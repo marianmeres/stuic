@@ -4,5 +4,5 @@
 </script>
 
 <Layout>
-	<Button>foo</Button>
+	<Button>todo</Button>
 </Layout>
