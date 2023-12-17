@@ -47,7 +47,10 @@
 	// 0 means flex-none for sidebars
 	export let pageFlexGrow: 0 | 1 | 2 | 3 | 4 | 5 = 3;
 	$: _sidebarFlexCls = pageFlexGrow ? 'flex-1' : 'flex-none';
-	$: _pageFlexCls = `flex-[${pageFlexGrow}]`;
+
+	// prettier-ignore
+	const flexMap = ['flex-1', 'flex-1', 'flex-[2]', 'flex-[3]', 'flex-[4]', 'flex-[5]'];
+	$: _pageFlexCls = flexMap[pageFlexGrow];
 
 	//
 	let shell: HTMLElement;
@@ -144,7 +147,7 @@
 
 				<!-- shell > div > content > page > page-main -->
 				<main
-					bind:this={pageFooter}
+					bind:this={pageMain}
 					data-shell="page-main"
 					class={twMerge(`flex-auto ${pageMainClass}`)}
 				>

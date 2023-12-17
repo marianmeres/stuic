@@ -1,7 +1,7 @@
 <script>
 	import Layout from './_components/Layout.svelte';
 
-	let links = ['app-shell', 'backdrop', 'button'];
+	let links = ['app-shell', 'backdrop', 'button', 'drawer'];
 </script>
 
 <Layout>

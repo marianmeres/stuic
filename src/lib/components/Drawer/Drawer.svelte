@@ -1,36 +1,30 @@
-<script lang="ts">
-	import { createEventDispatcher, onMount } from 'svelte';
-	import { BROWSER } from 'esm-env';
-	import { focusTrap } from '../../actions/FocusTrap/focusTrap.js';
-	import { fade, fly } from 'svelte/transition';
-	import { cubicIn } from 'svelte/easing';
-	import type { DrawerStore, DrawerOptions } from './drawer.ts';
+<script lang="ts" context="module">
+	import { createClog } from '@marianmeres/clog';
+	import { createSwitchStore } from '@marianmeres/switch-store';
+	import { createEventDispatcher } from 'svelte';
+	import { slide } from 'svelte/transition';
+	import { twMerge } from 'tailwind-merge';
 	import { prefersReducedMotionStore } from '../../utils/PrefersReducedMotion/PrefersReducedMotion.js';
-	import type { SvelteEvent } from '../../types.js';
+	import Backdrop from '../Backdrop/Backdrop.svelte';
 
+	export type DrawerStore = ReturnType<typeof createDrawerStore>;
+	export const createDrawerStore = (open = false) => createSwitchStore<any>(open);
+</script>
+
+<script lang="ts">
+	const clog = createClog('Drawer');
 	const dispatch = createEventDispatcher();
 
-	export let allowCloseOnEscape = true;
-
-	export let drawerStore: DrawerStore;
+	export let drawer: DrawerStore;
 	export let position: 'left' | 'top' | 'right' | 'bottom' = 'left';
 
-	// Backdrop
-	// export let bgBackdrop: string = '';
-	// export let blur: string = '';
-	// export let padding: string = '';
-	// export let zIndex: string = 'z-40';
+	// main container class
+	let _class = '';
+	export { _class as class };
 
-	// Drawer
-	export let bgDrawer: string = '';
-	export let border: string = '';
-	export let rounded: string = '';
-	export let shadow: string = '';
-	export let width: string = '';
-	export let height: string = '';
-	// Regions
-	export let regionBackdrop: string = '';
-	export let regionDrawer: string = '';
+	// Backdrop
+	export let backdropClass: string = '';
+
 	// A11y
 	export let labelledby: string = '';
 	export let describedby: string = '';
@@ -38,143 +32,71 @@
 	// Transitions
 	export let transitionDuration = 200;
 	export let transitionEnabled = !$prefersReducedMotionStore;
-	export let transitionOpacity = true;
 
-	// prettier-ignore
-	const presets = {
-		top: { alignment: 'items-start', width: 'w-full', height: 'h-[50%]' },
-		bottom: { alignment: 'items-end', width: 'w-full', height: ' h-[50%]' },
-		left: { alignment: 'justify-start', width: 'w-[90%]', height: 'h-full' },
-		right: { alignment: 'justify-end', width: 'w-[90%]', height: 'h-full' }
+	// opinionated: make backdrop fade-in a little faster, and never longer than 200... looks better
+	$: fadeInDuration = transitionEnabled ? Math.min(transitionDuration * 0.66, 200) : 0;
+
+	const _presetsClsBackdrop = {
+		left: `justify-start`,
+		right: `justify-end`,
+		top: `items-start`,
+		bottom: `items-end`,
 	};
 
-	// Local
-	// let elBackdrop: HTMLElement;
-	let elDrawer: HTMLElement;
-	let anim = { x: 0, y: 0 };
-
-	// Record a record of default props on init
-	// NOTE: these must stay in sync with the props implemented above.
-	// prettier-ignore
-	const propDefaults: any = {
-		position,
-		bgBackdrop, blur, padding,
-		bgDrawer, border, rounded, shadow,
-		width, height, transitionOpacity,
-		regionBackdrop, regionDrawer,
-		labelledby, describedby,
-		transitionDuration
+	const _presetsCls = {
+		left: `w-full sm:w-[66%] h-full`,
+		right: `w-full sm:w-[66%] h-full`,
+		top: `w-full h-full sm:h-[66%]`,
+		bottom: `w-full h-full sm:h-[66%]`,
 	};
 
-	// Override provided props, else restore prop defaults
-	// NOTE: these must stay in sync with the props implemented above.
-	function applyProps(options: Partial<DrawerOptions>): void {
-		// prettier-ignore
-		[
-			'position',
-			// Backdrop
-			// 'bgBackdrop', 'blur', 'padding', 'zIndex',
-			// Drawer
-			'bgDrawer', 'border', 'rounded', 'shadow', 'width', 'height',
-			// Regions
-			'regionBackdrop', 'regionDrawer',
-			// A11y
-			'labelledby', 'describedby',
-			// Transitions
-			'transitionDuration', 'transitionOpacity',
-		].forEach((k) => (options as any)[k] || propDefaults[k]);
-	}
-
-	function applyAnimationSettings(): void {
-		if (!BROWSER) return;
-		// prettier-ignore
-		switch (position) {
-			case 'top':    anim = { x: 0, y: -window.innerWidth }; break;
-			case 'bottom': anim = { x: 0, y: window.innerWidth }; break;
-			case 'left':   anim = { x: -window.innerHeight, y: 0 }; break;
-			case 'right':  anim = { x: window.innerHeight, y: 0 }; break;
-			default: console.error('Error: unknown position property value.'); break;
-		}
-	}
-
-	// function onDrawerInteraction(event: SvelteEvent<MouseEvent, HTMLDivElement>): void {
-	// 	if (event.target === elBackdrop) {
-	// 		drawerStore.close();
-	// 		dispatch('backdrop', event);
-	// 	} else {
-	// 		dispatch('drawer', event);
-	// 	}
-	// }
-
-	// function onKeydownWindow(event: SvelteEvent<KeyboardEvent, Window>): void {
-	// 	if (!$drawerStore) return;
-	// 	if (allowCloseOnEscape && event.code === 'Escape') drawerStore.close();
-	// }
+	// prettier-ignore
+	$: _presetsAnim = {
+		left:   { axis: 'x' } as any,
+		right:  { axis: 'x' } as any,
+		top:    { axis: 'y' } as any,
+		bottom: { axis: 'y' } as any,
+	};
 
 	//
-	onMount(
-		drawerStore.subscribe((settings: Partial<DrawerOptions>) => {
-			if (settings.open !== true) return;
-			applyProps(settings);
-			applyAnimationSettings();
-		})
-	);
+	let el: HTMLElement;
+	$: if (el) dispatch('element', { drawer: el });
 </script>
 
-<!-- <svelte:window on:keydown={onKeydownWindow} /> -->
-
-{#if $drawerStore.open === true}
-	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<!-- <div
-		bind:this={elBackdrop}
-		class="drawer-backdrop {classesBackdrop}"
-		on:mousedown={onDrawerInteraction}
-		on:touchstart|passive
-		on:touchend|passive
-		on:keypress
-		in:dynamicTransition|local={{
-			transition: fade,
-			params: { duration },
-			enabled: transitionEnabled && transitionOpacity,
-		}}
-		out:dynamicTransition|local={{
-			transition: fade,
-			params: { duration },
-			enabled: transitionEnabled && transitionOpacity,
-		}}
-		use:focusTrap={true}
-	> -->
-	<div
-		bind:this={elDrawer}
-		class="drawer {classesDrawer}"
-		data-testid="drawer"
-		role="dialog"
-		aria-modal="true"
-		aria-labelledby={labelledby}
-		aria-describedby={describedby}
-		in:dynamicTransition|local={{
-			transition: fly,
-			params: {
-				x: anim.x,
-				y: anim.y,
-				duration,
-				opacity: opacityTransition ? undefined : 1,
-			},
-			enabled: transitionEnabled,
-		}}
-		out:dynamicTransition|local={{
-			transition: fly,
-			params: {
-				x: anim.x,
-				y: anim.y,
-				duration,
-				opacity: opacityTransition ? undefined : 1,
-				easing: cubicIn,
-			},
-			enabled: transitionEnabled,
-		}}
+{#if $drawer.isOpen}
+	<!-- prettier-ignore -->
+	<Backdrop
+		class={twMerge(`
+			${_presetsClsBackdrop[position] || ''}  ${backdropClass}
+		`.trim())}
+		on:escape
+		on:click={(e) => dispatch('backdrop_click')}
+		{fadeInDuration}
+		fadeOutDuration={transitionEnabled ? transitionDuration : 0}
+		on:element
 	>
-		<slot />
-	</div>
-	<!-- </div> -->
+		<!-- 
+			svelte-ignore 
+			a11y-click-events-have-key-events 
+			a11y-no-noninteractive-element-interactions 
+		-->
+		<div
+			bind:this={el}
+			on:click|stopPropagation
+			aria-modal="true" 
+			role="dialog"
+			aria-labelledby={labelledby}
+			aria-describedby={describedby}
+			transition:slide={{
+				duration: transitionEnabled ? transitionDuration : 0,
+				...(_presetsAnim[position] || {}),
+			}}
+			class={twMerge(`
+				flex overflow-y-auto transition-transform
+				${_presetsCls[position] || ''}  ${_class}
+			`.trim())}
+		>
+			<slot />
+		</div>
+	</Backdrop>
 {/if}

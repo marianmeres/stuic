@@ -29,6 +29,7 @@
 		"svelte": "^4.0.0"
 	},
 	"devDependencies": {
+		"@marianmeres/parse-boolean": "^1.1.7",
 		"@sveltejs/adapter-auto": "^2.0.0",
 		"@sveltejs/kit": "^1.27.4",
 		"@sveltejs/package": "^2.0.0",
@@ -53,6 +54,7 @@
 	"dependencies": {
 		"@marianmeres/clog": "^1.0.1",
 		"@marianmeres/random-human-readable": "^1.6.1",
+		"@marianmeres/switch-store": "^1.3.0",
 		"tailwind-merge": "^2.1.0"
 	}
 }

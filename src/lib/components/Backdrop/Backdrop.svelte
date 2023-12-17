@@ -1,10 +1,17 @@
+<script lang="ts" context="module">
+	export class BackdropConfig {
+		static class = '';
+		static fadeInDuration = 50;
+		static fadeOutDuration = 150;
+	}
+</script>
+
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import { twMerge } from 'tailwind-merge';
 	import { focusTrap } from '../../actions/FocusTrap/focusTrap.js';
 	import { prefersReducedMotionStore } from '../../utils/PrefersReducedMotion/PrefersReducedMotion.js';
-	import { BackdropConfig } from './backdrop.js';
 
 	const dispatch = createEventDispatcher();
 
@@ -30,7 +37,7 @@
 <div
 	bind:this={el}
 	class={twMerge(`
-		fixed top-0 left-0 right-0 bottom-0 flex z-10 
+		fixed inset-0 flex z-10 
 		${BackdropConfig.class} ${_class}
 	`.trim())}
 	on:click
