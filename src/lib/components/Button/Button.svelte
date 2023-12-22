@@ -1,9 +1,6 @@
 <script lang="ts" context="module">
-	import { createClog } from '@marianmeres/clog';
 	import { twMerge } from 'tailwind-merge';
 	import type { HTMLButtonAttributes } from 'svelte/elements';
-
-	const clog = createClog('Button');
 
 	export class ButtonConfig {
 		static defaultSize: 'xs' | 'sm' | 'md' | 'lg' | 'xl' = 'md';

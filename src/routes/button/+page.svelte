@@ -49,7 +49,7 @@
 		<Button variant="foo foo-outline">Foo outline</Button>
 		<Button
 			href="https://github.com/marianmeres/stuic"
-			class="bg-blue-200 dark:bg-blue-200 text-black dark:text-black dark:hover:text-black"
+			class="bg-blue-200 dark:bg-blue-200 text-black dark:text-black"
 			target="_blank"
 		>
 			{@html iconBsGithub({ class: 'mr-1' })}

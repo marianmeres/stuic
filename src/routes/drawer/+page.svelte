@@ -16,7 +16,7 @@
 			<option {value}>{value}</option>
 		{/each}
 	</select>
-	<button on:click={(e) => drawer.open()}>Open drawer</button>
+	<button on:click={drawer.open}>Open drawer</button>
 </Layout>
 
 <!-- on:click={(e) => drawer.close()} -->
