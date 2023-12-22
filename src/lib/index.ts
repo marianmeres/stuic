@@ -15,3 +15,6 @@ export { default as Button } from './components/Button/Button.svelte';
 
 //
 export { default as Drawer, createDrawerStore } from './components/Drawer/Drawer.svelte';
+
+//
+export { default as X } from './components/X/X.svelte';

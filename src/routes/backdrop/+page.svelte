@@ -1,15 +1,11 @@
 <script>
-	import { createClog } from '@marianmeres/clog';
-	import Layout from '../_components/Layout.svelte';
 	import { Backdrop, BackdropConfig } from '../../lib';
-
-	const clog = createClog('backdrop/+page');
-
-	let show = false;
+	import Layout from '../_components/Layout.svelte';
 
 	// simulate global config
 	BackdropConfig.class = 'z-30 bg-black/50';
 
+	let show = false;
 	const close = () => (show = false);
 </script>
 

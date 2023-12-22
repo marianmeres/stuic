@@ -1,4 +1,4 @@
-// kopirovane zo skeletonu
+// copied from skeleton
 
 // Action: Focus Trap
 export function focusTrap(node: HTMLElement, enabled: boolean) {

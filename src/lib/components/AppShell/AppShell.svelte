@@ -2,7 +2,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import { twMerge } from 'tailwind-merge';
 
-	// this is mostly copied from https://www.skeleton.dev/components/app-shell
+	// idea copied from https://www.skeleton.dev/components/app-shell
 	// adjusted and tweaked to personal opinion and taste...
 
 	/*  Layout:
@@ -50,7 +50,7 @@
 
 	// prettier-ignore
 	const flexMap = ['flex-1', 'flex-1', 'flex-[2]', 'flex-[3]', 'flex-[4]', 'flex-[5]'];
-	$: _pageFlexCls = flexMap[pageFlexGrow];
+	$: _pageFlexCls = flexMap[pageFlexGrow] || 'flex-1';
 
 	//
 	let shell: HTMLElement;
@@ -196,19 +196,19 @@
 <style lang="scss">
 	/* from: https://www.skeleton.dev/components/app-shell
 
-    The App Shell will need to expand to fill all available space within your app's body tag. 
-    Open /src/app.html and add the following classes. This wrapping element is required 
-    and the style of display: contents should remain.
-    
-    <body>
-        <div style="display: contents" class="h-full overflow-hidden">%sveltekit.body%</div>
-    </body>
+	The App Shell will need to expand to fill all available space within your app's body tag. 
+	Open /src/app.html and add the following classes. This wrapping element is required 
+	and the style of display: contents should remain.
 
-    Then update your global stylesheet with the following. This will disable overflow for 
-    html and body tags to prevent duplicate scroll bars.
-    
-    html, body { @apply h-full overflow-hidden; }
-    */
+	<body>
+		<div style="display: contents" class="h-full overflow-hidden">%sveltekit.body%</div>
+	</body>
+
+	Then update your global stylesheet with the following. This will disable overflow for 
+	html and body tags to prevent duplicate scroll bars.
+
+	html, body { @apply h-full overflow-hidden; }
+	*/
 
 	// is this :global thing a good idea? (won't be able to embed this shell to a parent container...)
 	:global(html),

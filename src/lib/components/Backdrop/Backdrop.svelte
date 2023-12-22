@@ -10,10 +10,12 @@
 	import { createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import { twMerge } from 'tailwind-merge';
-	import { focusTrap } from '../../actions/FocusTrap/focusTrap.js';
+	import { focusTrap } from '../../actions/focus-trap.js';
 	import { prefersReducedMotionStore } from '../../utils/PrefersReducedMotion/PrefersReducedMotion.js';
 
 	const dispatch = createEventDispatcher();
+
+	export let useFocusTrap = true;
 
 	let _class = '';
 	export { _class as class };
@@ -47,7 +49,9 @@
 	on:keydown={(e) => e.code === 'Escape' && dispatch('escape')}
 	in:fade={{ duration: fadeInDuration }}
 	out:fade={{ duration: fadeOutDuration }}
-	use:focusTrap={true}
+	use:focusTrap={useFocusTrap}
+	role="presentation"
+	tabindex="-1" 
 >
 	<slot />
 </div>

@@ -2,10 +2,11 @@
 	import { createClog } from '@marianmeres/clog';
 	import { createSwitchStore } from '@marianmeres/switch-store';
 	import { createEventDispatcher } from 'svelte';
-	import { slide } from 'svelte/transition';
+	import { slide, fly } from 'svelte/transition';
 	import { twMerge } from 'tailwind-merge';
 	import { prefersReducedMotionStore } from '../../utils/PrefersReducedMotion/PrefersReducedMotion.js';
 	import Backdrop from '../Backdrop/Backdrop.svelte';
+	import { clickOutside } from '../../actions/click-outside.js';
 
 	export type DrawerStore = ReturnType<typeof createDrawerStore>;
 	export const createDrawerStore = (open = false) => createSwitchStore<any>(open);
@@ -17,6 +18,9 @@
 
 	export let drawer: DrawerStore;
 	export let position: 'left' | 'top' | 'right' | 'bottom' = 'left';
+
+	const _whitelist = ['left', 'top', 'right', 'bottom'];
+	$: if (!_whitelist.includes(position)) position = 'left';
 
 	// main container class
 	let _class = '';
@@ -30,10 +34,14 @@
 	export let describedby: string = '';
 
 	// Transitions
-	export let transitionDuration = 200;
+	export let transitionDuration = 250;
 	export let transitionEnabled = !$prefersReducedMotionStore;
 
-	// opinionated: make backdrop fade-in a little faster, and never longer than 200... looks better
+	// will be used in `fly` config. Ideally should match with the provided tw classes
+	// to make the animation smooth. May include ccs units (will be considered as pixels otherwise).
+	export let animOffset: string | number = '66vw';
+
+	// opinionated: make backdrop fade-in a little faster (but never longer than 200)... looks better
 	$: fadeInDuration = transitionEnabled ? Math.min(transitionDuration * 0.66, 200) : 0;
 
 	const _presetsClsBackdrop = {
@@ -44,18 +52,18 @@
 	};
 
 	const _presetsCls = {
-		left: `w-full sm:w-[66%] h-full`,
-		right: `w-full sm:w-[66%] h-full`,
-		top: `w-full h-full sm:h-[66%]`,
-		bottom: `w-full h-full sm:h-[66%]`,
+		left: `w-full sm:w-[66vw] h-full`,
+		right: `w-full sm:w-[66vw] h-full`,
+		top: `w-full h-full sm:h-[66vh]`,
+		bottom: `w-full h-full sm:h-[66vh]`,
 	};
 
 	// prettier-ignore
 	$: _presetsAnim = {
-		left:   { axis: 'x' } as any,
-		right:  { axis: 'x' } as any,
-		top:    { axis: 'y' } as any,
-		bottom: { axis: 'y' } as any,
+		left:   { x: `-${animOffset}`, y: 0 },
+		right:  { x: animOffset,       y: 0 },
+		top:    { x: 0,                y: `-${animOffset}`},
+		bottom: { x: 0,                y: animOffset },
 	};
 
 	//
@@ -63,14 +71,14 @@
 	$: if (el) dispatch('element', { drawer: el });
 </script>
 
+<!-- prettier-ignore -->
 {#if $drawer.isOpen}
-	<!-- prettier-ignore -->
 	<Backdrop
 		class={twMerge(`
 			${_presetsClsBackdrop[position] || ''}  ${backdropClass}
 		`.trim())}
 		on:escape
-		on:click={(e) => dispatch('backdrop_click')}
+		on:click={(e) => dispatch('click_backdrop')}
 		{fadeInDuration}
 		fadeOutDuration={transitionEnabled ? transitionDuration : 0}
 		on:element
@@ -87,14 +95,12 @@
 			role="dialog"
 			aria-labelledby={labelledby}
 			aria-describedby={describedby}
-			transition:slide={{
+			transition:fly={{
 				duration: transitionEnabled ? transitionDuration : 0,
 				...(_presetsAnim[position] || {}),
 			}}
-			class={twMerge(`
-				flex overflow-y-auto transition-transform
-				${_presetsCls[position] || ''}  ${_class}
-			`.trim())}
+			class={twMerge(`overflow-y-auto ${_presetsCls[position] || ''} ${_class}`.trim())}
+			use:clickOutside={() => dispatch('click_outside')}
 		>
 			<slot />
 		</div>

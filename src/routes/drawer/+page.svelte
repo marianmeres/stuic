@@ -8,12 +8,6 @@
 	const drawer = createDrawerStore();
 
 	let position: any = 'left';
-	const preset = {
-		left: '',
-		right: '',
-		top: '',
-		bottom: '',
-	};
 </script>
 
 <Layout>
@@ -29,18 +23,18 @@
 <!-- on:element={({ detail }) => clog(detail)} -->
 <Drawer
 	{drawer}
-	backdropClass="z-10 bg-black/50"
-	on:escape={(e) => drawer.close()}
-	on:backdrop_click={(e) => drawer.close()}
 	{position}
-	transitionDuration={200}
-	class="bg-white"
+	backdropClass="z-10 bg-black/50 cursor-pointer"
+	class="bg-white cursor-auto"
+	on:escape={drawer.close}
+	on:click_backdrop={drawer.close}
+	on:click_outside={() => clog('click outside')}
 >
 	<div class="w-full">
 		<div class="p-4 bg-gray-200">
 			<button on:click={(e) => drawer.close()}>close</button>
 		</div>
-		<div class="p-4 max-w-[400px]">
+		<div class="p-4 w-[400px] max-w-[400px]">
 			{@html dummyText(30)}
 		</div>
 	</div>

@@ -1,11 +1,9 @@
 <script lang="ts">
 	import AppShell from '../../lib/components/AppShell/AppShell.svelte';
-	import { getRandomParagraph } from '@marianmeres/random-human-readable';
-	import LeftSidebar from './_components/LeftSidebar.svelte';
 	import { dummyText } from '../_utils/dummy-text.js';
-	import HeadButtonSwitcher from './_components/HeadButtonSwitcher.svelte';
-	import { parseBoolean } from '@marianmeres/parse-boolean';
 	import FlexSelect from './_components/FlexSelect.svelte';
+	import HeadButtonSwitcher from './_components/HeadButtonSwitcher.svelte';
+	import LeftSidebar from './_components/LeftSidebar.svelte';
 
 	let pageFlexGrow: any = 0;
 

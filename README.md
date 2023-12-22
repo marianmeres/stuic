@@ -11,4 +11,5 @@ Ongoing effort to build reusable Svelte UI primitives as I need them, inspired b
 - https://captaincodeman.github.io/svelte-headlessui/
 - https://www.svelteui.org/
 
-Often cherry-picked (stolen), combined, adjusted and tweaked to my personal preference and needs.
+Cherry-picked (stolen), combined, adjusted and tweaked to my personal preference and needs.
+Ø

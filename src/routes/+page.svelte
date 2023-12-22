@@ -1,7 +1,17 @@
 <script>
 	import Layout from './_components/Layout.svelte';
 
-	let links = ['app-shell', 'backdrop', 'button', 'drawer'];
+	// prettier-ignore
+	let links = [
+		'app-shell', 'avatar', 
+		'backdrop', 'button', 
+		'carousel',
+		'drawer',
+		'popover', 
+		'spinner',
+		'table', 'tooltip', 'tree',
+		'x'
+	].toSorted();
 </script>
 
 <Layout>

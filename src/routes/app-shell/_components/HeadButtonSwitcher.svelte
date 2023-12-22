@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { parseBoolean } from '@marianmeres/parse-boolean';
 
 	export let flag: boolean;
