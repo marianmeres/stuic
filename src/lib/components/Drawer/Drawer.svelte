@@ -4,7 +4,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import { slide, fly } from 'svelte/transition';
 	import { twMerge } from 'tailwind-merge';
-	import { prefersReducedMotionStore } from '../../utils/PrefersReducedMotion/PrefersReducedMotion.js';
+	import { prefersReducedMotionStore } from '../../utils/prefers-reduced-motion.js';
 	import Backdrop from '../Backdrop/Backdrop.svelte';
 	import { clickOutside } from '../../actions/click-outside.js';
 

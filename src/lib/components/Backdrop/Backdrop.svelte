@@ -11,7 +11,7 @@
 	import { fade } from 'svelte/transition';
 	import { twMerge } from 'tailwind-merge';
 	import { focusTrap } from '../../actions/focus-trap.js';
-	import { prefersReducedMotionStore } from '../../utils/PrefersReducedMotion/PrefersReducedMotion.js';
+	import { prefersReducedMotionStore } from '../../utils/prefers-reduced-motion.js';
 
 	const dispatch = createEventDispatcher();
 
