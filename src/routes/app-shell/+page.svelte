@@ -20,12 +20,12 @@
 </script>
 
 <AppShell
-	class="bg-gray-100"
+	class=""
 	railClass="p-4 w-[60px] text-center {onoff(rail)}"
 	headerClass="p-4 max-h-40 overflow-auto"
 	sidebarLeftClass="p-4 {onoff(sidebarLeft)}"
 	pageHeaderClass="p-4 {onoff(pageHeader)}"
-	pageMainClass="bg-white p-4 {onoff(pageMain)}"
+	pageMainClass="p-4 {onoff(pageMain)}"
 	pageFooterClass="p-4 {onoff(pageFooter)}"
 	sidebarRightClass="p-4 {onoff(sidebarRight)}"
 	footerClass="p-4 {onoff(footer)}"

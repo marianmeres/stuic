@@ -11,7 +11,13 @@ export {
 // export { BackdropConfig } from './components/Backdrop/backdrop.js';
 
 //
-export { default as Button } from './components/Button/Button.svelte';
+export { default as Button, ButtonConfig } from './components/Button/Button.svelte';
+
+//
+export {
+	default as PrefersColorScheme,
+	ColorScheme,
+} from './components/PrefersColorScheme/PrefersColorScheme.svelte';
 
 //
 export { default as Drawer, createDrawerStore } from './components/Drawer/Drawer.svelte';

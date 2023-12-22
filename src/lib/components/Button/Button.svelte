@@ -17,9 +17,10 @@
 			text-center whitespace-nowrap
 			inline-flex justify-center items-center gap-x-1
 			border border-transparent
-			hover:brightness-[1.15]
-			active:brightness-90
+			hover:brightness-[1.1]
+			active:brightness-[0.95]
 			disabled:!cursor-not-allowed disabled:!opacity-50 disabled:hover:brightness-100
+			no-underline
 		`.trim();
 
 		static presetSquare = 'p-0 aspect-square';
@@ -33,19 +34,19 @@
 		};
 
 		static presetsShadow = {
-			xs: 'shadow-sm',
-			sm: 'shadow',
-			md: 'shadow',
-			lg: 'shadow-md',
-			xl: 'shadow-md',
+			xs: 'shadow-sm dark:shadow-black',
+			sm: 'shadow    dark:shadow-black',
+			md: 'shadow    dark:shadow-black',
+			lg: 'shadow-md dark:shadow-black',
+			xl: 'shadow-md dark:shadow-black',
 		};
 
 		static presetsSize = {
-			xs: 'px-2 py-0.5 text-xs',
-			sm: 'px-3 py-1 text-sm',
-			md: 'px-3.5 py-1 text-base',
-			lg: 'px-4 py-1.5 text-lg',
-			xl: 'px-4 py-2 text-xl',
+			xs: 'px-2   py-0.5 text-xs',
+			sm: 'px-3   py-1   text-sm',
+			md: 'px-3.5 py-1   text-base',
+			lg: 'px-4   py-1.5 text-lg',
+			xl: 'px-4   py-2   text-xl',
 		};
 
 		static classBySize = {

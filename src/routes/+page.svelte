@@ -7,7 +7,7 @@
 		'backdrop', 'button', 
 		'carousel',
 		'drawer',
-		'popover', 
+		'popover', 'prefers-color-scheme', 
 		'spinner',
 		'table', 'tooltip', 'tree',
 		'x'
