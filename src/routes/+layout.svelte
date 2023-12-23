@@ -1,7 +1,8 @@
 <script>
 	import '../app.scss';
-	import PrefersColorScheme from '../lib/components/PrefersColorScheme/PrefersColorScheme.svelte';
+	import LocalColorScheme from '../lib/components/ColorScheme/LocalColorScheme.svelte';
 </script>
 
-<PrefersColorScheme />
+<LocalColorScheme />
+
 <slot />

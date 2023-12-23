@@ -8,16 +8,14 @@ export {
 	default as Backdrop,
 	BackdropConfig,
 } from './components/Backdrop/Backdrop.svelte';
-// export { BackdropConfig } from './components/Backdrop/backdrop.js';
 
 //
 export { default as Button, ButtonConfig } from './components/Button/Button.svelte';
 
 //
-export {
-	default as PrefersColorScheme,
-	ColorScheme,
-} from './components/PrefersColorScheme/PrefersColorScheme.svelte';
+export { default as SystemAwareColorScheme } from './components/ColorScheme/SystemAwareColorScheme.svelte';
+export { default as LocalColorScheme } from './components/ColorScheme/LocalColorScheme.svelte';
+export { ColorScheme } from './components/ColorScheme/color-scheme.js';
 
 //
 export { default as Drawer, createDrawerStore } from './components/Drawer/Drawer.svelte';

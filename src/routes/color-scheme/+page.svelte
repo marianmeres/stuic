@@ -13,7 +13,10 @@
 		"
 	>
 		Check header above. You can also
-		<button class="underline" on:click={ColorScheme.reset}>reset</button>. (May want to
-		refresh page.)
+		<button class="underline" on:click={ColorScheme.reset}>reset</button>.
+
+		<div class="text-sm opacity-50 mt-4">
+			You will need to refresh the page for the changes to take effect.
+		</div>
 	</div>
 </Layout>

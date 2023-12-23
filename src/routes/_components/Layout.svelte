@@ -7,12 +7,12 @@
 
 	const theme = writable<string | null>(null);
 	onMount(() => {
-		$theme = ColorScheme.getValue();
+		$theme = ColorScheme.getLocalValue(ColorScheme.LIGHT);
 	});
 
 	const toggleTheme = () => {
 		ColorScheme.toggle();
-		$theme = ColorScheme.getValue();
+		$theme = ColorScheme.getLocalValue();
 	};
 </script>
 
@@ -30,7 +30,9 @@
 		{/if}
 	</div>
 	<div>
-		<button on:click={toggleTheme}>{$theme === 'light' ? 'dark' : 'light'}</button>
+		<button on:click={toggleTheme}>
+			{$theme === ColorScheme.LIGHT ? ColorScheme.DARK : ColorScheme.LIGHT}
+		</button>
 	</div>
 </header>
 <div class="p-4">

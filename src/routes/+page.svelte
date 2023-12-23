@@ -5,9 +5,9 @@
 	let links = [
 		'app-shell', 'avatar', 
 		'backdrop', 'button', 
-		'carousel',
+		'carousel', 'color-scheme', 
 		'drawer',
-		'popover', 'prefers-color-scheme', 
+		'popover', 
 		'spinner',
 		'table', 'tooltip', 'tree',
 		'x'
