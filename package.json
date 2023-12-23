@@ -13,8 +13,8 @@
 		"lint": "prettier --check .",
 		"format": "prettier --write .",
 		"prettier": "npm run format",
-		"release:minor": "release -v minor",
-		"release": "release -v patch"
+		"release:patch": "release -v patch",
+		"release": "release -v minor"
 	},
 	"exports": {
 		".": {
