@@ -2,11 +2,11 @@
 	import { createClog } from '@marianmeres/clog';
 	import { createSwitchStore } from '@marianmeres/switch-store';
 	import { createEventDispatcher } from 'svelte';
-	import { slide, fly } from 'svelte/transition';
+	import { fly } from 'svelte/transition';
 	import { twMerge } from 'tailwind-merge';
+	import { clickOutside } from '../../actions/click-outside.js';
 	import { prefersReducedMotionStore } from '../../utils/prefers-reduced-motion.js';
 	import Backdrop from '../Backdrop/Backdrop.svelte';
-	import { clickOutside } from '../../actions/click-outside.js';
 
 	export type DrawerStore = ReturnType<typeof createDrawerStore>;
 	export const createDrawerStore = (open = false) => createSwitchStore<any>(open);
@@ -38,24 +38,31 @@
 	export let transitionEnabled = !$prefersReducedMotionStore;
 
 	// will be used in `fly` config. Ideally should match with the provided tw classes
-	// to make the animation smooth. May include ccs units (will be considered as pixels otherwise).
+	// to make the animation optimal. May include ccs units (will be considered as pixels otherwise).
 	export let animOffset: string | number = '66vw';
 
 	// opinionated: make backdrop fade-in a little faster (but never longer than 200)... looks better
 	$: fadeInDuration = transitionEnabled ? Math.min(transitionDuration * 0.66, 200) : 0;
 
+	// prettier-ignore
 	const _presetsClsBackdrop = {
-		left: `justify-start`,
-		right: `justify-end`,
-		top: `items-start`,
+		left:   `justify-start`,
+		right:  `justify-end`,
+		top:    `items-start`,
 		bottom: `items-end`,
 	};
 
+	// sm	640px
+	// md	768px
+	// lg	1024px
+	// xl	1280px
+
+	// prettier-ignore
 	const _presetsCls = {
-		left: `w-full sm:w-[66vw] h-full`,
-		right: `w-full sm:w-[66vw] h-full`,
-		top: `w-full h-full sm:h-[66vh]`,
-		bottom: `w-full h-full sm:h-[66vh]`,
+		left:   `w-full sm:w-[66vw] h-full`,
+		right:  `w-full sm:w-[66vw] h-full`,
+		top:    `w-full             h-full sm:h-[66vh]`,
+		bottom: `w-full             h-full sm:h-[66vh]`,
 	};
 
 	// prettier-ignore
@@ -71,12 +78,9 @@
 	$: if (el) dispatch('element', { drawer: el });
 </script>
 
-<!-- prettier-ignore -->
 {#if $drawer.isOpen}
 	<Backdrop
-		class={twMerge(`
-			${_presetsClsBackdrop[position] || ''}  ${backdropClass}
-		`.trim())}
+		class={twMerge(`${_presetsClsBackdrop[position] || ''} ${backdropClass}`)}
 		on:escape
 		on:click={(e) => dispatch('click_backdrop')}
 		{fadeInDuration}
@@ -91,7 +95,7 @@
 		<div
 			bind:this={el}
 			on:click|stopPropagation
-			aria-modal="true" 
+			aria-modal="true"
 			role="dialog"
 			aria-labelledby={labelledby}
 			aria-describedby={describedby}
@@ -99,7 +103,7 @@
 				duration: transitionEnabled ? transitionDuration : 0,
 				...(_presetsAnim[position] || {}),
 			}}
-			class={twMerge(`overflow-y-auto ${_presetsCls[position] || ''} ${_class}`.trim())}
+			class={twMerge(`overflow-y-auto ${_presetsCls[position] || ''} ${_class}`)}
 			use:clickOutside={() => dispatch('click_outside')}
 		>
 			<slot />

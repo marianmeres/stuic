@@ -1,3 +1,15 @@
+<script context="module" lang="ts">
+	export const appShellSetHtmlBodyHeight = (): (() => any) => {
+		const _set = (flag: boolean) => {
+			document.body.style.height = flag ? '100vh' : 'auto';
+			document.body.style.overflow = flag ? 'hidden' : 'visible';
+		};
+		_set(true);
+		// returns reset, so we can write: onMount(appShellSetHtmlBodyHeight)
+		return () => _set(false);
+	};
+</script>
+
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { twMerge } from 'tailwind-merge';
@@ -209,11 +221,4 @@
 
 	html, body { @apply h-full overflow-hidden; }
 	*/
-
-	// is this :global thing a good idea? (won't be able to embed this shell to a parent container...)
-	:global(html),
-	:global(body) {
-		height: 100vh !important;
-		overflow: hidden !important;
-	}
 </style>

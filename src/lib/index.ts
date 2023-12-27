@@ -1,7 +1,10 @@
 // Reexport your entry components here
 
 //
-export { default as AppShell } from './components/AppShell/AppShell.svelte';
+export {
+	default as AppShell,
+	appShellSetHtmlBodyHeight,
+} from './components/AppShell/AppShell.svelte';
 
 //
 export {
@@ -19,6 +22,9 @@ export { ColorScheme } from './components/ColorScheme/color-scheme.js';
 
 //
 export { default as Drawer, createDrawerStore } from './components/Drawer/Drawer.svelte';
+
+//
+export { default as Expandable } from './components/Expandable/Expandable.svelte';
 
 //
 export { default as X } from './components/X/X.svelte';

@@ -1,5 +1,6 @@
 <script lang="ts">
-	import AppShell from '../../lib/components/AppShell/AppShell.svelte';
+	import { onMount } from 'svelte';
+	import { AppShell, appShellSetHtmlBodyHeight } from '../../lib/index.js';
 	import { dummyText } from '../_utils/dummy-text.js';
 	import FlexSelect from './_components/FlexSelect.svelte';
 	import HeadButtonSwitcher from './_components/HeadButtonSwitcher.svelte';
@@ -17,6 +18,8 @@
 	let footer: any;
 
 	const onoff = (f: any) => (f ? 'block' : 'hidden');
+
+	onMount(appShellSetHtmlBodyHeight);
 </script>
 
 <AppShell
