@@ -16,7 +16,7 @@
 	export let shadowOpacity = 0.5;
 
 	//
-	export let transitionDuration = 150;
+	export let duration = 150;
 
 	//
 	export let targetWidth = 300;
@@ -75,7 +75,7 @@
 				// _isExpanded = true;
 				_maybeTodo();
 			},
-			transitionDuration + (1000 / 60) * 3 // 3 x raf
+			duration + (1000 / 60) * 3 // 3 x raf
 		);
 
 		requestAnimationFrame(() => {
@@ -115,7 +115,7 @@
 			_isShrinking = false;
 			el.style.transitionProperty = 'none';
 			_maybeTodo();
-		}, transitionDuration);
+		}, duration);
 	};
 
 	// $: force && _expand();
@@ -130,7 +130,7 @@
 	on:click
 	aria-expanded={_isExpanded}
 	class={twMerge(`${_class}`)}
-	style="width: 100%; height: 100%; transition-duration: {transitionDuration}ms;"
+	style="width: 100%; height: 100%; transition-duration: {duration}ms;"
 >
 	<slot isExpanded={_isExpanded} inTransition={_isExpanding || _isShrinking} />
 </div>
