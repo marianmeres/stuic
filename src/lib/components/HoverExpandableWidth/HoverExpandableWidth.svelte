@@ -13,7 +13,7 @@
 	// export let force = false;
 
 	//
-	export let shadowOpacity = 0.8;
+	export let shadowOpacity = 0.5;
 
 	//
 	export let transitionDuration = 150;
@@ -56,7 +56,7 @@
 		};
 
 		// <offset-x>, <offset-y>, <blur-radius>, <spread-radius>
-		el.style.boxShadow = `8px 0 16px -8px rgb(0 0 0 / ${shadowOpacity})`;
+		el.style.boxShadow = `16px 0 24px -16px rgb(0 0 0 / ${shadowOpacity})`;
 
 		// kind of ugly - need to set props in multiple steps...
 
