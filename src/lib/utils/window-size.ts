@@ -23,7 +23,15 @@ window?.visualViewport?.addEventListener('resize', windowSize.touch);
 window?.visualViewport?.addEventListener('scroll', windowSize.touch);
 
 // https://tailwindcss.com/docs/responsive-design
-export const breakpoint = derived<[typeof windowSize], string | null>(
+interface Breakpoint {
+	__current__: null | string;
+	sm: boolean;
+	md: boolean;
+	lg: boolean;
+	xl: boolean;
+	'2xl': boolean;
+}
+export const breakpoint = derived<[typeof windowSize], Breakpoint>(
 	[windowSize],
 	([{ width: w }]) => {
 		const list = <[string, number][]>[
@@ -33,6 +41,14 @@ export const breakpoint = derived<[typeof windowSize], string | null>(
 			['xl', 1280],
 			['2xl', 1536],
 		];
-		return list.reduce<string | null>((m, [k, v]) => (w && w >= v ? k : m), null);
+		// return list.reduce<string | null>((m, [k, v]) => (w && w >= v ? k : m), null);
+		return list.reduce<Breakpoint>(
+			(m: Breakpoint, [k, v]) => {
+				const flag = w && w >= v;
+				m = { ...m, [k]: flag, __current__: flag ? k : m.__current__ };
+				return m;
+			},
+			{ __current__: null, sm: false, md: false, lg: false, xl: false, '2xl': false }
+		);
 	}
 );

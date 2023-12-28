@@ -11,6 +11,7 @@
 		'popover', 
 		'spinner',
 		'table', 'tooltip', 'tree',
+		'window-size',
 		'x'
 	].toSorted();
 </script>
