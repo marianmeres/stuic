@@ -24,7 +24,10 @@ export { ColorScheme } from './components/ColorScheme/color-scheme.js';
 export { default as Drawer, createDrawerStore } from './components/Drawer/Drawer.svelte';
 
 //
-export { default as Expandable } from './components/Expandable/Expandable.svelte';
+export { default as HoverExpandableWidth } from './components/HoverExpandableWidth/HoverExpandableWidth.svelte';
 
 //
 export { default as X } from './components/X/X.svelte';
+
+//
+export { windowSize, breakpoint } from './utils/window-size.js';

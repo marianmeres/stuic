@@ -7,7 +7,7 @@
 		'backdrop', 'button', 
 		'carousel', 'color-scheme', 
 		'drawer',
-		'expandable',
+		'hover-expandable-width',
 		'popover', 
 		'spinner',
 		'table', 'tooltip', 'tree',
