@@ -19,7 +19,7 @@
 	export let duration = 150;
 
 	//
-	export let targetWidth = 300;
+	export let targetWidth = 256;
 
 	//
 	let _class = '';
