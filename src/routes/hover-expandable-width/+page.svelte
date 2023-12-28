@@ -13,24 +13,22 @@
 </script>
 
 <Layout>
-	<div class="w-full outline flex overflow-hidden mb-8">
+	<div class="w-full outline flex overflow-hidden mb-8 h-[300px]">
 		<div class="left">
 			<HoverExpandableWidth
-				class=""
+				class="bg-red-400"
 				let:isExpanded
 				let:inTransition
 				on:click={() => clog('left click')}
 				on:change={({ detail }) => clog('change', detail)}
 			>
-				<div
-					class="h-full w-full p-4 transition duration"
-					class:bg-red-400={!isExpanded}
-					class:bg-blue-400={isExpanded}
-				>
+				<div class="h-full w-full p-4 transition duration">
 					hover
 					{#if isExpanded}<div class="font-bold">EXPANDED</div>{/if}
 					{#if inTransition}<div class="font-bold">Transition</div>{/if}
 					<!-- {#if isExpanded}<button on:click={left.toggle}>toggle force</button>{/if} -->
+
+					<div class="opacity-25 mt-4">{@html dummyText(3)}</div>
 				</div>
 			</HoverExpandableWidth>
 		</div>

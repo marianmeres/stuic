@@ -129,7 +129,7 @@
 	on:mouseleave={_shrink}
 	on:click
 	aria-expanded={_isExpanded}
-	class={twMerge(`${_class}`)}
+	class={twMerge(`overflow-x-hidden overflow-y-auto ${_class}`)}
 	style="width: 100%; height: 100%; transition-duration: {duration}ms;"
 >
 	<slot isExpanded={_isExpanded} inTransition={_isExpanding || _isShrinking} />
