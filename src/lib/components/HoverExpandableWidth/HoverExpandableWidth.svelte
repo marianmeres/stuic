@@ -2,24 +2,25 @@
 	import { createClog } from '@marianmeres/clog';
 	import { createEventDispatcher } from 'svelte';
 	import { get } from 'svelte/store';
+	import { twMerge } from 'tailwind-merge';
 	import { prefersReducedMotionStore } from '../../utils/prefers-reduced-motion.js';
 	import { windowSize } from '../../utils/window-size.js';
-	import { twMerge } from 'tailwind-merge';
 
 	const clog = createClog('HoverExpandableWidth');
 	const dispatch = createEventDispatcher();
 
-	// removing from api
-	// export let force = false;
-
 	//
 	export let shadowOpacity = 0.5;
 
-	//
+	// transition duration (default is matching the "transition-all" tw value)
 	export let duration = 150;
 
 	//
 	export let targetWidth = 256;
+
+	// delay before execution of expand/shrink
+	export let delayIn = 400;
+	export let delayOut = 100;
 
 	//
 	let _class = '';
@@ -29,19 +30,26 @@
 	$: _isExpanded = false;
 	let _isShrinking = false;
 	let _isExpanding = false;
-	let _todo: null | CallableFunction;
 
 	//
 	let el: HTMLElement;
 
-	const _maybeTodo = () => {
-		if (typeof _todo === 'function') _todo();
-		_todo = null;
+	//
+	let _delayTimer: number | null;
+	const _resetDelayTimer = () => {
+		if (_delayTimer) clearTimeout(_delayTimer);
+		_delayTimer = null;
+	};
+	const _planDelayedExec = (_fn: CallableFunction, _delay: number) => {
+		_resetDelayTimer();
+		_delayTimer = setTimeout(() => {
+			_fn();
+			_resetDelayTimer();
+		}, _delay);
 	};
 
 	//
 	const _expand = () => {
-		_todo = _expand;
 		if (_isExpanding || _isShrinking || _isExpanded) return;
 
 		_isExpanded = true; // asap
@@ -72,8 +80,6 @@
 		setTimeout(
 			() => {
 				_isExpanding = false;
-				// _isExpanded = true;
-				_maybeTodo();
 			},
 			duration + (1000 / 60) * 3 // 3 x raf
 		);
@@ -95,8 +101,6 @@
 
 	//
 	const _shrink = () => {
-		// if (force) return;
-		_todo = _shrink;
 		if (_isExpanding || _isShrinking || !_isExpanded) return;
 
 		_isExpanded = false; // asap
@@ -114,19 +118,17 @@
 		setTimeout(() => {
 			_isShrinking = false;
 			el.style.transitionProperty = 'none';
-			_maybeTodo();
 		}, duration);
 	};
 
-	// $: force && _expand();
 	$: dispatch('change', _isExpanded);
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
 <div
 	bind:this={el}
-	on:mouseenter={_expand}
-	on:mouseleave={_shrink}
+	on:mouseenter={() => _planDelayedExec(_expand, delayIn)}
+	on:mouseleave={() => _planDelayedExec(_shrink, delayOut)}
 	on:click
 	aria-expanded={_isExpanded}
 	class={twMerge(`overflow-x-hidden overflow-y-auto ${_class}`)}
