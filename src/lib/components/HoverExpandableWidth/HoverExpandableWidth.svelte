@@ -134,5 +134,10 @@
 	class={twMerge(`overflow-x-hidden overflow-y-auto ${_class}`)}
 	style="width: 100%; height: 100%; transition-duration: {duration}ms;"
 >
-	<slot isExpanded={_isExpanded} inTransition={_isExpanding || _isShrinking} />
+	<slot
+		isExpanded={_isExpanded}
+		isExpanding={_isExpanding}
+		isShrinking={_isShrinking}
+		inTransition={_isExpanding || _isShrinking}
+	/>
 </div>
