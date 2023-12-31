@@ -9,6 +9,9 @@
 	const clog = createClog('HoverExpandableWidth');
 	const dispatch = createEventDispatcher();
 
+	// master switch... if false nothing happens
+	export let enabled = true;
+
 	//
 	export let shadowOpacity = 0.5;
 
@@ -50,6 +53,7 @@
 
 	//
 	const _expand = () => {
+		if (!enabled) return;
 		if (_isExpanding || _isShrinking || _isExpanded) return;
 
 		_isExpanded = true; // asap
@@ -101,6 +105,7 @@
 
 	//
 	const _shrink = () => {
+		if (!enabled) return;
 		if (_isExpanding || _isShrinking || !_isExpanded) return;
 
 		_isExpanded = false; // asap

@@ -10,9 +10,14 @@
 
 	const left = createSwitchStore();
 	const right = createSwitchStore();
+
+	let enabled = true;
 </script>
 
 <Layout>
+	<button on:click={() => (enabled = !enabled)} class="mb-4">
+		{enabled ? 'disable' : 'enable'}
+	</button>
 	<div class="w-full outline flex overflow-hidden mb-8 h-[300px]">
 		<div class="left">
 			<HoverExpandableWidth
@@ -21,6 +26,7 @@
 				let:inTransition
 				on:click={() => clog('left click')}
 				on:change={({ detail }) => clog('change', detail)}
+				{enabled}
 			>
 				<div class="h-full w-full p-4 transition duration">
 					hover
