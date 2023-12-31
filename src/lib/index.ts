@@ -29,5 +29,6 @@ export { default as HoverExpandableWidth } from './components/HoverExpandableWid
 //
 export { default as X } from './components/X/X.svelte';
 
-//
+// utils
 export { windowSize, breakpoint } from './utils/window-size.js';
+export { DevicePointer } from './utils/device-pointer.js';

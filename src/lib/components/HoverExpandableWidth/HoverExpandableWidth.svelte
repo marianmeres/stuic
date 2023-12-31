@@ -5,12 +5,13 @@
 	import { twMerge } from 'tailwind-merge';
 	import { prefersReducedMotionStore } from '../../utils/prefers-reduced-motion.js';
 	import { windowSize } from '../../utils/window-size.js';
+	import { DevicePointer } from '../../index.js';
 
 	const clog = createClog('HoverExpandableWidth');
 	const dispatch = createEventDispatcher();
 
 	// master switch... if false nothing happens
-	export let enabled = true;
+	export let enabled = DevicePointer.isFine;
 
 	//
 	export let shadowOpacity = 0.5;
