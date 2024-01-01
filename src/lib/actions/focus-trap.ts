@@ -1,17 +1,39 @@
 // copied from skeleton
 
+interface FocusTrapOptions {
+	enabled?: boolean;
+	autoFocusFirst?: boolean;
+}
+
+const defaults: FocusTrapOptions = { enabled: true, autoFocusFirst: false };
+
 // Action: Focus Trap
-export function focusTrap(node: HTMLElement, enabled: boolean) {
-	const elemWhitelist =
-		'a[href]:not([tabindex="-1"]), button:not([tabindex="-1"]), input:not([tabindex="-1"]), textarea:not([tabindex="-1"]), select:not([tabindex="-1"]), details:not([tabindex="-1"]), [tabindex]:not([tabindex="-1"])';
-	let elemFirst: HTMLElement;
-	let elemLast: HTMLElement;
+export function focusTrap(node: HTMLElement, options: FocusTrapOptions = {}) {
+	let { enabled, autoFocusFirst } = { ...defaults, ...(options || {}) };
+
+	const focusableSelectors = [
+		'a[href]',
+		'area[href]',
+		'details',
+		'iframe',
+
+		'button:not([disabled])',
+		'input:not([disabled])',
+		'select:not([disabled])',
+		'textarea:not([disabled])',
+
+		'[contentEditable=true]',
+		'[tabindex]',
+	].join(',');
+
+	let first: HTMLElement;
+	let last: HTMLElement;
 
 	// When the first element is selected, shift+tab pressed, jump to the last selectable item.
 	function onFirstElemKeydown(e: KeyboardEvent): void {
 		if (e.shiftKey && e.code === 'Tab') {
 			e.preventDefault();
-			elemLast.focus();
+			last.focus();
 		}
 	}
 
@@ -19,32 +41,48 @@ export function focusTrap(node: HTMLElement, enabled: boolean) {
 	function onLastElemKeydown(e: KeyboardEvent): void {
 		if (!e.shiftKey && e.code === 'Tab') {
 			e.preventDefault();
-			elemFirst.focus();
+			first.focus();
 		}
 	}
 
-	const onScanElements = (fromObserver: boolean) => {
+	const queryElements = (fromObserver: boolean) => {
 		if (enabled === false) return;
-		// Gather all focusable elements
-		const focusableElems: HTMLElement[] = Array.from(
-			node.querySelectorAll(elemWhitelist)
-		);
-		if (focusableElems.length) {
-			// Set first/last focusable elements
-			elemFirst = focusableElems[0];
-			elemLast = focusableElems[focusableElems.length - 1];
+
+		const focusable: HTMLElement[] = (
+			[...node.querySelectorAll(focusableSelectors)] as HTMLElement[]
+		)
+			// i am unable to get the selectors right (still getting false positives),
+			// but filtering manually works well
+			.filter((e: HTMLElement) => {
+				if (e.getAttribute('disabled') === '') return false;
+				if ((e.getAttribute('tabindex') || '').startsWith('-')) return false;
+				return true;
+			})
+			// sort by tabindex, so the first/last will work as expected
+			.toSorted((e1, e2) => {
+				let a = parseInt(e1.getAttribute('tabindex') || '0');
+				let b = parseInt(e2.getAttribute('tabindex') || '0');
+				return a - b;
+			});
+
+		if (focusable.length) {
+			first = focusable[0];
+			last = focusable[focusable.length - 1];
+
 			// Auto-focus first focusable element only when not called from observer
-			if (!fromObserver) elemFirst.focus();
+			if (!fromObserver && autoFocusFirst) first.focus();
+
 			// Listen for keydown on first & last element
-			elemFirst.addEventListener('keydown', onFirstElemKeydown);
-			elemLast.addEventListener('keydown', onLastElemKeydown);
+			first.addEventListener('keydown', onFirstElemKeydown);
+			last.addEventListener('keydown', onLastElemKeydown);
 		}
 	};
-	onScanElements(false);
 
-	function onCleanUp(): void {
-		if (elemFirst) elemFirst.removeEventListener('keydown', onFirstElemKeydown);
-		if (elemLast) elemLast.removeEventListener('keydown', onLastElemKeydown);
+	queryElements(false);
+
+	function cleanup(): void {
+		if (first) first.removeEventListener('keydown', onFirstElemKeydown);
+		if (last) last.removeEventListener('keydown', onLastElemKeydown);
 	}
 
 	// When children of node are changed (added or removed)
@@ -53,8 +91,8 @@ export function focusTrap(node: HTMLElement, enabled: boolean) {
 		observer: MutationObserver
 	) => {
 		if (mutationRecords.length) {
-			onCleanUp();
-			onScanElements(true);
+			cleanup();
+			queryElements(true);
 		}
 		return observer;
 	};
@@ -63,12 +101,11 @@ export function focusTrap(node: HTMLElement, enabled: boolean) {
 
 	// Lifecycle
 	return {
-		update(newArgs: boolean) {
-			enabled = newArgs;
-			newArgs ? onScanElements(false) : onCleanUp();
+		update(options: FocusTrapOptions = {}) {
+			options?.enabled ? queryElements(false) : cleanup();
 		},
 		destroy() {
-			onCleanUp();
+			cleanup();
 			observer.disconnect();
 		},
 	};

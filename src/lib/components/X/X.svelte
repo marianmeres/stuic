@@ -4,7 +4,7 @@
 	let _class = '';
 	export { _class as class };
 
-	export let size = '1em';
+	export let size = '1rem';
 </script>
 
 <svg

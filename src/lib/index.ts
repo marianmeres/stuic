@@ -29,6 +29,10 @@ export { default as HoverExpandableWidth } from './components/HoverExpandableWid
 //
 export { default as X } from './components/X/X.svelte';
 
+// actions
+export { clickOutside } from './actions/click-outside.js';
+export { focusTrap } from './actions/focus-trap.js';
+
 // utils
 export { windowSize, breakpoint } from './utils/window-size.js';
 export { DevicePointer } from './utils/device-pointer.js';

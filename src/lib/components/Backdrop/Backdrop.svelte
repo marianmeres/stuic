@@ -49,7 +49,7 @@
 	on:keydown={(e) => e.code === 'Escape' && dispatch('escape')}
 	in:fade={{ duration: fadeInDuration }}
 	out:fade={{ duration: fadeOutDuration }}
-	use:focusTrap={useFocusTrap}
+	use:focusTrap={{ enabled: useFocusTrap }}
 	role="presentation"
 	tabindex="-1" 
 >

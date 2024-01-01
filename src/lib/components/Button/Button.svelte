@@ -8,19 +8,21 @@
 		static defaultRounded = true;
 		static defaultVariant: string | undefined = undefined;
 
-		// hover:brightness-[1.15]
 		static presetBase = `
-			text-base
 			text-center whitespace-nowrap
-			inline-flex justify-center items-center gap-x-1
-			border border-transparent
-			hover:brightness-[1.1]
+			inline-flex items-center gap-x-2
+			hover:brightness-[1.05]
 			active:brightness-[0.95]
 			disabled:!cursor-not-allowed disabled:!opacity-50 disabled:hover:brightness-100
 			no-underline
+			border
+			
+			bg-zinc-200 text-black
+			dark:bg-zinc-600 dark:text-white
+			border-zinc-400 dark:border-zinc-500
 		`.trim();
 
-		static presetSquare = 'p-0 aspect-square';
+		static presetSquare = 'p-0 aspect-square justify-center';
 
 		static presetsRounded = {
 			xs: 'rounded',
@@ -39,11 +41,11 @@
 		};
 
 		static presetsSize = {
-			xs: 'px-2   py-0.5 text-xs',
-			sm: 'px-3   py-1   text-sm',
-			md: 'px-3.5 py-1   text-base',
-			lg: 'px-4   py-1.5 text-lg',
-			xl: 'px-4   py-2   text-xl',
+			xs: 'px-2   py-0.5 leading-tight text-xs',
+			sm: 'px-2.5 py-0.5 leading-snug text-sm',
+			md: 'px-3   py-1   leading-normal text-base',
+			lg: 'px-4   py-1.5 leading-relaxed text-lg',
+			xl: 'px-4   py-2   leading text-xl',
 		};
 
 		static classBySize = {
