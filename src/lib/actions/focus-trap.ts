@@ -5,25 +5,26 @@ interface FocusTrapOptions {
 	autoFocusFirst?: boolean;
 }
 
-const defaults: FocusTrapOptions = { enabled: true, autoFocusFirst: false };
+const defaults: FocusTrapOptions = { enabled: true, autoFocusFirst: true };
 
 // Action: Focus Trap
 export function focusTrap(node: HTMLElement, options: FocusTrapOptions = {}) {
 	let { enabled, autoFocusFirst } = { ...defaults, ...(options || {}) };
 
 	const focusableSelectors = [
-		'a[href]',
-		'area[href]',
-		'details',
-		'iframe',
-
-		'button:not([disabled])',
-		'input:not([disabled])',
-		'select:not([disabled])',
-		'textarea:not([disabled])',
-
-		'[contentEditable=true]',
-		'[tabindex]',
+		'[contentEditable=true]:not([tabindex^="-"])',
+		//
+		'button:not([disabled]):not([tabindex^="-"])',
+		'input:not([disabled]):not([tabindex^="-"])',
+		'select:not([disabled]):not([tabindex^="-"])',
+		'textarea:not([disabled]):not([tabindex^="-"])',
+		//
+		'a[href]:not([tabindex^="-"])',
+		'area[href]:not([tabindex^="-"])',
+		'details:not([tabindex^="-"])',
+		'iframe:not([tabindex^="-"])',
+		//
+		'[tabindex]:not([tabindex^="-"])',
 	].join(',');
 
 	let first: HTMLElement;
@@ -51,17 +52,17 @@ export function focusTrap(node: HTMLElement, options: FocusTrapOptions = {}) {
 		const focusable: HTMLElement[] = (
 			[...node.querySelectorAll(focusableSelectors)] as HTMLElement[]
 		)
-			// i am unable to get the selectors right (still getting false positives),
-			// but filtering manually works well
+			// in case I didn't get the selectors right, make sure to manually check as well...
+			// (negligible overhead, if any...)
 			.filter((e: HTMLElement) => {
 				if (e.getAttribute('disabled') === '') return false;
 				if ((e.getAttribute('tabindex') || '').startsWith('-')) return false;
 				return true;
 			})
-			// sort by tabindex, so the first/last will work as expected
-			.toSorted((e1, e2) => {
-				let a = parseInt(e1.getAttribute('tabindex') || '0');
-				let b = parseInt(e2.getAttribute('tabindex') || '0');
+			// important to sort by tabindex, so the first/last will work as expected
+			.sort((e1: HTMLElement, e2: HTMLElement) => {
+				const a = parseInt(e1.getAttribute('tabindex') || '0');
+				const b = parseInt(e2.getAttribute('tabindex') || '0');
 				return a - b;
 			});
 
