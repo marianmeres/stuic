@@ -9,7 +9,7 @@
 		'drawer',
 		'hover-expandable-width',
 		'popover', 
-		'spinner',
+		'spinner', 'switch', 
 		'table', 'tooltip', 'tree',
 		'window-size',
 		'x'

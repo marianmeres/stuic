@@ -27,6 +27,9 @@ export { default as Drawer, createDrawerStore } from './components/Drawer/Drawer
 export { default as HoverExpandableWidth } from './components/HoverExpandableWidth/HoverExpandableWidth.svelte';
 
 //
+export { default as Switch } from './components/Switch/Switch.svelte';
+
+//
 export { default as X } from './components/X/X.svelte';
 
 // actions

@@ -77,6 +77,9 @@
 	export let square: boolean = false;
 	export let disabled: boolean = false;
 
+	// button only
+	export let value: string | undefined = undefined;
+
 	const _whitelist = ['xs', 'sm', 'md', 'lg', 'xl'];
 	export let size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' = ButtonConfig.defaultSize;
 	$: if (!_whitelist.includes(size)) size = ButtonConfig.defaultSize;
@@ -99,7 +102,6 @@
 		//
 		ButtonConfig.class,
 		//
-		// variant && ButtonConfig.variant?.[variant],
 		variant &&
 			`${variant || ''}`.split(' ').reduce((m, v) => {
 				m += ButtonConfig.variant?.[v] + ' ';
@@ -118,6 +120,10 @@
 		class={buttonClass}
 		{...$$restProps}
 		role="button"
+		data-size={size}
+		data-shadow={shadow}
+		data-rounded={rounded}
+		data-variant={variant}
 		on:click
 		on:change
 		on:keydown
@@ -135,6 +141,11 @@
 		{type}
 		{disabled}
 		class={buttonClass}
+		{value}
+		data-size={size}
+		data-shadow={shadow}
+		data-rounded={rounded}
+		data-variant={variant}
 		{...$$restProps}
 		on:click
 		on:change

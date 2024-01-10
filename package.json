@@ -31,7 +31,7 @@
 		"svelte": "^4.0.0"
 	},
 	"devDependencies": {
-		"@marianmeres/icons-fns": "^2.0.2",
+		"@marianmeres/icons-fns": "^2.1.0",
 		"@marianmeres/parse-boolean": "^1.1.7",
 		"@marianmeres/random-human-readable": "^1.6.1",
 		"@marianmeres/release": "^1.1.2",
