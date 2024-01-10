@@ -14,7 +14,8 @@
 			hover:brightness-[1.05] active:brightness-[0.95]
 			disabled:!cursor-not-allowed disabled:!opacity-50 disabled:hover:brightness-100
 
-			bg-zinc-300 data-[checked=true]:bg-zinc-600
+			bg-zinc-300 dark:bg-zinc-700
+			data-[checked=true]:bg-zinc-700 dark:data-[checked=true]:bg-zinc-300
 		`.trim();
 
 		static presetsSize = {
@@ -37,7 +38,8 @@
 			translate-x-1 rounded-full  
 			transition-all duration-100
 			shadow
-			bg-white
+			bg-white dark:bg-black
+			text-black dark:text-white
 		`.trim();
 
 		static presetsSizeDot = {
