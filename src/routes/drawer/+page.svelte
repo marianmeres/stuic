@@ -28,7 +28,7 @@
 	class="bg-white dark:bg-neutral-700 cursor-auto"
 	on:escape={drawer.close}
 	on:click_backdrop={drawer.close}
-	on:click_outside={() => clog('click outside')}
+	on:outside={() => clog('outside')}
 >
 	<div class="w-full">
 		<div class="p-4 bg-gray-200 dark:bg-black">

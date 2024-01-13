@@ -49,7 +49,7 @@
 		_delayTimer = setTimeout(() => {
 			_fn();
 			_resetDelayTimer();
-		}, _delay);
+		}, _delay) as any;
 	};
 
 	//
@@ -83,9 +83,7 @@
 		el.style.height = 'auto';
 
 		setTimeout(
-			() => {
-				_isExpanding = false;
-			},
+			() => (_isExpanding = false),
 			duration + (1000 / 60) * 3 // 3 x raf
 		);
 

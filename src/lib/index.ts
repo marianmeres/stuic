@@ -33,9 +33,12 @@ export { default as Switch } from './components/Switch/Switch.svelte';
 export { default as X } from './components/X/X.svelte';
 
 // actions
-export { clickOutside } from './actions/click-outside.js';
 export { focusTrap } from './actions/focus-trap.js';
+export { onOutside } from './actions/on-outside.js';
+export { tooltip, TooltipConfig } from './actions/tooltip/tooltip.js';
 
 // utils
-export { windowSize, breakpoint } from './utils/window-size.js';
+export { calculateAlignment } from './utils/calculate-alignment.js';
 export { DevicePointer } from './utils/device-pointer.js';
+export { getId } from './utils/get-id.js';
+export { windowSize, breakpoint } from './utils/window-size.js';

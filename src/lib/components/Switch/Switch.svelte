@@ -74,7 +74,7 @@
 	export let stopPropagation = true;
 	export let preventDefault = false;
 
-	type Hook = (oldValue: boolean) => Promise<void | boolean>;
+	type Hook = (previosValue: boolean) => Promise<void | boolean>;
 	const _defaultNoopHook = () => Promise.resolve(undefined);
 	export let preHook: Hook = _defaultNoopHook;
 

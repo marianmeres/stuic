@@ -8,6 +8,7 @@
 		'carousel', 'color-scheme', 
 		'drawer',
 		'hover-expandable-width',
+		'on-outside',
 		'popover', 
 		'spinner', 'switch', 
 		'table', 'tooltip', 'tree',
