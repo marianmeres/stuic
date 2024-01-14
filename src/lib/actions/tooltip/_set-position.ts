@@ -56,9 +56,6 @@ export const _setPosition = async (
 			div.style.left = `${r.position[safe].x}px`;
 			div.style.top = `${r.position[safe].y}px`;
 
-			// div.style.left = `${0}px`;
-			// div.style.top = `${0}px`;
-
 			// now dance with the arrow...
 			let arrowStyles: Record<string, string | null> = {
 				borderStyle: 'solid',

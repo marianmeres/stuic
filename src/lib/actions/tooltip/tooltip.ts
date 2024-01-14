@@ -202,7 +202,7 @@ export function tooltip(
 		}, _delay) as any;
 	};
 
-	// use popover if provided, otherwise new div will be createed
+	// use popover if provided, otherwise new div will be created
 	let div: HTMLElement | null = opts.popover;
 	let arrow: HTMLElement | null;
 	let _isOn = writable(false); // internal state store
@@ -228,12 +228,12 @@ export function tooltip(
 
 		// measure stuff and set position (provided opts.alignment is considered just as
 		// "preferred", which means it may be overwritten if there is no available space)
-		if (!(await _setPosition(opts.boundaryRoot, node, div, arrow, opts, _log))) {
-			_makeInVisible(div, arrow, _log);
-		} else {
+		if (await _setPosition(opts.boundaryRoot, node, div, arrow, opts, _log)) {
 			// finally, fade in
 			_makeVisible(div, arrow, _log);
 			setTimeout(() => _isOn.set(true), _TRANSITION_OPACITY_DUR);
+		} else {
+			_makeInVisible(div, arrow, _log);
 		}
 	};
 	let show = () => _planDelayedExec(_show, opts.delay);
@@ -273,21 +273,19 @@ export function tooltip(
 	let unsubs: CallableFunction[] = [_isOn.subscribe((v) => opts?.notifier?.set(v))];
 
 	// by default, listen to windowSize change, as well as window and boundaryRoot scroll
-	const _boundaryRootScroll = writable(0);
-	const onScroll = () => _boundaryRootScroll.set(Date.now());
-
+	const _scrollSignal = writable(0);
+	const onScroll = () => _scrollSignal.set(Date.now());
 	if (opts.boundaryRoot) {
 		opts.boundaryRoot.addEventListener('scroll', onScroll);
 		unsubs.push(() => opts.boundaryRoot?.removeEventListener('scroll', onScroll));
 	}
-
 	// also listen to window scroll
 	window.addEventListener('scroll', onScroll);
 	unsubs.push(() => window.removeEventListener('scroll', onScroll));
 
-	const _positionTriggers: Readable<any>[] = [_boundaryRootScroll, windowSize];
-	if (opts.touch?.subscribe) _positionTriggers.push(opts.touch);
-	const touch = derived(_positionTriggers, ([_]) => Date.now());
+	const _setPositionTriggers: Readable<any>[] = [_scrollSignal, windowSize];
+	if (opts.touch?.subscribe) _setPositionTriggers.push(opts.touch);
+	const touch = derived(_setPositionTriggers, ([_]) => Date.now());
 
 	// final, derived, notifier
 	let _touchCount = 0;
@@ -296,10 +294,10 @@ export function tooltip(
 			// ignore first
 			if (_touchCount++) {
 				_log('touch...');
-				if (!(await _setPosition(opts.boundaryRoot, node, div, arrow, opts, _log))) {
-					_makeInVisible(div, arrow, _log);
-				} else {
+				if (await _setPosition(opts.boundaryRoot, node, div, arrow, opts, _log)) {
 					_makeVisible(div, arrow, _log);
+				} else {
+					_makeInVisible(div, arrow, _log);
 				}
 			}
 		})
