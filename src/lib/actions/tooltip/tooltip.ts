@@ -56,6 +56,8 @@ export class PopoverConfig {
 
 export type TooltipLogger = (...args: any[]) => void;
 
+export type TooltipTrigger = 'hover' | 'focus' | 'click';
+
 export interface TooltipOptions {
 	content: string;
 	popover: HTMLElement | null;
@@ -64,7 +66,7 @@ export interface TooltipOptions {
 	delay: number;
 	class: string;
 	arrowClass: string;
-	triggers: string[];
+	triggers: TooltipTrigger[];
 	logger?: TooltipLogger;
 	boundaryRoot?: HTMLElement;
 	arrowSize: number; // in px
