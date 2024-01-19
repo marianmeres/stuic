@@ -259,9 +259,14 @@ export function tooltip(
 
 	//
 	const destroy = () => {
+		// for obscure cases, where parent node might have be removed from DOM
+		// before the planned show/hide happens
+		_resetDelayTimer();
+
 		if (!div && !arrow && !opts.popover && !storeGet(_isOn)) return;
 
 		_log('destroy');
+
 		if (!opts.popover) {
 			div?.remove();
 			div = null;
