@@ -14,6 +14,7 @@
 		<Button size="xs">Xsmall</Button>
 		<Button size="sm">Small</Button>
 		<Button>Medium</Button>
+		<Button variant="primary">Primary</Button>
 		<Button size="lg">Large</Button>
 		<Button size="xl">XLarge</Button>
 	</div>

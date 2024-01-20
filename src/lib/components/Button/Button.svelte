@@ -59,7 +59,16 @@
 		static class = '';
 
 		// to be defined at consumer level...
-		static variant: Record<string, string> = {};
+		static variant: Record<string, string> = {
+			// primary: `
+			// 	bg-[rgb(var(--primary))] text-[rgb(var(--on-primary))]
+			// 	dark:bg-[rgb(var(--primary-dark))] dark:text-[rgb(var(--on-primary-dark))]
+			// `.trim(),
+			primary: `
+				bg-primary text-on-primary
+				dark:bg-primary-dark dark:text-on-primary-dark
+			`.trim(),
+		};
 	}
 </script>
 
@@ -120,10 +129,10 @@
 		class={buttonClass}
 		{...$$restProps}
 		role="button"
-		data-size={size}
-		data-shadow={shadow}
-		data-rounded={rounded}
-		data-variant={variant}
+		data-button-size={size}
+		data-button-shadow={shadow}
+		data-button-rounded={rounded}
+		data-button-variant={variant}
 		on:click
 		on:change
 		on:keydown
@@ -142,10 +151,10 @@
 		{disabled}
 		class={buttonClass}
 		{value}
-		data-size={size}
-		data-shadow={shadow}
-		data-rounded={rounded}
-		data-variant={variant}
+		data-button-size={size}
+		data-button-shadow={shadow}
+		data-button-rounded={rounded}
+		data-button-variant={variant}
 		{...$$restProps}
 		on:click
 		on:change

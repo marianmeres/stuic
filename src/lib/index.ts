@@ -1,6 +1,15 @@
 // Reexport your entry components here
 
 //
+export { default as AlertConfirmPrompt } from './components/AlertConfirmPrompt/AlertConfirmPrompt.svelte';
+export {
+	createAlertConfirmPromptStore,
+	createAlert,
+	createConfirm,
+	createPrompt,
+} from './components/AlertConfirmPrompt/alert-confirm-prompt.js';
+
+//
 export {
 	default as AppShell,
 	appShellSetHtmlBodyHeight,
@@ -27,7 +36,15 @@ export { default as Drawer, createDrawerStore } from './components/Drawer/Drawer
 export { default as HoverExpandableWidth } from './components/HoverExpandableWidth/HoverExpandableWidth.svelte';
 
 //
+export { default as Field } from './components/Input/Field.svelte';
+export { default as FieldCheckbox } from './components/Input/FieldCheckbox.svelte';
+export { default as FieldRadios } from './components/Input/FieldRadios.svelte';
+export { default as FieldSelect } from './components/Input/FieldSelect.svelte';
+export { default as Fieldset } from './components/Input/Fieldset.svelte';
+
+//
 export { default as Switch, SwitchConfig } from './components/Switch/Switch.svelte';
+export { default as Thc } from './components/Thc/Thc.svelte';
 
 //
 export { default as X } from './components/X/X.svelte';
@@ -36,6 +53,13 @@ export { default as X } from './components/X/X.svelte';
 export { focusTrap } from './actions/focus-trap.js';
 export { onOutside } from './actions/on-outside.js';
 export { tooltip, TooltipConfig } from './actions/tooltip/tooltip.js';
+export {
+	validate,
+	type ValidateOptions,
+	type ValidationResult,
+} from './actions/validate.js';
+export { trim } from './actions/trim.js';
+export { autogrow } from './actions/autogrow.js';
 
 // utils
 export { calculateAlignment } from './utils/calculate-alignment.js';

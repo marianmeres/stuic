@@ -1,7 +1,6 @@
+import { createClogStr } from '@marianmeres/clog';
 import path from 'node:path';
-import { strict as assert } from 'node:assert';
 import { fileURLToPath } from 'node:url';
-import { createClog, createClogStr } from '@marianmeres/clog';
 import { expect, test } from 'vitest';
 import { calculateAlignment } from '../lib/utils/calculate-alignment.js';
 

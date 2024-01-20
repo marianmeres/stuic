@@ -3,15 +3,16 @@
 
 	// prettier-ignore
 	let links = [
-		'app-shell', 'avatar', 
+		'alert-confirm-prompt', 'app-shell', 'avatar', 
 		'backdrop', 'button', 
 		'carousel', 'color-scheme', 
 		'drawer',
 		'hover-expandable-width',
+		'input',
 		'on-outside',
 		'popover', 
 		'spinner', 'switch', 
-		'table', 'tooltip', 'tree',
+		'table', 'thc', 'tooltip', 'tree',
 		'window-size',
 		'x'
 	].toSorted();

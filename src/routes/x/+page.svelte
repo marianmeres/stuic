@@ -1,5 +1,5 @@
 <script>
-	import X from '../../lib/components/X/X.svelte';
+	import { X } from '../../lib';
 	import Layout from '../_components/Layout.svelte';
 </script>
 

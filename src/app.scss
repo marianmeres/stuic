@@ -2,6 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+	:root {
+		// example of what to do
+		--primary: 220 38 38; // red-600
+		--on-primary: 255 255 255;
+		//
+		--primary-dark: 220 38 38;
+		--on-primary-dark: 255 255 255;
+	}
+}
+
+*:focus-visible {
+	// @apply outline outline-2 outline-primary/75 outline-offset-[-1px]; // outline-offset-[-1px]
+	@apply outline-0 ring-4 ring-primary ring-opacity-20;
+	// @apply outline-1 outline-primary ring-0;
+}
+
 html {
 	@apply bg-white text-gray-950;
 	select {
@@ -19,6 +36,10 @@ html {
 a {
 	@apply underline;
 	&:hover {
-		@apply text-red-500;
+		@apply text-primary;
 	}
+}
+
+dialog::backdrop {
+	background: rgba(0, 0, 0, 0.5);
 }
