@@ -1,11 +1,12 @@
 <script lang="ts" context="module">
 	import { onMount } from 'svelte';
-	import { Button, focusTrap } from '../../index.js';
-	import Thc from '../Thc/Thc.svelte';
 	import {
 		AlertConfirmPromptType,
-		type createAlertConfirmPromptStore,
-	} from './alert-confirm-prompt.js';
+		Button,
+		createAlertConfirmPromptStore,
+		focusTrap,
+	} from '../../index.js';
+	import Thc from '../Thc/Thc.svelte';
 	import { twMerge } from 'tailwind-merge';
 	import { Field } from '../../index.js';
 	import { acpDefaultIcons } from './acp-icons.js';

@@ -6,6 +6,10 @@
 		brightness-[1.1] after:content-['✓']
 	`.trim();
 
+	ButtonConfig.variant.primary += `
+		font-semibold
+	`;
+
 	let active = 0;
 </script>
 

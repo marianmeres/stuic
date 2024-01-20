@@ -1,12 +1,17 @@
 // Reexport your entry components here
 
 //
-export { default as AlertConfirmPrompt } from './components/AlertConfirmPrompt/AlertConfirmPrompt.svelte';
+export {
+	default as AlertConfirmPrompt,
+	AlertConfirmPromptConfig,
+} from './components/AlertConfirmPrompt/AlertConfirmPrompt.svelte';
 export {
 	createAlertConfirmPromptStore,
 	createAlert,
 	createConfirm,
 	createPrompt,
+	AlertConfirmPromptType,
+	type AlertConfirmPromptVariant,
 } from './components/AlertConfirmPrompt/alert-confirm-prompt.js';
 
 //

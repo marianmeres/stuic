@@ -115,7 +115,7 @@
 			`${variant || ''}`.split(' ').reduce((m, v) => {
 				m += ButtonConfig.variant?.[v] + ' ';
 				return m;
-			}, ''),
+			}, ' '),
 		//
 		square && ButtonConfig.presetSquare,
 		//
