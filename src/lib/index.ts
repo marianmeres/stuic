@@ -24,6 +24,9 @@ export { ColorScheme } from './components/ColorScheme/color-scheme.js';
 export { default as Drawer, createDrawerStore } from './components/Drawer/Drawer.svelte';
 
 //
+export { default as Popover } from './components/popover/Popover.svelte';
+
+//
 export { default as HoverExpandableWidth } from './components/HoverExpandableWidth/HoverExpandableWidth.svelte';
 
 //
