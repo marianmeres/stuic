@@ -4,6 +4,12 @@ import { createClog } from '@marianmeres/clog';
 
 const clog = createClog('alert-confirm-prompt');
 
+// export class AlertConfirmPromptType {
+// 	static readonly ALERT: 'alert';
+// 	static readonly CONFIRM: 'confirm';
+// 	static readonly PROMPT: 'prompt';
+// }
+
 export enum AlertConfirmPromptType {
 	ALERT = 'alert',
 	CONFIRM = 'confirm',
@@ -19,6 +25,7 @@ type FnOnEscape = () => undefined;
 type FnOnCustom = (value: any) => any;
 
 interface Dialog extends Record<string, any> {
+	//keyof AlertConfirmPromptType;
 	type:
 		| AlertConfirmPromptType.ALERT
 		| AlertConfirmPromptType.CONFIRM

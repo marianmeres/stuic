@@ -151,11 +151,10 @@
 	}
 
 	const _isFn = (v: any) => typeof v === 'function';
-
-	const { ALERT, CONFIRM, PROMPT } = AlertConfirmPromptType;
 </script>
 
 <script lang="ts">
+	const { ALERT, CONFIRM, PROMPT } = AlertConfirmPromptType;
 	const clog = createClog('AlertConfirmPrompt');
 
 	// instance created by createAlertConfirmPromptStore()
