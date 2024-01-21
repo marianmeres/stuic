@@ -5,18 +5,18 @@
 @layer base {
 	:root {
 		// example of what to do
-		--primary: 220 38 38; // red-600
-		--on-primary: 255 255 255;
+		--stuic-primary: 220 38 38; // red-600
+		--stuic-on-primary: 255 255 255;
 		//
-		--primary-dark: 220 38 38;
-		--on-primary-dark: 255 255 255;
+		--stuic-primary-dark: 220 38 38;
+		--stuic-on-primary-dark: 255 255 255;
 	}
 }
 
 *:focus-visible {
-	// @apply outline outline-2 outline-primary/75 outline-offset-[-1px]; // outline-offset-[-1px]
-	@apply outline-0 ring-4 ring-primary ring-opacity-20;
-	// @apply outline-1 outline-primary ring-0;
+	// @apply outline outline-2 outline-stuic-primary/75 outline-offset-[-1px]; // outline-offset-[-1px]
+	@apply outline-0 ring-4 ring-stuic-primary ring-opacity-20;
+	// @apply outline-1 outline-stuic-primary ring-0;
 }
 
 html {
@@ -36,7 +36,7 @@ html {
 a {
 	@apply underline;
 	&:hover {
-		@apply text-primary;
+		@apply text-stuic-primary;
 	}
 }
 

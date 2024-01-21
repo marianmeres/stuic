@@ -30,7 +30,7 @@
 	export let labelClass = '';
 	export let wrapClass = '';
 	export let inputClass = '';
-	export let invalidClass = 'border-primary';
+	export let invalidClass = 'border-stuic-primary';
 
 	export let size: 'sm' | 'md' | 'lg' = 'md';
 
@@ -109,9 +109,9 @@
 		class={twMerge(`
             rounded-md border border-gray-300
             bg-gray-100
-            focus-within:border-primary
+            focus-within:border-stuic-primary
             focus-within:ring-4
-            focus-within:ring-primary
+            focus-within:ring-stuic-primary
             focus-within:ring-opacity-20
 			${wrapClass}
 			${validation && !validation.valid ? invalidClass : ''}
@@ -176,7 +176,7 @@
 		<div
 			transition:slide={{ duration: 150 }}
 			class={twMerge(
-				`mt-1 text-xs text-primary px-2 tracking-tight ${validationMessageClass}`
+				`mt-1 text-xs text-stuic-primary px-2 tracking-tight ${validationMessageClass}`
 			)}
 		>
 			{@html validation.message}

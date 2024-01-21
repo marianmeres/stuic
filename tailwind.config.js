@@ -6,8 +6,8 @@ export default {
 		extend: {
 			colors: {
 				// example of what to do
-				primary: 'rgb(var(--primary) / <alpha-value>)',
-				'on-primary': 'rgb(var(--on-primary) / <alpha-value>)',
+				'stuic-primary': 'rgb(var(--stuic-primary) / <alpha-value>)',
+				'stuic-on-primary': 'rgb(var(--stuic-on-primary) / <alpha-value>)',
 			},
 		},
 	},

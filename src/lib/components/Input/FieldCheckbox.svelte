@@ -11,7 +11,7 @@
 	let _class = '';
 	export { _class as class };
 
-	export let invalidClass = 'border-primary';
+	export let invalidClass = 'border-stuic-primary';
 	export let labelClass = '';
 	export let descriptionClass = '';
 
@@ -59,12 +59,12 @@
 				bg-gray-100
 				border-gray-300
 				shadow-sm
-				text-primary
+				text-stuic-primary
 				cursor-pointer
-				focus:border-primary
+				focus:border-stuic-primary
 				focus:ring-4
 				focus:ring-offset-0
-				focus:ring-primary
+				focus:ring-stuic-primary
 				focus:ring-opacity-20
 				disabled:cursor-not-allowed
 				${validation && !validation.valid ? invalidClass : ''}
@@ -92,7 +92,9 @@
 		{#if validation && !validation?.valid}
 			<div
 				transition:slide={{ duration: 150 }}
-				class={twMerge(`text-xs text-primary tracking-tight ${validationMessageClass}`)}
+				class={twMerge(
+					`text-xs text-stuic-primary tracking-tight ${validationMessageClass}`
+				)}
 			>
 				{@html validation.message}
 			</div>

@@ -33,4 +33,7 @@
 	{@html thc.html}
 {:else if thc?.component}
 	<svelte:component this={thc.component} {...thc?.props || {}} />
+{:else}
+	<!-- cast to string as the last resort -->
+	{thc}
 {/if}

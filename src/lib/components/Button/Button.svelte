@@ -60,13 +60,9 @@
 
 		// to be defined at consumer level...
 		static variant: Record<string, string> = {
-			// primary: `
-			// 	bg-[rgb(var(--primary))] text-[rgb(var(--on-primary))]
-			// 	dark:bg-[rgb(var(--primary-dark))] dark:text-[rgb(var(--on-primary-dark))]
-			// `.trim(),
 			primary: `
-				bg-primary text-on-primary
-				dark:bg-primary-dark dark:text-on-primary-dark
+				bg-stuic-primary text-stuic-on-primary
+				dark:bg-stuic-primary-dark dark:text-stuic-on-primary-dark
 			`.trim(),
 		};
 	}
