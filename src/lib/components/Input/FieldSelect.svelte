@@ -46,6 +46,7 @@
 
 	export let disabled = false;
 	export let required = false; // valueMissing
+	export let autofocus: true | undefined = undefined;
 
 	//
 	export let validationMessageClass = '';
@@ -116,6 +117,7 @@
 			{disabled}
 			{required}
 			{tabindex}
+			{autofocus}
 			{name}
 			use:validateAction={validate
 				? { ...(validate === true ? {} : validate), setValidationResult }

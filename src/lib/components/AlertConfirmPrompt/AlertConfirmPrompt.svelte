@@ -6,10 +6,10 @@
 		FieldSelect,
 		createAlertConfirmPromptStore,
 		focusTrap,
+		Field,
+		Thc,
 	} from '../../index.js';
-	import Thc from '../Thc/Thc.svelte';
 	import { twMerge } from 'tailwind-merge';
-	import { Field } from '../../index.js';
 	import { acpDefaultIcons } from './acp-icons.js';
 	import { createClog } from '@marianmeres/clog';
 
@@ -81,7 +81,7 @@
 		static classInputBox = '';
 		static classInputField = '';
 		static classMenu = '';
-		static classMenuLi = '';
+		// static classMenuLi = '';
 		static classButton = '';
 		static classSpinnerBox = '';
 
@@ -97,7 +97,7 @@
 				inputBox: '',
 				inputField: '',
 				menu: '',
-				menuLi: '',
+				// menuLi: '',
 				button: '',
 				spinnerBox: '',
 			},
@@ -110,7 +110,7 @@
 				inputBox: '',
 				inputField: '',
 				menu: '',
-				menuLi: '',
+				// menuLi: '',
 				button: '',
 				spinnerBox: '',
 			},
@@ -123,7 +123,7 @@
 				inputBox: '',
 				inputField: '',
 				menu: '',
-				menuLi: '',
+				// menuLi: '',
 				button: '',
 				spinnerBox: '',
 			},
@@ -136,7 +136,7 @@
 				inputBox: '',
 				inputField: '',
 				menu: '',
-				menuLi: '',
+				// menuLi: '',
 				button: '',
 				spinnerBox: '',
 			},
@@ -163,9 +163,11 @@
 
 	//
 	$: dialog = $acp[0];
+	// $: clog(dialog);
 
 	//
 	let _dialogEl: HTMLDialogElement;
+	let _formEl: HTMLFormElement;
 
 	//
 	let value: any = null;
@@ -188,20 +190,24 @@
 		if (!dialog) return;
 
 		if (e.key === 'Escape') {
+			// clog.debug('onEscape');
 			e.stopPropagation();
 			if (!isPending) return acp.escape();
 		}
 	};
 
 	onMount(() => {
-		_dialogEl.addEventListener('close', async () => {
-			// not relevant anymore i think (after stopping using the form.submit approach)
-			if (_dialogEl.returnValue === '') {
-				acp.escape();
-			}
+		_dialogEl.addEventListener('close', async (e: Event) => {
+			// clog.debug('close');
+			// not needed
+			// if (_dialogEl.returnValue === '') acp.escape();
 		});
+
 		// prevent built in escape
-		_dialogEl.addEventListener('cancel', (event) => event.preventDefault());
+		_dialogEl.addEventListener('cancel', (e: Event) => {
+			// clog.debug('cancel');
+			e.preventDefault();
+		});
 
 		//
 		document.addEventListener('keydown', onKeyDown, true);
@@ -266,10 +272,10 @@
 
 	$: _menuLiClass = twMerge(`
 		${AlertConfirmPromptConfig.preset.menuLi}
-		${AlertConfirmPromptConfig.classMenuLi}
-		${dialog?.class?.menuLi || ''}
-		${AlertConfirmPromptConfig.variant?.[dialog?.variant]?.menuLi || ''}
 	`);
+	// ${AlertConfirmPromptConfig.classMenuLi}
+	// ${dialog?.class?.menuLi || ''}
+	// ${AlertConfirmPromptConfig.variant?.[dialog?.variant]?.menuLi || ''}
 
 	$: _buttonClass = twMerge(`
 		${AlertConfirmPromptConfig.preset.button}
@@ -300,8 +306,6 @@
 	} else {
 		iconFn = false;
 	}
-
-	// $: clog(dialog);
 </script>
 
 <dialog
@@ -313,15 +317,31 @@
 	tabindex="-1"
 >
 	{#if dialog}
-		<!--since we're not using the native form submit, the <form> is not necessary-->
+		<!-- svelte-ignore a11y-autofocus -->
 		<form
 			method="dialog"
 			use:focusTrap={{ autoFocusFirst: false }}
 			tabindex="-1"
+			autofocus={dialog.type !== PROMPT}
 			data-acp-type={dialog?.type}
 			data-acp-variant={dialog?.variant}
 			data-acp-is-pending={isPending}
 			class={_dialogClass}
+			bind:this={_formEl}
+			on:submit|preventDefault={async () => {
+				// clog('on:submit', value);
+				isPending = true;
+				await Promise.resolve(dialog.onOk(dialog.type === PROMPT ? value : true));
+				isPending = false;
+				value = null;
+			}}
+			on:reset|preventDefault={async () => {
+				// clog('on:reset', value);
+				isPending = true;
+				await Promise.resolve(dialog.onCancel(false));
+				isPending = false;
+				value = null;
+			}}
 		>
 			<!-- this sm:flex is not configurable -->
 			<div class="sm:flex sm:items-start">
@@ -368,8 +388,9 @@
 									data-acp-type={dialog?.type}
 									data-acp-variant={dialog?.variant}
 									data-acp-is-pending={isPending}
-									on:input_mounted={({ detail }) => detail.focus()}
+									autofocus
 									size="sm"
+									validate
 									{...dialog.promptFieldProps}
 								/>
 							{:else}
@@ -379,8 +400,9 @@
 									data-acp-type={dialog?.type}
 									data-acp-variant={dialog?.variant}
 									data-acp-is-pending={isPending}
-									on:input_mounted={({ detail }) => detail.focus()}
+									autofocus
 									size="sm"
+									validate
 									{...dialog?.promptFieldProps || {}}
 								/>
 							{/if}
@@ -403,13 +425,6 @@
 					>
 						<Button
 							class={_buttonClass}
-							on:click={async (e) => {
-								e.preventDefault();
-								isPending = true;
-								await Promise.resolve(dialog.onCancel(false));
-								isPending = false;
-								value = null;
-							}}
 							type="reset"
 							data-acp-button-type="cancel"
 							data-acp-dialog-type={dialog?.type}
@@ -462,13 +477,6 @@
 						data-acp-dialog-type={dialog?.type}
 						data-acp-variant={dialog?.variant}
 						data-acp-is-pending={isPending}
-						on:click={async (e) => {
-							e.preventDefault();
-							isPending = true;
-							await Promise.resolve(dialog.onOk(dialog.type === PROMPT ? value : true));
-							isPending = false;
-							value = null;
-						}}
 						disabled={isPending}
 						variant="primary"
 					>

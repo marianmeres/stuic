@@ -44,6 +44,7 @@
 	export let description = '';
 	export let descriptionClass = '';
 
+	export let autofocus: true | undefined = undefined;
 	export let disabled = false;
 	export let readonly = false;
 	export let required = false; // valueMissing
@@ -132,6 +133,7 @@
 					{disabled}
 					{readonly}
 					{required}
+					{autofocus}
 					{tabindex}
 					use:trim={useTrim}
 					use:validateAction={validate
@@ -153,6 +155,7 @@
 					{disabled}
 					{readonly}
 					{required}
+					{autofocus}
 					{autocomplete}
 					{tabindex}
 					{minlength}

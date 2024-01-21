@@ -83,7 +83,7 @@ export const createAlertConfirmPromptStore = () => {
 	const push = (o: Partial<AlertConfirmPromptOptions>) => {
 		if (!isFn(o.onOk)) o.onOk = shift as any;
 		if (!isFn(o.onCancel)) o.onCancel = shift as any;
-		if (!isFn(o.onEscape)) o.onEscape = () => undefined;
+		if (!isFn(o.onEscape)) o.onEscape = shift as any;
 		if (o.labelOk === undefined) o.labelOk = labelOk;
 		if (o.labelCancel === undefined) o.labelCancel = labelCancel;
 		if (o.title === undefined) o.title = ucf(o.type as string);
