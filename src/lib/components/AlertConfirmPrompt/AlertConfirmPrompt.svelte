@@ -68,7 +68,7 @@
 			spinnerBox: `
 				absolute inset-0 flex justify-center items-center
 				rounded-lg
-				bg-white/50
+				bg-white/75
 			`.trim(),
 		};
 
@@ -495,6 +495,6 @@
 	// prettier-ignore
 	@keyframes -global-rotating-cw { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 	.rotating-cw {
-		animation: rotating-cw 0.5s linear infinite;
+		animation: rotating-cw 0.6s linear infinite;
 	}
 </style>

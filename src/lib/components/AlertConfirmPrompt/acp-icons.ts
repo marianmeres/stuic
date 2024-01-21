@@ -110,5 +110,5 @@ export const acpDefaultIcons = {
 	success: () => iconFeatherCheckCircle({}),
 	warn: () => iconFeatherAlertCircle({}),
 	error: () => iconFeatherXOctagon({}),
-	spinner: () => iconFeatherRotateCw({ size: 32, class: 'opacity-75', strokeWidth: 1.5 }),
+	spinner: () => iconFeatherRotateCw({ size: 32, class: 'opacity-50' }),
 };
