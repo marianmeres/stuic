@@ -144,11 +144,12 @@ export const createAlertConfirmPromptStore = () => {
 // sugar helpers to patch the native window.alert/confirm/prompt
 
 export const createAlert =
-	(acp: ReturnType<typeof createAlertConfirmPromptStore>) =>
+	(acp: ReturnType<typeof createAlertConfirmPromptStore>, defaults?: Partial<Dialog>) =>
 	// allowing to add the custom param outside of the native signature
 	(message: string, o?: Partial<Dialog>) =>
 		new Promise((resolve) =>
 			acp.alert({
+				...(defaults || {}),
 				onOk: () => {
 					acp.close();
 					resolve(undefined);
@@ -163,7 +164,7 @@ export const createAlert =
 		);
 
 export const createConfirm =
-	(acp: ReturnType<typeof createAlertConfirmPromptStore>) =>
+	(acp: ReturnType<typeof createAlertConfirmPromptStore>, defaults?: Partial<Dialog>) =>
 	// allowing to add the custom param outside of the native signature
 	(message: string, o?: Partial<Dialog>) =>
 		new Promise((resolve) =>
@@ -173,6 +174,7 @@ export const createConfirm =
 					resolve(true);
 				},
 				{
+					...(defaults || {}),
 					content: message,
 					onCancel: () => {
 						acp.close();
@@ -188,7 +190,7 @@ export const createConfirm =
 		);
 
 export const createPrompt =
-	(acp: ReturnType<typeof createAlertConfirmPromptStore>) =>
+	(acp: ReturnType<typeof createAlertConfirmPromptStore>, defaults?: Partial<Dialog>) =>
 	// allowing to add the custom param outside of the native signature
 	(message: string, defaultValue: string = '', o?: Partial<Dialog>) =>
 		new Promise((resolve) =>
@@ -198,6 +200,7 @@ export const createPrompt =
 					resolve(value);
 				},
 				{
+					...(defaults || {}),
 					content: message,
 					value: defaultValue,
 					onCancel: () => {

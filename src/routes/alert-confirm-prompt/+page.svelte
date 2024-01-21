@@ -12,7 +12,11 @@
 	import { clogFilterStringifier, createClog } from '@marianmeres/clog';
 	import { sleep } from './sleep';
 	import { AlertConfirmPromptConfig } from '../../lib/components/AlertConfirmPrompt/AlertConfirmPrompt.svelte';
-	import { iconBs0Circle, iconBs1CircleFill } from '@marianmeres/icons-fns';
+	import {
+		iconBs0Circle,
+		iconBs1CircleFill,
+		iconBs2CircleFill,
+	} from '@marianmeres/icons-fns';
 	import FooContent from './FooContent.svelte';
 
 	const clog = createClog('alert-confirm-prompt page');
@@ -76,8 +80,11 @@
 		<button
 			class="border px-2 m-2"
 			on:click={async () =>
-				await createConfirm(acp)(dummySentence(3), {
+				await createConfirm(acp, {
+					// this will be overwritten
 					iconFn: () => iconBs1CircleFill({ size: 24 }),
+				})(dummySentence(3), {
+					iconFn: () => iconBs2CircleFill({ size: 24 }),
 				})}
 		>
 			confirm (custom icon)
@@ -92,8 +99,9 @@
 
 		<button
 			class="border px-2 m-2"
-			on:click={async () =>
-				clog(await createConfirm(acp)(dummySentence(3), { iconFn: false }))}
+			on:click={async () => {
+				clog(await createConfirm(acp, { iconFn: false })(dummySentence(3)));
+			}}
 		>
 			confirm (no icon)
 		</button>
