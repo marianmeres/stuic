@@ -3,6 +3,7 @@
 	import {
 		AlertConfirmPromptType,
 		Button,
+		FieldSelect,
 		createAlertConfirmPromptStore,
 		focusTrap,
 	} from '../../index.js';
@@ -29,14 +30,14 @@
 			`.trim(),
 			icon: `
 				size-12 sm:size-10
-				mt-1 mb-4 sm:my-0
+				mt-1 mb-4 sm:my-0 sm:mr-5
 				mx-auto 
 				flex flex-shrink-0 items-center justify-center 
 				rounded-full 
 				bg-neutral-100 text-black/50
 			`.trim(),
 			contentBlock: `
-				mt-3 sm:ml-4 sm:mt-0 sm:flex-1
+				mt-3 sm:mt-0 sm:flex-1
 			`.trim(),
 			title: `
 				text-center sm:text-left
@@ -300,7 +301,7 @@
 		iconFn = false;
 	}
 
-	$: clog(dialog);
+	// $: clog(dialog);
 </script>
 
 <dialog
@@ -360,15 +361,29 @@
 							data-acp-variant={dialog?.variant}
 							data-acp-is-pending={isPending}
 						>
-							<Field
-								class={_inputFieldClass}
-								bind:value
-								data-acp-type={dialog?.type}
-								data-acp-variant={dialog?.variant}
-								data-acp-is-pending={isPending}
-								on:input_mounted={({ detail }) => detail.focus()}
-								size="sm"
-							/>
+							{#if dialog?.promptFieldProps?.options?.length}
+								<FieldSelect
+									class={_inputFieldClass}
+									bind:value
+									data-acp-type={dialog?.type}
+									data-acp-variant={dialog?.variant}
+									data-acp-is-pending={isPending}
+									on:input_mounted={({ detail }) => detail.focus()}
+									size="sm"
+									{...dialog.promptFieldProps}
+								/>
+							{:else}
+								<Field
+									class={_inputFieldClass}
+									bind:value
+									data-acp-type={dialog?.type}
+									data-acp-variant={dialog?.variant}
+									data-acp-is-pending={isPending}
+									on:input_mounted={({ detail }) => detail.focus()}
+									size="sm"
+									{...dialog?.promptFieldProps || {}}
+								/>
+							{/if}
 						</div>
 					{/if}
 				</div>
@@ -480,6 +495,6 @@
 	// prettier-ignore
 	@keyframes -global-rotating-cw { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 	.rotating-cw {
-		animation: rotating-cw 0.6s linear infinite;
+		animation: rotating-cw 0.5s linear infinite;
 	}
 </style>

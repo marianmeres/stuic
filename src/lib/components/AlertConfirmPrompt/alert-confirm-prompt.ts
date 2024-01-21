@@ -46,6 +46,8 @@ interface Dialog extends Record<string, any> {
 	// optional custom 3rd button label + handler
 	labelCustom?: THC;
 	onCustom?: FnOnCustom;
+	//
+	promptFieldProps?: any;
 	// visuals
 	variant: AlertConfirmPromptVariant;
 	iconFn: (() => string) | boolean; // true means default

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
 	import { slide } from 'svelte/transition';
 	import { twMerge } from 'tailwind-merge';
 	import {
@@ -7,6 +8,8 @@
 		type ValidateOptions,
 		type ValidationResult,
 	} from '../../index.js';
+
+	const dispatch = createEventDispatcher();
 
 	const inputSizePreset = {
 		sm: 'text-sm placeholder:text-sm',
@@ -63,6 +66,9 @@
 		return v;
 	});
 
+	let _inputEl: HTMLInputElement | HTMLTextAreaElement;
+	$: if (_inputEl) dispatch('input_mounted', _inputEl);
+
 	//
 	$: inputClass = twMerge(`
 		rounded-md border-0 block w-full flex-1
@@ -106,6 +112,7 @@
 		<select
 			class={inputClass}
 			bind:value
+			bind:this={_inputEl}
 			{disabled}
 			{required}
 			{tabindex}

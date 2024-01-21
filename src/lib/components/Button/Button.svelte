@@ -9,7 +9,7 @@
 		static defaultVariant: string | undefined = undefined;
 
 		static presetBase = `
-			text-center whitespace-nowrap
+			text-center 
 			inline-flex items-center gap-x-2
 			hover:brightness-[1.05]
 			active:brightness-[0.95]

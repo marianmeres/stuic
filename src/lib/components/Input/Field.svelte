@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
 	import { slide } from 'svelte/transition';
 	import { twMerge } from 'tailwind-merge';
 	import {
@@ -9,7 +10,6 @@
 		type ValidateOptions,
 		type ValidationResult,
 	} from '../../index.js';
-	import { createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher();
 	const setType = (el: HTMLInputElement, t: any) => (el.type = t);
@@ -29,7 +29,7 @@
 	export { _class as class };
 	export let labelClass = '';
 	export let wrapClass = '';
-	export let textareaClass = '';
+	export let inputClass = '';
 	export let invalidClass = 'border-primary';
 
 	export let size: 'sm' | 'md' | 'lg' = 'md';
@@ -72,7 +72,7 @@
 	$: if (_inputEl) dispatch('input_mounted', _inputEl);
 
 	//
-	$: inputClass = twMerge(`
+	$: _inputClass = twMerge(`
 		form-input
 		rounded-md border-0 w-full flex-1
 		bg-transparent
@@ -126,7 +126,7 @@
 					bind:value
 					bind:this={_inputEl}
 					{id}
-					class={twMerge(`${inputClass} min-h-16 ${textareaClass}`)}
+					class={twMerge(`${_inputClass} min-h-16 ${inputClass}`)}
 					class:cursor-not-allowed={disabled}
 					{name}
 					{disabled}
@@ -146,7 +146,7 @@
 					bind:this={_inputEl}
 					use:setType={type}
 					{id}
-					class={inputClass}
+					class={twMerge(`${_inputClass} ${inputClass}`)}
 					class:cursor-not-allowed={disabled}
 					{name}
 					{placeholder}
