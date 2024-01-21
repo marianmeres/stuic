@@ -1,23 +1,18 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { createClog } from '@marianmeres/clog';
+	import { iconBs1CircleFill, iconBs2CircleFill } from '@marianmeres/icons-fns';
 	import {
 		AlertConfirmPrompt,
-		createAlertConfirmPromptStore,
 		createAlert,
+		createAlertConfirmPromptStore,
 		createConfirm,
 		createPrompt,
 	} from '../../lib';
+	import { AlertConfirmPromptConfig } from '../../lib/components/AlertConfirmPrompt/AlertConfirmPrompt.svelte';
 	import Layout from '../_components/Layout.svelte';
 	import { dummySentence } from '../_utils/dummy-text';
-	import { clogFilterStringifier, createClog } from '@marianmeres/clog';
-	import { sleep } from './sleep';
-	import { AlertConfirmPromptConfig } from '../../lib/components/AlertConfirmPrompt/AlertConfirmPrompt.svelte';
-	import {
-		iconBs0Circle,
-		iconBs1CircleFill,
-		iconBs2CircleFill,
-	} from '@marianmeres/icons-fns';
 	import FooContent from './FooContent.svelte';
+	import { sleep } from './sleep';
 
 	const clog = createClog('alert-confirm-prompt page');
 	const acp = createAlertConfirmPromptStore();

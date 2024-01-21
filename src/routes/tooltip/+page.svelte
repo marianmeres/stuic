@@ -2,10 +2,11 @@
 	import { createClog } from '@marianmeres/clog';
 	import { onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
-	import { tooltip, windowSize } from '../../lib';
+	import { windowSize } from '../../lib';
 	import { calculateAlignment } from '../../lib/utils/calculate-alignment.js';
 	import Layout from '../_components/Layout.svelte';
 	import { dummySentence, dummyText } from '../_utils/dummy-text.js';
+	import { tooltip } from '../../lib/actions/tooltip/tooltip.js';
 
 	const clog = createClog('tooltip page');
 

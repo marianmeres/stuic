@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { tooltip } from '../..';
-	import type { TooltipOptions } from '../../actions/tooltip/tooltip.js';
+	import { tooltip, type TooltipOptions } from '../../actions/tooltip/tooltip.js';
 
 	export let options: Partial<TooltipOptions> = {};
 

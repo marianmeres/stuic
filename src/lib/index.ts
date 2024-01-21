@@ -49,6 +49,9 @@ export { default as FieldSelect } from './components/Input/FieldSelect.svelte';
 export { default as Fieldset } from './components/Input/Fieldset.svelte';
 
 //
+export { default as Popover } from './components/Popover/Popover.svelte';
+
+//
 export { default as Switch, SwitchConfig } from './components/Switch/Switch.svelte';
 export { default as Thc } from './components/Thc/Thc.svelte';
 
@@ -58,7 +61,11 @@ export { default as X } from './components/X/X.svelte';
 // actions
 export { focusTrap } from './actions/focus-trap.js';
 export { onOutside } from './actions/on-outside.js';
-export { tooltip, TooltipConfig } from './actions/tooltip/tooltip.js';
+export {
+	tooltip,
+	TooltipConfig,
+	type TooltipOptions,
+} from './actions/tooltip/tooltip.js';
 export {
 	validate,
 	type ValidateOptions,
