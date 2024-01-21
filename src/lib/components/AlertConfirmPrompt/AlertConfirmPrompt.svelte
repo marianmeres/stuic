@@ -151,7 +151,7 @@
 		};
 
 		// conveniently hoisted THC option, since all content is rendered via THC
-		static forceAsHtml = undefined;
+		static forceAsHtml: boolean | undefined = undefined;
 	}
 
 	const _isFn = (v: any) => typeof v === 'function';
