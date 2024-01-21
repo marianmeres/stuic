@@ -28,7 +28,7 @@
 	AlertConfirmPromptConfig.classButton = 'border-0';
 
 	const alert = createAlert(acp);
-	const confirm = createConfirm(acp);
+	const confirm = createConfirm(acp, { forceAsHtml: true });
 	const prompt = createPrompt(acp);
 </script>
 
@@ -134,7 +134,7 @@
 			on:click={async () => {
 				clog(
 					await confirm(dummySentence(3), {
-						labelCustom: 'Custom',
+						labelCustom: '<i>Custom</i>',
 						onCustom: async () => {
 							await sleep(3_000);
 							acp.close();

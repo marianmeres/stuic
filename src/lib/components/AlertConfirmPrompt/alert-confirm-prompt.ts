@@ -64,6 +64,8 @@ export interface AlertConfirmPromptOptions extends Record<string, any> {
 		button: string;
 		spinnerBox: string;
 	}>;
+	//
+	forceAsHtml?: boolean;
 }
 
 const isFn = (v: any) => typeof v === 'function';

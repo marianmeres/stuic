@@ -149,6 +149,9 @@
 			error: undefined,
 			spinner: undefined,
 		};
+
+		// conveniently hoisted THC option, since all content is rendered via THC
+		static forceAsHtml = undefined;
 	}
 
 	const _isFn = (v: any) => typeof v === 'function';
@@ -164,6 +167,13 @@
 	//
 	$: dialog = $acp[0];
 	// $: clog(dialog);
+
+	let forceAsHtml: boolean | undefined = undefined;
+	$: if (dialog) {
+		forceAsHtml = dialog.forceAsHtml ?? AlertConfirmPromptConfig.forceAsHtml;
+	} else {
+		forceAsHtml = undefined;
+	}
 
 	//
 	let _dialogEl: HTMLDialogElement;
@@ -362,7 +372,7 @@
 						data-acp-variant={dialog?.variant}
 						data-acp-is-pending={isPending}
 					>
-						<Thc thc={dialog.title} />
+						<Thc thc={dialog.title} {forceAsHtml} />
 					</h1>
 					{#if dialog.content}
 						<div
@@ -371,7 +381,7 @@
 							data-acp-variant={dialog?.variant}
 							data-acp-is-pending={isPending}
 						>
-							<Thc thc={dialog.content} />
+							<Thc thc={dialog.content} {forceAsHtml} />
 						</div>
 					{/if}
 					{#if dialog.type === PROMPT}
@@ -432,7 +442,7 @@
 							data-acp-is-pending={isPending}
 							disabled={isPending}
 						>
-							<Thc thc={dialog.labelCancel} />
+							<Thc thc={dialog.labelCancel} {forceAsHtml} />
 						</Button>
 					</li>
 				{/if}
@@ -459,7 +469,7 @@
 							data-acp-is-pending={isPending}
 							disabled={isPending}
 						>
-							<Thc thc={dialog.labelCustom} />
+							<Thc thc={dialog.labelCustom} {forceAsHtml} />
 						</Button>
 					</li>
 				{/if}
@@ -480,7 +490,7 @@
 						disabled={isPending}
 						variant="primary"
 					>
-						<Thc thc={dialog.labelOk} />
+						<Thc thc={dialog.labelOk} {forceAsHtml} />
 					</Button>
 				</li>
 			</menu>
