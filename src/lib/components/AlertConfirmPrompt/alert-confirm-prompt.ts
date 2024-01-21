@@ -24,7 +24,7 @@ type FnOnCancel = (value: false) => any;
 type FnOnEscape = () => undefined;
 type FnOnCustom = (value: any) => any;
 
-interface Dialog extends Record<string, any> {
+export interface AlertConfirmPromptOptions extends Record<string, any> {
 	//keyof AlertConfirmPromptType;
 	type:
 		| AlertConfirmPromptType.ALERT
@@ -71,7 +71,7 @@ const ucf = (s: string) => `${s}`[0].toUpperCase() + `${s}`.slice(1);
 
 export const createAlertConfirmPromptStore = () => {
 	// fifo
-	const _stack = createStore<Dialog[]>([]);
+	const _stack = createStore<AlertConfirmPromptOptions[]>([]);
 
 	// defaults
 	const labelOk = 'OK';
@@ -80,7 +80,7 @@ export const createAlertConfirmPromptStore = () => {
 	// optional 3rd button label
 	const labelCustom = undefined;
 
-	const push = (o: Partial<Dialog>) => {
+	const push = (o: Partial<AlertConfirmPromptOptions>) => {
 		if (!isFn(o.onOk)) o.onOk = shift as any;
 		if (!isFn(o.onCancel)) o.onCancel = shift as any;
 		if (!isFn(o.onEscape)) o.onEscape = () => undefined;
@@ -99,7 +99,7 @@ export const createAlertConfirmPromptStore = () => {
 		if (!isFn(o.onCustom)) o.onCustom = () => undefined;
 
 		//
-		_stack.update((old) => [...old, o] as Dialog[]);
+		_stack.update((old) => [...old, o] as AlertConfirmPromptOptions[]);
 	};
 
 	const shift = () =>
@@ -108,7 +108,7 @@ export const createAlertConfirmPromptStore = () => {
 			return [...old];
 		});
 
-	const reset = (stack: Dialog[] = []) => _stack.set(stack);
+	const reset = (stack: AlertConfirmPromptOptions[] = []) => _stack.set(stack);
 
 	const escape = () => {
 		if (_stack.get().length) _stack.get()[0].onEscape();
@@ -128,15 +128,15 @@ export const createAlertConfirmPromptStore = () => {
 		// sugar below
 
 		//
-		alert: (o?: Partial<Dialog> | string) => {
+		alert: (o?: Partial<AlertConfirmPromptOptions> | string) => {
 			if (typeof o === 'string') o = { title: o };
 			push({ ...(o || {}), type: AlertConfirmPromptType.ALERT });
 		},
 		//
-		confirm: (onOk: FnOnOK, o?: Partial<Dialog>) =>
+		confirm: (onOk: FnOnOK, o?: Partial<AlertConfirmPromptOptions>) =>
 			push({ onOk, value: false, ...o, type: AlertConfirmPromptType.CONFIRM }),
 		//
-		prompt: (onOk: FnOnOK, o?: Partial<Dialog>) =>
+		prompt: (onOk: FnOnOK, o?: Partial<AlertConfirmPromptOptions>) =>
 			push({ onOk, value: '', ...o, type: AlertConfirmPromptType.PROMPT }),
 	};
 };
@@ -144,9 +144,12 @@ export const createAlertConfirmPromptStore = () => {
 // sugar helpers to patch the native window.alert/confirm/prompt
 
 export const createAlert =
-	(acp: ReturnType<typeof createAlertConfirmPromptStore>, defaults?: Partial<Dialog>) =>
+	(
+		acp: ReturnType<typeof createAlertConfirmPromptStore>,
+		defaults?: Partial<AlertConfirmPromptOptions>
+	) =>
 	// allowing to add the custom param outside of the native signature
-	(message: string, o?: Partial<Dialog>) =>
+	(message: string, o?: Partial<AlertConfirmPromptOptions>) =>
 		new Promise((resolve) =>
 			acp.alert({
 				...(defaults || {}),
@@ -164,9 +167,12 @@ export const createAlert =
 		);
 
 export const createConfirm =
-	(acp: ReturnType<typeof createAlertConfirmPromptStore>, defaults?: Partial<Dialog>) =>
+	(
+		acp: ReturnType<typeof createAlertConfirmPromptStore>,
+		defaults?: Partial<AlertConfirmPromptOptions>
+	) =>
 	// allowing to add the custom param outside of the native signature
-	(message: string, o?: Partial<Dialog>) =>
+	(message: string, o?: Partial<AlertConfirmPromptOptions>) =>
 		new Promise((resolve) =>
 			acp.confirm(
 				() => {
@@ -190,9 +196,12 @@ export const createConfirm =
 		);
 
 export const createPrompt =
-	(acp: ReturnType<typeof createAlertConfirmPromptStore>, defaults?: Partial<Dialog>) =>
+	(
+		acp: ReturnType<typeof createAlertConfirmPromptStore>,
+		defaults?: Partial<AlertConfirmPromptOptions>
+	) =>
 	// allowing to add the custom param outside of the native signature
-	(message: string, defaultValue: string = '', o?: Partial<Dialog>) =>
+	(message: string, defaultValue: string = '', o?: Partial<AlertConfirmPromptOptions>) =>
 		new Promise((resolve) =>
 			acp.prompt(
 				(value: string) => {

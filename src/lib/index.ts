@@ -12,6 +12,7 @@ export {
 	createPrompt,
 	AlertConfirmPromptType,
 	type AlertConfirmPromptVariant,
+	type AlertConfirmPromptOptions,
 } from './components/AlertConfirmPrompt/alert-confirm-prompt.js';
 
 //
