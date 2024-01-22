@@ -1,7 +1,7 @@
 <script>
 	import { createClog } from '@marianmeres/clog';
 	import Layout from '../_components/Layout.svelte';
-	import Popover from '../../lib/components/Popover/Popover.svelte';
+	import Popover from '../../lib/components/Popoverx/Popover.svelte';
 	import { tooltip } from '../../lib/actions/tooltip/tooltip';
 
 	const clog = createClog('popover page');

@@ -40,9 +40,6 @@ export { ColorScheme } from './components/ColorScheme/color-scheme.js';
 export { default as Drawer, createDrawerStore } from './components/Drawer/Drawer.svelte';
 
 //
-export { default as Popover } from './components/popover/Popover.svelte';
-
-//
 export { default as HoverExpandableWidth } from './components/HoverExpandableWidth/HoverExpandableWidth.svelte';
 
 //
@@ -71,7 +68,7 @@ export {
 } from './components/Notifications/Notifications.svelte';
 
 //
-export { default as Popover } from './components/Popover/Popover.svelte';
+export { default as Popover } from './components/Popoverx/Popover.svelte';
 
 //
 export { default as Switch, SwitchConfig } from './components/Switch/Switch.svelte';
