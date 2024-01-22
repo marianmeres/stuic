@@ -97,87 +97,26 @@
 			},
 		};
 
+		// prettier-ignore
 		static presetByType: Record<NotificationType, NotifClasses> = {
-			info: {
-				box: ``,
-				count: ``,
-				icon: ``,
-				content: ``,
-				button: ``,
-				x: ``,
-			},
-			success: {
-				box: ``, // e.g. bg-green-800
-				count: ``,
-				icon: ``,
-				content: ``,
-				button: ``,
-				x: ``,
-			},
-			warn: {
-				box: ``, // e.g. bg-yellow-800
-				count: ``,
-				icon: ``,
-				content: ``,
-				button: ``,
-				x: ``,
-			},
-			error: {
-				box: `bg-red-700`, // e.g. bg-red-800
-				count: ``,
-				icon: ``,
-				content: ``,
-				button: ``,
-				x: ``,
-			},
+			info:    { box: ``,           count: ``, icon: ``, content: ``, button: ``, x: `` },
+			success: { box: ``,           count: ``, icon: ``, content: ``, button: ``, x: `` },
+			warn:    { box: ``,           count: ``, icon: ``, content: ``, button: ``, x: `` },
+			error:   { box: `bg-red-700`, count: ``, icon: ``, content: ``, button: ``, x: `` },
 		};
 
 		static class = {
 			wrap: '',
 			wrapInner: '',
-			notification: {
-				box: ``,
-				count: ``,
-				icon: ``,
-				content: ``,
-				button: ``,
-				x: ``,
-			},
+			notification: { box: ``, count: ``, icon: ``, content: ``, button: ``, x: `` },
 		};
 
+		// prettier-ignore
 		static classByType: Record<NotificationType, NotifClasses> = {
-			info: {
-				box: ``,
-				count: ``,
-				icon: ``,
-				content: ``,
-				button: ``,
-				x: ``,
-			},
-			success: {
-				box: ``,
-				count: ``,
-				icon: ``,
-				content: ``,
-				button: ``,
-				x: ``,
-			},
-			warn: {
-				box: ``,
-				count: ``,
-				icon: ``,
-				content: ``,
-				button: ``,
-				x: ``,
-			},
-			error: {
-				box: ``,
-				count: ``,
-				icon: ``,
-				content: ``,
-				button: ``,
-				x: ``,
-			},
+			info:    { box: ``, count: ``, icon: ``, content: ``, button: ``, x: `` },
+			success: { box: ``, count: ``, icon: ``, content: ``, button: ``, x: `` },
+			warn:    { box: ``, count: ``, icon: ``, content: ``, button: ``, x: `` },
+			error:   { box: ``, count: ``, icon: ``, content: ``, button: ``, x: `` },
 		};
 
 		static iconFn: Record<NotificationType, undefined | (() => string)> = {
@@ -223,76 +162,79 @@
 	$: y = Y_POSITIONS.includes(posY) ? posY : DEFAULT.posY;
 	$: yMobile = Y_POSITIONS.includes(posYMobile) ? posYMobile : DEFAULT.posYMobile;
 
-	$: _wrapClass = twMerge(`
-        ${NotificationsConfig.preset.wrap}
-        ${NotificationsConfig.class.wrap}
-        flex flex-row inset-0 
-        pointer-events-none bg-transparent
-        ${YMAP_M[yMobile]} ${YMAP[y]}
-    `);
+	$: _wrapClass = twMerge(
+		NotificationsConfig.preset.wrap,
+		NotificationsConfig.class.wrap,
+		`flex flex-row inset-0 
+        pointer-events-none bg-transparent`,
+		YMAP_M[yMobile],
+		YMAP[y]
+	);
 
-	$: _wrapInnerClass = twMerge(`
-        ${NotificationsConfig.preset.wrapInner}
-        ${NotificationsConfig.class.wrapInner}
-        flex flex-col w-full 
-        pointer-events-none bg-transparent
-        ${XMAP_M[xMobile]} ${XMAP[x]}
-    `);
+	$: _wrapInnerClass = twMerge(
+		NotificationsConfig.preset.wrapInner,
+		NotificationsConfig.class.wrapInner,
+		`flex flex-col w-full 
+        pointer-events-none bg-transparent`,
+		XMAP_M[xMobile],
+		XMAP[x]
+	);
 
 	//
 	const _boxClass = (n: Notification) =>
-		twMerge(`
-            ${NotificationsConfig?.preset?.notification?.box}
-            ${NotificationsConfig?.class?.notification?.box}
-            ${NotificationsConfig?.presetByType?.[n.type]?.box || ''}
-            ${NotificationsConfig?.classByType?.[n.type]?.box || ''}
-            ${n.class?.box || ''}
-        `);
+		twMerge(
+			NotificationsConfig?.preset?.notification?.box || '',
+			NotificationsConfig?.class?.notification?.box || '',
+			NotificationsConfig?.presetByType?.[n.type]?.box || '',
+			NotificationsConfig?.classByType?.[n.type]?.box || '',
+			n.class?.box || ''
+		);
 
 	const _countClass = (n: Notification) =>
-		twMerge(`
-            ${NotificationsConfig?.preset?.notification?.count}
-            ${NotificationsConfig?.class?.notification?.count}
-            ${NotificationsConfig?.presetByType?.[n.type]?.count || ''}
-            ${NotificationsConfig?.classByType?.[n.type]?.count || ''}
-            ${n.class?.count || ''}
-        `);
+		twMerge(
+			NotificationsConfig?.preset?.notification?.count || '',
+			NotificationsConfig?.class?.notification?.count || '',
+			NotificationsConfig?.presetByType?.[n.type]?.count || '',
+			NotificationsConfig?.classByType?.[n.type]?.count || '',
+			n.class?.count || ''
+		);
 
 	const _iconClass = (n: Notification) =>
-		twMerge(`
-            ${NotificationsConfig?.preset?.notification?.icon}
-            ${NotificationsConfig?.class?.notification?.icon}
-            ${NotificationsConfig?.presetByType?.[n.type]?.icon || ''}
-            ${NotificationsConfig?.classByType?.[n.type]?.icon || ''}
-            ${n.class?.icon || ''}
-        `);
+		twMerge(
+			NotificationsConfig?.preset?.notification?.icon || '',
+			NotificationsConfig?.class?.notification?.icon || '',
+			NotificationsConfig?.presetByType?.[n.type]?.icon || '',
+			NotificationsConfig?.classByType?.[n.type]?.icon || '',
+			n.class?.icon || ''
+		);
 
 	const _contentClass = (n: Notification) =>
-		twMerge(`
-            ${NotificationsConfig?.preset?.notification?.content}
-            ${NotificationsConfig?.class?.notification?.content}
-            ${NotificationsConfig?.presetByType?.[n.type]?.content || ''}
-            ${NotificationsConfig?.classByType?.[n.type]?.content || ''}
-            ${n.class?.content || ''}
-        `);
+		twMerge(
+			NotificationsConfig?.preset?.notification?.content || '',
+			NotificationsConfig?.class?.notification?.content || '',
+			NotificationsConfig?.presetByType?.[n.type]?.content || '',
+			NotificationsConfig?.classByType?.[n.type]?.content || '',
+			n.class?.content || ''
+		);
 
 	const _buttonClass = (n: Notification) =>
-		twMerge(`
-            ${NotificationsConfig?.preset?.notification?.button}
-            ${NotificationsConfig?.class?.notification?.button}
-            ${NotificationsConfig?.presetByType?.[n.type]?.button || ''}
-            ${NotificationsConfig?.classByType?.[n.type]?.button || ''}
-            ${n.class?.button || ''}
-        `);
+		twMerge(
+			NotificationsConfig?.preset?.notification?.button || '',
+			NotificationsConfig?.class?.notification?.button || '',
+			NotificationsConfig?.presetByType?.[n.type]?.button || '',
+			NotificationsConfig?.classByType?.[n.type]?.button || '',
+			n.class?.button || ''
+		);
 
 	const _xClass = (n: Notification) =>
-		twMerge(`
-            ${NotificationsConfig?.preset?.notification?.x}
-            ${NotificationsConfig?.class?.notification?.x}
-            ${NotificationsConfig?.presetByType?.[n.type]?.x || ''}
-            ${NotificationsConfig?.classByType?.[n.type]?.x || ''}
-            ${n.class?.x || ''}
-        `);
+		twMerge(
+			NotificationsConfig?.preset?.notification?.x || '',
+			NotificationsConfig?.class?.notification?.x || '',
+			NotificationsConfig?.presetByType?.[n.type]?.x || '',
+			NotificationsConfig?.classByType?.[n.type]?.x || '',
+			n.class?.x || ''
+		);
+
 	const _iconFn = (n: Notification) => {
 		let iconFn: (() => string) | false = false;
 		if (n?.iconFn === true) {

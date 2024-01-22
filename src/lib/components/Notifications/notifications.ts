@@ -2,6 +2,7 @@ import { createClog } from '@marianmeres/clog';
 import { createStore } from '@marianmeres/store';
 import { createTicker } from '@marianmeres/ticker';
 import type { THC } from '../Thc/Thc.svelte';
+import { twMerge } from 'tailwind-merge';
 
 export type NotificationsSortOrder = 'asc' | 'desc';
 
@@ -17,6 +18,15 @@ export type NotificationType = 'info' | 'success' | 'warn' | 'error' | string;
 interface ComponentWrap {
 	component: Function;
 	props?: any;
+}
+
+interface KnownClasses {
+	box: string;
+	count: string;
+	icon: string;
+	content: string;
+	button: string;
+	x: string;
 }
 
 export interface NotificationInput extends Record<string, any> {
@@ -56,15 +66,7 @@ export interface NotificationInput extends Record<string, any> {
 	//
 	iconFn: (() => string) | boolean;
 
-	// custom css classes to override/merge with defaults
-	class?: Partial<{
-		box: string;
-		count: string;
-		icon: string;
-		content: string;
-		button: string;
-		x: string;
-	}>;
+	class?: Partial<KnownClasses>;
 
 	// pragmatic shortcut to THC
 	forceAsHtml: boolean | undefined;
@@ -103,15 +105,8 @@ export interface NotiticationsCreateStoreOptions {
 
 	//
 	forceAsHtml?: boolean | undefined;
-
-	class?: Partial<{
-		box: string;
-		count: string;
-		icon: string;
-		content: string;
-		button: string;
-		x: string;
-	}>;
+	class?: Partial<KnownClasses>;
+	classByType?: Record<NotificationType, Partial<KnownClasses>>;
 
 	// debug
 	logger: (...v: any) => void;
@@ -185,39 +180,47 @@ export const createNotificationsStore = (
 	['maxCapacity', 'defaultTtl'].forEach((k: any) => _setOption(k, (opts as any)[k]));
 
 	const _factory = (notification: NotificationCreateParam): Notification | null => {
-		let notif: Partial<Notification> =
+		let o: Partial<Notification> =
 			typeof notification === 'string' ? { id: 0, content: notification } : notification;
 
 		// ignore invalid (empty) notifs
-		if (!notif.content) {
+		if (!o.content) {
 			_log(`WARN: ignoring empty notification`);
 			return null;
 		}
 
-		notif.type ||= opts.defaultType; //
-		notif.id ||= _id((notif as Notification).type, [notif.content].join());
-		notif.created = new Date(notif.created || Date.now());
-		notif.count ??= 1;
-		notif.forceAsHtml ??= opts.forceAsHtml;
+		o.type ||= opts.defaultType; //
+		o.id ||= _id((o as Notification).type, [o.content].join());
+		o.created = new Date(o.created || Date.now());
+		o.count ??= 1;
+		o.forceAsHtml ??= opts.forceAsHtml;
 
-		if (opts.class) {
-			notif.class ??= {};
-			notif.class = { ...opts.class, ...notif.class };
-		}
+		// classes merge dance
+
+		o.class ??= {};
+		// prettier-ignore
+		const clsKeys: (keyof KnownClasses)[] = ['box', 'count', 'icon', 'content', 'button', 'x'];
+		clsKeys.forEach((k) => {
+			(o.class as any)[k] = twMerge(
+				opts?.class?.[k] || '',
+				opts?.classByType?.[o.type as NotificationType]?.[k] || '',
+				o?.class?.[k] || ''
+			);
+		});
 
 		//
-		if (notif.ttl === undefined) notif.ttl = opts.defaultTtl;
+		if (o.ttl === undefined) o.ttl = opts.defaultTtl;
 
 		//
-		if (notif.iconFn === undefined) {
+		if (o.iconFn === undefined) {
 			if (typeof opts.defaultIcons === 'boolean') {
-				notif.iconFn = opts.defaultIcons;
+				o.iconFn = opts.defaultIcons;
 			} else {
-				notif.iconFn = opts.defaultIcons?.[(notif as Notification).type];
+				o.iconFn = opts.defaultIcons?.[(o as Notification).type];
 			}
 		}
 
-		return notif as Notification;
+		return o as Notification;
 	};
 
 	const _findIndexById = (notifs: Notification[], id: any) =>

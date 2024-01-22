@@ -13,6 +13,7 @@ export {
 	AlertConfirmPromptType,
 	type AlertConfirmPromptVariant,
 	type AlertConfirmPromptOptions,
+	type AlertConfirmPromptFactoryStoreOptions,
 } from './components/AlertConfirmPrompt/alert-confirm-prompt.js';
 
 //

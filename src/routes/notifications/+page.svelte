@@ -13,9 +13,14 @@
 
 	const notifications = createNotificationsStore([], {
 		defaultTtl: 120,
-		// class: {
-		// 	box: 'border border-4 border-black',
-		// },
+		class: {
+			box: 'border border-4 border-black',
+		},
+		classByType: {
+			error: {
+				box: 'border-orange-500',
+			},
+		},
 	});
 
 	const foo = dummySentence(1);
