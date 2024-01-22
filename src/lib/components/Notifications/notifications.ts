@@ -42,9 +42,6 @@ export interface NotificationInput extends Record<string, any> {
 	// notifications without any content will be ignored
 	content: THC;
 
-	// for sorting the queue, will default to now
-	// created: Date;
-
 	// generic action handler for triggered actions...
 	on: NotificationOnEventHandler;
 
@@ -66,6 +63,7 @@ export interface NotificationInput extends Record<string, any> {
 	//
 	iconFn: (() => string) | boolean;
 
+	//
 	class?: Partial<KnownClasses>;
 
 	// pragmatic shortcut to THC
@@ -74,10 +72,6 @@ export interface NotificationInput extends Record<string, any> {
 export interface Notification extends NotificationInput {
 	// for sorting the queue, will default to now
 	created: Date;
-
-	// Number of notifications in the queue with the same `id`. If you do not provide your
-	// own id, it will be calculated from content (type, text, html).
-	// count: number;
 }
 
 export type NotificationCreateParam = string | Partial<NotificationInput>;
@@ -99,16 +93,6 @@ export interface NotiticationsCreateStoreOptions {
 	// Sorting is always done by the `created` prop.
 	sortOrder?: NotificationsSortOrder;
 
-	// boolean to dis/allow default icons, or
-	// custom type-to-fn map (function should return svg string)
-	defaultIcons?: Record<NotificationType, () => string> | boolean;
-
-	//
-	forceAsHtml?: boolean | undefined;
-	class?: Partial<KnownClasses>;
-	classByType?: Partial<Record<NotificationType, Partial<KnownClasses>>>;
-
-	// debug
 	logger: (...v: any) => void;
 }
 
@@ -119,7 +103,6 @@ const DEFAULT_OPTIONS: Partial<NotiticationsCreateStoreOptions> = {
 	defaultTtl: 10,
 	defaultType: 'info',
 	sortOrder: 'asc',
-	defaultIcons: true,
 	logger: createClog('notifications'),
 };
 
@@ -193,31 +176,9 @@ export const createNotificationsStore = (
 		o.id ||= _id((o as Notification).type, [o.content].join());
 		o.created = new Date(o.created || Date.now());
 		o.count ??= 1;
-		o.forceAsHtml ??= opts.forceAsHtml;
-
-		// classes merge dance
-		o.class ??= {};
-		// prettier-ignore
-		const clsKeys: (keyof KnownClasses)[] = ['box', 'count', 'icon', 'content', 'button', 'x'];
-		clsKeys.forEach((k) => {
-			(o.class as any)[k] = twMerge(
-				opts?.class?.[k] || '',
-				opts?.classByType?.[o.type as NotificationType]?.[k] || '',
-				o?.class?.[k] || ''
-			);
-		});
 
 		//
 		if (o.ttl === undefined) o.ttl = opts.defaultTtl;
-
-		//
-		if (o.iconFn === undefined) {
-			if (typeof opts.defaultIcons === 'boolean') {
-				o.iconFn = opts.defaultIcons;
-			} else {
-				o.iconFn = opts.defaultIcons?.[(o as Notification).type];
-			}
-		}
 
 		return o as Notification;
 	};

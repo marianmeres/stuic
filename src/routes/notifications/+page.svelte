@@ -8,14 +8,6 @@
 
 	const notifications = createNotificationsStore([], {
 		defaultTtl: 120,
-		class: {
-			box: 'border border-4 border-black',
-		},
-		classByType: {
-			error: {
-				box: 'border-orange-500',
-			},
-		},
 	});
 
 	const foo = dummySentence(1);
@@ -29,7 +21,7 @@
 	<button on:click={() => notifications.success(dummySentence(4))}>success</button>
 	<button
 		on:click={() =>
-			notifications.success(
+			notifications.info(
 				{ component: CustomContent },
 				{
 					class: { button: 'hidden' },
@@ -39,7 +31,23 @@
 	>
 		custom
 	</button>
-	<button on:click={() => notifications.success(foo)}>repeat</button>
+	<button on:click={() => notifications.info(foo)}>repeat</button>
 </Layout>
 
-<Notifications {notifications} />
+<Notifications
+	{notifications}
+	classes={{
+		box: 'border border-4 border-black',
+	}}
+	classesByType={{
+		error: {
+			box: 'border-orange-500',
+		},
+		warn: {
+			box: 'border-orange-500',
+		},
+		success: {
+			box: 'border-lime-500',
+		},
+	}}
+/>

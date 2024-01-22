@@ -104,30 +104,6 @@
 			warn:    { box: ``,           count: ``, icon: ``, content: ``, button: ``, x: `` },
 			error:   { box: `bg-red-700`, count: ``, icon: ``, content: ``, button: ``, x: `` },
 		};
-
-		static class = {
-			wrap: '',
-			wrapInner: '',
-			notification: { box: ``, count: ``, icon: ``, content: ``, button: ``, x: `` },
-		};
-
-		// prettier-ignore
-		static classByType: Record<NotificationType, NotifClasses> = {
-			info:    { box: ``, count: ``, icon: ``, content: ``, button: ``, x: `` },
-			success: { box: ``, count: ``, icon: ``, content: ``, button: ``, x: `` },
-			warn:    { box: ``, count: ``, icon: ``, content: ``, button: ``, x: `` },
-			error:   { box: ``, count: ``, icon: ``, content: ``, button: ``, x: `` },
-		};
-
-		static iconFn: Record<NotificationType, undefined | (() => string)> = {
-			info: undefined,
-			success: undefined,
-			warn: undefined,
-			error: undefined,
-		};
-
-		// conveniently hoisted THC option, since all content is rendered via THC
-		static forceAsHtml: boolean | undefined = undefined;
 	}
 </script>
 
@@ -138,8 +114,12 @@
 	export let notifications: ReturnType<typeof createNotificationsStore>;
 	// $: clog($notifications);
 
-	let _class = '';
-	export { _class as class };
+	export let forceAsHtml: boolean | undefined = undefined;
+	export let defaultIcons: Partial<Record<NotificationType, () => string>> =
+		notificationsDefaultIcons;
+
+	export let classes: Partial<NotifClasses> = {};
+	export let classesByType: Partial<Record<NotificationType, Partial<NotifClasses>>> = {};
 
 	export let ariaCloseLabel = 'Discard';
 
@@ -164,7 +144,6 @@
 
 	$: _wrapClass = twMerge(
 		NotificationsConfig.preset.wrap,
-		NotificationsConfig.class.wrap,
 		`flex flex-row inset-0 
         pointer-events-none bg-transparent`,
 		YMAP_M[yMobile],
@@ -173,7 +152,6 @@
 
 	$: _wrapInnerClass = twMerge(
 		NotificationsConfig.preset.wrapInner,
-		NotificationsConfig.class.wrapInner,
 		`flex flex-col w-full 
         pointer-events-none bg-transparent`,
 		XMAP_M[xMobile],
@@ -184,79 +162,62 @@
 	const _boxClass = (n: Notification) =>
 		twMerge(
 			NotificationsConfig?.preset?.notification?.box || '',
-			NotificationsConfig?.class?.notification?.box || '',
+			classes?.box || '',
 			NotificationsConfig?.presetByType?.[n.type]?.box || '',
-			NotificationsConfig?.classByType?.[n.type]?.box || '',
+			classesByType?.[n.type]?.box || '',
 			n.class?.box || ''
 		);
 
 	const _countClass = (n: Notification) =>
 		twMerge(
 			NotificationsConfig?.preset?.notification?.count || '',
-			NotificationsConfig?.class?.notification?.count || '',
+			classes?.count || '',
 			NotificationsConfig?.presetByType?.[n.type]?.count || '',
-			NotificationsConfig?.classByType?.[n.type]?.count || '',
+			classesByType?.[n.type]?.count || '',
 			n.class?.count || ''
 		);
 
 	const _iconClass = (n: Notification) =>
 		twMerge(
 			NotificationsConfig?.preset?.notification?.icon || '',
-			NotificationsConfig?.class?.notification?.icon || '',
+			classes?.icon || '',
 			NotificationsConfig?.presetByType?.[n.type]?.icon || '',
-			NotificationsConfig?.classByType?.[n.type]?.icon || '',
+			classesByType?.[n.type]?.icon || '',
 			n.class?.icon || ''
 		);
 
 	const _contentClass = (n: Notification) =>
 		twMerge(
 			NotificationsConfig?.preset?.notification?.content || '',
-			NotificationsConfig?.class?.notification?.content || '',
+			classes?.content || '',
 			NotificationsConfig?.presetByType?.[n.type]?.content || '',
-			NotificationsConfig?.classByType?.[n.type]?.content || '',
+			classesByType?.[n.type]?.content || '',
 			n.class?.content || ''
 		);
 
 	const _buttonClass = (n: Notification) =>
 		twMerge(
 			NotificationsConfig?.preset?.notification?.button || '',
-			NotificationsConfig?.class?.notification?.button || '',
+			classes?.button || '',
 			NotificationsConfig?.presetByType?.[n.type]?.button || '',
-			NotificationsConfig?.classByType?.[n.type]?.button || '',
+			classesByType?.[n.type]?.button || '',
 			n.class?.button || ''
 		);
 
 	const _xClass = (n: Notification) =>
 		twMerge(
 			NotificationsConfig?.preset?.notification?.x || '',
-			NotificationsConfig?.class?.notification?.x || '',
+			classes?.x || '',
 			NotificationsConfig?.presetByType?.[n.type]?.x || '',
-			NotificationsConfig?.classByType?.[n.type]?.x || '',
+			classesByType?.[n.type]?.x || '',
 			n.class?.x || ''
 		);
 
-	const _iconFn = (n: Notification) => {
-		let iconFn: (() => string) | false = false;
-		if (n?.iconFn === true) {
-			// explicit "true" means default, that is:
-			iconFn =
-				// either runtime config
-				NotificationsConfig.iconFn[n?.type] ||
-				// or fixed default
-				notificationsDefaultIcons[n?.type];
-		} else if (n?.iconFn) {
-			// custom instance
-			iconFn = n.iconFn;
-		} else {
-			iconFn = false;
-		}
+	const _iconFn = (o: Notification) => o.iconFn ?? defaultIcons?.[o.type];
 
-		return iconFn;
-	};
 	const _isFn = (v: any) => typeof v === 'function';
 </script>
 
-<!-- {#if $notifications.length} -->
 <div class={_wrapClass} aria-live="assertive">
 	<div class={_wrapInnerClass}>
 		{#if $notifications.length}
@@ -299,7 +260,7 @@
 						<div class={_contentClass(n)}>
 							<Thc
 								thc={n.content}
-								forceAsHtml={n.forceAsHtml ?? NotificationsConfig.forceAsHtml}
+								forceAsHtml={n.forceAsHtml ?? forceAsHtml}
 								notification={n}
 								{notifications}
 							/>
@@ -318,4 +279,3 @@
 		{/if}
 	</div>
 </div>
-<!-- {/if} -->
