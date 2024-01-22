@@ -196,7 +196,6 @@ export const createNotificationsStore = (
 		o.forceAsHtml ??= opts.forceAsHtml;
 
 		// classes merge dance
-
 		o.class ??= {};
 		// prettier-ignore
 		const clsKeys: (keyof KnownClasses)[] = ['box', 'count', 'icon', 'content', 'button', 'x'];

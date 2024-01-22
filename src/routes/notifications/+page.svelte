@@ -1,15 +1,10 @@
 <script lang="ts">
+	import { iconBsAsterisk } from '@marianmeres/icons-fns';
 	import { createNotificationsStore } from '../../lib';
 	import Notifications from '../../lib/components/Notifications/Notifications.svelte';
 	import Layout from '../_components/Layout.svelte';
-	import CustomContent from './CustomContent.svelte';
 	import { dummySentence } from '../_utils/dummy-text';
-	import {
-		iconBs0CircleFill,
-		iconBsApple,
-		iconBsAsterisk,
-		iconHeroMicroAcademicCap,
-	} from '@marianmeres/icons-fns';
+	import CustomContent from './CustomContent.svelte';
 
 	const notifications = createNotificationsStore([], {
 		defaultTtl: 120,
