@@ -3,9 +3,9 @@
 	import { createEventDispatcher } from 'svelte';
 	import { get } from 'svelte/store';
 	import { twMerge } from 'tailwind-merge';
+	import { DevicePointer } from '../../index.js';
 	import { prefersReducedMotionStore } from '../../utils/prefers-reduced-motion.js';
 	import { windowSize } from '../../utils/window-size.js';
-	import { DevicePointer } from '../../index.js';
 
 	const clog = createClog('HoverExpandableWidth');
 	const dispatch = createEventDispatcher();
@@ -31,7 +31,7 @@
 	export { _class as class };
 
 	//
-	$: _isExpanded = false;
+	let _isExpanded = false;
 	let _isShrinking = false;
 	let _isExpanding = false;
 
@@ -52,6 +52,8 @@
 		}, _delay) as any;
 	};
 
+	let box: DOMRect;
+
 	//
 	const _expand = () => {
 		if (!enabled) return;
@@ -59,13 +61,14 @@
 
 		_isExpanded = true; // asap
 		_isExpanding = true;
-		const box = el.getBoundingClientRect();
-		const w = get(windowSize);
+
+		box = el.getBoundingClientRect();
+		const win = get(windowSize);
 		const pos = {
 			top: box.top,
-			bottom: w.height - box.bottom,
+			bottom: win.height - box.bottom,
 			left: box.left,
-			right: w.width - box.right,
+			right: win.width - box.right,
 		};
 
 		// <offset-x>, <offset-y>, <blur-radius>, <spread-radius>
@@ -74,13 +77,15 @@
 		// kind of ugly - need to set props in multiple steps...
 
 		// no transition yet
-		el.style.zIndex = `1`;
 		el.style.top = `${pos.top}px`;
 		el.style.right = `${pos.right}px`;
 		el.style.bottom = `${pos.bottom}px`;
 		el.style.left = `${pos.left}px`;
+
 		el.style.width = 'auto';
 		el.style.height = 'auto';
+
+		el.style.zIndex = '1';
 
 		setTimeout(
 			() => (_isExpanding = false),
@@ -109,18 +114,25 @@
 
 		_isExpanded = false; // asap
 		_isShrinking = true;
-		el.style.position = `static`;
-		el.style.zIndex = `auto`;
-		el.style.top = 'auto';
-		el.style.right = 'auto';
-		el.style.bottom = 'auto';
-		el.style.left = 'auto';
-		el.style.width = '100%';
-		el.style.height = '100%';
+
 		el.style.boxShadow = 'none';
+		el.style.width = `${box.width}px`;
 
 		setTimeout(() => {
 			_isShrinking = false;
+
+			// now reset all back to defaults
+			el.style.position = `static`;
+
+			el.style.top = 'auto';
+			el.style.right = 'auto';
+			el.style.bottom = 'auto';
+			el.style.left = 'auto';
+
+			el.style.width = '100%';
+			el.style.height = '100%';
+
+			el.style.zIndex = '0';
 			el.style.transitionProperty = 'none';
 		}, duration);
 	};

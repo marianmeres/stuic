@@ -1,6 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { AppShell, appShellSetHtmlBodyHeight } from '../../lib/index.js';
+	import {
+		AppShell,
+		HoverExpandableWidth,
+		appShellSetHtmlBodyHeight,
+	} from '../../lib/index.js';
 	import { dummyText } from '../_utils/dummy-text.js';
 	import FlexSelect from './_components/FlexSelect.svelte';
 	import HeadButtonSwitcher from './_components/HeadButtonSwitcher.svelte';
@@ -24,7 +28,7 @@
 
 <AppShell
 	class=""
-	railClass="p-4 w-[60px] text-center {onoff(rail)}"
+	railClass="w-[60px] text-center {onoff(rail)}"
 	headerClass="p-4 max-h-40 overflow-auto"
 	sidebarLeftClass="p-4 {onoff(sidebarLeft)}"
 	pageHeaderClass="p-4 {onoff(pageHeader)}"
@@ -37,7 +41,9 @@
 		// console.log(e?.target?.scrollTop);
 	}}
 >
-	<svelte:fragment slot="rail">rail</svelte:fragment>
+	<svelte:fragment slot="rail">
+		<HoverExpandableWidth class=" bg-gray-200 p-4">rail</HoverExpandableWidth>
+	</svelte:fragment>
 	<svelte:fragment slot="header">
 		<a href="/">UI home</a>
 		<div class="inline-block space-x-2 ml-2">

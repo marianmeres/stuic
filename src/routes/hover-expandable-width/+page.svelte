@@ -17,22 +17,22 @@
 		{enabled ? 'disable' : 'enable'}
 	</button>
 	<div class="w-full outline flex overflow-hidden mb-8 h-[300px]">
-		<div class="left">
+		<div class="w-32">
 			<HoverExpandableWidth
-				class="bg-red-400"
+				class="bg-red-400 z-10"
 				let:isExpanded
 				let:inTransition
 				on:click={() => clog('left click')}
 				on:change={({ detail }) => clog('change', detail)}
 				{enabled}
 			>
-				<div class="h-full w-full p-4 transition duration">
+				<div class="h-full w-full p-4">
 					hover
 					{#if isExpanded}<div class="font-bold">EXPANDED</div>{/if}
 					{#if inTransition}<div class="font-bold">Transition</div>{/if}
 					<!-- {#if isExpanded}<button on:click={left.toggle}>toggle force</button>{/if} -->
 
-					<div class="opacity-25 mt-4">{@html dummyText(3)}</div>
+					<div class="mt-4">{@html dummyText(3)}</div>
 				</div>
 			</HoverExpandableWidth>
 		</div>
@@ -44,13 +44,3 @@
 		</div>
 	</div>
 </Layout>
-
-<style lang="scss">
-	.parent {
-		// relative position is IMPORTANT, as the child is absolute
-		position: relative;
-	}
-	.left {
-		width: 100px;
-	}
-</style>

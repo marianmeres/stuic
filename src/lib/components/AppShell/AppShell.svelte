@@ -114,7 +114,7 @@
 			<header
 				bind:this={header}
 				data-shell="header"
-				class={twMerge(`flex-none z-10 ${headerClass}`)}
+				class={twMerge(`flex-none ${headerClass}`)}
 			>
 				<slot name="header" />
 			</header>
