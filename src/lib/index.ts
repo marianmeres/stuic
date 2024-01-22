@@ -60,7 +60,10 @@ export {
 	type NotificationOnEventHandler,
 	type NotificationsSortOrder,
 } from './components/Notifications/notifications.js';
-export { default as Notifications } from './components/Notifications/Notifications.svelte';
+export {
+	default as Notifications,
+	NotificationsConfig,
+} from './components/Notifications/Notifications.svelte';
 
 //
 export { default as Popover } from './components/Popover/Popover.svelte';
