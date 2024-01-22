@@ -5,6 +5,6 @@
 
 <Layout>
 	<X />
-	<X size="40px" class="text-red-500" />
-	<X size="16px" class="opacity-50" />
+	<X class="text-red-500 size-10" />
+	<X class="opacity-50 size-4" />
 </Layout>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
-	import { ColorScheme } from '../../lib';
+	import { ColorScheme, breakpoint } from '../../lib';
 	import { writable } from 'svelte/store';
 	// intentionally not using +layout.svelte here
 
@@ -30,6 +30,8 @@
 		{/if}
 	</div>
 	<div>
+		<span class="mr-4 opacity-50">{$breakpoint.__current__}</span>
+
 		<button on:click={toggleTheme}>
 			{$theme === ColorScheme.LIGHT ? ColorScheme.DARK : ColorScheme.LIGHT}
 		</button>

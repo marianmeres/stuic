@@ -73,17 +73,19 @@
 		};
 
 		// main userland configuration
-		static classDialog = '';
-		static classIcon = '';
-		static classTitle = '';
-		static classContentBlock = '';
-		static classContent = '';
-		static classInputBox = '';
-		static classInputField = '';
-		static classMenu = '';
-		// static classMenuLi = '';
-		static classButton = '';
-		static classSpinnerBox = '';
+		static class = {
+			dialog: '',
+			icon: '',
+			contentBlock: '',
+			title: '',
+			content: '',
+			inputBox: '',
+			inputField: '',
+			menu: '',
+			// menuLi: '',
+			button: '',
+			spinnerBox: '',
+		};
 
 		// 'info' | 'success' | 'warn' | 'error'
 		// userlang variant fine tuning
@@ -226,56 +228,56 @@
 
 	$: _dialogClass = twMerge(`
         ${AlertConfirmPromptConfig.preset.dialog}
-        ${AlertConfirmPromptConfig.classDialog}
+        ${AlertConfirmPromptConfig.class.dialog}
         ${dialog?.class?.dialog || ''}
         ${AlertConfirmPromptConfig.variant?.[dialog?.variant]?.dialog || ''}
     `);
 
 	$: _iconClass = twMerge(`
 		${AlertConfirmPromptConfig.preset.icon}
-		${AlertConfirmPromptConfig.classIcon}
+		${AlertConfirmPromptConfig.class.icon}
 		${dialog?.class?.icon || ''}
 		${AlertConfirmPromptConfig.variant?.[dialog?.variant]?.icon || ''}
 	`);
 
 	$: _contentBlockClass = twMerge(`
 		${AlertConfirmPromptConfig.preset.contentBlock}
-		${AlertConfirmPromptConfig.classContentBlock}
+		${AlertConfirmPromptConfig.class.contentBlock}
 		${dialog?.class?.contentBlock || ''}
 		${AlertConfirmPromptConfig.variant?.[dialog?.variant]?.contentBlock || ''}
 	`);
 
 	$: _titleClass = twMerge(`
 		${AlertConfirmPromptConfig.preset.title}
-		${AlertConfirmPromptConfig.classTitle}
+		${AlertConfirmPromptConfig.class.title}
 		${dialog?.class?.title || ''}
 		${AlertConfirmPromptConfig.variant?.[dialog?.variant]?.title || ''}
 	`);
 
 	$: _contentClass = twMerge(`
 		${AlertConfirmPromptConfig.preset.content}
-		${AlertConfirmPromptConfig.classContent}
+		${AlertConfirmPromptConfig.class.content}
 		${dialog?.class?.content || ''}
 		${AlertConfirmPromptConfig.variant?.[dialog?.variant]?.content || ''}
 	`);
 
 	$: _inputBoxClass = twMerge(`
 		${AlertConfirmPromptConfig.preset.inputBox}
-		${AlertConfirmPromptConfig.classInputBox}
+		${AlertConfirmPromptConfig.class.inputBox}
 		${dialog?.class?.inputBox || ''}
 		${AlertConfirmPromptConfig.variant?.[dialog?.variant]?.inputBox || ''}
 	`);
 
 	$: _inputFieldClass = twMerge(`
 		${AlertConfirmPromptConfig.preset.inputField}
-		${AlertConfirmPromptConfig.classInputField}
+		${AlertConfirmPromptConfig.class.inputField}
 		${dialog?.class?.inputField || ''}
 		${AlertConfirmPromptConfig.variant?.[dialog?.variant]?.inputField || ''}
 	`);
 
 	$: _menuClass = twMerge(`
 		${AlertConfirmPromptConfig.preset.menu}
-		${AlertConfirmPromptConfig.classMenu}
+		${AlertConfirmPromptConfig.class.menu}
 		${dialog?.class?.menu || ''}
 		${AlertConfirmPromptConfig.variant?.[dialog?.variant]?.menu || ''}
 	`);
@@ -289,14 +291,14 @@
 
 	$: _buttonClass = twMerge(`
 		${AlertConfirmPromptConfig.preset.button}
-		${AlertConfirmPromptConfig.classButton}
+		${AlertConfirmPromptConfig.class.button}
 		${dialog?.class?.button || ''}
 		${AlertConfirmPromptConfig.variant?.[dialog?.variant]?.button || ''}
 	`);
 
 	$: _spinnerBoxClass = twMerge(`
 		${AlertConfirmPromptConfig.preset.spinnerBox}
-		${AlertConfirmPromptConfig.classSpinnerBox}
+		${AlertConfirmPromptConfig.class.spinnerBox}
 		${dialog?.class?.spinnerBox || ''}
 		${AlertConfirmPromptConfig.variant?.[dialog?.variant]?.spinnerBox || ''}
 	`);

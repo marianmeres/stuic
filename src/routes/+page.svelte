@@ -9,6 +9,7 @@
 		'drawer',
 		'hover-expandable-width',
 		'input',
+		'notifications',
 		'on-outside',
 		'popover', 
 		'spinner', 'switch', 

@@ -49,6 +49,20 @@ export { default as FieldSelect } from './components/Input/FieldSelect.svelte';
 export { default as Fieldset } from './components/Input/Fieldset.svelte';
 
 //
+export {
+	createNotificationsStore,
+	NOTIFICATION_EVENT,
+	type NotiticationsCreateStoreOptions,
+	type NotificationCreateParam,
+	type Notification,
+	type NotificationInput,
+	type NotificationType,
+	type NotificationOnEventHandler,
+	type NotificationsSortOrder,
+} from './components/Notifications/notifications.js';
+export { default as Notifications } from './components/Notifications/Notifications.svelte';
+
+//
 export { default as Popover } from './components/Popover/Popover.svelte';
 
 //

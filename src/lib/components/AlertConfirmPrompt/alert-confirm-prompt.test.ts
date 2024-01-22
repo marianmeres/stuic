@@ -35,7 +35,7 @@ test('basic flow', async () => {
 
 	assert(acp.get().length === 2);
 
-	acp.get()[0].onOk();
+	acp.get()[0].onOk(null);
 	assert(log === undefined);
 
 	assert(acp.get().length === 1);

@@ -32,7 +32,7 @@
 {:else if thc?.html}
 	{@html thc.html}
 {:else if thc?.component}
-	<svelte:component this={thc.component} {...thc?.props || {}} />
+	<svelte:component this={thc.component} {...thc?.props || {}} {...$$restProps || {}} />
 {:else}
 	<!-- cast to string as the last resort -->
 	{thc}

@@ -65,6 +65,7 @@
 		"@marianmeres/clog": "^1.0.1",
 		"@marianmeres/store": "^1.5.0",
 		"@marianmeres/switch-store": "^1.3.1",
+		"@marianmeres/ticker": "^1.5.0",
 		"esm-env": "^1.0.0",
 		"tailwind-merge": "^2.1.0"
 	}

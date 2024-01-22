@@ -25,7 +25,7 @@
 		bg-red-100 text-red-500
 	`.trim();
 
-	AlertConfirmPromptConfig.classButton = 'border-0';
+	AlertConfirmPromptConfig.class.button = 'border-0';
 
 	const alert = createAlert(acp);
 	const confirm = createConfirm(acp, { forceAsHtml: true });
