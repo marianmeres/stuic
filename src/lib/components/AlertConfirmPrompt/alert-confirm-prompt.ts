@@ -66,7 +66,7 @@ export interface AlertConfirmPromptOptions extends Record<string, any> {
 
 export interface AlertConfirmPromptFactoryStoreOptions
 	extends Partial<AlertConfirmPromptOptions> {
-	classByVariant: Record<AlertConfirmPromptVariant, Partial<KnownClasses>>;
+	classByVariant: Partial<Record<AlertConfirmPromptVariant, Partial<KnownClasses>>>;
 }
 
 const isFn = (v: any) => typeof v === 'function';

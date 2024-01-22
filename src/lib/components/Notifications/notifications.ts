@@ -106,7 +106,7 @@ export interface NotiticationsCreateStoreOptions {
 	//
 	forceAsHtml?: boolean | undefined;
 	class?: Partial<KnownClasses>;
-	classByType?: Record<NotificationType, Partial<KnownClasses>>;
+	classByType?: Partial<Record<NotificationType, Partial<KnownClasses>>>;
 
 	// debug
 	logger: (...v: any) => void;
