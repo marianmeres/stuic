@@ -101,6 +101,9 @@ export interface NotiticationsCreateStoreOptions {
 	// custom type-to-fn map (function should return svg string)
 	defaultIcons?: Record<NotificationType, () => string> | boolean;
 
+	//
+	forceAsHtml: boolean | undefined;
+
 	// debug
 	logger: (...v: any) => void;
 }
@@ -186,6 +189,7 @@ export const createNotificationsStore = (
 		notif.id ||= _id((notif as Notification).type, [notif.content].join());
 		notif.created = new Date(notif.created || Date.now());
 		notif.count ??= 1;
+		notif.forceAsHtml ??= opts.forceAsHtml;
 
 		//
 		if (notif.ttl === undefined) notif.ttl = opts.defaultTtl;
