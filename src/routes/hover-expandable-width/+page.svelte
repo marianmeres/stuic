@@ -44,3 +44,13 @@
 		</div>
 	</div>
 </Layout>
+
+<style lang="scss">
+	.parent {
+		// relative position is IMPORTANT, as the child is absolute
+		position: relative;
+	}
+	.left {
+		width: 100px;
+	}
+</style>
