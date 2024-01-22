@@ -218,5 +218,11 @@
 		error: {
 			icon: 'bg-red-100 text-red-500',
 		},
+		success: {
+			icon: 'bg-green-100 text-green-500',
+		},
+		warn: {
+			icon: 'bg-orange-100 text-orange-600',
+		},
 	}}
 />

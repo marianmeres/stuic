@@ -14,6 +14,7 @@
 	import { acpDefaultIcons } from './acp-icons.js';
 	import type {
 		AlertConfirmPromptKnownClasses,
+		AlertConfirmPromptOptions,
 		AlertConfirmPromptVariant,
 	} from './alert-confirm-prompt.js';
 
@@ -107,6 +108,7 @@
 	export let classesByVariant: Partial<
 		Record<AlertConfirmPromptVariant, Partial<AlertConfirmPromptKnownClasses>>
 	> = {};
+	// $: clog(classesByVariant);
 
 	//
 	$: dialog = $acp[0];
@@ -159,25 +161,28 @@
 		return () => document.removeEventListener('keydown', onKeyDown, true);
 	});
 
-	const _collectClasses = (k: keyof AlertConfirmPromptKnownClasses) => [
+	const _collectClasses = (
+		o: AlertConfirmPromptOptions,
+		k: keyof AlertConfirmPromptKnownClasses
+	) => [
 		AlertConfirmPromptConfig?.preset?.[k] || '',
 		classes?.[k] || '',
-		AlertConfirmPromptConfig.presetByVariant?.[dialog?.variant]?.[k] || '',
-		classesByVariant?.[dialog?.variant]?.[k] || '',
-		dialog?.class?.[k] || '',
+		AlertConfirmPromptConfig.presetByVariant?.[o?.variant]?.[k] || '',
+		classesByVariant?.[o?.variant]?.[k] || '',
+		o?.class?.[k] || '',
 	];
 
-	$: _dialogClass = twMerge(..._collectClasses('dialog'));
-	$: _iconClass = twMerge(..._collectClasses('icon'));
-	$: _contentBlockClass = twMerge(..._collectClasses('contentBlock'));
-	$: _titleClass = twMerge(..._collectClasses('title'));
-	$: _contentClass = twMerge(..._collectClasses('content'));
-	$: _inputBoxClass = twMerge(..._collectClasses('inputBox'));
-	$: _inputFieldClass = twMerge(..._collectClasses('inputField'));
-	$: _menuClass = twMerge(..._collectClasses('menu'));
+	$: _dialogClass = twMerge(..._collectClasses(dialog, 'dialog'));
+	$: _iconClass = twMerge(..._collectClasses(dialog, 'icon'));
+	$: _contentBlockClass = twMerge(..._collectClasses(dialog, 'contentBlock'));
+	$: _titleClass = twMerge(..._collectClasses(dialog, 'title'));
+	$: _contentClass = twMerge(..._collectClasses(dialog, 'content'));
+	$: _inputBoxClass = twMerge(..._collectClasses(dialog, 'inputBox'));
+	$: _inputFieldClass = twMerge(..._collectClasses(dialog, 'inputField'));
+	$: _menuClass = twMerge(..._collectClasses(dialog, 'menu'));
 	$: _menuLiClass = twMerge(AlertConfirmPromptConfig.preset.menuLi);
-	$: _buttonClass = twMerge(..._collectClasses('button'));
-	$: _spinnerBoxClass = twMerge(..._collectClasses('spinnerBox'));
+	$: _buttonClass = twMerge(..._collectClasses(dialog, 'button'));
+	$: _spinnerBoxClass = twMerge(..._collectClasses(dialog, 'spinnerBox'));
 
 	//
 	$: iconFn = dialog?.iconFn ?? defaultIcons?.[dialog?.variant];
