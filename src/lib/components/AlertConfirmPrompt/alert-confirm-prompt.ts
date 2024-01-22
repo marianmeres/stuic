@@ -1,6 +1,7 @@
 import { createStore } from '@marianmeres/store';
 import type { THC } from '../Thc/Thc.svelte';
 import { createClog } from '@marianmeres/clog';
+import { dset as mergeDeep } from 'dset/merge';
 
 const clog = createClog('alert-confirm-prompt');
 
@@ -71,34 +72,46 @@ export interface AlertConfirmPromptOptions extends Record<string, any> {
 const isFn = (v: any) => typeof v === 'function';
 const ucf = (s: string) => `${s}`[0].toUpperCase() + `${s}`.slice(1);
 
-export const createAlertConfirmPromptStore = () => {
+export const createAlertConfirmPromptStore = (
+	defaults?: Partial<AlertConfirmPromptOptions>
+) => {
 	// fifo
 	const _stack = createStore<AlertConfirmPromptOptions[]>([]);
 
-	// defaults
-	const labelOk = 'OK';
-	const labelCancel = 'Cancel';
-
-	// optional 3rd button label
-	const labelCustom = undefined;
-
 	const push = (o: Partial<AlertConfirmPromptOptions>) => {
+		defaults ??= {};
+		o ??= {};
+
+		defaults = {
+			...{
+				labelOk: 'OK',
+				labelCancel: 'Cancel',
+				iconFn: true,
+				title: ucf(o.type as string),
+			},
+			...defaults,
+		};
+
 		if (!isFn(o.onOk)) o.onOk = shift as any;
 		if (!isFn(o.onCancel)) o.onCancel = shift as any;
 		if (!isFn(o.onEscape)) o.onEscape = shift as any;
-		if (o.labelOk === undefined) o.labelOk = labelOk;
-		if (o.labelCancel === undefined) o.labelCancel = labelCancel;
-		if (o.title === undefined) o.title = ucf(o.type as string);
+		if (!isFn(o.onCustom)) o.onCustom = () => undefined;
+
+		o.labelOk ??= defaults.labelOk;
+		o.labelCancel ??= defaults.labelCancel;
+		o.title ??= defaults.title;
+		o.iconFn ??= defaults.iconFn;
+		o.forceAsHtml ??= defaults.forceAsHtml;
 
 		// variant defaults to info
 		if (!['info', 'success', 'warn', 'error'].includes(o?.variant as string)) {
 			o.variant = 'info';
 		}
 
-		if (o.iconFn === undefined) o.iconFn = true; // will use default
-
-		// 3rd label may stay undefined
-		if (!isFn(o.onCustom)) o.onCustom = () => undefined;
+		if (defaults.class) {
+			o.class ??= {};
+			o.class = { ...defaults.class, ...o.class };
+		}
 
 		//
 		_stack.update((old) => [...old, o] as AlertConfirmPromptOptions[]);

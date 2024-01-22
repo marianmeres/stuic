@@ -19,7 +19,9 @@
 	import { sleep } from './sleep';
 
 	const clog = createClog('alert-confirm-prompt page');
-	const acp = createAlertConfirmPromptStore();
+	const acp = createAlertConfirmPromptStore({
+		forceAsHtml: true,
+	});
 
 	AlertConfirmPromptConfig.variant.error.icon += `
 		bg-red-100 text-red-500

@@ -102,7 +102,16 @@ export interface NotiticationsCreateStoreOptions {
 	defaultIcons?: Record<NotificationType, () => string> | boolean;
 
 	//
-	forceAsHtml: boolean | undefined;
+	forceAsHtml?: boolean | undefined;
+
+	class?: Partial<{
+		box: string;
+		count: string;
+		icon: string;
+		content: string;
+		button: string;
+		x: string;
+	}>;
 
 	// debug
 	logger: (...v: any) => void;
@@ -190,6 +199,11 @@ export const createNotificationsStore = (
 		notif.created = new Date(notif.created || Date.now());
 		notif.count ??= 1;
 		notif.forceAsHtml ??= opts.forceAsHtml;
+
+		if (opts.class) {
+			notif.class ??= {};
+			notif.class = { ...opts.class, ...notif.class };
+		}
 
 		//
 		if (notif.ttl === undefined) notif.ttl = opts.defaultTtl;
