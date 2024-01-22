@@ -68,7 +68,7 @@ export {
 } from './components/Notifications/Notifications.svelte';
 
 //
-export { default as Popover } from './components/Popoverx/Popover.svelte';
+export { default as Popover } from './components/Popover/Popover.svelte';
 
 //
 export { default as Switch, SwitchConfig } from './components/Switch/Switch.svelte';
