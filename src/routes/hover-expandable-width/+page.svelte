@@ -1,15 +1,13 @@
 <script lang="ts">
-	import { twMerge } from 'tailwind-merge';
+	import { createClog } from '@marianmeres/clog';
 	import { createSwitchStore } from '@marianmeres/switch-store';
 	import { HoverExpandableWidth } from '../../lib/index.js';
 	import Layout from '../_components/Layout.svelte';
 	import { dummyText } from '../_utils/dummy-text.js';
-	import { createClog } from '@marianmeres/clog';
 
 	const clog = createClog('exandable page');
 
 	const left = createSwitchStore();
-	const right = createSwitchStore();
 
 	let enabled = true;
 </script>
