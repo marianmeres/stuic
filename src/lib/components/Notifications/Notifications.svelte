@@ -42,7 +42,7 @@
 	export class NotificationsConfig {
 		static preset = {
 			wrap: `
-                fixed z-10
+                fixed z-50
             `,
 			wrapInner: `
                 p-4 space-y-4
