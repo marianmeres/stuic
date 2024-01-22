@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { createClog } from '@marianmeres/clog';
 	import Switch from '../../lib/components/Switch/Switch.svelte';
-	import { tooltip, type createNotificationsStore, type Notification } from '../../lib';
+	import { tooltip } from '../../lib/actions/tooltip/tooltip.js';
+	import type { createNotificationsStore } from '../../lib/components/Notifications/notifications.js';
+	// import { tooltip, type createNotificationsStore, type Notification } from '../../lib';
 	const clog = createClog('CustomContent');
 
 	export let notification: Notification;

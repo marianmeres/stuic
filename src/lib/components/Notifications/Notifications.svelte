@@ -1,4 +1,5 @@
 <script context="module" lang="ts">
+	import { createClog } from '@marianmeres/clog';
 	import { fade } from 'svelte/transition';
 	import { twMerge } from 'tailwind-merge';
 	import Thc from '../Thc/Thc.svelte';
@@ -6,10 +7,10 @@
 	import { notificationsDefaultIcons } from './notifications-icons.js';
 	import type {
 		Notification,
+		NotificationKnownClasses,
 		NotificationType,
 		createNotificationsStore,
 	} from './notifications.js';
-	import { createClog } from '@marianmeres/clog';
 
 	const X_POSITIONS = ['left', 'center', 'right'] as const;
 	const Y_POSITIONS = ['top', 'center', 'bottom'] as const;
@@ -37,15 +38,6 @@
 	const YMAP = { top: 'sm:items-start', center: 'sm:items-center', bottom: 'sm:items-end' };
 	// prettier-ignore
 	const YMAP_M = { top: 'items-start', center: 'items-center', bottom: 'items-end' };
-
-	interface NotifClasses {
-		box: string;
-		count: string;
-		icon: string;
-		content: string;
-		button: string;
-		x: string;
-	}
 
 	export class NotificationsConfig {
 		static preset = {
@@ -98,7 +90,7 @@
 		};
 
 		// prettier-ignore
-		static presetByType: Record<NotificationType, NotifClasses> = {
+		static presetByType: Record<NotificationType, NotificationKnownClasses> = {
 			info:    { box: ``,           count: ``, icon: ``, content: ``, button: ``, x: `` },
 			success: { box: ``,           count: ``, icon: ``, content: ``, button: ``, x: `` },
 			warn:    { box: ``,           count: ``, icon: ``, content: ``, button: ``, x: `` },
@@ -118,8 +110,10 @@
 	export let defaultIcons: Partial<Record<NotificationType, () => string>> =
 		notificationsDefaultIcons;
 
-	export let classes: Partial<NotifClasses> = {};
-	export let classesByType: Partial<Record<NotificationType, Partial<NotifClasses>>> = {};
+	export let classes: Partial<NotificationKnownClasses> = {};
+	export let classesByType: Partial<
+		Record<NotificationType, Partial<NotificationKnownClasses>>
+	> = {};
 
 	export let ariaCloseLabel = 'Discard';
 
@@ -158,61 +152,21 @@
 		XMAP[x]
 	);
 
+	const _collectClasses = (n: Notification, k: keyof NotificationKnownClasses) => [
+		NotificationsConfig?.preset?.notification?.[k] || '',
+		classes?.[k] || '',
+		NotificationsConfig?.presetByType?.[n.type]?.[k] || '',
+		classesByType?.[n.type]?.[k] || '',
+		n.class?.[k] || '',
+	];
+
 	//
-	const _boxClass = (n: Notification) =>
-		twMerge(
-			NotificationsConfig?.preset?.notification?.box || '',
-			classes?.box || '',
-			NotificationsConfig?.presetByType?.[n.type]?.box || '',
-			classesByType?.[n.type]?.box || '',
-			n.class?.box || ''
-		);
-
-	const _countClass = (n: Notification) =>
-		twMerge(
-			NotificationsConfig?.preset?.notification?.count || '',
-			classes?.count || '',
-			NotificationsConfig?.presetByType?.[n.type]?.count || '',
-			classesByType?.[n.type]?.count || '',
-			n.class?.count || ''
-		);
-
-	const _iconClass = (n: Notification) =>
-		twMerge(
-			NotificationsConfig?.preset?.notification?.icon || '',
-			classes?.icon || '',
-			NotificationsConfig?.presetByType?.[n.type]?.icon || '',
-			classesByType?.[n.type]?.icon || '',
-			n.class?.icon || ''
-		);
-
-	const _contentClass = (n: Notification) =>
-		twMerge(
-			NotificationsConfig?.preset?.notification?.content || '',
-			classes?.content || '',
-			NotificationsConfig?.presetByType?.[n.type]?.content || '',
-			classesByType?.[n.type]?.content || '',
-			n.class?.content || ''
-		);
-
-	const _buttonClass = (n: Notification) =>
-		twMerge(
-			NotificationsConfig?.preset?.notification?.button || '',
-			classes?.button || '',
-			NotificationsConfig?.presetByType?.[n.type]?.button || '',
-			classesByType?.[n.type]?.button || '',
-			n.class?.button || ''
-		);
-
-	const _xClass = (n: Notification) =>
-		twMerge(
-			NotificationsConfig?.preset?.notification?.x || '',
-			classes?.x || '',
-			NotificationsConfig?.presetByType?.[n.type]?.x || '',
-			classesByType?.[n.type]?.x || '',
-			n.class?.x || ''
-		);
-
+	const _boxClass = (n: Notification) => twMerge(..._collectClasses(n, 'box'));
+	const _countClass = (n: Notification) => twMerge(..._collectClasses(n, 'count'));
+	const _iconClass = (n: Notification) => twMerge(..._collectClasses(n, 'icon'));
+	const _contentClass = (n: Notification) => twMerge(..._collectClasses(n, 'content'));
+	const _buttonClass = (n: Notification) => twMerge(..._collectClasses(n, 'button'));
+	const _xClass = (n: Notification) => twMerge(..._collectClasses(n, 'x'));
 	const _iconFn = (o: Notification) => o.iconFn ?? defaultIcons?.[o.type];
 
 	const _isFn = (v: any) => typeof v === 'function';

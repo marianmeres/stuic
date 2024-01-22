@@ -19,15 +19,7 @@
 	import { sleep } from './sleep';
 
 	const clog = createClog('alert-confirm-prompt page');
-	const acp = createAlertConfirmPromptStore({
-		forceAsHtml: true,
-	});
-
-	AlertConfirmPromptConfig.variant.error.icon += `
-		bg-red-100 text-red-500
-	`.trim();
-
-	AlertConfirmPromptConfig.class.button = 'border-0';
+	const acp = createAlertConfirmPromptStore();
 
 	const alert = createAlert(acp);
 	const confirm = createConfirm(acp, { forceAsHtml: true });
@@ -216,4 +208,15 @@
 	</div>
 </Layout>
 
-<AlertConfirmPrompt {acp} />
+<AlertConfirmPrompt
+	{acp}
+	forceAsHtml
+	classes={{
+		button: 'border-0',
+	}}
+	classesByVariant={{
+		error: {
+			icon: 'bg-red-100 text-red-500',
+		},
+	}}
+/>

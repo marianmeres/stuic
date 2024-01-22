@@ -1,7 +1,6 @@
 import { createClog } from '@marianmeres/clog';
 import { createStore } from '@marianmeres/store';
 import type { THC } from '../Thc/Thc.svelte';
-import { twMerge } from 'tailwind-merge';
 
 const clog = createClog('alert-confirm-prompt');
 
@@ -19,7 +18,7 @@ type FnOnCancel = (value: false) => any;
 type FnOnEscape = () => undefined;
 type FnOnCustom = (value: any) => any;
 
-interface KnownClasses {
+export interface AlertConfirmPromptKnownClasses {
 	dialog: string;
 	icon: string;
 	contentBlock: string;
@@ -60,20 +59,15 @@ export interface AlertConfirmPromptOptions extends Record<string, any> {
 	// visuals
 	variant: AlertConfirmPromptVariant;
 	iconFn: (() => string) | boolean; // true means default
-	class?: Partial<KnownClasses>;
+	class?: Partial<AlertConfirmPromptKnownClasses>;
 	forceAsHtml?: boolean;
-}
-
-export interface AlertConfirmPromptFactoryStoreOptions
-	extends Partial<AlertConfirmPromptOptions> {
-	classByVariant: Partial<Record<AlertConfirmPromptVariant, Partial<KnownClasses>>>;
 }
 
 const isFn = (v: any) => typeof v === 'function';
 const ucf = (s: string) => `${s}`[0].toUpperCase() + `${s}`.slice(1);
 
 export const createAlertConfirmPromptStore = (
-	defaults?: Partial<AlertConfirmPromptFactoryStoreOptions>
+	defaults?: Partial<AlertConfirmPromptOptions>
 ) => {
 	// fifo
 	const _stack = createStore<AlertConfirmPromptOptions[]>([]);
@@ -100,29 +94,11 @@ export const createAlertConfirmPromptStore = (
 		o.labelOk ??= defaults.labelOk;
 		o.labelCancel ??= defaults.labelCancel;
 		o.title ??= defaults.title;
-		o.iconFn ??= defaults.iconFn;
-		o.forceAsHtml ??= defaults.forceAsHtml;
 
 		// variant defaults to info
 		if (!['info', 'success', 'warn', 'error'].includes(o?.variant as string)) {
 			o.variant = 'info';
 		}
-
-		o.class ??= {};
-
-		// prettier-ignore
-		const clsKeys: (keyof KnownClasses)[] = [
-			'dialog', 'icon', 'contentBlock', 'title', 'content', 'inputBox',
-			'inputField', 'menu', 'button', 'spinnerBox'
-		];
-
-		clsKeys.forEach((k) => {
-			(o.class as any)[k] = twMerge(
-				defaults?.class?.[k] || '',
-				defaults?.classByVariant?.[o.variant as AlertConfirmPromptVariant]?.[k] || '',
-				o?.class?.[k] || ''
-			);
-		});
 
 		//
 		_stack.update((old) => [...old, o] as AlertConfirmPromptOptions[]);

@@ -13,7 +13,7 @@ export {
 	AlertConfirmPromptType,
 	type AlertConfirmPromptVariant,
 	type AlertConfirmPromptOptions,
-	type AlertConfirmPromptFactoryStoreOptions,
+	type AlertConfirmPromptKnownClasses,
 } from './components/AlertConfirmPrompt/alert-confirm-prompt.js';
 
 //
@@ -60,6 +60,7 @@ export {
 	type NotificationType,
 	type NotificationOnEventHandler,
 	type NotificationsSortOrder,
+	type NotificationKnownClasses,
 } from './components/Notifications/notifications.js';
 export {
 	default as Notifications,

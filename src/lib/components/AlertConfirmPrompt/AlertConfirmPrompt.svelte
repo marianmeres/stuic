@@ -1,17 +1,26 @@
 <script lang="ts" context="module">
+	import { createClog } from '@marianmeres/clog';
 	import { onMount } from 'svelte';
+	import { twMerge } from 'tailwind-merge';
 	import {
 		AlertConfirmPromptType,
 		Button,
+		Field,
 		FieldSelect,
+		Thc,
 		createAlertConfirmPromptStore,
 		focusTrap,
-		Field,
-		Thc,
 	} from '../../index.js';
-	import { twMerge } from 'tailwind-merge';
 	import { acpDefaultIcons } from './acp-icons.js';
-	import { createClog } from '@marianmeres/clog';
+	import type {
+		AlertConfirmPromptKnownClasses,
+		AlertConfirmPromptVariant,
+	} from './alert-confirm-prompt.js';
+
+	export interface AlertConfirmPromptIcons
+		extends Record<AlertConfirmPromptVariant, () => string> {
+		spinner: () => string;
+	}
 
 	export class AlertConfirmPromptConfig {
 		// sane defaults which perhaps should stay untouched
@@ -72,88 +81,13 @@
 			`.trim(),
 		};
 
-		// main userland configuration
-		static class = {
-			dialog: '',
-			icon: '',
-			contentBlock: '',
-			title: '',
-			content: '',
-			inputBox: '',
-			inputField: '',
-			menu: '',
-			// menuLi: '',
-			button: '',
-			spinnerBox: '',
+		// prettier-ignore
+		static presetByVariant = {
+			info:    { dialog: '', icon: '', contentBlock: '', title: '', content: '', inputBox: '', inputField: '', menu: '', button: '', spinnerBox: '' },
+			success: { dialog: '', icon: '', contentBlock: '', title: '', content: '', inputBox: '', inputField: '', menu: '', button: '', spinnerBox: '' },
+			warn:    { dialog: '', icon: '', contentBlock: '', title: '', content: '', inputBox: '', inputField: '', menu: '', button: '', spinnerBox: '' },
+			error:   { dialog: '', icon: '', contentBlock: '', title: '', content: '', inputBox: '', inputField: '', menu: '', button: '', spinnerBox: '' },
 		};
-
-		// 'info' | 'success' | 'warn' | 'error'
-		// userlang variant fine tuning
-		static variant = {
-			info: {
-				dialog: '',
-				icon: '',
-				contentBlock: '',
-				title: '',
-				content: '',
-				inputBox: '',
-				inputField: '',
-				menu: '',
-				// menuLi: '',
-				button: '',
-				spinnerBox: '',
-			},
-			success: {
-				dialog: '',
-				icon: '',
-				contentBlock: '',
-				title: '',
-				content: '',
-				inputBox: '',
-				inputField: '',
-				menu: '',
-				// menuLi: '',
-				button: '',
-				spinnerBox: '',
-			},
-			warn: {
-				dialog: '',
-				icon: '',
-				contentBlock: '',
-				title: '',
-				content: '',
-				inputBox: '',
-				inputField: '',
-				menu: '',
-				// menuLi: '',
-				button: '',
-				spinnerBox: '',
-			},
-			error: {
-				dialog: '',
-				icon: '',
-				contentBlock: '',
-				title: '',
-				content: '',
-				inputBox: '',
-				inputField: '',
-				menu: '',
-				// menuLi: '',
-				button: '',
-				spinnerBox: '',
-			},
-		};
-
-		static iconFn = {
-			info: undefined,
-			success: undefined,
-			warn: undefined,
-			error: undefined,
-			spinner: undefined,
-		};
-
-		// conveniently hoisted THC option, since all content is rendered via THC
-		static forceAsHtml: boolean | undefined = undefined;
 	}
 
 	const _isFn = (v: any) => typeof v === 'function';
@@ -166,16 +100,17 @@
 	// instance created by createAlertConfirmPromptStore()
 	export let acp: ReturnType<typeof createAlertConfirmPromptStore>;
 
+	export let forceAsHtml: boolean | undefined = undefined;
+	export let defaultIcons: Partial<AlertConfirmPromptIcons> = acpDefaultIcons;
+
+	export let classes: Partial<AlertConfirmPromptKnownClasses> = {};
+	export let classesByVariant: Partial<
+		Record<AlertConfirmPromptVariant, Partial<AlertConfirmPromptKnownClasses>>
+	> = {};
+
 	//
 	$: dialog = $acp[0];
 	// $: clog(dialog);
-
-	let forceAsHtml: boolean | undefined = undefined;
-	$: if (dialog) {
-		forceAsHtml = dialog.forceAsHtml ?? AlertConfirmPromptConfig.forceAsHtml;
-	} else {
-		forceAsHtml = undefined;
-	}
 
 	//
 	let _dialogEl: HTMLDialogElement;
@@ -209,11 +144,9 @@
 	};
 
 	onMount(() => {
-		_dialogEl.addEventListener('close', async (e: Event) => {
-			// clog.debug('close');
-			// not needed
-			// if (_dialogEl.returnValue === '') acp.escape();
-		});
+		// _dialogEl.addEventListener('close', async (e: Event) => {
+		// if (_dialogEl.returnValue === '') acp.escape(); // not needed
+		// });
 
 		// prevent built in escape
 		_dialogEl.addEventListener('cancel', (e: Event) => {
@@ -226,93 +159,28 @@
 		return () => document.removeEventListener('keydown', onKeyDown, true);
 	});
 
-	$: _dialogClass = twMerge(
-		AlertConfirmPromptConfig.preset.dialog,
-		AlertConfirmPromptConfig.class.dialog,
-		dialog?.class?.dialog || '',
-		AlertConfirmPromptConfig.variant?.[dialog?.variant]?.dialog || ''
-	);
+	const _collectClasses = (k: keyof AlertConfirmPromptKnownClasses) => [
+		AlertConfirmPromptConfig?.preset?.[k] || '',
+		classes?.[k] || '',
+		AlertConfirmPromptConfig.presetByVariant?.[dialog?.variant]?.[k] || '',
+		classesByVariant?.[dialog?.variant]?.[k] || '',
+		dialog?.class?.[k] || '',
+	];
 
-	$: _iconClass = twMerge(
-		AlertConfirmPromptConfig.preset.icon,
-		AlertConfirmPromptConfig.class.icon,
-		dialog?.class?.icon || '',
-		AlertConfirmPromptConfig.variant?.[dialog?.variant]?.icon || ''
-	);
-
-	$: _contentBlockClass = twMerge(
-		AlertConfirmPromptConfig.preset.contentBlock,
-		AlertConfirmPromptConfig.class.contentBlock,
-		dialog?.class?.contentBlock || '',
-		AlertConfirmPromptConfig.variant?.[dialog?.variant]?.contentBlock || ''
-	);
-
-	$: _titleClass = twMerge(
-		AlertConfirmPromptConfig.preset.title,
-		AlertConfirmPromptConfig.class.title,
-		dialog?.class?.title || '',
-		AlertConfirmPromptConfig.variant?.[dialog?.variant]?.title || ''
-	);
-
-	$: _contentClass = twMerge(
-		AlertConfirmPromptConfig.preset.content,
-		AlertConfirmPromptConfig.class.content,
-		dialog?.class?.content || '',
-		AlertConfirmPromptConfig.variant?.[dialog?.variant]?.content || ''
-	);
-
-	$: _inputBoxClass = twMerge(
-		AlertConfirmPromptConfig.preset.inputBox,
-		AlertConfirmPromptConfig.class.inputBox,
-		dialog?.class?.inputBox || '',
-		AlertConfirmPromptConfig.variant?.[dialog?.variant]?.inputBox || ''
-	);
-
-	$: _inputFieldClass = twMerge(
-		AlertConfirmPromptConfig.preset.inputField,
-		AlertConfirmPromptConfig.class.inputField,
-		dialog?.class?.inputField || '',
-		AlertConfirmPromptConfig.variant?.[dialog?.variant]?.inputField || ''
-	);
-
-	$: _menuClass = twMerge(
-		AlertConfirmPromptConfig.preset.menu,
-		AlertConfirmPromptConfig.class.menu,
-		dialog?.class?.menu || '',
-		AlertConfirmPromptConfig.variant?.[dialog?.variant]?.menu || ''
-	);
-
+	$: _dialogClass = twMerge(..._collectClasses('dialog'));
+	$: _iconClass = twMerge(..._collectClasses('icon'));
+	$: _contentBlockClass = twMerge(..._collectClasses('contentBlock'));
+	$: _titleClass = twMerge(..._collectClasses('title'));
+	$: _contentClass = twMerge(..._collectClasses('content'));
+	$: _inputBoxClass = twMerge(..._collectClasses('inputBox'));
+	$: _inputFieldClass = twMerge(..._collectClasses('inputField'));
+	$: _menuClass = twMerge(..._collectClasses('menu'));
 	$: _menuLiClass = twMerge(AlertConfirmPromptConfig.preset.menuLi);
-
-	$: _buttonClass = twMerge(
-		AlertConfirmPromptConfig.preset.button,
-		AlertConfirmPromptConfig.class.button,
-		dialog?.class?.button || '',
-		AlertConfirmPromptConfig.variant?.[dialog?.variant]?.button || ''
-	);
-
-	$: _spinnerBoxClass = twMerge(
-		AlertConfirmPromptConfig.preset.spinnerBox,
-		AlertConfirmPromptConfig.class.spinnerBox,
-		dialog?.class?.spinnerBox || '',
-		AlertConfirmPromptConfig.variant?.[dialog?.variant]?.spinnerBox || ''
-	);
+	$: _buttonClass = twMerge(..._collectClasses('button'));
+	$: _spinnerBoxClass = twMerge(..._collectClasses('spinnerBox'));
 
 	//
-	let iconFn: (() => string) | false = false;
-	$: if (dialog?.iconFn === true) {
-		// explicit "true" means default, that is:
-		iconFn =
-			// either runtime config
-			AlertConfirmPromptConfig.iconFn[dialog?.variant] ||
-			// or fixed default
-			acpDefaultIcons[dialog?.variant];
-	} else if (dialog?.iconFn) {
-		// custom instance
-		iconFn = dialog.iconFn;
-	} else {
-		iconFn = false;
-	}
+	$: iconFn = dialog?.iconFn ?? defaultIcons?.[dialog?.variant];
 </script>
 
 <dialog

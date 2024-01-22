@@ -2,7 +2,6 @@ import { createClog } from '@marianmeres/clog';
 import { createStore } from '@marianmeres/store';
 import { createTicker } from '@marianmeres/ticker';
 import type { THC } from '../Thc/Thc.svelte';
-import { twMerge } from 'tailwind-merge';
 
 export type NotificationsSortOrder = 'asc' | 'desc';
 
@@ -20,7 +19,7 @@ interface ComponentWrap {
 	props?: any;
 }
 
-interface KnownClasses {
+export interface NotificationKnownClasses {
 	box: string;
 	count: string;
 	icon: string;
@@ -64,7 +63,7 @@ export interface NotificationInput extends Record<string, any> {
 	iconFn: (() => string) | boolean;
 
 	//
-	class?: Partial<KnownClasses>;
+	class?: Partial<NotificationKnownClasses>;
 
 	// pragmatic shortcut to THC
 	forceAsHtml: boolean | undefined;
