@@ -95,7 +95,7 @@ function iconFeatherRotateCw(props) {
 export const acpDefaultIcons: AlertConfirmPromptIcons = {
 	info: () => iconFeatherInfo({}),
 	success: () => iconFeatherCheckCircle({}),
-	warn: () => iconFeatherAlertTriangle({}),
+	warn: () => iconFeatherAlertTriangle({ class: '-mt-[3px]' }), // move up a little because it looks better with the triangle
 	error: () => iconFeatherXOctagon({}),
 	spinner: () => iconFeatherRotateCw({ size: 32, class: 'opacity-50' }),
 };
