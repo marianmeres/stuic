@@ -6,7 +6,7 @@
 		'alert-confirm-prompt', 'app-shell', 'avatar', 
 		'backdrop', 'button', 
 		'carousel', 'color-scheme', 
-		'drawer',
+		'dismissible-message', 'drawer',
 		'hover-expandable-width',
 		'input',
 		'notifications',

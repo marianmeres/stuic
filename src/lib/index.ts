@@ -37,6 +37,9 @@ export { default as LocalColorScheme } from './components/ColorScheme/LocalColor
 export { ColorScheme } from './components/ColorScheme/color-scheme.js';
 
 //
+export { default as DismissibleMessage } from './components/DismissibleMessage/DismissibleMessage.svelte';
+
+//
 export { default as Drawer, createDrawerStore } from './components/Drawer/Drawer.svelte';
 
 //
@@ -72,7 +75,7 @@ export { default as Popover } from './components/Popover/Popover.svelte';
 
 //
 export { default as Switch, SwitchConfig } from './components/Switch/Switch.svelte';
-export { default as Thc } from './components/Thc/Thc.svelte';
+export { default as Thc, type THC } from './components/Thc/Thc.svelte';
 
 //
 export { default as X } from './components/X/X.svelte';
@@ -98,3 +101,4 @@ export { calculateAlignment } from './utils/calculate-alignment.js';
 export { DevicePointer } from './utils/device-pointer.js';
 export { getId } from './utils/get-id.js';
 export { windowSize, breakpoint } from './utils/window-size.js';
+export type { TW_COLORS } from './utils/tw-types.js';

@@ -1,10 +1,6 @@
 <script lang="ts">
 	import { createClog } from '@marianmeres/clog';
-	import {
-		iconBs1CircleFill,
-		iconBs2CircleFill,
-		iconBsArrowLeftRight,
-	} from '@marianmeres/icons-fns';
+	import { iconBs1CircleFill, iconBs2CircleFill } from '@marianmeres/icons-fns';
 	import {
 		AlertConfirmPrompt,
 		createAlert,
@@ -12,7 +8,6 @@
 		createConfirm,
 		createPrompt,
 	} from '../../lib';
-	import { AlertConfirmPromptConfig } from '../../lib/components/AlertConfirmPrompt/AlertConfirmPrompt.svelte';
 	import Layout from '../_components/Layout.svelte';
 	import { dummySentence } from '../_utils/dummy-text';
 	import FooContent from './FooContent.svelte';
