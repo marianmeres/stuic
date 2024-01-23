@@ -37,7 +37,10 @@ export { default as LocalColorScheme } from './components/ColorScheme/LocalColor
 export { ColorScheme } from './components/ColorScheme/color-scheme.js';
 
 //
-export { default as DismissibleMessage } from './components/DismissibleMessage/DismissibleMessage.svelte';
+export {
+	default as DismissibleMessage,
+	DismissibleMessageConfig,
+} from './components/DismissibleMessage/DismissibleMessage.svelte';
 
 //
 export { default as Drawer, createDrawerStore } from './components/Drawer/Drawer.svelte';

@@ -33,8 +33,6 @@
 	];
 
 	const signal = writable(0);
-
-	dummySentence;
 </script>
 
 <Layout>

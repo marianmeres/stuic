@@ -1,22 +1,10 @@
-<script lang="ts">
+<script lang="ts" context="module">
 	import { slide } from 'svelte/transition';
 	import { twMerge } from 'tailwind-merge';
 	import { Thc, X, type THC, type TW_COLORS } from '../../index.js';
 
-	let _class = '';
-	export { _class as class };
-	export let classContent = '';
-	export let classDismiss = '';
-
-	export let duration = 150;
-	export let message: THC | null;
-
-	export let onDismiss: (() => void) | null = () => (message = null);
-
-	export let theme: 'primary' | 'secondary' | TW_COLORS = 'primary';
-
 	// prettier-ignore
-	const preset = {
+	const themes = {
 		primary:   'bg-stuic-primary/10   text-stuic-primary   dark:bg-stuic-primary   dark:text-white/90',
 		secondary: 'bg-stuic-secondary/10 text-stuic-secondary dark:bg-stuic-secondary dark:text-white/90',
 		slate:     'bg-slate-100          text-slate-800       dark:bg-slate-700       dark:text-slate-100',
@@ -42,32 +30,69 @@
 		pink:      'bg-pink-100           text-pink-800        dark:bg-pink-800        dark:text-pink-100',
 		rose:      'bg-rose-100           text-rose-800        dark:bg-rose-800        dark:text-rose-100',
 	};
+
+	export class DismissibleMessageConfig {
+		static preset = {
+			box: `mb-4 rounded flex text-sm`,
+			content: `flex-1 px-4 py-3`,
+			dismiss: `
+                hover:bg-black/5 dark:hover:bg-black/20
+                rounded rounded-l-none
+                px-3
+                flex items-center justify-center
+                group
+            `,
+		};
+
+		static class = {
+			box: ``,
+			content: ``,
+			dismiss: ``,
+		};
+	}
+</script>
+
+<script lang="ts">
+	let _class = '';
+	export { _class as class };
+	export let classContent = '';
+	export let classDismiss = '';
+
+	export let duration = 150;
+	export let message: THC | null;
+
+	export let onDismiss: (() => void) | null = () => (message = null);
+
+	export let theme: 'primary' | 'secondary' | TW_COLORS = 'primary';
 </script>
 
 {#if message}
 	<div
-		class={twMerge(`
-			mb-4 rounded flex
-            text-sm
-			${preset[theme] ?? preset.primary} 
-			${_class}
-		`)}
+		class={twMerge(
+			DismissibleMessageConfig.preset.box,
+			DismissibleMessageConfig.class.box,
+			themes[theme] ?? themes.primary,
+			_class
+		)}
 		transition:slide={{ duration }}
 	>
-		<div class={twMerge(`flex-1 px-4 py-3 ${classContent}`)}>
+		<div
+			class={twMerge(
+				DismissibleMessageConfig.preset.content,
+				DismissibleMessageConfig.class.content,
+				classContent
+			)}
+		>
 			<Thc thc={message} />
 		</div>
 
 		{#if typeof onDismiss === 'function'}
 			<button
-				class={twMerge(`
-					hover:bg-black/5 dark:hover:bg-black/20
-					rounded rounded-l-none
-					px-3
-					flex items-center justify-center
-					group
-                    ${classDismiss}
-                `)}
+				class={twMerge(
+					DismissibleMessageConfig.preset.dismiss,
+					DismissibleMessageConfig.class.dismiss,
+					classDismiss
+				)}
 				on:click={() => onDismiss()}
 			>
 				<X class="opacity-75 group-hover:opacity-100" strokeWidth={1.5} />
