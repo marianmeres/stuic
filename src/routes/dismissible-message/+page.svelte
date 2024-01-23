@@ -33,6 +33,8 @@
 	];
 
 	const signal = writable(0);
+
+	let message = '';
 </script>
 
 <Layout>
@@ -43,4 +45,10 @@
 	{/if}
 
 	<button on:click={() => ($signal = Date.now())}>create all</button>
+
+	<hr class="my-8" />
+	<div class="max-w-lg">
+		<DismissibleMessage {message} />
+	</div>
+	<button on:click={() => (message = dummySentence(5))}>create one</button>
 </Layout>

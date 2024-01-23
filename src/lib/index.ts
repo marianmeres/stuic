@@ -78,7 +78,7 @@ export { default as Popover } from './components/Popover/Popover.svelte';
 
 //
 export { default as Switch, SwitchConfig } from './components/Switch/Switch.svelte';
-export { default as Thc, type THC } from './components/Thc/Thc.svelte';
+export { default as Thc, type THC, isTHCNotEmpty } from './components/Thc/Thc.svelte';
 
 //
 export { default as X } from './components/X/X.svelte';

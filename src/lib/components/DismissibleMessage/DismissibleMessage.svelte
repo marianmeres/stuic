@@ -1,7 +1,8 @@
 <script lang="ts" context="module">
 	import { slide } from 'svelte/transition';
 	import { twMerge } from 'tailwind-merge';
-	import { Thc, X, type THC, type TW_COLORS } from '../../index.js';
+	import { Thc, X, type THC, type TW_COLORS, isTHCNotEmpty } from '../../index.js';
+	import { tick } from 'svelte';
 
 	// prettier-ignore
 	const themes = {
@@ -59,14 +60,22 @@
 	export let classDismiss = '';
 
 	export let duration = 150;
-	export let message: THC | null;
+	export let message: THC;
 
-	export let onDismiss: (() => void) | null = () => (message = null);
+	export let onDismiss: (() => void) | null | false = () => (message = '');
 
 	export let theme: 'primary' | 'secondary' | TW_COLORS = 'primary';
+
+	// basic {#if _isNotEmpty(message)} didn't slide in the first render if this component
+	// was conditionally rendered (not sure why)... so hacking around it
+	let show = false;
+	$: if (isTHCNotEmpty(message)) {
+		requestAnimationFrame(() => (show = true));
+	}
 </script>
 
-{#if message}
+<!-- {#if isNotEmpty(message)} -->
+{#if show}
 	<div
 		class={twMerge(
 			DismissibleMessageConfig.preset.box,

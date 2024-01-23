@@ -16,6 +16,11 @@
 
 	//
 	export type THC = string | WithText | WithHtml | WithComponent;
+
+	const _is = (m: any) => typeof m === 'string' && m;
+
+	export const isTHCNotEmpty = (m: any) =>
+		_is(m) || _is(m?.text) || _is(m?.html) || m?.component;
 </script>
 
 <script lang="ts">
