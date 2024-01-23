@@ -71,6 +71,8 @@
 	let show = false;
 	$: if (isTHCNotEmpty(message)) {
 		requestAnimationFrame(() => (show = true));
+	} else {
+		show = false;
 	}
 </script>
 
