@@ -89,12 +89,12 @@
 		{#if label || $$slots.label}
 			<label
 				for={id}
-				class={twMerge(`
-					block flex-1 
-					${required ? "after:content-['*'] after:opacity-30 after:pl-1" : ''}
-					${labelSizePreset[size]}
-					${labelClass}
-				`)}
+				class={twMerge(
+					'block flex-1',
+					required ? "after:content-['*'] after:opacity-30 after:pl-1" : '',
+					labelSizePreset[size],
+					labelClass
+				)}
 				class:required
 			>
 				{#if $$slots.label}
@@ -107,16 +107,16 @@
 		<slot name="right_of_label" />
 	</div>
 	<div
-		class={twMerge(`
-            rounded-md border border-gray-300
+		class={twMerge(
+			`rounded-md border border-gray-300
             bg-gray-100
             focus-within:border-stuic-primary
             focus-within:ring-4
             focus-within:ring-stuic-primary
-            focus-within:ring-opacity-20
-			${wrapClass}
-			${validation && !validation.valid ? invalidClass : ''}
-        `)}
+            focus-within:ring-opacity-20`,
+			wrapClass,
+			validation && !validation.valid ? invalidClass : ''
+		)}
 		class:cursor-not-allowed={disabled}
 		class:opacity-50={disabled}
 	>

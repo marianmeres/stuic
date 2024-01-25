@@ -84,7 +84,14 @@
 <div class={twMerge(`mb-4 ${_class}`)}>
 	<div class="flex items-end px-2 mb-1">
 		{#if label || $$slots.label}
-			<label for={id} class="block flex-1 {labelSizePreset[size]}">
+			<label
+				for={id}
+				class={twMerge(
+					'block flex-1',
+					required ? "after:content-['*'] after:opacity-30 after:pl-1" : '',
+					labelSizePreset[size]
+				)}
+			>
 				{#if $$slots.label}
 					<slot name="label" />
 				{:else}
