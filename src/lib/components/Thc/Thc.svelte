@@ -24,10 +24,15 @@
 </script>
 
 <script lang="ts">
+	// the contend
+	export let thc: THC;
+
 	// pragmatic shortcut to allow string to be rendered as html without
 	// the need to wrap it as { html: ... }
 	export let forceAsHtml = false;
-	export let thc: THC;
+
+	//
+	export let allowCastToStringFallback = true;
 </script>
 
 {#if typeof thc === 'string'}
@@ -38,7 +43,9 @@
 	{@html thc.html}
 {:else if thc?.component}
 	<svelte:component this={thc.component} {...thc?.props || {}} {...$$restProps || {}} />
-{:else}
-	<!-- cast to string as the last resort -->
+{:else if allowCastToStringFallback}
+	<!-- cast to string as the last resort (if enabled) -->
 	{thc}
+{:else}
+	<!-- silence -->
 {/if}

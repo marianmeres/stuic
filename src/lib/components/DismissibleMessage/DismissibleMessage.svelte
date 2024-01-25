@@ -66,6 +66,9 @@
 
 	export let theme: 'primary' | 'secondary' | TW_COLORS = 'primary';
 
+	// pragmatic shortcut to THC
+	export let forceAsHtml: boolean = false;
+
 	// basic {#if _isNotEmpty(message)} didn't slide in the first render if this component
 	// was conditionally rendered (not sure why)... so hacking around it
 	let show = false;
@@ -94,7 +97,7 @@
 				classContent
 			)}
 		>
-			<Thc thc={message} />
+			<Thc thc={message} {forceAsHtml} />
 		</div>
 
 		{#if typeof onDismiss === 'function'}
