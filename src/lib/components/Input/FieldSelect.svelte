@@ -53,7 +53,20 @@
 		asterix: `after:content-['*'] after:opacity-30 after:pl-1`,
 	};
 
-	const _PRESET_BY_SIZE: FieldSelectConfigClassesBySize = {};
+	const _PRESET_BY_SIZE: FieldSelectConfigClassesBySize = {
+		sm: {
+			label: 'text-sm',
+			input: 'text-sm placeholder:text-sm',
+		},
+		md: {
+			label: 'text-base',
+			input: 'text-base placeholder:text-base',
+		},
+		lg: {
+			label: 'text-base font-bold',
+			input: 'text-lg placeholder:text-lg',
+		},
+	};
 
 	export class FieldSelectConfig {
 		static class: FieldSelectConfigClasses = {};
@@ -63,17 +76,6 @@
 
 <script lang="ts">
 	const dispatch = createEventDispatcher();
-
-	const inputSizePreset = {
-		sm: 'text-sm placeholder:text-sm',
-		md: 'text-base placeholder:text-base',
-		lg: 'text-lg  placeholder:text-lg',
-	};
-	const labelSizePreset = {
-		sm: 'text-sm',
-		md: 'text-base',
-		lg: 'text-base font-bold',
-	};
 
 	interface Option {
 		label: string;
