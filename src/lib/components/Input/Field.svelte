@@ -45,7 +45,7 @@
 	});
 
 	const _PRESET: FieldConfigClasses = {
-		box: 'mb-4 grid gap-4',
+		box: 'mb-4 grid', //  gap-4
 		wrap: `
 			rounded-md border border-gray-300
 			bg-gray-100
@@ -54,7 +54,7 @@
 			focus-within:ring-stuic-primary
 			focus-within:ring-opacity-20
 		`,
-		label: `block flex-1`,
+		label: `block flex-1 px-2 mb-1`, //
 		input: `
 			rounded-md border-0 w-full flex-1
 			bg-transparent
@@ -190,7 +190,7 @@
 	class:grid-cols-3={labelLeft && labelLeftWidth === 'wide'}
 >
 	<div
-		class="flex px-2 mb-1"
+		class="flex"
 		class:items-end={!labelLeft}
 		class:items-start={labelLeft}
 		class:mt-1={labelLeft}
