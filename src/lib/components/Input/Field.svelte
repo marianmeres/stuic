@@ -85,12 +85,18 @@
 	};
 
 	export class FieldConfig {
+		//
 		static class: FieldConfigClasses = _emptyClasses();
 		static classBySize: FieldConfigClassesBySize = {
 			sm: _emptyClasses(),
 			md: _emptyClasses(),
 			lg: _emptyClasses(),
 		};
+		static labelLeft = false;
+		static labelLeftWidth: 'normal' | 'wide' = 'normal';
+		//
+		static readonly _preset = _PRESET;
+		static readonly _presetBySize = _PRESET_BY_SIZE;
 	}
 </script>
 
@@ -133,8 +139,8 @@
 	export let textareaAutoEnlarge = true;
 
 	//
-	export let labelLeft = false;
-	export let labelLeftWidth: 'normal' | 'wide' = 'normal';
+	export let labelLeft = FieldConfig.labelLeft;
+	export let labelLeftWidth: 'normal' | 'wide' = FieldConfig.labelLeftWidth;
 
 	//
 	export let validate: ValidateOptions | true | undefined = undefined;

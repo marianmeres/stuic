@@ -82,12 +82,18 @@
 	};
 
 	export class FieldSelectConfig {
+		//
 		static class: FieldSelectConfigClasses = _emptyClasses();
 		static classBySize: FieldSelectConfigClassesBySize = {
 			sm: _emptyClasses(),
 			md: _emptyClasses(),
 			lg: _emptyClasses(),
 		};
+		static labelLeft = false;
+		static labelLeftWidth: 'normal' | 'wide' = 'normal';
+		//
+		static readonly _preset = _PRESET;
+		static readonly _presetBySize = _PRESET_BY_SIZE;
 	}
 </script>
 
@@ -123,8 +129,8 @@
 
 	export let showAsterixOnRequired = true;
 
-	export let labelLeft = false;
-	export let labelLeftWidth: 'normal' | 'wide' = 'normal';
+	export let labelLeft = FieldSelectConfig.labelLeft;
+	export let labelLeftWidth: 'normal' | 'wide' = FieldSelectConfig.labelLeftWidth;
 
 	//
 	let validation: ValidationResult;
