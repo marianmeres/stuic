@@ -19,9 +19,23 @@
 		lg?: FieldRadiosConfigClasses;
 	}
 
+	const _emptyClasses = (): FieldRadiosConfigClasses => ({
+		group: '',
+		box: '',
+		label: '',
+		input: '',
+		invalid: '',
+		validationMessage: '',
+		description: '',
+	});
+
 	export class FieldRadiosConfig {
-		static class: FieldRadiosConfigClasses;
-		static classBySize: FieldRadiosConfigClassesBySize;
+		static class: FieldRadiosConfigClasses = _emptyClasses();
+		static classBySize: FieldRadiosConfigClassesBySize = {
+			sm: _emptyClasses(),
+			md: _emptyClasses(),
+			lg: _emptyClasses(),
+		};
 	}
 </script>
 

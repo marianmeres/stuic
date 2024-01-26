@@ -28,6 +28,18 @@
 		lg?: FieldSelectConfigClasses;
 	}
 
+	const _emptyClasses = (): FieldSelectConfigClasses => ({
+		box: '',
+		wrap: '',
+		label: '',
+		input: '',
+		invalid: '',
+		validationMessage: '',
+		description: '',
+		below: '',
+		asterix: '',
+	});
+
 	const _PRESET: FieldSelectConfigClasses = {
 		box: 'mb-4',
 		wrap: `
@@ -69,8 +81,12 @@
 	};
 
 	export class FieldSelectConfig {
-		static class: FieldSelectConfigClasses = {};
-		static classBySize: FieldSelectConfigClassesBySize = {};
+		static class: FieldSelectConfigClasses = _emptyClasses();
+		static classBySize: FieldSelectConfigClassesBySize = {
+			sm: _emptyClasses(),
+			md: _emptyClasses(),
+			lg: _emptyClasses(),
+		};
 	}
 </script>
 

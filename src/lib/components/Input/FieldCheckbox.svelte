@@ -24,6 +24,15 @@
 		lg?: FieldCheckboxConfigClasses;
 	}
 
+	const _emptyClasses = (): FieldCheckboxConfigClasses => ({
+		box: '',
+		label: '',
+		input: '',
+		invalid: '',
+		validationMessage: '',
+		description: '',
+	});
+
 	const _PRESET: FieldCheckboxConfigClasses = {
 		box: 'flex items-start mb-4',
 		label: 'block w-full',
@@ -52,8 +61,12 @@
 	};
 
 	export class FieldCheckboxConfig {
-		static class: FieldCheckboxConfigClasses;
-		static classBySize: FieldCheckboxConfigClassesBySize;
+		static class: FieldCheckboxConfigClasses = _emptyClasses();
+		static classBySize: FieldCheckboxConfigClassesBySize = {
+			sm: _emptyClasses(),
+			md: _emptyClasses(),
+			lg: _emptyClasses(),
+		};
 	}
 </script>
 

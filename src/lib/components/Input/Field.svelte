@@ -32,6 +32,18 @@
 		lg?: FieldConfigClasses;
 	}
 
+	const _emptyClasses = (): FieldConfigClasses => ({
+		box: '',
+		wrap: '',
+		label: '',
+		input: '',
+		invalid: '',
+		validationMessage: '',
+		description: '',
+		below: '',
+		asterix: '',
+	});
+
 	const _PRESET: FieldConfigClasses = {
 		box: 'mb-4',
 		wrap: `
@@ -73,8 +85,12 @@
 	};
 
 	export class FieldConfig {
-		static class: FieldConfigClasses = {};
-		static classBySize: FieldConfigClassesBySize = {};
+		static class: FieldConfigClasses = _emptyClasses();
+		static classBySize: FieldConfigClassesBySize = {
+			sm: _emptyClasses(),
+			md: _emptyClasses(),
+			lg: _emptyClasses(),
+		};
 	}
 </script>
 
