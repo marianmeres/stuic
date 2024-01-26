@@ -41,7 +41,7 @@
 	});
 
 	const _PRESET: FieldSelectConfigClasses = {
-		box: 'mb-4',
+		box: 'mb-4 grid',
 		wrap: `
 			flex items-center
             rounded-md border border-gray-300
@@ -122,6 +122,9 @@
 
 	export let showAsterixOnRequired = true;
 
+	export let labelLeft = false;
+	export let labelLeftWidth: 'normal' | 'wide' = 'normal';
+
 	//
 	let validation: ValidationResult;
 	const setValidationResult = (res: ValidationResult) => (validation = res);
@@ -174,8 +177,17 @@
 	$: _belowClass = twMerge(_collectClasses('below'));
 </script>
 
-<div class={_boxClass}>
-	<div class="flex items-end px-2 mb-1">
+<div
+	class={_boxClass}
+	class:grid-cols-4={labelLeft && labelLeftWidth === 'normal'}
+	class:grid-cols-3={labelLeft && labelLeftWidth === 'wide'}
+>
+	<div
+		class="flex px-2"
+		class:items-end={!labelLeft}
+		class:items-start={labelLeft}
+		class:mt-1={labelLeft}
+	>
 		{#if label || $$slots.label}
 			<label for={id} class={_labelClass}>
 				{#if $$slots.label}
@@ -187,39 +199,49 @@
 		{/if}
 		<slot name="right_of_label" />
 	</div>
-	<div class={_wrapClass} class:cursor-not-allowed={disabled} class:opacity-50={disabled}>
-		<slot name="input_before" {id} />
-		<select
-			class={_inputClass}
-			bind:value
-			bind:this={_inputEl}
-			{disabled}
-			{required}
-			{tabindex}
-			{autofocus}
-			{name}
-			use:validateAction={validate
-				? { ...(validate === true ? {} : validate), setValidationResult }
-				: undefined}
+	<div
+		class:col-span-3={labelLeft && labelLeftWidth === 'normal'}
+		class:col-span-2={labelLeft && labelLeftWidth === 'wide'}
+	>
+		<div
+			class={_wrapClass}
+			class:cursor-not-allowed={disabled}
+			class:opacity-50={disabled}
 		>
-			{#each _options as o, i}
-				<option value={o.value}>{o.label}</option>
-			{/each}
-		</select>
+			<slot name="input_before" {id} />
+			<select
+				class={_inputClass}
+				bind:value
+				bind:this={_inputEl}
+				{id}
+				{disabled}
+				{required}
+				{tabindex}
+				{autofocus}
+				{name}
+				use:validateAction={validate
+					? { ...(validate === true ? {} : validate), setValidationResult }
+					: undefined}
+			>
+				{#each _options as o, i}
+					<option value={o.value}>{o.label}</option>
+				{/each}
+			</select>
 
-		<slot name="input_after" {id} />
+			<slot name="input_after" {id} />
+		</div>
+		{#if validation && !validation?.valid}
+			<div transition:slide={{ duration: 150 }} class={_validationMessageClass}>
+				{@html validation.message}
+			</div>
+		{/if}
+		{#if description}
+			<div class={_descriptionClass}>
+				<Thc thc={description} forceAsHtml />
+			</div>
+		{/if}
+		{#if $$slots.below}
+			<div class={_belowClass}><slot name="below" {id} /></div>
+		{/if}
 	</div>
-	{#if validation && !validation?.valid}
-		<div transition:slide={{ duration: 150 }} class={_validationMessageClass}>
-			{@html validation.message}
-		</div>
-	{/if}
-	{#if description}
-		<div class={_descriptionClass}>
-			<Thc thc={description} forceAsHtml />
-		</div>
-	{/if}
-	{#if $$slots.below}
-		<div class={_belowClass}><slot name="below" {id} /></div>
-	{/if}
 </div>

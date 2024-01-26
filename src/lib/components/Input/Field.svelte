@@ -45,7 +45,7 @@
 	});
 
 	const _PRESET: FieldConfigClasses = {
-		box: 'mb-4',
+		box: 'mb-4 grid',
 		wrap: `
 			rounded-md border border-gray-300
 			bg-gray-100
@@ -133,6 +133,10 @@
 	export let textareaAutoEnlarge = true;
 
 	//
+	export let labelLeft = false;
+	export let labelLeftWidth: 'normal' | 'wide' = 'normal';
+
+	//
 	export let validate: ValidateOptions | true | undefined = undefined;
 
 	export let showAsterixOnRequired = true;
@@ -180,8 +184,17 @@
 	$: _belowClass = twMerge(_collectClasses('below'));
 </script>
 
-<div class={_boxClass}>
-	<div class="flex items-end px-2 mb-1">
+<div
+	class={_boxClass}
+	class:grid-cols-4={labelLeft && labelLeftWidth === 'normal'}
+	class:grid-cols-3={labelLeft && labelLeftWidth === 'wide'}
+>
+	<div
+		class="flex px-2 mb-1"
+		class:items-end={!labelLeft}
+		class:items-start={labelLeft}
+		class:mt-1={labelLeft}
+	>
 		{#if label || $$slots.label}
 			<label for={id} class={_labelClass} class:required>
 				{#if $$slots.label}
@@ -193,73 +206,82 @@
 		{/if}
 		<slot name="right_of_label" />
 	</div>
-	<div class={_wrapClass} class:cursor-not-allowed={disabled} class:opacity-50={disabled}>
-		<div class="flex items-center">
-			<slot name="input_before" {id} />
-			{#if type === 'textarea'}
-				<textarea
-					bind:value
-					bind:this={_inputEl}
-					{id}
-					class={_inputClass}
-					class:cursor-not-allowed={disabled}
-					{name}
-					{disabled}
-					{readonly}
-					{required}
-					{autofocus}
-					{tabindex}
-					use:trim={useTrim}
-					use:validateAction={validate
-						? { ...(validate === true ? {} : validate), setValidationResult }
-						: undefined}
-					use:autogrow={{ allowed: textareaAutoEnlarge }}
-					{...$$restProps}
-				/>
-			{:else}
-				<input
-					bind:value
-					bind:this={_inputEl}
-					use:setType={type}
-					{id}
-					class={_inputClass}
-					class:cursor-not-allowed={disabled}
-					{name}
-					{placeholder}
-					{disabled}
-					{readonly}
-					{required}
-					{autofocus}
-					{autocomplete}
-					{tabindex}
-					{minlength}
-					{maxlength}
-					{min}
-					{max}
-					{pattern}
-					{step}
-					use:trim={useTrim}
-					use:validateAction={validate
-						? { ...(validate === true ? {} : validate), setValidationResult }
-						: undefined}
-					{...$$restProps}
-				/>
-			{/if}
-			<slot name="input_after" {id} />
+	<div
+		class:col-span-3={labelLeft && labelLeftWidth === 'normal'}
+		class:col-span-2={labelLeft && labelLeftWidth === 'wide'}
+	>
+		<div
+			class={_wrapClass}
+			class:cursor-not-allowed={disabled}
+			class:opacity-50={disabled}
+		>
+			<div class="flex items-center">
+				<slot name="input_before" {id} />
+				{#if type === 'textarea'}
+					<textarea
+						bind:value
+						bind:this={_inputEl}
+						{id}
+						class={_inputClass}
+						class:cursor-not-allowed={disabled}
+						{name}
+						{disabled}
+						{readonly}
+						{required}
+						{autofocus}
+						{tabindex}
+						use:trim={useTrim}
+						use:validateAction={validate
+							? { ...(validate === true ? {} : validate), setValidationResult }
+							: undefined}
+						use:autogrow={{ allowed: textareaAutoEnlarge }}
+						{...$$restProps}
+					/>
+				{:else}
+					<input
+						bind:value
+						bind:this={_inputEl}
+						use:setType={type}
+						{id}
+						class={_inputClass}
+						class:cursor-not-allowed={disabled}
+						{name}
+						{placeholder}
+						{disabled}
+						{readonly}
+						{required}
+						{autofocus}
+						{autocomplete}
+						{tabindex}
+						{minlength}
+						{maxlength}
+						{min}
+						{max}
+						{pattern}
+						{step}
+						use:trim={useTrim}
+						use:validateAction={validate
+							? { ...(validate === true ? {} : validate), setValidationResult }
+							: undefined}
+						{...$$restProps}
+					/>
+				{/if}
+				<slot name="input_after" {id} />
+			</div>
+			<slot name="input_below" {id} />
 		</div>
-		<slot name="input_below" {id} />
+		{#if validation && !validation?.valid}
+			<div transition:slide={{ duration: 150 }} class={_validationMessageClass}>
+				{@html validation.message}
+			</div>
+		{/if}
+		{#if description}
+			<div class={_descriptionClass}>
+				<Thc thc={description} forceAsHtml />
+			</div>
+		{/if}
+		{#if $$slots.below}
+			<div class={_belowClass}><slot name="below" {id} /></div>
+		{/if}
 	</div>
-	{#if validation && !validation?.valid}
-		<div transition:slide={{ duration: 150 }} class={_validationMessageClass}>
-			{@html validation.message}
-		</div>
-	{/if}
-	{#if description}
-		<div class={_descriptionClass}>
-			<Thc thc={description} forceAsHtml />
-		</div>
-	{/if}
-	{#if $$slots.below}
-		<div class={_belowClass}><slot name="below" {id} /></div>
-	{/if}
 </div>

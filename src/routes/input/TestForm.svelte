@@ -23,8 +23,12 @@
 	});
 
 	$: clog($formData);
+
+	let labelLeft = false;
 </script>
 
+<button on:click={() => (labelLeft = !labelLeft)}>toggle label left</button>
+<hr class="my-4" />
 <form
 	on:submit|preventDefault={() => {
 		clog(123);
@@ -43,6 +47,7 @@
 			class={{
 				asterix: 'after:opacity-100 after:text-red-500',
 			}}
+			{labelLeft}
 		/>
 		<Field
 			type="text"
@@ -53,6 +58,7 @@
 			label="Normal input"
 			placeholder="Ho"
 			description="Let's go"
+			{labelLeft}
 		/>
 		<Field
 			size="sm"
@@ -62,6 +68,7 @@
 			placeholder="example.com"
 			required
 			validate
+			{labelLeft}
 		>
 			<svelte:fragment slot="input_before">
 				<span class="opacity-50 ml-2 -mr-2 pointer-events-none text-xs tracking-tight">
@@ -90,6 +97,7 @@
 						if (!/bar/.test(v)) return 'Must include "bar"!';
 					},
 				}}
+				{labelLeft}
 			>
 				<svelte:fragment slot="input_before">
 					<span class="opacity-25 ml-2">BFR</span>
@@ -109,25 +117,23 @@
 			/>
 		</Fieldset>
 
-		<!-- empty legend -->
-		<Fieldset legend="">
-			<FieldSelect
-				label="Select"
-				bind:value={$formData.select}
-				options={['Hey', 'ho', "Let's", 'go']}
-				required
-				validate={{
-					customValidator: (v, ctx) => (/ho/.test(v) ? '' : 'Wrong answer!'),
-				}}
-			>
-				<svelte:fragment slot="input_before">
-					<span class="opacity-25 ml-2">BFR</span>
-				</svelte:fragment>
-				<svelte:fragment slot="input_after">
-					<span class="opacity-25 mr-2">AFT</span>
-				</svelte:fragment>
-			</FieldSelect>
-		</Fieldset>
+		<FieldSelect
+			label="Select"
+			bind:value={$formData.select}
+			options={['Hey', 'ho', "Let's", 'go']}
+			required
+			validate={{
+				customValidator: (v, ctx) => (/ho/.test(v) ? '' : 'Wrong answer!'),
+			}}
+			{labelLeft}
+		>
+			<svelte:fragment slot="input_before">
+				<span class="opacity-25 ml-2">BFR</span>
+			</svelte:fragment>
+			<svelte:fragment slot="input_after">
+				<span class="opacity-25 mr-2">AFT</span>
+			</svelte:fragment>
+		</FieldSelect>
 	</div>
 
 	<div class="mt-12 flex justify-between items-end">
