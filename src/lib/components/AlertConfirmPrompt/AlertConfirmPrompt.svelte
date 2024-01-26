@@ -37,7 +37,7 @@
 				transition-all
 				shadow-xl
 				focus-within:outline-0 focus-within:ring-0
-			`.trim(),
+			`,
 			icon: `
 				size-12 sm:size-10
 				mt-1 mb-4 sm:my-0 sm:mr-5
@@ -45,41 +45,31 @@
 				flex flex-shrink-0 items-center justify-center 
 				rounded-full 
 				bg-neutral-100 text-black/50
-			`.trim(),
-			contentBlock: `
-				mt-3 sm:mt-0 sm:flex-1
-			`.trim(),
+			`,
+			contentBlock: `mt-3 sm:mt-0 sm:flex-1`,
 			title: `
 				text-center sm:text-left
 				text-base font-semibold leading-6 text-black/90
-			`.trim(),
+			`,
 			content: `
 				mt-2 mx-3 sm:mx-0
 				text-center sm:text-left
 				text-sm text-black/75
-			`.trim(),
-			inputBox: `
-				mt-3
-			`.trim(),
-			inputField: `
-				m-0
-			`.trim(),
+			`,
+			inputBox: `mt-3`,
+			inputField: `m-0`,
 			menu: `
 				mt-6
 				sm:flex sm:space-x-4 justify-end
 				space-y-3 sm:space-y-0
-			`.trim(),
-			menuLi: `
-				flex-1 sm:flex-none w-full sm:w-auto sm:inline-block
-			`.trim(),
-			button: `
-				w-full min-w-24 text-center inline-block
-			`.trim(),
+			`,
+			menuLi: `flex-1 sm:flex-none w-full sm:w-auto sm:inline-block`,
+			button: `w-full min-w-24 text-center inline-block`,
 			spinnerBox: `
 				absolute inset-0 flex justify-center items-center
 				rounded-lg
 				bg-white/75
-			`.trim(),
+			`,
 		};
 
 		// prettier-ignore

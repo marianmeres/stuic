@@ -1,8 +1,7 @@
 <script lang="ts" context="module">
 	import { slide } from 'svelte/transition';
 	import { twMerge } from 'tailwind-merge';
-	import { Thc, X, type THC, type TW_COLORS, isTHCNotEmpty } from '../../index.js';
-	import { tick } from 'svelte';
+	import { Thc, X, isTHCNotEmpty, type THC, type TW_COLORS } from '../../index.js';
 
 	// prettier-ignore
 	const themes = {
@@ -32,32 +31,38 @@
 		rose:      'bg-rose-100           text-rose-800        dark:bg-rose-800        dark:text-rose-100',
 	};
 
-	export class DismissibleMessageConfig {
-		static preset = {
-			box: `mb-4 rounded flex text-sm`,
-			content: `flex-1 px-4 py-3`,
-			dismiss: `
-                hover:bg-black/5 dark:hover:bg-black/20
-                rounded rounded-l-none
-                px-3
-                flex items-center justify-center
-                group
-            `,
-		};
+	const _PRESET = {
+		box: `mb-4 rounded flex text-sm`,
+		content: `flex-1 px-4 py-3`,
+		dismiss: `
+			hover:bg-black/5 dark:hover:bg-black/20
+			focus-visible:bg-black/5 focus-visible:hover:bg-black/20 focus-visible:ring-0
+			rounded rounded-l-none
+			px-3
+			flex items-center justify-center
+			group
+		`,
+		x: `opacity-75 group-hover:opacity-100`,
+	};
 
+	export class DismissibleMessageConfig {
 		static class = {
 			box: ``,
 			content: ``,
 			dismiss: ``,
+			x: ``,
 		};
 	}
 </script>
 
 <script lang="ts">
-	let _class = '';
+	let _class: {
+		box?: '';
+		content?: '';
+		dismiss?: '';
+		x?: '';
+	} = {};
 	export { _class as class };
-	export let classContent = '';
-	export let classDismiss = '';
 
 	export let duration = 150;
 	export let message: THC;
@@ -77,39 +82,28 @@
 	} else {
 		show = false;
 	}
+
+	const _collectClasses = (k: 'box' | 'content' | 'dismiss' | 'x', extra = '') => [
+		(_PRESET as any)?.[k],
+		(DismissibleMessageConfig as any)?.class?.[k],
+		extra,
+		(_class as any)?.[k],
+	];
 </script>
 
 <!-- {#if isNotEmpty(message)} -->
 {#if show}
 	<div
-		class={twMerge(
-			DismissibleMessageConfig.preset.box,
-			DismissibleMessageConfig.class.box,
-			themes[theme] ?? themes.primary,
-			_class
-		)}
+		class={twMerge(_collectClasses('box', themes[theme] ?? themes.primary))}
 		transition:slide={{ duration }}
 	>
-		<div
-			class={twMerge(
-				DismissibleMessageConfig.preset.content,
-				DismissibleMessageConfig.class.content,
-				classContent
-			)}
-		>
+		<div class={twMerge(_collectClasses('content'))}>
 			<Thc thc={message} {forceAsHtml} />
 		</div>
 
 		{#if typeof onDismiss === 'function'}
-			<button
-				class={twMerge(
-					DismissibleMessageConfig.preset.dismiss,
-					DismissibleMessageConfig.class.dismiss,
-					classDismiss
-				)}
-				on:click={() => onDismiss()}
-			>
-				<X class="opacity-75 group-hover:opacity-100" strokeWidth={1.5} />
+			<button class={twMerge(_collectClasses('dismiss'))} on:click={() => onDismiss()}>
+				<X class={twMerge(_collectClasses('x'))} strokeWidth={1.5} />
 			</button>
 		{/if}
 	</div>

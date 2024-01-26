@@ -1,9 +1,30 @@
-<script lang="ts">
-	import { twMerge } from 'tailwind-merge';
-	import XFieldRadioInternal from './XFieldRadioInternal.svelte';
+<script context="module" lang="ts">
 	import { createClog } from '@marianmeres/clog';
+	import { twMerge } from 'tailwind-merge';
 	import { getId } from '../../index.js';
+	import XFieldRadioInternal from './XFieldRadioInternal.svelte';
 
+	export interface FieldRadiosConfigClasses {
+		box?: string;
+		label?: string;
+		input?: string;
+		invalid?: string;
+		validationMessage?: string;
+		description?: string;
+	}
+	export interface FieldRadiosConfigClassesBySize {
+		sm?: FieldRadiosConfigClasses;
+		md?: FieldRadiosConfigClasses;
+		lg?: FieldRadiosConfigClasses;
+	}
+
+	export class FieldRadiosConfig {
+		static class: FieldRadiosConfigClasses;
+		static classBySize: FieldRadiosConfigClassesBySize;
+	}
+</script>
+
+<script lang="ts">
 	const clog = createClog('FieldRadio');
 
 	interface Option {
@@ -13,14 +34,11 @@
 	}
 	export let options: (string | Option)[] = [];
 
-	let _class = '';
+	let _class: FieldRadiosConfigClasses = {};
 	export { _class as class };
+	export let classBySize: FieldRadiosConfigClassesBySize = {};
 
-	export let optionClass = '';
-	export let labelClass = '';
-	export let descriptionClass = '';
-
-	export let invalidClass = '';
+	// export let invalidClass = '';
 	export let size: 'sm' | 'md' | 'lg' = 'md';
 
 	export let name = '';
@@ -53,13 +71,11 @@
 				label={o.label}
 				value={o.value || o.label}
 				description={o.description}
-				class={optionClass}
-				{labelClass}
-				{descriptionClass}
+				class={_class}
+				{classBySize}
 				{disabled}
 				{tabindex}
 				{required}
-				{invalidClass}
 				{size}
 			/>
 		{/each}

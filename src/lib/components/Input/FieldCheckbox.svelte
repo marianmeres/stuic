@@ -1,41 +1,81 @@
-<script lang="ts">
+<script context="module" lang="ts">
+	import { slide } from 'svelte/transition';
 	import { twMerge } from 'tailwind-merge';
 	import {
+		getId,
+		Thc,
 		validate as validateAction,
+		type THC,
 		type ValidateOptions,
 		type ValidationResult,
 	} from '../../index.js';
-	import { slide } from 'svelte/transition';
-	import { getId } from '../../index.js';
 
-	let _class = '';
+	export interface FieldCheckboxConfigClasses {
+		box?: string;
+		label?: string;
+		input?: string;
+		invalid?: string;
+		validationMessage?: string;
+		description?: string;
+	}
+	export interface FieldCheckboxConfigClassesBySize {
+		sm?: FieldCheckboxConfigClasses;
+		md?: FieldCheckboxConfigClasses;
+		lg?: FieldCheckboxConfigClasses;
+	}
+
+	const _PRESET: FieldCheckboxConfigClasses = {
+		box: 'flex items-start mb-4',
+		label: 'block w-full',
+		input: `
+			size-4 rounded
+			bg-gray-100
+			border-gray-300
+			shadow-sm
+			text-stuic-primary
+			cursor-pointer
+			focus:border-stuic-primary
+			focus:ring-4
+			focus:ring-offset-0
+			focus:ring-stuic-primary
+			focus:ring-opacity-20
+			disabled:cursor-not-allowed
+		`,
+		validationMessage: 'text-xs text-stuic-primary tracking-tight',
+		description: 'text-sm opacity-50',
+	};
+
+	const _PRESET_BY_SIZE: FieldCheckboxConfigClassesBySize = {
+		sm: { label: 'text-sm' },
+		md: { label: 'text-base' },
+		lg: { label: 'text-base font-bold' },
+	};
+
+	export class FieldCheckboxConfig {
+		static class: FieldCheckboxConfigClasses;
+		static classBySize: FieldCheckboxConfigClassesBySize;
+	}
+</script>
+
+<script lang="ts">
+	let _class: FieldCheckboxConfigClasses = {};
 	export { _class as class };
-
-	export let invalidClass = 'border-stuic-primary';
-	export let labelClass = '';
-	export let descriptionClass = '';
+	export let classBySize: FieldCheckboxConfigClassesBySize = {};
 
 	export let size: 'sm' | 'md' | 'lg' = 'md';
 
 	export let id = getId();
 	export let checked = false;
-	export let label = '';
+	export let label: THC = '';
 	export let name = '';
-	export let description = '';
+	export let description: THC = '';
 	export let tabindex = 0;
 
 	export let disabled: boolean | undefined = undefined;
 	export let readonly: boolean | undefined = undefined;
 	export let required: boolean | undefined = undefined;
 
-	const labelSizePreset = {
-		sm: 'text-sm',
-		md: 'text-base',
-		lg: 'text-base font-bold',
-	};
-
 	//
-	export let validationMessageClass = '';
 	export let validate: ValidateOptions | true | undefined = undefined;
 
 	//
@@ -43,9 +83,30 @@
 	const setValidationResult = (res: ValidationResult) => (validation = res);
 
 	let idDesc = getId();
+
+	const _collectClasses = (k: keyof FieldCheckboxConfigClasses, extra = '') => [
+		_PRESET?.[k] || '',
+		_PRESET_BY_SIZE?.[size]?.[k] || '',
+		FieldCheckboxConfig?.class?.[k] || '',
+		FieldCheckboxConfig?.classBySize?.[size]?.[k] || '',
+		extra || '',
+		_class?.[k] || '',
+		classBySize?.[size]?.[k] || '',
+	];
+
+	$: _boxClass = twMerge(_collectClasses('box'));
+	$: _inputClass = twMerge(
+		_collectClasses(
+			'input',
+			validation && !validation.valid ? _collectClasses('invalid').join(' ') : ''
+		)
+	);
+	$: _labelClass = twMerge(_collectClasses('label'));
+	$: _validationMessageClass = twMerge(_collectClasses('validationMessage'));
+	$: _descriptionClass = twMerge(_collectClasses('description'));
 </script>
 
-<div class={twMerge(`flex items-start mb-4 ${_class}`)}>
+<div class={_boxClass}>
 	<div class="flex h-6 items-center ml-1">
 		<input
 			{id}
@@ -54,21 +115,7 @@
 			aria-checked={checked}
 			aria-describedby={description ? idDesc : undefined}
 			{name}
-			class={twMerge(`
-				size-4 rounded
-				bg-gray-100
-				border-gray-300
-				shadow-sm
-				text-stuic-primary
-				cursor-pointer
-				focus:border-stuic-primary
-				focus:ring-4
-				focus:ring-offset-0
-				focus:ring-stuic-primary
-				focus:ring-opacity-20
-				disabled:cursor-not-allowed
-				${validation && !validation.valid ? invalidClass : ''}
-			`)}
+			class={_inputClass}
 			{disabled}
 			{readonly}
 			{required}
@@ -82,27 +129,22 @@
 		{#if label}
 			<label
 				for={id}
-				class={twMerge(`block w-full ${labelSizePreset[size]} ${labelClass}`)}
+				class={_labelClass}
 				class:cursor-pointer={!disabled}
 				class:cursor-not-allowed={disabled}
 			>
-				{@html label}
+				<Thc thc={label} forceAsHtml />
 			</label>
 		{/if}
 		{#if validation && !validation?.valid}
-			<div
-				transition:slide={{ duration: 150 }}
-				class={twMerge(
-					`text-xs text-stuic-primary tracking-tight ${validationMessageClass}`
-				)}
-			>
+			<div transition:slide={{ duration: 150 }} class={_validationMessageClass}>
 				{@html validation.message}
 			</div>
 		{/if}
 		{#if description || $$slots.description}
 			<!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
 			<div
-				class={twMerge(`text-sm opacity-50 ${descriptionClass}`)}
+				class={_descriptionClass}
 				class:cursor-pointer={!disabled}
 				class:cursor-not-allowed={disabled}
 				on:click={() => !disabled && (checked = !checked)}
@@ -110,7 +152,7 @@
 				{#if $$slots.description}
 					<slot name="description" />
 				{:else}
-					{@html description}
+					<Thc thc={description} forceAsHtml />
 				{/if}
 			</div>
 		{/if}

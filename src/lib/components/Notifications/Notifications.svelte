@@ -80,6 +80,7 @@
                     leading-none
                     px-3
                     hover:bg-black/20
+                    focus-visible:bg-black/20 focus-visible:outline-none focus-visible:ring-0
                     group
                     rounded-tr-md rounded-br-md
                 `,

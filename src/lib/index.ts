@@ -49,11 +49,34 @@ export { default as Drawer, createDrawerStore } from './components/Drawer/Drawer
 export { default as HoverExpandableWidth } from './components/HoverExpandableWidth/HoverExpandableWidth.svelte';
 
 //
-export { default as Field } from './components/Input/Field.svelte';
-export { default as FieldCheckbox } from './components/Input/FieldCheckbox.svelte';
-export { default as FieldRadios } from './components/Input/FieldRadios.svelte';
-export { default as FieldSelect } from './components/Input/FieldSelect.svelte';
-export { default as Fieldset } from './components/Input/Fieldset.svelte';
+export {
+	default as Field,
+	FieldConfig,
+	type FieldConfigClasses,
+} from './components/Input/Field.svelte';
+export {
+	default as FieldCheckbox,
+	FieldCheckboxConfig,
+	type FieldCheckboxConfigClasses,
+	type FieldCheckboxConfigClassesBySize,
+} from './components/Input/FieldCheckbox.svelte';
+export {
+	default as FieldRadios,
+	FieldRadiosConfig,
+	type FieldRadiosConfigClasses,
+	type FieldRadiosConfigClassesBySize,
+} from './components/Input/FieldRadios.svelte';
+export {
+	default as FieldSelect,
+	FieldSelectConfig,
+	type FieldSelectConfigClasses,
+	type FieldSelectConfigClassesBySize,
+} from './components/Input/FieldSelect.svelte';
+export {
+	default as Fieldset,
+	FieldsetConfig,
+	type FieldsetConfigClasses,
+} from './components/Input/Fieldset.svelte';
 
 //
 export {

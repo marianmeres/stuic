@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
 	import { createClog } from '@marianmeres/clog';
+	import { writable } from 'svelte/store';
 	import {
 		Button,
 		Field,
@@ -40,9 +40,15 @@
 			required
 			validate
 			size="lg"
+			class={{
+				asterix: 'after:opacity-100 after:text-red-500',
+			}}
 		/>
 		<Field
 			type="text"
+			class={{
+				label: 'text-blue-500',
+			}}
 			bind:value={$formData.normal}
 			label="Normal input"
 			placeholder="Ho"
@@ -74,12 +80,13 @@
 
 			<Field
 				type="textarea"
-				class="mb-0"
 				bind:value={$formData.textarea}
 				label="Foo"
 				required
 				validate={{
+					context: $formData,
 					customValidator: (v, ctx) => {
+						// console.log(ctx);
 						if (!/bar/.test(v)) return 'Must include "bar"!';
 					},
 				}}
@@ -101,22 +108,25 @@
 			/>
 		</Fieldset>
 
-		<FieldSelect
-			label="Select"
-			bind:value={$formData.select}
-			options={['Hey', 'ho', "Let's", 'go']}
-			required
-			validate={{
-				customValidator: (v, ctx) => (/ho/.test(v) ? '' : 'Wrong answer!'),
-			}}
-		>
-			<svelte:fragment slot="input_before">
-				<span class="opacity-25 ml-2">BFR</span>
-			</svelte:fragment>
-			<svelte:fragment slot="input_after">
-				<span class="opacity-25 mr-2">AFT</span>
-			</svelte:fragment>
-		</FieldSelect>
+		<!-- empty legend -->
+		<Fieldset legend="">
+			<FieldSelect
+				label="Select"
+				bind:value={$formData.select}
+				options={['Hey', 'ho', "Let's", 'go']}
+				required
+				validate={{
+					customValidator: (v, ctx) => (/ho/.test(v) ? '' : 'Wrong answer!'),
+				}}
+			>
+				<svelte:fragment slot="input_before">
+					<span class="opacity-25 ml-2">BFR</span>
+				</svelte:fragment>
+				<svelte:fragment slot="input_after">
+					<span class="opacity-25 mr-2">AFT</span>
+				</svelte:fragment>
+			</FieldSelect>
+		</Fieldset>
 	</div>
 
 	<div class="mt-12 flex justify-between items-end">

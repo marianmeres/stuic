@@ -57,7 +57,7 @@ export const validate = (
 			el.setCustomValidity(customValidator(el.value, context, el) || '');
 		}
 
-		// toto trigerne bubble
+		// this triggers the bubble
 		// el.reportValidity();
 
 		const validityState = el.validity;
