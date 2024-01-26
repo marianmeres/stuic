@@ -101,8 +101,9 @@
 		</Fieldset>
 
 		<Fieldset legend="Hey ho">
+			<!--  -->
 			<FieldRadios
-				class="grid grid-cols-2 sm:grid-cols-4"
+				class={{ group: 'grid-cols-2 sm:grid-cols-4' }}
 				bind:value={$formData.radio}
 				options={['Hey', 'ho', "Let's", 'go']}
 			/>

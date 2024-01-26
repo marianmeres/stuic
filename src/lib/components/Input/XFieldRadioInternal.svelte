@@ -14,7 +14,7 @@
 	import { createEventDispatcher, onMount } from 'svelte';
 
 	const _PRESET: FieldRadiosConfigClasses = {
-		box: 'flex items-start mb-4',
+		box: 'flex items-start',
 		label: 'block w-full',
 		input: `
 			size-4 rounded-full

@@ -83,7 +83,7 @@
 
 	let _class: FieldSelectConfigClasses = {};
 	export { _class as class };
-	export let classBySize: FieldSelectConfigClassesBySize;
+	export let classBySize: FieldSelectConfigClassesBySize = {};
 
 	export let size: 'sm' | 'md' | 'lg' = 'md';
 

@@ -5,6 +5,7 @@
 	import XFieldRadioInternal from './XFieldRadioInternal.svelte';
 
 	export interface FieldRadiosConfigClasses {
+		group?: string;
 		box?: string;
 		label?: string;
 		input?: string;
@@ -38,6 +39,11 @@
 	export { _class as class };
 	export let classBySize: FieldRadiosConfigClassesBySize = {};
 
+	//
+	$: if (typeof _class === 'string') {
+		_class = { group: _class };
+	}
+
 	// export let invalidClass = '';
 	export let size: 'sm' | 'md' | 'lg' = 'md';
 
@@ -63,7 +69,7 @@
 </script>
 
 {#if options.length}
-	<div class={twMerge(`space-y-1 ${_class}`)}>
+	<div class={twMerge(`gap-y-2 grid ${_class.group || ''}`)}>
 		{#each _options as o, i}
 			<XFieldRadioInternal
 				bind:group={value}
