@@ -71,7 +71,12 @@
 			{labelLeft}
 		>
 			<svelte:fragment slot="input_before">
-				<span class="opacity-50 ml-2 -mr-2 pointer-events-none text-xs tracking-tight">
+				<span
+					class="
+						flex flex-col justify-center opacity-50 ml-2 -mr-2
+						pointer-events-none text-sm tracking-tight
+					"
+				>
 					https://
 				</span>
 			</svelte:fragment>
@@ -100,7 +105,7 @@
 				{labelLeft}
 			>
 				<svelte:fragment slot="input_before">
-					<span class="opacity-25 ml-2">BFR</span>
+					<span class="flex flex-col justify-center opacity-25 ml-2">BFR</span>
 				</svelte:fragment>
 				<!-- <svelte:fragment slot="input_below">
 					<span class="opacity-25 p-2">kokos</span>
@@ -131,7 +136,7 @@
 				<span class="opacity-25 ml-2">BFR</span>
 			</svelte:fragment>
 			<svelte:fragment slot="input_after">
-				<span class="opacity-25 mr-2">AFT</span>
+				<span class="flex flex-col justify-center opacity-25 mr-2">AFT</span>
 			</svelte:fragment>
 		</FieldSelect>
 	</div>

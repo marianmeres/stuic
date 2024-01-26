@@ -43,7 +43,6 @@
 	const _PRESET: FieldSelectConfigClasses = {
 		box: 'mb-4 grid', // gap-4
 		wrap: `
-			flex items-center
             rounded-md border border-gray-300
             bg-gray-100
             focus-within:border-stuic-primary
@@ -215,27 +214,29 @@
 			class:cursor-not-allowed={disabled}
 			class:opacity-50={disabled}
 		>
-			<slot name="input_before" {id} />
-			<select
-				class={_inputClass}
-				bind:value
-				bind:this={_inputEl}
-				{id}
-				{disabled}
-				{required}
-				{tabindex}
-				{autofocus}
-				{name}
-				use:validateAction={validate
-					? { ...(validate === true ? {} : validate), setValidationResult }
-					: undefined}
-			>
-				{#each _options as o, i}
-					<option value={o.value}>{o.label}</option>
-				{/each}
-			</select>
+			<div class="flex">
+				<slot name="input_before" {id} />
+				<select
+					class={_inputClass}
+					bind:value
+					bind:this={_inputEl}
+					{id}
+					{disabled}
+					{required}
+					{tabindex}
+					{autofocus}
+					{name}
+					use:validateAction={validate
+						? { ...(validate === true ? {} : validate), setValidationResult }
+						: undefined}
+				>
+					{#each _options as o, i}
+						<option value={o.value}>{o.label}</option>
+					{/each}
+				</select>
 
-			<slot name="input_after" {id} />
+				<slot name="input_after" {id} />
+			</div>
 		</div>
 		{#if validation && !validation?.valid}
 			<div transition:slide={{ duration: 150 }} class={_validationMessageClass}>

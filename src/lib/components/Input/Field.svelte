@@ -221,7 +221,7 @@
 			class:cursor-not-allowed={disabled}
 			class:opacity-50={disabled}
 		>
-			<div class="flex items-center">
+			<div class="flex">
 				<slot name="input_before" {id} />
 				{#if type === 'textarea'}
 					<textarea
