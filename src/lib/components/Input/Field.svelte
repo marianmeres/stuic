@@ -45,7 +45,7 @@
 	});
 
 	const _PRESET: FieldConfigClasses = {
-		box: 'mb-4 grid',
+		box: 'mb-4 grid gap-4',
 		wrap: `
 			rounded-md border border-gray-300
 			bg-gray-100
