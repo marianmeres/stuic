@@ -59,9 +59,9 @@
 			placeholder:text-black/35 placeholder:tracking-tight
 		`,
 		invalid: `border-stuic-primary`,
-		validationMessage: `mt-1 text-xs text-stuic-primary px-2 tracking-tight`,
+		validationMessage: `my-1 text-xs text-stuic-primary px-2 tracking-tight`,
 		description: `mx-2 mt-1 text-sm opacity-50`,
-		below: `mx-2 mt-1`,
+		below: `mx-2 my-1`,
 		asterix: `after:content-['*'] after:opacity-30 after:pl-1`,
 	};
 

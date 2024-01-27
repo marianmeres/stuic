@@ -57,10 +57,10 @@
 
 <script lang="ts">
 	let _class: {
-		box?: '';
-		content?: '';
-		dismiss?: '';
-		x?: '';
+		box?: string;
+		content?: string;
+		dismiss?: string;
+		x?: string;
 	} = {};
 	export { _class as class };
 

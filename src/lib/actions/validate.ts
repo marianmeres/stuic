@@ -21,7 +21,7 @@ export interface ValidateOptions {
 		el: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
 	) => string | undefined;
 	// on which event to trigger validation (default change)
-	on?: 'input' | 'change';
+	on?: 'input' | 'change'; // intentionally not 'blur'
 	//
 	setValidationResult?: (res: ValidationResult) => void;
 	//
