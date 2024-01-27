@@ -107,8 +107,10 @@ export { default as Thc, type THC, isTHCNotEmpty } from './components/Thc/Thc.sv
 export { default as X } from './components/X/X.svelte';
 
 // actions
+export { autogrow } from './actions/autogrow.js';
 export { focusTrap } from './actions/focus-trap.js';
 export { onOutside } from './actions/on-outside.js';
+export { preSubmitValidityCheck } from './actions/pre-submit-validity-check.js';
 export {
 	tooltip,
 	TooltipConfig,
@@ -120,7 +122,6 @@ export {
 	type ValidationResult,
 } from './actions/validate.js';
 export { trim } from './actions/trim.js';
-export { autogrow } from './actions/autogrow.js';
 
 // utils
 export { calculateAlignment } from './utils/calculate-alignment.js';
