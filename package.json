@@ -1,6 +1,6 @@
 {
 	"name": "@marianmeres/stuic",
-	"version": "1.61.0",
+	"version": "1.62.0",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build && npm run package && node ./scripts/date.js",
