@@ -1,10 +1,12 @@
+const _window = typeof window !== 'undefined' ? window : null;
+
 export class ColorScheme {
 	static readonly KEY = 'color-scheme';
 	static readonly DARK = 'dark';
 	static readonly LIGHT = 'light';
 
 	static getSystemValue = () =>
-		window?.matchMedia(`(prefers-color-scheme: ${ColorScheme.DARK})`).matches
+		_window?.matchMedia(`(prefers-color-scheme: ${ColorScheme.DARK})`).matches
 			? ColorScheme.DARK
 			: ColorScheme.LIGHT;
 
@@ -15,7 +17,7 @@ export class ColorScheme {
 
 	static toggle = () => {
 		// returns bool, indicating whether token is in the list after the call or not.
-		const isDark = window?.document.documentElement.classList.toggle(ColorScheme.DARK);
+		const isDark = _window?.document.documentElement.classList.toggle(ColorScheme.DARK);
 		localStorage?.setItem(ColorScheme.KEY, isDark ? ColorScheme.DARK : ColorScheme.LIGHT);
 	};
 

@@ -1,7 +1,9 @@
 import { derived, writable } from 'svelte/store';
 
+const _window = typeof window !== 'undefined' ? window : null;
+
 const getWindowSize = () => {
-	const { width, height, scale } = window?.visualViewport || {
+	const { width, height, scale } = _window?.visualViewport || {
 		width: 0,
 		height: 0,
 		scale: 1,
@@ -19,8 +21,8 @@ export const windowSize = {
 windowSize.touch();
 
 // intentionally not debounced
-window?.visualViewport?.addEventListener('resize', windowSize.touch);
-window?.visualViewport?.addEventListener('scroll', windowSize.touch);
+_window?.visualViewport?.addEventListener('resize', windowSize.touch);
+_window?.visualViewport?.addEventListener('scroll', windowSize.touch);
 
 // https://tailwindcss.com/docs/responsive-design
 interface Breakpoint {
