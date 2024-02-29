@@ -133,6 +133,7 @@ export const _setPosition = async (
 
 			// log('applying arrowStyles', arrowStyles);
 			Object.entries(arrowStyles).forEach(([k, v]) => {
+				// @ts-ignore
 				arrow.style[k] = v;
 			});
 

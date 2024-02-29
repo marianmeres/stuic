@@ -108,6 +108,12 @@ export { default as X } from './components/X/X.svelte';
 
 // actions
 export { autogrow } from './actions/autogrow.js';
+export {
+	draggable,
+	droppable,
+	type DraggableOptions,
+	type DroppableOptions,
+} from './actions/drag-drop.js';
 export { focusTrap } from './actions/focus-trap.js';
 export { onOutside } from './actions/on-outside.js';
 export { preSubmitValidityCheck } from './actions/pre-submit-validity-check.js';
