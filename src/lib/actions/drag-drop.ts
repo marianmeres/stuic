@@ -120,7 +120,9 @@ export const droppable = (node: HTMLElement, options: DroppableOptions) => {
 	};
 
 	const onDragover = (e: DragEvent) => {
-		e.preventDefault(); // this prevents animation
+		// prevent default to allow drop
+		// this alse prevents animation (todo: really?)
+		e.preventDefault();
 	};
 
 	const onDragleave = (e: DragEvent) => {
@@ -149,17 +151,13 @@ export const droppable = (node: HTMLElement, options: DroppableOptions) => {
 	};
 
 	//
-	let _listens = false;
 	const _init = (_opts: DroppableOptions) => {
-		if (_opts.enabled && !_listens) {
+		_removeListeners();
+		if (_opts.enabled) {
 			node.addEventListener('dragenter', onDragenter);
 			node.addEventListener('dragover', onDragover);
 			node.addEventListener('dragleave', onDragleave);
 			node.addEventListener('drop', onDrop);
-			_listens = true;
-		} else if (!_opts.enabled && _listens) {
-			_removeListeners();
-			_listens = false;
 		}
 	};
 
