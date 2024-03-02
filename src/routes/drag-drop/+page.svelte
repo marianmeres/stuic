@@ -24,14 +24,14 @@
 					payload: () => ({ index, label }),
 					effectAllowed: 'move', // "action"
 					isDragged,
+					logger: createClog('draggable'),
 					// allowedAxis: 'y', // not working
 				}}
-				class:cursor-grab={!$isDragged?.[id]}
-				class:cursor-grabbing={$isDragged?.[id]}
 				class:opacity-25={$isDragged?.[id]}
 				on:dragover|preventDefault
 			>
 				{label}
+				{$isDragged?.[id] ? 'dragged' : ''}
 				<div
 					use:droppable={{
 						id,
@@ -40,6 +40,7 @@
 							clog('onDrop', index, data, e.dataTransfer);
 						},
 						isDraggedOver,
+						logger: createClog('droppable'),
 					}}
 					class:bg-gray-300={$isDraggedOver?.[id]}
 					class:h-1={!$isDraggedOver?.[id]}
@@ -51,3 +52,12 @@
 		{/each}
 	</ul>
 </Layout>
+
+<style lang="scss">
+	:global(*[draggable='true']) {
+		cursor: grab;
+	}
+	:global(*[aria-grabbed='true']) {
+		cursor: grabbing;
+	}
+</style>
