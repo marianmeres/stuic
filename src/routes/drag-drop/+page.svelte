@@ -6,15 +6,15 @@
 
 	const clog = createClog('drag-drop +page');
 
-	const isDragged = writable<Record<string, boolean>>({});
-	const isDraggedOver = writable<Record<string, boolean>>({});
+	const isDragged = writable<string | null>(null);
+	const isDraggedOver = writable<string | null>(null);
 
 	// $: clog('isDragged', $isDragged);
 	// $: clog('isDraggedOver', $isDraggedOver);
 </script>
 
 <Layout>
-	<ul class="p-2" class:bg-gray-50={Object.values($isDragged).some((v) => v)}>
+	<ul class="p-2" class:bg-gray-50={$isDragged}>
 		{#each ['aaa', 'bbb', 'ccc'] as label, index}
 			{@const id = `li-${index}`}
 			<!-- on:dragover|preventDefault prevents the slow native "slide to original position" animation -->
@@ -27,7 +27,7 @@
 					logger: createClog('draggable'),
 					// allowedAxis: 'y', // not working
 				}}
-				class:opacity-25={$isDragged?.[id]}
+				class:opacity-25={$isDragged === id}
 				on:dragover|preventDefault
 			>
 				{label}
@@ -42,9 +42,9 @@
 						isDraggedOver,
 						logger: createClog('droppable'),
 					}}
-					class:bg-gray-300={$isDraggedOver?.[id]}
-					class:h-1={!$isDraggedOver?.[id]}
-					class:h-4={$isDraggedOver?.[id]}
+					class:bg-gray-300={$isDraggedOver === id}
+					class:h-1={$isDraggedOver !== id}
+					class:h-4={$isDraggedOver === id}
 				>
 					&nbsp;
 				</div>

@@ -23,7 +23,8 @@ export interface DraggableOptions {
 	enabled?: boolean;
 	payload?: any; // may be a function
 	effectAllowed?: EffectAllowed;
-	isDragged?: Writable<Record<string, boolean>>;
+	// isDragged?: Writable<Record<string, boolean>>;
+	isDragged?: Writable<string | null>; // id
 	logger?: (...args: any[]) => void;
 
 	// hm... I don't think this is doable with the native DnD api
@@ -50,7 +51,8 @@ export const draggable = (node: HTMLElement, options: DraggableOptions) => {
 			e.dataTransfer?.setData('stuic', JSON.stringify({ id: options.id, payload: pld }));
 			e.dataTransfer!.effectAllowed = options.effectAllowed!;
 		}
-		options?.isDragged?.update((old) => ({ ...old, [options.id!]: true }));
+		// options?.isDragged?.update((old) => ({ ...old, [options.id!]: true }));
+		options?.isDragged?.set(options.id!);
 		node.setAttribute('aria-grabbed', 'true');
 	};
 
@@ -64,7 +66,8 @@ export const draggable = (node: HTMLElement, options: DraggableOptions) => {
 	const onDragend = (e: DragEvent) => {
 		_log('onDragend', e.dataTransfer);
 		// e.preventDefault();
-		options?.isDragged?.update((old) => ({ ...old, [options.id!]: false }));
+		// options?.isDragged?.update((old) => ({ ...old, [options.id!]: false }));
+		options?.isDragged?.set(null);
 		node.setAttribute('aria-grabbed', 'false');
 	};
 
@@ -113,7 +116,8 @@ export interface DroppableOptions {
 	onDrop: (data: any, e: DragEvent) => void;
 	onDragover?: (data: any) => void;
 	dropEffect?: DropEffect;
-	isDraggedOver?: Writable<Record<string, boolean>>;
+	// isDraggedOver?: Writable<Record<string, boolean>>;
+	isDraggedOver?: Writable<string | null>;
 	logger?: (...args: any[]) => void;
 }
 export const droppable = (node: HTMLElement, options: DroppableOptions) => {
@@ -131,7 +135,8 @@ export const droppable = (node: HTMLElement, options: DroppableOptions) => {
 		// e.preventDefault();
 		_log('onDragenter', e.dataTransfer);
 		e.dataTransfer!.dropEffect = options.dropEffect!;
-		options?.isDraggedOver?.update((old) => ({ ...old, [options.id!]: true }));
+		// options?.isDraggedOver?.update((old) => ({ ...old, [options.id!]: true }));
+		options?.isDraggedOver?.set(options.id!);
 	};
 
 	const onDragover = (e: DragEvent) => {
@@ -144,7 +149,8 @@ export const droppable = (node: HTMLElement, options: DroppableOptions) => {
 	const onDragleave = (e: DragEvent) => {
 		_log('onDragleave', e.dataTransfer);
 		// e.preventDefault();
-		options?.isDraggedOver?.update((old) => ({ ...old, [options.id!]: false }));
+		// options?.isDraggedOver?.update((old) => ({ ...old, [options.id!]: false }));
+		options?.isDraggedOver?.set(null);
 	};
 
 	const onDrop = (e: DragEvent) => {
@@ -152,7 +158,8 @@ export const droppable = (node: HTMLElement, options: DroppableOptions) => {
 		e.preventDefault();
 		const target: HTMLElement = e.target as any;
 		e.dataTransfer!.dropEffect = options.dropEffect!;
-		options?.isDraggedOver?.update((old) => ({ ...old, [options.id!]: false }));
+		// options?.isDraggedOver?.update((old) => ({ ...old, [options.id!]: false }));
+		options?.isDraggedOver?.set(null);
 		if (_isFn(options.onDrop)) {
 			let stuicData: any = e.dataTransfer?.getData('stuic');
 			// prettier-ignore
