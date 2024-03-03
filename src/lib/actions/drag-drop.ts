@@ -81,6 +81,7 @@ export const draggable = (node: HTMLElement, options: DraggableOptions) => {
 	const _init = (_opts: DraggableOptions) => {
 		_log('_init', _opts);
 		_removeListeners();
+		options?.isDragged?.set(null);
 		if (_opts.enabled) {
 			node.setAttribute('draggable', 'true');
 			node.setAttribute('aria-grabbed', 'false');
@@ -179,6 +180,7 @@ export const droppable = (node: HTMLElement, options: DroppableOptions) => {
 	const _init = (_opts: DroppableOptions) => {
 		_log('_init', _opts);
 		_removeListeners();
+		options?.isDraggedOver?.set(null);
 		if (_opts.enabled) {
 			node.addEventListener('dragenter', onDragenter);
 			node.addEventListener('dragover', onDragover);

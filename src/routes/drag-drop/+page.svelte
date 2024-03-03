@@ -31,7 +31,7 @@
 				on:dragover|preventDefault
 			>
 				{label}
-				{$isDragged?.[id] ? 'dragged' : ''}
+				{$isDragged === id ? 'dragged' : ''}
 				<div
 					use:droppable={{
 						id,
