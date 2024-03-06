@@ -115,7 +115,7 @@ export interface DroppableOptions {
 	id?: string;
 	enabled?: boolean;
 	onDrop: (data: any, e: DragEvent) => void;
-	onDragover?: (data: any) => void;
+	onDragover?: (e: DragEvent) => void;
 	dropEffect?: DropEffect;
 	// isDraggedOver?: Writable<Record<string, boolean>>;
 	isDraggedOver?: Writable<string | null>;
@@ -142,9 +142,10 @@ export const droppable = (node: HTMLElement, options: DroppableOptions) => {
 
 	const onDragover = (e: DragEvent) => {
 		// _log('onDragover', e.dataTransfer); // too much spam
-		// prevent default to allow drop
-		// this alse prevents animation (todo: really?)
-		e.preventDefault();
+		options?.isDraggedOver?.set(options.id!);
+		if (_isFn(options.onDragover)) {
+			return options.onDragover!(e);
+		}
 	};
 
 	const onDragleave = (e: DragEvent) => {

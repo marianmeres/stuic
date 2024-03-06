@@ -24,29 +24,33 @@
 					payload: () => ({ index, label }),
 					effectAllowed: 'move', // "action"
 					isDragged,
-					logger: createClog('draggable'),
-					// allowedAxis: 'y', // not working
+					// logger: createClog('draggable'),
 				}}
 				class:opacity-25={$isDragged === id}
 				on:dragover|preventDefault
+				class="flex items-center"
+				use:droppable={{
+					id,
+					dropEffect: 'move', // "acceptance"
+					onDrop: (data, e) => {
+						clog('onDrop', index, data, e.dataTransfer);
+					},
+					onDragover: (e) => {
+						// clog('onDragover', index);
+					},
+					isDraggedOver,
+					// logger: createClog('droppable'),
+				}}
+				class:border={$isDraggedOver === id}
+				class:border-black={$isDraggedOver === id}
 			>
+				{id}
 				{label}
 				{$isDragged === id ? 'dragged' : ''}
-				<div
-					use:droppable={{
-						id,
-						dropEffect: 'move', // "acceptance"
-						onDrop: (data, e) => {
-							clog('onDrop', index, data, e.dataTransfer);
-						},
-						isDraggedOver,
-						logger: createClog('droppable'),
-					}}
-					class:bg-gray-300={$isDraggedOver === id}
-					class:h-1={$isDraggedOver !== id}
-					class:h-4={$isDraggedOver === id}
-				>
-					&nbsp;
+				&nbsp;
+				<div class="flex items-center space-x-2">
+					<div>inner a</div>
+					<div>inner b</div>
 				</div>
 			</li>
 		{/each}
