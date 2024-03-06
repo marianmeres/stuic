@@ -27,7 +27,6 @@
 					// logger: createClog('draggable'),
 				}}
 				class:opacity-25={$isDragged === id}
-				on:dragover|preventDefault
 				class="flex items-center"
 				use:droppable={{
 					id,

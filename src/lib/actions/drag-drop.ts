@@ -142,6 +142,11 @@ export const droppable = (node: HTMLElement, options: DroppableOptions) => {
 
 	const onDragover = (e: DragEvent) => {
 		// _log('onDragover', e.dataTransfer); // too much spam
+
+		// this is important, otherwise onDrop will no be fired
+		// (so we're preventing default not to prevent future onDrop)
+		e.preventDefault();
+
 		options?.isDraggedOver?.set(options.id!);
 		if (_isFn(options.onDragover)) {
 			return options.onDragover!(e);
