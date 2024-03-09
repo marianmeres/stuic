@@ -15,7 +15,7 @@ export type AlertConfirmPromptVariant = 'info' | 'success' | 'warn' | 'error';
 
 type FnOnOK = (value: any) => any;
 type FnOnCancel = (value: false) => any;
-type FnOnEscape = () => undefined;
+type FnOnEscape = () => void;
 type FnOnCustom = (value: any) => any;
 
 export interface AlertConfirmPromptKnownClasses {

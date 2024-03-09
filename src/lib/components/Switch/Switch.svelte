@@ -1,6 +1,8 @@
 <script lang="ts" context="module">
 	import { twMerge } from 'tailwind-merge';
 
+	export type SwitchPreHook = (previosValue: boolean) => Promise<void | boolean>;
+
 	export class SwitchConfig {
 		static defaultSize: 'xs' | 'sm' | 'md' | 'lg' | 'xl' = 'md';
 		static defaultVariant: string | undefined = undefined;
@@ -74,9 +76,8 @@
 	export let stopPropagation = true;
 	export let preventDefault = false;
 
-	type Hook = (previosValue: boolean) => Promise<void | boolean>;
 	const _defaultNoopHook = () => Promise.resolve(undefined);
-	export let preHook: Hook = _defaultNoopHook;
+	export let preHook: SwitchPreHook = _defaultNoopHook;
 
 	const _whitelist = ['xs', 'sm', 'md', 'lg', 'xl'];
 	export let size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' = SwitchConfig.defaultSize;

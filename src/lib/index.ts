@@ -100,7 +100,11 @@ export {
 export { default as Popover } from './components/Popover/Popover.svelte';
 
 //
-export { default as Switch, SwitchConfig } from './components/Switch/Switch.svelte';
+export {
+	default as Switch,
+	SwitchConfig,
+	type SwitchPreHook,
+} from './components/Switch/Switch.svelte';
 export { default as Thc, type THC, isTHCNotEmpty } from './components/Thc/Thc.svelte';
 
 //
