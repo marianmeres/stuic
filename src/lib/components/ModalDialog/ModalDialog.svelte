@@ -1,7 +1,16 @@
-<script lang="ts">
+<script lang="ts" context="module">
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { focusTrap } from '../../actions/focus-trap.js';
+	import { writable, type Writable } from 'svelte/store';
 
+	export interface ModalDialogAPI {
+		open: () => void;
+		close: () => void;
+		isOpen: Writable<boolean>;
+	}
+</script>
+
+<script lang="ts">
 	const dispatch = createEventDispatcher();
 
 	// sane defaults
@@ -20,23 +29,29 @@
 	let _open = !!openOnMount;
 
 	// for parent consumption
-	export const doToggle = () => (_open = !_open);
-	export const doOpen = () => (_open = true);
-	export const doClose = () => (_open = false);
+	export function toggle() {
+		_open = !_open;
+	}
+	export function open() {
+		_open = true;
+	}
+	export function close() {
+		_open = false;
+	}
 
 	//
 	$: _open ? _el?.showModal() : _el?.close();
 	$: dispatch(_open ? 'open' : 'close');
 
 	// readonly for parent consumption
-	export let isOpen = _open;
-	$: isOpen = _open;
+	export const isOpen = writable<boolean>(_open);
+	$: $isOpen = _open;
 
 	onMount(() => {
 		const _unsubs: CallableFunction[] = [];
 
 		//
-		const _handleClose = (e: Event) => doClose();
+		const _handleClose = (e: Event) => close();
 		_el.addEventListener('close', _handleClose);
 		_unsubs.push(() => _el.removeEventListener('close', _handleClose));
 
@@ -47,14 +62,14 @@
 
 		// handle cancel manually
 		const _handleKeyDown = (e: KeyboardEvent) =>
-			closeOnEscape && e.key === 'Escape' && doClose();
+			closeOnEscape && e.key === 'Escape' && close();
 		document.addEventListener('keydown', _handleKeyDown, true);
 		_unsubs.push(() => document.removeEventListener('keydown', _handleKeyDown, true));
 
 		// close on outside click ("outside" is actualy the dialog's backdrop here... that's
 		// why we're not using the onOutside action)
 		const _handleClick = (e: MouseEvent) => {
-			closeOnOutsideClick && /dialog/i.test(e.target?.tagName) && doClose();
+			closeOnOutsideClick && /dialog/i.test(e.target?.tagName) && close();
 		};
 		_el.addEventListener('click', _handleClick);
 		_unsubs.push(() => _el.removeEventListener('click', _handleClick));

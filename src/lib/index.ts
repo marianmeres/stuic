@@ -78,7 +78,10 @@ export {
 	type FieldsetConfigClasses,
 } from './components/Input/Fieldset.svelte';
 
-export { default as ModalDialog } from './components/ModalDialog/ModalDialog.svelte';
+export {
+	default as ModalDialog,
+	type ModalDialogAPI,
+} from './components/ModalDialog/ModalDialog.svelte';
 
 //
 export {
