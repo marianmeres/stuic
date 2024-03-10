@@ -106,7 +106,8 @@ export function focusTrap(node: HTMLElement, options: FocusTrapOptions = {}) {
 	// Lifecycle
 	return {
 		update(options: FocusTrapOptions = {}) {
-			options?.enabled ? queryElements(false) : cleanup();
+			enabled = !!options?.enabled;
+			enabled ? queryElements(false) : cleanup();
 		},
 		destroy() {
 			cleanup();
