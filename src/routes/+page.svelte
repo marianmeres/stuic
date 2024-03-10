@@ -9,11 +9,12 @@
 		'dismissible-message', 'drag-drop', 'drawer',
 		'hover-expandable-width',
 		'input',
+		'modal-dialog',
 		'notifications',
 		'on-outside',
 		'popover', 
 		'spinner', 'switch', 
-		'table', 'thc', 'tooltip', 'tree',
+		'table', 'thc', 'tooltip',
 		'window-size',
 		'x'
 	].toSorted();
