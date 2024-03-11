@@ -241,6 +241,18 @@
 							? { ...(validate === true ? {} : validate), setValidationResult }
 							: undefined}
 						use:autogrow={{ allowed: textareaAutoEnlarge }}
+						on:blur
+						on:change
+						on:click
+						on:focus
+						on:input
+						on:keydown
+						on:keyup
+						on:touchstart
+						on:touchend
+						on:touchcancel
+						on:mouseenter
+						on:mouseleave
 						{...$$restProps}
 					/>
 				{:else}
@@ -269,6 +281,18 @@
 						use:validateAction={validate
 							? { ...(validate === true ? {} : validate), setValidationResult }
 							: undefined}
+						on:blur
+						on:change
+						on:click
+						on:focus
+						on:input
+						on:keydown
+						on:keyup
+						on:touchstart
+						on:touchend
+						on:touchcancel
+						on:mouseenter
+						on:mouseleave
 						{...$$restProps}
 					/>
 				{/if}

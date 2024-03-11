@@ -129,11 +129,13 @@
 		data-button-shadow={shadow}
 		data-button-rounded={rounded}
 		data-button-variant={variant}
+		on:focus
+		on:blur
 		on:click
 		on:change
 		on:keydown
 		on:keyup
-		on:touchstart|passive
+		on:touchstart
 		on:touchend
 		on:touchcancel
 		on:mouseenter
@@ -152,11 +154,13 @@
 		data-button-rounded={rounded}
 		data-button-variant={variant}
 		{...$$restProps}
+		on:focus
+		on:blur
 		on:click
 		on:change
 		on:keydown
 		on:keyup
-		on:touchstart|passive
+		on:touchstart
 		on:touchend
 		on:touchcancel
 		on:mouseenter
