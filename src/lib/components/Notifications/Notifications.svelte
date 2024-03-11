@@ -11,6 +11,7 @@
 		NotificationType,
 		createNotificationsStore,
 	} from './notifications.js';
+	import { disableScrollHandling } from '$app/navigation';
 
 	const X_POSITIONS = ['left', 'center', 'right'] as const;
 	const Y_POSITIONS = ['top', 'center', 'bottom'] as const;
@@ -173,64 +174,67 @@
 	const _isFn = (v: any) => typeof v === 'function';
 </script>
 
-<div class={_wrapClass} aria-live="assertive">
-	<div class={_wrapInnerClass}>
-		{#if $notifications.length}
-			{#each $notifications as n}
-				{@const iconFn = _iconFn(n)}
-				<!-- use your own component -->
-				{#if n?.component}
-					<svelte:component
-						this={n.component.component || n.component}
-						{...n.component.props || {}}
-						notification={n}
-						{notifications}
-					/>
-				{:else}
-					<!-- svelte-ignore 
+{#if $notifications.length}
+	<dialog open>
+		<div class={_wrapClass}>
+			<div class={_wrapInnerClass}>
+				{#each $notifications as n}
+					{@const iconFn = _iconFn(n)}
+					<!-- use your own component -->
+					{#if n?.component}
+						<svelte:component
+							this={n.component.component || n.component}
+							{...n.component.props || {}}
+							notification={n}
+							{notifications}
+						/>
+					{:else}
+						<!-- svelte-ignore 
                             a11y-click-events-have-key-events 
                             a11y-no-noninteractive-element-interactions 
                             a11y-mouse-events-have-key-events -->
-					<div
-						transition:fade|global={{ duration: 200 }}
-						class={_boxClass(n)}
-						class:cursor-pointer={typeof n.onClick === 'function'}
-						data-notification-type={n.type}
-						data-notification-multiple={n.count > 1 ? true : undefined}
-						role="alert"
-						on:mouseover={() => notifications.event(n.id, notifications.EVENT.MOUSEOVER)}
-						on:mouseout={() => notifications.event(n.id, notifications.EVENT.MOUSEOUT)}
-						on:click={() => notifications.event(n.id, notifications.EVENT.CLICK)}
-					>
-						{#if n.count > 1}
-							<div class={_countClass(n)}>
-								{n.count}
-							</div>
-						{/if}
-
-						{#if _isFn(iconFn)}
-							<div class={_iconClass(n)}>{@html iconFn()}</div>
-						{/if}
-
-						<div class={_contentClass(n)}>
-							<Thc
-								thc={n.content}
-								forceAsHtml={n.forceAsHtml ?? forceAsHtml}
-								notification={n}
-								{notifications}
-							/>
-						</div>
-
-						<button
-							class={_buttonClass(n)}
-							aria-label={ariaCloseLabel}
-							on:click|preventDefault|stopPropagation={() => notifications.remove(n.id)}
+						<div
+							transition:fade|global={{ duration: 200 }}
+							class={_boxClass(n)}
+							class:cursor-pointer={typeof n.onClick === 'function'}
+							data-notification-type={n.type}
+							data-notification-multiple={n.count > 1 ? true : undefined}
+							role="alert"
+							on:mouseover={() =>
+								notifications.event(n.id, notifications.EVENT.MOUSEOVER)}
+							on:mouseout={() => notifications.event(n.id, notifications.EVENT.MOUSEOUT)}
+							on:click={() => notifications.event(n.id, notifications.EVENT.CLICK)}
 						>
-							<X class={_xClass(n)} />
-						</button>
-					</div>
-				{/if}
-			{/each}
-		{/if}
-	</div>
-</div>
+							{#if n.count > 1}
+								<div class={_countClass(n)}>
+									{n.count}
+								</div>
+							{/if}
+
+							{#if _isFn(iconFn)}
+								<div class={_iconClass(n)}>{@html iconFn()}</div>
+							{/if}
+
+							<div class={_contentClass(n)}>
+								<Thc
+									thc={n.content}
+									forceAsHtml={n.forceAsHtml ?? forceAsHtml}
+									notification={n}
+									{notifications}
+								/>
+							</div>
+
+							<button
+								class={_buttonClass(n)}
+								aria-label={ariaCloseLabel}
+								on:click|preventDefault|stopPropagation={() => notifications.remove(n.id)}
+							>
+								<X class={_xClass(n)} />
+							</button>
+						</div>
+					{/if}
+				{/each}
+			</div>
+		</div>
+	</dialog>
+{/if}
