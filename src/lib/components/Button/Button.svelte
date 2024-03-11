@@ -135,8 +135,9 @@
 		on:change
 		on:keydown
 		on:keyup
-		on:touchstart
-		on:touchend
+		on:touchstart|passive
+		on:touchend|passive
+		on:touchmove|passive
 		on:touchcancel
 		on:mouseenter
 		on:mouseleave
@@ -160,8 +161,9 @@
 		on:change
 		on:keydown
 		on:keyup
-		on:touchstart
-		on:touchend
+		on:touchstart|passive
+		on:touchend|passive
+		on:touchmove|passive
 		on:touchcancel
 		on:mouseenter
 		on:mouseleave

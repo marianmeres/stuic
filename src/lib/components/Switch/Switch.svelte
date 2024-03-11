@@ -133,7 +133,8 @@
 	on:keydown
 	on:keyup
 	on:touchstart|passive
-	on:touchend
+	on:touchend|passive
+	on:touchmove|passive
 	on:touchcancel
 	on:mouseenter
 	on:mouseleave
