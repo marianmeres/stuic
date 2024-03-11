@@ -104,9 +104,9 @@
 				on:input
 				on:keydown
 				on:keyup
-				on:touchstart|passive
-				on:touchend|passive
-				on:touchmove|passive
+				on:touchstart
+				on:touchend
+				on:touchmove
 				on:touchcancel
 				on:mouseenter
 				on:mouseleave
