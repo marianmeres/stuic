@@ -97,6 +97,18 @@
 				{tabindex}
 				{required}
 				{size}
+				on:blur
+				on:change
+				on:click
+				on:focus
+				on:input
+				on:keydown
+				on:keyup
+				on:touchstart
+				on:touchend
+				on:touchcancel
+				on:mouseenter
+				on:mouseleave
 			/>
 		{/each}
 	</div>

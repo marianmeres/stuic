@@ -136,6 +136,18 @@
 			use:validateAction={validate
 				? { ...(validate === true ? {} : validate), setValidationResult }
 				: undefined}
+			on:blur
+			on:change
+			on:click
+			on:focus
+			on:input
+			on:keydown
+			on:keyup
+			on:touchstart
+			on:touchend
+			on:touchcancel
+			on:mouseenter
+			on:mouseleave
 		/>
 	</div>
 	<div class="ml-3 w-full">
