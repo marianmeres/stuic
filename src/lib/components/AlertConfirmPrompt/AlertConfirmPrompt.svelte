@@ -7,9 +7,13 @@
 		Button,
 		Field,
 		FieldSelect,
+		Notifications,
 		Thc,
 		createAlertConfirmPromptStore,
+		createNotificationsStore,
 		focusTrap,
+		type NOTIFICATIONS_POSX,
+		type NOTIFICATIONS_POSY,
 	} from '../../index.js';
 	import { acpDefaultIcons } from './acp-icons.js';
 	import type {
@@ -87,6 +91,16 @@
 <script lang="ts">
 	const { ALERT, CONFIRM, PROMPT } = AlertConfirmPromptType;
 	const clog = createClog('AlertConfirmPrompt');
+
+	// ADVANCED OPTIONAL FEATURE: allow notifs on top layer as well if needed...
+	export let notifications: ReturnType<typeof createNotificationsStore> | undefined =
+		undefined;
+	export let notificationsPositionConfig: Partial<{
+		posX: NOTIFICATIONS_POSX;
+		posXMobile: NOTIFICATIONS_POSX;
+		posY: NOTIFICATIONS_POSY;
+		posYMobile: NOTIFICATIONS_POSY;
+	}> = {};
 
 	// instance created by createAlertConfirmPromptStore()
 	export let acp: ReturnType<typeof createAlertConfirmPromptStore>;
@@ -366,6 +380,10 @@
 				</div>
 			{/if}
 		</form>
+	{/if}
+
+	{#if notifications}
+		<Notifications {notifications} {...notificationsPositionConfig || {}} />
 	{/if}
 </dialog>
 

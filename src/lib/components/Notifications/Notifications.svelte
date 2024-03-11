@@ -11,7 +11,6 @@
 		NotificationType,
 		createNotificationsStore,
 	} from './notifications.js';
-	import { disableScrollHandling } from '$app/navigation';
 
 	const X_POSITIONS = ['left', 'center', 'right'] as const;
 	const Y_POSITIONS = ['top', 'center', 'bottom'] as const;
@@ -20,10 +19,15 @@
 	type ArrayElement<T extends ReadonlyArray<unknown>> =
 		T extends ReadonlyArray<infer ArrayElement> ? ArrayElement : never;
 
-	type POSX = ArrayElement<typeof X_POSITIONS>;
-	type POSY = ArrayElement<typeof Y_POSITIONS>;
+	export type NOTIFICATIONS_POSX = ArrayElement<typeof X_POSITIONS>;
+	export type NOTIFICATIONS_POSY = ArrayElement<typeof Y_POSITIONS>;
 
-	const DEFAULT: { posX: POSX; posXMobile: POSX; posY: POSY; posYMobile: POSY } = {
+	const DEFAULT: {
+		posX: NOTIFICATIONS_POSX;
+		posXMobile: NOTIFICATIONS_POSX;
+		posY: NOTIFICATIONS_POSY;
+		posYMobile: NOTIFICATIONS_POSY;
+	} = {
 		posX: 'center',
 		posXMobile: 'center',
 		posY: 'top',
@@ -120,15 +124,27 @@
 	export let ariaCloseLabel = 'Discard';
 
 	// right|center|left
-	export let posX: POSX = DEFAULT.posX;
-	export let posXMobile: POSX = DEFAULT.posXMobile;
+	export let posX: NOTIFICATIONS_POSX = DEFAULT.posX;
+	export let posXMobile: NOTIFICATIONS_POSX = DEFAULT.posXMobile;
 
 	// top|center|bottom
-	export let posY: POSY = DEFAULT.posY;
-	export let posYMobile: POSY = DEFAULT.posYMobile;
+	export let posY: NOTIFICATIONS_POSY = DEFAULT.posY;
+	export let posYMobile: NOTIFICATIONS_POSY = DEFAULT.posYMobile;
 
 	// sanitize
-	let x: POSX, y: POSY, xMobile: POSX, yMobile: POSY;
+	let x: NOTIFICATIONS_POSX,
+		y: NOTIFICATIONS_POSY,
+		xMobile: NOTIFICATIONS_POSX,
+		yMobile: NOTIFICATIONS_POSY;
+
+	export function getPositionConfig() {
+		return {
+			posX: x,
+			posY: y,
+			posXMobile: xMobile,
+			posYMobile: yMobile,
+		};
+	}
 
 	// x
 	$: x = X_POSITIONS.includes(posX) ? posX : DEFAULT.posX;

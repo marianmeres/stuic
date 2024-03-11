@@ -99,6 +99,8 @@ export {
 export {
 	default as Notifications,
 	NotificationsConfig,
+	type NOTIFICATIONS_POSX,
+	type NOTIFICATIONS_POSY,
 } from './components/Notifications/Notifications.svelte';
 
 //

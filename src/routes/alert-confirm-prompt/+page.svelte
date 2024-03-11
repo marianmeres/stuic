@@ -3,15 +3,18 @@
 	import { iconBs1CircleFill, iconBs2CircleFill } from '@marianmeres/icons-fns';
 	import {
 		AlertConfirmPrompt,
+		Notifications,
 		createAlert,
 		createAlertConfirmPromptStore,
 		createConfirm,
+		createNotificationsStore,
 		createPrompt,
 	} from '../../lib';
 	import Layout from '../_components/Layout.svelte';
 	import { dummySentence } from '../_utils/dummy-text';
 	import FooContent from './FooContent.svelte';
 	import { sleep } from './sleep';
+	import { onMount } from 'svelte';
 
 	const clog = createClog('alert-confirm-prompt page');
 	const acp = createAlertConfirmPromptStore();
@@ -19,6 +22,10 @@
 	const alert = createAlert(acp);
 	const confirm = createConfirm(acp, { forceAsHtml: true });
 	const prompt = createPrompt(acp);
+
+	const notifications = createNotificationsStore([], {
+		defaultTtl: 120,
+	});
 </script>
 
 <Layout>
@@ -109,7 +116,7 @@
 				const r = await confirm(dummySentence(5), {
 					content: {
 						component: FooContent,
-						props: { context },
+						props: { context, notifications },
 					},
 				});
 				r && clog(context?.result);
@@ -201,6 +208,10 @@
 			triple
 		</button>
 	</div>
+	<hr />
+	<button class="p-2 m-4 border" on:click={() => notifications.info('Foo')}>
+		trigger test notification
+	</button>
 </Layout>
 
 <AlertConfirmPrompt
@@ -220,4 +231,7 @@
 			icon: 'bg-orange-100 text-orange-600',
 		},
 	}}
+	{notifications}
 />
+
+<Notifications {notifications} />
