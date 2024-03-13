@@ -62,7 +62,7 @@
 
 		// handle cancel manually
 		const _handleKeyDown = (e: KeyboardEvent) => {
-			if (closeOnEscape && e.key === 'Escape') {
+			if (_open && closeOnEscape && e.key === 'Escape') {
 				e.stopPropagation();
 				close();
 			}
@@ -73,7 +73,7 @@
 		// close on outside click ("outside" is actualy the dialog's backdrop here... that's
 		// why we're not using the onOutside action)
 		const _handleClick = (e: MouseEvent) => {
-			closeOnOutsideClick && /dialog/i.test(e.target?.tagName) && close();
+			_open && closeOnOutsideClick && /dialog/i.test(e.target?.tagName) && close();
 		};
 		_el.addEventListener('click', _handleClick);
 		_unsubs.push(() => _el.removeEventListener('click', _handleClick));
