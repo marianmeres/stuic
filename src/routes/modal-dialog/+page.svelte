@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { writable, type Writable } from 'svelte/store';
+	import { createClog } from '@marianmeres/clog';
+	import { writable } from 'svelte/store';
 	import { ModalDialog, type ModalDialogAPI } from '../../lib';
 	import Layout from '../_components/Layout.svelte';
-	import { createClog } from '@marianmeres/clog';
 
 	const clog = createClog('modal-dialog page');
 
@@ -21,9 +21,7 @@
 	on:close={() => clog('close')}
 	class="drop-shadow-lg bg-white rounded focus:outline-none"
 >
-	{#if $isOpen}
-		<div class="min-w-40 min-h-20 flex items-center justify-center">
-			<button on:click={modal.close}>close</button>
-		</div>
-	{/if}
+	<div class="min-w-40 min-h-20 flex items-center justify-center">
+		<button on:click={modal.close}>close</button>
+	</div>
 </ModalDialog>

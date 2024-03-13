@@ -92,5 +92,7 @@
 	style="{style ? `${style}; ` : ''}padding: 0 !important;"
 	class={_class}
 >
-	<slot />
+	{#if _open}
+		<slot />
+	{/if}
 </dialog>
