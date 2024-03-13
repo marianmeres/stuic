@@ -61,8 +61,12 @@
 		_unsubs.push(() => _el.removeEventListener('cancel', _handleCancel));
 
 		// handle cancel manually
-		const _handleKeyDown = (e: KeyboardEvent) =>
-			closeOnEscape && e.key === 'Escape' && close();
+		const _handleKeyDown = (e: KeyboardEvent) => {
+			if (closeOnEscape && e.key === 'Escape') {
+				e.stopPropagation();
+				close();
+			}
+		};
 		document.addEventListener('keydown', _handleKeyDown, true);
 		_unsubs.push(() => document.removeEventListener('keydown', _handleKeyDown, true));
 
