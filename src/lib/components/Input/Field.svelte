@@ -231,6 +231,7 @@
 						class={_inputClass}
 						class:cursor-not-allowed={disabled}
 						{name}
+						{placeholder}
 						{disabled}
 						{readonly}
 						{required}
