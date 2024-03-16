@@ -15,6 +15,7 @@
 	import FooContent from './FooContent.svelte';
 	import { sleep } from './sleep';
 	import { onMount } from 'svelte';
+	import { writable } from 'svelte/store';
 
 	const clog = createClog('alert-confirm-prompt page');
 	const acp = createAlertConfirmPromptStore();
@@ -26,6 +27,9 @@
 	const notifications = createNotificationsStore([], {
 		defaultTtl: 120,
 	});
+
+	// pro
+	$: clog($acp);
 </script>
 
 <Layout>
@@ -182,6 +186,33 @@
 				)}
 		>
 			prompt select
+		</button>
+
+		<button
+			class="border px-2 m-2"
+			on:click={async () => {
+				await prompt(
+					'<a href="https://www.youtube.com/watch?v=krokQtkvd9M" target="_blank">Hint...</a>',
+					"let's ...?",
+					{
+						onOk: (value) => {
+							if (/let'?s go/i.test(value)) {
+								acp.close();
+								notifications?.success('Correct!');
+							} else {
+								// this is important to reset the dialog's value after submit
+								acp.setHeadValue(value);
+								notifications?.error('Wrong answer.');
+							}
+						},
+						promptFieldProps: { type: 'textarea' },
+						iconFn: false,
+						title: 'Hey ho... ?',
+					}
+				);
+			}}
+		>
+			prompt validate
 		</button>
 
 		<hr class="my-4" />

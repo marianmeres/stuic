@@ -100,6 +100,8 @@ export const createAlertConfirmPromptStore = (
 			o.variant = 'info';
 		}
 
+		o._id = Math.random().toString(36).slice(2);
+
 		//
 		_stack.update((old) => [...old, o] as AlertConfirmPromptOptions[]);
 	};
@@ -117,6 +119,16 @@ export const createAlertConfirmPromptStore = (
 		shift();
 	};
 
+	// will update value of the current (at index 0) element. Relevant for prompts, when validation
+	// is needed
+	const setHeadValue = (value: string) => {
+		const head = _stack.get()[0];
+		if (head) {
+			head.value = value;
+			_stack.update((old) => [head, ...old.slice(1)]);
+		}
+	};
+
 	return {
 		subscribe: _stack.subscribe,
 		get: _stack.get,
@@ -126,7 +138,8 @@ export const createAlertConfirmPromptStore = (
 		escape,
 		// human alias
 		close: shift,
-
+		//
+		setHeadValue,
 		// sugar below
 
 		//

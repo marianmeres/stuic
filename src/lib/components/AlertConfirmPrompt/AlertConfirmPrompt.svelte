@@ -116,11 +116,10 @@
 
 	//
 	$: dialog = $acp[0];
-	// $: clog(dialog);
+	// $: clog(1111111, dialog);
 
 	//
 	let _dialogEl: HTMLDialogElement;
-	let _formEl: HTMLFormElement;
 
 	//
 	let value: any = null;
@@ -201,185 +200,186 @@
 	tabindex="-1"
 >
 	{#if dialog}
-		<!-- svelte-ignore a11y-autofocus -->
-		<form
-			method="dialog"
-			use:focusTrap={{ autoFocusFirst: false }}
-			tabindex="-1"
-			autofocus={dialog.type !== PROMPT}
-			data-acp-type={dialog?.type}
-			data-acp-variant={dialog?.variant}
-			data-acp-is-pending={isPending}
-			class={_dialogClass}
-			bind:this={_formEl}
-			on:submit|preventDefault={async () => {
-				// clog('on:submit', value);
-				isPending = true;
-				await Promise.resolve(dialog.onOk(dialog.type === PROMPT ? value : true));
-				isPending = false;
-				value = null;
-			}}
-			on:reset|preventDefault={async () => {
-				// clog('on:reset', value);
-				isPending = true;
-				await Promise.resolve(dialog.onCancel(false));
-				isPending = false;
-				value = null;
-			}}
-		>
-			<!-- this sm:flex is not configurable -->
-			<div class="sm:flex sm:items-start">
-				{#if _isFn(iconFn)}
-					<div
-						class={_iconClass}
-						data-acp-type={dialog?.type}
-						data-acp-variant={dialog?.variant}
-						data-acp-is-pending={isPending}
-					>
-						{@html iconFn()}
-					</div>
-				{/if}
-				<div class={_contentBlockClass}>
-					<h1
-						class={_titleClass}
-						data-acp-type={dialog?.type}
-						data-acp-variant={dialog?.variant}
-						data-acp-is-pending={isPending}
-					>
-						<Thc thc={dialog.title} {forceAsHtml} />
-					</h1>
-					{#if dialog.content}
-						<div
-							class={_contentClass}
-							data-acp-type={dialog?.type}
-							data-acp-variant={dialog?.variant}
-							data-acp-is-pending={isPending}
-						>
-							<Thc thc={dialog.content} {forceAsHtml} />
-						</div>
-					{/if}
-					{#if dialog.type === PROMPT}
-						<div
-							class={_inputBoxClass}
-							data-acp-type={dialog?.type}
-							data-acp-variant={dialog?.variant}
-							data-acp-is-pending={isPending}
-						>
-							{#if dialog?.promptFieldProps?.options?.length}
-								<FieldSelect
-									class={_inputFieldClass}
-									bind:value
-									data-acp-type={dialog?.type}
-									data-acp-variant={dialog?.variant}
-									data-acp-is-pending={isPending}
-									autofocus
-									size="sm"
-									validate
-									{...dialog.promptFieldProps}
-								/>
-							{:else}
-								<Field
-									class={_inputFieldClass}
-									bind:value
-									data-acp-type={dialog?.type}
-									data-acp-variant={dialog?.variant}
-									data-acp-is-pending={isPending}
-									autofocus
-									size="sm"
-									validate
-									{...dialog?.promptFieldProps || {}}
-								/>
-							{/if}
-						</div>
-					{/if}
-				</div>
-			</div>
-			<menu
-				class={_menuClass}
+		{#key dialog.id}
+			<!-- svelte-ignore a11y-autofocus -->
+			<form
+				method="dialog"
+				use:focusTrap={{ autoFocusFirst: false }}
+				tabindex="-1"
+				autofocus={dialog.type !== PROMPT}
 				data-acp-type={dialog?.type}
 				data-acp-variant={dialog?.variant}
 				data-acp-is-pending={isPending}
+				class={_dialogClass}
+				on:submit|preventDefault={async () => {
+					// clog('on:submit', value);
+					isPending = true;
+					await Promise.resolve(dialog.onOk(dialog.type === PROMPT ? value : true));
+					isPending = false;
+					value = null;
+				}}
+				on:reset|preventDefault={async () => {
+					// clog('on:reset', value);
+					isPending = true;
+					await Promise.resolve(dialog.onCancel(false));
+					isPending = false;
+					value = null;
+				}}
 			>
-				{#if dialog.type !== ALERT}
-					<li
-						class={_menuLiClass}
-						data-acp-dialog-type={dialog?.type}
-						data-acp-variant={dialog?.variant}
-						data-acp-is-pending={isPending}
-					>
-						<Button
-							class={_buttonClass}
-							type="reset"
-							data-acp-button-type="cancel"
-							data-acp-dialog-type={dialog?.type}
+				<!-- this sm:flex is not configurable -->
+				<div class="sm:flex sm:items-start">
+					{#if _isFn(iconFn)}
+						<div
+							class={_iconClass}
+							data-acp-type={dialog?.type}
 							data-acp-variant={dialog?.variant}
 							data-acp-is-pending={isPending}
-							disabled={isPending}
 						>
-							<Thc thc={dialog.labelCancel} {forceAsHtml} />
-						</Button>
-					</li>
-				{/if}
-				{#if dialog.labelCustom && _isFn(dialog.onCustom)}
-					<li
-						class={_menuLiClass}
-						data-acp-dialog-type={dialog?.type}
-						data-acp-variant={dialog?.variant}
-						data-acp-is-pending={isPending}
-					>
-						<Button
-							class={_buttonClass}
-							on:click={async (e) => {
-								e.preventDefault();
-								isPending = true;
-								await Promise.resolve(dialog.onCustom(value));
-								isPending = false;
-								value = null;
-							}}
-							type="button"
-							data-acp-button-type="custom"
-							data-acp-dialog-type={dialog?.type}
+							{@html iconFn()}
+						</div>
+					{/if}
+					<div class={_contentBlockClass}>
+						<h1
+							class={_titleClass}
+							data-acp-type={dialog?.type}
 							data-acp-variant={dialog?.variant}
 							data-acp-is-pending={isPending}
-							disabled={isPending}
 						>
-							<Thc thc={dialog.labelCustom} {forceAsHtml} />
-						</Button>
-					</li>
-				{/if}
-				<li
-					class={_menuLiClass}
+							<Thc thc={dialog.title} {forceAsHtml} />
+						</h1>
+						{#if dialog.content}
+							<div
+								class={_contentClass}
+								data-acp-type={dialog?.type}
+								data-acp-variant={dialog?.variant}
+								data-acp-is-pending={isPending}
+							>
+								<Thc thc={dialog.content} {forceAsHtml} />
+							</div>
+						{/if}
+						{#if dialog.type === PROMPT}
+							<div
+								class={_inputBoxClass}
+								data-acp-type={dialog?.type}
+								data-acp-variant={dialog?.variant}
+								data-acp-is-pending={isPending}
+							>
+								{#if dialog?.promptFieldProps?.options?.length}
+									<FieldSelect
+										class={_inputFieldClass}
+										bind:value
+										data-acp-type={dialog?.type}
+										data-acp-variant={dialog?.variant}
+										data-acp-is-pending={isPending}
+										autofocus
+										size="sm"
+										validate
+										{...dialog.promptFieldProps}
+									/>
+								{:else}
+									<Field
+										class={_inputFieldClass}
+										bind:value
+										data-acp-type={dialog?.type}
+										data-acp-variant={dialog?.variant}
+										data-acp-is-pending={isPending}
+										autofocus
+										size="sm"
+										validate
+										{...dialog?.promptFieldProps || {}}
+									/>
+								{/if}
+							</div>
+						{/if}
+					</div>
+				</div>
+				<menu
+					class={_menuClass}
 					data-acp-type={dialog?.type}
 					data-acp-variant={dialog?.variant}
 					data-acp-is-pending={isPending}
 				>
-					<Button
-						class={_buttonClass}
-						type="submit"
-						value="OK"
-						data-acp-button-type="ok"
-						data-acp-dialog-type={dialog?.type}
+					{#if dialog.type !== ALERT}
+						<li
+							class={_menuLiClass}
+							data-acp-dialog-type={dialog?.type}
+							data-acp-variant={dialog?.variant}
+							data-acp-is-pending={isPending}
+						>
+							<Button
+								class={_buttonClass}
+								type="reset"
+								data-acp-button-type="cancel"
+								data-acp-dialog-type={dialog?.type}
+								data-acp-variant={dialog?.variant}
+								data-acp-is-pending={isPending}
+								disabled={isPending}
+							>
+								<Thc thc={dialog.labelCancel} {forceAsHtml} />
+							</Button>
+						</li>
+					{/if}
+					{#if dialog.labelCustom && _isFn(dialog.onCustom)}
+						<li
+							class={_menuLiClass}
+							data-acp-dialog-type={dialog?.type}
+							data-acp-variant={dialog?.variant}
+							data-acp-is-pending={isPending}
+						>
+							<Button
+								class={_buttonClass}
+								on:click={async (e) => {
+									e.preventDefault();
+									isPending = true;
+									await Promise.resolve(dialog.onCustom(value));
+									isPending = false;
+									value = null;
+								}}
+								type="button"
+								data-acp-button-type="custom"
+								data-acp-dialog-type={dialog?.type}
+								data-acp-variant={dialog?.variant}
+								data-acp-is-pending={isPending}
+								disabled={isPending}
+							>
+								<Thc thc={dialog.labelCustom} {forceAsHtml} />
+							</Button>
+						</li>
+					{/if}
+					<li
+						class={_menuLiClass}
+						data-acp-type={dialog?.type}
 						data-acp-variant={dialog?.variant}
 						data-acp-is-pending={isPending}
-						disabled={isPending}
-						variant="primary"
 					>
-						<Thc thc={dialog.labelOk} {forceAsHtml} />
-					</Button>
-				</li>
-			</menu>
-			{#if isPending}
-				<div
-					class={_spinnerBoxClass}
-					data-acp-type={dialog?.type}
-					data-acp-variant={dialog?.variant}
-				>
-					<div class="rotating-cw">
-						{@html acpDefaultIcons.spinner()}
+						<Button
+							class={_buttonClass}
+							type="submit"
+							value="OK"
+							data-acp-button-type="ok"
+							data-acp-dialog-type={dialog?.type}
+							data-acp-variant={dialog?.variant}
+							data-acp-is-pending={isPending}
+							disabled={isPending}
+							variant="primary"
+						>
+							<Thc thc={dialog.labelOk} {forceAsHtml} />
+						</Button>
+					</li>
+				</menu>
+				{#if isPending}
+					<div
+						class={_spinnerBoxClass}
+						data-acp-type={dialog?.type}
+						data-acp-variant={dialog?.variant}
+					>
+						<div class="rotating-cw">
+							{@html acpDefaultIcons.spinner()}
+						</div>
 					</div>
-				</div>
-			{/if}
-		</form>
+				{/if}
+			</form>
+		{/key}
 	{/if}
 
 	{#if notifications}
