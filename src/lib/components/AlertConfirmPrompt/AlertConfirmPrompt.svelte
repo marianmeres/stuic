@@ -144,6 +144,7 @@
 		if (e.key === 'Escape') {
 			// clog.debug('onEscape');
 			e.stopPropagation();
+			e.stopImmediatePropagation();
 			if (!isPending) return acp.escape();
 		}
 	};
