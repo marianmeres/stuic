@@ -1,12 +1,13 @@
 <script context="module" lang="ts">
+	import { createClog } from '@marianmeres/clog';
 	import { createEventDispatcher } from 'svelte';
 	import { slide } from 'svelte/transition';
 	import { twMerge } from 'tailwind-merge';
 	import {
-		getId,
 		Thc,
-		type THC,
+		getId,
 		validate as validateAction,
+		type THC,
 		type ValidateOptions,
 		type ValidationResult,
 	} from '../../index.js';
@@ -97,11 +98,13 @@
 </script>
 
 <script lang="ts">
+	const clog = createClog('FieldSelect');
 	const dispatch = createEventDispatcher();
 
 	interface Option {
 		label: string;
 		value?: string;
+		optgroup?: string;
 	}
 	export let options: (string | Option)[] = [];
 
@@ -135,17 +138,22 @@
 	let validation: ValidationResult;
 	const setValidationResult = (res: ValidationResult) => (validation = res);
 
+	const _normalizeAndGroupOptions = (opts: (string | Option)[]) => {
+		const groupped = new Map<string, Option[]>();
+		opts.forEach((v) => {
+			if (typeof v === 'string') v = { label: v };
+			if (v.value === undefined) v.value = v.label;
+			const optgLabel = v.optgroup || '';
+			if (!groupped.has(optgLabel)) groupped.set(optgLabel, []);
+			const optgroup = groupped.get(optgLabel);
+			optgroup!.push(v);
+		});
+		return groupped;
+	};
+
 	//
-	let _options: Option[] = [];
-	$: _options = options.map((v) => {
-		if (typeof v === 'string') {
-			v = { label: v };
-		}
-		if (v.value === undefined) {
-			v.value = v.label;
-		}
-		return v;
-	});
+	let _options: Map<string, Option[]>;
+	$: _options = _normalizeAndGroupOptions(options);
 
 	let _inputEl: HTMLInputElement | HTMLTextAreaElement;
 	$: if (_inputEl) dispatch('input_mounted', _inputEl);
@@ -242,8 +250,18 @@
 					on:mouseenter
 					on:mouseleave
 				>
-					{#each _options as o, i}
-						<option value={o.value}>{o.label}</option>
+					{#each _options as [_optgroup, _opts]}
+						{#if _optgroup}
+							<optgroup label={_optgroup}>
+								{#each _opts as o}
+									<option value={o.value}>{o.label}</option>
+								{/each}
+							</optgroup>
+						{:else}
+							{#each _opts as o}
+								<option value={o.value}>{o.label}</option>
+							{/each}
+						{/if}
 					{/each}
 				</select>
 

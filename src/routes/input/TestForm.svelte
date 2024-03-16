@@ -125,7 +125,13 @@
 		<FieldSelect
 			label="Select"
 			bind:value={$formData.select}
-			options={['Hey', 'ho', "Let's", 'go']}
+			options={[
+				// 'Hey',
+				{ label: 'Hey', optgroup: 'first optgroup' },
+				'ho',
+				{ label: "Let's" },
+				{ label: 'go', optgroup: 'second optgroup' },
+			]}
 			required
 			validate={{
 				customValidator: (v, ctx) => (/ho/.test(v) ? '' : 'Wrong answer!'),
