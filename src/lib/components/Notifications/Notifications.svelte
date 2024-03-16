@@ -28,7 +28,7 @@
 		posY: NOTIFICATIONS_POSY;
 		posYMobile: NOTIFICATIONS_POSY;
 	} = {
-		posX: 'center',
+		posX: 'right',
 		posXMobile: 'center',
 		posY: 'top',
 		posYMobile: 'bottom',
@@ -56,7 +56,7 @@
 				box: `
                     relative flex
                     pointer-events-auto 
-                    w-full max-w-lg
+                    w-full max-w-sm
                     rounded-md
                     shadow-lg
                     bg-gray-700 text-white
