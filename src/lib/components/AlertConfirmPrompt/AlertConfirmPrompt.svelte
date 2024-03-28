@@ -14,6 +14,7 @@
 		focusTrap,
 		type NOTIFICATIONS_POSX,
 		type NOTIFICATIONS_POSY,
+		type NotiticationsCreateStoreOptions,
 	} from '../../index.js';
 	import { acpDefaultIcons } from './acp-icons.js';
 	import type {
@@ -95,6 +96,7 @@
 	// ADVANCED OPTIONAL FEATURE: allow notifs on top layer as well if needed...
 	export let notifications: ReturnType<typeof createNotificationsStore> | undefined =
 		undefined;
+	export let notificationsRestProps: any = { forceAsHtml: true };
 	export let notificationsPositionConfig: Partial<{
 		posX: NOTIFICATIONS_POSX;
 		posXMobile: NOTIFICATIONS_POSX;
@@ -384,7 +386,11 @@
 	{/if}
 
 	{#if notifications}
-		<Notifications {notifications} {...notificationsPositionConfig || {}} />
+		<Notifications
+			{notifications}
+			{...notificationsRestProps || {}}
+			{...notificationsPositionConfig || {}}
+		/>
 	{/if}
 </dialog>
 
