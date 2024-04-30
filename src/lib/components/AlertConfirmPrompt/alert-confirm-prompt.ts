@@ -165,7 +165,7 @@ export const createAlert =
 	) =>
 	// allowing to add the custom param outside of the native signature
 	(message: string, o?: Partial<AlertConfirmPromptOptions>) =>
-		new Promise((resolve) =>
+		new Promise<undefined>((resolve) =>
 			acp.alert({
 				...(defaults || {}),
 				onOk: () => {
@@ -188,7 +188,7 @@ export const createConfirm =
 	) =>
 	// allowing to add the custom param outside of the native signature
 	(message: string, o?: Partial<AlertConfirmPromptOptions>) =>
-		new Promise((resolve) =>
+		new Promise<boolean>((resolve) =>
 			acp.confirm(
 				() => {
 					acp.close();
@@ -217,7 +217,7 @@ export const createPrompt =
 	) =>
 	// allowing to add the custom param outside of the native signature
 	(message: string, defaultValue: string = '', o?: Partial<AlertConfirmPromptOptions>) =>
-		new Promise((resolve) =>
+		new Promise<string | null>((resolve) =>
 			acp.prompt(
 				(value: string) => {
 					acp.close();
