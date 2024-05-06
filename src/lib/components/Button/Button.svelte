@@ -42,10 +42,10 @@
 
 		static presetsSize = {
 			xs: 'px-2   py-0.5 leading-tight text-xs',
-			sm: 'px-2.5 py-0.5 leading-snug text-sm',
+			sm: 'px-2.5 py-0.5 leading-normal text-sm',
 			md: 'px-3   py-1   leading-normal text-sm',
-			lg: 'px-4   py-1.5 leading-relaxed text-base',
-			xl: 'px-4   py-2   leading text-lg',
+			lg: 'px-4   py-1.5 leading-normal text-base',
+			xl: 'px-4   py-2   leading-normal text-lg',
 		};
 
 		static classBySize = {
