@@ -27,7 +27,7 @@
 		static presetsRounded = {
 			xs: 'rounded',
 			sm: 'rounded',
-			md: 'rounded-md',
+			md: 'rounded',
 			lg: 'rounded-md',
 			xl: 'rounded-lg',
 		};
@@ -43,9 +43,9 @@
 		static presetsSize = {
 			xs: 'px-2   py-0.5 leading-tight text-xs',
 			sm: 'px-2.5 py-0.5 leading-snug text-sm',
-			md: 'px-3   py-1   leading-normal text-base',
-			lg: 'px-4   py-1.5 leading-relaxed text-lg',
-			xl: 'px-4   py-2   leading text-xl',
+			md: 'px-3   py-1   leading-normal text-sm',
+			lg: 'px-4   py-1.5 leading-relaxed text-base',
+			xl: 'px-4   py-2   leading text-lg',
 		};
 
 		static classBySize = {
