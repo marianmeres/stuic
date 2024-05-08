@@ -7,6 +7,7 @@
 	import { onOutside } from '../../actions/on-outside.js';
 	import { prefersReducedMotionStore } from '../../utils/prefers-reduced-motion.js';
 	import Backdrop from '../Backdrop/Backdrop.svelte';
+	import type { FocusTrapOptions } from '../../actions/focus-trap.js';
 
 	export type DrawerStore = ReturnType<typeof createDrawerStore>;
 	export const createDrawerStore = (open = false) => createSwitchStore<any>(open);
@@ -40,6 +41,9 @@
 	// will be used in `fly` config. Ideally should match with the provided tw classes
 	// to make the animation optimal. May include ccs units (will be considered as pixels otherwise).
 	export let animOffset: string | number = '66vw';
+
+	//
+	export let backdropFocusTrapOptions: Partial<FocusTrapOptions> = {};
 
 	// opinionated: make backdrop fade-in a little faster (but never longer than 200)... looks better
 	$: fadeInDuration = transitionEnabled ? Math.min(transitionDuration * 0.66, 200) : 0;
@@ -86,6 +90,7 @@
 		{fadeInDuration}
 		fadeOutDuration={transitionEnabled ? transitionDuration : 0}
 		on:element
+		focusTrapOptions={backdropFocusTrapOptions}
 	>
 		<!-- 
 			svelte-ignore 

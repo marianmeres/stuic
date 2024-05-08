@@ -15,7 +15,10 @@
 
 	const dispatch = createEventDispatcher();
 
+	// may be overriden by `focusTrapOptions.enabled` below
 	export let useFocusTrap = true;
+
+	// higher priority over `useFocusTrap` above
 	export let focusTrapOptions: Partial<FocusTrapOptions> = {};
 
 	let _class = '';
@@ -51,7 +54,7 @@
 	on:keydown={(e) => e.code === 'Escape' && dispatch('escape')}
 	in:fade={{ duration: fadeInDuration }}
 	out:fade={{ duration: fadeOutDuration }}
-	use:focusTrap={{ ...focusTrapOptions, enabled: useFocusTrap }}
+	use:focusTrap={{ enabled: useFocusTrap, ...(focusTrapOptions || {}) }}
 	role="presentation"
 	tabindex="-1" 
 >
