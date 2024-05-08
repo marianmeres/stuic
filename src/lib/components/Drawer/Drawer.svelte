@@ -82,7 +82,7 @@
 	<Backdrop
 		class={twMerge(`${_presetsClsBackdrop[position] || ''} ${backdropClass}`)}
 		on:escape
-		on:click={(e) => dispatch('click_backdrop')}
+		on:mousedown={(e) => dispatch('click_backdrop')}
 		{fadeInDuration}
 		fadeOutDuration={transitionEnabled ? transitionDuration : 0}
 		on:element
@@ -94,7 +94,7 @@
 		-->
 		<div
 			bind:this={el}
-			on:click|stopPropagation
+			on:mousedown|stopPropagation
 			aria-modal="true"
 			role="dialog"
 			aria-labelledby={labelledby}

@@ -44,6 +44,7 @@
 	`.trim())}
 	on:click
 	on:mousedown
+	on:mouseup
 	on:touchstart|passive
 	on:touchend|passive
 	on:keydown={(e) => e.code === 'Escape' && dispatch('escape')}

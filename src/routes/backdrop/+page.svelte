@@ -14,7 +14,20 @@
 </Layout>
 
 {#if show}
-	<Backdrop on:escape={close} on:click={close} class="justify-center items-center">
-		<button on:click={close} class="bg-white text-black p-4 rounded"> close </button>
+	<Backdrop on:escape={close} on:mousedown={close} class="justify-center items-center">
+		<button on:click={close} class="bg-red-300 text-black p-4 rounded">
+			button: close
+		</button>
+		<button
+			on:mousedown|stopPropagation={() => console.log('noop click')}
+			class="bg-slate-400 p-4"
+		>
+			noop button
+		</button>
+		<!-- svelte-ignore 
+			a11y-click-events-have-key-events 
+			a11y-no-static-element-interactions 
+		-->
+		<div on:mousedown|stopPropagation class="bg-blue-300 p-4 rounded">div</div>
 	</Backdrop>
 {/if}
