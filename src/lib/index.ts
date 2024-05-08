@@ -125,7 +125,7 @@ export {
 	type DraggableOptions,
 	type DroppableOptions,
 } from './actions/drag-drop.js';
-export { focusTrap } from './actions/focus-trap.js';
+export { focusTrap, type FocusTrapOptions } from './actions/focus-trap.js';
 export { onOutside } from './actions/on-outside.js';
 export { preSubmitValidityCheck } from './actions/pre-submit-validity-check.js';
 export {

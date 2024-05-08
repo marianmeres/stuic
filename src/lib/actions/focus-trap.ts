@@ -1,6 +1,6 @@
 // initially copied from skeleton, adjusted
 
-interface FocusTrapOptions {
+export interface FocusTrapOptions {
 	enabled?: boolean;
 	autoFocusFirst?: boolean;
 }
