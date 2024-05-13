@@ -99,9 +99,32 @@
 		['leftTop', 'left', 'leftBottom'],
 		['rightTop', 'right', 'rightBottom'],
 	];
+
+	//
+	let dial: HTMLDialogElement;
+	let inner: HTMLElement;
 </script>
 
 <Layout>
+	<dialog bind:this={dial} class="p-8">
+		<div bind:this={inner}>
+			<span
+				use:tooltip={{
+					content: 'Tooltip in top layer!',
+					getAppendChildTarget: () => inner,
+					logger: clog,
+				}}
+			>
+				Hover me
+			</span>
+		</div>
+	</dialog>
+	<button
+		on:click={() => {
+			dial.showModal();
+		}}>open dialog</button
+	>
+
 	<div class="flex justify-between mb-4">
 		{#each [1, 2, 3] as i}
 			<span

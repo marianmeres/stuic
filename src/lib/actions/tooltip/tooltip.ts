@@ -76,6 +76,8 @@ export interface TooltipOptions {
 	touch?: Readable<number>;
 	trigger?: Readable<boolean>;
 	notifier?: Writable<boolean>;
+	//
+	getAppendChildTarget?: () => HTMLElement;
 }
 
 const DEFAULTS: TooltipOptions = {
@@ -106,11 +108,12 @@ const _ensureDiv = (
 	opts: TooltipOptions,
 	log: TooltipLogger
 ): HTMLElement => {
-	log('_ensureDiv');
+	log('_ensureDiv', div);
 	if (!div) {
 		log('creating tooltip div...');
 		div = document.createElement('div');
-		document.body.appendChild(div);
+
+		(opts?.getAppendChildTarget?.() || document.body).appendChild(div);
 	} else {
 		log('div exists... going to apply classes');
 	}
@@ -141,7 +144,7 @@ const _ensureArrow = (
 	if (!arrow) {
 		log('creating tooltip arrow...');
 		arrow = document.createElement('div');
-		document.body.appendChild(arrow);
+		(opts?.getAppendChildTarget?.() || document.body).appendChild(arrow);
 	} else {
 		log('arrow exists... going to apply classes');
 	}

@@ -8,7 +8,7 @@
 
 	// modal controller (will be bound to instance)
 	let modal: ModalDialogAPI;
-	$: isOpen = modal?.isOpen ?? writable(false);
+	// $: isOpen = modal?.isOpen ?? writable(false);
 </script>
 
 <Layout>
