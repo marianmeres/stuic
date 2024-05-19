@@ -102,6 +102,11 @@
 						if (!/bar/.test(v)) return 'Must include "bar"!';
 					},
 				}}
+				class={{
+					input: 'min-h-0',
+				}}
+				description="One line texatarea"
+				rows="1"
 				{labelLeft}
 			>
 				<svelte:fragment slot="input_before">

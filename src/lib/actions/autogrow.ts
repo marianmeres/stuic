@@ -1,5 +1,5 @@
 // actual worker
-export function increaseHeightToScrollHeight(el: HTMLElement, max = 0, min = 16) {
+export function increaseHeightToScrollHeight(el: HTMLElement, max = 0, min = 0) {
 	//
 	let h = max ? Math.min(max, el.scrollHeight) : el.scrollHeight;
 	h = Math.max(min, h);
@@ -15,7 +15,7 @@ export function autogrow(
 	el: HTMLTextAreaElement,
 	options: Partial<{ max: number; min: number; allowed: boolean }> | null = null
 ) {
-	const { max, min, allowed } = { max: 250, min: 64, allowed: true, ...(options || {}) };
+	const { max, min, allowed } = { max: 250, min: 0, allowed: true, ...(options || {}) };
 	if (!allowed) return;
 
 	const _doGrow = () => increaseHeightToScrollHeight(el, max, min);

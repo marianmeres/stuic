@@ -182,7 +182,8 @@
 
 	$: _inputClass = twMerge(
 		'form-input',
-		_collectClasses('input', type === 'textarea' ? 'min-h-16' : '')
+		type === 'textarea' ? 'min-h-16' : '',
+		_collectClasses('input')
 	);
 
 	$: _validationMessageClass = twMerge(_collectClasses('validationMessage'));
