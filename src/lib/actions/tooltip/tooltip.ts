@@ -7,8 +7,8 @@ import {
 	type Writable,
 } from 'svelte/store';
 import { twMerge } from 'tailwind-merge';
-import { windowSize } from '../../index.js';
 import type { Alignment } from '../../utils/calculate-alignment.js';
+import { windowSize } from '../../utils/window-size.js';
 import { _makeInVisible, _makeVisible } from './_make-visible.js';
 import { _setPosition } from './_set-position.js';
 
