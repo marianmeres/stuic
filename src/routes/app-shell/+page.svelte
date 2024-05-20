@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import {
-		AppShell,
-		HoverExpandableWidth,
+	import AppShell, {
 		appShellSetHtmlBodyHeight,
-	} from '../../lib/index.js';
+	} from '../../lib/components/AppShell/AppShell.svelte';
+	import HoverExpandableWidth from '../../lib/components/HoverExpandableWidth/HoverExpandableWidth.svelte';
 	import { dummyText } from '../_utils/dummy-text.js';
 	import FlexSelect from './_components/FlexSelect.svelte';
 	import HeadButtonSwitcher from './_components/HeadButtonSwitcher.svelte';

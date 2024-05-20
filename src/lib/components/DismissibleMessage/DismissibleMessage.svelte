@@ -1,7 +1,9 @@
 <script lang="ts" context="module">
 	import { slide } from 'svelte/transition';
 	import { twMerge } from 'tailwind-merge';
-	import { Thc, X, isTHCNotEmpty, type THC, type TW_COLORS } from '../../index.js';
+	import type { TW_COLORS } from '../../utils/tw-types.js';
+	import Thc, { isTHCNotEmpty, type THC } from '../Thc/Thc.svelte';
+	import X from '../X/X.svelte';
 
 	// prettier-ignore
 	const themes = {

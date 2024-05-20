@@ -3,7 +3,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import { get } from 'svelte/store';
 	import { twMerge } from 'tailwind-merge';
-	import { DevicePointer } from '../../index.js';
+	import { DevicePointer } from '../../utils/device-pointer.js';
 	import { prefersReducedMotionStore } from '../../utils/prefers-reduced-motion.js';
 	import { windowSize } from '../../utils/window-size.js';
 

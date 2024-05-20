@@ -3,14 +3,11 @@
 	import { createEventDispatcher } from 'svelte';
 	import { slide } from 'svelte/transition';
 	import { twMerge } from 'tailwind-merge';
-	import {
-		Thc,
-		getId,
-		validate as validateAction,
-		type THC,
-		type ValidateOptions,
-		type ValidationResult,
-	} from '../../index.js';
+	import type { ValidateOptions, ValidationResult } from '../../actions/validate.js';
+	import { validate as validateAction } from '../../actions/validate.js';
+	import { getId } from '../../utils/get-id.js';
+	import type { THC } from '../Thc/Thc.svelte';
+	import Thc from '../Thc/Thc.svelte';
 
 	export interface FieldSelectConfigClasses {
 		box?: string;

@@ -1,5 +1,4 @@
-import type { calculateAlignment } from '../../index.js';
-import type { Alignment } from '../../utils/calculate-alignment.js';
+import type { Alignment, calculateAlignment } from '../../utils/calculate-alignment.js';
 import type { TooltipLogger, TooltipOptions } from './tooltip.js';
 
 export const _maybePickSafePlacement = (

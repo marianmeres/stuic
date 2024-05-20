@@ -2,25 +2,24 @@
 	import { createClog } from '@marianmeres/clog';
 	import { onMount } from 'svelte';
 	import { twMerge } from 'tailwind-merge';
+	import { focusTrap } from '../../actions/focus-trap.js';
+	import Button from '../Button/Button.svelte';
+	import Field from '../Input/Field.svelte';
+	import FieldSelect from '../Input/FieldSelect.svelte';
+	import type {
+		NOTIFICATIONS_POSX,
+		NOTIFICATIONS_POSY,
+	} from '../Notifications/Notifications.svelte';
+	import Notifications from '../Notifications/Notifications.svelte';
+	import type { createNotificationsStore } from '../Notifications/notifications.js';
+	import Thc from '../Thc/Thc.svelte';
+	import { acpDefaultIcons } from './acp-icons.js';
 	import {
 		AlertConfirmPromptType,
-		Button,
-		Field,
-		FieldSelect,
-		Notifications,
-		Thc,
 		createAlertConfirmPromptStore,
-		createNotificationsStore,
-		focusTrap,
-		type NOTIFICATIONS_POSX,
-		type NOTIFICATIONS_POSY,
-		type NotiticationsCreateStoreOptions,
-	} from '../../index.js';
-	import { acpDefaultIcons } from './acp-icons.js';
-	import type {
-		AlertConfirmPromptKnownClasses,
-		AlertConfirmPromptOptions,
-		AlertConfirmPromptVariant,
+		type AlertConfirmPromptKnownClasses,
+		type AlertConfirmPromptOptions,
+		type AlertConfirmPromptVariant,
 	} from './alert-confirm-prompt.js';
 
 	export interface AlertConfirmPromptIcons

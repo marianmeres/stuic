@@ -1,6 +1,6 @@
 <script lang="ts">
+	import type { createNotificationsStore } from '../../lib/components/Notifications/notifications.js';
 	import Switch from '../../lib/components/Switch/Switch.svelte';
-	import type { createNotificationsStore } from '../../lib/index.js';
 
 	export let context: any = {};
 	export let notifications: ReturnType<typeof createNotificationsStore>;

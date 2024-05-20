@@ -1,7 +1,7 @@
 <script context="module" lang="ts">
 	import { createClog } from '@marianmeres/clog';
 	import { twMerge } from 'tailwind-merge';
-	import { getId } from '../../index.js';
+	import { getId } from '../../utils/get-id.js';
 	import XFieldRadioInternal from './XFieldRadioInternal.svelte';
 
 	export interface FieldRadiosConfigClasses {

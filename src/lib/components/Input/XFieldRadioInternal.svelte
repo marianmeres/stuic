@@ -1,17 +1,16 @@
 <script context="module" lang="ts">
-	import { twMerge } from 'tailwind-merge';
-	import {
-		getId,
-		validate as validateAction,
-		type FieldRadiosConfigClassesBySize,
-		type ValidateOptions,
-		type ValidationResult,
-		type FieldRadiosConfigClasses,
-		FieldRadiosConfig,
-		Thc,
-	} from '../../index.js';
+	import { createEventDispatcher } from 'svelte';
 	import { slide } from 'svelte/transition';
-	import { createEventDispatcher, onMount } from 'svelte';
+	import { twMerge } from 'tailwind-merge';
+	import type { ValidateOptions, ValidationResult } from '../../actions/validate.js';
+	import { validate as validateAction } from '../../actions/validate.js';
+	import { getId } from '../../utils/get-id.js';
+	import Thc from '../Thc/Thc.svelte';
+	import {
+		FieldRadiosConfig,
+		type FieldRadiosConfigClasses,
+		type FieldRadiosConfigClassesBySize,
+	} from './FieldRadios.svelte';
 
 	const _PRESET: FieldRadiosConfigClasses = {
 		box: 'flex items-start',

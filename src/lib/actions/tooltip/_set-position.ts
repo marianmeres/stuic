@@ -1,7 +1,8 @@
 import { get as storeGet } from 'svelte/store';
-import type { TooltipLogger, TooltipOptions } from './tooltip.js';
-import { calculateAlignment, windowSize } from '../../index.js';
+import { calculateAlignment } from '../../utils/calculate-alignment.js';
+import { windowSize } from '../../utils/window-size.js';
 import { _maybePickSafePlacement } from './_maybe-pick-safe-placement.js';
+import type { TooltipLogger, TooltipOptions } from './tooltip.js';
 
 export const _setPosition = async (
 	boundaryRoot: HTMLElement | undefined, // will default to window dimensions
