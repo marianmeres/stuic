@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createClog } from '@marianmeres/clog';
-	import { iconBs1CircleFill, iconBs2CircleFill } from '@marianmeres/icons-fns';
+	import { iconBs1CircleFill } from '@marianmeres/icons-fns/bootstrap/iconBs1CircleFill.js';
+	import { iconBs2CircleFill } from '@marianmeres/icons-fns/bootstrap/iconBs2CircleFill.js';
 	import {
 		AlertConfirmPrompt,
 		Notifications,
@@ -14,8 +15,6 @@
 	import { dummySentence } from '../_utils/dummy-text';
 	import FooContent from './FooContent.svelte';
 	import { sleep } from './sleep';
-	import { onMount } from 'svelte';
-	import { writable } from 'svelte/store';
 
 	const clog = createClog('alert-confirm-prompt page');
 	const acp = createAlertConfirmPromptStore();

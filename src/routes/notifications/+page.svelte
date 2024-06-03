@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { iconBsAsterisk } from '@marianmeres/icons-fns';
+	import { iconBsAsterisk } from '@marianmeres/icons-fns/bootstrap/iconBsAsterisk.js';
 	import { createNotificationsStore } from '../../lib';
 	import Notifications from '../../lib/components/Notifications/Notifications.svelte';
 	import Layout from '../_components/Layout.svelte';

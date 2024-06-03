@@ -1,6 +1,7 @@
 <script>
 	import { createClog } from '@marianmeres/clog';
-	import { iconHeroSolidCheck, iconHeroSolidXMark } from '@marianmeres/icons-fns';
+	import { iconHeroSolidCheck } from '@marianmeres/icons-fns/heroicons/solid/iconHeroSolidCheck.js';
+	import { iconHeroSolidXMark } from '@marianmeres/icons-fns/heroicons/solid/iconHeroSolidXMark.js';
 	import { Switch } from '../../lib';
 	import Layout from '../_components/Layout.svelte';
 
