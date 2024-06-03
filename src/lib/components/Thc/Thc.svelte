@@ -24,7 +24,7 @@
 </script>
 
 <script lang="ts">
-	// the contend
+	// the content
 	export let thc: THC;
 
 	// pragmatic shortcut to allow string to be rendered as html without
@@ -33,19 +33,23 @@
 
 	//
 	export let allowCastToStringFallback = true;
+
+	export let filter: undefined | ((s: string) => string) = undefined;
+
+	const _filter = (s: string): string => (typeof filter === 'function' ? filter(s) : s);
 </script>
 
 {#if typeof thc === 'string'}
-	{#if forceAsHtml}{@html thc}{:else}{thc}{/if}
+	{#if forceAsHtml}{@html _filter(thc)}{:else}{_filter(thc)}{/if}
 {:else if thc?.text}
-	{#if forceAsHtml}{@html thc.text}{:else}{thc.text}{/if}
+	{#if forceAsHtml}{@html _filter(thc.text)}{:else}{_filter(thc.text)}{/if}
 {:else if thc?.html}
-	{@html thc.html}
+	{@html _filter(thc.html)}
 {:else if thc?.component}
 	<svelte:component this={thc.component} {...thc?.props || {}} {...$$restProps || {}} />
 {:else if allowCastToStringFallback}
 	<!-- cast to string as the last resort (if enabled) -->
-	{thc}
+	{_filter(thc)}
 {:else}
 	<!-- silence -->
 {/if}
