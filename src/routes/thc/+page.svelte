@@ -13,14 +13,14 @@
 
 	<Thc thc="Hey" />
 	<Thc thc={{ text: 'ho' }} />
-	<Thc thc={{ html: "&ndash; let's" }} transform={(s) => `<b>${s}</b>`} />
+	<Thc thc={{ html: "&ndash; let's" }} />
 	<Thc thc={{ component: Foo, props: { foo: 'go' } }} />
 	<hr class="my-4" />
 	The above is written as:
 	<pre>{`
 	<Thc thc="Hey" /> // same as { text: 'Hey' }
 	<Thc thc={{ text: 'ho' }} />
-	<Thc thc={{ html: "&ndash; let's" }} transform={(s) => \`<b>\${s}</b>\`}/>
+	<Thc thc={{ html: "&ndash; let's" }} />
 	<Thc thc={{ component: Foo, props: { foo: 'go' } }} />
 `}</pre>
 </Layout>

@@ -33,24 +33,19 @@
 
 	//
 	export let allowCastToStringFallback = true;
-
-	export let transform: undefined | ((s: string) => string) = undefined;
-
-	const _transform = (s: any): string =>
-		typeof transform === 'function' ? transform(s) : s;
 </script>
 
 {#if typeof thc === 'string'}
-	{#if forceAsHtml}{@html _transform(thc)}{:else}{_transform(thc)}{/if}
+	{#if forceAsHtml}{@html thc}{:else}{thc}{/if}
 {:else if thc?.text}
-	{#if forceAsHtml}{@html _transform(thc.text)}{:else}{_transform(thc.text)}{/if}
+	{#if forceAsHtml}{@html thc.text}{:else}{thc.text}{/if}
 {:else if thc?.html}
-	{@html _transform(thc.html)}
+	{@html thc.html}
 {:else if thc?.component}
 	<svelte:component this={thc.component} {...thc?.props || {}} {...$$restProps || {}} />
 {:else if allowCastToStringFallback}
 	<!-- cast to string as the last resort (if enabled) -->
-	{_transform(thc)}
+	{thc}
 {:else}
 	<!-- silence -->
 {/if}
