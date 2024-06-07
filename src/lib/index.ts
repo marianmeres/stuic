@@ -119,6 +119,7 @@ export { default as X } from './components/X/X.svelte';
 
 // actions
 export { autogrow } from './actions/autogrow.js';
+export { autoscroll } from './actions/autoscroll.js';
 export {
 	draggable,
 	droppable,
@@ -133,12 +134,12 @@ export {
 	TooltipConfig,
 	type TooltipOptions,
 } from './actions/tooltip/tooltip.js';
+export { trim } from './actions/trim.js';
 export {
 	validate,
 	type ValidateOptions,
 	type ValidationResult,
 } from './actions/validate.js';
-export { trim } from './actions/trim.js';
 
 // utils
 export { calculateAlignment } from './utils/calculate-alignment.js';
