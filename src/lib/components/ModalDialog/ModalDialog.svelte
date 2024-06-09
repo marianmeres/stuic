@@ -24,6 +24,8 @@
 	export { _class as class };
 	export let style = '';
 
+	export let backdropFadeIn: false | 'normal' | 'slow' = 'normal';
+
 	//
 	let _el: HTMLDialogElement;
 	let _open = !!openOnMount;
@@ -90,9 +92,28 @@
 	bind:this={_el}
 	use:focusTrap={{ enabled: _open }}
 	style="{style ? `${style}; ` : ''}padding: 0 !important;"
-	class={_class}
+	class={`${_class} ${backdropFadeIn || ''}`}
 >
 	{#if _open}
 		<slot />
 	{/if}
 </dialog>
+
+<style>
+	dialog.normal[open]::backdrop {
+		animation: fade 0.2s ease-out;
+	}
+
+	dialog.slow[open]::backdrop {
+		animation: fade 0.5s ease-out;
+	}
+
+	@keyframes fade {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+</style>

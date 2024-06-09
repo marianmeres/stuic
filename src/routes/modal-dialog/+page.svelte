@@ -3,12 +3,12 @@
 	import { writable } from 'svelte/store';
 	import { ModalDialog, type ModalDialogAPI } from '../../lib';
 	import Layout from '../_components/Layout.svelte';
+	import { onMount } from 'svelte';
 
 	const clog = createClog('modal-dialog page');
 
 	// modal controller (will be bound to instance)
 	let modal: ModalDialogAPI;
-	// $: isOpen = modal?.isOpen ?? writable(false);
 </script>
 
 <Layout>
