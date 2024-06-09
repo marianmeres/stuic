@@ -115,6 +115,8 @@
 	> = {};
 	// $: clog(classesByVariant);
 
+	export let backdropFadeIn: boolean = true;
+
 	//
 	$: dialog = $acp[0];
 	// $: clog(1111111, dialog);
@@ -198,7 +200,7 @@
 	data-acp-type={dialog?.type}
 	data-acp-variant={dialog?.variant}
 	data-acp-is-pending={isPending}
-	class="bg-transparent w-full focus-within:outline-0 focus-within:ring-0"
+	class={`bg-transparent w-full focus-within:outline-0 focus-within:ring-0 ${backdropFadeIn && 'backdrop-fade-in-normal'}`}
 	tabindex="-1"
 >
 	{#if dialog}
@@ -398,5 +400,18 @@
 	@keyframes -global-rotating-cw { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 	.rotating-cw {
 		animation: rotating-cw 0.6s linear infinite;
+	}
+
+	dialog.backdrop-fade-in-normal[open]::backdrop {
+		animation: fade 0.15s ease-out;
+	}
+
+	@keyframes fade {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
 	}
 </style>
