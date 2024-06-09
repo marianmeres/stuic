@@ -101,7 +101,7 @@
 
 <style>
 	dialog.normal[open]::backdrop {
-		animation: fade 0.2s ease-out;
+		animation: fade 0.15s ease-out;
 	}
 
 	dialog.slow[open]::backdrop {
