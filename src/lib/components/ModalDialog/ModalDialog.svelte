@@ -72,15 +72,16 @@
 		document.addEventListener('keydown', _handleKeyDown, true);
 		_unsubs.push(() => document.removeEventListener('keydown', _handleKeyDown, true));
 
-		// close on outside click ("outside" is actualy the dialog's backdrop here... that's
-		// why we're not using the onOutside action)
 		const _handleClick = (e: MouseEvent) => {
-			if (_open && closeOnOutsideClick && /dialog/i.test(e.target?.tagName)) {
-				close();
-			}
-			// do not propagate click as modal may be opened on top of another click sensitive layers
-			else if (_open) {
+			if (_open) {
+				// do not propagate click as the modal may be opened on top of another click sensitive layers
 				e.stopPropagation();
+
+				// close on outside click ("outside" is actually the dialog's backdrop here... that's
+				// why we're not using the onOutside action). Note that this only works
+				// as expected if the inner content wrapped in another element (that's why
+				// we're adding the full width/height wrap below)
+				if (closeOnOutsideClick && e.target === _el) return close();
 			}
 		};
 		_el.addEventListener('click', _handleClick);
@@ -101,7 +102,14 @@
 	class={`${_class} ${backdropFadeIn || ''}`}
 >
 	{#if _open}
-		<slot />
+		<!-- 
+			wrapping into relative full h/w div so that the inner click will never trigger close 
+			(this could be achieved in many different ways, but this seems to be the most 
+			pragmatic when taking into account the consumer usage) 
+		-->
+		<div class="relative w-full h-full">
+			<slot />
+		</div>
 	{/if}
 </dialog>
 
