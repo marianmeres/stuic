@@ -75,7 +75,13 @@
 		// close on outside click ("outside" is actualy the dialog's backdrop here... that's
 		// why we're not using the onOutside action)
 		const _handleClick = (e: MouseEvent) => {
-			_open && closeOnOutsideClick && /dialog/i.test(e.target?.tagName) && close();
+			if (_open && closeOnOutsideClick && /dialog/i.test(e.target?.tagName)) {
+				close();
+			}
+			// do not propagate click as modal may be opened on top of another click sensitive layers
+			else if (_open) {
+				e.stopPropagation();
+			}
 		};
 		_el.addEventListener('click', _handleClick);
 		_unsubs.push(() => _el.removeEventListener('click', _handleClick));
