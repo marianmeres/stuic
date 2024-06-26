@@ -29,7 +29,7 @@
 		"!dist/**/*.spec.*"
 	],
 	"peerDependencies": {
-		"svelte": "^4.0.0"
+		"svelte": "^4.0.0 || ^5.0.0"
 	},
 	"devDependencies": {
 		"@marianmeres/parse-boolean": "^1.1.7",
