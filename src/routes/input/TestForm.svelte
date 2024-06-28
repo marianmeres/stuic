@@ -9,6 +9,7 @@
 		FieldSelect,
 		Fieldset,
 	} from '../../lib/index.js';
+	import FieldPin from '../../lib/components/Input/PinInput.svelte';
 
 	const clog = createClog('TestForm');
 
@@ -20,6 +21,7 @@
 		checkbox: false,
 		radio: 'Hey',
 		select: '',
+		pin: '',
 	});
 
 	$: clog($formData);
@@ -81,6 +83,27 @@
 				</span>
 			</svelte:fragment>
 		</Field>
+
+		<Field
+			type="pin"
+			bind:value={$formData.pin}
+			label="PIN"
+			required
+			description="Use PIN from your email!"
+			validate={{
+				context: $formData,
+				customValidator: (v, ctx) => {
+					// console.log(ctx);
+					if (v && !/1234/.test(v)) return 'Bad PIN!';
+				},
+			}}
+			placeholder="0000"
+			pattern="\d\d\d\d"
+			class={{
+				input: 'caret-red-600',
+			}}
+			pinCellClass="border border-stuic-primary bg-transparent"
+		/>
 
 		<Fieldset legend="Hey ho">
 			<FieldCheckbox

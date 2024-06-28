@@ -98,6 +98,8 @@
 </script>
 
 <script lang="ts">
+	import PinInput from './PinInput.svelte';
+
 	const clog = createClog('Field');
 	const dispatch = createEventDispatcher();
 	const setType = (el: HTMLInputElement, t: any) => (el.type = t);
@@ -250,6 +252,37 @@
 						on:touchstart|passive
 						on:touchend|passive
 						on:touchmove|passive
+						on:touchcancel
+						on:mouseenter
+						on:mouseleave
+						{...$$restProps}
+					></textarea>
+				{:else if type === 'pin'}
+					<PinInput
+						bind:value
+						inputClass={_inputClass}
+						on:input_mounted
+						{id}
+						{name}
+						{disabled}
+						{readonly}
+						{required}
+						{autofocus}
+						{tabindex}
+						{placeholder}
+						{pattern}
+						{setValidationResult}
+						bind:validate
+						on:blur
+						on:change
+						on:click
+						on:focus
+						on:input
+						on:keydown
+						on:keyup
+						on:touchstart
+						on:touchend
+						on:touchmove
 						on:touchcancel
 						on:mouseenter
 						on:mouseleave
