@@ -67,7 +67,7 @@
 	export { _class as class };
 
 	export let duration = 150;
-	export let message: THC;
+	export let message: THC | Error;
 
 	export let onDismiss: (() => void) | null | false = () => (message = '');
 
@@ -75,6 +75,9 @@
 
 	// pragmatic shortcut to THC
 	export let forceAsHtml: boolean = false;
+
+	// special pragmatic case
+	$: if (message instanceof Error) message = message.toString();
 
 	// basic {#if _isNotEmpty(message)} didn't slide in the first render if this component
 	// was conditionally rendered (not sure why)... so hacking around it

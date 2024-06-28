@@ -100,10 +100,10 @@
 			placeholder="0000"
 			pattern="\d\d\d\d"
 			class={{
-				input: 'caret-red-600',
+				// input: 'caret-red-600',
 			}}
-			pinCellClass="border border-stuic-primary bg-transparent"
 		/>
+		<!-- pinCellClass="border border-stuic-primary bg-transparent" -->
 
 		<Fieldset legend="Hey ho">
 			<FieldCheckbox
