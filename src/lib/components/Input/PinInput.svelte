@@ -112,7 +112,11 @@
 			{id}
 			type="text"
 			spellcheck="false"
-			class={twMerge('caret-black', inputClass, `font-mono text-transparent`)}
+			class={twMerge(
+				'caret-black',
+				inputClass,
+				`font-mono text-transparent black:text-transparent`
+			)}
 			class:cursor-not-allowed={disabled}
 			style="
                 padding-left: {100 / length / 2}%; 
