@@ -49,16 +49,19 @@
 				flex flex-shrink-0 items-center justify-center 
 				rounded-full 
 				bg-neutral-100 text-black/50
+				dark:bg-neutral-800 dark:text-white/50
 			`,
 			contentBlock: `mt-3 sm:mt-0 sm:flex-1`,
 			title: `
 				text-center sm:text-left
-				text-base font-semibold leading-6 text-black/90
+				text-base font-semibold leading-6
+				text-black/90 dark:text-white/90
 			`,
 			content: `
 				mt-2 mx-3 sm:mx-0
 				text-center sm:text-left
-				text-sm text-black/75
+				text-sm 
+				text-black/75 dark:text-white/75
 			`,
 			inputBox: `mt-3`,
 			inputField: `m-0`,
@@ -72,7 +75,7 @@
 			spinnerBox: `
 				absolute inset-0 flex justify-center items-center
 				rounded-lg
-				bg-white/75
+				bg-white/75 dark:bg-black/75
 			`,
 		};
 

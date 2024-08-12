@@ -44,8 +44,8 @@
 	const _PRESET: FieldConfigClasses = {
 		box: 'mb-4 grid', //  gap-4
 		wrap: `
-			rounded-md border border-gray-300
-			bg-gray-100
+			rounded-md border border-gray-300 dark:border-gray-600
+			bg-gray-100 dark:bg-gray-700
 			focus-within:border-stuic-primary
 			focus-within:ring-4
 			focus-within:ring-stuic-primary
@@ -57,7 +57,9 @@
 			bg-transparent
 			tracking-tight
 			focus:outline-0 focus-visible:ring-0
-			placeholder:text-black/35 placeholder:tracking-tight
+			placeholder:tracking-tight
+			placeholder:text-black/35 dark:placeholder:text-white/35
+			text-black dark:text-white
 		`,
 		invalid: `border-stuic-primary`,
 		validationMessage: `my-1 text-xs text-stuic-primary px-2 tracking-tight`,

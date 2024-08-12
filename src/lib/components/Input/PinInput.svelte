@@ -115,7 +115,7 @@
 			class={twMerge(
 				'caret-black',
 				inputClass,
-				`font-mono text-transparent black:text-transparent`
+				`font-mono text-transparent dark:text-transparent`
 			)}
 			class:cursor-not-allowed={disabled}
 			style="
