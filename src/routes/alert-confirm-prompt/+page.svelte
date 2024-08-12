@@ -247,9 +247,7 @@
 <AlertConfirmPrompt
 	{acp}
 	forceAsHtml
-	classes={{
-		button: 'border-0',
-	}}
+	classes={{}}
 	classesByVariant={{
 		error: {
 			icon: 'bg-red-100 text-red-500',

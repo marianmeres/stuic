@@ -1,8 +1,8 @@
 <script lang="ts" context="module">
 	import { createClog } from '@marianmeres/clog';
 	import { onMount } from 'svelte';
-	import { twMerge } from 'tailwind-merge';
 	import { focusTrap } from '../../actions/focus-trap.js';
+	import { twMerge2 } from '../../utils/tw-merge2.js';
 	import Button from '../Button/Button.svelte';
 	import Field from '../Input/Field.svelte';
 	import FieldSelect from '../Input/FieldSelect.svelte';
@@ -39,14 +39,14 @@
 				transition-all
 				shadow-xl
 				focus-within:outline-0 focus-within:ring-0
-					 bg-white
-				dark:bg-black 
+					 bg-neutral-50
+				dark:bg-neutral-950 
 
-				     text-black
-				dark:text-white
+				     text-neutral-950
+				dark:text-neutral-50
 
-				border border-white
-				dark:border-white/20
+				border border-neutral-50
+				dark:border-neutral-50/20
 			`,
 			icon: `
 				size-12 sm:size-10
@@ -55,8 +55,8 @@
 				flex flex-shrink-0 items-center justify-center 
 				rounded-full 
 
-				     bg-black/10      text-black/80
-				dark:bg-white/20 dark:text-white/80
+				     bg-neutral-950/10      text-neutral-950/80
+				dark:bg-neutral-50/20 dark:text-neutral-50/80
 			`,
 			contentBlock: `mt-3 sm:mt-0 sm:flex-1`,
 			title: `
@@ -82,8 +82,8 @@
 				absolute inset-0 flex justify-center items-center
 				rounded-lg
 
-				     bg-white/75 
-				dark:bg-black/75
+				     bg-neutral-50/75 
+				dark:bg-neutral-950/75
 			`,
 		};
 
@@ -190,17 +190,17 @@
 		o?.class?.[k] || '',
 	];
 
-	$: _dialogClass = twMerge(..._collectClasses(dialog, 'dialog'));
-	$: _iconClass = twMerge(..._collectClasses(dialog, 'icon'));
-	$: _contentBlockClass = twMerge(..._collectClasses(dialog, 'contentBlock'));
-	$: _titleClass = twMerge(..._collectClasses(dialog, 'title'));
-	$: _contentClass = twMerge(..._collectClasses(dialog, 'content'));
-	$: _inputBoxClass = twMerge(..._collectClasses(dialog, 'inputBox'));
-	$: _inputFieldClass = twMerge(..._collectClasses(dialog, 'inputField'));
-	$: _menuClass = twMerge(..._collectClasses(dialog, 'menu'));
-	$: _menuLiClass = twMerge(AlertConfirmPromptConfig.preset.menuLi);
-	$: _buttonClass = twMerge(..._collectClasses(dialog, 'button'));
-	$: _spinnerBoxClass = twMerge(..._collectClasses(dialog, 'spinnerBox'));
+	$: _dialogClass = twMerge2(..._collectClasses(dialog, 'dialog'));
+	$: _iconClass = twMerge2(..._collectClasses(dialog, 'icon'));
+	$: _contentBlockClass = twMerge2(..._collectClasses(dialog, 'contentBlock'));
+	$: _titleClass = twMerge2(..._collectClasses(dialog, 'title'));
+	$: _contentClass = twMerge2(..._collectClasses(dialog, 'content'));
+	$: _inputBoxClass = twMerge2(..._collectClasses(dialog, 'inputBox'));
+	$: _inputFieldClass = twMerge2(..._collectClasses(dialog, 'inputField'));
+	$: _menuClass = twMerge2(..._collectClasses(dialog, 'menu'));
+	$: _menuLiClass = twMerge2(AlertConfirmPromptConfig.preset.menuLi);
+	$: _buttonClass = twMerge2(..._collectClasses(dialog, 'button'));
+	$: _spinnerBoxClass = twMerge2(..._collectClasses(dialog, 'spinnerBox'));
 
 	//
 	$: iconFn = dialog?.iconFn ?? defaultIcons?.[dialog?.variant];

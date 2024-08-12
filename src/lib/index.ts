@@ -146,4 +146,5 @@ export { calculateAlignment } from './utils/calculate-alignment.js';
 export { DevicePointer } from './utils/device-pointer.js';
 export { getId } from './utils/get-id.js';
 export { windowSize, breakpoint } from './utils/window-size.js';
+export { twMerge2, clsClean } from './utils/tw-merge2.js';
 export type { TW_COLORS } from './utils/tw-types.js';

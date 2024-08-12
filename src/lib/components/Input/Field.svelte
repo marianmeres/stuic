@@ -2,7 +2,6 @@
 	import { createClog } from '@marianmeres/clog';
 	import { createEventDispatcher } from 'svelte';
 	import { slide } from 'svelte/transition';
-	import { twMerge } from 'tailwind-merge';
 	import { autogrow } from '../../actions/autogrow.js';
 	import { trim } from '../../actions/trim.js';
 	import type { ValidateOptions, ValidationResult } from '../../actions/validate.js';
@@ -58,8 +57,8 @@
 			tracking-tight
 			focus:outline-0 focus-visible:ring-0
 			placeholder:tracking-tight
-			placeholder:text-black/35 dark:placeholder:text-white/35
-			text-black dark:text-white
+			placeholder:text-neutral-950/35 dark:placeholder:text-neutral-50/35
+			text-neutral-950 dark:text-neutral-50
 		`,
 		invalid: `border-stuic-primary`,
 		validationMessage: `my-1 text-xs text-stuic-primary px-2 tracking-tight`,
@@ -100,6 +99,7 @@
 </script>
 
 <script lang="ts">
+	import { twMerge2 } from '../../utils/tw-merge2.js';
 	import PinInput from './PinInput.svelte';
 
 	const clog = createClog('Field');
@@ -165,31 +165,31 @@
 		classBySize?.[size]?.[k] || '',
 	];
 
-	$: _boxClass = twMerge(_collectClasses('box'));
+	$: _boxClass = twMerge2(_collectClasses('box'));
 
-	$: _labelClass = twMerge(
+	$: _labelClass = twMerge2(
 		_collectClasses(
 			'label',
 			showAsterixOnRequired && required ? _collectClasses('asterix').join(' ') : ''
 		)
 	);
 
-	$: _wrapClass = twMerge(
+	$: _wrapClass = twMerge2(
 		_collectClasses(
 			'wrap',
 			validation && !validation.valid ? _collectClasses('invalid').join(' ') : ''
 		)
 	);
 
-	$: _inputClass = twMerge(
+	$: _inputClass = twMerge2(
 		'form-input',
 		type === 'textarea' ? 'min-h-16' : '',
 		_collectClasses('input')
 	);
 
-	$: _validationMessageClass = twMerge(_collectClasses('validationMessage'));
-	$: _descriptionClass = twMerge(_collectClasses('description'));
-	$: _belowClass = twMerge(_collectClasses('below'));
+	$: _validationMessageClass = twMerge2(_collectClasses('validationMessage'));
+	$: _descriptionClass = twMerge2(_collectClasses('description'));
+	$: _belowClass = twMerge2(_collectClasses('below'));
 </script>
 
 <div

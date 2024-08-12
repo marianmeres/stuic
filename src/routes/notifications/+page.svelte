@@ -37,7 +37,7 @@
 <Notifications
 	{notifications}
 	classes={{
-		box: 'border border-4 border-black',
+		box: 'border border-4 border-neutral-950',
 	}}
 	classesByType={{
 		error: {

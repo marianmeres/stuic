@@ -3,7 +3,7 @@
 	import Layout from '../_components/Layout.svelte';
 
 	// simulate global config
-	BackdropConfig.class = 'z-30 bg-black/50 dark:bg-black/70';
+	BackdropConfig.class = 'z-30 bg-neutral-950/50 dark:bg-neutral-950/70';
 
 	let show = false;
 	const close = () => (show = false);
@@ -15,7 +15,7 @@
 
 {#if show}
 	<Backdrop on:escape={close} on:mousedown={close} class="justify-center items-center">
-		<button on:click={close} class="bg-red-300 text-black p-4 rounded">
+		<button on:click={close} class="bg-red-300 text-neutral-950 p-4 rounded">
 			button: close
 		</button>
 		<button

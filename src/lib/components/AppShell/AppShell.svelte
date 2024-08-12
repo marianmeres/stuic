@@ -12,7 +12,7 @@
 
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { twMerge } from 'tailwind-merge';
+	import { twMerge2 } from '../../utils/tw-merge2.js';
 
 	// idea copied from https://www.skeleton.dev/components/app-shell
 	// adjusted and tweaked to personal opinion and taste...
@@ -94,14 +94,14 @@
 	bind:this={shell}
 	{id}
 	data-shell="shell"
-	class={twMerge(`w-full h-full flex overflow-hidden ${_class}`)}
+	class={twMerge2(`w-full h-full flex overflow-hidden ${_class}`)}
 >
 	<!-- shell > rail -->
 	{#if $$slots.rail}
 		<div
 			bind:this={rail}
 			data-shell="rail"
-			class={twMerge(`flex-none overflow-x-hidden overflow-y-auto ${railClass}`)}
+			class={twMerge2(`flex-none overflow-x-hidden overflow-y-auto ${railClass}`)}
 		>
 			<slot name="rail" />
 		</div>
@@ -114,7 +114,7 @@
 			<header
 				bind:this={header}
 				data-shell="header"
-				class={twMerge(`flex-none ${headerClass}`)}
+				class={twMerge2(`flex-none ${headerClass}`)}
 			>
 				<slot name="header" />
 			</header>
@@ -123,14 +123,14 @@
 		<!-- shell > div > content -->
 		<div
 			data-shell="content"
-			class={twMerge(`flex-auto w-full h-full flex overflow-hidden ${contentClass}`)}
+			class={twMerge2(`flex-auto w-full h-full flex overflow-hidden ${contentClass}`)}
 		>
 			<!-- shell > div > content > sidebar-left -->
 			{#if $$slots.sidebarLeft}
 				<aside
 					bind:this={sidebarLeft}
 					data-shell="sidebar-left"
-					class={twMerge(
+					class={twMerge2(
 						`${_sidebarFlexCls} overflow-x-hidden overflow-y-auto w-auto ${sidebarLeftClass}`
 					)}
 				>
@@ -142,7 +142,7 @@
 			<div
 				bind:this={page}
 				data-shell="page"
-				class={twMerge(`${_pageFlexCls} overflow-x-hidden flex flex-col ${pageClass}`)}
+				class={twMerge2(`${_pageFlexCls} overflow-x-hidden flex flex-col ${pageClass}`)}
 				style:scrollbar-gutter={scrollbarGutter}
 				on:scroll
 			>
@@ -151,7 +151,7 @@
 					<header
 						bind:this={pageHeader}
 						data-shell="page-header"
-						class={twMerge(`flex-none ${pageHeaderClass}`)}
+						class={twMerge2(`flex-none ${pageHeaderClass}`)}
 					>
 						<slot name="pageHeader" />
 					</header>
@@ -161,7 +161,7 @@
 				<main
 					bind:this={pageMain}
 					data-shell="page-main"
-					class={twMerge(`flex-auto ${pageMainClass}`)}
+					class={twMerge2(`flex-auto ${pageMainClass}`)}
 				>
 					<slot />
 				</main>
@@ -171,7 +171,7 @@
 					<footer
 						bind:this={pageFooter}
 						data-shell="page-footer"
-						class={twMerge(`flex-none ${pageFooterClass}`)}
+						class={twMerge2(`flex-none ${pageFooterClass}`)}
 					>
 						<slot name="pageFooter" />
 					</footer>
@@ -183,7 +183,7 @@
 				<aside
 					bind:this={sidebarRight}
 					data-shell="sidebar-right"
-					class={twMerge(
+					class={twMerge2(
 						`${_sidebarFlexCls} overflow-x-hidden overflow-y-auto ${sidebarRightClass}`
 					)}
 				>
@@ -197,7 +197,7 @@
 			<footer
 				bind:this={footer}
 				data-shell="footer"
-				class={twMerge(`flex-none ${footerClass}`)}
+				class={twMerge2(`flex-none ${footerClass}`)}
 			>
 				<slot name="footer" />
 			</footer>

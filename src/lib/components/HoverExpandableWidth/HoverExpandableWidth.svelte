@@ -2,9 +2,9 @@
 	import { createClog } from '@marianmeres/clog';
 	import { createEventDispatcher } from 'svelte';
 	import { get } from 'svelte/store';
-	import { twMerge } from 'tailwind-merge';
 	import { DevicePointer } from '../../utils/device-pointer.js';
 	import { prefersReducedMotionStore } from '../../utils/prefers-reduced-motion.js';
+	import { twMerge2 } from '../../utils/tw-merge2.js';
 	import { windowSize } from '../../utils/window-size.js';
 
 	const clog = createClog('HoverExpandableWidth');
@@ -147,7 +147,7 @@
 	on:mouseleave={() => _planDelayedExec(_shrink, delayOut)}
 	on:click
 	aria-expanded={_isExpanded}
-	class={twMerge(`overflow-x-hidden overflow-y-auto ${_class}`)}
+	class={twMerge2(`overflow-x-hidden overflow-y-auto ${_class}`)}
 	style="width: 100%; height: 100%; transition-duration: {duration}ms;"
 >
 	<slot

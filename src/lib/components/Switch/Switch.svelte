@@ -1,6 +1,4 @@
 <script lang="ts" context="module">
-	import { twMerge } from 'tailwind-merge';
-
 	export type SwitchPreHook = (previosValue: boolean) => Promise<void | boolean>;
 
 	export class SwitchConfig {
@@ -17,7 +15,7 @@
 			disabled:!cursor-not-allowed disabled:!opacity-50 disabled:hover:brightness-100
 
 			bg-neutral-400 dark:bg-neutral-400
-			data-[checked=true]:bg-stuic-primary dark:data-[checked=true]:bg-stuic-primary
+			data-[checked=true]:bg-stuic-primary dark:data-[checked=true]:bg-stuic-primary-dark
 		`.trim();
 
 		static presetsSize = {
@@ -40,8 +38,8 @@
 			translate-x-1 rounded-full  
 			transition-all duration-100
 			shadow
-			bg-white dark:bg-white
-			text-black dark:text-black
+			bg-neutral-50 dark:bg-neutral-50
+			text-neutral-950 dark:text-neutral-950
 		`.trim();
 
 		static presetsSizeDot = {
@@ -62,6 +60,7 @@
 
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
+	import { twMerge2 } from '../../utils/tw-merge2.js';
 
 	let _class = '';
 	export { _class as class };
@@ -84,7 +83,7 @@
 	$: if (!_whitelist.includes(size)) size = SwitchConfig.defaultSize;
 
 	let switchClass: string;
-	$: switchClass = twMerge(
+	$: switchClass = twMerge2(
 		SwitchConfig.presetBase,
 		SwitchConfig.presetsSize[size],
 		SwitchConfig.class,
@@ -97,7 +96,7 @@
 	);
 
 	let dotClass: string;
-	$: dotClass = twMerge(
+	$: dotClass = twMerge2(
 		SwitchConfig.presetBaseDot,
 		SwitchConfig.presetsSizeDot[size],
 		SwitchConfig.classDot,

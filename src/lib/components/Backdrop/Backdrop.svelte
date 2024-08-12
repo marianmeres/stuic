@@ -9,9 +9,9 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import { twMerge } from 'tailwind-merge';
 	import { focusTrap, type FocusTrapOptions } from '../../actions/focus-trap.js';
 	import { prefersReducedMotionStore } from '../../utils/prefers-reduced-motion.js';
+	import { twMerge2 } from '../../utils/tw-merge2.js';
 
 	const dispatch = createEventDispatcher();
 
@@ -42,7 +42,7 @@
 <!-- prettier-ignore -->
 <div
 	bind:this={el}
-	class={twMerge(`
+	class={twMerge2(`
 		fixed inset-0 flex z-10 
 		${BackdropConfig.class} ${_class}
 	`.trim())}

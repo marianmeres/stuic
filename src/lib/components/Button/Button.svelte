@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
-	import { twMerge } from 'tailwind-merge';
 	import type { HTMLButtonAttributes } from 'svelte/elements';
+	import { twMerge2 } from '../../utils/tw-merge2.js';
 
 	export class ButtonConfig {
 		static defaultSize: 'xs' | 'sm' | 'md' | 'lg' | 'xl' = 'md';
@@ -15,11 +15,10 @@
 			active:brightness-[0.95]
 			disabled:!cursor-not-allowed disabled:!opacity-50 disabled:hover:brightness-100
 			no-underline
-			border
+			border border-neutral-300  dark:border-neutral-500
 			
-			bg-neutral-200 text-black
-			dark:bg-neutral-600 dark:text-white
-			border-neutral-400 dark:border-neutral-500
+			     bg-neutral-200      text-neutral-950
+			dark:bg-neutral-600 dark:text-neutral-50
 		`.trim();
 
 		static presetSquare = 'p-0 aspect-square justify-center';
@@ -33,11 +32,11 @@
 		};
 
 		static presetsShadow = {
-			xs: 'shadow-sm dark:shadow-black',
-			sm: 'shadow    dark:shadow-black',
-			md: 'shadow    dark:shadow-black',
-			lg: 'shadow-md dark:shadow-black',
-			xl: 'shadow-md dark:shadow-black',
+			xs: 'shadow-sm dark:shadow-neutral-950',
+			sm: 'shadow    dark:shadow-neutral-950',
+			md: 'shadow    dark:shadow-neutral-950',
+			lg: 'shadow-md dark:shadow-neutral-950',
+			xl: 'shadow-md dark:shadow-neutral-950',
 		};
 
 		static presetsSize = {
@@ -61,8 +60,8 @@
 		// to be defined at consumer level...
 		static variant: Record<string, string> = {
 			primary: `
-				     bg-stuic-primary           text-stuic-on-primary
-				dark:bg-stuic-primary-dark dark:text-stuic-on-primary-dark
+				     bg-stuic-primary             text-stuic-on-primary
+				dark:bg-stuic-primary-dark   dark:text-stuic-on-primary-dark
 			`.trim(),
 			secondary: `
 				     bg-stuic-secondary           text-stuic-on-secondary
@@ -94,7 +93,7 @@
 	$: if (!_whitelist.includes(size)) size = ButtonConfig.defaultSize;
 
 	let buttonClass: string;
-	$: buttonClass = twMerge(
+	$: buttonClass = twMerge2(
 		ButtonConfig.presetBase,
 		// either full, or config, or none
 		rounded
@@ -121,6 +120,7 @@
 		//
 		_class
 	);
+	$: console.log(123, buttonClass.replace(/\s+/gi, ' '));
 </script>
 
 {#if href}

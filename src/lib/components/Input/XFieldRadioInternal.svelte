@@ -1,10 +1,10 @@
 <script context="module" lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { slide } from 'svelte/transition';
-	import { twMerge } from 'tailwind-merge';
 	import type { ValidateOptions, ValidationResult } from '../../actions/validate.js';
 	import { validate as validateAction } from '../../actions/validate.js';
 	import { getId } from '../../utils/get-id.js';
+	import { twMerge2 } from '../../utils/tw-merge2.js';
 	import Thc from '../Thc/Thc.svelte';
 	import {
 		FieldRadiosConfig,
@@ -95,16 +95,16 @@
 		classBySize?.[size]?.[k] || '',
 	];
 
-	$: _boxClass = twMerge(_collectClasses('box'));
-	$: _inputClass = twMerge(
+	$: _boxClass = twMerge2(_collectClasses('box'));
+	$: _inputClass = twMerge2(
 		_collectClasses(
 			'input',
 			validation && !validation.valid ? _collectClasses('invalid').join(' ') : ''
 		)
 	);
-	$: _labelClass = twMerge(_collectClasses('label'));
-	$: _validationMessageClass = twMerge(_collectClasses('validationMessage'));
-	$: _descriptionClass = twMerge(_collectClasses('description'));
+	$: _labelClass = twMerge2(_collectClasses('label'));
+	$: _validationMessageClass = twMerge2(_collectClasses('validationMessage'));
+	$: _descriptionClass = twMerge2(_collectClasses('description'));
 </script>
 
 <div class={_boxClass}>

@@ -24,14 +24,14 @@
 <Drawer
 	{drawer}
 	{position}
-	backdropClass="z-10 bg-black/50 cursor-pointer"
-	class="bg-white dark:bg-neutral-700 cursor-auto"
+	backdropClass="z-10 bg-neutral-950/50 cursor-pointer"
+	class="bg-neutral-50 dark:bg-neutral-700 cursor-auto"
 	on:escape={drawer.close}
 	on:click_backdrop={drawer.close}
 	on:outside={() => clog('outside')}
 >
 	<div class="w-full">
-		<div class="p-4 bg-gray-200 dark:bg-black">
+		<div class="p-4 bg-gray-200 dark:bg-neutral-950">
 			<button on:click={(e) => drawer.close()}>close</button>
 		</div>
 		<div class="p-4 w-[400px] max-w-[400px]">

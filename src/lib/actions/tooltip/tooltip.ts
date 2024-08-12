@@ -6,8 +6,8 @@ import {
 	type Readable,
 	type Writable,
 } from 'svelte/store';
-import { twMerge } from 'tailwind-merge';
 import type { Alignment } from '../../utils/calculate-alignment.js';
+import { twMerge2 } from '../../utils/tw-merge2.js';
 import { windowSize } from '../../utils/window-size.js';
 import { _makeInVisible, _makeVisible } from './_make-visible.js';
 import { _setPosition } from './_set-position.js';
@@ -125,7 +125,7 @@ const _ensureDiv = (
 		classes = [TooltipConfig.presetBase, TooltipConfig.class, opts.class].join(' ');
 	}
 	// make sure these are never overwritten (must come last)
-	classes = twMerge(classes, 'fixed block transition-opacity')
+	classes = twMerge2(classes, 'fixed block transition-opacity')
 		.split(/\s/)
 		.filter(Boolean);
 
@@ -157,7 +157,7 @@ const _ensureArrow = (
 		classes = [TooltipConfig.arrowPresetBase, TooltipConfig.arrowClass, opts.arrowClass].join(' ');
 	}
 	// make sure these are never overwritten (must come last)
-	classes = twMerge(classes, 'fixed block size-0 transition-opacity')
+	classes = twMerge2(classes, 'fixed block size-0 transition-opacity')
 		.split(/\s/)
 		.filter(Boolean);
 

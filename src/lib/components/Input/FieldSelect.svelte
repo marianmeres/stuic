@@ -2,10 +2,10 @@
 	import { createClog } from '@marianmeres/clog';
 	import { createEventDispatcher } from 'svelte';
 	import { slide } from 'svelte/transition';
-	import { twMerge } from 'tailwind-merge';
 	import type { ValidateOptions, ValidationResult } from '../../actions/validate.js';
 	import { validate as validateAction } from '../../actions/validate.js';
 	import { getId } from '../../utils/get-id.js';
+	import { twMerge2 } from '../../utils/tw-merge2.js';
 	import type { THC } from '../Thc/Thc.svelte';
 	import Thc from '../Thc/Thc.svelte';
 
@@ -54,7 +54,7 @@
 			bg-neutral-100 dark:bg-neutral-700
 			tracking-tight
 			focus:outline-0 focus-visible:ring-0
-			placeholder:text-black/35 dark:placeholder:text-white/35
+			placeholder:text-neutral-950/35 dark:placeholder:text-neutral-50/35
 			placeholder:tracking-tight
 		`,
 		invalid: `border-stuic-primary`,
@@ -167,26 +167,26 @@
 		classBySize?.[size]?.[k] || '',
 	];
 
-	$: _boxClass = twMerge(_collectClasses('box'));
+	$: _boxClass = twMerge2(_collectClasses('box'));
 
-	$: _labelClass = twMerge(
+	$: _labelClass = twMerge2(
 		_collectClasses(
 			'label',
 			showAsterixOnRequired && required ? _collectClasses('asterix').join(' ') : ''
 		)
 	);
 
-	$: _wrapClass = twMerge(
+	$: _wrapClass = twMerge2(
 		_collectClasses(
 			'wrap',
 			validation && !validation.valid ? _collectClasses('invalid').join(' ') : ''
 		)
 	);
 
-	$: _inputClass = twMerge('form-input', _collectClasses('input'));
-	$: _validationMessageClass = twMerge(_collectClasses('validationMessage'));
-	$: _descriptionClass = twMerge(_collectClasses('description'));
-	$: _belowClass = twMerge(_collectClasses('below'));
+	$: _inputClass = twMerge2('form-input', _collectClasses('input'));
+	$: _validationMessageClass = twMerge2(_collectClasses('validationMessage'));
+	$: _descriptionClass = twMerge2(_collectClasses('description'));
+	$: _belowClass = twMerge2(_collectClasses('below'));
 </script>
 
 <div

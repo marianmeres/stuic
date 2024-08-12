@@ -20,15 +20,15 @@
 }
 
 html {
-	@apply bg-white text-gray-950;
+	@apply bg-neutral-50 text-neutral-950;
 	select {
-		@apply bg-white text-black;
+		@apply bg-neutral-50 text-neutral-950;
 	}
 
 	&.dark {
-		@apply bg-neutral-800 text-gray-50;
+		@apply bg-neutral-800 text-neutral-50;
 		select {
-			@apply bg-black text-white;
+			@apply bg-neutral-800 text-neutral-50;
 		}
 	}
 }

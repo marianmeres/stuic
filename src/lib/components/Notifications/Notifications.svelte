@@ -1,7 +1,7 @@
 <script context="module" lang="ts">
 	import { createClog } from '@marianmeres/clog';
 	import { fade } from 'svelte/transition';
-	import { twMerge } from 'tailwind-merge';
+	import { twMerge2 } from '../../utils/tw-merge2.js';
 	import Thc from '../Thc/Thc.svelte';
 	import X from '../X/X.svelte';
 	import { notificationsDefaultIcons } from './notifications-icons.js';
@@ -59,7 +59,7 @@
                     w-full max-w-sm
                     rounded-md
                     shadow-lg
-                    bg-neutral-700 text-white
+                    bg-neutral-700 text-neutral-50
                 `,
 				count: `
                     absolute -top-2 -right-2 
@@ -67,7 +67,7 @@
                     flex items-center justify-center
                     px-2 py-1 rounded-full
                     leading-none text-xs
-                    bg-black text-white
+                    bg-neutral-950 text-neutral-50
                 `,
 				icon: `
                     flex items-start justify-center
@@ -84,8 +84,8 @@
                     flex flex-col items-center justify-center
                     leading-none
                     px-3
-                    hover:bg-black/20
-                    focus-visible:bg-black/20 focus-visible:outline-none focus-visible:ring-0
+                    hover:bg-neutral-950/20
+                    focus-visible:bg-neutral-950/20 focus-visible:outline-none focus-visible:ring-0
                     group
                     rounded-tr-md rounded-br-md
                 `,
@@ -154,7 +154,7 @@
 	$: y = Y_POSITIONS.includes(posY) ? posY : DEFAULT.posY;
 	$: yMobile = Y_POSITIONS.includes(posYMobile) ? posYMobile : DEFAULT.posYMobile;
 
-	$: _wrapClass = twMerge(
+	$: _wrapClass = twMerge2(
 		NotificationsConfig.preset.wrap,
 		`flex flex-row inset-0 
         pointer-events-none bg-transparent`,
@@ -162,7 +162,7 @@
 		YMAP[y]
 	);
 
-	$: _wrapInnerClass = twMerge(
+	$: _wrapInnerClass = twMerge2(
 		NotificationsConfig.preset.wrapInner,
 		`flex flex-col w-full 
         pointer-events-none bg-transparent`,
@@ -179,12 +179,12 @@
 	];
 
 	//
-	const _boxClass = (n: Notification) => twMerge(..._collectClasses(n, 'box'));
-	const _countClass = (n: Notification) => twMerge(..._collectClasses(n, 'count'));
-	const _iconClass = (n: Notification) => twMerge(..._collectClasses(n, 'icon'));
-	const _contentClass = (n: Notification) => twMerge(..._collectClasses(n, 'content'));
-	const _buttonClass = (n: Notification) => twMerge(..._collectClasses(n, 'button'));
-	const _xClass = (n: Notification) => twMerge(..._collectClasses(n, 'x'));
+	const _boxClass = (n: Notification) => twMerge2(..._collectClasses(n, 'box'));
+	const _countClass = (n: Notification) => twMerge2(..._collectClasses(n, 'count'));
+	const _iconClass = (n: Notification) => twMerge2(..._collectClasses(n, 'icon'));
+	const _contentClass = (n: Notification) => twMerge2(..._collectClasses(n, 'content'));
+	const _buttonClass = (n: Notification) => twMerge2(..._collectClasses(n, 'button'));
+	const _xClass = (n: Notification) => twMerge2(..._collectClasses(n, 'x'));
 	const _iconFn = (o: Notification) => o.iconFn ?? defaultIcons?.[o.type];
 
 	const _isFn = (v: any) => typeof v === 'function';

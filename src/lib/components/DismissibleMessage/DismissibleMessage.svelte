@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
 	import { slide } from 'svelte/transition';
-	import { twMerge } from 'tailwind-merge';
+	import { twMerge2 } from '../../utils/tw-merge2.js';
 	import type { TW_COLORS } from '../../utils/tw-types.js';
 	import Thc, { isTHCNotEmpty, type THC } from '../Thc/Thc.svelte';
 	import X from '../X/X.svelte';
@@ -37,8 +37,8 @@
 		box: `mb-4 rounded flex text-sm`,
 		content: `flex-1 px-4 py-3`,
 		dismiss: `
-			hover:bg-black/5 dark:hover:bg-black/20
-			focus-visible:bg-black/5 focus-visible:hover:bg-black/20 focus-visible:ring-0
+			hover:bg-neutral-950/5 dark:hover:bg-neutral-950/20
+			focus-visible:bg-neutral-950/5 focus-visible:hover:bg-neutral-950/20 focus-visible:ring-0
 			rounded rounded-l-none
 			px-3
 			flex items-center justify-center
@@ -99,16 +99,16 @@
 <!-- {#if isNotEmpty(message)} -->
 {#if show}
 	<div
-		class={twMerge(_collectClasses('box', themes[theme] ?? themes.primary))}
+		class={twMerge2(_collectClasses('box', themes[theme] ?? themes.primary))}
 		transition:slide={{ duration }}
 	>
-		<div class={twMerge(_collectClasses('content'))}>
+		<div class={twMerge2(_collectClasses('content'))}>
 			<Thc thc={message} {forceAsHtml} />
 		</div>
 
 		{#if typeof onDismiss === 'function'}
-			<button class={twMerge(_collectClasses('dismiss'))} on:click={() => onDismiss()}>
-				<X class={twMerge(_collectClasses('x'))} strokeWidth={1.5} />
+			<button class={twMerge2(_collectClasses('dismiss'))} on:click={() => onDismiss()}>
+				<X class={twMerge2(_collectClasses('x'))} strokeWidth={1.5} />
 			</button>
 		{/if}
 	</div>

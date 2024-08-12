@@ -41,7 +41,7 @@
 					// logger: createClog('droppable'),
 				}}
 				class:border={$isDraggedOver === id}
-				class:border-black={$isDraggedOver === id}
+				class:border-neutral-950={$isDraggedOver === id}
 			>
 				{id}
 				{label}

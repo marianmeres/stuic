@@ -2,13 +2,13 @@
 	import { createClog } from '@marianmeres/clog';
 	import { iconBsEye } from '@marianmeres/icons-fns/bootstrap/iconBsEye.js';
 	import { iconBsEyeSlash } from '@marianmeres/icons-fns/bootstrap/iconBsEyeSlash.js';
-	import { createEventDispatcher } from 'svelte';
-	import { twMerge } from 'tailwind-merge';
-	import { trim } from '../../actions/trim.js';
-	import { validate as validateAction } from '../../actions/validate.js';
-	import type { ValidateOptions, ValidationResult } from '../../actions/validate.js';
-	import { getId } from '../../utils/get-id.js';
 	import { iconBsX } from '@marianmeres/icons-fns/bootstrap/iconBsX.js';
+	import { createEventDispatcher } from 'svelte';
+	import { trim } from '../../actions/trim.js';
+	import type { ValidateOptions } from '../../actions/validate.js';
+	import { validate as validateAction } from '../../actions/validate.js';
+	import { getId } from '../../utils/get-id.js';
+	import { twMerge2 } from '../../utils/tw-merge2.js';
 
 	const dispatch = createEventDispatcher();
 	const clog = createClog('PinInput');
@@ -92,8 +92,8 @@
 	<div class="absolute inset-0 grid {gridCols[length - 2]} pointer-events-none p-1 gap-1">
 		{#each _cells as c, idx (idx)}
 			<div
-				class={twMerge(
-					'flex items-center justify-center rounded bg-black/10 font-mono',
+				class={twMerge2(
+					'flex items-center justify-center rounded bg-neutral-950/10 font-mono',
 					pinCellClass
 				)}
 			>
@@ -112,8 +112,8 @@
 			{id}
 			type="text"
 			spellcheck="false"
-			class={twMerge(
-				'caret-black',
+			class={twMerge2(
+				'caret-neutral-950',
 				inputClass,
 				`font-mono text-transparent dark:text-transparent`
 			)}

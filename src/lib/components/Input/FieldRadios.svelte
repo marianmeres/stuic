@@ -1,7 +1,7 @@
 <script context="module" lang="ts">
 	import { createClog } from '@marianmeres/clog';
-	import { twMerge } from 'tailwind-merge';
 	import { getId } from '../../utils/get-id.js';
+	import { twMerge2 } from '../../utils/tw-merge2.js';
 	import XFieldRadioInternal from './XFieldRadioInternal.svelte';
 
 	export interface FieldRadiosConfigClasses {
@@ -83,7 +83,7 @@
 </script>
 
 {#if options.length}
-	<div class={twMerge(`gap-y-2 grid ${_class.group || ''}`)}>
+	<div class={twMerge2(`gap-y-2 grid ${_class.group || ''}`)}>
 		{#each _options as o, i}
 			<XFieldRadioInternal
 				bind:group={value}

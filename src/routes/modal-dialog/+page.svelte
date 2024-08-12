@@ -19,7 +19,7 @@
 		bind:this={modal}
 		on:open={() => clog('open')}
 		on:close={() => clog('close')}
-		class="drop-shadow-lg bg-white rounded focus:outline-none w-[40vw] h-[40vh]"
+		class="drop-shadow-lg bg-neutral-50 rounded focus:outline-none w-[40vw] h-[40vh]"
 	>
 		<div class="absolute inset-0 bg-red-100 p-4">
 			<button on:click={modal.close} class="outline px-2">close</button>

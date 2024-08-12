@@ -3,11 +3,11 @@
 	import { createSwitchStore } from '@marianmeres/switch-store';
 	import { createEventDispatcher } from 'svelte';
 	import { fly } from 'svelte/transition';
-	import { twMerge } from 'tailwind-merge';
+	import type { FocusTrapOptions } from '../../actions/focus-trap.js';
 	import { onOutside } from '../../actions/on-outside.js';
 	import { prefersReducedMotionStore } from '../../utils/prefers-reduced-motion.js';
+	import { twMerge2 } from '../../utils/tw-merge2.js';
 	import Backdrop from '../Backdrop/Backdrop.svelte';
-	import type { FocusTrapOptions } from '../../actions/focus-trap.js';
 
 	export type DrawerStore = ReturnType<typeof createDrawerStore>;
 	export const createDrawerStore = (open = false) => createSwitchStore<any>(open);
@@ -84,7 +84,7 @@
 
 {#if $drawer.isOpen}
 	<Backdrop
-		class={twMerge(`${_presetsClsBackdrop[position] || ''} ${backdropClass}`)}
+		class={twMerge2(`${_presetsClsBackdrop[position] || ''} ${backdropClass}`)}
 		on:escape
 		on:mousedown={(e) => dispatch('click_backdrop')}
 		{fadeInDuration}
@@ -108,7 +108,7 @@
 				duration: transitionEnabled ? transitionDuration : 0,
 				...(_presetsAnim[position] || {}),
 			}}
-			class={twMerge(`overflow-y-auto ${_presetsCls[position] || ''} ${_class}`)}
+			class={twMerge2(`overflow-y-auto ${_presetsCls[position] || ''} ${_class}`)}
 			use:onOutside
 		>
 			<slot />

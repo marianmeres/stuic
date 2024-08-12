@@ -12,9 +12,9 @@
 <button
 	class="text-xs px-1 rounded"
 	class:bg-gray-200={!flag}
-	class:text-black={!flag}
+	class:text-neutral-950={!flag}
 	class:bg-gray-600={flag}
-	class:text-white={flag}
+	class:text-neutral-50={flag}
 	on:click={() => (flag = !flag)}
 >
 	{label}

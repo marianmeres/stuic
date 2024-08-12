@@ -30,7 +30,7 @@
 		color: gray;
 		strong {
 			font-size: 1.3rem;
-			@apply text-black dark:text-white;
+			@apply text-neutral-950 dark:text-neutral-50;
 		}
 	}
 </style>
