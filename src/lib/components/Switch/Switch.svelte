@@ -16,7 +16,7 @@
 			hover:brightness-[1.05] active:brightness-[0.95]
 			disabled:!cursor-not-allowed disabled:!opacity-50 disabled:hover:brightness-100
 
-			bg-gray-400 dark:bg-gray-400
+			bg-neutral-400 dark:bg-neutral-400
 			data-[checked=true]:bg-stuic-primary dark:data-[checked=true]:bg-stuic-primary
 		`.trim();
 

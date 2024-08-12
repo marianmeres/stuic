@@ -41,8 +41,8 @@
 	const _PRESET: FieldSelectConfigClasses = {
 		box: 'mb-4 grid', // gap-4
 		wrap: `
-            rounded-md border border-gray-300 dark:border-gray-600
-            bg-gray-100 dark:bg-gray-700
+            rounded-md border border-neutral-300 dark:border-neutral-600
+            bg-neutral-100 dark:bg-neutral-700
             focus-within:border-stuic-primary
             focus-within:ring-4
             focus-within:ring-stuic-primary
@@ -51,7 +51,7 @@
 		label: `block flex-1 px-2 mb-1`,
 		input: `
 			rounded-md border-0 block w-full flex-1
-			bg-gray-100 dark:bg-gray-700
+			bg-neutral-100 dark:bg-neutral-700
 			tracking-tight
 			focus:outline-0 focus-visible:ring-0
 			placeholder:text-black/35 dark:placeholder:text-white/35

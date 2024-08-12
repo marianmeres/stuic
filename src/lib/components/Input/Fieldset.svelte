@@ -8,7 +8,7 @@
 	}
 
 	const _PRESET: FieldsetConfigClasses = {
-		box: `border border-gray-200 p-4 pt-3 rounded-md`,
+		box: `border border-neutral-200 p-4 pt-3 rounded-md`,
 		legend: `px-2`,
 	};
 

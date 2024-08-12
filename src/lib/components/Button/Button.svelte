@@ -17,9 +17,9 @@
 			no-underline
 			border
 			
-			bg-zinc-200 text-black
-			dark:bg-zinc-600 dark:text-white
-			border-zinc-400 dark:border-zinc-500
+			bg-neutral-200 text-black
+			dark:bg-neutral-600 dark:text-white
+			border-neutral-400 dark:border-neutral-500
 		`.trim();
 
 		static presetSquare = 'p-0 aspect-square justify-center';

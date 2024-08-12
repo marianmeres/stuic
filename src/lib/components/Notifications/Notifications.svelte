@@ -59,7 +59,7 @@
                     w-full max-w-sm
                     rounded-md
                     shadow-lg
-                    bg-gray-700 text-white
+                    bg-neutral-700 text-white
                 `,
 				count: `
                     absolute -top-2 -right-2 
@@ -72,7 +72,7 @@
 				icon: `
                     flex items-start justify-center
                     pt-4 pr-0 pb-4 pl-4
-                    text-gray-200
+                    text-neutral-200
                 `,
 				content: `
                     flex-1

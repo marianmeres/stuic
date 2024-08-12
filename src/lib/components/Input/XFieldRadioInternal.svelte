@@ -17,8 +17,8 @@
 		label: 'block w-full',
 		input: `
 			size-4 rounded-full
-			bg-gray-100
-			border-gray-300
+			bg-neutral-100
+			border-neutral-300
 			shadow-sm
 			text-stuic-primary
 			cursor-pointer
