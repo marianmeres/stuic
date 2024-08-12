@@ -68,7 +68,7 @@
 				space-y-3 sm:space-y-0
 			`,
 			menuLi: `flex-1 sm:flex-none w-full sm:w-auto sm:inline-block`,
-			button: `w-full min-w-24 text-center inline-block`,
+			button: `w-full min-w-24 justify-center`,
 			spinnerBox: `
 				absolute inset-0 flex justify-center items-center
 				rounded-lg
