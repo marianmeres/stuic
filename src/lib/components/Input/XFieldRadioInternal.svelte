@@ -20,7 +20,7 @@
 			bg-neutral-100
 			border-neutral-300
 			shadow-sm
-			text-stuic-primary
+			text-stuic-primary dark:text-stuic-primary-dark
 			cursor-pointer
 			focus:border-stuic-primary
 			focus:ring-4
@@ -29,7 +29,8 @@
 			focus:ring-opacity-20
 			disabled:cursor-not-allowed
 		`,
-		validationMessage: 'text-xs text-stuic-primary tracking-tight',
+		validationMessage:
+			'text-xs text-stuic-primary dark:text-stuic-primary-dark tracking-tight',
 		description: 'text-sm opacity-50',
 	};
 

@@ -61,8 +61,12 @@
 		// to be defined at consumer level...
 		static variant: Record<string, string> = {
 			primary: `
-				bg-stuic-primary text-stuic-on-primary
+				     bg-stuic-primary           text-stuic-on-primary
 				dark:bg-stuic-primary-dark dark:text-stuic-on-primary-dark
+			`.trim(),
+			secondary: `
+				     bg-stuic-secondary           text-stuic-on-secondary
+				dark:bg-stuic-secondary-dark dark:text-stuic-on-secondary-dark
 			`.trim(),
 		};
 	}

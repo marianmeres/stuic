@@ -38,7 +38,7 @@
 			bg-neutral-100
 			border-neutral-300
 			shadow-sm
-			text-stuic-primary
+			text-stuic-primary dark:text-stuic-primary-dark
 			cursor-pointer
 			focus:border-stuic-primary
 			focus:ring-4
