@@ -1,6 +1,6 @@
 import { twMerge } from 'tailwind-merge';
 
-export const clsClean = (s: string) => `${s || ''}`.replace(/\s+/gi, ' ').trim();
+export const clsClean = (s: string) => `${s || ''}`.replace(/\s+/g, ' ').trim();
 
 // twMerge does not seem to handle "\r", "\n" and/or "\t" within the input strings correctly,
 // so we need to do the cleanup ourselves
