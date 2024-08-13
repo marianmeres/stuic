@@ -120,7 +120,6 @@
 		//
 		_class
 	);
-	$: console.log(123, buttonClass.replace(/\s+/gi, ' '));
 </script>
 
 {#if href}
