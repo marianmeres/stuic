@@ -23,11 +23,8 @@
 
 	export let legend = '';
 
-	const _collectClasses = (k: keyof FieldsetConfigClasses, extra = '') => [
-		_PRESET?.[k] || '',
-		FieldsetConfig?.class?.[k] || '',
-		_class?.[k] || '',
-	];
+	const _collectClasses = (k: keyof FieldsetConfigClasses, extra = '') =>
+		[_PRESET?.[k] || '', FieldsetConfig?.class?.[k] || '', _class?.[k] || ''].join(' ');
 </script>
 
 <fieldset class={twMerge2(_collectClasses('box'))}>
