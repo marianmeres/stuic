@@ -9,7 +9,6 @@
 		FieldSelect,
 		Fieldset,
 	} from '../../lib/index.js';
-	import FieldPin from '../../lib/components/Input/PinInput.svelte';
 
 	const clog = createClog('TestForm');
 

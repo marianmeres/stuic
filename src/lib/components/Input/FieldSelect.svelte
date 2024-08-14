@@ -157,29 +157,30 @@
 	$: if (_inputEl) dispatch('input_mounted', _inputEl);
 
 	//
-	const _collectClasses = (k: keyof FieldSelectConfigClasses, extra = '') => [
-		_PRESET?.[k] || '',
-		_PRESET_BY_SIZE?.[size]?.[k] || '',
-		FieldSelectConfig?.class?.[k] || '',
-		FieldSelectConfig?.classBySize?.[size]?.[k] || '',
-		extra || '',
-		_class?.[k] || '',
-		classBySize?.[size]?.[k] || '',
-	];
+	const _collectClasses = (k: keyof FieldSelectConfigClasses, extra = '') =>
+		[
+			_PRESET?.[k] || '',
+			_PRESET_BY_SIZE?.[size]?.[k] || '',
+			FieldSelectConfig?.class?.[k] || '',
+			FieldSelectConfig?.classBySize?.[size]?.[k] || '',
+			extra || '',
+			_class?.[k] || '',
+			classBySize?.[size]?.[k] || '',
+		].join(' ');
 
 	$: _boxClass = twMerge2(_collectClasses('box'));
 
 	$: _labelClass = twMerge2(
 		_collectClasses(
 			'label',
-			showAsterixOnRequired && required ? _collectClasses('asterix').join(' ') : ''
+			showAsterixOnRequired && required ? _collectClasses('asterix') : ''
 		)
 	);
 
 	$: _wrapClass = twMerge2(
 		_collectClasses(
 			'wrap',
-			validation && !validation.valid ? _collectClasses('invalid').join(' ') : ''
+			validation && !validation.valid ? _collectClasses('invalid') : ''
 		)
 	);
 

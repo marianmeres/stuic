@@ -94,21 +94,22 @@
 
 	let idDesc = getId();
 
-	const _collectClasses = (k: keyof FieldCheckboxConfigClasses, extra = '') => [
-		_PRESET?.[k] || '',
-		_PRESET_BY_SIZE?.[size]?.[k] || '',
-		FieldCheckboxConfig?.class?.[k] || '',
-		FieldCheckboxConfig?.classBySize?.[size]?.[k] || '',
-		extra || '',
-		_class?.[k] || '',
-		classBySize?.[size]?.[k] || '',
-	];
+	const _collectClasses = (k: keyof FieldCheckboxConfigClasses, extra = '') =>
+		[
+			_PRESET?.[k] || '',
+			_PRESET_BY_SIZE?.[size]?.[k] || '',
+			FieldCheckboxConfig?.class?.[k] || '',
+			FieldCheckboxConfig?.classBySize?.[size]?.[k] || '',
+			extra || '',
+			_class?.[k] || '',
+			classBySize?.[size]?.[k] || '',
+		].join(' ');
 
 	$: _boxClass = twMerge2(_collectClasses('box'));
 	$: _inputClass = twMerge2(
 		_collectClasses(
 			'input',
-			validation && !validation.valid ? _collectClasses('invalid').join(' ') : ''
+			validation && !validation.valid ? _collectClasses('invalid') : ''
 		)
 	);
 	$: _labelClass = twMerge2(_collectClasses('label'));
