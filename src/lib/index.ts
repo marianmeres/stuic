@@ -107,6 +107,9 @@ export {
 export { default as Popover } from './components/Popover/Popover.svelte';
 
 //
+export { default as Spinner } from './components/Spinner/Spinner.svelte';
+
+//
 export {
 	default as Switch,
 	SwitchConfig,

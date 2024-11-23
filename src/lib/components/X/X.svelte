@@ -4,7 +4,7 @@
 	let _class = '';
 	export { _class as class };
 
-	export let strokeWidth: 1 | 1.5 | 2 | 2.5 | 3 | 3.5 | 4 = 2;
+	export let strokeWidth: 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | 3.5 | 4 = 2;
 
 	// size-6 is 1.5rem, 24px
 </script>
