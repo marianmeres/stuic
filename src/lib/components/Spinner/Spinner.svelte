@@ -20,15 +20,15 @@
 	$: _count = Math.max(3, Math.min(12, count));
 
 	let _id = 0;
-	const _calcSegs = (_c: number, _d: number) => {
+	const _calcSegs = (c: number, d: number) => {
 		const id = _id++;
 		let out = [];
-		for (let i = 0; i < _c; i++) {
+		for (let i = 0; i < c; i++) {
 			out.push({
 				id: `${id}_${i}`,
-				rotate: (360 / _c) * i,
-				delay: (direction === 'ccw' ? 1 : -1) * (_d - (_d / _c) * (i + 1)),
-				duration: _d,
+				rotate: (360 / c) * i,
+				delay: (direction === 'ccw' ? 1 : -1) * (d - (d / c) * (i + 1)),
+				duration: d,
 			});
 		}
 		return out;
@@ -44,7 +44,7 @@
 		'height-' + (['normal', 'tall', 'short'].includes(height) ? height : 'normal');
 </script>
 
-<div class="spinner {_thickness} {_height} {twMerge2('inline-block w-5', _class)}">
+<div class="spinner {_thickness} {_height} {twMerge2('inline-block w-4', _class)}">
 	{#each _segments as s (s.id)}
 		<div
 			style={[
@@ -95,16 +95,16 @@
 	}
 	/* thickness */
 	.spinner.thickness-thin div:after {
-		left: 47.5%;
-		width: 5%;
+		left: 48%;
+		width: 4%;
 	}
 	.spinner.thickness-normal div:after {
 		left: 46%;
 		width: 8%;
 	}
 	.spinner.thickness-thick div:after {
-		left: 44.5%;
-		width: 11%;
+		left: 43%;
+		width: 14%;
 	}
 
 	/* height */
