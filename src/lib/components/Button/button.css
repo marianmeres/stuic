@@ -1,0 +1,54 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer components {
+	[data-stuic-button] {
+		@apply /* bg / fg + dark */
+			bg-neutral-200 text-black dark:bg-neutral-500 dark:text-white
+			/* font + text */
+			font-mono text-sm text-center font-light
+			/* border */
+			border-2 border-black/20 dark:border-black/80
+			/* rounded */
+			rounded-md
+			/* flex */
+			inline-flex items-center gap-x-2
+			/* padding */
+			px-3 py-1
+			/* shadow */
+			shadow-[1px_2px_1px_0_rgba(0_0_0_/_.4)]
+			active:shadow-none active:translate-[1px]
+			disabled:shadow-none disabled:active:shadow-none disabled:active:translate-none
+			/* hover */
+			hover:brightness-[1.05]
+			active:brightness-[0.95]
+			disabled:hover:brightness-100
+			/* focus */
+			focus:shadow-black/50 focus:outline-0;
+	}
+
+	[data-stuic-button][data-button-variant='primary'] {
+		@apply font-medium;
+	}
+
+	[data-stuic-button][data-button-variant='secondary'] {
+		@apply bg-neutral-100 dark:bg-neutral-600
+			text-black/60 dark:text-white/80 
+			shadow-[1px_2px_1px_0_rgba(0_0_0_/_.2)]
+			active:shadow-none active:translate-[1px]
+			focus:shadow-black/30;
+	}
+
+	[data-stuic-button][data-button-size='sm'] {
+		@apply text-xs rounded-sm px-2 py-0.5;
+	}
+
+	[data-stuic-button][data-button-size='lg'] {
+		@apply text-base rounded-md;
+	}
+
+	[data-stuic-button][data-button-muted] {
+		@apply text-black/50 dark:text-white/50;
+	}
+}

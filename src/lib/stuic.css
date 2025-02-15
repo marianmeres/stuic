@@ -1,0 +1,23 @@
+@import 'tailwindcss';
+
+@layer base {
+	button:not(:disabled),
+	[role='button']:not(:disabled) {
+		cursor: pointer;
+	}
+
+	button:disabled,
+	[role='button']:disabled {
+		cursor: not-allowed !important;
+		opacity: 0.5 !important;
+	}
+}
+
+/* STUIC global theme vars */
+/* @theme {
+	--color-stuic-primary: var(--color-red-600);
+	--color-stuic-primary-foreground: var(--color-white);
+
+	--color-stuic-primary-dark: var(--color-green-600);
+	--color-stuic-primary-foreground-dark: var(--color-gray-100);
+} */
