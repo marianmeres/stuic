@@ -1,15 +1,15 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
-	import type { HTMLButtonAttributes } from 'svelte/elements';
-	// order matters
-	import '../../stuic.css';
-	import { twMerge } from '../../utils/tw-merge2.js';
-	import './button.css';
+	import type { Snippet } from "svelte";
+	import type { HTMLButtonAttributes } from "svelte/elements";
+	import { twMerge } from "../../utils/tw-merge.js";
+	// order does matter
+	import "../../stuic.css";
+	import "./button.css";
 
 	// interface Props extends DataAttributes, Partial<Omit<HTMLButtonElement, 'children'>> {
 	interface Props extends HTMLButtonAttributes {
-		variant?: 'primary' | 'secondary' | string;
-		size?: 'sm' | 'md' | 'lg' | string;
+		variant?: "primary" | "secondary" | string;
+		size?: "sm" | "md" | "lg" | string;
 		muted?: boolean;
 		class?: string;
 		href?: string;
@@ -26,31 +26,18 @@
 		...rest
 	}: Props = $props();
 
-	// I ended up not using classes here at all... see button.css
-	const _class = '';
+	// see button.css
+	const _class = $derived(
+		["stuic-button", variant, size, muted && "muted"].filter(Boolean).join(" ")
+	);
 </script>
 
 {#if href}
-	<a
-		{href}
-		data-stuic-button
-		data-button-variant={variant || undefined}
-		data-button-size={size === 'md' ? undefined : size || undefined}
-		data-button-muted={muted || undefined}
-		class={twMerge(_class, classProp)}
-		{...rest as any}
-	>
+	<a {href} class={twMerge(_class, classProp)} {...rest as any}>
 		{@render children?.()}
 	</a>
 {:else}
-	<button
-		data-stuic-button
-		data-button-variant={variant || undefined}
-		data-button-size={size === 'md' ? undefined : size || undefined}
-		data-button-muted={muted || undefined}
-		class={twMerge(_class, classProp)}
-		{...rest}
-	>
+	<button class={twMerge(_class, classProp)} {...rest}>
 		{@render children?.()}
 	</button>
 {/if}

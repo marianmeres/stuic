@@ -1,12 +1,11 @@
-import { twMerge as _twMerge } from 'tailwind-merge';
-import { type ClassNameValue } from 'tailwind-merge';
+import { twMerge as _twMerge, type ClassNameValue } from "tailwind-merge";
 
 /**
- * Normalizes whitespaces
+ * Normalizes and dedupes whitespaces
  */
 export function clsClean(s: ClassNameValue) {
-	if (Array.isArray(s)) s = s.join(' ');
-	return `${s || ''}`.replace(/\s+/g, ' ').trim();
+	if (Array.isArray(s)) s = s.join(" ");
+	return `${s || ""}`.replace(/\s+/g, " ").trim();
 }
 
 /**
