@@ -12,7 +12,7 @@
         // 'drag-drop', 
         // 'drawer',
 		// 'hover-expandable-width',
-		// 'input',
+		'input',
 		// 'modal-dialog',
 		// 'notifications',
 		// 'on-outside',
@@ -20,7 +20,7 @@
 		'spinner', 
         // 'switch', 
 		// 'table', 
-        // 'thc', 
+        'thc', 
         // 'tooltip',
 		// 'viewport',
 		// 'x'

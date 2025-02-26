@@ -2,8 +2,9 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-@layer components {
-	.stuic-button {
+/* https://tailwindcss.com/docs/upgrade-guide#adding-custom-utilities */
+@utility stuic-button {
+	& {
 		@apply /* bg / fg + dark */
 			bg-neutral-200 text-black dark:bg-neutral-500 dark:text-white
 			/* font + text */
@@ -25,7 +26,8 @@
 			active:brightness-[0.95]
 			disabled:hover:brightness-100
 			/* focus */
-			focus:brightness-[1.05] focus:outline-0;
+			focus:brightness-[1.05] focus:outline-0
+			focus:border-black/40 focus:dark:border-white/10;
 
 		&.primary {
 			@apply font-medium;

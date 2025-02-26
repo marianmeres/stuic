@@ -35,7 +35,6 @@
 <script lang="ts">
 	import type { Snippet } from "svelte";
 	import { twMerge } from "../../utils/tw-merge.js";
-	import type { EventHandler } from "svelte/elements";
 
 	// idea copied from https://www.skeleton.dev/components/app-shell
 	// adjusted and tweaked to personal opinion and taste...

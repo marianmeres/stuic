@@ -14,6 +14,8 @@
 	};
 
 	const viewport = getViewport();
+
+	let route = $derived(page.route.id?.slice(1).replace(/\([^)]+\)\//, ""));
 </script>
 
 <LocalColorScheme />
@@ -28,7 +30,9 @@
 	<div class="flex-1">
 		<a class="underline" href="/">UI home</a>
 		{#if page?.route?.id !== "/"}
-			<span class="opacity-50">&rarr;&nbsp;{page.route.id?.slice(1)}</span>
+			<span class="opacity-50">
+				&rarr;&nbsp;{route}
+			</span>
 		{/if}
 	</div>
 	<div>

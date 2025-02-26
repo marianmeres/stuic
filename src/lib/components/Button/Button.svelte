@@ -2,7 +2,8 @@
 	import type { Snippet } from "svelte";
 	import type { HTMLButtonAttributes } from "svelte/elements";
 	import { twMerge } from "../../utils/tw-merge.js";
-	// order does matter
+
+	// order matters I guess...
 	import "../../stuic.css";
 	import "./button.css";
 
