@@ -2,15 +2,32 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* prettier-ignore */
+@theme inline {
+	--color-button-bg: var(--color-button-bg, var(--color-neutral-200));
+	--color-button-bg-dark: var(--color-button-bg-dark, var(--color-neutral-500));
+
+	--color-button-text: var(--color-button-text, var(--color-black));
+	--color-button-text-dark: var(--color-button-text-dark, var(--color-white));
+
+	--color-button-border: var(--color-button-border, var(--color-neutral-400));
+	--color-button-border-dark: var(--color-button-border-dark, var(--color-neutral-800));
+
+	--color-button-border-focus: var(--color-button-border-focus, var(--color-neutral-400));
+	--color-button-border-focus-dark: var(--color-button-border-focus-dark, var(--color-neutral-100));
+}
+
 /* https://tailwindcss.com/docs/upgrade-guide#adding-custom-utilities */
 @utility stuic-button {
 	& {
 		@apply /* bg / fg + dark */
-			bg-neutral-200 text-black dark:bg-neutral-500 dark:text-white
+			bg-button-bg text-button-text 
+			dark:bg-button-bg-dark dark:text-button-text-dark
 			/* font + text */
 			font-mono text-sm text-center font-light
 			/* border */
-			border-2 border-black/20 dark:border-black/80
+			/* border-2 border-black/20 dark:border-black/80 */
+			border-2 border-button-border dark:border-button-border-dark
 			/* rounded */
 			rounded-md
 			/* flex */
@@ -27,7 +44,8 @@
 			disabled:hover:brightness-100
 			/* focus */
 			focus:brightness-[1.05] focus:outline-0
-			focus:border-black/40 focus:dark:border-white/10;
+			/* focus:border-black/40 focus:dark:border-white/10; */
+			focus:border-button-border-focus focus:dark:border-button-border-focus-dark;
 
 		&.primary {
 			@apply font-medium;

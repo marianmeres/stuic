@@ -1,27 +1,29 @@
 <script lang="ts">
 	import type { Snippet } from "svelte";
-	import type { HTMLInputAttributes } from "svelte/elements";
-	import { slide } from "svelte/transition";
+	import type { THC } from "../../Thc/Thc.svelte";
 	import {
 		validate as validateAction,
 		type ValidateOptions,
 		type ValidationResult,
-	} from "../../actions/validate.svelte.js";
-	import { getId } from "../../utils/get-id.js";
-	import { twMerge } from "../../utils/tw-merge.js";
-	import { Thc } from "../Thc/index.js";
-	import { isTHCNotEmpty, type THC } from "../Thc/Thc.svelte";
+	} from "../../../actions/validate.svelte.js";
+	import type { HTMLInputAttributes } from "svelte/elements";
+	import { getId } from "../../../utils/get-id.js";
+	import { twMerge } from "../../../utils/tw-merge.js";
+	import Thc, { isTHCNotEmpty } from "../../Thc/Thc.svelte";
+
 	//
-	import "../../stuic.css";
-	import "./_internal/checkbox.css";
+	import "../../../stuic.css";
+	import "./radio.css";
+	import { slide } from "svelte/transition";
 
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
 	interface Props extends HTMLInputAttributes {
 		input?: HTMLInputElement;
-		id?: string;
-		checked?: boolean;
+		group?: string;
 		label?: SnippetWithId | THC;
+		name?: string;
+		value?: string;
 		required?: boolean;
 		disabled?: boolean;
 		renderSize?: "sm" | "md" | "lg" | string;
@@ -29,50 +31,52 @@
 		//
 		validate?: boolean | Omit<ValidateOptions, "setValidationResult">;
 		//
-		class?: string;
+		classRadioBox?: string;
 		classInputBox?: string;
 		classInput?: string;
 		classLabelBox?: string;
 		classLabel?: string;
 		classDescBox?: string;
 		classValidationBox?: string;
+		//
+		validation: ValidationResult | undefined;
 	}
 
 	let {
 		input = $bindable(),
-		id = getId(),
-		checked = $bindable(),
+		group = $bindable(),
+		value,
 		label,
+		name,
 		required,
 		disabled,
-		renderSize = "md",
 		description,
+		renderSize,
+		tabindex,
 		validate,
-		class: classProp,
+		classRadioBox,
 		classInputBox,
 		classInput,
 		classLabelBox,
 		classLabel,
 		classDescBox,
 		classValidationBox,
+		validation = $bindable(),
 		...rest
 	}: Props = $props();
 
 	//
-	let validation: ValidationResult | undefined = $state();
+	// let validation: ValidationResult | undefined = $state();
 	const setValidationResult = (res: ValidationResult) => (validation = res);
 
 	//
 	let invalid = $derived(validation && !validation?.valid);
+	let id = getId();
 	let idDesc = getId();
-
-	$inspect(33333, invalid, validation);
 
 	//
 	let _classCommon = $derived(
-		[invalid && "invalid", disabled && "disabled", required && "required", renderSize]
-			.filter(Boolean)
-			.join(" ")
+		[invalid && "invalid", disabled && "disabled", renderSize].filter(Boolean).join(" ")
 	);
 </script>
 
@@ -84,27 +88,28 @@
 	{/if}
 {/snippet}
 
-<label class={twMerge(`stuic-checkbox`, _classCommon, classProp)}>
+<label class={twMerge("radio-box", _classCommon, classRadioBox)}>
 	<div class={twMerge("input-box", _classCommon, classInputBox)}>
 		<input
+			type="radio"
 			{id}
-			type="checkbox"
 			bind:this={input}
-			bind:checked
-			aria-checked={checked}
+			bind:group
+			{value}
+			{name}
+			class={twMerge(_classCommon, classInput)}
 			aria-describedby={description ? idDesc : undefined}
 			use:validateAction={() => ({
 				enabled: !!validate,
 				...(typeof validate === "boolean" ? {} : validate),
 				setValidationResult,
 			})}
-			class={twMerge(_classCommon, classInput)}
 			{required}
 			{disabled}
 			{...rest}
 		/>
 	</div>
-	<div class={twMerge("label-box", renderSize, classLabelBox)}>
+	<div class={twMerge("label-box", _classCommon, classLabelBox)}>
 		{#if label}
 			<div class={twMerge("label", _classCommon, classLabel)}>
 				{#if isTHCNotEmpty(label)}
@@ -112,14 +117,6 @@
 				{:else}
 					{@render (label as SnippetWithId)({ id })}
 				{/if}
-			</div>
-		{/if}
-		{#if validation && !validation?.valid}
-			<div
-				transition:slide={{ duration: 150 }}
-				class={twMerge("validation-box", _classCommon, classValidationBox)}
-			>
-				{@html validation.message}
 			</div>
 		{/if}
 		{#if description}

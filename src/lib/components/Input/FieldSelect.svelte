@@ -1,11 +1,3 @@
-<script lang="ts" module>
-	export interface FieldSelectOption {
-		label: string;
-		value?: string;
-		optgroup?: string;
-	}
-</script>
-
 <script lang="ts">
 	import type { Snippet } from "svelte";
 	import type { HTMLSelectAttributes } from "svelte/elements";
@@ -18,6 +10,7 @@
 	import { twMerge } from "../../utils/tw-merge.js";
 	import type { THC } from "../Thc/Thc.svelte";
 	import InputWrap from "./_internal/InputWrap.svelte";
+	import type { FieldSelectOption } from "./types.js";
 
 	type SnippetWithId = Snippet<[{ id: string }]>;
 

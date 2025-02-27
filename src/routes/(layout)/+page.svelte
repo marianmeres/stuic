@@ -4,26 +4,26 @@
 		// 'alert-confirm-prompt', 
 		'app-shell', 
 		// 'avatar', 
-		// 'backdrop', 
+		'backdrop', 
         'button', 
 		// 'carousel', 
-        // 'color-scheme', 
+        'color-scheme', 
 		// 'dismissible-message', 
         // 'drag-drop', 
-        // 'drawer',
+        'drawer',
 		// 'hover-expandable-width',
 		'input',
-		// 'modal-dialog',
+		'modal-dialog',
 		// 'notifications',
 		// 'on-outside',
 		// 'popover', 
 		'spinner', 
-        // 'switch', 
+        'switch', 
 		// 'table', 
         'thc', 
         // 'tooltip',
 		// 'viewport',
-		// 'x'
+		'x'
 	].toSorted();
 </script>
 

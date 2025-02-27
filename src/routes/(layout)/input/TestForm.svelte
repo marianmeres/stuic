@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { createClog } from "@marianmeres/clog";
-	import FieldInput from "../../../lib/components/Input/FieldInput.svelte";
-	import Button from "../../../lib/components/Button/Button.svelte";
-	import FieldTextarea from "../../../lib/components/Input/FieldTextarea.svelte";
-	import Fieldset from "../../../lib/components/Input/Fieldset.svelte";
-	import FieldCheckbox from "../../../lib/components/Input/FieldCheckbox.svelte";
-	import FieldSelect from "../../../lib/components/Input/FieldSelect.svelte";
+	import FieldInput from "$lib/components/Input/FieldInput.svelte";
+	import Button from "$lib/components/Button/Button.svelte";
+	import FieldTextarea from "$lib/components/Input/FieldTextarea.svelte";
+	import Fieldset from "$lib/components/Input/Fieldset.svelte";
+	import FieldCheckbox from "$lib/components/Input/FieldCheckbox.svelte";
+	import FieldSelect from "$lib/components/Input/FieldSelect.svelte";
+	import FieldRadios from "$lib/components/Input/FieldRadios.svelte";
 
 	const clog = createClog("TestForm");
 
@@ -13,8 +14,10 @@
 	let values = $state({
 		input1: "",
 		input2: "",
-		check: false,
+		check: true,
 		range: 33,
+		select: "",
+		radio: "",
 	});
 
 	let labelLeft = $state(false);
@@ -84,6 +87,8 @@
 				label="Some super label"
 				description="Some longer description"
 				required
+				validate
+				renderSize="sm"
 			/>
 
 			<FieldInput
@@ -102,24 +107,61 @@
 				}}
 			>
 				{#snippet inputAfter({ id })}
-					<span class="flex flex-col justify-center items-center w-10 -ml-2"
-						>{values.range}</span
-					>
+					<span class="flex flex-col justify-center items-center w-10 -ml-2">
+						{values.range}
+					</span>
 				{/snippet}
 			</FieldInput>
 		</Fieldset>
 
+		<FieldRadios
+			class="sm:grid-cols-2"
+			bind:value={values.radio}
+			options={[
+				{
+					value: "first",
+					label: "Radio buttons are similar to checkboxes",
+					description:
+						"Where multiple same-named controls exist, radio buttons allow one...",
+				},
+				"ho",
+				{ label: "Let's", description: "Some desc" },
+				"go",
+			]}
+			required
+			validate
+			renderSize="md"
+		/>
+
 		<FieldSelect
-			options={["", "Hey", { label: "Ho", optgroup: "Foo" }, "Let's", "Go"]}
+			options={[
+				{ label: "Hey", optgroup: "first optgroup" },
+				"ho",
+				{ label: "Let's" },
+				{ label: "go", optgroup: "second optgroup" },
+				"A long or short placeholder will change the intrinsic size of inputs...",
+			]}
+			bind:value={values.select}
 			label="Selector"
 			required
 			validate={{
 				customValidator(val, ctx, el) {
-					if (val && !/hey/i.test(val)) return "Hey hey hey!";
+					if (val && !/ho/i.test(val)) return "Ho ho ho!";
 				},
 			}}
 			{labelLeft}
 			description="Some boring description"
+		/>
+
+		<FieldSelect
+			options={[
+				"foo",
+				"bar",
+				"A long or short placeholder will change the intrinsic size of inputs...",
+			]}
+			class="inline-block"
+			classInput="field-sizing-content"
+			renderSize="sm"
 		/>
 	</div>
 

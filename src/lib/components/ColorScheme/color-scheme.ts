@@ -50,5 +50,9 @@ export class ColorScheme {
 	 */
 	static reset(): void {
 		globalThis.localStorage?.removeItem(ColorScheme.KEY);
+		globalThis?.document?.documentElement.classList.remove(
+			ColorScheme.DARK,
+			ColorScheme.LIGHT
+		);
 	}
 }

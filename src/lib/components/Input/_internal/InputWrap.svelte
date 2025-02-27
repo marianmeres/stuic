@@ -77,6 +77,14 @@
 			labelLeft = !(width && width < labelLeftBreakpoint);
 		}
 	});
+
+	let _classCommon = $derived(
+		[invalid && "invalid", disabled && "disabled", required && "required", size]
+			.filter(Boolean)
+			.join(" ")
+	);
+
+	let hasLabel = $derived(isTHCNotEmpty(label) || typeof label === "function");
 </script>
 
 {#snippet snippetOrThc({ id, value }: { id: string; value?: SnippetWithId | THC })}
@@ -90,10 +98,9 @@
 <div
 	class={twMerge(
 		`stuic-input`,
-		size,
-		invalid && "invalid",
-		labelLeft && labelLeftWidth === "normal" && "width-normal grid-cols-4",
-		labelLeft && labelLeftWidth === "wide" && "width-wide grid-cols-3",
+		_classCommon,
+		hasLabel && labelLeft && labelLeftWidth === "normal" && "width-normal grid-cols-4",
+		hasLabel && labelLeft && labelLeftWidth === "wide" && "width-wide grid-cols-3",
 		classProp
 	)}
 	bind:clientWidth={width}
@@ -101,17 +108,13 @@
 	<div
 		class={twMerge(
 			"label-box flex",
-			size,
-			invalid && "invalid",
+			_classCommon,
 			labelLeft ? "left items-start mt-2" : "items-end",
 			classLabelBox
 		)}
 	>
 		{#if label}
-			<label
-				for={id}
-				class={twMerge(classLabel, size, invalid && "invalid", required && "required")}
-			>
+			<label for={id} class={twMerge(_classCommon, classLabel)}>
 				{@render snippetOrThc({ id, value: label })}
 			</label>
 		{/if}
@@ -122,18 +125,16 @@
 	<div
 		class={twMerge(
 			"input-box",
-			size,
-			invalid && "invalid",
-			labelLeft && labelLeftWidth === "normal" && "col-span-3",
-			labelLeft && labelLeftWidth === "wide" && "col-span-2",
+			_classCommon,
+			hasLabel && labelLeft && labelLeftWidth === "normal" && "col-span-3",
+			hasLabel && labelLeft && labelLeftWidth === "wide" && "col-span-2",
 			classInputBox
 		)}
 	>
 		<div
 			class={twMerge(
 				"input-wrap",
-				size,
-				invalid && "invalid",
+				_classCommon,
 				disabled && "cursor-not-allowed opacity-50",
 				classInputBoxWrap
 			)}
@@ -149,20 +150,20 @@
 		{#if validation && !validation?.valid}
 			<div
 				transition:slide={{ duration: 150 }}
-				class={twMerge("validation-box", classValidationBox)}
+				class={twMerge("validation-box", _classCommon, classValidationBox)}
 			>
 				{@html validation.message}
 			</div>
 		{/if}
 
 		{#if description}
-			<div class={twMerge("desc-box", size, invalid && "invalid", classDescBox)}>
+			<div class={twMerge("desc-box", _classCommon, classDescBox)}>
 				{@render snippetOrThc({ id, value: description })}
 			</div>
 		{/if}
 
 		{#if below}
-			<div class={twMerge("below-box", size, invalid && "invalid", classBelowBox)}>
+			<div class={twMerge("below-box", _classCommon, classBelowBox)}>
 				{@render snippetOrThc({ id, value: below })}
 			</div>
 		{/if}

@@ -47,11 +47,14 @@
                         placeholder:text-neutral-950/35 dark:placeholder:text-neutral-50/35
                         text-neutral-950 dark:text-neutral-50;
 					&.sm {
-						@apply text-sm placeholder:text-sm;
+						@apply text-sm placeholder:text-sm py-1;
 					}
 					&.lg {
 						@apply text-lg placeholder:text-lg;
 					}
+				}
+				select.form-input {
+					@apply pr-8;
 				}
 			}
 		}

@@ -11,18 +11,6 @@
 
 		.input-box {
 			@apply flex h-6 items-center ml-1;
-			/* 
-			
-			row-start-1 
-			appearance-none rounded border border-gray-300 
-			bg-white 
-			checked:border-indigo-600 checked:bg-indigo-600 
-			indeterminate:border-indigo-600 indeterminate:bg-indigo-600 
-			focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 
-			
-			disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto
-			
-			*/
 
 			input {
 				@apply size-4 rounded
@@ -30,12 +18,15 @@
 					border-neutral-300
 					text-input-accent dark:text-input-accent-dark
 					cursor-pointer
+
 					checked:border-input-accent checked:bg-input-accent 
 					checked:dark:border-input-accent-dark checked:dark:bg-input-accent-dark
+					
 					focus:border-input-accent
 					focus:ring-4
 					focus:ring-offset-0
 					focus:ring-input-accent/20 focus:dark:ring-input-accent-dark/20
+					
 					disabled:cursor-not-allowed;
 
 				&[disabled] {
@@ -46,7 +37,7 @@
 
 		.label-box {
 			@apply ml-3 w-full;
-			label {
+			.label {
 				@apply block w-full cursor-pointer;
 				&[disabled] {
 					@apply cursor-not-allowed;
@@ -55,20 +46,20 @@
 					@apply after:content-['*'] after:opacity-70 after:pl-1;
 				}
 				&.sm {
-					@apply text-sm;
+					@apply text-sm mt-0.5;
 				}
 				&.lg {
 					@apply font-bold;
 				}
 			}
-		}
-		.validation-box {
-			@apply text-xs text-input-accent dark:text-input-accent-dark tracking-tight;
-		}
-		.desc-box {
-			@apply text-sm opacity-50 cursor-pointer font-normal;
-			&.disabled {
-				@apply cursor-not-allowed;
+			.validation-box {
+				@apply text-xs text-input-accent dark:text-input-accent-dark tracking-tight;
+			}
+			.desc-box {
+				@apply text-sm opacity-50 cursor-pointer font-normal;
+				&.disabled {
+					@apply cursor-not-allowed;
+				}
 			}
 		}
 	}
