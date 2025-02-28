@@ -8,6 +8,8 @@ export * from "./components/DismissibleMessage/index.js";
 export * from "./components/Drawer/index.js";
 export * from "./components/Input/index.js";
 export * from "./components/ModalDialog/index.js";
+export * from "./components/Notifications/index.js";
+export * from "./components/Progress/index.js";
 export * from "./components/Spinner/index.js";
 export * from "./components/Switch/index.js";
 export * from "./components/X/index.js";

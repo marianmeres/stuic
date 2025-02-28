@@ -2,12 +2,8 @@
 	import { onClickOutside } from "runed";
 	import { tick, type Snippet } from "svelte";
 	import { focusTrap } from "../../actions/focus-trap.js";
+	import { stopPropagation } from "../../utils/event-modifiers.js";
 	import { twMerge } from "../../utils/tw-merge.js";
-	import {
-		preventDefault,
-		stopImmediatePropagation,
-		stopPropagation,
-	} from "../../utils/event-modifiers.js";
 
 	interface Props {
 		// idea is, that the `dialog` element, should not be needed to customize

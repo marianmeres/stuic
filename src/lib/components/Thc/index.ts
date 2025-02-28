@@ -1,1 +1,6 @@
-export { default as Thc, type THC, isTHCNotEmpty } from "./Thc.svelte";
+export {
+	default as Thc,
+	type THC,
+	isTHCNotEmpty,
+	getTHCStringContent,
+} from "./Thc.svelte";

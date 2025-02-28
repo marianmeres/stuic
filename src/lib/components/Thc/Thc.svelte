@@ -22,19 +22,28 @@
 	export function isTHCNotEmpty(m: any) {
 		return _is(m) || _is(m?.text) || _is(m?.html) || m?.component;
 	}
+
+	/**
+	 * Will try to extract textual (or html) content from THC
+	 */
+	export function getTHCStringContent(m: any): string {
+		return m?.html || m?.text || (typeof m === "string" ? m : "") || "";
+	}
 </script>
 
 <script lang="ts">
+	interface Props extends Record<string, any> {
+		thc: THC;
+		forceAsHtml?: boolean;
+		allowCastToStringFallback?: boolean;
+	}
+
 	let {
 		thc,
 		forceAsHtml = false,
 		allowCastToStringFallback = true,
 		...rest
-	}: {
-		thc: THC;
-		forceAsHtml?: boolean;
-		allowCastToStringFallback?: boolean;
-	} = $props();
+	}: Props = $props();
 </script>
 
 {#if typeof thc === "string"}
