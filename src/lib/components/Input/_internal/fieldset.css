@@ -1,12 +1,11 @@
 @import "tailwindcss";
-
-@custom-variant dark (&:where(.dark, .dark *));
+@import "../../../stuic.css";
 
 /* https://tailwindcss.com/docs/upgrade-guide#adding-custom-utilities */
 @utility stuic-fieldset {
 	& {
 		@apply border border-neutral-200 p-4 pt-3 rounded-md;
-		legend {
+		> legend {
 			@apply px-2;
 		}
 	}

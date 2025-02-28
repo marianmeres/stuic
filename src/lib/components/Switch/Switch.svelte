@@ -3,8 +3,6 @@
 	import type { FormEventHandler, HTMLButtonAttributes } from "svelte/elements";
 	import { twMerge } from "../../utils/tw-merge.js";
 
-	// order matters I guess...
-	import "../../stuic.css";
 	import "./switch.css";
 
 	interface Props extends HTMLButtonAttributes {

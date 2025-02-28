@@ -70,7 +70,7 @@
 			.filter(Boolean)
 			.join(" ")
 	);
-	$inspect(111111, value);
+	// $inspect(value);
 </script>
 
 {#if _options.length}

@@ -12,7 +12,6 @@
 	import Thc, { isTHCNotEmpty } from "../../Thc/Thc.svelte";
 
 	//
-	import "../../../stuic.css";
 	import "./radio.css";
 	import { slide } from "svelte/transition";
 

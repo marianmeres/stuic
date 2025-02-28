@@ -1,6 +1,5 @@
 @import "tailwindcss";
-
-@custom-variant dark (&:where(.dark, .dark *));
+@import "../../stuic.css";
 
 /* prettier-ignore */
 @theme inline {
@@ -31,7 +30,7 @@
 			/* rounded */
 			rounded-md
 			/* flex */
-			inline-flex items-center gap-x-2
+			inline-flex items-center justify-center gap-x-2
 			/* padding */
 			px-3 py-1
 			/* shadow */

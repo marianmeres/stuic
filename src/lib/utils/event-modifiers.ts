@@ -21,3 +21,11 @@ export function stopPropagation(fn?: (e: Event) => any) {
 		fn?.call(this, e);
 	};
 }
+
+export function stopImmediatePropagation(fn?: (e: Event) => any) {
+	return function (e: Event) {
+		e.stopImmediatePropagation();
+		// @ts-ignore
+		fn?.call(this, e);
+	};
+}

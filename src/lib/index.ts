@@ -1,8 +1,10 @@
 // components
+export * from "./components/AlertConfirmPrompt/index.js";
 export * from "./components/AppShell/index.js";
 export * from "./components/Backdrop/index.js";
 export * from "./components/Button/index.js";
 export * from "./components/ColorScheme/index.js";
+export * from "./components/DismissibleMessage/index.js";
 export * from "./components/Drawer/index.js";
 export * from "./components/Input/index.js";
 export * from "./components/ModalDialog/index.js";

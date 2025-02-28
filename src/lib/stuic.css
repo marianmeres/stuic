@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @plugin '@tailwindcss/forms';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
 	button:not(:disabled),
 	[role="button"]:not(:disabled) {
@@ -19,10 +21,10 @@
 	
 	When defining theme variables that reference other variables, use the `inline` option.
 */
-@theme inline {
-	/* --color-stuic-primary: var(--color-red-600);
+/* @theme inline { */
+/* --color-stuic-primary: var(--color-red-600);
 	--color-stuic-primary-foreground: var(--color-white);
 
 	--color-stuic-primary-dark: var(--color-green-600);
 	--color-stuic-primary-foreground-dark: var(--color-gray-100); */
-}
+/* } */

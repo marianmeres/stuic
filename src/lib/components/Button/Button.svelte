@@ -3,8 +3,6 @@
 	import type { HTMLButtonAttributes } from "svelte/elements";
 	import { twMerge } from "../../utils/tw-merge.js";
 
-	// order matters I guess...
-	import "../../stuic.css";
 	import "./button.css";
 
 	// interface Props extends DataAttributes, Partial<Omit<HTMLButtonElement, 'children'>> {

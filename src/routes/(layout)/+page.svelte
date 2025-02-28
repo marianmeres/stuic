@@ -1,14 +1,14 @@
 <script lang="ts">
 	// prettier-ignore
 	let links = [
-		// 'alert-confirm-prompt', 
+		'alert-confirm-prompt', 
 		'app-shell', 
 		// 'avatar', 
 		'backdrop', 
         'button', 
 		// 'carousel', 
         'color-scheme', 
-		// 'dismissible-message', 
+		'dismissible-message', 
         // 'drag-drop', 
         'drawer',
 		// 'hover-expandable-width',

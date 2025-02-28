@@ -1,7 +1,5 @@
 @import "tailwindcss";
-
-@custom-variant dark (&:where(.dark, .dark *));
-
+@import "../../../stuic.css";
 @import "./theme.css";
 
 /* https://tailwindcss.com/docs/upgrade-guide#adding-custom-utilities */
@@ -9,8 +7,8 @@
 	& {
 		@apply mb-4 grid;
 
-		.label-box {
-			label {
+		> .label-box {
+			> label {
 				@apply block flex-1 px-2 mb-1 text-base;
 				&.required {
 					@apply after:content-['*'] after:opacity-70 after:pl-1;
@@ -24,8 +22,8 @@
 			}
 		}
 
-		.input-box {
-			.input-wrap {
+		> .input-box {
+			> .input-wrap {
 				@apply rounded-md border border-neutral-300 dark:border-neutral-600
                     bg-neutral-100 dark:bg-neutral-700
                     focus-within:border-input-accent focus-within:dark:border-input-accent-dark
@@ -57,19 +55,19 @@
 					@apply pr-8;
 				}
 			}
-		}
 
-		.validation-box {
-			@apply my-1 text-xs px-2
-            text-input-accent dark:text-input-accent-dark;
-		}
+			> .validation-box {
+				@apply my-1 text-xs px-2
+				text-input-accent dark:text-input-accent-dark;
+			}
 
-		.desc-box {
-			@apply mx-2 mt-1 text-sm opacity-50;
-		}
+			> .desc-box {
+				@apply mx-2 mt-1 text-sm opacity-50;
+			}
 
-		.below-box {
-			@apply mx-2 my-1;
+			> .below-box {
+				@apply mx-2 my-1;
+			}
 		}
 	}
 
@@ -173,70 +171,3 @@
 		}
 	}
 }
-
-/* 
-input[type="range"]::-webkit-slider-runnable-track {
-	background: #808080;
-	border: 0;
-	border-radius: 25px;
-	width: 100%;
-	height: 4px;
-	cursor: pointer;
-}
-input[type="range"]::-webkit-slider-thumb {
-	margin-top: -7px;
-	width: 18px;
-	height: 18px;
-	background: #ff0000;
-	border: 0;
-	border-radius: 18px;
-	cursor: pointer;
-	-webkit-appearance: none;
-}
-input[type="range"]:focus::-webkit-slider-runnable-track {
-	background: #808080;
-}
-input[type="range"]::-moz-range-track {
-	background: #808080;
-	border: 0;
-	border-radius: 25px;
-	width: 100%;
-	height: 4px;
-	cursor: pointer;
-}
-input[type="range"]::-moz-range-thumb {
-	width: 18px;
-	height: 18px;
-	background: #ff0000;
-	border: 0;
-	border-radius: 18px;
-	cursor: pointer;
-}
-input[type="range"]::-ms-track {
-	background: transparent;
-	border-color: transparent;
-	border-width: 7px 0;
-	color: transparent;
-	width: 100%;
-	height: 4px;
-	cursor: pointer;
-}
-input[type="range"]::-ms-fill-lower {
-	background: #808080;
-	border: 0;
-	border-radius: 50px;
-}
-input[type="range"]::-ms-fill-upper {
-	background: #808080;
-	border: 0;
-	border-radius: 50px;
-}
-input[type="range"]::-ms-thumb {
-	width: 18px;
-	height: 18px;
-	background: #ff0000;
-	border: 0;
-	border-radius: 18px;
-	cursor: pointer;
-	margin-top: 0px;
-} */

@@ -5,7 +5,6 @@
 	import { twMerge } from "../../../utils/tw-merge.js";
 	import Thc, { isTHCNotEmpty, type THC } from "../../Thc/Thc.svelte";
 	//
-	import "../../../stuic.css";
 	import "./input-wrap.css";
 
 	type SnippetWithId = Snippet<[{ id: string }]>;

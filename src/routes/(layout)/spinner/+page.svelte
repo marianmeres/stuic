@@ -18,6 +18,7 @@
 	</span>
 	<span class="flex items-center space-x-2">
 		<input type="range" bind:value={size} min={0} max={3} step="1" />
+		<span>{w[size]}</span>
 	</span>
 </div>
 

@@ -5,7 +5,6 @@
 	import { twMerge } from "../../utils/tw-merge.js";
 
 	//
-	import "../../stuic.css";
 	import "./_internal/fieldset.css";
 
 	interface Props {

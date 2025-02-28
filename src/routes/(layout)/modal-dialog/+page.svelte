@@ -1,27 +1,31 @@
 <script lang="ts">
-	import { Button, ModalDialog } from "$lib/index.js";
+	import { Button, ModalDialog, X } from "$lib/index.js";
 	import { dummyText } from "../../_utils/dummy-text.js";
 
-	let visible = $state(false);
-	const close = () => (visible = false);
-
-	let visible2 = $state(false);
-	// $inspect("page visible", visible);
+	let modal1 = $state<ModalDialog>();
+	let modal2 = $state<ModalDialog>();
+	let modal3 = $state<ModalDialog>();
 </script>
 
-<Button onclick={() => (visible = true)} size="sm" class="shadow-none">open</Button>
-(current: {visible})
+<Button onclick={modal1?.open} size="sm" class="shadow-none">first</Button>
+<Button onclick={modal3?.open} size="sm" class="shadow-none">third</Button>
 
-<ModalDialog bind:visible class="">
-	<div class="absolute inset-4 overflow-hidden rounded-md">
-		<div class="bg-orange-200 p-4 overflow-auto inset-0 absolute">
-			<Button onclick={close} size="sm" class="mb-4">close</Button>
-			<Button onclick={() => (visible2 = true)}>second</Button>
-			{@html dummyText(10)}
-		</div>
+<ModalDialog bind:this={modal1} class="p-4">
+	<!-- <div class="inset-0 absolute overflow-auto bg-orange-200 p-4 text-black"> -->
+	<Button onclick={modal1?.close} size="sm" class="mb-4">close</Button>
+	<Button onclick={modal2?.open}>second</Button>
+	<div>
+		{@html dummyText(20)}
 	</div>
+	<!-- </div> -->
 </ModalDialog>
 
-<ModalDialog bind:visible={visible2} noEscapeClose class="border w-[100px] bg-red-400/20">
-	second
+<ModalDialog bind:this={modal2} noEscapeClose class="bg-red-400 size-[200px] p-4">
+	second with <code>noEscapeClose</code>
+	<hr />
+	<Button onclick={modal2.close} class="sm">close</Button>
+</ModalDialog>
+
+<ModalDialog bind:this={modal3} class="max-w-xl max-h-[350px] border rounded-lg">
+	<div class="content-box class-must-be-ignored">third</div>
 </ModalDialog>

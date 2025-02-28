@@ -1,7 +1,5 @@
 @import "tailwindcss";
-
-@custom-variant dark (&:where(.dark, .dark *));
-
+@import "../../../stuic.css";
 @import "./theme.css";
 
 /* https://tailwindcss.com/docs/upgrade-guide#adding-custom-utilities */
@@ -9,10 +7,10 @@
 	& {
 		@apply flex items-start mb-4 text-base;
 
-		.input-box {
+		> .input-box {
 			@apply flex h-6 items-center ml-1;
 
-			input {
+			> input {
 				@apply size-4 rounded
 					bg-neutral-100
 					border-neutral-300
@@ -35,9 +33,9 @@
 			}
 		}
 
-		.label-box {
+		> .label-box {
 			@apply ml-3 w-full;
-			.label {
+			> .label {
 				@apply block w-full cursor-pointer;
 				&[disabled] {
 					@apply cursor-not-allowed;
@@ -52,10 +50,10 @@
 					@apply font-bold;
 				}
 			}
-			.validation-box {
+			> .validation-box {
 				@apply text-xs text-input-accent dark:text-input-accent-dark tracking-tight;
 			}
-			.desc-box {
+			> .desc-box {
 				@apply text-sm opacity-50 cursor-pointer font-normal;
 				&.disabled {
 					@apply cursor-not-allowed;

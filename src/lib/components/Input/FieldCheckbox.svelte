@@ -12,7 +12,6 @@
 	import { Thc } from "../Thc/index.js";
 	import { isTHCNotEmpty, type THC } from "../Thc/Thc.svelte";
 	//
-	import "../../stuic.css";
 	import "./_internal/checkbox.css";
 
 	type SnippetWithId = Snippet<[{ id: string }]>;

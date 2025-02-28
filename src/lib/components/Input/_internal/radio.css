@@ -1,31 +1,29 @@
 @import "tailwindcss";
-
-@custom-variant dark (&:where(.dark, .dark *));
-
+@import "../../../stuic.css";
 @import "./theme.css";
 
 @utility stuic-radios {
 	& {
-		.radios-box {
+		> .radios-box {
 			@apply gap-y-2 grid
-            rounded-md 
-            p-2
-            border border-neutral-300 dark:border-neutral-600
-            bg-neutral-100 dark:bg-neutral-700;
+				rounded-md 
+				p-2
+				border border-neutral-300 dark:border-neutral-600
+				bg-neutral-100 dark:bg-neutral-700;
 			&.invalid {
 				@apply border-input-accent dark:border-input-accent-dark;
 			}
 
-			label.radio-box {
+			> label.radio-box {
 				@apply flex items-start cursor-pointer pr-1;
 
 				&.disabled {
 					@apply cursor-not-allowed;
 				}
-				.input-box {
+				> .input-box {
 					@apply flex h-6 items-center ml-1;
 
-					input {
+					> input {
 						@apply size-4 rounded-full
                         bg-neutral-100
                         border-neutral-300
@@ -47,27 +45,27 @@
 						}
 					}
 				}
-			}
 
-			.label-box {
-				@apply ml-3 w-full;
-				.label {
-					@apply block w-full cursor-pointer;
+				> .label-box {
+					@apply ml-3 w-full;
+					> .label {
+						@apply block w-full cursor-pointer;
 
-					&.required {
-						@apply after:content-['*'] after:opacity-70 after:pl-1;
+						&.required {
+							@apply after:content-['*'] after:opacity-70 after:pl-1;
+						}
+						&.sm {
+							@apply text-sm mt-0.5;
+						}
+						&.lg {
+							@apply font-semibold;
+						}
 					}
-					&.sm {
-						@apply text-sm mt-0.5;
-					}
-					&.lg {
-						@apply font-semibold;
-					}
-				}
-				.desc-box {
-					@apply text-sm opacity-50 cursor-pointer font-normal;
-					&.disabled {
-						@apply cursor-not-allowed;
+					> .desc-box {
+						@apply text-sm opacity-50 cursor-pointer font-normal;
+						&.disabled {
+							@apply cursor-not-allowed;
+						}
 					}
 				}
 			}

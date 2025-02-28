@@ -1,3 +1,51 @@
 export type DataAttributes = {
 	[key: `data-${string}`]: string | number | boolean;
 };
+
+export type TW_COLORS =
+	| "amber"
+	| "blue"
+	| "cyan"
+	| "emerald"
+	| "fuchsia"
+	| "gray"
+	| "green"
+	| "indigo"
+	| "lime"
+	| "neutral"
+	| "orange"
+	| "pink"
+	| "purple"
+	| "red"
+	| "rose"
+	| "sky"
+	| "slate"
+	| "stone"
+	| "teal"
+	| "violet"
+	| "yellow"
+	| "zinc";
+
+// leaving it for tw compiler
+// "--color-amber-100"
+// "--color-blue-100"
+// "--color-cyan-100"
+// "--color-emerald-100"
+// "--color-fuchsia-100"
+// "--color-gray-100"
+// "--color-green-100"
+// "--color-indigo-100"
+// "--color-lime-100"
+// "--color-neutral-100"
+// "--color-orange-100"
+// "--color-pink-100"
+// "--color-purple-100"
+// "--color-red-100"
+// "--color-rose-100"
+// "--color-sky-100"
+// "--color-slate-100"
+// "--color-stone-100"
+// "--color-teal-100"
+// "--color-violet-100"
+// "--color-yellow-100"
+// "--color-zinc-100";

@@ -1,0 +1,61 @@
+<script lang="ts">
+	import { twMerge } from "../../utils/tw-merge.js";
+	import ModalDialog from "../ModalDialog/ModalDialog.svelte";
+	import {
+		AlertConfirmPromptType,
+		type AlertConfirmPromptStack,
+	} from "./alert-confirm-prompt-stack.svelte.js";
+	import Current from "./Current.svelte";
+
+	const { ALERT, CONFIRM, PROMPT } = AlertConfirmPromptType;
+
+	interface Props {
+		acp?: AlertConfirmPromptStack;
+		forceAsHtml?: boolean;
+		class?: string;
+		classModalInnerBox?: string;
+	}
+
+	let { acp, forceAsHtml, class: classProp, classModalInnerBox }: Props = $props();
+
+	let modal = $state<ModalDialog>();
+
+	$effect(() => {
+		if (modal) {
+			acp?.current ? modal.open() : modal.close();
+		}
+	});
+
+	let value = $state();
+	let isPending = $state(false);
+</script>
+
+<pre class="text-xs">{JSON.stringify(acp?.dump(), null, 2)}</pre>
+
+{#if acp?.current}
+	<!-- 
+        // always allow escape - this emulates native alert/confirm/prompt
+        preEscapeClose={acp?.current?.onEscape}
+        // do not close modal if stack is not empty (this is just `ModalDialog` render business)
+        preClose={() => !acp.length}
+        // do not allow close on outside click - this emulates native alert/confirm/prompt
+        noClickOutsideClose
+    -->
+	<ModalDialog
+		bind:this={modal}
+		preEscapeClose={() => {
+			if (isPending) return false;
+			acp?.current.onEscape?.();
+		}}
+		preClose={() => !acp.length}
+		noClickOutsideClose
+		type={acp?.current?.type}
+		class={twMerge(
+			"max-w-xl justify-end max-h-[62vh] sm:max-h-[200px] border p-4 rounded-lg",
+			acp?.current?.type === PROMPT && "sm:max-h-[250px]",
+			classProp
+		)}
+	>
+		<Current bind:value bind:isPending {acp} />
+	</ModalDialog>
+{/if}
