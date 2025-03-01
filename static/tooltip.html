@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Simple Anchor Tooltip</title>
+		<style>
+			body {
+				width: 2500px;
+				height: 2500px;
+			}
+			:root {
+				--m: 4px;
+			}
+
+			/* The button that will trigger the tooltip */
+			.tooltip-trigger {
+				anchor-name: --button;
+			}
+
+			/* The tooltip itself, positioned outside the button */
+			#tooltip {
+				position: fixed;
+
+				/* Only shown in browsers that support anchor positioning */
+				/* display: none; */
+
+				/* Anchor positioning */
+				position-anchor: --button;
+				position-area: top span-right;
+
+				position-try-fallbacks:
+					flip-block,
+					top,
+					top span-right,
+					right,
+					bottom span-right;
+
+				position-try-fallbacks:
+					flip-block,
+					top,
+					top span-left,
+					left,
+					bottom span-left;
+
+				position-try-fallbacks:
+					top,
+					top span-left,
+					top span-right;
+
+				position-try-fallbacks:
+					flip-inline,
+					flip-block,
+					flip-block flip-inline;
+
+				/* top span-left,
+					left,
+					bottom span-right,
+					bottom,
+					bottom span-left,
+					left; */
+
+				/* right,
+					bottom right,
+					bottom,
+					bottom left,
+					left; */
+
+				/* position-try: normal flip-block; */
+				/* position-try: top, right, left, bottom; */
+				/* position-try: flip-block, right, left; */
+				/* position-try-fallbacks: left, right, bottom; */
+				/* position-try: right, left, flip-block, right, left; */
+				/* position-try: flip-block, left, right, bottom; */
+				/* position-try: flip-inline, flip-block; */
+				/* position-try: flip-inline; */
+
+				/* position-try:
+					flip-block,
+					left,
+					right,
+					flip-block,
+					flip-start, flip-block flip-inline; */
+
+				/* Center horizontally */
+				margin: var(--m) 0;
+
+				/* Position above the button with a small gap */
+				/* inset-block-end: calc(100% + 8px); */
+				/* inset-inline-start: 50%; */
+				/* transform: translateX(-50%); */
+				/* inset-inline: 50%; */
+				/* translate: -50% 0; */
+
+				/* Styling */
+				background-color: #333;
+				color: white;
+				padding: 0.5rem;
+
+				width: max-content;
+				max-width: 300px;
+				/* min-width: 100%; */
+
+				/* max-width: 350px; */
+				/* text-overflow: ellipsis; */
+				/* height: 200px; */
+			}
+
+			/* Arrow for the tooltip */
+			/* #tooltip::after {
+				content: "";
+				position: absolute;
+				top: 100%;
+				left: 50%;
+				margin-left: -5px;
+				border-width: 5px;
+				border-style: solid;
+				border-color: #333 transparent transparent transparent;
+			} */
+
+			@supports (anchor-name: --button) {
+				#tooltip {
+					display: block;
+					opacity: 1;
+					/* pointer-events: none; */
+				}
+
+				/* .tooltip-trigger:hover ~ #tooltip {
+					opacity: 1;
+				} */
+			}
+
+			/* @position-try --top {
+				position-area: top;
+			}
+
+			@position-try --top-left {
+				position-area: top span-left;
+			}
+
+			@position-try --top-right {
+				position-area: top span-right;
+			}
+
+			@position-try --left {
+				position-area: left;
+			}
+
+			@position-try --right {
+				position-area: right;
+			}
+
+			@position-try --bottom-right {
+				position-area: bottom span-right;
+			}
+
+			@position-try --bottom-left {
+				position-area: bottom span-left;
+			}
+
+			@position-try --bottom {
+				position-area: bottom;
+			} */
+		</style>
+	</head>
+	<body>
+		<div
+			style="display: flex; justify-content: center; align-items: center; margin: 20rem"
+		>
+			<button class="tooltip-trigger">Hover me</button>
+		</div>
+		<div id="tooltip">
+			This is a tooltip. This is a tooltip. <b>hoho</b> This is a tooltip.
+		</div>
+	</body>
+</html>

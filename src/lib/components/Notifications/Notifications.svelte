@@ -170,8 +170,8 @@
 
 	const _classNotifButtonX = `opacity-75 group-hover:opacity-100`;
 
-	const _classProgress = `absolute inset-0 size-full bg-transparent rounded-md`;
-	const _classProgressBar = `bg-white/10 dark:bg-white/5 size-full rounded-md`;
+	const _classProgress = `absolute inset-0 size-full bg-transparent rounded-tl-md rounded-bl-md`;
+	const _classProgressBar = `bg-white/10 dark:bg-white/5 size-full rounded-tl-md rounded-bl-md`;
 
 	const _buildTheme = (type: NotificationType) => {
 		let theme =
@@ -186,7 +186,7 @@
             --color-notif-text: var(--color-notif-${type}-text, var(--color-${theme}-50));
             --color-notif-border: var(--color-notif-${type}-border, var(--color-${theme}-900));
 
-            --color-notif-bg-dark: var(--color-notif-${type}-bg-dark, var(--color-${theme}-900));
+            --color-notif-bg-dark: var(--color-notif-${type}-bg-dark, var(--color-${theme}-800));
             --color-notif-text-dark: var(--color-notif-${type}-text-dark, var(--color-${theme}-200));
             --color-notif-border-dark: var(--color-notif-${type}-border-dark, var(--color-${theme}-500));
         `;

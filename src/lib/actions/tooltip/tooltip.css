@@ -1,0 +1,39 @@
+@import "tailwindcss";
+@import "../../stuic.css";
+
+/* prettier-ignore */
+@theme inline {
+    /* style props will not work as with regular components, because tooltips are created outside of the anchor dom tree */
+    --color-tooltip-bg: var(--color-tooltip-bg, var(--color-neutral-800));
+    --color-tooltip-bg-dark: var(--color-tooltip-bg-dark, var(--color-neutral-300));
+    --color-tooltip-text: var(--color-tooltip-text, var(--color-white));
+    --color-tooltip-text-dark: var(--color-tooltip-text-dark, var(--color-black));
+
+}
+
+/* no @utility here */
+
+.stuic-tooltip {
+	position: fixed;
+	display: none;
+	opacity: 0;
+	transition-property: opacity;
+}
+
+@supports (anchor-name: --anchor) {
+	.stuic-tooltip {
+		position-area: top span-right;
+		position-try-fallbacks:
+			flip-inline,
+			flip-block,
+			flip-block flip-inline;
+
+		&.tt-block {
+			display: block;
+			opacity: 0;
+			&.tt-visible {
+				opacity: 1;
+			}
+		}
+	}
+}

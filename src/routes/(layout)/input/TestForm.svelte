@@ -7,6 +7,7 @@
 	import FieldCheckbox from "$lib/components/Input/FieldCheckbox.svelte";
 	import FieldSelect from "$lib/components/Input/FieldSelect.svelte";
 	import FieldRadios from "$lib/components/Input/FieldRadios.svelte";
+	import { preSubmitValidityCheck } from "$lib/index.js";
 
 	const clog = createClog("TestForm");
 
@@ -33,6 +34,7 @@
 		clog($state.snapshot(values));
 	}}
 	class="max-w-3xl my-4"
+	use:preSubmitValidityCheck
 >
 	<div class="space-y-6">
 		<FieldInput
