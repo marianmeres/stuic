@@ -22,7 +22,7 @@
         'switch', 
 		// 'table', 
         'thc', 
-        // 'tooltip',
+        'tooltip',
 		// 'viewport',
 		'x'
 	].toSorted();
