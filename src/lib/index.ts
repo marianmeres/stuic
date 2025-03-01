@@ -6,6 +6,7 @@ export * from "./components/Button/index.js";
 export * from "./components/ColorScheme/index.js";
 export * from "./components/DismissibleMessage/index.js";
 export * from "./components/Drawer/index.js";
+export * from "./components/HoverExpandableWidth/index.js";
 export * from "./components/Input/index.js";
 export * from "./components/ModalDialog/index.js";
 export * from "./components/Notifications/index.js";

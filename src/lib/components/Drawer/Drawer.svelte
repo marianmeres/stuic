@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { fly } from "svelte/transition";
 	import { type FocusTrapOptions } from "../../actions/focus-trap.js";
-	import { prefersReducedMotion } from "../../utils/prefers-reduced-motion.js";
+	import { prefersReducedMotion } from "../../utils/prefers-reduced-motion.svelte.js";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import Backdrop from "../Backdrop/Backdrop.svelte";
 	import type { Snippet } from "svelte";

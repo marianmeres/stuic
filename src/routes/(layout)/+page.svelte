@@ -11,7 +11,7 @@
 		'dismissible-message', 
         // 'drag-drop', 
         'drawer',
-		// 'hover-expandable-width',
+		'hover-expandable-width',
 		'input',
 		'modal-dialog',
 		'notifications',
