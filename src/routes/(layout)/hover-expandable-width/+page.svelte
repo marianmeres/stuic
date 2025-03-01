@@ -11,7 +11,7 @@
 
 <div class="w-full outline flex overflow-hidden mb-8 h-[300px]">
 	<div class="w-32">
-		<HoverExpandableWidth class="bg-red-400 z-10" {enabled}>
+		<HoverExpandableWidth class="bg-red-400 z-10" {enabled} duration={100}>
 			{#snippet children({ isExpanded, isExpanding, isShrinking, inTransition })}
 				<div class="h-full w-full p-4" class:bg-red-600={inTransition}>
 					<div class="text-xs mb-4">

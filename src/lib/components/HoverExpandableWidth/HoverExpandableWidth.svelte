@@ -31,8 +31,8 @@
 		shadowOpacity = 0.5,
 		duration: _duration = 150,
 		targetWidth = 256,
-		delayIn = 400,
-		delayOut = 400,
+		delayIn = 500,
+		delayOut = 300,
 		class: classProp,
 		children,
 		...rest
@@ -148,7 +148,7 @@
 	onmouseenter={() => schedule(expand, delayIn)}
 	onmouseleave={() => schedule(shrink, delayOut)}
 	class={twMerge("stuic-expandable", "overflow-x-hidden overflow-y-auto", classProp)}
-	style="width: 100%; height: 100%; transition-duration: {duration}ms;"
+	style="width: 100%; height: 100%; transition-timing-function: ease-in; transition-duration: {duration}ms;"
 	aria-expanded={isExpanded}
 	{...rest}
 >
