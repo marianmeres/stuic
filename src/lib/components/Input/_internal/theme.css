@@ -1,5 +1,0 @@
-/* prettier-ignore */
-@theme inline {
-	--color-input-accent: var(--color-input-accent, var(--color-red-600));
-	--color-input-accent-dark: var(--color-input-accent-dark, var(--color-red-400));
-}

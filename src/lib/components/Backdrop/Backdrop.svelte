@@ -4,9 +4,12 @@
 		twMerge,
 		type FocusTrapOptions,
 	} from "$lib/index.js";
+	import { createClog } from "@marianmeres/clog";
 	import { PressedKeys } from "runed";
-	import type { Snippet } from "svelte";
+	import { onMount, tick, untrack, type Snippet } from "svelte";
 	import { fade } from "svelte/transition";
+
+	const clog = createClog("Backdrop").debug;
 
 	interface Props extends Record<string, any> {
 		class?: string;
@@ -33,11 +36,14 @@
 		...rest
 	}: Props = $props();
 
-	const keys = new PressedKeys();
+	let keys = new PressedKeys();
 
-	const isEscapePressed = $derived(keys.has("Escape"));
+	let isEscapePressed = $derived(keys.has("Escape"));
 	$effect(() => {
-		if (isEscapePressed) onEscape?.();
+		if (isEscapePressed && typeof onEscape === "function") {
+			// clog("Executing onEscape...");
+			onEscape();
+		}
 	});
 
 	$effect(() => {
@@ -46,6 +52,8 @@
 			fadeOutDuration = 0;
 		}
 	});
+
+	// $inspect("visible:", visible, "isEscapePressed:", isEscapePressed).with(clog);
 </script>
 
 {#if visible}

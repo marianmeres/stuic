@@ -1,4 +1,7 @@
+import { createClog } from "@marianmeres/clog";
 import type { THC } from "../Thc/Thc.svelte";
+
+const clog = createClog("alert-confirm-prompt-stack").debug;
 
 export enum AlertConfirmPromptType {
 	ALERT = "alert",

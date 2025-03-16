@@ -8,17 +8,17 @@ export function trim(
 		// setup goes here
 		let { enabled, setValue } = fn?.() || { enabled: true };
 
-		function _trim(e: Event) {
+		function trim(e: Event) {
 			if (enabled && typeof el.value === "string") {
 				el.value = el.value.trim();
 				setValue?.(el.value);
 			}
 		}
 
-		el.addEventListener("change", _trim);
+		el.addEventListener("change", trim);
 
 		return () => {
-			el.removeEventListener("change", _trim);
+			el.removeEventListener("change", trim);
 		};
 	});
 }

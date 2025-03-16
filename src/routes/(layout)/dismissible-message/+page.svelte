@@ -7,7 +7,7 @@
 	let theme = $state<TW_COLORS>();
 </script>
 
-<DismissibleMessage {message} {theme} class="border-2" />
+<DismissibleMessage {message} {theme} class="border-1" />
 
 <FieldSelect
 	bind:value={theme}

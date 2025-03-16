@@ -2,7 +2,7 @@
 	let { children } = $props();
 	import "../../app.css";
 	import { page } from "$app/state";
-	import { ColorScheme, getViewport, ColorSchemeLocal } from "$lib/index.js";
+	import { ColorScheme, ColorSchemeLocal, Breakpoint } from "$lib/index.js";
 
 	let theme = $state(ColorScheme.getLocalValue(ColorScheme.LIGHT));
 
@@ -11,9 +11,9 @@
 		theme = ColorScheme.getLocalValue();
 	};
 
-	const viewport = getViewport();
-
 	let route = $derived(page.route.id?.slice(1).replace(/\([^)]+\)\//, ""));
+
+	let breakpoint = new Breakpoint();
 </script>
 
 <ColorSchemeLocal />
@@ -21,8 +21,7 @@
 <header
 	class="
 		p-4 flex items-center
-		bg-neutral-200
-		dark:bg-neutral-950
+		bg-neutral-200 dark:bg-neutral-950
 	"
 >
 	<div class="flex-1">
@@ -35,7 +34,7 @@
 	</div>
 	<div>
 		<span class="mr-4 opacity-50">
-			{viewport.breakpoint.__current__ || "none"}
+			{breakpoint.current}
 		</span>
 
 		<button onclick={toggleTheme}>

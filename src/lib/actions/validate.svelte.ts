@@ -1,3 +1,6 @@
+import { tick } from "svelte";
+import { waitForNextRepaint, waitForTwoRepaints } from "../utils/paint.js";
+
 export interface ValidationResult {
 	validity: ValidityState;
 	reasons: (keyof ValidityStateFlags)[];
@@ -101,13 +104,17 @@ export function validate(
 				[] as (keyof ValidityStateFlags)[]
 			);
 
-			setValidationResult?.({
-				validity: validityState,
-				reasons,
-				valid: validityState?.valid,
-				// use translate fn for first reason (if fn provided and allowed),
-				// otherwise fallback to native msg
-				message: _t(reasons?.[0], el.value, el.validationMessage),
+			// hm... Uncaught Svelte error: state_unsafe_mutation...
+			// the `tick` await helps, but I'm not really sure I understand the internals...
+			tick().then(() => {
+				setValidationResult?.({
+					validity: validityState,
+					reasons,
+					valid: validityState?.valid,
+					// use translate fn for first reason (if fn provided and allowed),
+					// otherwise fallback to native msg
+					message: _t(reasons?.[0], el.value, el.validationMessage),
+				});
 			});
 		};
 

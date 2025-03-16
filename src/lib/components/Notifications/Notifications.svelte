@@ -5,7 +5,7 @@
 	import Thc from "../Thc/Thc.svelte";
 	import X from "../X/X.svelte";
 	import { notificationsDefaultIcons } from "./notifications-icons.js";
-	import "./notifications.css";
+	import "./index.css";
 	import type {
 		Notification,
 		NotificationsStack,
@@ -32,14 +32,14 @@
 	};
 
 	// prettier-ignore
-	const XMAP = { left: 'sm:items-start', center: 'sm:items-center', right: 'sm:items-end' };
+	const XMAP = { left: 'sm:justify-start', center: 'sm:justify-center', right: 'sm:justify-end' };
 	// prettier-ignore
-	const XMAP_M = { left: 'items-start', center: 'items-center', right: 'items-end' };
+	const XMAP_M = { left: 'justify-start', center: 'justify-center', right: 'justify-end' };
 
 	// prettier-ignore
-	const YMAP = { top: 'sm:items-start', center: 'sm:items-center', bottom: 'sm:items-end' };
+	const YMAP = { top: 'sm:justify-start', center: 'sm:justify-center', bottom: 'sm:justify-end' };
 	// prettier-ignore
-	const YMAP_M = { top: 'items-start', center: 'items-center', bottom: 'items-end' };
+	const YMAP_M = { top: 'justify-start', center: 'justify-center', bottom: 'justify-end' };
 
 	interface Props {
 		notifications: NotificationsStack;
@@ -54,9 +54,10 @@
 		themeError?: TW_COLORS;
 		themeWarn?: TW_COLORS;
 		themeSuccess?: TW_COLORS;
+		noTheme?: boolean;
 		//
-		classWrap?: string;
-		classWrapInner?: string;
+		classWrapY?: string;
+		classWrapX?: string;
 		class?: string; // classNotifBox
 		classNotifCount?: string;
 		classNotifIcon?: string;
@@ -87,9 +88,11 @@
 		themeError = "red",
 		themeWarn = "yellow",
 		themeSuccess = "green",
+		// use truthy `noTheme` if manual css-only var customization is needed
+		noTheme,
 		//
-		classWrap,
-		classWrapInner,
+		classWrapY,
+		classWrapX,
 		class: classNotifBox,
 		classNotifCount,
 		classNotifIcon,
@@ -121,51 +124,51 @@
 
 	const maybeIcon = (n: Notification) => n.iconFn ?? notificationsDefaultIcons?.[n.type];
 
-	const _classWrap = `
+	const _classWrapX = `
         fixed z-50 flex flex-row inset-0 
         pointer-events-none bg-transparent`;
 
-	const _classWrapInner = `
-        p-4 space-y-4
-        flex flex-col w-full 
+	const _classWrapY = `
+        p-4 space-y-4 
+        flex flex-col inset-0 
         pointer-events-none bg-transparent`;
 
 	const _classNotifBox = `
-        relative flex
+        relative flex 
         pointer-events-auto 
-        w-full max-w-sm
-        rounded-md
-        shadow-lg
-        border-notif-border dark:border-notif-border-dark
-        bg-notif-bg text-notif-text
+        w-xs sm:w-sm max-w-sm 
+        rounded-lg 
+        shadow-lg 
+        border border-notif-border dark:border-notif-border-dark 
+        bg-notif-bg text-notif-text 
         dark:bg-notif-bg-dark dark:text-notif-text-dark`;
 
 	const _classNotifCount = `
         absolute -top-2 -right-2 
-        w-auto h-auto
-        flex items-center justify-center
-        px-2 py-1 rounded-full
-        leading-none text-xs
+        w-auto h-auto 
+        flex items-center justify-center 
+        px-2 py-1 rounded-full 
+        leading-none text-xs 
         bg-neutral-950 text-neutral-50`;
 
 	const _classNotifIcon = `
-        flex items-start justify-center
-        pt-4 pr-0 pb-4 pl-4
+        flex items-start justify-center 
+        pt-4 pr-0 pb-4 pl-4 
         text-neutral-200`;
 
 	const _classNotifContent = `
-        flex-1
-        flex flex-col justify-center
-        text-sm
+        flex-1 
+        flex flex-col justify-center 
+        text-sm tracking-tight 
         pl-4 pr-1 py-3`;
 
 	const _classNotifButton = `
-        flex flex-col items-center justify-center
-        leading-none
-        px-3
-        hover:bg-neutral-950/20
-        focus-visible:bg-neutral-950/20 focus-visible:outline-none focus-visible:ring-0
-        group
+        flex flex-col items-center justify-center 
+        leading-none 
+        px-3 
+        hover:bg-neutral-950/10 
+        focus-visible:bg-neutral-950/10 focus-visible:outline-none focus-visible:ring-0 
+        group 
         rounded-tr-md rounded-br-md`;
 
 	const _classNotifButtonX = `opacity-75 group-hover:opacity-100`;
@@ -174,6 +177,7 @@
 	const _classProgressBar = `bg-white/10 dark:bg-white/5 size-full rounded-tl-md rounded-bl-md`;
 
 	const _buildTheme = (type: NotificationType) => {
+		if (noTheme) return "";
 		let theme =
 			{
 				info: themeInfo,
@@ -181,32 +185,30 @@
 				success: themeSuccess,
 				warn: themeWarn,
 			}[type] || "info";
-		return `
-            --color-notif-bg: var(--color-notif-${type}-bg, var(--color-${theme}-700));
-            --color-notif-text: var(--color-notif-${type}-text, var(--color-${theme}-50));
-            --color-notif-border: var(--color-notif-${type}-border, var(--color-${theme}-900));
-
-            --color-notif-bg-dark: var(--color-notif-${type}-bg-dark, var(--color-${theme}-800));
-            --color-notif-text-dark: var(--color-notif-${type}-text-dark, var(--color-${theme}-200));
-            --color-notif-border-dark: var(--color-notif-${type}-border-dark, var(--color-${theme}-500));
-        `;
+		return [
+			`--color-notif-bg: var(--color-${theme}-700);`,
+			`--color-notif-text: var(--color-${theme}-50);`,
+			`--color-notif-border: var(--color-${theme}-800);`,
+			//
+			`--color-notif-bg-dark: var(--color-${theme}-800);`,
+			`--color-notif-text-dark: var(--color-${theme}-200);`,
+			`--color-notif-border-dark: var(--color-${theme}-700);`,
+		].join("");
 	};
 </script>
 
 {#if notifications.stack.length}
 	<div
 		aria-live="assertive"
-		class={twMerge("stuic-notifs wrap", _classWrap, YMAP_M[yMobile], YMAP[y], classWrap)}
+		class={twMerge(
+			"stuic-notifs wrap-x",
+			_classWrapX,
+			XMAP[x],
+			XMAP_M[xMobile],
+			classWrapX
+		)}
 	>
-		<div
-			class={twMerge(
-				"wrap-inner",
-				_classWrapInner,
-				XMAP_M[xMobile],
-				XMAP[x],
-				classWrapInner
-			)}
-		>
+		<div class={twMerge("wrap-y", _classWrapY, YMAP_M[yMobile], YMAP[y], classWrapY)}>
 			{#each notifications.stack as n (n.id)}
 				{@const { Cmp, props } = maybeComponent(n)}
 				{@const iconFn = maybeIcon(n)}
@@ -257,7 +259,10 @@
 								notifications.removeById(n.id);
 							}}
 						>
-							<X class={twMerge("x", _classNotifButtonX, classNotifButtonX)} />
+							<X
+								class={twMerge("x", _classNotifButtonX, classNotifButtonX)}
+								strokeWidth={1.5}
+							/>
 						</button>
 					</div>
 				{/if}

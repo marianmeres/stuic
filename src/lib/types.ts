@@ -27,7 +27,8 @@ export type TW_COLORS =
 	| "zinc";
 
 /**
-DO NOTE REMOVE. FOOD FOR TW COMPILER... WE WANT THE COLORS.
+DO NOTE REMOVE. FOOD FOR TW COMPILER...
+
 bg-black
 bg-white
 bg-slate-50

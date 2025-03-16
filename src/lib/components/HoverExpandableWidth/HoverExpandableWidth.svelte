@@ -1,10 +1,12 @@
 <script lang="ts">
 	import type { Snippet } from "svelte";
-	import { DevicePointer } from "../../utils/device-pointer.js";
-	import { twMerge } from "../../utils/tw-merge.js";
-	import { getViewport } from "../../utils/viewport.svelte.js";
+	import { innerHeight, innerWidth } from "svelte/reactivity/window";
+	import { DevicePointer } from "../../utils/device-pointer.svelte.js";
 	import { waitForNextRepaint, waitForTransitionEnd } from "../../utils/paint.js";
 	import { prefersReducedMotion } from "../../utils/prefers-reduced-motion.svelte.js";
+	import { twMerge } from "../../utils/tw-merge.js";
+
+	const dp = new DevicePointer();
 
 	interface Props {
 		enabled?: boolean;
@@ -27,7 +29,7 @@
 	}
 
 	let {
-		enabled = DevicePointer.isFine,
+		enabled = dp.isFine,
 		shadowOpacity = 0.5,
 		duration: _duration = 150,
 		targetWidth = 256,
@@ -47,7 +49,6 @@
 	let inTransition = $derived(isExpanding || isShrinking);
 	let _timer: any;
 	let box = $state<DOMRect>();
-	let win: ReturnType<typeof getViewport>["rect"];
 	let duration = $derived(prefersReduced.current ? 0 : _duration);
 
 	function clear() {
@@ -72,12 +73,11 @@
 		isExpanding = true;
 
 		box = el.getBoundingClientRect();
-		win ??= getViewport().rect;
 		const pos = {
 			top: box.top,
-			bottom: win!.height - box.bottom,
+			bottom: innerHeight.current! - box.bottom,
 			left: box.left,
-			right: win!.width - box.right,
+			right: innerWidth.current! - box.right,
 		};
 
 		// <offset-x>, <offset-y>, <blur-radius>, <spread-radius>

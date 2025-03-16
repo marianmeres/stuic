@@ -1,0 +1,16 @@
+@import "../../_shared.css";
+
+/* prettier-ignore */
+@theme inline {
+	--color-button-bg: var(--color-button-bg, var(--color-neutral-200));
+	--color-button-bg-dark: var(--color-button-bg-dark, var(--color-neutral-500));
+
+	--color-button-text: var(--color-button-text, var(--color-black));
+	--color-button-text-dark: var(--color-button-text-dark, var(--color-white));
+
+	--color-button-border: var(--color-button-border, var(--color-neutral-400));
+	--color-button-border-dark: var(--color-button-border-dark, var(--color-neutral-800));
+
+	--color-button-border-focus: var(--color-button-border-focus, var(--color-neutral-500));
+	--color-button-border-focus-dark: var(--color-button-border-focus-dark, var(--color-neutral-500));
+}

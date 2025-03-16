@@ -4,7 +4,7 @@ import { twMerge as _twMerge, type ClassNameValue } from "tailwind-merge";
  * Normalizes and dedupes whitespaces
  */
 export function clsClean(s: ClassNameValue) {
-	if (Array.isArray(s)) s = s.join(" ");
+	if (Array.isArray(s)) s = s.filter(Boolean).join(" ");
 	return `${s || ""}`.replace(/\s+/g, " ").trim();
 }
 

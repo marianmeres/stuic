@@ -5,7 +5,7 @@
 	import X from "../X/X.svelte";
 	import { twMerge } from "../../utils/tw-merge.js";
 
-	import "./dismiss.css";
+	import "./index.css";
 
 	interface Props {
 		class?: string;
@@ -48,10 +48,10 @@
 		style={theme
 			? `
                     --color-dismiss-bg: var(--color-${theme}-100);
-                    --color-dismiss-bg-dark: var(--color-${theme}-800);
+                    --color-dismiss-bg-dark: var(--color-${theme}-700);
 
                     --color-dismiss-text: var(--color-${theme}-800);
-                    --color-dismiss-text-dark: var(--color-${theme}-100);
+                    --color-dismiss-text-dark: var(--color-${theme}-50);
 
                     --color-dismiss-border: var(--color-${theme}-500);
                     --color-dismiss-border-dark: var(--color-${theme}-500);
@@ -76,6 +76,7 @@
                     group`,
 					classDismiss
 				)}
+				type="button"
 			>
 				<X
 					class={twMerge("x", "opacity-75 group-hover:opacity-100", classX)}

@@ -1,5 +1,4 @@
-@import "tailwindcss";
-@import "../../stuic.css";
+@import "../../_shared.css";
 
 /* prettier-ignore */
 @theme inline {

@@ -1,9 +1,13 @@
 <script lang="ts">
 	import { onClickOutside } from "runed";
-	import { tick, type Snippet } from "svelte";
+	import { onMount, tick, type Snippet } from "svelte";
 	import { focusTrap } from "../../actions/focus-trap.js";
 	import { stopPropagation } from "../../utils/event-modifiers.js";
 	import { twMerge } from "../../utils/tw-merge.js";
+	import { createClog } from "@marianmeres/clog";
+	import { waitForNextRepaint } from "../../utils/paint.js";
+
+	const clog = createClog("ModalDialog").debug;
 
 	interface Props {
 		// idea is, that the `dialog` element, should not be needed to customize
@@ -37,7 +41,12 @@
 
 	export function open() {
 		visible = true;
-		tick().then(() => dialog.showModal());
+		clog("will showModal");
+		// dialog must be rendered in the DOM before it can be opened...
+		waitForNextRepaint().then(() => {
+			clog("dialog.showModal()");
+			dialog.showModal();
+		});
 	}
 
 	export function close() {
@@ -45,6 +54,7 @@
 			const allowed = await preClose?.();
 			// explicit false prevents close
 			if (allowed !== false) {
+				clog("dialog.close()");
 				dialog?.close();
 				visible = false;
 			}
@@ -55,6 +65,8 @@
 		() => box,
 		() => !noClickOutsideClose && close()
 	);
+
+	// $inspect("Modal dialog mounted, is visible:", visible).with(clog);
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -72,8 +84,16 @@
 			classDialog
 		)}
 		onkeydown={async (e) => {
-			if (e.key === "Escape") {
+			if (e.key === "Escape" && visible) {
+				clog("on Escape keydown, preventing default and stopping propagation");
+
+				// do not allow built-in close on escape
 				e.preventDefault();
+				// do not bubble
+				e.stopPropagation();
+				// ???: do not allow additional onkeydown listeners on this dialog (should there be any...)
+				e.stopImmediatePropagation();
+
 				if (!noEscapeClose) {
 					// explicit false prevents close
 					let allowed = await preEscapeClose?.();

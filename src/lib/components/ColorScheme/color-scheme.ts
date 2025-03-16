@@ -2,7 +2,7 @@
  * Color scheme toggler and manager
  */
 export class ColorScheme {
-	static readonly KEY = "color-scheme" as const;
+	static readonly KEY = "stuic-color-scheme" as const;
 	static readonly DARK = "dark" as const;
 	static readonly LIGHT = "light" as const;
 

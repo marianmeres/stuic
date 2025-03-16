@@ -5,17 +5,17 @@ export function autogrow(
 	$effect(() => {
 		let { enabled = true, max = 250 } = fn?.() || {};
 
-		function _set_height(e: Event) {
+		function set_height(e: Event) {
 			if (enabled) {
 				el.style.height = "auto"; // Reset height to auto to correctly calculate scrollHeight
 				el.style.height = Math.min(el.scrollHeight, max) + "px";
 			}
 		}
 
-		el.addEventListener("input", _set_height);
+		el.addEventListener("input", set_height);
 
 		return () => {
-			el.removeEventListener("input", _set_height);
+			el.removeEventListener("input", set_height);
 		};
 	});
 }

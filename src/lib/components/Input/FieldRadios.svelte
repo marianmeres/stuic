@@ -75,7 +75,17 @@
 
 {#if _options.length}
 	<div class={twMerge("stuic-radios", _classCommon)}>
-		<div class={twMerge("radios-box", _classCommon, classProp)}>
+		<div
+			class={twMerge(
+				"radios-box",
+				_classCommon,
+				`gap-y-2 grid rounded-md p-2
+				border border-neutral-300 dark:border-neutral-600
+				bg-neutral-100 dark:bg-neutral-700`,
+				invalid && "border-input-accent dark:border-input-accent-dark",
+				classProp
+			)}
+		>
 			{#each _options as o, i}
 				<!-- value={o.value || o.label} -->
 				<FieldRadioInternal
@@ -103,7 +113,13 @@
 		{#if validation && !validation?.valid}
 			<div
 				transition:slide={{ duration: 150 }}
-				class={twMerge("validation-box", _classCommon, classValidationBox)}
+				class={twMerge(
+					"validation-box",
+					_classCommon,
+					`mt-1 px-2 text-xs text-input-accent dark:text-input-accent-dark 
+					tracking-tight`,
+					classValidationBox
+				)}
 			>
 				{@html validation.message}
 			</div>

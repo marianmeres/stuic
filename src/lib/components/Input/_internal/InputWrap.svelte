@@ -4,8 +4,6 @@
 	import type { ValidationResult } from "../../../actions/validate.svelte.js";
 	import { twMerge } from "../../../utils/tw-merge.js";
 	import Thc, { isTHCNotEmpty, type THC } from "../../Thc/Thc.svelte";
-	//
-	import "./input-wrap.css";
 
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
@@ -84,6 +82,20 @@
 	);
 
 	let hasLabel = $derived(isTHCNotEmpty(label) || typeof label === "function");
+
+	const _preset = {
+		label: {
+			size: {
+				sm: "text-sm",
+				lg: "font-semibold",
+			} as any,
+		},
+		inputBox: {
+			size: {
+				sm: "text-sm",
+			} as any,
+		},
+	};
 </script>
 
 {#snippet snippetOrThc({ id, value }: { id: string; value?: SnippetWithId | THC })}
@@ -96,8 +108,9 @@
 
 <div
 	class={twMerge(
-		`stuic-input`,
+		"stuic-input",
 		_classCommon,
+		"mb-4 grid",
 		hasLabel && labelLeft && labelLeftWidth === "normal" && "width-normal grid-cols-4",
 		hasLabel && labelLeft && labelLeftWidth === "wide" && "width-wide grid-cols-3",
 		classProp
@@ -106,14 +119,25 @@
 >
 	<div
 		class={twMerge(
-			"label-box flex",
+			"label-box",
 			_classCommon,
+			"flex",
 			labelLeft ? "left items-start mt-2" : "items-end",
 			classLabelBox
 		)}
 	>
 		{#if label}
-			<label for={id} class={twMerge(_classCommon, classLabel)}>
+			<label
+				for={id}
+				class={twMerge(
+					"block",
+					_classCommon,
+					"flex-1 px-2 mb-1 text-base",
+					required && "after:content-['*'] after:opacity-40 after:pl-1",
+					_preset.label.size[size],
+					classLabel
+				)}
+			>
 				{@render snippetOrThc({ id, value: label })}
 			</label>
 		{/if}
@@ -134,7 +158,14 @@
 			class={twMerge(
 				"input-wrap",
 				_classCommon,
+				`rounded-md border border-neutral-300 dark:border-neutral-600
+				bg-neutral-100 dark:bg-neutral-700
+				focus-within:border-input-accent focus-within:dark:border-input-accent-dark
+				focus-within:ring-input-accent/20 focus-within:dark:ring-input-accent-dark/20
+				focus-within:ring-4`,
+				invalid && "border-input-accent dark:border-input-accent-dark",
 				disabled && "cursor-not-allowed opacity-50",
+				_preset.inputBox.size[size],
 				classInputBoxWrap
 			)}
 		>
@@ -149,20 +180,32 @@
 		{#if validation && !validation?.valid}
 			<div
 				transition:slide={{ duration: 150 }}
-				class={twMerge("validation-box", _classCommon, classValidationBox)}
+				class={twMerge(
+					"validation-box",
+					_classCommon,
+					"my-1 text-xs px-2 text-input-accent dark:text-input-accent-dark",
+					classValidationBox
+				)}
 			>
 				{@html validation.message}
 			</div>
 		{/if}
 
 		{#if description}
-			<div class={twMerge("desc-box", _classCommon, classDescBox)}>
+			<div
+				class={twMerge(
+					"desc-box",
+					_classCommon,
+					"mx-2 mt-1 text-sm opacity-50",
+					classDescBox
+				)}
+			>
 				{@render snippetOrThc({ id, value: description })}
 			</div>
 		{/if}
 
 		{#if below}
-			<div class={twMerge("below-box", _classCommon, classBelowBox)}>
+			<div class={twMerge("below-box", _classCommon, "mx-2 my-1", classBelowBox)}>
 				{@render snippetOrThc({ id, value: below })}
 			</div>
 		{/if}

@@ -1,13 +1,11 @@
 export function omit(obj: any, keys: string | string[]) {
 	if (typeof keys === "string") keys = [keys];
-	return Object.fromEntries(
-		Object.entries(obj).filter(([k]) => !(keys || []).includes(k))
-	);
+	const _keys = new Set(keys);
+	return Object.fromEntries(Object.entries(obj).filter(([k]) => !_keys.has(k)));
 }
 
 export function pick(obj: any, keys: string | string[]) {
 	if (typeof keys === "string") keys = [keys];
-	return Object.fromEntries(
-		Object.entries(obj).filter(([k]) => (keys || []).includes(k))
-	);
+	const _keys = new Set(keys);
+	return Object.fromEntries(Object.entries(obj).filter(([k]) => _keys.has(k)));
 }

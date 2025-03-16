@@ -1,5 +1,4 @@
-@import "tailwindcss";
-@import "../../stuic.css";
+@import "../../_shared.css";
 
 /* prettier-ignore */
 @theme inline {
@@ -9,5 +8,5 @@
 
     --color-notif-bg-dark: var(--color-notif-bg-dark, var(--color-neutral-950));
     --color-notif-text-dark: var(--color-notif-text-dark, var(--color-neutral-200));
-    --color-notif-border-dark: var(--color-notif-border-dark, var(--color-neutral-500));
+    --color-notif-border-dark: var(--color-notif-border-dark, var(--color-neutral-500)); 
 }

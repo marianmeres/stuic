@@ -1,13 +1,14 @@
 <script lang="ts">
-	import { createClog } from "@marianmeres/clog";
-	import FieldInput from "$lib/components/Input/FieldInput.svelte";
 	import Button from "$lib/components/Button/Button.svelte";
+	import FieldCheckbox from "$lib/components/Input/FieldCheckbox.svelte";
+	import FieldInput from "$lib/components/Input/FieldInput.svelte";
+	import FieldRadios from "$lib/components/Input/FieldRadios.svelte";
+	import FieldSelect from "$lib/components/Input/FieldSelect.svelte";
 	import FieldTextarea from "$lib/components/Input/FieldTextarea.svelte";
 	import Fieldset from "$lib/components/Input/Fieldset.svelte";
-	import FieldCheckbox from "$lib/components/Input/FieldCheckbox.svelte";
-	import FieldSelect from "$lib/components/Input/FieldSelect.svelte";
-	import FieldRadios from "$lib/components/Input/FieldRadios.svelte";
-	import { preSubmitValidityCheck } from "$lib/index.js";
+	import { onSubmitValidityCheck } from "$lib/index.js";
+	import { createClog } from "@marianmeres/clog";
+	import { onMount } from "svelte";
 
 	const clog = createClog("TestForm");
 
@@ -22,25 +23,39 @@
 	});
 
 	let labelLeft = $state(false);
+
+	let f = $state<HTMLFormElement>()!;
+
+	onMount(() => {
+		function on_submit_valid(e: any) {
+			clog("submit_valid handler", [...e.detail.formData.entries()]);
+		}
+
+		f.addEventListener("submit_valid", on_submit_valid);
+		return () => f.removeEventListener("submit_valid", on_submit_valid);
+	});
 </script>
 
 <Button size="sm" class="border px-2" onclick={() => (labelLeft = !labelLeft)}
 	>left/full</Button
 >
 
+<!--  -->
+<!--  -->
 <form
+	bind:this={f}
 	onsubmit={(e) => {
-		e.preventDefault();
-		clog($state.snapshot(values));
+		clog("this will not be logged, because we have use:onSubmitValidityCheck");
 	}}
 	class="max-w-3xl my-4"
-	use:preSubmitValidityCheck
+	use:onSubmitValidityCheck
 >
 	<div class="space-y-6">
 		<FieldInput
 			bind:value={values.input1}
 			bind:input
 			label="Label as prop"
+			name="input1"
 			required
 			{labelLeft}
 			placeholder="This is some placeholder"
@@ -73,6 +88,7 @@
 		<FieldTextarea
 			bind:value={values.input2}
 			label="Big text"
+			name="input2"
 			required
 			validate
 			description="inline description"
@@ -88,6 +104,7 @@
 				bind:checked={values.check}
 				label="Some super label"
 				description="Some longer description"
+				name="check"
 				required
 				validate
 				renderSize="sm"
@@ -96,7 +113,8 @@
 			<FieldInput
 				type="range"
 				label="Hey ranger!"
-				class="mb-0"
+				class="!mb-0"
+				name="range"
 				min="0"
 				max="100"
 				bind:value={values.range}
@@ -126,13 +144,14 @@
 					description:
 						"Where multiple same-named controls exist, radio buttons allow one...",
 				},
+				"go",
 				"ho",
 				{ label: "Let's", description: "Some desc" },
-				"go",
 			]}
 			required
 			validate
 			renderSize="md"
+			name="radios"
 		/>
 
 		<FieldSelect
@@ -145,6 +164,7 @@
 			]}
 			bind:value={values.select}
 			label="Selector"
+			name="selector"
 			required
 			validate={{
 				customValidator(val, ctx, el) {
@@ -162,6 +182,7 @@
 				"A long or short placeholder will change the intrinsic size of inputs...",
 			]}
 			class="inline-block"
+			name="select2"
 			classInput="field-sizing-content"
 			renderSize="sm"
 		/>

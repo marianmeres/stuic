@@ -14,6 +14,7 @@
 		'hover-expandable-width',
 		'input',
 		'modal-dialog',
+		'modal-prompt',
 		'notifications',
 		// 'on-outside',
 		// 'popover', 
@@ -23,6 +24,7 @@
 		// 'table', 
         'thc', 
         'tooltip',
+        'tw-check',
 		// 'viewport',
 		'x'
 	].toSorted();

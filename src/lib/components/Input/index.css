@@ -1,78 +1,35 @@
-@import "tailwindcss";
-@import "../../../stuic.css";
-@import "./theme.css";
+@import "../../_shared.css";
+@plugin '@tailwindcss/forms';
 
-/* https://tailwindcss.com/docs/upgrade-guide#adding-custom-utilities */
-@utility stuic-input {
-	& {
-		@apply mb-4 grid;
+/* prettier-ignore */
+@theme inline {
+	--color-input-accent: var(--color-input-accent, var(--color-red-600));
+	--color-input-accent-dark: var(--color-input-accent-dark, var(--color-red-400));
+}
 
-		> .label-box {
-			> label {
-				@apply block flex-1 px-2 mb-1 text-base;
-				&.required {
-					@apply after:content-['*'] after:opacity-70 after:pl-1;
-				}
-				&.sm {
-					@apply text-sm;
-				}
-				&.lg {
-					@apply font-semibold;
-				}
-			}
+.stuic-input {
+	.form-input {
+		@apply rounded-md border-0 w-full flex-1
+			text-base placeholder:text-base
+			bg-transparent
+			tracking-tight
+			focus:outline-0 focus-visible:ring-0
+			placeholder:tracking-tight
+			placeholder:text-neutral-950/35 dark:placeholder:text-neutral-50/35
+			text-neutral-950 dark:text-neutral-50;
+		&.sm {
+			@apply text-sm placeholder:text-sm;
 		}
-
-		> .input-box {
-			> .input-wrap {
-				@apply rounded-md border border-neutral-300 dark:border-neutral-600
-                    bg-neutral-100 dark:bg-neutral-700
-                    focus-within:border-input-accent focus-within:dark:border-input-accent-dark
-                    focus-within:ring-input-accent/20 focus-within:dark:ring-input-accent-dark/20
-                    focus-within:ring-4;
-				&.invalid {
-					@apply border-input-accent dark:border-input-accent-dark;
-				}
-				&.sm {
-					@apply text-sm;
-				}
-				.form-input {
-					@apply rounded-md border-0 w-full flex-1
-                        text-base placeholder:text-base
-                        bg-transparent
-                        tracking-tight
-                        focus:outline-0 focus-visible:ring-0
-                        placeholder:tracking-tight
-                        placeholder:text-neutral-950/35 dark:placeholder:text-neutral-50/35
-                        text-neutral-950 dark:text-neutral-50;
-					&.sm {
-						@apply text-sm placeholder:text-sm py-1;
-					}
-					&.lg {
-						@apply text-lg placeholder:text-lg;
-					}
-				}
-				select.form-input {
-					@apply pr-8;
-				}
-			}
-
-			> .validation-box {
-				@apply my-1 text-xs px-2
-				text-input-accent dark:text-input-accent-dark;
-			}
-
-			> .desc-box {
-				@apply mx-2 mt-1 text-sm opacity-50;
-			}
-
-			> .below-box {
-				@apply mx-2 my-1;
-			}
+		&.lg {
+			@apply text-lg placeholder:text-lg;
 		}
 	}
 
-	/* https://danielstern.ca/range.css/ */
+	select.form-input {
+		@apply pr-8;
+	}
 
+	/* https://danielstern.ca/range.css/ */
 	input[type="range"] {
 		--thumb-width: 18px;
 		--thumb-height: 18px;

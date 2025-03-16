@@ -117,7 +117,14 @@
 			</div>
 		{/if}
 		<div class={twMerge("content-box", _classContentBox, classContentBox)}>
-			<h1 class={twMerge("title", _classTitle, classTitle)}>
+			<h1
+				class={twMerge(
+					"title",
+					_classTitle,
+					typeof iconFn === "function" && "pt-2",
+					classTitle
+				)}
+			>
 				<Thc thc={current.title} {forceAsHtml} />
 			</h1>
 

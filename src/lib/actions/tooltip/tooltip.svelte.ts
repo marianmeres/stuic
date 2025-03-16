@@ -1,7 +1,6 @@
 import { twMerge } from "../../utils/tw-merge.js";
-import { waitForTransitionEnd, waitForTwoRepaints } from "../../utils/paint.js";
-import { untrack } from "svelte";
-import "./tooltip.css";
+//
+import "./index.css";
 
 const TIMEOUT = 200;
 const TRANSITION = 200;
@@ -57,9 +56,9 @@ export function isTooltipSupported() {
 
 const _classTooltip = `
     bg-tooltip-bg dark:bg-tooltip-bg-dark text-tooltip-text dark:text-tooltip-text-dark
-    text-sm rounded my-1
+    text-xs tracking-tight rounded my-1
     px-2.5 py-1.5
-    max-w-[250px]
+    max-w-64
     z-50
 `;
 

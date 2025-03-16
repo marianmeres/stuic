@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { ColorScheme } from "$lib/index.js";
 </script>
 
@@ -11,5 +11,5 @@
     "
 >
 	Check header above. You can also
-	<button class="underline" on:click={ColorScheme.reset}>reset</button>.
+	<button class="underline" onclick={ColorScheme.reset}>reset</button>.
 </div>

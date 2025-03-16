@@ -2,12 +2,27 @@
 	import { Button, Notifications, NotificationsStack } from "$lib/index.js";
 	import { dummySentence } from "../../_utils/dummy-text.js";
 
-	const fixed = dummySentence(1);
+	const fixed = "Short"; // dummySentence(1);
+	const fixedLong = dummySentence(5);
 	const notifications = new NotificationsStack([], {
 		// defaultTtl: 10_000,
 		disposeInterval: 1_000,
 	});
+
+	let posX = $state<"left" | "center" | "right">("right");
+	let posY = $state<"top" | "center" | "bottom">("top");
 </script>
+
+<div class="space-x-2">
+	{#each ["left", "center", "right"] as v}
+		<button onclick={() => (posX = v as any)}>{v}</button>
+	{/each}
+	|
+	{#each ["top", "center", "bottom"] as v}
+		<button onclick={() => (posY = v as any)}>{v}</button>
+	{/each}
+</div>
+<hr class="my-2" />
 
 <Button
 	onclick={() => {
@@ -39,6 +54,13 @@
 	}}>eternal</Button
 >
 
-<Notifications {notifications} class="" />
+<Button
+	onclick={() => {
+		notifications.info(fixedLong, { ttl: 0 });
+	}}>eternal long</Button
+>
+
+<Notifications {notifications} {posX} {posY} />
+<!-- noTheme --color-notif-bg="var(--color-amber-500)" -->
 
 <pre class="text-xs mt-4 opacity-75">{JSON.stringify(notifications.stack, null, 2)}</pre>

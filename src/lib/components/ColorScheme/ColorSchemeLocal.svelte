@@ -4,7 +4,7 @@
 -->
 <svelte:head>
 	<script>
-		const KEY = "color-scheme";
+		const KEY = "stuic-color-scheme";
 		const cls = window.document.documentElement.classList;
 		localStorage.getItem(KEY) === "dark" ? cls.add("dark") : cls.remove("dark");
 	</script>

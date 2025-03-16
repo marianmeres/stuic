@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { twMerge } from "../../utils/tw-merge.js";
 	import ModalDialog from "../ModalDialog/ModalDialog.svelte";
+	import { isTHCNotEmpty } from "../Thc/Thc.svelte";
 	import {
 		AlertConfirmPromptType,
 		type AlertConfirmPromptStack,
@@ -30,8 +31,6 @@
 	let isPending = $state(false);
 </script>
 
-<pre class="text-xs">{JSON.stringify(acp?.dump(), null, 2)}</pre>
-
 {#if acp?.current}
 	<!-- 
         // always allow escape - this emulates native alert/confirm/prompt
@@ -44,14 +43,15 @@
 	<ModalDialog
 		bind:this={modal}
 		preEscapeClose={() => {
-			if (isPending) return false;
-			acp?.current.onEscape?.();
+			return isPending ? false : acp?.current.onEscape?.();
 		}}
 		preClose={() => !acp.length}
 		noClickOutsideClose
 		type={acp?.current?.type}
 		class={twMerge(
 			"max-w-xl justify-end max-h-[62vh] sm:max-h-[200px] border p-4 rounded-lg",
+			// different max-h based on not/existing content
+			isTHCNotEmpty(acp?.current?.content) ? "sm:max-h-[200px]" : "sm:max-h-[150px]",
 			acp?.current?.type === PROMPT && "sm:max-h-[250px]",
 			classProp
 		)}

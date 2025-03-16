@@ -6,7 +6,7 @@
 		strokeWidth?: 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | 3.5 | 4;
 	}
 
-	let { class: classProps, strokeWidth }: Props = $props();
+	let { class: classProps, strokeWidth = 2 }: Props = $props();
 
 	// size-6 = 1.5rem = 24px
 </script>

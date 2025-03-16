@@ -44,6 +44,20 @@
 <Button
 	size="sm"
 	onclick={() =>
+		acp.confirm(onOk, {
+			title: "Are you sure?",
+			onCancel,
+			onCustom,
+			onEscape,
+			// content: dummySentence(2),
+		})}
+>
+	sure?
+</Button>
+
+<Button
+	size="sm"
+	onclick={() =>
 		acp.alert({
 			title: "kokosko",
 			onOk,

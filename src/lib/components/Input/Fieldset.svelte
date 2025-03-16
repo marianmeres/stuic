@@ -4,9 +4,6 @@
 	import Thc from "../Thc/Thc.svelte";
 	import { twMerge } from "../../utils/tw-merge.js";
 
-	//
-	import "./_internal/fieldset.css";
-
 	interface Props {
 		legend?: THC;
 		class?: string;
@@ -16,9 +13,15 @@
 	let { legend, class: classProp, children, classLegend }: Props = $props();
 </script>
 
-<fieldset class={twMerge("stuic-fieldset", classProp)}>
+<fieldset
+	class={twMerge(
+		"stuic-fieldset",
+		"border border-neutral-200 p-4 pt-3 rounded-md",
+		classProp
+	)}
+>
 	{#if legend}
-		<legend class={twMerge(classLegend)}>
+		<legend class={twMerge("px-2", classLegend)}>
 			<Thc thc={legend} forceAsHtml />
 		</legend>
 	{/if}
