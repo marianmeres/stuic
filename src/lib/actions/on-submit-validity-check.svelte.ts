@@ -1,6 +1,5 @@
-import { waitForNextRepaint } from "../utils/paint.js";
-
 const SUBMIT_VALID_EVENT_NAME = "submit_valid";
+const SUBMIT_INVALID_EVENT_NAME = "submit_invalid";
 
 /**
  * The problem: custom validity checks via `validate` action are registered on
@@ -19,7 +18,7 @@ export function onSubmitValidityCheck(node: HTMLFormElement) {
 		// this will disable all other onsubmit listeners...
 		e.stopImmediatePropagation();
 
-		let invalidCount = 0;
+		let invalid = [];
 		for (let i = 0; i < node.elements?.length; i++) {
 			let el = node.elements[i] as any;
 
@@ -32,16 +31,25 @@ export function onSubmitValidityCheck(node: HTMLFormElement) {
 				el.dispatchEvent(new Event("change", { bubbles: true }));
 
 				// typeof el.checkValidity === "function" && !el.checkValidity();
-				if (!el.checkValidity()) invalidCount++;
+				if (!el.checkValidity()) {
+					invalid.push(el);
+				}
 			}
 		}
 
 		// none invalid
-		if (!invalidCount) {
+		if (!invalid.length) {
 			node.dispatchEvent(
 				new CustomEvent(SUBMIT_VALID_EVENT_NAME, {
 					bubbles: true,
 					detail: { formData: new FormData(node) },
+				})
+			);
+		} else {
+			node.dispatchEvent(
+				new CustomEvent(SUBMIT_INVALID_EVENT_NAME, {
+					bubbles: true,
+					detail: { invalid },
 				})
 			);
 		}
@@ -56,3 +64,4 @@ export function onSubmitValidityCheck(node: HTMLFormElement) {
 }
 
 onSubmitValidityCheck.SUBMIT_VALID_EVENT_NAME = SUBMIT_VALID_EVENT_NAME;
+onSubmitValidityCheck.SUBMIT_INVALID_EVENT_NAME = SUBMIT_INVALID_EVENT_NAME;

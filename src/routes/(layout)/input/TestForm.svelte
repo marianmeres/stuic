@@ -9,6 +9,7 @@
 	import { onSubmitValidityCheck } from "$lib/index.js";
 	import { createClog } from "@marianmeres/clog";
 	import { onMount } from "svelte";
+	import FieldFile from "../../../lib/components/Input/FieldFile.svelte";
 
 	const clog = createClog("TestForm");
 
@@ -31,9 +32,21 @@
 			clog("submit_valid handler", [...e.detail.formData.entries()]);
 		}
 
+		function on_submit_invalid(e: any) {
+			clog("submit_invalid handler", e.detail);
+		}
+
 		f.addEventListener("submit_valid", on_submit_valid);
-		return () => f.removeEventListener("submit_valid", on_submit_valid);
+		f.addEventListener("submit_invalid", on_submit_invalid);
+
+		return () => {
+			f.removeEventListener("submit_valid", on_submit_valid);
+			f.removeEventListener("submit_invalid", on_submit_invalid);
+		};
 	});
+
+	let files: FileList | undefined = $state();
+	$inspect("files", files);
 </script>
 
 <Button size="sm" class="border px-2" onclick={() => (labelLeft = !labelLeft)}
@@ -186,6 +199,22 @@
 			classInput="field-sizing-content"
 			renderSize="sm"
 		/>
+
+		<FieldFile
+			name="files"
+			bind:files
+			description="Hohoho"
+			label="Click or drop"
+			multiple
+			required
+			validate={{
+				customValidator(val, ctx, el) {
+					// @ts-ignore
+					if (el.files?.length > 2) return "Too many files. Max 2 allowed";
+				},
+			}}
+			{labelLeft}
+		/>
 	</div>
 
 	<div class="my-6 flex justify-between items-end">
@@ -195,3 +224,4 @@
 
 <hr />
 <pre class="text-xs">{JSON.stringify(values, null, 2)}</pre>
+<pre class="text-xs">{JSON.stringify(files, null, 2)}</pre>

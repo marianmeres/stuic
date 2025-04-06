@@ -32,7 +32,7 @@ export interface NotificationInput extends Record<string, any> {
 	// pointer cursor), which would not be possible for `on('click', ...)`
 	onClick: (self: Notification, all: Notification[], data: any) => void;
 
-	/** Notification specific time-to-live in seconds (after which notif will be auto discarded)
+	/** Notification specific time-to-live in milliseconds (after which notif will be auto discarded)
 	use 0 to disable auto disposal */
 	ttl: number;
 
@@ -84,7 +84,7 @@ export interface NotificationsStackOptions {
 	sortOrder?: NotificationsSortOrder;
 
 	/** How often to check for disposed ones? (milliseconds). Note that this interval
-	 * also effects how often the progress is updates. The higher the more precise...
+	 * also effects how often the progress is updated. The higher the more precise...
 	 * (which may have visual implications if used with progress bar). Reasonable value
 	 * would be between 100ms and 1_000ms. */
 	disposeInterval?: number;
@@ -92,7 +92,7 @@ export interface NotificationsStackOptions {
 
 const DEFAULT_OPTIONS: Partial<NotificationsStackOptions> = {
 	maxCapacity: 5,
-	defaultTtl: 4_000,
+	defaultTtl: 3_000,
 	extraTtlPerChar: 20,
 	defaultType: "info",
 	sortOrder: "asc",

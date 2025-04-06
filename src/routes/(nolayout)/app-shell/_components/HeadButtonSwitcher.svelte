@@ -14,7 +14,7 @@
 		sessionStorage.setItem(key, Number(flag).toString());
 	});
 
-	$inspect(key, flag);
+	// $inspect(key, flag);
 </script>
 
 <button
