@@ -13,9 +13,11 @@ export function autogrow(
 		}
 
 		el.addEventListener("input", set_height);
+		el.addEventListener("blur", set_height);
 
 		return () => {
 			el.removeEventListener("input", set_height);
+			el.removeEventListener("blur", set_height);
 		};
 	});
 }

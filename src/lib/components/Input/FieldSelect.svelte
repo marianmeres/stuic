@@ -48,6 +48,7 @@
 		classInputBoxWrap?: string;
 		classDescBox?: string;
 		classBelowBox?: string;
+		style?: string;
 	}
 
 	let {
@@ -84,6 +85,7 @@
 		classInputBoxWrap,
 		classDescBox,
 		classBelowBox,
+		style,
 		//
 		...rest
 	}: Props = $props();
@@ -130,6 +132,7 @@
 	{classDescBox}
 	{classBelowBox}
 	{validation}
+	{style}
 >
 	<select
 		bind:value

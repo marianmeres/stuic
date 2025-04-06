@@ -32,7 +32,8 @@
 	const _base = `
 		bg-button-bg text-button-text 
 		dark:bg-button-bg-dark dark:text-button-text-dark
-		font-mono text-sm text-center
+		font-mono text-sm text-center 
+		leading-4
 		border-1
 		border-button-border dark:border-button-border-dark
 		rounded-md
@@ -43,8 +44,11 @@
 		active:brightness-[0.95]
 		disabled:hover:brightness-100
 
-		focus:brightness-[1.05] focus:outline-0
+		focus:brightness-[1.05] 
 		focus:border-button-border-focus focus:dark:border-button-border-focus-dark
+
+		        focus:outline-4         focus:outline-black/10         focus:dark:outline-white/20
+		focus-visible:outline-4 focus-visible:outline-black/10 focus-visible:dark:outline-white/20
 	`;
 
 	const _preset: any = {

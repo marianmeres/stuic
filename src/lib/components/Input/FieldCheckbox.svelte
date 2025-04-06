@@ -33,6 +33,7 @@
 		classLabel?: string;
 		classDescBox?: string;
 		classValidationBox?: string;
+		style?: string;
 	}
 
 	let {
@@ -52,6 +53,7 @@
 		classLabel,
 		classDescBox,
 		classValidationBox,
+		style,
 		...rest
 	}: Props = $props();
 
@@ -99,6 +101,7 @@
 		"flex items-start mb-4 text-base",
 		classProp
 	)}
+	{style}
 >
 	<div
 		class={twMerge(

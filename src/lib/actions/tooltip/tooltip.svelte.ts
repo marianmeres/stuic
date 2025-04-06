@@ -184,9 +184,10 @@ export function tooltip(
 	function schedule_hide() {
 		debug("scheduleHide()", enabled);
 		clear_both();
-		if (!tooltipEl) {
-			return console.warn(id, "Unexpected tooltip instance...");
-		}
+
+		// legit - maybe there was no content available...
+		if (!tooltipEl) return false;
+
 		hide_timer = setTimeout(() => {
 			debug("hide...");
 			clear_hide();

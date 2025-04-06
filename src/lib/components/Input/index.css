@@ -29,6 +29,10 @@
 		@apply pr-8;
 	}
 
+	textarea {
+		scrollbar-width: thin;
+	}
+
 	/* https://danielstern.ca/range.css/ */
 	input[type="range"] {
 		--thumb-width: 18px;

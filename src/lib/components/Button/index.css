@@ -2,7 +2,7 @@
 
 /* prettier-ignore */
 @theme inline {
-	--color-button-bg: var(--color-button-bg, var(--color-neutral-200));
+	--color-button-bg: var(--color-button-bg, var(--color-neutral-100));
 	--color-button-bg-dark: var(--color-button-bg-dark, var(--color-neutral-500));
 
 	--color-button-text: var(--color-button-text, var(--color-black));

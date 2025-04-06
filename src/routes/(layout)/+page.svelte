@@ -8,6 +8,7 @@
         'button', 
 		// 'carousel', 
         'color-scheme', 
+		'col-resize',
 		'dismissible-message', 
         // 'drag-drop', 
         'drawer',

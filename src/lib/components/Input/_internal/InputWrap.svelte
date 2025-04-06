@@ -34,6 +34,7 @@
 		classDescBox?: string;
 		classBelowBox?: string;
 		classValidationBox?: string;
+		style?: string;
 	}
 	let {
 		id,
@@ -62,6 +63,7 @@
 		classDescBox,
 		classBelowBox,
 		classValidationBox,
+		style,
 	}: Props = $props();
 
 	let invalid = $derived(validation && !validation?.valid);
@@ -110,12 +112,13 @@
 	class={twMerge(
 		"stuic-input",
 		_classCommon,
-		"mb-4 grid",
+		"mb-8 grid",
 		hasLabel && labelLeft && labelLeftWidth === "normal" && "width-normal grid-cols-4",
 		hasLabel && labelLeft && labelLeftWidth === "wide" && "width-wide grid-cols-3",
 		classProp
 	)}
 	bind:clientWidth={width}
+	{style}
 >
 	<div
 		class={twMerge(

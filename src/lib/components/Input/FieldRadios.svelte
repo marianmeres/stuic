@@ -30,6 +30,8 @@
 		classLabel?: string;
 		classDescBox?: string;
 		classValidationBox?: string;
+		//
+		style?: string;
 	}
 
 	let {
@@ -50,6 +52,7 @@
 		classLabel,
 		classDescBox,
 		classValidationBox,
+		style,
 	}: Props = $props();
 
 	let _options: FieldRadiosOption[] = $derived(
@@ -74,14 +77,14 @@
 </script>
 
 {#if _options.length}
-	<div class={twMerge("stuic-radios", _classCommon)}>
+	<div class={twMerge("stuic-radios", _classCommon)} {style}>
 		<div
 			class={twMerge(
 				"radios-box",
 				_classCommon,
-				`gap-y-2 grid rounded-md p-2
-				border border-neutral-300 dark:border-neutral-600
-				bg-neutral-100 dark:bg-neutral-700`,
+				"gap-y-2 grid rounded-md p-2 mb-8",
+				"border border-neutral-300 dark:border-neutral-600",
+				"bg-neutral-100 dark:bg-neutral-700",
 				invalid && "border-input-accent dark:border-input-accent-dark",
 				classProp
 			)}

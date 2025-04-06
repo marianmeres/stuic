@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Resizable Divs with Draggable Boundary</title>
+		<style>
+			* {
+				box-sizing: border-box;
+				margin: 0;
+				padding: 0;
+			}
+
+			body,
+			html {
+				height: 100%;
+				overflow: hidden;
+			}
+
+			.container {
+				width: 100%;
+				height: 100%;
+				display: flex;
+				position: relative;
+			}
+
+			.panel-a,
+			.panel-b {
+				height: 100%;
+				overflow: auto;
+			}
+
+			.panel-a {
+				width: 50%;
+				background-color: #f0f0f0;
+			}
+
+			.panel-b {
+				width: 50%;
+				background-color: #e0e0e0;
+			}
+
+			.divider {
+				width: 4px;
+				height: 100%;
+				background-color: #ccc;
+				position: absolute;
+				left: 50%;
+				transform: translateX(-50%);
+				cursor: col-resize;
+				z-index: 10;
+			}
+
+			.divider:hover,
+			.divider.active {
+				background-color: #aaa;
+			}
+
+			/* Add some content for demonstration */
+			.content {
+				padding: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="panel-a">
+				<div class="content">
+					<h2>Panel A</h2>
+					<p>This is the left panel content.</p>
+				</div>
+			</div>
+			<div class="divider" id="divider"></div>
+			<div class="panel-b">
+				<div class="content">
+					<h2>Panel B</h2>
+					<p>This is the right panel content.</p>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+				const container = document.querySelector(".container");
+				const divider = document.getElementById("divider");
+				const panelA = document.querySelector(".panel-a");
+				const panelB = document.querySelector(".panel-b");
+
+				let isDragging = false;
+
+				// Event listeners for mouse/touch events
+				divider.addEventListener("mousedown", startDrag);
+				divider.addEventListener("touchstart", startDrag);
+
+				function startDrag(e) {
+					e.preventDefault();
+					isDragging = true;
+					divider.classList.add("active");
+
+					// Add event listeners for drag and end events
+					document.addEventListener("mousemove", drag);
+					document.addEventListener("touchmove", drag);
+					document.addEventListener("mouseup", endDrag);
+					document.addEventListener("touchend", endDrag);
+				}
+
+				function drag(e) {
+					if (!isDragging) return;
+
+					let clientX;
+					if (e.type === "touchmove") {
+						clientX = e.touches[0].clientX;
+					} else {
+						clientX = e.clientX;
+					}
+
+					const containerRect = container.getBoundingClientRect();
+					let newPosition = ((clientX - containerRect.left) / containerRect.width) * 100;
+
+					// Set min and max constraints (e.g., don't allow panels smaller than 10%)
+					newPosition = Math.max(10, Math.min(90, newPosition));
+
+					// Update panel widths and divider position
+					panelA.style.width = `${newPosition}%`;
+					panelB.style.width = `${100 - newPosition}%`;
+					divider.style.left = `${newPosition}%`;
+				}
+
+				function endDrag() {
+					isDragging = false;
+					divider.classList.remove("active");
+
+					// Remove event listeners
+					document.removeEventListener("mousemove", drag);
+					document.removeEventListener("touchmove", drag);
+					document.removeEventListener("mouseup", endDrag);
+					document.removeEventListener("touchend", endDrag);
+				}
+
+				// Handle window resize events
+				window.addEventListener("resize", function () {
+					// Ensure divider position matches panel A's width
+					const panelAWidth =
+						(parseFloat(getComputedStyle(panelA).width) / container.offsetWidth) * 100;
+					divider.style.left = `${panelAWidth}%`;
+				});
+			});
+		</script>
+	</body>
+</html>
