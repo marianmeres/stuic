@@ -4,6 +4,7 @@ export * from "./event-modifiers.js";
 export * from "./get-id.js";
 export * from "./is-browser.js";
 export * from "./maybe-json-parse.js";
+export * from "./maybe-json-stringify.js";
 export * from "./omit-pick.js";
 export * from "./paint.js";
 export * from "./prefers-reduced-motion.svelte.js";
