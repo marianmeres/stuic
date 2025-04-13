@@ -10,7 +10,7 @@
 		Notification,
 		NotificationsStack,
 		NotificationType,
-	} from "./notifications.svelte.js";
+	} from "./notifications-stack.svelte.js";
 	import Progress from "../Progress/Progress.svelte";
 
 	const X_POSITIONS = ["left", "center", "right"] as const;
@@ -73,6 +73,7 @@
 		duration?: number;
 		//
 		noProgress?: boolean;
+		noXButton?: boolean;
 	}
 
 	let {
@@ -107,6 +108,7 @@
 		ariaCloseLabel = "Close",
 		duration = 200,
 		noProgress,
+		noXButton,
 	}: Props = $props();
 
 	let { x, y, xMobile, yMobile } = $derived.by(() => {
@@ -212,6 +214,7 @@
 			{#each notifications.stack as n (n.id)}
 				{@const { Cmp, props } = maybeComponent(n)}
 				{@const iconFn = maybeIcon(n)}
+				{@const showXButton = !noXButton || n.ttl > 1000}
 				{#if Cmp}
 					<Cmp {...props || {}} notification={n} {notifications} />
 				{:else}
@@ -241,7 +244,14 @@
 							</div>
 						{/if}
 
-						<div class={twMerge("content", _classNotifContent, classNotifContent)}>
+						<div
+							class={twMerge(
+								"content",
+								_classNotifContent,
+								classNotifContent,
+								!showXButton && "pr-4"
+							)}
+						>
 							<Thc
 								thc={n.content}
 								forceAsHtml={n.forceAsHtml ?? forceAsHtml}
@@ -250,20 +260,24 @@
 							/>
 						</div>
 
-						<button
-							class={twMerge("button", _classNotifButton, classNotifButton)}
-							aria-label={ariaCloseLabel}
-							onclick={(e) => {
-								e.preventDefault();
-								e.stopPropagation();
-								notifications.removeById(n.id);
-							}}
-						>
-							<X
-								class={twMerge("x", _classNotifButtonX, classNotifButtonX)}
-								strokeWidth={1.5}
-							/>
-						</button>
+						{#if showXButton}
+							<button
+								type="button"
+								class={twMerge("button", _classNotifButton, classNotifButton)}
+								aria-label={ariaCloseLabel}
+								onclick={(e) => {
+									e.preventDefault();
+									e.stopPropagation();
+									e.stopImmediatePropagation();
+									notifications.removeById(n.id);
+								}}
+							>
+								<X
+									class={twMerge("x", _classNotifButtonX, classNotifButtonX)}
+									strokeWidth={1.5}
+								/>
+							</button>
+						{/if}
 					</div>
 				{/if}
 			{/each}

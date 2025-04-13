@@ -1,35 +1,5 @@
-<script lang="ts">
-	import type { Snippet } from "svelte";
-	import type { HTMLButtonAttributes } from "svelte/elements";
-	import { twMerge } from "../../utils/tw-merge.js";
-	//
-	import "./index.css";
-
-	// interface Props extends DataAttributes, Partial<Omit<HTMLButtonElement, 'children'>> {
-	interface Props extends HTMLButtonAttributes {
-		variant?: "primary" | "secondary" | string;
-		size?: "sm" | "md" | "lg" | string;
-		muted?: boolean;
-		noshadow?: boolean;
-		unstyled?: boolean;
-		class?: string;
-		href?: string;
-		children?: Snippet;
-	}
-
-	let {
-		variant,
-		size,
-		class: classProp,
-		muted,
-		noshadow,
-		unstyled,
-		href,
-		children,
-		...rest
-	}: Props = $props();
-
-	const _base = `
+<script lang="ts" module>
+	export const BUTTON_STUIC_BASE_CLASSES = `
 		bg-button-bg text-button-text 
 		dark:bg-button-bg-dark dark:text-button-text-dark
 		font-mono text-sm text-center 
@@ -51,7 +21,7 @@
 		focus-visible:outline-4 focus-visible:outline-black/10 focus-visible:dark:outline-white/20
 	`;
 
-	const _preset: any = {
+	export const BUTTON_STUIC_PRESET_CLASSES: any = {
 		size: {
 			sm: `text-xs rounded-sm px-2 py-0.5`,
 			lg: `text-base rounded-md`,
@@ -73,6 +43,58 @@
 			disabled:shadow-none disabled:active:shadow-none disabled:active:translate-none
 		`,
 	};
+</script>
+
+<script lang="ts">
+	import type { Snippet } from "svelte";
+	import type { HTMLButtonAttributes } from "svelte/elements";
+	import { twMerge } from "../../utils/tw-merge.js";
+	//
+	import "./index.css";
+
+	// interface Props extends DataAttributes, Partial<Omit<HTMLButtonElement, 'children'>> {
+	interface Props extends HTMLButtonAttributes {
+		variant?: "primary" | "secondary" | string;
+		size?: "sm" | "md" | "lg" | string;
+		muted?: boolean;
+		noshadow?: boolean;
+		unstyled?: boolean;
+		class?: string;
+		href?: string;
+		children?: Snippet<[{ checked?: boolean }]>;
+		// support for switch
+		roleSwitch?: boolean;
+		checked?: boolean;
+	}
+
+	let {
+		variant,
+		size,
+		class: classProp,
+		muted,
+		noshadow,
+		unstyled,
+		href,
+		children,
+		//
+		roleSwitch = false,
+		checked = $bindable(false),
+		//
+		...rest
+	}: Props = $props();
+
+	let button: HTMLButtonElement | undefined = $state();
+
+	$effect(() => {
+		const toggle = () => (checked = !checked);
+		if (!href && roleSwitch && button) {
+			button?.addEventListener("click", toggle);
+		}
+		return () => button?.removeEventListener("click", toggle);
+	});
+
+	const _base = BUTTON_STUIC_BASE_CLASSES;
+	const _preset: any = BUTTON_STUIC_PRESET_CLASSES;
 
 	// see button.css
 	let _class = $derived(
@@ -98,10 +120,10 @@
 
 {#if href}
 	<a {href} class={twMerge(_class, classProp)} {...rest as any}>
-		{@render children?.()}
+		{@render children?.({})}
 	</a>
 {:else}
-	<button class={twMerge(_class, classProp)} {...rest}>
-		{@render children?.()}
+	<button bind:this={button} class={twMerge(_class, classProp)} {...rest}>
+		{@render children?.({ checked })}
 	</button>
 {/if}

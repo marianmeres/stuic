@@ -1,2 +1,2 @@
-export * from "./notifications.svelte.js";
+export * from "./notifications-stack.svelte.js";
 export { default as Notifications } from "./Notifications.svelte";

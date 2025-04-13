@@ -128,7 +128,7 @@
 		class={twMerge("form-input", renderSize, classInput)}
 		use:trim={() => ({
 			enabled: useTrim,
-			setValue: (v: string) => (value = v),
+			setValue: (v: string) => useTrim && (value = v),
 		})}
 		use:validateAction={() => ({
 			enabled: !!validate,

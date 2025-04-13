@@ -246,6 +246,11 @@ export class NotificationsStack {
 		return [...this.#stack];
 	}
 
+	/** Will get the current stack size */
+	get length() {
+		return this.#stack.length;
+	}
+
 	/** Will do internal cleanups. */
 	destroy = () => {
 		this.reset();

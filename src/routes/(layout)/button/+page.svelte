@@ -1,5 +1,7 @@
 <script>
 	import { Button } from "$lib/index.js";
+
+	let checked = $state(true);
 </script>
 
 <div class="space-x-3">
@@ -27,4 +29,13 @@
 	<Button unstyled variant="secondary" class="bg-pink-400 rounded px-2"
 		>no default styles</Button
 	>
+	<hr class="my-8" />
+	<Button roleSwitch onclick={() => console.log("outer click")} bind:checked>
+		<!-- {#snippet children({ checked })} -->
+		Switch: {checked ? "on" : "off"}
+		<!-- {/snippet} -->
+	</Button>
+	<div>
+		checked: {checked}
+	</div>
 </div>

@@ -1,5 +1,5 @@
 import { expect, test, assert } from "vitest";
-import { NotificationsStack } from "./notifications.svelte.js";
+import { NotificationsStack } from "./notifications-stack.svelte.js";
 import { sleep } from "../../index.js";
 
 test.only("sanity check", async () => {

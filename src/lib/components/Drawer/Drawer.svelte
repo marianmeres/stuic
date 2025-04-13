@@ -27,7 +27,9 @@
 		// to make the animation optimal. May include ccs units (will be considered as pixels otherwise).
 		animOffset?: string | number;
 		onEscape?: () => void;
+		//
 		onOutside?: false | (() => void);
+		onOutsideEnabled?: boolean;
 	}
 
 	let {
@@ -46,6 +48,7 @@
 		animOffset = "75vw",
 		onEscape,
 		onOutside,
+		onOutsideEnabled = true,
 	}: Props = $props();
 
 	$effect(() => {
@@ -83,6 +86,8 @@
 	onClickOutside(
 		() => el,
 		() => {
+			// noop if not enabled
+			if (!onOutsideEnabled) return;
 			// explicit false means ignoring outside click
 			if (typeof onOutside === "function") onOutside();
 			else if (onOutside !== false) visible = false;
