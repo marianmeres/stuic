@@ -65,6 +65,7 @@
 		// support for switch
 		roleSwitch?: boolean;
 		checked?: boolean;
+		el?: Element;
 	}
 
 	let {
@@ -79,18 +80,19 @@
 		//
 		roleSwitch = false,
 		checked = $bindable(false),
+		el = $bindable(),
 		//
 		...rest
 	}: Props = $props();
 
-	let button: HTMLButtonElement | undefined = $state();
+	// let button: HTMLButtonElement | undefined = $state();
 
 	$effect(() => {
 		const toggle = () => (checked = !checked);
-		if (!href && roleSwitch && button) {
-			button?.addEventListener("click", toggle);
+		if (!href && roleSwitch && el) {
+			el?.addEventListener("click", toggle);
 		}
-		return () => button?.removeEventListener("click", toggle);
+		return () => el?.removeEventListener("click", toggle);
 	});
 
 	const _base = BUTTON_STUIC_BASE_CLASSES;
@@ -119,11 +121,11 @@
 </script>
 
 {#if href}
-	<a {href} class={twMerge(_class, classProp)} {...rest as any}>
+	<a {href} bind:this={el} class={twMerge(_class, classProp)} {...rest as any}>
 		{@render children?.({})}
 	</a>
 {:else}
-	<button bind:this={button} class={twMerge(_class, classProp)} {...rest}>
+	<button bind:this={el} class={twMerge(_class, classProp)} {...rest}>
 		{@render children?.({ checked })}
 	</button>
 {/if}

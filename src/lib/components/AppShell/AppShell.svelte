@@ -1,4 +1,5 @@
 <script module lang="ts">
+	export const MAIN_WIDTH = Symbol("MAIN_WIDTH");
 	/**
 	 * Helper utility function which sets document.body height to 100vh, and overflow: hidden.
 	 * It also returns a function which unsets the full height. So we can write:
@@ -33,7 +34,7 @@
 </script>
 
 <script lang="ts">
-	import type { Snippet } from "svelte";
+	import { setContext, type Snippet } from "svelte";
 	import { twMerge } from "../../utils/tw-merge.js";
 
 	// idea copied from https://www.skeleton.dev/components/app-shell
@@ -136,6 +137,14 @@
 
 	const flexMap = ["flex-1", "flex-1", "flex-[2]", "flex-[3]", "flex-[4]", "flex-[5]"];
 	let _pageFlexCls = $derived(flexMap[pageFlexGrow] || "flex-1");
+
+	// pragmatic use case...
+	let mainWidth: number = $state(0);
+	setContext(MAIN_WIDTH, {
+		get current() {
+			return mainWidth;
+		},
+	});
 </script>
 
 <div
@@ -211,6 +220,7 @@
 					bind:this={elPageMain}
 					data-shell="page-main"
 					class={twMerge("flex-auto", pageMainClass)}
+					bind:offsetWidth={mainWidth}
 				>
 					{@render children?.()}
 				</main>

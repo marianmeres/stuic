@@ -7,6 +7,8 @@
 	let modal3 = $state<ModalDialog>();
 </script>
 
+<p class="mb-4">General modal dialog (internally with dialog element implementation)</p>
+
 <Button onclick={modal1?.open} size="sm" class="shadow-none">first</Button>
 <Button onclick={modal3?.open} size="sm" class="shadow-none">third</Button>
 

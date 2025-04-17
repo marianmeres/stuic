@@ -1,1 +1,1 @@
-export { default as ModalPrompt } from "./ModalPrompt.svelte";
+export { default as Modal } from "./Modal.svelte";

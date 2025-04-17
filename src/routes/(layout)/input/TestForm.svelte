@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Button from "$lib/components/Button/Button.svelte";
 	import FieldCheckbox from "$lib/components/Input/FieldCheckbox.svelte";
+	import FieldFile from "$lib/components/Input/FieldFile.svelte";
 	import FieldInput from "$lib/components/Input/FieldInput.svelte";
 	import FieldRadios from "$lib/components/Input/FieldRadios.svelte";
 	import FieldSelect from "$lib/components/Input/FieldSelect.svelte";
@@ -9,7 +10,6 @@
 	import { onSubmitValidityCheck } from "$lib/index.js";
 	import { createClog } from "@marianmeres/clog";
 	import { onMount } from "svelte";
-	import FieldFile from "../../../lib/components/Input/FieldFile.svelte";
 
 	const clog = createClog("TestForm");
 

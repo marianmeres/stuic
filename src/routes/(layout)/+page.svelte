@@ -15,7 +15,7 @@
 		'hover-expandable-width',
 		'input',
 		'modal-dialog',
-		'modal-prompt',
+		'modal',
 		'notifications',
 		// 'on-outside',
 		// 'popover', 

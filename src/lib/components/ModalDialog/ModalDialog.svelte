@@ -38,10 +38,14 @@
 	let visible = $state(false);
 	let dialog = $state<HTMLDialogElement>()!;
 	let box = $state<HTMLDivElement>()!;
+	let _opener: undefined | null | HTMLElement = $state();
 
-	export function open() {
+	export function open(openerOrEvent?: null | HTMLElement | MouseEvent) {
 		visible = true;
-		clog("will showModal");
+		setOpener(
+			(openerOrEvent as any)?.currentTarget ?? openerOrEvent ?? document.activeElement
+		);
+		// clog("will showModal");
 		// dialog must be rendered in the DOM before it can be opened...
 		waitForNextRepaint().then(() => {
 			clog("dialog.showModal()");
@@ -54,11 +58,17 @@
 			const allowed = await preClose?.();
 			// explicit false prevents close
 			if (allowed !== false) {
-				clog("dialog.close()");
+				// clog("dialog.close()");
 				dialog?.close();
 				visible = false;
+				_opener?.focus();
+				_opener = null;
 			}
 		})();
+	}
+
+	export function setOpener(opener?: null | HTMLElement) {
+		_opener = opener;
 	}
 
 	onClickOutside(
@@ -77,10 +87,10 @@
 		data-type={type}
 		class={twMerge(
 			"stuic-modal-dialog",
-			`fixed inset-4 m-auto size-auto
-			flex justify-center items-center
-			focus:outline-none focus-visible:outline-none
-			bg-transparent backdrop:bg-black/40`,
+			"fixed inset-4 m-auto size-auto",
+			"flex justify-center items-center",
+			"focus:outline-none focus-visible:outline-none",
+			"bg-transparent backdrop:bg-black/40",
 			classDialog
 		)}
 		onkeydown={async (e) => {

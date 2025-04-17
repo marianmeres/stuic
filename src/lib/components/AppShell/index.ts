@@ -1,1 +1,5 @@
-export { default as AppShell, appShellSetHtmlBodyHeight } from "./AppShell.svelte";
+export {
+	default as AppShell,
+	appShellSetHtmlBodyHeight,
+	MAIN_WIDTH,
+} from "./AppShell.svelte";

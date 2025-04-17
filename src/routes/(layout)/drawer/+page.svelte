@@ -2,11 +2,10 @@
 	import { Button, FieldSelect, Drawer, X } from "$lib/index.js";
 	import { dummyText } from "../../_utils/dummy-text.js";
 
-	let visible = $state(false);
-	let position = $state<"left" | "top" | "right" | "bottom">("left");
+	let visible = $state(false); // "raw" open/close strategy
+	let drawer: Drawer = $state()!; // "api" open/close strategy
 
-	const open = () => (visible = true);
-	const close = () => (visible = false);
+	let position = $state<"left" | "top" | "right" | "bottom">("left");
 </script>
 
 <FieldSelect
@@ -17,18 +16,19 @@
 	renderSize="sm"
 />
 
-<Button onclick={open} size="sm" class="shadow-none">Open drawer</Button>
+<Button onclick={drawer?.open} size="sm" class="shadow-none">Open drawer</Button>
 
 <Drawer
+	bind:this={drawer}
 	bind:visible
 	{position}
 	classBackdrop="z-10 bg-neutral-950/50 cursor-pointer"
 	class="bg-neutral-50 dark:bg-neutral-700 cursor-auto"
-	onEscape={close}
+	onEscape={drawer?.close}
 >
 	<div class="h-full">
 		<div class="p-4 bg-gray-200 dark:bg-neutral-950">
-			<Button onclick={close} size="sm" class="[.sm]:p-0"><X /></Button>
+			<Button onclick={drawer?.close} size="sm" class="[.sm]:p-0"><X /></Button>
 		</div>
 		<div class="p-4 w-[400px] max-w-[400px]">
 			{@html dummyText(30)}

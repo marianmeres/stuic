@@ -1,4 +1,5 @@
 <script lang="ts">
+	import AlertConfirmPrompt from "$lib/components/AlertConfirmPrompt/AlertConfirmPrompt.svelte";
 	import {
 		AlertConfirmPromptStack,
 		Button,
@@ -11,7 +12,6 @@
 		type FnOnEscape,
 		type FnOnOK,
 	} from "$lib/index.js";
-	import AlertConfirmPrompt from "../../../lib/components/AlertConfirmPrompt/AlertConfirmPrompt.svelte";
 	import { dummySentence } from "../../_utils/dummy-text.js";
 
 	const acp = new AlertConfirmPromptStack();

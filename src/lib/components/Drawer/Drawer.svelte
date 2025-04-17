@@ -104,11 +104,26 @@
 		duration: transitionDuration,
 		...(_animPresets[position] ?? _animPresets[DEFAULT_POS]),
 	});
+
+	let backdrop: Backdrop = $state()!;
+
+	export function close() {
+		backdrop.close();
+	}
+
+	export function open(openerOrEvent?: null | HTMLElement | MouseEvent) {
+		setOpener(openerOrEvent ?? (document.activeElement as any));
+	}
+
+	export function setOpener(opener?: null | HTMLElement) {
+		backdrop.setOpener(opener);
+	}
 </script>
 
 <Backdrop
+	bind:this={backdrop}
 	bind:el={elBackdrop}
-	{visible}
+	bind:visible
 	class={twMerge(_classBackdrop, classBackdrop)}
 	{focusTrap}
 	{fadeInDuration}

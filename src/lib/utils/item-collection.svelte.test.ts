@@ -39,6 +39,11 @@ test("string collection works", () => {
 	c.remove("dd");
 	c.remove("asdf"); // noop
 	assert.equal(c.dump().join(), "a,b,c");
+
+	// select by raw value
+	assert(c.select("b").isSelected("b"));
+	assert(!c.isSelected("c"));
+	assert(!c.isSelected("x"));
 });
 
 test("selection works", () => {

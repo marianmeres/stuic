@@ -5,8 +5,8 @@
 		type FocusTrapOptions,
 	} from "$lib/index.js";
 	import { createClog } from "@marianmeres/clog";
-	import { PressedKeys } from "runed";
-	import { onMount, tick, untrack, type Snippet } from "svelte";
+	import { PressedKeys, watch } from "runed";
+	import { type Snippet } from "svelte";
 	import { fade } from "svelte/transition";
 
 	const clog = createClog("Backdrop").debug;
@@ -36,6 +36,7 @@
 		...rest
 	}: Props = $props();
 
+	let _opener: undefined | null | HTMLElement = $state();
 	let keys = new PressedKeys();
 
 	let isEscapePressed = $derived(keys.has("Escape"));
@@ -52,6 +53,39 @@
 			fadeOutDuration = 0;
 		}
 	});
+
+	export function close() {
+		visible = false;
+	}
+
+	export function open(openerOrEvent?: null | HTMLElement | MouseEvent) {
+		visible = true;
+		setOpener(
+			(openerOrEvent as any)?.currentTarget ?? openerOrEvent ?? document.activeElement
+		);
+	}
+
+	export function setOpener(opener?: null | HTMLElement) {
+		_opener = opener;
+	}
+
+	export function visibility() {
+		return {
+			get visible() {
+				return visible;
+			},
+		};
+	}
+
+	watch(
+		() => visible,
+		(isVisible, wasVisible) => {
+			if (wasVisible && !isVisible && _opener) {
+				_opener?.focus();
+				_opener = null;
+			}
+		}
+	);
 
 	// $inspect("visible:", visible, "isEscapePressed:", isEscapePressed).with(clog);
 </script>

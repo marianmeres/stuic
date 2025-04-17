@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { DismissibleMessage, Button, FieldSelect } from "$lib/index.js";
-	import type { TW_COLORS } from "../../../lib/types.js";
+	import { Button, DismissibleMessage, FieldSelect } from "$lib/index.js";
+	import type { TW_COLORS } from "$lib/types.js";
 	import { dummySentence } from "../../_utils/dummy-text.js";
 
 	let message = $state("");

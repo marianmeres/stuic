@@ -122,10 +122,14 @@ export class ItemCollection<T> {
 
 	/** Will mark the index as selected (respecting internal state), or
 	 * will select all/none if the index is boolean */
-	select(index: number | boolean) {
+	select(index: number | boolean | T) {
 		if (typeof index === "boolean") {
 			this.#selected = new Set(index ? [...Array(this.#items.length).keys()] : []);
 			return this;
+		}
+
+		if (typeof index !== "number") {
+			index = this.#items.indexOf(index);
 		}
 
 		if (this.#items[index] === undefined) return this;
@@ -140,7 +144,11 @@ export class ItemCollection<T> {
 	}
 
 	/** Will toggle selection for the given index */
-	toggleSelect(index: number) {
+	toggleSelect(index: number | T) {
+		if (typeof index !== "number") {
+			index = this.#items.indexOf(index);
+		}
+
 		if (this.#items[index] === undefined) return false;
 
 		if (this.#selected.has(index)) {
@@ -164,7 +172,10 @@ export class ItemCollection<T> {
 	}
 
 	/** Checks whether given index is selected */
-	isSelected(index: number) {
+	isSelected(index: number | T) {
+		if (typeof index !== "number") {
+			index = this.#items.indexOf(index);
+		}
 		if (this.#items[index] === undefined) return false;
 		return this.#selected.has(index);
 	}
