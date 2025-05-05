@@ -56,7 +56,7 @@ export class StorageAbstraction {
 		try {
 			return this.#deserializer(value);
 		} catch (e) {
-			console.error(`Unable to deserialize value. Details: ${e}`);
+			console.error(`Unable to deserialize value "${value}". Details: ${e}`);
 			return value;
 		}
 	}

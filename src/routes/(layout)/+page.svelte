@@ -2,6 +2,7 @@
 	// prettier-ignore
 	let links = [
 		'alert-confirm-prompt', 
+		'animated-ellipsis',
 		'app-shell', 
 		// 'avatar', 
 		'backdrop', 
@@ -14,6 +15,7 @@
         'drawer',
 		'hover-expandable-width',
 		'input',
+		'kbd-shortcut',
 		'modal-dialog',
 		'modal',
 		'notifications',

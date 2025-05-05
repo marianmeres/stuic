@@ -1,4 +1,5 @@
 export * from "./breakpoint.svelte.js";
+export * from "./debounce.js";
 export * from "./device-pointer.svelte.js";
 export * from "./event-modifiers.js";
 export * from "./get-id.js";
@@ -14,5 +15,7 @@ export * from "./qsa.js";
 export * from "./sleep.js";
 export * from "./storage-abstraction.js";
 export * from "./str-hash.js";
+export * from "./throttle.js";
 export * from "./tr.js";
 export * from "./tw-merge.js";
+export * from "./ucfirst.js";

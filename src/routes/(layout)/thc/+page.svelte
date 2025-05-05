@@ -12,6 +12,13 @@
 <Thc thc={{ text: "ho" }} />
 <Thc thc={{ html: "&ndash; let's" }} />
 <Thc thc={{ component: Foo, props: { foo: "go" } }} />
+
+{#snippet snippet()}
+	<div>this is snippet</div>
+{/snippet}
+<Thc thc={{ snippet }} />
+<Thc thc={snippet} />
+
 <hr class="my-4" />
 
 The above is written as:
@@ -20,4 +27,6 @@ The above is written as:
 	<Thc thc={{ text: 'ho' }} />
 	<Thc thc={{ html: "&ndash; let's" }} />
 	<Thc thc={{ component: Foo, props: { foo: 'go' } }} />
+	<Thc thc={{ snippet }} />
+	<Thc thc={snippet} />
 `}</pre>

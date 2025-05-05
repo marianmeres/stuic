@@ -1,5 +1,6 @@
 // components
 export * from "./components/AlertConfirmPrompt/index.js";
+export * from "./components/AnimatedElipsis/index.js";
 export * from "./components/AppShell/index.js";
 export * from "./components/Backdrop/index.js";
 export * from "./components/Button/index.js";
@@ -8,8 +9,9 @@ export * from "./components/DismissibleMessage/index.js";
 export * from "./components/Drawer/index.js";
 export * from "./components/HoverExpandableWidth/index.js";
 export * from "./components/Input/index.js";
+export * from "./components/KbdShortcut/index.js";
+export * from "./components/Modal/index.js";
 export * from "./components/ModalDialog/index.js";
-export * from "./components/ModalPrompt/index.js";
 export * from "./components/Notifications/index.js";
 export * from "./components/Progress/index.js";
 export * from "./components/Spinner/index.js";

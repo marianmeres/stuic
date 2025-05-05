@@ -176,7 +176,7 @@
 	const _classNotifButtonX = `opacity-75 group-hover:opacity-100`;
 
 	const _classProgress = `absolute inset-0 size-full bg-transparent rounded-tl-md rounded-bl-md`;
-	const _classProgressBar = `bg-white/3 dark:bg-white/3 size-full rounded-tl-md rounded-bl-md`;
+	const _classProgressBar = `bg-white/10 dark:bg-white/10 size-full rounded-tl-md rounded-bl-md`;
 
 	const _buildTheme = (type: NotificationType) => {
 		if (noTheme) return "";

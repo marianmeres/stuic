@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Modal from "$lib/components/ModalPrompt/Modal.svelte";
+	import Modal from "$lib/components/Modal/Modal.svelte";
 	import { AlertConfirmPrompt, AlertConfirmPromptStack, Button } from "$lib/index.js";
 	import X from "$lib/components/X/X.svelte";
 	import { dummyText } from "../../_utils/dummy-text.js";
@@ -29,7 +29,7 @@
 		<Button onclick={modal.close} size="sm"><X /></Button>
 	{/snippet}
 
-	<div>{@html dummyText(10)}</div>
+	<div>{@html dummyText(30)}</div>
 
 	{#snippet footer()}
 		<div class="space-x-2">
@@ -47,5 +47,9 @@
 		</div>
 	{/snippet}
 </Modal>
+
+<div class="my-12">
+	{@html dummyText(20)}
+</div>
 
 <AlertConfirmPrompt {acp} />

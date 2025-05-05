@@ -25,7 +25,7 @@
 		elBackdrop?: HTMLDivElement;
 		el?: HTMLDivElement;
 		focusTrap?: boolean | FocusTrapOptions;
-		onEscape?: () => void;
+		onEscape?: undefined | (() => void);
 	}
 
 	let {
@@ -45,7 +45,7 @@
 		// transitionEnabled = true,
 		elBackdrop = $bindable(),
 		el = $bindable(),
-		focusTrap,
+		focusTrap = true,
 		onEscape,
 	}: Props = $props();
 
@@ -73,7 +73,7 @@
 	bind:el={elBackdrop}
 	bind:visible
 	class={twMerge(
-		"justify-center items-center bg-black/25 p-4 sm:p-8 md:p-[10vh] lg:p-[15vh] transition-all",
+		"justify-center items-center bg-black/25 p-2 sm:p-4 md:p-[10vh] transition-all",
 		classBackdrop
 	)}
 	{focusTrap}
@@ -87,7 +87,7 @@
 		aria-labelledby={labelledby}
 		aria-describedby={describedby}
 		class={twMerge(
-			"overflow-hidden w-full h-full max-w-3xl ",
+			"overflow-x-hidden overflow-y-hidden w-full h-full max-w-3xl",
 			// "overflow-y-auto w-full h-full max-w-3xl max-h-[66vh] border",
 			classInner
 		)}
@@ -95,7 +95,7 @@
 		<div
 			class={twMerge(
 				"bg-white dark:bg-neutral-800 rounded-md flex flex-col overflow-hidden",
-				"w-full h-fit md:max-h-2/3",
+				"w-full max-h-full md:max-h-2/3",
 				classProp
 			)}
 		>

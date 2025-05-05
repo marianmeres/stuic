@@ -21,7 +21,7 @@
 		below?: SnippetWithId | THC;
 		required?: boolean;
 		disabled?: boolean;
-		validation: ValidationResult | undefined;
+		validation?: ValidationResult | undefined;
 		//
 		labelLeft?: boolean;
 		labelLeftWidth?: "normal" | "wide";

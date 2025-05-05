@@ -14,7 +14,7 @@
 
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
-	interface Props extends HTMLInputAttributes {
+	interface Props extends HTMLInputAttributes, Record<string, any> {
 		input?: HTMLInputElement;
 		value?: string | number; // badInput
 		label?: SnippetWithId | THC;

@@ -48,7 +48,7 @@
 		// clog("will showModal");
 		// dialog must be rendered in the DOM before it can be opened...
 		waitForNextRepaint().then(() => {
-			clog("dialog.showModal()");
+			// clog("dialog.showModal()");
 			dialog.showModal();
 		});
 	}

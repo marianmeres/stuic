@@ -2,7 +2,7 @@ import { expect, test, assert } from "vitest";
 import { NotificationsStack } from "./notifications-stack.svelte.js";
 import { sleep } from "../../index.js";
 
-test.only("sanity check", async () => {
+test("sanity check", async () => {
 	const n = new NotificationsStack(["foo"], {
 		defaultTtl: 50,
 		disposeInterval: 10,

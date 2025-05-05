@@ -25,12 +25,14 @@
 	classBackdrop="z-10 bg-neutral-950/50 cursor-pointer"
 	class="bg-neutral-50 dark:bg-neutral-700 cursor-auto"
 	onEscape={drawer?.close}
+	onOutside={drawer?.close}
 >
 	<div class="h-full">
 		<div class="p-4 bg-gray-200 dark:bg-neutral-950">
 			<Button onclick={drawer?.close} size="sm" class="[.sm]:p-0"><X /></Button>
 		</div>
 		<div class="p-4 w-[400px] max-w-[400px]">
+			<Button onclick={() => console.log("noop")} size="sm">noop</Button>
 			{@html dummyText(30)}
 		</div>
 	</div>

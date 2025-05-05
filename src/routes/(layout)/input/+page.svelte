@@ -1,9 +1,2 @@
-<script>
-	import { createClog } from "@marianmeres/clog";
-	import TestForm from "./TestForm.svelte";
-	const clog = createClog("input");
-
-	// $inspect(123, input);
-</script>
-
-<TestForm />
+<a href="./input/test-form" class="underline">Test form</a>
+<a href="./input/options" class="underline">Option inputs</a>

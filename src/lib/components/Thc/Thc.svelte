@@ -14,8 +14,20 @@
 		html: string;
 	}
 
+	interface WithSnippet {
+		snippet: Snippet;
+	}
+
+	type AsSnippet = Snippet;
+
 	//
-	export type THC = string | WithText | WithHtml | WithComponent;
+	export type THC =
+		| string
+		| WithText
+		| WithHtml
+		| WithComponent
+		| WithSnippet
+		| AsSnippet;
 
 	const _is = (m: any) => typeof m === "string" && m;
 
@@ -32,6 +44,8 @@
 </script>
 
 <script lang="ts">
+	import type { Snippet } from "svelte";
+
 	interface Props extends Record<string, any> {
 		thc: THC;
 		forceAsHtml?: boolean;
@@ -52,6 +66,10 @@
 	{#if forceAsHtml}{@html thc.text}{:else}{thc.text}{/if}
 {:else if "html" in thc && thc.html}
 	{@html thc.html}
+{:else if typeof thc === "function"}
+	{@render thc()}
+{:else if typeof thc === "object" && "snippet" in thc}
+	{@render thc.snippet()}
 {:else if typeof thc === "object" && "component" in thc}
 	<thc.component {...thc.props || {}} {...rest || {}} />
 {:else if allowCastToStringFallback}

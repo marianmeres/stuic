@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from "svelte";
 	import type { HTMLInputAttributes } from "svelte/elements";
-	import { highlightDragover } from "../../actions/highlight-dragover.svelte.js";
+	import { trim } from "../../actions/trim.svelte.js";
 	import {
 		validate as validateAction,
 		type ValidateOptions,
@@ -11,19 +11,22 @@
 	import { twMerge } from "../../utils/tw-merge.js";
 	import type { THC } from "../Thc/Thc.svelte";
 	import InputWrap from "./_internal/InputWrap.svelte";
+	import { watch } from "runed";
 
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
-	interface Props extends HTMLInputAttributes, Record<string, any> {
+	interface Props extends Record<string, any> {
 		input?: HTMLInputElement;
-		files?: FileList;
-		multiple?: boolean;
+		value: string;
 		label?: SnippetWithId | THC;
+		// type?: "submit" | "reset" | "button";
 		description?: SnippetWithId | THC;
 		class?: string;
 		id?: string;
 		tabindex?: number; // tooShort
 		renderSize?: "sm" | "md" | "lg" | string;
+		useTrim?: boolean;
+		name?: string;
 		//
 		required?: boolean;
 		disabled?: boolean;
@@ -47,22 +50,24 @@
 		classInputBoxWrap?: string;
 		classDescBox?: string;
 		classBelowBox?: string;
-		classFileList?: string;
 		//
 		style?: string;
+		//
+		renderValue?: (rawValue: any) => string;
 	}
 
 	let {
 		input = $bindable(),
-		files = $bindable(),
-		multiple,
+		value = $bindable(),
 		label = "",
 		id = getId(),
-		type = "text",
+		// type = "button",
 		tabindex = 0,
 		description,
 		class: classProp,
-		renderSize,
+		renderSize = "md",
+		useTrim = true,
+		name,
 		//
 		required = false,
 		disabled = false,
@@ -86,16 +91,40 @@
 		classInputBoxWrap,
 		classDescBox,
 		classBelowBox,
-		classFileList,
-		style,
+		style = "",
+		//
+		renderValue,
 		//
 		...rest
 	}: Props = $props();
 
+	let _value_renderer: any = $derived(
+		typeof renderValue === "function"
+			? renderValue
+			: (v: any) => {
+					// by default, we're expecting JSON value
+					try {
+						return JSON.stringify(JSON.parse(v));
+					} catch (e) {
+						return `${e}`;
+					}
+				}
+	);
+
+	// let rendered = $derived(renderValue?.(value) ?? value);
+	let rendered: string | Snippet<[value: string]> = $derived(_value_renderer(value));
+
+	// once button rendered, trigger change on the input, so that the validation re/triggers
+	$effect(() => {
+		rendered;
+		input?.dispatchEvent(new Event("change", { bubbles: true }));
+	});
+
+	//
 	let validation: ValidationResult | undefined = $state();
 	const setValidationResult = (res: ValidationResult) => (validation = res);
 
-	// $inspect(files);
+	// $inspect("validation", validation);
 </script>
 
 <InputWrap
@@ -122,45 +151,59 @@
 	{validation}
 	{style}
 >
-	<div class="block w-full">
-		<input
-			type="file"
-			bind:files
-			bind:this={input}
-			{id}
-			class={twMerge(
-				"form-input",
-				"block border-0 w-full !text-sm",
-				"file:rounded file:border-0 file:mr-4 file:bg-neutral-200",
-				"file:px-2 file:py-0.5 file:cursor-pointer file:text-sm",
-				"focus-visible:ring-0 focus:ring-0 focus:leading-0",
-				renderSize,
-				classInput
-			)}
-			use:highlightDragover={() => ({ classes: ["outline-dashed"] })}
-			use:validateAction={() => ({
-				enabled: !!validate,
-				...(typeof validate === "boolean" ? {} : validate),
-				setValidationResult,
-			})}
-			{multiple}
-			{tabindex}
-			{required}
-			{disabled}
-			{...rest}
-		/>
-		{#if (files?.length || 0) > 1}
-			<ul
-				class={twMerge(
-					"px-2.5 pb-2.5 pt-1 text-sm opacity-80",
-					"space-y-1 list-decimal list-inside",
-					classFileList
-				)}
-			>
-				{#each files || [] as f}
-					<li>{f.name}</li>
-				{/each}
-			</ul>
+	<button
+		type="button"
+		class={twMerge(
+			"no-focus-visible",
+			"w-full text-left py-2 px-3 border-0 bg-transparent",
+			"focus:outline-0 focus-visible:outline-0",
+			renderSize,
+			classInput
+		)}
+		{disabled}
+		{...rest as any}
+		{tabindex}
+	>
+		{#if typeof rendered === "function"}
+			{@render rendered(value)}
+		{:else if rendered}
+			{@html rendered}
+		{:else}
+			&nbsp;
 		{/if}
-	</div>
+	</button>
+
+	<input
+		bind:value
+		bind:this={input}
+		type="hidden"
+		{id}
+		{name}
+		use:validateAction={() => ({
+			enabled: !!validate,
+			...(typeof validate === "boolean"
+				? {
+						// PROBLEM with hidden inputs is that they:
+						// 1. do not report required (AFAICT)
+						// 2. do not report el.validationMessage even if invalid via custom validation
+						customValidator(val, ctx, el) {
+							// so, here, we're fixing (1.) and will handle the (2.) elsewhere
+							// (the message will be ignored anyway, we just need to send non-empty string)
+							if (required && !val) return "valueMissing";
+
+							// also, by default, JSON validation is built in
+							try {
+								JSON.parse(val);
+								return "";
+							} catch (e) {
+								return "typeMismatch";
+							}
+						},
+					}
+				: validate),
+			setValidationResult,
+		})}
+		{required}
+		{disabled}
+	/>
 </InputWrap>

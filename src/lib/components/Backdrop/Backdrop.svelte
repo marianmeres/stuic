@@ -1,7 +1,12 @@
+<script lang="ts" module>
+	const _instances = [];
+</script>
+
 <script lang="ts">
 	import {
 		focusTrap as focusTrapAction,
 		twMerge,
+		waitForNextRepaint,
 		type FocusTrapOptions,
 	} from "$lib/index.js";
 	import { createClog } from "@marianmeres/clog";
@@ -21,6 +26,7 @@
 		children?: Snippet;
 		onEscape?: () => void;
 		visible?: boolean;
+		noScrollLock?: boolean;
 	}
 
 	let {
@@ -33,19 +39,20 @@
 		children,
 		onEscape,
 		visible = $bindable(false),
+		noScrollLock,
 		...rest
 	}: Props = $props();
 
 	let _opener: undefined | null | HTMLElement = $state();
-	let keys = new PressedKeys();
 
-	let isEscapePressed = $derived(keys.has("Escape"));
-	$effect(() => {
-		if (isEscapePressed && typeof onEscape === "function") {
-			// clog("Executing onEscape...");
-			onEscape();
-		}
-	});
+	// let keys = new PressedKeys();
+	// let isEscapePressed = $derived(keys.has("Escape"));
+	// $effect(() => {
+	// 	if (isEscapePressed && typeof onEscape === "function") {
+	// 		// clog("Executing onEscape...");
+	// 		onEscape();
+	// 	}
+	// });
 
 	$effect(() => {
 		if (!transitionEnabled) {
@@ -87,7 +94,44 @@
 		}
 	);
 
-	// $inspect("visible:", visible, "isEscapePressed:", isEscapePressed).with(clog);
+	// lock body scroll when open and restore back
+	let _original: any = {};
+	$effect(() => {
+		if (noScrollLock) return;
+		if (visible) {
+			_original = window.getComputedStyle(document.body);
+			const scrollY = window.scrollY;
+
+			document.body.style.position = "fixed";
+			document.body.style.top = `-${scrollY}px`;
+			document.body.style.width = "100%";
+			document.body.style.overflow = "hidden";
+		} else {
+			const scrollY = document.body.style.top;
+
+			document.body.style.position = _original.position;
+			document.body.style.position = "";
+			document.body.style.top = "";
+			document.body.style.width = "";
+			document.body.style.overflow = "";
+
+			// Restore scroll position
+			window.scrollTo(0, parseInt(scrollY || "0") * -1);
+		}
+	});
+
+	$effect(() => {
+		function onkeydown(e: KeyboardEvent) {
+			if (e.key === "Escape" && typeof onEscape === "function") {
+				e.stopPropagation();
+				e.stopImmediatePropagation();
+				e.preventDefault();
+				onEscape();
+			}
+		}
+		el?.addEventListener("keydown", onkeydown);
+		return () => el?.removeEventListener("keydown", onkeydown);
+	});
 </script>
 
 {#if visible}

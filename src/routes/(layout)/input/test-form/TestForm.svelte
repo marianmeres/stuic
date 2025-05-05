@@ -7,11 +7,20 @@
 	import FieldSelect from "$lib/components/Input/FieldSelect.svelte";
 	import FieldTextarea from "$lib/components/Input/FieldTextarea.svelte";
 	import Fieldset from "$lib/components/Input/Fieldset.svelte";
-	import { onSubmitValidityCheck } from "$lib/index.js";
+	import { NotificationsStack, onSubmitValidityCheck, sleep } from "$lib/index.js";
 	import { createClog } from "@marianmeres/clog";
 	import { onMount } from "svelte";
+	import FieldLikeButton from "../../../../lib/components/Input/FieldLikeButton.svelte";
+	import FieldOptions from "../../../../lib/components/Input/FieldOptions.svelte";
+	import { type Item } from "../../../../lib/utils/item-collection.svelte.js";
 
 	const clog = createClog("TestForm");
+
+	let {
+		notifications,
+	}: {
+		notifications: NotificationsStack;
+	} = $props();
 
 	let input = $state<HTMLInputElement>();
 	let values = $state({
@@ -21,7 +30,10 @@
 		range: 33,
 		select: "",
 		radio: "",
+		field_like_hidden: "[1,2,3]",
+		options: '[{"id":"initial"},{"id":"not listed"}]',
 	});
+	$inspect("field_like_hidden", values.field_like_hidden);
 
 	let labelLeft = $state(false);
 
@@ -29,11 +41,15 @@
 
 	onMount(() => {
 		function on_submit_valid(e: any) {
-			clog("submit_valid handler", [...e.detail.formData.entries()]);
+			clog.color("green")(
+				"submit_valid handler",
+				[...e.detail.formData.entries()],
+				$state.snapshot(values)
+			);
 		}
 
 		function on_submit_invalid(e: any) {
-			clog("submit_invalid handler", e.detail);
+			clog.error("SUBMIT_INVALID handler", e.detail, $state.snapshot(values));
 		}
 
 		f.addEventListener("submit_valid", on_submit_valid);
@@ -46,7 +62,7 @@
 	});
 
 	let files: FileList | undefined = $state();
-	$inspect("files", files);
+	// $inspect("files", files);
 </script>
 
 <Button size="sm" class="border px-2" onclick={() => (labelLeft = !labelLeft)}
@@ -60,7 +76,7 @@
 	onsubmit={(e) => {
 		clog("this will not be logged, because we have use:onSubmitValidityCheck");
 	}}
-	class="max-w-3xl my-4"
+	class="max-w-3xl"
 	use:onSubmitValidityCheck
 >
 	<div class="space-y-6">
@@ -97,6 +113,66 @@
 				below for {id}
 			{/snippet}
 		</FieldInput>
+
+		<FieldLikeButton
+			bind:value={values.field_like_hidden}
+			label="Field like button"
+			required
+			onclick={() => {
+				values.field_like_hidden = prompt("Value? Valid JSON array required.") || "";
+			}}
+			{labelLeft}
+			validate
+			description="Any valid JSON should validate"
+		/>
+
+		<FieldOptions
+			bind:value={values.options}
+			label="Options selector"
+			name="options"
+			getOptions={async (s: string) => {
+				s = s.trim();
+				await sleep(500);
+				if (!s) {
+					return [
+						{ id: "initial" },
+						{ id: "foo" },
+						{ id: "bar" },
+						{ id: "baz" },
+						{ id: "bat" },
+						{ id: "hey" },
+						{ id: "ho" },
+						{ id: "lets" },
+						{ id: "go" },
+					];
+				}
+				let out: any[] = [s];
+				out = s
+					.trim()
+					.split(" ")
+					.map((v) => v.trim())
+					.filter(Boolean)
+					.map((v) => `x${v}`);
+				// just to test error handling...
+				if (out.includes("xxx")) {
+					throw new Error("Boom");
+				}
+				return out.map((id) => ({ id })) as Item[];
+			}}
+			required
+			{notifications}
+			cardinality={5}
+			validate={{
+				customValidator(val, ctx, el) {
+					// we know val is valid JSON ARRAY string here (no need to check)
+					// also we know it satisfies the cardinality constraints
+					const selected = JSON.parse(val);
+					// custom validation: must not include "foo"
+					return selected.includes("foo") ? "invalid" : "";
+				},
+			}}
+			renderOptionLabel={(item) => `${item.id}`}
+		/>
 
 		<FieldTextarea
 			bind:value={values.input2}
@@ -206,7 +282,6 @@
 			description="Hohoho"
 			label="Click or drop"
 			multiple
-			required
 			validate={{
 				customValidator(val, ctx, el) {
 					// @ts-ignore

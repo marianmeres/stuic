@@ -31,7 +31,9 @@ export function onSubmitValidityCheck(node: HTMLFormElement) {
 				el.dispatchEvent(new Event("change", { bubbles: true }));
 
 				// typeof el.checkValidity === "function" && !el.checkValidity();
-				if (!el.checkValidity()) {
+				// NOTE: el.checkValidity() returns true for hidden inputs event if they are invalid!
+				// if (!el.checkValidity()) {
+				if (!el.validity.valid) {
 					invalid.push(el);
 				}
 			}

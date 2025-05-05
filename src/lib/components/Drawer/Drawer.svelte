@@ -5,7 +5,7 @@
 	import { twMerge } from "../../utils/tw-merge.js";
 	import Backdrop from "../Backdrop/Backdrop.svelte";
 	import type { Snippet } from "svelte";
-	import { onClickOutside } from "runed";
+	// import { onClickOutside } from "runed";
 
 	const prefersReduced = prefersReducedMotion();
 	const DEFAULT_POS = "left";
@@ -28,8 +28,8 @@
 		animOffset?: string | number;
 		onEscape?: () => void;
 		//
-		onOutside?: false | (() => void);
-		onOutsideEnabled?: boolean;
+		onOutside?: () => void;
+		// onOutsideEnabled?: boolean;
 	}
 
 	let {
@@ -48,7 +48,7 @@
 		animOffset = "75vw",
 		onEscape,
 		onOutside,
-		onOutsideEnabled = true,
+		// onOutsideEnabled = true,
 	}: Props = $props();
 
 	$effect(() => {
@@ -83,16 +83,16 @@
 		bottom: { x: 0,                y: animOffset },
     });
 
-	onClickOutside(
-		() => el,
-		() => {
-			// noop if not enabled
-			if (!onOutsideEnabled) return;
-			// explicit false means ignoring outside click
-			if (typeof onOutside === "function") onOutside();
-			else if (onOutside !== false) visible = false;
-		}
-	);
+	// onClickOutside(
+	// 	() => el,
+	// 	() => {
+	// 		// noop if not enabled
+	// 		if (!onOutsideEnabled) return;
+	// 		// explicit false means ignoring outside click
+	// 		if (typeof onOutside === "function") onOutside();
+	// 		else if (onOutside !== false) visible = false;
+	// 	}
+	// );
 
 	let _classBackdrop = $derived(
 		_classPresetsBackdrop[position] ?? _classPresetsBackdrop[DEFAULT_POS]
@@ -112,7 +112,8 @@
 	}
 
 	export function open(openerOrEvent?: null | HTMLElement | MouseEvent) {
-		setOpener(openerOrEvent ?? (document.activeElement as any));
+		// setOpener(openerOrEvent ?? (document.activeElement as any));
+		backdrop.open(openerOrEvent);
 	}
 
 	export function setOpener(opener?: null | HTMLElement) {
@@ -129,7 +130,10 @@
 	{fadeInDuration}
 	fadeOutDuration={transitionDuration}
 	{onEscape}
+	onclick={() => onOutside?.()}
 >
+	<!-- svelte-ignore a11y_interactive_supports_focus -->
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
 		bind:this={el}
 		aria-modal="true"
@@ -138,6 +142,12 @@
 		aria-describedby={describedby}
 		class={twMerge("overflow-y-auto", _class, classProp)}
 		transition:fly={flyOptions}
+		onclick={(e) => {
+			if (onOutside) {
+				e.stopImmediatePropagation();
+				e.stopPropagation();
+			}
+		}}
 	>
 		{@render children()}
 	</div>
