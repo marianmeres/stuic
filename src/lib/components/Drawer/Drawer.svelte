@@ -121,6 +121,11 @@
 	}
 </script>
 
+<!-- 
+	Using `onmousedown` not `onclick` intentionally. Otherwise drag inside + release outside 
+ 	(eg selecting text and accidentally release outside) would trigger close. 
+-->
+
 <Backdrop
 	bind:this={backdrop}
 	bind:el={elBackdrop}
@@ -130,7 +135,7 @@
 	{fadeInDuration}
 	fadeOutDuration={transitionDuration}
 	{onEscape}
-	onclick={() => onOutside?.()}
+	onmousedown={() => onOutside?.()}
 >
 	<!-- svelte-ignore a11y_interactive_supports_focus -->
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -142,7 +147,7 @@
 		aria-describedby={describedby}
 		class={twMerge("overflow-y-auto", _class, classProp)}
 		transition:fly={flyOptions}
-		onclick={(e) => {
+		onmousedown={(e) => {
 			if (onOutside) {
 				e.stopImmediatePropagation();
 				e.stopPropagation();

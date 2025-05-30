@@ -8,4 +8,5 @@ export { default as FieldOptions } from "./FieldOptions.svelte";
 export { default as FieldRadios } from "./FieldRadios.svelte";
 export { default as FieldSelect } from "./FieldSelect.svelte";
 export { default as Fieldset } from "./Fieldset.svelte";
+export { default as FieldSwitch } from "./FieldSwitch.svelte";
 export { default as FieldTextarea } from "./FieldTextarea.svelte";

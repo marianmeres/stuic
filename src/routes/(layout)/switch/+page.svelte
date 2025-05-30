@@ -2,6 +2,7 @@
 	import { Switch } from "$lib/index.js";
 	import { iconHeroSolidCheck } from "@marianmeres/icons-fns/heroicons/solid/iconHeroSolidCheck.js";
 	import { iconHeroSolidXMark } from "@marianmeres/icons-fns/heroicons/solid/iconHeroSolidXMark.js";
+	// import SwitchCheckbox from "../../../lib/components/Switch/SwitchCheckbox.svelte";
 
 	let toggle1 = $state(false);
 </script>
@@ -56,3 +57,4 @@
 
 <hr class="my-8" />
 <Switch disabled />
+<hr class="my-8" />

@@ -3,16 +3,17 @@
 	import FieldCheckbox from "$lib/components/Input/FieldCheckbox.svelte";
 	import FieldFile from "$lib/components/Input/FieldFile.svelte";
 	import FieldInput from "$lib/components/Input/FieldInput.svelte";
+	import FieldLikeButton from "$lib/components/Input/FieldLikeButton.svelte";
+	import FieldOptions from "$lib/components/Input/FieldOptions.svelte";
 	import FieldRadios from "$lib/components/Input/FieldRadios.svelte";
 	import FieldSelect from "$lib/components/Input/FieldSelect.svelte";
+	import FieldSwitch from "$lib/components/Input/FieldSwitch.svelte";
 	import FieldTextarea from "$lib/components/Input/FieldTextarea.svelte";
 	import Fieldset from "$lib/components/Input/Fieldset.svelte";
 	import { NotificationsStack, onSubmitValidityCheck, sleep } from "$lib/index.js";
 	import { createClog } from "@marianmeres/clog";
+	import { type Item } from "@marianmeres/item-collection";
 	import { onMount } from "svelte";
-	import FieldLikeButton from "../../../../lib/components/Input/FieldLikeButton.svelte";
-	import FieldOptions from "../../../../lib/components/Input/FieldOptions.svelte";
-	import { type Item } from "../../../../lib/utils/item-collection.svelte.js";
 
 	const clog = createClog("TestForm");
 
@@ -32,6 +33,7 @@
 		radio: "",
 		field_like_hidden: "[1,2,3]",
 		options: '[{"id":"initial"},{"id":"not listed"}]',
+		switch: false,
 	});
 	$inspect("field_like_hidden", values.field_like_hidden);
 
@@ -172,6 +174,21 @@
 				},
 			}}
 			renderOptionLabel={(item) => `${item.id}`}
+		/>
+
+		<FieldSwitch
+			bind:checked={values.switch}
+			label="Do you agree?"
+			name="swich"
+			required
+			description="some description"
+			{labelLeft}
+			validate={{
+				customValidator(val, ctx, el) {
+					// if (val && !/\d+/.test(val)) return "Numbers only";
+					if (!(el as any).checked) return "You must agree before continue";
+				},
+			}}
 		/>
 
 		<FieldTextarea

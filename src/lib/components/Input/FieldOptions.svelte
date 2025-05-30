@@ -37,6 +37,7 @@
 	import { type ValidateOptions } from "../../actions/validate.svelte.js";
 	import { getId } from "../../utils/get-id.js";
 	import { maybeJsonParse } from "../../utils/maybe-json-parse.js";
+	import { waitForNextRepaint } from "../../utils/paint.js";
 	import { qsa } from "../../utils/qsa.js";
 	import { strHash } from "../../utils/str-hash.js";
 	import { twMerge } from "../../utils/tw-merge.js";
@@ -48,7 +49,6 @@
 	import X from "../X/X.svelte";
 	import InputWrap from "./_internal/InputWrap.svelte";
 	import FieldLikeButton from "./FieldLikeButton.svelte";
-	import { waitForNextRepaint } from "../../utils/paint.js";
 
 	const clog = createClog("FieldOptions");
 
@@ -96,6 +96,7 @@
 		classOptionActive?: string;
 		//
 		classModalField?: string;
+		noScrollLock?: boolean;
 		//
 		style?: string;
 		t?: (key: string) => string;
@@ -153,12 +154,13 @@
 		style,
 		//
 		classModalField,
+		noScrollLock = false,
 		t = t_default,
 		//
 		renderValue,
 		getOptions,
 		notifications,
-		cardinality = Infinity,
+		cardinality: _cardinality = Infinity,
 		renderOptionLabel,
 		allowUnknown = false,
 		showIcons = true,
@@ -171,14 +173,15 @@
 	let modal: Modal = $state()!;
 	let innerValue = $state("");
 	let isFetching = $state(false);
+	let cardinality = $derived(_cardinality === -1 ? Infinity : _cardinality);
 	let isMultiple = $derived(cardinality > 1);
 
 	//
 	let wrappedValidate: Omit<ValidateOptions, "setValidationResult"> = $derived({
 		enabled: true,
 		customValidator(value: any, context: Record<string, any> | undefined, el: any) {
-			// NOTE: the below error message code will be ignore, so it's just cosmetics
-			// built in JSON array validator which cannot be bypassed
+			// NOTE: the below error message code will be ignored, so it's just cosmetics.
+			// This, built-in JSON array validator cannot be bypassed. Strictly expecting array.
 			let selected = [];
 			try {
 				selected = JSON.parse(value);
@@ -187,16 +190,13 @@
 				return "typeMismatch";
 			}
 			// cardinality check
-			if (selected.length > cardinality) {
-				return "rangeOverflow";
-			}
+			if (selected.length > cardinality) return "rangeOverflow";
 
 			// continue with provided validator
 			return (validate as any)?.customValidator?.(value, context, el) || "";
 		},
 		t(reason: keyof ValidityStateFlags, value: any, fallback: string) {
-			// Unfortunately, with a hidden field, everything here is a `customError` reason.
-			// So, we must generalize...
+			// Unfortunately, for hidden, everything is a `customError` reason. So, we must generalize...
 			return t("field_req_att");
 		},
 	});
@@ -211,7 +211,7 @@
 		});
 	}
 
-	// let's have two distinct collections for the job
+	// let's have two distinct collections for the job, they are independent on each other
 	// first, the all available options
 	const _optionsColl = new ItemCollection([], {
 		allowNextPrevCycle: false,
@@ -220,6 +220,7 @@
 		searchable: { getContent: (item) => _renderOptionLabel(item) },
 	});
 
+	// second, the selected ones
 	const _selectedColl = new ItemCollection([], {
 		cardinality,
 		sortFn,
@@ -242,8 +243,7 @@
 		(isVisible, wasVisible) => {
 			// modal was just opened
 			if (!wasVisible && isVisible) {
-				const parsed = maybeJsonParse(value);
-				_selectedColl.clear().addMany(parsed);
+				_selectedColl.clear().addMany(maybeJsonParse(value));
 				// IMPORTANT: focus first selected so it scrolls into view on open
 				if (_selectedColl.size) {
 					waitForNextRepaint().then(() => {
@@ -254,7 +254,7 @@
 		}
 	);
 
-	//
+	// scroll the active option into view
 	$effect(() => {
 		if (modal.visibility().visible && options.active?.[itemIdPropName]) {
 			activeEl = qsa(`#${btnId(options.active[itemIdPropName])}`, optionsBox)[0] as any;
@@ -264,10 +264,9 @@
 			activeEl = undefined;
 		}
 	});
-	// $inspect(activeEl, options.active?.id);
 
-	//
-	const debounced = new Debounced(() => innerValue, 200);
+	// suggest options as a typeahead feature
+	const debounced = new Debounced(() => innerValue, 150);
 	watch(
 		[() => modal.visibility().visible, () => debounced.current],
 		([isVisible, currVal]) => {
@@ -277,7 +276,6 @@
 				.then((res) => {
 					// always update the existing with recent server data
 					_selectedColl.patchMany(res);
-
 					// continue normally, with (server) provided options...
 					_optionsColl.clear().addMany(res);
 				})
@@ -289,76 +287,49 @@
 		}
 	);
 
+	// internal DRY
 	function btnId(id: string | number, prefix = "btn-") {
 		return prefix + strHash(`${id}`.repeat(3));
 	}
 
-	// this will set the outer bound value and close modal... further process is left on the consumer
+	// this will set the outer bound value (always string) and close modal... further process is left on the consumer
 	function submit() {
-		// sets the opener's value (always strings);
-		clog("modal submit", $state.snapshot(selected.items));
+		// clog("modal submit", $state.snapshot(selected.items));
 		value = JSON.stringify(selected.items);
 		innerValue = "";
 		_optionsColl.clear();
 		modal.close();
 	}
 
-	/** cleans, closes, submits nothing */
+	// clears, closes, submits nothing
 	function escape() {
 		innerValue = "";
 		_optionsColl.clear();
-		// _selectedColl.clear();
 		modal?.close();
-	}
-
-	function toggleAdd(item: Item) {
-		try {
-			return _selectedColl.toggleAdd(item);
-		} catch (e) {
-			notifications?.error(`${e}`);
-		}
-	}
-
-	function selectOne(item: Item, resetPrevious = true) {
-		try {
-			if (resetPrevious) _selectedColl.clear();
-			_selectedColl.add(item);
-			return true;
-		} catch (e) {
-			notifications?.error(`${e}`);
-		}
-		return false;
-	}
-
-	function selectMany(items: Item[]) {
-		try {
-			_selectedColl.addMany(items);
-			return true;
-		} catch (e) {
-			notifications?.error(`${e}`);
-		}
-		return false;
 	}
 </script>
 
-<!-- this must (?) be on window as we're catching any typing to focus -->
+<!-- this must be on window as we're catching any typing anywhere -->
 <svelte:window
 	onkeydown={(e) => {
 		if (modal.visibility().visible) {
+			// arrow navigation
 			if (["ArrowDown", "ArrowUp"].includes(e.key)) {
 				e.preventDefault();
 
 				if (e.key === "ArrowUp") {
-					e.metaKey ? _optionsColl.first() : _optionsColl.previous();
+					e.metaKey ? _optionsColl.setActiveFirst() : _optionsColl.setActivePrevious();
 				} else if (e.key === "ArrowDown") {
-					e.metaKey ? _optionsColl.last() : _optionsColl.next();
+					e.metaKey ? _optionsColl.setActiveLast() : _optionsColl.setActiveNext();
 				}
 
-				// convention: radios are selected by arrows
+				// common UI convention: radios are selected by arrows
 				if (!isMultiple && _optionsColl.active) {
 					_selectedColl.clear().add(_optionsColl.active!);
 				}
-			} else if (!["Tab", " ", "Enter"].includes(e.key)) {
+			}
+			// everything else (except controls) "forward" as an input search
+			else if (!["Tab", " ", "Enter"].includes(e.key)) {
 				input?.focus();
 			}
 		}
@@ -390,10 +361,24 @@
 		{disabled}
 		renderValue={(v) => {
 			if (typeof renderValue === "function") return renderValue(v);
+			// console.log(123123, "renderValue", v);
 			// prettier-ignore
 			try {
-				return JSON.parse(v).map(_renderOptionLabel).join(", ");
+				// defensive
+				if (!v) v = "[]";
+
+				const limit = 5;
+				let vals: any[] = JSON.parse(v);
+				if (!Array.isArray(vals)) throw new Error('Expecting value to be an array');
+				const origLength = vals.length;
+				let extra = '';
+				if (vals.length > limit) {
+					vals = vals.slice(0, limit);
+					extra = `, ... <span class="text-sm opacity-50">(+${(origLength - limit)})</span>`;
+				}
+				return vals.map(_renderOptionLabel).join(", ") + extra;
 			} catch (e) {
+				clog.warn(e);
 				return `${e}`; // either invalid json or not array...
 			}
 		}}
@@ -406,6 +391,7 @@
 		class="bg-transparent dark:bg-transparent"
 		classInner="max-w-2xl"
 		bind:el={modalEl}
+		{noScrollLock}
 	>
 		<InputWrap
 			size={renderSize}
@@ -442,9 +428,7 @@
 								found = { [itemIdPropName]: innerValue };
 							}
 
-							if (!isMultiple) {
-								_selectedColl.clear();
-							}
+							if (!isMultiple) _selectedColl.clear();
 
 							// actual selection addon
 							_selectedColl.add(found);
@@ -472,13 +456,11 @@
 
 			{#snippet inputBelow()}
 				<div class="h-full border-t p-2 border-black/20">
-					<!-- {JSON.stringify(selected.items)} -->
-					<!-- {#if selected.items.length} -->
 					<div class="text-sm -mt-1 flex items-center">
 						{#if isMultiple}
 							<button
 								type="button"
-								onclick={() => selectMany(options.items)}
+								onclick={() => _selectedColl.addMany(options.items)}
 								class={twMerge(
 									"control flex items-center p-1 m-1 text-xs opacity-75 underline rounded",
 									"hover:opacity-100 focus-visible:outline-neutral-400 focus-visible:opacity-100"
@@ -488,7 +470,6 @@
 								{@html t("select_all")}
 							</button>
 						{/if}
-						<!-- {#if selected.items.length} -->
 						<button
 							type="button"
 							onclick={() => {
@@ -505,7 +486,7 @@
 						>
 							{@html t("clear_all")}
 						</button>
-						<!-- {/if} -->
+
 						<span class="p-1 m-1 text-xs">&nbsp;</span>
 						<span class="flex-1 block justify-end opacity-50 text-right text-xs p-1 pr-2">
 							{selected.items.length}
@@ -515,8 +496,8 @@
 							{@html t("cardinality_selected")}
 						</span>
 					</div>
-					<!-- {/if} -->
 
+					<!-- {#if options.items.length} -->
 					<ul
 						class={twMerge(
 							"options block h-[250px] max-h-[250px] overflow-y-auto overflow-x-hidden space-y-1"
@@ -524,6 +505,11 @@
 						bind:this={optionsBox}
 						tabindex="-1"
 					>
+						{#if isFetching && !options.items.length}
+							<div class="p-4 opacity-50">
+								<Spinner class="w-4" />
+							</div>
+						{/if}
 						{#each options.items as item}
 							{@const active = item[itemIdPropName] === options.active?.[itemIdPropName]}
 							{@const isSelected =
@@ -535,11 +521,15 @@
 									onclick={() => {
 										if (isMultiple) {
 											if (selected.isFull && !_selectedColl.exists(item)) {
-												return notifications?.error(t("cardinality_full"), { ttl: 1000 });
+												return notifications?.error(t("cardinality_full"), {
+													ttl: 1000,
+												});
 											}
-											toggleAdd(item);
+											_selectedColl.toggleAdd(item);
 										} else {
-											selectOne(item, true) && submit();
+											_selectedColl.clear();
+											_selectedColl.add(item);
+											submit();
 										}
 									}}
 									class:active
@@ -580,9 +570,10 @@
 							</li>
 						{/each}
 					</ul>
+					<!-- {/if} -->
 					<div class="p-2 flex items-end justify-between">
 						<div class="text-xs opacity-50">
-							<!-- Use arrows to navigate. Spacebar to select. Enter to submit. -->
+							<!-- Use arrows to navigate. Spacebar and Enter to select and/or submit. -->
 							{#if allowUnknown}
 								{@html t("unknown_allowed")}
 							{:else}

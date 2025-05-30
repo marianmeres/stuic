@@ -26,6 +26,8 @@
 		el?: HTMLDivElement;
 		focusTrap?: boolean | FocusTrapOptions;
 		onEscape?: undefined | (() => void);
+
+		noScrollLock?: boolean;
 	}
 
 	let {
@@ -47,6 +49,7 @@
 		el = $bindable(),
 		focusTrap = true,
 		onEscape,
+		noScrollLock = false,
 	}: Props = $props();
 
 	let backdrop: Backdrop = $state()!;
@@ -79,6 +82,7 @@
 	{focusTrap}
 	fadeOutDuration={transitionDuration}
 	{onEscape}
+	{noScrollLock}
 >
 	<div
 		bind:this={el}

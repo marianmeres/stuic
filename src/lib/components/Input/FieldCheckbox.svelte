@@ -125,7 +125,7 @@
 			})}
 			class={twMerge(
 				_classCommon,
-				`size-4 rounded
+				`size-5 rounded
 				bg-neutral-100
 				border-neutral-300
 				text-input-accent dark:text-input-accent-dark

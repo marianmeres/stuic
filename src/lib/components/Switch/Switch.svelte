@@ -2,6 +2,11 @@
 	import { tick, type Snippet } from "svelte";
 	import type { FormEventHandler, HTMLButtonAttributes } from "svelte/elements";
 	import { twMerge } from "../../utils/tw-merge.js";
+	import {
+		validate as validateAction,
+		type ValidateOptions,
+		type ValidationResult,
+	} from "../../actions/validate.svelte.js";
 
 	import "./index.css";
 
@@ -9,9 +14,11 @@
 		button?: HTMLButtonElement;
 		checked?: boolean;
 		size?: "xs" | "sm" | "md" | "lg" | "xl" | string;
+		name?: string;
 		class?: string;
 		dotClass?: string;
 		label?: string;
+		required?: boolean;
 		disabled?: boolean;
 		tabindex?: number;
 		on?: Snippet;
@@ -19,14 +26,19 @@
 		onclick?: (event: MouseEvent) => void;
 		onchange?: FormEventHandler<HTMLButtonElement> | null | undefined;
 		preHook?: (current: boolean) => Promise<false | any>;
+		//
+		validate?: boolean | Omit<ValidateOptions, "setValidationResult">;
+		setValidationResult?: (res: ValidationResult) => void;
 	}
 
 	let {
 		button = $bindable(),
 		size = "md",
+		name,
 		class: classProp,
 		dotClass,
 		checked = $bindable(false),
+		required,
 		disabled,
 		tabindex = 0,
 		label,
@@ -34,6 +46,8 @@
 		off,
 		onclick,
 		preHook,
+		validate,
+		setValidationResult,
 		...rest
 	}: Props = $props();
 
@@ -55,72 +69,83 @@
 			},
 		},
 	};
+
+	//
+	let wrap = $state<HTMLLabelElement>()!;
+	let checkbox = $state<HTMLInputElement>()!;
+
+	function change() {
+		checkbox.checked = !checked;
+		checkbox.dispatchEvent(new Event("change", { bubbles: true, cancelable: true }));
+		wrap.focus();
+	}
 </script>
 
-<!-- <div class="inline-block relative"> -->
-<button
-	bind:this={button}
+<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions  -->
+<label
+	bind:this={wrap}
 	class={twMerge(
 		"stuic-switch",
 		`m-2 
-			relative inline-flex flex-shrink-0 items-center
-			rounded-full cursor-pointer
-	
-			transition-colors duration-100
-	
-			hover:brightness-[1.05] active:brightness-[0.95]
-			disabled:!cursor-not-allowed disabled:!opacity-50 disabled:hover:brightness-100
-	
-			bg-neutral-400 dark:bg-neutral-400
-	
-			aria-[checked=true]:bg-switch-accent
-			dark:aria-[checked=true]:bg-switch-accent-dark
-	
-			focus:outline-0
-			focus:ring-switch-accent/20 focus:dark:ring-switch-accent-dark/20
-			focus:ring-4`,
+		relative inline-flex flex-shrink-0 items-center
+		rounded-full cursor-pointer
+
+		transition-colors duration-100
+
+		hover:brightness-[1.05] active:brightness-[0.95]
+		data-[disabled=true]:!cursor-not-allowed data-[disabled=true]:!opacity-50 data-[disabled=true]:hover:brightness-100
+
+		bg-neutral-400 dark:bg-neutral-400
+
+		data-[checked=true]:bg-switch-accent
+		dark:data-[checked=true]:bg-switch-accent-dark
+
+		focus:outline-0
+		focus:ring-switch-accent/20 focus:dark:ring-switch-accent-dark/20
+		focus:ring-4`,
 		size,
 		_preset.size[size],
 		classProp
 	)}
-	type="button"
-	role="switch"
-	aria-checked={checked}
-	value={`${!!checked}`}
-	{tabindex}
-	{disabled}
+	data-checked={checked}
+	data-disabled={disabled}
+	tabindex={disabled ? -1 : tabindex}
+	onkeydown={(e: KeyboardEvent) => {
+		if (!disabled && !e.metaKey && ["Space", "Enter"].includes(e.code)) {
+			change();
+		}
+	}}
 	onclick={async (e) => {
+		e.preventDefault();
+		if (disabled) return false;
+
 		if (typeof preHook === "function" && (await preHook(checked)) === false) {
 			return false;
 		}
-		checked = !checked;
+
+		change();
 
 		await tick();
 
 		if (typeof onclick === "function") onclick(e);
-
-		button!.dispatchEvent(
-			new CustomEvent("change", { bubbles: true, cancelable: true, detail: checked })
-		);
 	}}
 	{...rest}
 >
-	{#if label}<span class="sr-only">{@html label}</span>{/if}
 	<span
-		aria-hidden="true"
-		data-checked={checked}
 		class={twMerge(
 			"dot",
 			`flex items-center justify-center
-				translate-x-1 rounded-full  
-				transition-all duration-100
-				shadow
-				bg-neutral-50 dark:bg-neutral-50
-				text-neutral-950 dark:text-neutral-950`,
+			translate-x-1 rounded-full  
+			transition-all duration-100
+			shadow
+			bg-neutral-50 dark:bg-neutral-50
+			text-neutral-950 dark:text-neutral-950`,
 			size,
 			_preset.dot.size[size],
 			dotClass
 		)}
+		data-checked={checked}
 	>
 		{#if checked}
 			{@render on?.()}
@@ -128,4 +153,19 @@
 			{@render off?.()}
 		{/if}
 	</span>
-</button>
+	<input
+		bind:checked
+		bind:this={checkbox}
+		type="checkbox"
+		class="opacity-0 size-0"
+		{disabled}
+		{required}
+		{name}
+		use:validateAction={() => ({
+			enabled: !!validate,
+			...(typeof validate === "boolean" ? {} : validate),
+			setValidationResult,
+		})}
+		tabindex="-1"
+	/>
+</label>
