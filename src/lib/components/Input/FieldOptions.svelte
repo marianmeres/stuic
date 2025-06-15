@@ -13,7 +13,9 @@
 			submit: "Submit",
 			select_all: "Select all",
 			clear_all: "Clear all",
+			clear: "Clear",
 			search_placeholder: "Type to search...",
+			search_submit_placeholder: "Type to search and/or submit...",
 			cardinality_full: "Max selection reached",
 			select_from_list: "Please select from the list",
 			x_close: "Clear input or close [esc]",
@@ -222,9 +224,15 @@
 
 	// second, the selected ones
 	const _selectedColl = new ItemCollection([], {
+		// svelte-ignore state_referenced_locally
 		cardinality,
 		sortFn,
 		idPropName: itemIdPropName,
+	});
+
+	// reconfigure if the prop ever changes during runtime (most likely will NOT)
+	$effect(() => {
+		_selectedColl.configure({ cardinality });
 	});
 
 	// now, create the reactive, subscribed variants
@@ -292,7 +300,41 @@
 		return prefix + strHash(`${id}`.repeat(3));
 	}
 
-	// this will set the outer bound value (always string) and close modal... further process is left on the consumer
+	// "inner" submit
+	function try_submit(force = false) {
+		if (innerValue) {
+			// doing label search, taking first result
+			let found = _optionsColl.search(innerValue)?.[0];
+			if (!found) {
+				if (!allowUnknown) {
+					return notifications?.error(t("select_from_list"), { ttl: 1000 });
+				}
+				found = { [itemIdPropName]: innerValue };
+			}
+
+			if (!isMultiple) _selectedColl.clear();
+
+			// actual selection addon
+			_selectedColl.add(found);
+
+			// we might have added a new one, so add it to options as well
+			// (will be noop if already exists)...
+			if (allowUnknown) {
+				_optionsColl.add(found);
+				_optionsColl.setActive(found);
+			}
+
+			// maybe submit
+			if (_selectedColl.isFull || force) submit();
+		}
+		// enter on empty input always submits
+		else {
+			submit();
+		}
+	}
+
+	// "outer" submit - will set the outer bound value (always string) and close modal...
+	// further process is left on the consumer
 	function submit() {
 		// clog("modal submit", $state.snapshot(selected.items));
 		value = JSON.stringify(selected.items);
@@ -413,40 +455,12 @@
 				tabindex={1}
 				{required}
 				{disabled}
-				placeholder={searchPlaceholder ?? t("search_placeholder")}
+				placeholder={searchPlaceholder ??
+					t(allowUnknown ? "search_submit_placeholder" : "search_placeholder")}
 				onkeydown={(e) => {
 					if (e.key === "Enter") {
 						e.preventDefault();
-
-						if (innerValue) {
-							// doing label search, taking first result
-							let found = _optionsColl.search(innerValue)?.[0];
-							if (!found) {
-								if (!allowUnknown) {
-									return notifications?.error(t("select_from_list"), { ttl: 1000 });
-								}
-								found = { [itemIdPropName]: innerValue };
-							}
-
-							if (!isMultiple) _selectedColl.clear();
-
-							// actual selection addon
-							_selectedColl.add(found);
-
-							// we might have added a new one, so add it to options as well
-							// (will be noop if already exists)...
-							if (allowUnknown) {
-								_optionsColl.add(found);
-								_optionsColl.setActive(found);
-							}
-
-							// maybe submit
-							if (_selectedColl.isFull) submit();
-						}
-						// enter on empty input always submits
-						else {
-							submit();
-						}
+						try_submit();
 					}
 				}}
 				autocomplete="off"
@@ -484,7 +498,7 @@
 							tabindex={5}
 							disabled={!selected.items.length}
 						>
-							{@html t("clear_all")}
+							{@html t(cardinality === 1 ? "clear" : "clear_all")}
 						</button>
 
 						<span class="p-1 m-1 text-xs">&nbsp;</span>
@@ -585,9 +599,9 @@
 								class="control"
 								type="button"
 								variant="primary"
-								onclick={(e) => {
+								onclick={async (e) => {
 									e.preventDefault();
-									submit();
+									try_submit(true);
 								}}
 								tabindex={3}
 							>

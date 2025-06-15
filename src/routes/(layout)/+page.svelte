@@ -7,6 +7,7 @@
 		// 'avatar', 
 		'backdrop', 
         'button', 
+        'button-group-radio', 
 		// 'carousel', 
         'color-scheme', 
 		'col-resize',

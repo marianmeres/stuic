@@ -3,7 +3,7 @@
 		bg-button-bg text-button-text 
 		dark:bg-button-bg-dark dark:text-button-text-dark
 		font-mono text-sm text-center 
-		leading-4
+		leading-none
 		border-1
 		border-button-border dark:border-button-border-dark
 		rounded-md
