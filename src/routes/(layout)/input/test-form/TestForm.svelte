@@ -14,6 +14,7 @@
 	import { createClog } from "@marianmeres/clog";
 	import { type Item } from "@marianmeres/item-collection";
 	import { onMount } from "svelte";
+	import ButtonGroupRadio from "../../../../lib/components/ButtonGroupRadio/ButtonGroupRadio.svelte";
 
 	const clog = createClog("TestForm");
 
@@ -28,6 +29,7 @@
 		input1: "",
 		input2: "",
 		check: true,
+		buttongroup: "B",
 		range: 33,
 		select: "",
 		radio: "",
@@ -191,6 +193,14 @@
 			}}
 		/>
 
+		<ButtonGroupRadio
+			bind:value={values.buttongroup}
+			options={[
+				{ label: "Option A", value: "A" },
+				{ label: "Option B", value: "B" },
+			]}
+		/>
+
 		<FieldTextarea
 			bind:value={values.input2}
 			label="Big text"
@@ -218,7 +228,7 @@
 
 			<FieldInput
 				type="range"
-				label="Hey ranger!"
+				label="Ranger!"
 				class="!mb-0"
 				name="range"
 				min="0"
