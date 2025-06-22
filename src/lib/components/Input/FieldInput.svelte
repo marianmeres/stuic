@@ -105,6 +105,7 @@
 	{labelAfter}
 	{inputBefore}
 	{inputAfter}
+	{inputBelow}
 	{below}
 	{required}
 	{disabled}

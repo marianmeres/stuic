@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { ItemCollection, type Item } from "@marianmeres/item-collection";
-	import { getId } from "../../utils/get-id.js";
+	import { ItemCollection } from "@marianmeres/item-collection";
 	import { twMerge } from "../../utils/tw-merge.js";
-	import type { FieldRadiosOption } from "../Input/types.js";
 	import Button from "../Button/Button.svelte";
+	import type { FieldRadiosOption } from "../Input/types.js";
 	//
 	import "./index.css";
 
@@ -79,16 +78,19 @@
 		});
 	});
 
-	const rounded = "rounded-full";
-	const roundedBtn = "rounded-full";
+	const rounded = "rounded-md";
+	const roundedBtn = "rounded-md";
 	//
 	const CLS = `
+		stuic-button-group
         ${rounded}
-        py-1 px-1.5 inline-block space-x-1
+		w-full
+        py-1.5 px-1.5 inline-block space-x-1
         bg-button-group-bg text-button-group-text
         dark:bg-button-group-bg-dark dark:text-button-group-text-dark
         border-1
         border-button-group-border dark:border-button-group-border-dark
+		flex justify-between
         
         focus-within:border-button-group-accent focus-within:dark:border-button-group-accent-dark
         focus-within:ring-button-group-accent/20 focus-within:dark:ring-button-group-accent-dark/20
@@ -97,6 +99,7 @@
 
 	const CLS_BUTTON = `
         ${rounded}
+		w-full inline-block
 	    bg-transparent text-button-group-text dark:text-button-group-text-dark
         hover:bg-transparent hover:text-button-group-text hover:dark:text-button-group-text-dark
         outline-none focus:outline-none
@@ -140,6 +143,7 @@
 					classButton,
 					$coll.activeIndex === i && [CLS_BUTTON_ACTIVE, classButtonActive].join(" ")
 				)}
+				{disabled}
 				{size}
 				type="button"
 				role="radio"

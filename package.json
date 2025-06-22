@@ -63,6 +63,7 @@
 		"@marianmeres/item-collection": "^1.2.15",
 		"@marianmeres/parse-boolean": "^1.1.7",
 		"@marianmeres/ticker": "^1.15.0",
+		"clsx": "^2.1.1",
 		"esm-env": "^1.2.2",
 		"runed": "^0.23.4",
 		"tailwind-merge": "^3.3.1"

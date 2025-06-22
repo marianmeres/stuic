@@ -69,7 +69,7 @@
 	// $inspect("files", files);
 </script>
 
-<Button size="sm" class="border px-2" onclick={() => (labelLeft = !labelLeft)}
+<Button size="sm" class="border px-2 mb-4" onclick={() => (labelLeft = !labelLeft)}
 	>left/full</Button
 >
 
@@ -134,12 +134,16 @@
 			bind:value={values.options}
 			label="Options selector"
 			name="options"
+			{labelLeft}
 			getOptions={async (s: string) => {
 				s = s.trim();
 				await sleep(500);
 				if (!s) {
 					return [
 						{ id: "initial" },
+						{
+							id: "alorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+						},
 						{ id: "foo" },
 						{ id: "bar" },
 						{ id: "baz" },
@@ -233,6 +237,7 @@
 				name="range"
 				min="0"
 				max="100"
+				{labelLeft}
 				bind:value={values.range}
 				--color-input-accent="var(--color-violet-600)"
 				validate={{
@@ -325,5 +330,5 @@
 </form>
 
 <hr />
-<pre class="text-xs">{JSON.stringify(values, null, 2)}</pre>
-<pre class="text-xs">{JSON.stringify(files, null, 2)}</pre>
+<pre class="text-xs overflow-scroll">{JSON.stringify(values, null, 2)}</pre>
+<pre class="text-xs overflow-scroll">{JSON.stringify(files, null, 2)}</pre>

@@ -12,7 +12,7 @@
 	let activeIndex = $state<number | undefined>(1);
 </script>
 
-<div class="space-x-4">
+<div class="space-x-4 space-y-4">
 	<Button>before</Button>
 
 	<ButtonGroupRadio
@@ -38,6 +38,7 @@
 		buttonProps={(i) => {
 			if (i === 5) return { disabled: true };
 		}}
+		class="max-w-2xl"
 	/>
 	<!-- classButtonActive="bg-red-500 text-white hover:bg-red-600 hover:text-white shadow-none" -->
 

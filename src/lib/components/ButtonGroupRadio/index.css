@@ -3,7 +3,7 @@
 
 /* prettier-ignore */
 @theme inline {
-	--color-button-group-bg: var(--color-button-group-bg, var(--color-neutral-100));
+	--color-button-group-bg: var(--color-button-group-bg, var(--color-white));
 	--color-button-group-bg-dark: var(--color-button-group-bg-dark, var(--color-neutral-600));
 
 	--color-button-group-text: var(--color-button-group-text, var(--color-black));

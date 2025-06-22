@@ -17,7 +17,7 @@ export function highlightDragover(
 
 	function prevent(e: DragEvent) {
 		e.preventDefault();
-		e.stopPropagation();
+		// e.stopPropagation();
 	}
 
 	const HIGH = ["dragenter", "dragover"];
@@ -29,17 +29,31 @@ export function highlightDragover(
 		if (!enabled) return;
 
 		if (!Array.isArray(classes)) classes = [classes];
+		// allow strings
+		classes = classes.reduce((m, c) => {
+			m = [
+				...m,
+				...c
+					.split(/\s/)
+					.map((v) => v.trim())
+					.filter(Boolean),
+			];
+			return m;
+		}, [] as string[]);
+
+		// el.addEventListener("drop", prevent);
 
 		const highlight = () => el.classList.add(...classes);
 		const unhighlight = () => el.classList.remove(...classes);
 
 		// ALL.forEach((name: any) => el.addEventListener(name, prevent, false));
-		HIGH.forEach((name) => el.addEventListener(name, highlight, false));
-		UNHIGH.forEach((name) => el.addEventListener(name, unhighlight, false));
+		HIGH.forEach((name) => el.addEventListener(name, highlight));
+		UNHIGH.forEach((name) => el.addEventListener(name, unhighlight));
 
 		// el.addEventListener("drop", handle_drop, false);
 
 		return () => {
+			// el.removeEventListener("drop", prevent);
 			// ALL.forEach((name: any) => el.removeEventListener(name, prevent));
 			HIGH.forEach((name) => el.removeEventListener(name, highlight));
 			UNHIGH.forEach((name) => el.removeEventListener(name, unhighlight));

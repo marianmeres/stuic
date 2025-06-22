@@ -1,10 +1,29 @@
-<script>
+<script lang="ts">
 	import Spinner from "$lib/components/Spinner/Spinner.svelte";
+	import SpinnerUnicode, {
+		spinnerCreateBackAndForthCharFrames,
+		type SpinnerUnicodeVariant,
+	} from "$lib/components/Spinner/SpinnerUnicode.svelte";
 
 	let w = ["w-4", "w-5", "w-8", "w-16"];
 	let size = 1;
 	let count = 8;
 	let duration = 750;
+
+	const unicodeVariants: SpinnerUnicodeVariant[] = [
+		"braille_bar_dot",
+		"braille_bar",
+		"braille_dot_circle",
+		"braille_dot_bounce",
+		"half_circle",
+		"quarter_circle",
+		"ascii",
+		"bar_v",
+		"bar_h",
+		"shade",
+		"arrows",
+		"arrows2",
+	];
 </script>
 
 <div class="flex items-center space-x-6">
@@ -39,3 +58,25 @@
 		<Spinner class={w[size]} {count} {duration} thickness="thick" height="tall" />
 	</div>
 </div>
+
+<hr class="my-6" />
+
+<div class="space-x-4">
+	{#each unicodeVariants as variant}
+		<SpinnerUnicode {variant} />
+	{/each}
+</div>
+
+<div class="space-x-4">
+	{#each unicodeVariants as variant}
+		<SpinnerUnicode {variant} reversed />
+	{/each}
+</div>
+
+<hr class="my-6" />
+
+<SpinnerUnicode
+	class="font-sans text-sm text-red-500"
+	speed={130}
+	frames={spinnerCreateBackAndForthCharFrames(5, "■", "□")}
+/>

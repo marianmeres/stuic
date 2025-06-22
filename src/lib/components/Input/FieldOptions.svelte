@@ -1,35 +1,7 @@
 <script lang="ts" module>
-	export interface Option {
-		label: string;
-		value: any;
-	}
-
-	// i18n ready
-	function t_default(k: string) {
-		const m: Record<string, string> = {
-			field_req_att: "This field requires attention. Please review and try again.",
-			cardinality_of: "of",
-			cardinality_selected: "selected",
-			submit: "Submit",
-			select_all: "Select all",
-			clear_all: "Clear all",
-			clear: "Clear",
-			search_placeholder: "Type to search...",
-			search_submit_placeholder: "Type to search and/or submit...",
-			cardinality_full: "Max selection reached",
-			select_from_list: "Please select from the list",
-			x_close: "Clear input or close [esc]",
-			unknown_allowed: "Select from the list or type and submit any value",
-			unknown_not_allowed: "Select values from the list only",
-		};
-		return m[k] ?? k;
-	}
-</script>
-
-<script lang="ts">
 	import { createClog } from "@marianmeres/clog";
 	import { iconBsSearch } from "@marianmeres/icons-fns/bootstrap/iconBsSearch.js";
-	import { iconLucideCheck } from "@marianmeres/icons-fns/lucide/iconLucideCheck.js";
+	import { iconLucideCheck as iconLucideCheck } from "@marianmeres/icons-fns/lucide/iconLucideCheck.js";
 	import { iconLucideCircle } from "@marianmeres/icons-fns/lucide/iconLucideCircle.js";
 	import { iconLucideSquare } from "@marianmeres/icons-fns/lucide/iconLucideSquare.js";
 	import { ItemCollection, type Item } from "@marianmeres/item-collection";
@@ -52,6 +24,35 @@
 	import InputWrap from "./_internal/InputWrap.svelte";
 	import FieldLikeButton from "./FieldLikeButton.svelte";
 
+	export interface Option {
+		label: string;
+		value: any;
+	}
+
+	// i18n ready
+	function t_default(k: string) {
+		const m: Record<string, string> = {
+			field_req_att: "This field requires attention. Please review and try again.",
+			cardinality_of: "of",
+			cardinality_selected: "selected",
+			submit: "Submit",
+			select_all: "Select all",
+			clear_all: "Clear all",
+			clear: "Clear",
+			search_placeholder: "Type to search...",
+			search_submit_placeholder: "Type to search and/or submit...",
+			cardinality_full: "Max selection reached",
+			select_from_list: "Please select from the list only",
+			x_close: "Clear input or close [esc]",
+			unknown_allowed: "Select or type and submit",
+			unknown_not_allowed: "Select from the list",
+			no_results: "No results found.",
+		};
+		return m[k] ?? k;
+	}
+</script>
+
+<script lang="ts">
 	const clog = createClog("FieldOptions");
 
 	const iconCheckboxEmpty = iconLucideSquare;
@@ -96,6 +97,7 @@
 		//
 		classOption?: string;
 		classOptionActive?: string;
+		classOptgroup?: string;
 		//
 		classModalField?: string;
 		noScrollLock?: boolean;
@@ -104,15 +106,17 @@
 		t?: (key: string) => string;
 		//
 		renderValue?: (strigifiedItems: string) => string;
-		getOptions: (s: string, current: Item[]) => Promise<Item[]>;
+		getOptions: (q: string, current: Item[]) => Promise<Item[]>;
 		notifications?: NotificationsStack;
 		// -1 no limit
 		// +n max selected limit
 		cardinality?: number;
 		renderOptionLabel?: (item: Item) => string;
+		renderOptionGroup?: (s: string) => string;
 		// whether to allow adding unknown options
 		allowUnknown?: boolean;
-		showIcons?: boolean;
+		showIconsCheckbox?: boolean;
+		showIconsRadio?: boolean;
 		searchPlaceholder?: string;
 		name: string;
 		itemIdPropName?: string;
@@ -152,6 +156,7 @@
 		//
 		classOption,
 		classOptionActive,
+		classOptgroup,
 		//
 		style,
 		//
@@ -164,8 +169,10 @@
 		notifications,
 		cardinality: _cardinality = Infinity,
 		renderOptionLabel,
+		renderOptionGroup = (s: string) => `${s}`.replaceAll("_", " "),
 		allowUnknown = false,
-		showIcons = true,
+		showIconsCheckbox = true,
+		showIconsRadio = false,
 		searchPlaceholder,
 		name,
 		itemIdPropName = "id",
@@ -177,6 +184,7 @@
 	let isFetching = $state(false);
 	let cardinality = $derived(_cardinality === -1 ? Infinity : _cardinality);
 	let isMultiple = $derived(cardinality > 1);
+	let showIcons = $derived(isMultiple ? showIconsCheckbox : showIconsRadio);
 
 	//
 	let wrappedValidate: Omit<ValidateOptions, "setValidationResult"> = $derived({
@@ -208,10 +216,17 @@
 	}
 
 	function sortFn(a: Item, b: Item) {
-		return _renderOptionLabel(a).localeCompare(_renderOptionLabel(b), undefined, {
+		const withOptGroup = (i: Item) => `${i.optgroup || ""}__${_renderOptionLabel(i)}`;
+		return withOptGroup(a).localeCompare(withOptGroup(b), undefined, {
 			sensitivity: "base",
 		});
 	}
+
+	// function sortFn(a: Item, b: Item) {
+	// 	return _renderOptionLabel(a).localeCompare(_renderOptionLabel(b), undefined, {
+	// 		sensitivity: "base",
+	// 	});
+	// }
 
 	// let's have two distinct collections for the job, they are independent on each other
 	// first, the all available options
@@ -242,7 +257,7 @@
 	// $inspect("selected", selected);
 
 	let activeEl: HTMLButtonElement | undefined = $state();
-	let optionsBox: HTMLUListElement | undefined = $state();
+	let optionsBox: HTMLDivElement | undefined = $state();
 	let modalEl: HTMLDivElement | undefined = $state();
 
 	// set value on open
@@ -265,7 +280,7 @@
 	// scroll the active option into view
 	$effect(() => {
 		if (modal.visibility().visible && options.active?.[itemIdPropName]) {
-			activeEl = qsa(`#${btnId(options.active[itemIdPropName])}`, optionsBox)[0] as any;
+			activeEl = qsa(`#${btn_id(options.active[itemIdPropName])}`, optionsBox)[0] as any;
 			activeEl?.scrollIntoView({ behavior: "smooth", block: "center" });
 			activeEl?.focus();
 		} else {
@@ -296,7 +311,7 @@
 	);
 
 	// internal DRY
-	function btnId(id: string | number, prefix = "btn-") {
+	function btn_id(id: string | number, prefix = "btn-") {
 		return prefix + strHash(`${id}`.repeat(3));
 	}
 
@@ -348,6 +363,17 @@
 		innerValue = "";
 		_optionsColl.clear();
 		modal?.close();
+	}
+
+	function _normalize_and_group_options(opts: Item[]): Map<string, Item[]> {
+		const groupped = new Map<string, Item[]>();
+		opts.forEach((o) => {
+			const optgLabel = renderOptionGroup(o.optgroup || "");
+			if (!groupped.has(optgLabel)) groupped.set(optgLabel, []);
+			const optgroup = groupped.get(optgLabel);
+			optgroup!.push(o);
+		});
+		return groupped;
 	}
 </script>
 
@@ -437,7 +463,7 @@
 	>
 		<InputWrap
 			size={renderSize}
-			class={twMerge("m-4 mb-12 shadow-xl", classModalField)}
+			class={twMerge("m-2 mb-12 shadow-xl", classModalField)}
 			classInputBoxWrap={twMerge(
 				// always look like focused
 				`border border-input-accent dark:border-input-accent-dark`,
@@ -512,80 +538,108 @@
 					</div>
 
 					<!-- {#if options.items.length} -->
-					<ul
-						class={twMerge(
-							"options block h-[250px] max-h-[250px] overflow-y-auto overflow-x-hidden space-y-1"
-						)}
+					<div
+						class={[
+							"options overflow-y-auto overflow-x-hidden space-y-1",
+							"h-[220px] max-h-[220px]",
+						]}
 						bind:this={optionsBox}
 						tabindex="-1"
 					>
 						{#if isFetching && !options.items.length}
-							<div class="p-4 opacity-50">
+							<!-- <div class="p-4 opacity-50"> -->
+							<div class="flex opacity-50 text-sm h-full items-center justify-center">
 								<Spinner class="w-4" />
 							</div>
+						{:else if !options.items.length && !allowUnknown}
+							<div class="flex opacity-50 text-sm h-full items-center justify-center">
+								{@html t("no_results")}
+							</div>
 						{/if}
-						{#each options.items as item}
-							{@const active = item[itemIdPropName] === options.active?.[itemIdPropName]}
-							{@const isSelected =
-								selected.items && _selectedColl.exists(item[itemIdPropName])}
-							<li class:active class="px-2">
-								<button
-									type="button"
-									id={btnId(item[itemIdPropName])}
-									onclick={() => {
-										if (isMultiple) {
-											if (selected.isFull && !_selectedColl.exists(item)) {
-												return notifications?.error(t("cardinality_full"), {
-													ttl: 1000,
-												});
-											}
-											_selectedColl.toggleAdd(item);
-										} else {
-											_selectedColl.clear();
-											_selectedColl.add(item);
-											submit();
-										}
-									}}
-									class:active
-									class:selected={isSelected}
+
+						{#each _normalize_and_group_options(options.items) as [_optgroup, _opts]}
+							{#if _optgroup}
+								<div
 									class={twMerge(
-										"no-focus-visible",
-										"w-full text-left rounded-md py-2 px-2.5 flex items-center space-x-2",
-										"text-ellipsis border border-transparent",
-										"focus:outline-0 focus:border-neutral-400 dark:focus:border-neutral-500",
-										"focus-visible:outline-0 focus-visible:ring-0",
-										"hover:border-neutral-400 dark:hover:border-neutral-500",
-										isSelected && "bg-neutral-200 dark:bg-neutral-800",
-										classOption,
-										// active && "border-neutral-400",
-										active && classOptionActive
+										"text-xs capitalize opacity-50 border-b border-black/10 mb-1 p-1 mx-1",
+										classOptgroup
 									)}
-									tabindex="-1"
-									role="checkbox"
-									aria-checked={isSelected}
 								>
-									{#if showIcons}
-										<span class={isSelected ? "opacity-100" : "opacity-25"}>
-											{#if isMultiple}
-												{#if isSelected}
-													{@html iconCheckboxCheck()}
-												{:else}
-													{@html iconCheckboxEmpty()}
-												{/if}
-											{:else if isSelected}
-												{@html iconRadioCheck()}
-											{:else}
-												{@html iconRadioEmpty()}
+									{_optgroup}
+								</div>
+							{/if}
+							<ul>
+								<!-- {#each options.items as item} -->
+								{#each _opts as item (item[itemIdPropName])}
+									{@const active =
+										item[itemIdPropName] === options.active?.[itemIdPropName]}
+									{@const isSelected =
+										selected.items && _selectedColl.exists(item[itemIdPropName])}
+									<li class:active class="px-1">
+										<button
+											type="button"
+											id={btn_id(item[itemIdPropName])}
+											onclick={() => {
+												if (isMultiple) {
+													if (selected.isFull && !_selectedColl.exists(item)) {
+														return notifications?.error(t("cardinality_full"), {
+															ttl: 1000,
+														});
+													}
+													_selectedColl.toggleAdd(item);
+												} else {
+													_selectedColl.clear();
+													_selectedColl.add(item);
+													submit();
+												}
+											}}
+											class:active
+											class:selected={isSelected}
+											class={twMerge(
+												"no-focus-visible",
+												"text-left rounded-md py-2 px-2.5 flex items-center space-x-2",
+												"w-full",
+												"border border-transparent",
+												"focus:outline-0 focus:border-neutral-400 dark:focus:border-neutral-500",
+												"focus-visible:outline-0 focus-visible:ring-0",
+												"hover:border-neutral-400 dark:hover:border-neutral-500",
+												isSelected && "bg-neutral-200 dark:bg-neutral-800",
+												classOption,
+												// active && "border-neutral-400",
+												active && classOptionActive
+											)}
+											tabindex="-1"
+											role="checkbox"
+											aria-checked={isSelected}
+										>
+											{#if showIcons}
+												<span class={isSelected ? "opacity-100" : "opacity-25"}>
+													{#if isMultiple}
+														{#if isSelected}
+															{@html iconCheckboxCheck()}
+														{:else}
+															{@html iconCheckboxEmpty()}
+														{/if}
+													{:else if isSelected}
+														{@html iconRadioCheck()}
+													{:else}
+														{@html iconRadioEmpty()}
+													{/if}
+												</span>
 											{/if}
-										</span>
-									{/if}
-									<span>{_renderOptionLabel(item)}</span>
-								</button>
-							</li>
+											<span
+												class={twMerge(
+													"min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap"
+												)}>{_renderOptionLabel(item)}</span
+											>
+										</button>
+									</li>
+								{/each}
+							</ul>
 						{/each}
-					</ul>
+					</div>
 					<!-- {/if} -->
-					<div class="p-2 flex items-end justify-between">
+					<div class="p-2 px-3 flex items-end justify-between">
 						<div class="text-xs opacity-50">
 							<!-- Use arrows to navigate. Spacebar and Enter to select and/or submit. -->
 							{#if allowUnknown}

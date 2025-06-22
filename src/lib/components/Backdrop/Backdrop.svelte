@@ -139,7 +139,7 @@
 		bind:this={el}
 		role="presentation"
 		tabindex="-1"
-		class={twMerge("fixed inset-0 flex z-10", classProp)}
+		class={twMerge("fixed inset-0 flex z-10 h-dvh", classProp)}
 		in:fade={{ duration: fadeInDuration }}
 		out:fade={{ duration: fadeOutDuration }}
 		use:focusTrapAction={{

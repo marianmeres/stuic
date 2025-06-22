@@ -16,33 +16,40 @@
 <hr class="my-4" />
 {value}
 
+<!-- classBackdrop="p-0 sm:p-0" -->
 <Modal
 	bind:this={modal}
 	onEscape={modal?.close}
-	class="border"
+	class="md:border"
+	classInner=""
 	classMain="p-4"
 	classHeader="p-4 bg-neutral-200 dark:bg-black border-b flex items-center"
 	classFooter="p-4 bg-neutral-100 dark:bg-black border-t flex items-center"
 >
+	<!-- noScrollLock -->
 	{#snippet header()}
 		<span class="flex-1">header</span>
 		<Button onclick={modal.close} size="sm"><X /></Button>
 	{/snippet}
 
-	<div>{@html dummyText(30)}</div>
+	<input type="text" />
+
+	<!-- <div>{@html dummyText(30)}</div> -->
+	<div>{@html dummyText(1)}</div>
 
 	{#snippet footer()}
-		<div class="space-x-2">
+		<div class="flex justify-between w-full">
 			<Button
 				onclick={() => {
 					acp.alert("Yo!");
-				}}>footer alert</Button
+				}}>alert</Button
 			>
+			<input type="text" />
 			<Button
 				onclick={() => {
 					value = new Date();
 					modal.close();
-				}}>Set value and close</Button
+				}}>close</Button
 			>
 		</div>
 	{/snippet}

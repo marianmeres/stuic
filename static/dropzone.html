@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>File Dropzone</title>
+		<style>
+			.dropzone {
+				width: 400px;
+				height: 200px;
+				border: 2px dashed #ccc;
+				border-radius: 8px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				margin: 20px;
+				background-color: #f9f9f9;
+				cursor: pointer;
+				transition: all 0.3s ease;
+				font-family: Arial, sans-serif;
+			}
+
+			.dropzone.dragover {
+				border-color: #007bff;
+				background-color: #e3f2fd;
+				transform: scale(1.02);
+			}
+
+			.dropzone-text {
+				text-align: center;
+				color: #666;
+			}
+
+			.file-list {
+				margin: 20px;
+				font-family: Arial, sans-serif;
+			}
+
+			.file-item {
+				padding: 8px;
+				margin: 4px 0;
+				background-color: #f0f0f0;
+				border-radius: 4px;
+				border-left: 4px solid #007bff;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="dropzone" id="dropzone">
+			<div class="dropzone-text">
+				<p>Drag and drop files here</p>
+				<p>or click to select files</p>
+			</div>
+		</div>
+
+		<div class="file-list" id="fileList"></div>
+
+		<!-- Hidden file input -->
+		<input type="file" id="fileInput" multiple style="display: none" />
+
+		<script>
+			function makeDropzone(element) {
+				const fileInput = document.getElementById("fileInput");
+				const fileList = document.getElementById("fileList");
+
+				// Prevent default drag behaviors
+				["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+					element.addEventListener(eventName, preventDefaults, false);
+					document.body.addEventListener(eventName, preventDefaults, false);
+				});
+
+				// Highlight drop area when item is dragged over it
+				["dragenter", "dragover"].forEach((eventName) => {
+					element.addEventListener(eventName, highlight, false);
+				});
+
+				["dragleave", "drop"].forEach((eventName) => {
+					element.addEventListener(eventName, unhighlight, false);
+				});
+
+				// Handle dropped files
+				element.addEventListener("drop", handleDrop, false);
+
+				// Handle click to open file dialog
+				element.addEventListener("click", () => fileInput.click());
+
+				// Handle files selected via file input
+				fileInput.addEventListener("change", (e) => {
+					handleFiles(e.target.files);
+				});
+
+				function preventDefaults(e) {
+					e.preventDefault();
+					e.stopPropagation();
+				}
+
+				function highlight() {
+					element.classList.add("dragover");
+				}
+
+				function unhighlight() {
+					element.classList.remove("dragover");
+				}
+
+				function handleDrop(e) {
+					const dt = e.dataTransfer;
+					const files = dt.files;
+					handleFiles(files);
+				}
+
+				function handleFiles(files) {
+					// Clear previous file list
+					fileList.innerHTML = "";
+
+					// Process each file
+					Array.from(files).forEach((file) => {
+						displayFile(file);
+						// Here you can add your file processing logic
+						processFile(file);
+					});
+				}
+
+				function displayFile(file) {
+					const fileItem = document.createElement("div");
+					fileItem.className = "file-item";
+					fileItem.innerHTML = `
+                    <strong>${file.name}</strong> 
+                    (${formatFileSize(file.size)}) - ${file.type || "unknown type"}
+                `;
+					fileList.appendChild(fileItem);
+				}
+
+				function processFile(file) {
+					// Your file processing logic goes here
+					console.log("Processing file:", file.name);
+
+					// Example: Read file as text
+					if (file.type.startsWith("text/")) {
+						const reader = new FileReader();
+						reader.onload = (e) => {
+							console.log("File content:", e.target.result);
+						};
+						reader.readAsText(file);
+					}
+
+					// Example: Upload file
+					// uploadFile(file);
+				}
+
+				function formatFileSize(bytes) {
+					if (bytes === 0) return "0 Bytes";
+					const k = 1024;
+					const sizes = ["Bytes", "KB", "MB", "GB"];
+					const i = Math.floor(Math.log(bytes) / Math.log(k));
+					return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+				}
+			}
+
+			// Initialize the dropzone
+			const dropzone = document.getElementById("dropzone");
+			makeDropzone(dropzone);
+
+			// Example upload function (commented out)
+			/*
+        function uploadFile(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Upload successful:', data);
+            })
+            .catch(error => {
+                console.error('Upload error:', error);
+            });
+        }
+        */
+		</script>
+	</body>
+</html>

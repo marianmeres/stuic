@@ -8,7 +8,7 @@
 		border-button-border dark:border-button-border-dark
 		rounded-md
 		inline-flex items-center justify-center gap-x-2
-		px-3 py-1.5
+		px-3 py-2
 
 		hover:brightness-[1.05]
 		active:brightness-[0.95]

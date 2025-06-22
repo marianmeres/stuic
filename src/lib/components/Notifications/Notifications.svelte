@@ -28,7 +28,7 @@
 		posX: "right",
 		posXMobile: "center",
 		posY: "top",
-		posYMobile: "bottom",
+		posYMobile: "top",
 	};
 
 	// prettier-ignore

@@ -8,6 +8,7 @@
 	import { createClog } from "@marianmeres/clog";
 	import { ItemCollection, type Item } from "@marianmeres/item-collection";
 	import FieldOptions from "../../../../lib/components/Input/FieldOptions.svelte";
+	import { citiesByContinent } from "../../../_utils/options.js";
 
 	const clog = createClog("options");
 
@@ -37,10 +38,14 @@
 		{ model_id: "xxx" },
 		{ model_id: "lets" },
 		{ model_id: "GO" },
+		{
+			model_id:
+				"a lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+		},
 	];
 
 	function renderItemOptionLabel(item: Item) {
-		return `${item[itemIdPropName]}`.toLowerCase();
+		return `${item[itemIdPropName]}`;
 	}
 
 	function customValidator(val: any, ctx: any, el: any) {
@@ -63,9 +68,20 @@
 		// within the server loaded (or the server may have changed)
 		// we have to manually add those, so we can always see what is selected (see `current`)
 
-		const all = new ItemCollection([...OPTIONS, ...(current ?? [])], {
+		const options = Object.entries(citiesByContinent).reduce((m, [cont, cities]) => {
+			cities.forEach((city) => m.push({ [itemIdPropName]: city, optgroup: cont }));
+			return m;
+		}, [] as any[]);
+
+		options.push({ [itemIdPropName]: "foo" });
+
+		const all = new ItemCollection([...options, ...(current ?? [])], {
 			idPropName: itemIdPropName,
-			searchable: { getContent: (item) => renderItemOptionLabel(item) },
+			// searchable: { getContent: (item) => renderItemOptionLabel(item) },
+			searchable: {
+				getContent: (item) =>
+					renderItemOptionLabel(item) + ` ${(item.optgroup || "").replaceAll("_", " ")}`,
+			},
 		});
 
 		s = s.trim().toLowerCase();

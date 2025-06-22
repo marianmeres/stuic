@@ -11,9 +11,11 @@
 		// 'carousel', 
         'color-scheme', 
 		'col-resize',
+		'command-menu',
 		'dismissible-message', 
         // 'drag-drop', 
         'drawer',
+		'file-dropzone',
 		'hover-expandable-width',
 		'input',
 		'kbd-shortcut',
@@ -35,7 +37,7 @@
 </script>
 
 <div class="p-4">
-	<ul class="list-disc ml-4">
+	<ul class="list-disc ml-4 space-y-1">
 		{#each links as link}
 			<li><a href={link} class="underline">{link}</a></li>
 		{/each}

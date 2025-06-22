@@ -76,7 +76,9 @@
 	bind:el={elBackdrop}
 	bind:visible
 	class={twMerge(
-		"justify-center items-center bg-black/25 p-2 sm:p-4 md:p-[10vh] transition-all",
+		// "justify-center items-center bg-black/25 p-2 sm:p-4 md:p-[10vh] transition-all",
+		"justify-center items-center bg-black/25 transition-all",
+		"md:p-[10vh]",
 		classBackdrop
 	)}
 	{focusTrap}
@@ -91,15 +93,18 @@
 		aria-labelledby={labelledby}
 		aria-describedby={describedby}
 		class={twMerge(
-			"overflow-x-hidden overflow-y-hidden w-full h-full max-w-3xl",
-			// "overflow-y-auto w-full h-full max-w-3xl max-h-[66vh] border",
+			"overflow-x-hidden overflow-y-hidden flex flex-col",
+			"w-full max-w-3xl",
+			"h-dvh md:h-full",
 			classInner
 		)}
 	>
 		<div
 			class={twMerge(
-				"bg-white dark:bg-neutral-800 rounded-md flex flex-col overflow-hidden",
-				"w-full max-h-full md:max-h-2/3",
+				"bg-white dark:bg-neutral-800",
+				"flex flex-col overflow-hidden",
+				"rounded-none md:rounded-md",
+				"w-full flex-1 md:max-h-2/3",
 				classProp
 			)}
 		>

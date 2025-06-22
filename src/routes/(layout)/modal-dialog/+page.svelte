@@ -17,6 +17,7 @@
 	<Button onclick={modal1?.close} size="sm" class="mb-4">close</Button>
 	<Button onclick={modal2?.open}>second</Button>
 	<div>
+		<input type="text" />
 		{@html dummyText(20)}
 	</div>
 	<!-- </div> -->
@@ -29,5 +30,8 @@
 </ModalDialog>
 
 <ModalDialog bind:this={modal3} class="max-w-xl max-h-[350px] border rounded-lg">
-	<div class="content-box class-must-be-ignored">third</div>
+	<div class="content-box class-must-be-ignored">
+		third
+		<input type="text" />
+	</div>
 </ModalDialog>

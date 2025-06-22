@@ -1,5 +1,6 @@
 export * from "./autogrow.svelte.js";
 export * from "./autoscroll.js";
+export * from "./file-dropzone.svelte.js";
 export * from "./focus-trap.js";
 export * from "./highlight-dragover.svelte.js";
 export * from "./on-submit-validity-check.svelte.js";

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Button Ellipsis Demo</title>
+		<style>
+			body {
+				font-family: sans-serif;
+				margin: 0;
+				background-color: #f5f5f5;
+			}
+
+			.container {
+				background: white;
+				padding: 20px;
+
+				/* display: flex; */
+				/* flex-direction: column; */
+			}
+
+			.wrapper {
+				/* max-width: none; */
+				/* width: 100%; */
+				/* flex: 1; */
+			}
+
+			/* Reset ul/li styles and ensure full width */
+			.wrapper ul {
+				/* width: 100%; */
+				padding: 0;
+				margin: 0;
+				list-style: none;
+			}
+
+			.wrapper li {
+				/* width: 100%; */
+				margin-bottom: 8px;
+			}
+
+			/* Button with ellipsis */
+			.wrapper button {
+				width: 100%;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				min-width: 0;
+				padding: 5px;
+				text-align: left;
+				/* display: block; */
+				/* box-sizing: border-box; */
+			}
+		</style>
+	</head>
+	<body>
+		<div style="display: contents">
+			<div class="container">
+				<h1>Button Text Ellipsis Demo</h1>
+
+				<div class="wrapper">
+					<ul>
+						<li><button>Short text</button></li>
+						<li><button>Medium length button text</button></li>
+						<li>
+							<button>
+								Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+								tempor incididunt ut labore et dolore magna aliqua.
+							</button>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

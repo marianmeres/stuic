@@ -112,9 +112,10 @@
 	class={twMerge(
 		"stuic-input",
 		_classCommon,
-		"mb-8 grid",
-		hasLabel && labelLeft && labelLeftWidth === "normal" && "width-normal grid-cols-4",
-		hasLabel && labelLeft && labelLeftWidth === "wide" && "width-wide grid-cols-3",
+		"mb-8",
+		hasLabel && labelLeft && "flex",
+		hasLabel && labelLeft && labelLeftWidth === "normal" && "width-normal",
+		hasLabel && labelLeft && labelLeftWidth === "wide" && "width-wide",
 		classProp
 	)}
 	bind:clientWidth={width}
@@ -124,7 +125,7 @@
 		class={twMerge(
 			"label-box",
 			_classCommon,
-			"flex",
+			"flex flex-1",
 			labelLeft ? "left items-start mt-2" : "items-end",
 			classLabelBox
 		)}
@@ -152,8 +153,8 @@
 		class={twMerge(
 			"input-box",
 			_classCommon,
-			hasLabel && labelLeft && labelLeftWidth === "normal" && "col-span-3",
-			hasLabel && labelLeft && labelLeftWidth === "wide" && "col-span-2",
+			hasLabel && labelLeft && labelLeftWidth === "normal" && "flex-3",
+			hasLabel && labelLeft && labelLeftWidth === "wide" && "flex-2",
 			classInputBox
 		)}
 	>
