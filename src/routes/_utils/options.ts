@@ -86,4 +86,8 @@ export const citiesByContinent = {
 	North_America,
 	South_America,
 	Oceania,
+
+	A_Lorem_Ipsum: [
+		"A lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+	],
 };

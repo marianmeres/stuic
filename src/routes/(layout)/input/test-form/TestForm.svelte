@@ -12,9 +12,10 @@
 	import Fieldset from "$lib/components/Input/Fieldset.svelte";
 	import { NotificationsStack, onSubmitValidityCheck, sleep } from "$lib/index.js";
 	import { createClog } from "@marianmeres/clog";
-	import { type Item } from "@marianmeres/item-collection";
+	import { ItemCollection, type Item } from "@marianmeres/item-collection";
 	import { onMount } from "svelte";
 	import ButtonGroupRadio from "../../../../lib/components/ButtonGroupRadio/ButtonGroupRadio.svelte";
+	import { citiesByContinent } from "../../../_utils/options.js";
 
 	const clog = createClog("TestForm");
 
@@ -66,7 +67,11 @@
 	});
 
 	let files: FileList | undefined = $state();
-	// $inspect("files", files);
+	// $inspect("files", files)
+
+	function renderItemOptionLabel(item: Item) {
+		return `${item.id}`;
+	}
 </script>
 
 <Button size="sm" class="border px-2 mb-4" onclick={() => (labelLeft = !labelLeft)}
@@ -135,37 +140,27 @@
 			label="Options selector"
 			name="options"
 			{labelLeft}
-			getOptions={async (s: string) => {
-				s = s.trim();
-				await sleep(500);
-				if (!s) {
-					return [
-						{ id: "initial" },
-						{
-							id: "alorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-						},
-						{ id: "foo" },
-						{ id: "bar" },
-						{ id: "baz" },
-						{ id: "bat" },
-						{ id: "hey" },
-						{ id: "ho" },
-						{ id: "lets" },
-						{ id: "go" },
-					];
-				}
-				let out: any[] = [s];
-				out = s
-					.trim()
-					.split(" ")
-					.map((v) => v.trim())
-					.filter(Boolean)
-					.map((v) => `x${v}`);
-				// just to test error handling...
-				if (out.includes("xxx")) {
-					throw new Error("Boom");
-				}
-				return out.map((id) => ({ id })) as Item[];
+			getOptions={async (s: string, current: Item[]) => {
+				const options = Object.entries(citiesByContinent).reduce((m, [cont, cities]) => {
+					cities.forEach((city) => m.push({ id: city, optgroup: cont }));
+					return m;
+				}, [] as any[]);
+
+				options.push({ id: "foo" });
+
+				const coll = new ItemCollection([...options, ...(current ?? [])], {
+					// searchable: { getContent: (item) => renderItemOptionLabel(item) },
+					searchable: {
+						getContent: (item) =>
+							renderItemOptionLabel(item) +
+							` ${(item.optgroup || "").replaceAll("_", " ")}`,
+					},
+				});
+
+				s = s.trim().toLowerCase();
+				const found = s ? coll.search(s) : coll.items;
+
+				return { coll, found };
 			}}
 			required
 			{notifications}
@@ -175,11 +170,11 @@
 					// we know val is valid JSON ARRAY string here (no need to check)
 					// also we know it satisfies the cardinality constraints
 					const selected = JSON.parse(val);
-					// custom validation: must not include "foo"
-					return selected.includes("foo") ? "invalid" : "";
+					const fooExists = selected?.find((v: any) => v.id === "foo");
+					return fooExists ? "" : "invalid";
 				},
 			}}
-			renderOptionLabel={(item) => `${item.id}`}
+			renderOptionLabel={renderItemOptionLabel}
 		/>
 
 		<FieldSwitch

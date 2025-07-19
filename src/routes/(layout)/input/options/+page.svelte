@@ -26,35 +26,17 @@
 		items2: "[]",
 	});
 
-	const OPTIONS = [
-		{ model_id: "aaa" },
-		{ model_id: "initial" },
-		{ model_id: "foo" },
-		{ model_id: "bar" },
-		{ model_id: "baz" },
-		{ model_id: "bat" },
-		{ model_id: "hey" },
-		{ model_id: "ho" },
-		{ model_id: "xxx" },
-		{ model_id: "lets" },
-		{ model_id: "GO" },
-		{
-			model_id:
-				"a lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-		},
-	];
-
 	function renderItemOptionLabel(item: Item) {
 		return `${item[itemIdPropName]}`;
 	}
 
 	function customValidator(val: any, ctx: any, el: any) {
-		// clog('customValidator', el);
+		// clog("customValidator", el);
 		// we know val is valid JSON ARRAY string here (no need to check)
 		// also we know it satisfies the cardinality constraints
 		const selected = JSON.parse(val);
 		// custom validation: MUST include "foo"
-		const fooExists = selected?.find((v: any) => v.model_id === "foo");
+		const fooExists = selected?.find((v: any) => v[itemIdPropName] === "foo");
 		return fooExists ? "" : "invalid";
 	}
 
@@ -75,7 +57,7 @@
 
 		options.push({ [itemIdPropName]: "foo" });
 
-		const all = new ItemCollection([...options, ...(current ?? [])], {
+		const coll = new ItemCollection([...options, ...(current ?? [])], {
 			idPropName: itemIdPropName,
 			// searchable: { getContent: (item) => renderItemOptionLabel(item) },
 			searchable: {
@@ -85,12 +67,9 @@
 		});
 
 		s = s.trim().toLowerCase();
-		return s ? all.search(s) : all.items;
+		const found = s ? coll.search(s) : coll.items;
 
-		// await sleep(200);
-		// return s
-		// 	? OPTIONS.filter((v) => renderItemOptionLabel(v).toLowerCase().startsWith(s))
-		// 	: OPTIONS;
+		return { coll, found };
 	}
 </script>
 
@@ -164,9 +143,9 @@
 			renderOptionLabel={renderItemOptionLabel}
 			{getOptions}
 			description={`Should allow to select many. "foo" must be selected. Can add any.`}
-			validate={{ customValidator }}
 			{itemIdPropName}
 			allowUnknown
+			validate={{ customValidator }}
 		/>
 		<pre class="text-xs">{JSON.stringify(maybeJsonParse(values.items2))}</pre>
 	</form>

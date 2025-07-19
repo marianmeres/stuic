@@ -1,6 +1,7 @@
 export * from "./breakpoint.svelte.js";
 export * from "./debounce.js";
 export * from "./device-pointer.svelte.js";
+export * from "./escape-regex.js";
 export * from "./event-modifiers.js";
 export * from "./get-id.js";
 export * from "./is-browser.js";
@@ -12,6 +13,7 @@ export * from "./paint.js";
 export * from "./persistent-state.svelte.js";
 export * from "./prefers-reduced-motion.svelte.js";
 export * from "./qsa.js";
+export * from "./replace-map.js";
 export * from "./sleep.js";
 export * from "./storage-abstraction.js";
 export * from "./str-hash.js";

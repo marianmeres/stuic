@@ -2,6 +2,13 @@ export type DataAttributes = {
 	[key: `data-${string}`]: string | number | boolean;
 };
 
+export type TranslateFn = (
+	k: string,
+	values?: false | null | undefined | Record<string, string | number>,
+	fallback?: string | boolean,
+	i18nSpanWrap?: boolean
+) => string;
+
 export type TW_COLORS =
 	| "amber"
 	| "blue"

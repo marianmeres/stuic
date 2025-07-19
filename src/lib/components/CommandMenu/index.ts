@@ -1,1 +1,1 @@
-export * from "./CommandMenu.svelte";
+export { default as CommandMenu } from "./CommandMenu.svelte";

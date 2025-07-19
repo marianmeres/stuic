@@ -6,7 +6,7 @@
 	import { iconLucideSquare } from "@marianmeres/icons-fns/lucide/iconLucideSquare.js";
 	import { ItemCollection, type Item } from "@marianmeres/item-collection";
 	import { Debounced, watch } from "runed";
-	import { type Snippet } from "svelte";
+	import { tick, type Snippet } from "svelte";
 	import { tooltip } from "../../actions/index.js";
 	import { type ValidateOptions } from "../../actions/validate.svelte.js";
 	import { getId } from "../../utils/get-id.js";
@@ -23,6 +23,9 @@
 	import X from "../X/X.svelte";
 	import InputWrap from "./_internal/InputWrap.svelte";
 	import FieldLikeButton from "./FieldLikeButton.svelte";
+	import { replaceMap } from "../../utils/replace-map.js";
+	import { isPlainObject } from "../../utils/is-plain-object.js";
+	import type { TranslateFn } from "../../types.js";
 
 	export interface Option {
 		label: string;
@@ -30,14 +33,19 @@
 	}
 
 	// i18n ready
-	function t_default(k: string) {
+	function t_default(
+		k: string,
+		values: false | null | undefined | Record<string, string | number> = null,
+		fallback: string | boolean = "",
+		i18nSpanWrap: boolean = true
+	) {
 		const m: Record<string, string> = {
 			field_req_att: "This field requires attention. Please review and try again.",
-			cardinality_of: "of",
+			cardinality_of: "of max",
 			cardinality_selected: "selected",
 			submit: "Submit",
-			select_all: "Select all",
-			clear_all: "Clear all",
+			select_all: "Select results",
+			clear_all: "Clear selected",
 			clear: "Clear",
 			search_placeholder: "Type to search...",
 			search_submit_placeholder: "Type to search and/or submit...",
@@ -47,8 +55,12 @@
 			unknown_allowed: "Select or type and submit",
 			unknown_not_allowed: "Select from the list",
 			no_results: "No results found.",
+			add_new: 'Add "{{value}}"...',
+			click_add_new: "You must add the value to continue",
 		};
-		return m[k] ?? k;
+		let out = m[k] ?? fallback ?? k;
+
+		return isPlainObject(values) ? replaceMap(out, values as any) : out;
 	}
 </script>
 
@@ -103,10 +115,13 @@
 		noScrollLock?: boolean;
 		//
 		style?: string;
-		t?: (key: string) => string;
+		t?: TranslateFn;
 		//
 		renderValue?: (strigifiedItems: string) => string;
-		getOptions: (q: string, current: Item[]) => Promise<Item[]>;
+		getOptions: (
+			q: string,
+			current: Item[]
+		) => Promise<{ coll?: ItemCollection<Item>; found: Item[] }>;
 		notifications?: NotificationsStack;
 		// -1 no limit
 		// +n max selected limit
@@ -222,12 +237,6 @@
 		});
 	}
 
-	// function sortFn(a: Item, b: Item) {
-	// 	return _renderOptionLabel(a).localeCompare(_renderOptionLabel(b), undefined, {
-	// 		sensitivity: "base",
-	// 	});
-	// }
-
 	// let's have two distinct collections for the job, they are independent on each other
 	// first, the all available options
 	const _optionsColl = new ItemCollection([], {
@@ -253,12 +262,28 @@
 	// now, create the reactive, subscribed variants
 	let options = $derived($_optionsColl);
 	let selected = $derived($_selectedColl);
+
+	// we need to know whether to show "Add xyz"...
+	function have_option_label_like(items: Item[], s: string) {
+		return items.some(
+			(item) => _renderOptionLabel(item).toLowerCase() === `${s}`.toLowerCase()
+		);
+	}
+
 	// $inspect("options", options);
 	// $inspect("selected", selected);
+	// $inspect("lastQuery", lastQuery, innerValue);
+
+	// hidden input which holds the final value (upon which validation happens)
+	let parentHiddenInputEl: HTMLInputElement | undefined = $state();
 
 	let activeEl: HTMLButtonElement | undefined = $state();
 	let optionsBox: HTMLDivElement | undefined = $state();
 	let modalEl: HTMLDivElement | undefined = $state();
+
+	// add_new dance...
+	let addNewBtn: HTMLButtonElement | undefined = $state();
+	let isAddNewBtnActive = $state(false);
 
 	// set value on open
 	watch(
@@ -297,10 +322,12 @@
 			isFetching = true;
 			getOptions(currVal, selected.items)
 				.then((res) => {
+					const { found, coll } = res;
+
 					// always update the existing with recent server data
-					_selectedColl.patchMany(res);
+					_selectedColl.patchMany(found);
 					// continue normally, with (server) provided options...
-					_optionsColl.clear().addMany(res);
+					_optionsColl.clear().addMany(found);
 				})
 				.catch((e) => {
 					console.error(e);
@@ -317,26 +344,17 @@
 
 	// "inner" submit
 	function try_submit(force = false) {
+		clog("try_submit", innerValue);
 		if (innerValue) {
-			// doing label search, taking first result
-			let found = _optionsColl.search(innerValue)?.[0];
-			if (!found) {
-				if (!allowUnknown) {
-					return notifications?.error(t("select_from_list"), { ttl: 1000 });
-				}
-				found = { [itemIdPropName]: innerValue };
+			let found = have_option_label_like(_optionsColl.items, innerValue);
+			if (!found && !allowUnknown) {
+				return notifications?.error(t("select_from_list"), { ttl: 1000 });
 			}
 
-			if (!isMultiple) _selectedColl.clear();
-
-			// actual selection addon
-			_selectedColl.add(found);
-
-			// we might have added a new one, so add it to options as well
-			// (will be noop if already exists)...
-			if (allowUnknown) {
-				_optionsColl.add(found);
-				_optionsColl.setActive(found);
+			if (!found && !_optionsColl.size) {
+				return notifications?.error(t("click_add_new", { value: innerValue }), {
+					ttl: 1000,
+				});
 			}
 
 			// maybe submit
@@ -348,6 +366,27 @@
 		}
 	}
 
+	function add_new() {
+		// should be noop if called multiple times with same value
+		if (allowUnknown && innerValue) {
+			const item = { [itemIdPropName]: innerValue };
+			if (!isMultiple) _selectedColl.clear();
+			// actual selection addon
+			_selectedColl.add(item);
+			// we might have added a new one, so add it to options as well
+			// (will be noop if already exists)...
+			_optionsColl.add(item);
+			_optionsColl.setActive(item);
+		}
+	}
+
+	function _dispatch_change_to_owner() {
+		// trigger validation on the parent on each submit (emulate typical browser behaviour)
+		tick().then(() => {
+			parentHiddenInputEl?.dispatchEvent(new Event("change", { bubbles: true }));
+		});
+	}
+
 	// "outer" submit - will set the outer bound value (always string) and close modal...
 	// further process is left on the consumer
 	function submit() {
@@ -356,6 +395,7 @@
 		innerValue = "";
 		_optionsColl.clear();
 		modal.close();
+		_dispatch_change_to_owner();
 	}
 
 	// clears, closes, submits nothing
@@ -363,6 +403,7 @@
 		innerValue = "";
 		_optionsColl.clear();
 		modal?.close();
+		_dispatch_change_to_owner();
 	}
 
 	function _normalize_and_group_options(opts: Item[]): Map<string, Item[]> {
@@ -375,6 +416,52 @@
 		});
 		return groupped;
 	}
+
+	const BTN_CLS = [
+		"no-focus-visible",
+		"text-left rounded-md py-2 px-2.5 flex items-center space-x-2",
+		"w-full",
+		"border border-transparent",
+		"focus:outline-0 focus:border-neutral-400 dark:focus:border-neutral-500",
+		"focus-visible:outline-0 focus-visible:ring-0",
+		"hover:border-neutral-400 dark:hover:border-neutral-500",
+	];
+
+	// add new dance
+	$effect(() => {
+		if (addNewBtn && isAddNewBtnActive) {
+			addNewBtn?.focus();
+			_optionsColl.unsetActive(); // make sure to reset
+		}
+		if (!addNewBtn) {
+			isAddNewBtnActive = false;
+		}
+	});
+
+	function maybe_activate_add_new(isDown: boolean, isMeta: boolean) {
+		// no button, no activation
+		if (!addNewBtn) return false;
+		const isUp = !isDown;
+
+		// separating below into distinct ifs, so it's easily readable
+
+		// if first arrow down
+		if (!isAddNewBtnActive && isDown && _optionsColl.activeIndex === undefined) {
+			return true;
+		}
+
+		// isActive and isUp (this is a noop, but we must break)
+		if (isAddNewBtnActive && isUp) {
+			return true;
+		}
+
+		// isUp from first, or is metaUp
+		if (!isAddNewBtnActive && isUp && (_optionsColl.activeIndex === 0 || isMeta)) {
+			return true;
+		}
+
+		return false;
+	}
 </script>
 
 <!-- this must be on window as we're catching any typing anywhere -->
@@ -385,10 +472,14 @@
 			if (["ArrowDown", "ArrowUp"].includes(e.key)) {
 				e.preventDefault();
 
-				if (e.key === "ArrowUp") {
-					e.metaKey ? _optionsColl.setActiveFirst() : _optionsColl.setActivePrevious();
-				} else if (e.key === "ArrowDown") {
-					e.metaKey ? _optionsColl.setActiveLast() : _optionsColl.setActiveNext();
+				isAddNewBtnActive = maybe_activate_add_new(e.key === "ArrowDown", e.metaKey);
+
+				if (!isAddNewBtnActive) {
+					if (e.key === "ArrowUp") {
+						e.metaKey ? _optionsColl.setActiveFirst() : _optionsColl.setActivePrevious();
+					} else if (e.key === "ArrowDown") {
+						e.metaKey ? _optionsColl.setActiveLast() : _optionsColl.setActiveNext();
+					}
 				}
 
 				// common UI convention: radios are selected by arrows
@@ -408,6 +499,7 @@
 <div>
 	<FieldLikeButton
 		bind:value
+		bind:input={parentHiddenInputEl}
 		{name}
 		class={classProp}
 		{label}
@@ -506,6 +598,7 @@
 									"hover:opacity-100 focus-visible:outline-neutral-400 focus-visible:opacity-100"
 								)}
 								tabindex={4}
+								disabled={!options.size}
 							>
 								{@html t("select_all")}
 							</button>
@@ -557,18 +650,35 @@
 							</div>
 						{/if}
 
+						{#if !isFetching && allowUnknown && innerValue && !have_option_label_like(options.items, innerValue)}
+							<div class="px-1">
+								<button
+									type="button"
+									bind:this={addNewBtn}
+									onclick={add_new}
+									class={twMerge(
+										BTN_CLS,
+										classOption,
+										isAddNewBtnActive && classOptionActive
+									)}
+								>
+									{t("add_new", { value: innerValue })}
+								</button>
+							</div>
+						{/if}
+
 						{#each _normalize_and_group_options(options.items) as [_optgroup, _opts]}
 							{#if _optgroup}
 								<div
 									class={twMerge(
-										"text-xs capitalize opacity-50 border-b border-black/10 mb-1 p-1 mx-1",
+										"text-xs capitalize opacity-50 border-b border-black/10 mb-0.5 p-1 mx-1",
 										classOptgroup
 									)}
 								>
 									{_optgroup}
 								</div>
 							{/if}
-							<ul>
+							<ul class="space-y-0.5">
 								<!-- {#each options.items as item} -->
 								{#each _opts as item (item[itemIdPropName])}
 									{@const active =
@@ -596,13 +706,7 @@
 											class:active
 											class:selected={isSelected}
 											class={twMerge(
-												"no-focus-visible",
-												"text-left rounded-md py-2 px-2.5 flex items-center space-x-2",
-												"w-full",
-												"border border-transparent",
-												"focus:outline-0 focus:border-neutral-400 dark:focus:border-neutral-500",
-												"focus-visible:outline-0 focus-visible:ring-0",
-												"hover:border-neutral-400 dark:hover:border-neutral-500",
+												BTN_CLS,
 												isSelected && "bg-neutral-200 dark:bg-neutral-800",
 												classOption,
 												// active && "border-neutral-400",
@@ -679,7 +783,7 @@
 							"opacity-50 rounded",
 							"hover:opacity-100 hover:bg-neutral-200 dark:hover:bg-neutral-800",
 							"focus-visible:opacity-100 focus-visible:outline-0",
-							" focus-visible:bg-neutral-200 dark:focus-visible:bg-neutral-800"
+							"focus-visible:bg-neutral-200 dark:focus-visible:bg-neutral-800"
 						)}
 						use:tooltip
 						aria-label={t("x_close")}

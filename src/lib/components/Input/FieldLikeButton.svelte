@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Snippet } from "svelte";
+	import { onMount, type Snippet } from "svelte";
 	import {
 		validate as validateAction,
 		type ValidateOptions,
@@ -9,6 +9,7 @@
 	import { twMerge } from "../../utils/tw-merge.js";
 	import type { THC } from "../Thc/Thc.svelte";
 	import InputWrap from "./_internal/InputWrap.svelte";
+	import { watch } from "runed";
 
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
@@ -108,14 +109,22 @@
 				}
 	);
 
-	// let rendered = $derived(renderValue?.(value) ?? value);
+	//
 	let rendered: string | Snippet<[value: string]> = $derived(_value_renderer(value));
 
-	// once button rendered, trigger change on the input, so that the validation re/triggers
-	$effect(() => {
-		rendered;
-		input?.dispatchEvent(new Event("change", { bubbles: true }));
-	});
+	// let renderCount = $state(0);
+
+	// // once button rendered, trigger change on the input, so that the validation re/triggers
+	// // (this is ugly as hell...)
+	// watch(
+	// 	() => rendered,
+	// 	(isRendered, wasRendered) => {
+	// 		// ignore first (initial) render
+	// 		// if (isRendered && renderCount++) {
+	// 		// input?.dispatchEvent(new Event("change", { bubbles: true }));
+	// 		// }
+	// 	}
+	// );
 
 	//
 	let validation: ValidationResult | undefined = $state();
