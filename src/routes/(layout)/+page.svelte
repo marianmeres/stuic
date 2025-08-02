@@ -25,7 +25,7 @@
 		// 'on-outside',
 		// 'popover', 
 		'progress',
-		'resizable-cols',
+		'resizable-width',
 		'spinner', 
         'switch', 
 		// 'table', 
