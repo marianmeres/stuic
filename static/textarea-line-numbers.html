@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Textarea with Line Numbers</title>
+		<style>
+			body {
+				font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+				padding: 20px;
+				background: #f5f5f5;
+			}
+
+			.editor-container {
+				display: flex;
+				border: 1px solid #ccc;
+				border-radius: 4px;
+				overflow: hidden;
+				background: white;
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			}
+
+			.line-numbers {
+				background: #f8f8f8;
+				color: #999;
+				padding: 10px 8px;
+				font-size: 14px;
+				line-height: 20px;
+				text-align: right;
+				user-select: none;
+				border-right: 1px solid #e0e0e0;
+				overflow: hidden;
+				white-space: pre;
+				min-width: 40px;
+			}
+
+			.textarea {
+				font-size: 14px;
+				line-height: 20px;
+				padding: 10px;
+				border: none;
+				outline: none;
+
+				font-family: inherit;
+				flex: 1;
+				overflow-y: auto;
+				white-space: pre;
+			}
+
+			.editor-container,
+			.textarea,
+			.line-numbers {
+				height: 300px;
+			}
+
+			h2 {
+				color: #333;
+				margin-bottom: 10px;
+			}
+
+			.info {
+				margin-top: 20px;
+				padding: 15px;
+				background: #e3f2fd;
+				border-left: 4px solid #2196f3;
+				border-radius: 4px;
+			}
+		</style>
+	</head>
+	<body>
+		<h2>Textarea with Line Numbers</h2>
+
+		<div class="editor-container">
+			<div class="line-numbers" id="lineNumbers">1</div>
+			<textarea
+				class="textarea"
+				id="codeTextarea"
+				placeholder="Start typing your code here..."
+				spellcheck="false"
+			>
+function hello() {
+    console.log("Hello, world!");
+    
+    const items = [1, 2, 3];
+    items.forEach(item => {
+        console.log(item);
+    });
+}
+
+// Add more lines to see scrolling in action
+const data = {
+    name: "Example",
+    value: 42
+};</textarea
+			>
+		</div>
+
+		<div class="info">
+			<strong>Features:</strong>
+			<ul>
+				<li>Line numbers sync with textarea content</li>
+				<li>Smooth scrolling synchronization</li>
+				<li>Handles line wrapping correctly</li>
+				<li>Updates on content changes</li>
+			</ul>
+		</div>
+
+		<script>
+			class TextareaLineNumbers {
+				constructor(textareaId, lineNumbersId) {
+					this.textarea = document.getElementById(textareaId);
+					this.lineNumbers = document.getElementById(lineNumbersId);
+					this.init();
+				}
+
+				init() {
+					// Sync scrolling
+					this.textarea.addEventListener("scroll", () => {
+						this.lineNumbers.scrollTop = this.textarea.scrollTop;
+					});
+
+					// Update line numbers on content change
+					this.textarea.addEventListener("input", () => {
+						this.updateLineNumbers();
+					});
+
+					// Initial line number setup
+					this.updateLineNumbers();
+				}
+
+				updateLineNumbers() {
+					const lines = this.textarea.value.split("\n");
+					const lineCount = lines.length;
+
+					let lineNumbersText = "";
+					for (let i = 1; i <= lineCount; i++) {
+						lineNumbersText += i + "\n";
+					}
+
+					this.lineNumbers.textContent = lineNumbersText.slice(0, -1); // Remove last newline
+				}
+			}
+
+			// Initialize the line numbers
+			new TextareaLineNumbers("codeTextarea", "lineNumbers");
+		</script>
+	</body>
+</html>

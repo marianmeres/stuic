@@ -5,6 +5,8 @@
 	let names = $state<string[]>([]);
 </script>
 
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
 	use:highlightDragover={() => ({ classes: ["bg-red-100", "outline-4"] })}
 	use:fileDropzone={() => ({
@@ -17,7 +19,7 @@
 			}
 			names = Array.from(files ?? []).map((f) => f.name);
 		},
-		allowClick: false,
+		allowClick: true,
 	})}
 	class="flex items-center justify-center outline-2 outline-dashed w-full min-h-[480px]"
 >

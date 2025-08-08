@@ -4,39 +4,24 @@ import {
 } from "../utils/persistent-state.svelte.js";
 import { twMerge } from "../utils/tw-merge.js";
 
-function get_storage(
-	type: "local" | "session",
-	key?: string | number | null | undefined,
-	initialValue?: number
-) {
-	if (key) {
-		return (type === "session" ? sessionStorageState : localStorageState)(
-			`resizable-width-${key}`,
-			initialValue
-		);
-	}
-	return null;
+export interface ResizableWidthOptions {
+	// master switch
+	enabled?: boolean;
+	initial?: number;
+	min?: number;
+	max?: number;
+	units?: "px" | "%";
+	key?: string | number | null | undefined;
+	storage?: "local" | "session";
+	handleClass?: string;
+	onResize?: (info: { width: number; units: "px" | "%"; container: number }) => void;
+	debug?: (...args: any[]) => void;
 }
 
 /**
- * Note: units should not be changed on the fly (it will behave unexpected I guess)...
+ * Note: units should not be changed on the fly...
  */
-export function resizableWidth(
-	el: HTMLDivElement,
-	fn?: () => {
-		// master switch
-		enabled?: boolean;
-		initial?: number;
-		min?: number;
-		max?: number;
-		units?: "px" | "%";
-		key?: string | number | null | undefined;
-		storage?: "local" | "session";
-		handleClass?: string;
-		onResize?: (info: { width: number; units: "px" | "%"; container: number }) => void;
-		debug?: (...args: any[]) => void;
-	}
-) {
+export function resizableWidth(el: HTMLDivElement, fn?: () => ResizableWidthOptions) {
 	const DEFAULT_HANDLE_CLS = [
 		"absolute top-0 right-0 bottom-0",
 		"w-[1px] hover:w-[4px] hover:right-[-1px]",
@@ -206,4 +191,20 @@ export function resizableWidth(
 			handle.remove();
 		};
 	});
+}
+
+// helpers ///////////////////////////////////////////////////////////////////////////////
+
+function get_storage(
+	type: "local" | "session",
+	key?: string | number | null | undefined,
+	initialValue?: number
+) {
+	if (key) {
+		return (type === "session" ? sessionStorageState : localStorageState)(
+			`resizable-width-${key}`,
+			initialValue
+		);
+	}
+	return null;
 }

@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import { createClog } from "@marianmeres/clog";
 	import { iconBsSearch } from "@marianmeres/icons-fns/bootstrap/iconBsSearch.js";
-	import { iconLucideCheck as iconLucideCheck } from "@marianmeres/icons-fns/lucide/iconLucideCheck.js";
+	import { iconLucideCheck } from "@marianmeres/icons-fns/lucide/iconLucideCheck.js";
 	import { iconLucideCircle } from "@marianmeres/icons-fns/lucide/iconLucideCircle.js";
 	import { iconLucideSquare } from "@marianmeres/icons-fns/lucide/iconLucideSquare.js";
 	import { ItemCollection, type Item } from "@marianmeres/item-collection";

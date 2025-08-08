@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Textarea with Line Numbers</title>
+		<style>
+			body {
+				font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+				padding: 20px;
+				background: #f5f5f5;
+			}
+
+			.editor-container {
+				display: flex;
+				border: 1px solid #ccc;
+				border-radius: 4px;
+				overflow: hidden;
+				background: white;
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+				position: relative;
+			}
+
+			.textarea-wrapper {
+				position: relative;
+				flex: 1;
+				height: 300px;
+			}
+
+			.line-highlight {
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				background: rgba(255, 255, 0, 0.15);
+				pointer-events: none;
+				z-index: 1;
+				transition: top 0.1s ease;
+			}
+
+			.line-numbers {
+				background: #f8f8f8;
+				color: #999;
+				padding: 10px 8px;
+				font-size: 14px;
+				line-height: 20px;
+				text-align: right;
+				user-select: none;
+				border-right: 1px solid #e0e0e0;
+				overflow: hidden;
+				white-space: pre;
+				min-width: 40px;
+			}
+
+			.textarea {
+				font-size: 14px;
+				line-height: 20px;
+				padding: 10px;
+				border: none;
+				outline: none;
+				resize: none;
+				font-family: inherit;
+				width: 100%;
+				height: 100%;
+				overflow: scroll;
+				white-space: pre;
+				position: relative;
+				z-index: 2;
+				background: transparent;
+				/* Force scrollbars to be visible */
+				scrollbar-width: auto; /* Firefox - force normal scrollbars */
+				scrollbar-color: #666 #e0e0e0; /* Firefox - darker colors */
+			}
+
+			/* Webkit browsers (Chrome, Safari, Edge) - force visible scrollbars */
+			.textarea::-webkit-scrollbar {
+				width: 16px;
+				height: 16px;
+				-webkit-appearance: none;
+			}
+
+			.textarea::-webkit-scrollbar-track {
+				background: #e0e0e0;
+				border-radius: 8px;
+			}
+
+			.textarea::-webkit-scrollbar-thumb {
+				background: #666;
+				border-radius: 8px;
+				border: 2px solid #e0e0e0;
+			}
+
+			.textarea::-webkit-scrollbar-thumb:hover {
+				background: #333;
+			}
+
+			.textarea::-webkit-scrollbar-corner {
+				background: #e0e0e0;
+			}
+
+			.editor-container,
+			.line-numbers {
+				height: 300px;
+			}
+
+			h2 {
+				color: #333;
+				margin-bottom: 10px;
+			}
+
+			.info {
+				margin-top: 20px;
+				padding: 15px;
+				background: #e3f2fd;
+				border-left: 4px solid #2196f3;
+				border-radius: 4px;
+			}
+		</style>
+	</head>
+	<body>
+		<h2>Textarea with Line Numbers</h2>
+
+		<div class="editor-container">
+			<div class="line-numbers" id="lineNumbers">1</div>
+			<div class="textarea-wrapper">
+				<div class="line-highlight" id="lineHighlight"></div>
+				<textarea
+					class="textarea"
+					id="codeTextarea"
+					placeholder="Start typing your code here..."
+					spellcheck="false"
+				>
+function hello() {
+    console.log("Hello, world!");
+    
+    const items = [1, 2, 3];
+    items.forEach(item => {
+        console.log(item);
+    });
+}
+
+// Add more lines to see scrolling in action
+const data = {
+    name: "Example",
+    value: 42
+};
+
+// Try adding a really long line to see horizontal scrolling:
+const reallyLongVariableName = "This is a very long line that should cause horizontal scrolling when it exceeds the width of the textarea container";
+
+for (let i = 0; i < 20; i++) {
+    console.log(`Line ${i}: Adding more content to demonstrate vertical scrolling behavior`);
+}</textarea
+				>
+			</div>
+		</div>
+
+		<div class="info">
+			<strong>Features:</strong>
+			<ul>
+				<li>Line numbers sync with textarea content</li>
+				<li>Smooth scrolling synchronization</li>
+				<li>Handles line wrapping correctly</li>
+				<li>Updates on content changes</li>
+				<li><strong>Current line highlighting</strong></li>
+				<li>Highlight follows cursor position</li>
+			</ul>
+		</div>
+
+		<script>
+			class TextareaLineNumbers {
+				constructor(textareaId, lineNumbersId, lineHighlightId) {
+					this.textarea = document.getElementById(textareaId);
+					this.lineNumbers = document.getElementById(lineNumbersId);
+					this.lineHighlight = document.getElementById(lineHighlightId);
+					this.lineHeight = 20; // Should match CSS line-height
+					this.padding = 10; // Should match textarea padding
+					this.init();
+				}
+
+				init() {
+					// Sync scrolling (both horizontal and vertical)
+					this.textarea.addEventListener("scroll", () => {
+						this.lineNumbers.scrollTop = this.textarea.scrollTop;
+						this.updateHighlightPosition();
+					});
+
+					// Update line numbers and highlight on content change
+					this.textarea.addEventListener("input", () => {
+						this.updateLineNumbers();
+						this.updateHighlightPosition();
+					});
+
+					// Update highlight on cursor movement (without content changes)
+					document.addEventListener("selectionchange", () => {
+						if (document.activeElement === this.textarea) {
+							this.updateHighlightPosition();
+						}
+					});
+
+					this.textarea.addEventListener("focus", () => {
+						this.updateHighlightPosition();
+					});
+
+					// Initial setup
+					this.updateLineNumbers();
+					this.updateHighlightPosition();
+				}
+
+				updateLineNumbers() {
+					const lines = this.textarea.value.split("\n");
+					const lineCount = lines.length;
+
+					let lineNumbersText = "";
+					for (let i = 1; i <= lineCount; i++) {
+						lineNumbersText += i + "\n";
+					}
+
+					this.lineNumbers.textContent = lineNumbersText.slice(0, -1);
+				}
+
+				getCurrentLine() {
+					const cursorPosition = this.textarea.selectionStart;
+					const textBeforeCursor = this.textarea.value.substring(0, cursorPosition);
+					const lineNumber = textBeforeCursor.split("\n").length;
+					return lineNumber;
+				}
+
+				updateHighlightPosition() {
+					const currentLine = this.getCurrentLine();
+					const scrollTop = this.textarea.scrollTop;
+
+					// Calculate the top position of the current line
+					const lineTop = (currentLine - 1) * this.lineHeight + this.padding - scrollTop;
+
+					// Position the highlight
+					this.lineHighlight.style.top = `${lineTop}px`;
+					this.lineHighlight.style.height = `${this.lineHeight}px`;
+
+					// Hide highlight if line is scrolled out of view
+					const textareaHeight = this.textarea.clientHeight;
+					if (lineTop < 0 || lineTop > textareaHeight) {
+						this.lineHighlight.style.opacity = "0";
+					} else {
+						this.lineHighlight.style.opacity = "1";
+					}
+				}
+			}
+
+			// Initialize the line numbers and highlighting
+			new TextareaLineNumbers("codeTextarea", "lineNumbers", "lineHighlight");
+		</script>
+	</body>
+</html>
