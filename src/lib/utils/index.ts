@@ -2,6 +2,7 @@ export * from "./breakpoint.svelte.js";
 export * from "./debounce.js";
 export * from "./device-pointer.svelte.js";
 export * from "./escape-regex.js";
+export * from "./event-emitter.js";
 export * from "./event-modifiers.js";
 export * from "./get-id.js";
 export * from "./is-browser.js";
