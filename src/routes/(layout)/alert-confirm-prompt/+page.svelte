@@ -41,85 +41,87 @@
 	};
 </script>
 
-<Button
-	size="sm"
-	onclick={() =>
-		acp.confirm(onOk, {
-			title: "Are you sure?",
-			onCancel,
-			onCustom,
-			onEscape,
-			// content: dummySentence(2),
-		})}
->
-	sure?
-</Button>
+<div>
+	<Button
+		size="sm"
+		onclick={() =>
+			acp.confirm(onOk, {
+				title: "Are you sure?",
+				onCancel,
+				onCustom,
+				onEscape,
+				// content: dummySentence(2),
+			})}
+	>
+		sure?
+	</Button>
 
-<Button
-	size="sm"
-	onclick={() =>
-		acp.alert({
-			title: "kokosko",
-			onOk,
-			onCancel,
-			onCustom,
-			onEscape,
-			content: dummySentence(8),
-		})}
->
-	alert
-</Button>
+	<Button
+		size="sm"
+		onclick={() =>
+			acp.alert({
+				title: "kokosko",
+				onOk,
+				onCancel,
+				onCustom,
+				onEscape,
+				content: dummySentence(8),
+			})}
+	>
+		alert
+	</Button>
 
-<Button
-	size="sm"
-	onclick={() => {
-		acp.confirm(onOk, {
-			onCancel,
-			onCustom,
-			onEscape,
-			content: dummySentence(4),
-			variant: "warn",
-		});
-	}}
->
-	confirm
-</Button>
+	<Button
+		size="sm"
+		onclick={() => {
+			acp.confirm(onOk, {
+				onCancel,
+				onCustom,
+				onEscape,
+				content: dummySentence(4),
+				variant: "warn",
+			});
+		}}
+	>
+		confirm
+	</Button>
 
-<Button
-	size="sm"
-	onclick={() => {
-		acp.prompt(onOk, {
-			onCancel,
-			onCustom,
-			onEscape,
-			content: dummySentence(2),
-			variant: "error",
-		});
-	}}
->
-	prompt
-</Button>
-
-<Button
-	size="sm"
-	onclick={() => {
-		acp.confirm(
-			async () => {
-				await sleep(10_000);
-				acp.shift();
-			},
-			{
+	<Button
+		size="sm"
+		onclick={() => {
+			acp.prompt(onOk, {
 				onCancel,
 				onCustom,
 				onEscape,
 				content: dummySentence(2),
-				variant: "warn",
-			}
-		);
-	}}
->
-	confirm long sleep
-</Button>
+				variant: "error",
+			});
+		}}
+	>
+		prompt
+	</Button>
+
+	<Button
+		size="sm"
+		onclick={() => {
+			acp.confirm(
+				async () => {
+					await sleep(10_000);
+					acp.shift();
+				},
+				{
+					onCancel,
+					onCustom,
+					onEscape,
+					content: dummySentence(2),
+					variant: "warn",
+				}
+			);
+		}}
+	>
+		confirm long sleep
+	</Button>
+</div>
 
 <css-wrap style="display:contents;">
 	<style>

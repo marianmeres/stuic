@@ -23,7 +23,7 @@
 	<div
 		class={twMerge(
 			"bar",
-			"w-full h-full bg-progress-accent transition-[width] ease-linear duration-1000",
+			"w-full h-full bg-progress-accent transition-[width] ease-linear duration-100",
 			classBar
 		)}
 		style="width:{Math.min(100, Math.max(0, progress))}%; {styleBar}"

@@ -20,7 +20,7 @@
 	>
 		{width1}
 	</div>
-	<div class="flex-1 p-4">right</div>
+	<div class="flex-1 p-4 py-10">right</div>
 </div>
 
 <div class="border flex mb-4">
@@ -37,9 +37,10 @@
 			key: "example-2",
 			handleClass:
 				"w-[5px] hover:w-[10px] hover:right-[-3px] bg-red-300 hover:bg-red-500",
+			handleDragClass: "hidden",
 		})}
 	>
 		{width2}
 	</div>
-	<div class="flex-1 p-4">right</div>
+	<div class="flex-1 p-4 py-12">right</div>
 </div>

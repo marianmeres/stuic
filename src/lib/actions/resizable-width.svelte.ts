@@ -14,6 +14,7 @@ export interface ResizableWidthOptions {
 	key?: string | number | null | undefined;
 	storage?: "local" | "session";
 	handleClass?: string;
+	handleDragClass?: string;
 	onResize?: (info: { width: number; units: "px" | "%"; container: number }) => void;
 	debug?: (...args: any[]) => void;
 }
@@ -23,16 +24,39 @@ export interface ResizableWidthOptions {
  */
 export function resizableWidth(el: HTMLDivElement, fn?: () => ResizableWidthOptions) {
 	const DEFAULT_HANDLE_CLS = [
+		"group",
 		"absolute top-0 right-0 bottom-0",
-		"w-[1px] hover:w-[4px] hover:right-[-1px]",
-		"bg-black/10 hover:bg-black/20",
+		"w-[1px]",
+		"bg-black/20 hover:bg-black/30",
+		"dark:bg-white/10 dark:hover:bg-white/20",
 		"transition-colors duration-200",
 		"touch-none cursor-ew-resize",
 	].join(" ");
 
-	function create_handle(el: HTMLDivElement, handleClass?: string) {
+	const DEFAULT_DRAG_HANDLE_CLS = [
+		"absolute h-[20px] w-[9px]",
+		"-translate-x-[4px] top-1/2 -translate-y-1/2",
+		"rounded border border-black/20 dark:border-white/20",
+		"bg-gray-300 group-hover:bg-gray-400",
+		"dark:bg-gray-600 dark:group-hover:bg-gray-500",
+		"transition-colors duration-200",
+		"touch-none cursor-ew-resize",
+	].join(" ");
+
+	function create_handle(
+		el: HTMLDivElement,
+		handleClass?: string,
+		handleDragClass?: string
+	) {
 		const handle = document.createElement("div");
 		handle.setAttribute("data-handle", "true");
+
+		const dragHandle = document.createElement("div");
+		dragHandle.classList.add(
+			...twMerge(DEFAULT_DRAG_HANDLE_CLS, handleDragClass).split(" ")
+		);
+
+		handle.appendChild(dragHandle);
 		el.appendChild(handle);
 
 		//
@@ -51,6 +75,7 @@ export function resizableWidth(el: HTMLDivElement, fn?: () => ResizableWidthOpti
 			key,
 			storage = "session",
 			handleClass = "",
+			handleDragClass = "",
 			onResize,
 			debug,
 		} = fn?.() || {};
@@ -68,7 +93,7 @@ export function resizableWidth(el: HTMLDivElement, fn?: () => ResizableWidthOpti
 		let startWidth = 0;
 		let containerW: number | undefined = undefined;
 		//
-		const handle = create_handle(el, handleClass);
+		const handle = create_handle(el, handleClass, handleDragClass);
 		const container = el.parentElement!;
 
 		// do we have a storage? if so, adjust the initial value...
