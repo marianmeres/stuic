@@ -10,7 +10,6 @@
         'button-group-radio', 
 		// 'carousel', 
         'color-scheme', 
-		'col-resize',
 		'command-menu',
 		'dismissible-message', 
         // 'drag-drop', 
