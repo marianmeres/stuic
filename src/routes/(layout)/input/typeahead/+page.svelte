@@ -33,9 +33,9 @@
 	}
 </script>
 
-<div class="border rounded-md p-2 bg-white">
+<div class="border rounded-md p-2 pl-3 bg-white">
 	<TypeaheadInput
-		placeholder="Type here..."
+		placeholder="Type here... (accept suggestion with Tab or &rarr;)"
 		bind:value
 		{getOptions}
 		{renderOptionLabel}

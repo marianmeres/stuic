@@ -15,7 +15,8 @@
 		renderOptionLabel?: (item: Item) => string;
 		itemIdPropName?: string;
 		name?: string;
-		//
+		// consumer might need to differentiate between "value" and a "true submitted value"
+		// (eg. when hitting Enter)... so we have `onSubmit`. Note, that this is NOT a "form.onSubmit"
 		onSubmit?: (s: string | Item) => void;
 		//
 		class?: string;
@@ -91,9 +92,14 @@
 	// do the query search
 	const debounced = new Debounced(() => value, 150);
 	watch([() => debounced.current], ([currQ], [oldQ]) => {
+		// always start fresh
 		options.clear();
+
+		// no suggestion on empty input (todo: make this configurable to allow list all?)
 		if (!currQ) return;
+
 		isFetching = true;
+
 		getOptions(`${currQ}`, [])
 			.then((res) => {
 				// no options?
@@ -107,13 +113,14 @@
 					return label.startsWith(currQ.toLowerCase());
 				});
 
-				// no exact "starts with"?
+				// no exact "starts with" found?
 				if (!found.length) return;
 
 				// finally, this is where we pick the actual suggestion (by setting it as active)
 				options.addMany(found);
 				options.setActiveFirst();
 			})
+			.catch(clog.error)
 			.finally(() => (isFetching = false));
 	});
 
@@ -159,7 +166,8 @@
 					}
 
 					// special case Tab handling - if we hit Enter just before, we want Tab
-					// to behave normaly (so we are able to set value which has a suggestion)
+					// to behave normaly (so we are able to set value which has a suggestion
+					// but is NOT a suggestion - eg "New" vs "New York")
 					if (previousKey === "Enter" && e.key === "Tab") {
 						return;
 					}
