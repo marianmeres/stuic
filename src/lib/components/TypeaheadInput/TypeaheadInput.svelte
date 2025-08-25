@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { ItemCollection, type Item } from "@marianmeres/item-collection";
-	import { twMerge } from "../../utils/tw-merge.js";
 	import { createClog } from "@marianmeres/clog";
+	import { ItemCollection, type Item } from "@marianmeres/item-collection";
 	import { Debounced, watch } from "runed";
+	import { twMerge } from "../../utils/tw-merge.js";
 	import Spinner from "../Spinner/Spinner.svelte";
-	import { redirect } from "@sveltejs/kit";
 
 	const clog = createClog("TypeaheadInput");
 
@@ -166,6 +165,8 @@
 	function _on_submit(v: string) {
 		v = `${v || ""}`.trim();
 		if (v && typeof onSubmit === "function") onSubmit(v);
+		// reset this flag, next arrow may trigger listing again
+		allowListAll = false;
 	}
 </script>
 
