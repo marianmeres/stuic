@@ -4,6 +4,7 @@
 	import { createClog } from "@marianmeres/clog";
 	import { Debounced, watch } from "runed";
 	import Spinner from "../Spinner/Spinner.svelte";
+	import { redirect } from "@sveltejs/kit";
 
 	const clog = createClog("TypeaheadInput");
 
@@ -18,10 +19,15 @@
 		// consumer might need to differentiate between "value" and a "true submitted value"
 		// (eg. when hitting Enter)... so we have `onSubmit`. Note, that this is NOT a "form.onSubmit"
 		onSubmit?: (s: string | Item) => void;
+		// when we hit backspace, and we are at cursor position 0... this is useful for
+		// consumer...
+		onDeleteRequest?: () => void;
 		//
 		class?: string;
 		classInput?: string;
 		noSpinner?: boolean;
+		// master disable flag not allowing to list all options on empty query
+		noListAllOnEmptyQ?: boolean;
 	}
 
 	let {
@@ -34,16 +40,22 @@
 		name = "text_input",
 		//
 		onSubmit,
+		onDeleteRequest,
 		//
 		class: classProp,
 		classInput = "",
 		noSpinner,
+		noListAllOnEmptyQ,
 	}: Props = $props();
 
 	let inputEl: HTMLInputElement = $state()!;
 	const randName = "name-" + Math.random().toString(36).slice(2);
 	let isFetching = $state(false); // not used currently
 	let previousKey = $state();
+
+	// special case flag to allow listing all available options when navigating with arrows
+	// even on empty query
+	let allowListAll = $state(false);
 
 	// ItemCollection of all possible candidates based on the current query (value)
 	const options = new ItemCollection<Item>([], {
@@ -64,7 +76,13 @@
 		// a little dance, since we need to be case insensitive
 		// otherwise we would just: `value = _renderOptionLabel(available.active)`
 		const suggestion = _renderOptionLabel(available.active);
-		return value + suggestion.slice(value.length);
+		return (value || "") + suggestion.slice(value?.length || 0);
+	});
+
+	let visibleSuggestion: string = $derived.by(() => {
+		if (!suggestion || suggestion.toLowerCase() === value?.toLowerCase()) return "";
+
+		return suggestion ? suggestion + "  [tab]" : "";
 	});
 
 	// helper
@@ -75,8 +93,11 @@
 	// reset suggestion asap, even before the debounced search finishes (it feels better)
 	// the debounce will take over short after
 	watch([() => value], ([currQ], [oldQ]) => {
+		clog({ currQ });
+		if (value === undefined) return;
+
 		// if we don't have a query or nothing is active, reset asap
-		if (!currQ || !available.active) {
+		if ((!allowListAll && !currQ) || !available.active) {
 			options.clear();
 			return;
 		}
@@ -91,27 +112,30 @@
 
 	// do the query search
 	const debounced = new Debounced(() => value, 150);
-	watch([() => debounced.current], ([currQ], [oldQ]) => {
+	watch([() => debounced.current, () => allowListAll], ([currQ, ala], [oldQ, _]) => {
 		// always start fresh
 		options.clear();
 
-		// no suggestion on empty input (todo: make this configurable to allow list all?)
-		if (!currQ) return;
+		// no suggestion on empty input
+		if (!ala && !currQ) return;
 
 		isFetching = true;
 
-		getOptions(`${currQ}`, [])
+		getOptions(currQ, [])
 			.then((res) => {
 				// no options?
 				if (!res.length) return;
 
-				// so, here we have some candidate items... but, this is not a typical
-				// "word search", this is an exact, case-insensitive "string begins with",
-				// so we need to filter further...
-				const found = res.filter((item) => {
-					const label = _renderOptionLabel(item).toLowerCase();
-					return label.startsWith(currQ.toLowerCase());
-				});
+				let found = res;
+				if (currQ) {
+					// so, here we have some candidate items... but, this is not a typical
+					// "word search", this is an exact, case-insensitive "string begins with",
+					// so we need to filter further...
+					found = res.filter((item) => {
+						const label = _renderOptionLabel(item).toLowerCase();
+						return label.startsWith(currQ.toLowerCase());
+					});
+				}
 
 				// no exact "starts with" found?
 				if (!found.length) return;
@@ -138,6 +162,11 @@
 
 	// $inspect({ isFetching, value, suggestion }).with(clog);
 	// $inspect({ previousKey }).with(clog);
+
+	function _on_submit(v: string) {
+		v = `${v || ""}`.trim();
+		if (v && typeof onSubmit === "function") onSubmit(v);
+	}
 </script>
 
 <div class={twMerge("", classProp)}>
@@ -149,7 +178,7 @@
 				bind:this={inputEl}
 				{name}
 				class={twMerge(_fixedInputClasses)}
-				{placeholder}
+				placeholder={suggestion ? "" : placeholder}
 				autocomplete="off"
 				onkeydown={(e) => {
 					// ignore on any modifier key
@@ -157,12 +186,13 @@
 						return;
 					}
 
+					const cursorPos = inputEl.selectionStart ?? 0;
+
 					// also ignore ArrowRight if cursor is not at the end
 					if (value?.length) {
-						const pos = inputEl.selectionStart ?? 0;
 						const maxPos = value.length;
 						// clog({ cursorPosition: pos, maxPos, value });
-						if (e.key === "ArrowRight" && pos < maxPos) return;
+						if (e.key === "ArrowRight" && cursorPos < maxPos) return;
 					}
 
 					// special case Tab handling - if we hit Enter just before, we want Tab
@@ -171,6 +201,9 @@
 					if (previousKey === "Enter" && e.key === "Tab") {
 						return;
 					}
+
+					//
+					allowListAll = !noListAllOnEmptyQ && ["ArrowDown", "ArrowUp"].includes(e.key);
 
 					//
 					const suggestion = options.active ? _renderOptionLabel(options.active) : null;
@@ -185,19 +218,21 @@
 							e.preventDefault();
 						}
 						value = suggestion;
-						if (e.key === "Tab") onSubmit?.(value);
+						if (e.key === "Tab") _on_submit(value);
 					} else if (e.key === "Enter") {
 						options.clear();
-						onSubmit?.(value);
+						_on_submit(value);
+					} else if (e.key === "Backspace" && cursorPos === 0) {
+						onDeleteRequest?.();
 					}
 
 					previousKey = e.key;
 				}}
-				onblur={() => onSubmit?.(value)}
+				onblur={() => _on_submit(value)}
 			/>
 			<input
 				type="text"
-				bind:value={suggestion}
+				bind:value={visibleSuggestion}
 				class={twMerge(
 					_fixedInputClasses,
 					"absolute inset-0 pointer-events-none opacity-40 z-0"

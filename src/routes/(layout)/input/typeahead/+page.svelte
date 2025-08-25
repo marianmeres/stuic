@@ -4,6 +4,7 @@
 	import { citiesByContinent } from "../../../_utils/options.js";
 	import { createClog } from "@marianmeres/clog";
 	import { sleep } from "../../../../lib/utils/sleep.js";
+	import X from "../../../../lib/components/X/X.svelte";
 
 	const clog = createClog("typeahead-page");
 	let value = $state<any>();
@@ -31,21 +32,45 @@
 
 		return q ? all.search(q) : all.items;
 	}
+
+	const selection = new ItemCollection<Item>([]);
+	let selected = $derived($selection);
+
+	$inspect($selection);
 </script>
 
-<div class="border rounded-md p-2 pl-3 bg-white">
-	<TypeaheadInput
-		placeholder="Type here... (accept suggestion with Tab or &rarr;)"
-		bind:value
-		{getOptions}
-		{renderOptionLabel}
-		onSubmit={(v) => {
-			submitted = v;
-		}}
-	/>
+<div class="border rounded-md bg-white flex items-center flex-wrap p-1">
+	{#if selected.size}
+		<!-- <div class="space-x-2 p-2 flex"> -->
+		{#each selected.items as item, idx (item.id)}
+			<button
+				class="border rounded-lg text-xs px-1 py-0.5 leading-none inline-flex mx-1 my-1 text-left"
+				onclick={() => {
+					selection.removeAt(idx);
+				}}>{renderOptionLabel(item)} <X class="size-3" /></button
+			>
+		{/each}
+		<!-- </div> -->
+	{/if}
+	<div class="flex-1 min-w-[250px] px-2 py-1">
+		<TypeaheadInput
+			placeholder="Type here..."
+			bind:value
+			{getOptions}
+			{renderOptionLabel}
+			onSubmit={(v) => {
+				submitted = v;
+				value = "";
+				if (submitted) selection.add({ [itemIdPropName]: v });
+			}}
+			onDeleteRequest={() => {
+				selection.removeAt(selection.items.length - 1);
+			}}
+		/>
+	</div>
 </div>
 
 <br />
-submitted: {submitted}
+last submitted: {submitted}
 <br />
 current value: {value}
