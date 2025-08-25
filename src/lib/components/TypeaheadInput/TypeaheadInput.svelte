@@ -4,6 +4,7 @@
 	import { Debounced, watch } from "runed";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import Spinner from "../Spinner/Spinner.svelte";
+	import { unaccent } from "../../utils/unaccent.js";
 
 	const clog = createClog("TypeaheadInput");
 
@@ -92,7 +93,6 @@
 	// reset suggestion asap, even before the debounced search finishes (it feels better)
 	// the debounce will take over short after
 	watch([() => value], ([currQ], [oldQ]) => {
-		clog({ currQ });
 		if (value === undefined) return;
 
 		// if we don't have a query or nothing is active, reset asap
@@ -131,8 +131,8 @@
 					// "word search", this is an exact, case-insensitive "string begins with",
 					// so we need to filter further...
 					found = res.filter((item) => {
-						const label = _renderOptionLabel(item).toLowerCase();
-						return label.startsWith(currQ.toLowerCase());
+						const label = unaccent(_renderOptionLabel(item).toLowerCase());
+						return label.startsWith(unaccent(currQ.toLowerCase()));
 					});
 				}
 
