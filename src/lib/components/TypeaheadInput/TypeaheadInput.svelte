@@ -1,10 +1,10 @@
-<script lang="ts">
+<script lang="ts" generics="T extends Item">
 	import { createClog } from "@marianmeres/clog";
 	import { ItemCollection, type Item } from "@marianmeres/item-collection";
 	import { Debounced, watch } from "runed";
 	import { twMerge } from "../../utils/tw-merge.js";
-	import Spinner from "../Spinner/Spinner.svelte";
 	import { unaccent } from "../../utils/unaccent.js";
+	import Spinner from "../Spinner/Spinner.svelte";
 
 	const clog = createClog("TypeaheadInput");
 
@@ -12,13 +12,13 @@
 		input?: HTMLInputElement;
 		value: any;
 		placeholder?: string;
-		getOptions: (s: string, current: Item[]) => Promise<Item[]>;
-		renderOptionLabel?: (item: Item) => string;
+		getOptions: (s: string, current: T[]) => Promise<T[]>;
+		renderOptionLabel?: (item: T) => string;
 		itemIdPropName?: string;
 		name?: string;
 		// consumer might need to differentiate between "value" and a "true submitted value"
 		// (eg. when hitting Enter)... so we have `onSubmit`. Note, that this is NOT a "form.onSubmit"
-		onSubmit?: (s: string | Item) => void;
+		onSubmit?: (s: string) => void;
 		// when we hit backspace, and we are at cursor position 0... this is useful for
 		// consumer...
 		onDeleteRequest?: () => void;
@@ -28,6 +28,8 @@
 		noSpinner?: boolean;
 		// master disable flag not allowing to list all options on empty query
 		noListAllOnEmptyQ?: boolean;
+		// use empty string to disable hint
+		appendHint?: string;
 	}
 
 	let {
@@ -46,6 +48,7 @@
 		classInput = "",
 		noSpinner,
 		noListAllOnEmptyQ,
+		appendHint = " [tab]",
 	}: Props = $props();
 
 	let inputEl: HTMLInputElement = $state()!;
@@ -58,7 +61,7 @@
 	let allowListAll = $state(false);
 
 	// ItemCollection of all possible candidates based on the current query (value)
-	const options = new ItemCollection<Item>([], {
+	const options = new ItemCollection<T>([], {
 		idPropName: itemIdPropName,
 		searchable: { getContent: (item) => _renderOptionLabel(item) },
 		allowNextPrevCycle: true,
@@ -80,13 +83,18 @@
 	});
 
 	let visibleSuggestion: string = $derived.by(() => {
-		if (!suggestion || suggestion.toLowerCase() === value?.toLowerCase()) return "";
+		if (
+			!suggestion ||
+			unaccent(suggestion.toLowerCase()) === unaccent(value?.toLowerCase())
+		) {
+			return "";
+		}
 
-		return suggestion ? suggestion + "  [tab]" : "";
+		return suggestion ? suggestion + appendHint : suggestion;
 	});
 
 	// helper
-	function _renderOptionLabel(item: Item): string {
+	function _renderOptionLabel(item: T): string {
 		return renderOptionLabel?.(item) || `${item[itemIdPropName]}`;
 	}
 
@@ -159,15 +167,15 @@
 		)
 	);
 
-	// $inspect({ isFetching, value, suggestion }).with(clog);
-	// $inspect({ previousKey }).with(clog);
-
 	function _on_submit(v: string) {
 		v = `${v || ""}`.trim();
-		if (v && typeof onSubmit === "function") onSubmit(v);
-		// reset this flag, next arrow may trigger listing again
+		if (v) onSubmit?.(v);
+		// reset this flag, next up/down arrow will switch it on again
 		allowListAll = false;
 	}
+
+	// $inspect({ isFetching, value, suggestion }).with(clog);
+	// $inspect({ previousKey }).with(clog);
 </script>
 
 <div class={twMerge("", classProp)}>
@@ -197,14 +205,17 @@
 					}
 
 					// special case Tab handling - if we hit Enter just before, we want Tab
-					// to behave normaly (so we are able to set value which has a suggestion
+					// to behave normally (so we are able to set value which HAS a suggestion
 					// but is NOT a suggestion - eg "New" vs "New York")
 					if (previousKey === "Enter" && e.key === "Tab") {
 						return;
 					}
 
-					//
-					allowListAll = !noListAllOnEmptyQ && ["ArrowDown", "ArrowUp"].includes(e.key);
+					// this acts as trigger for getOptions if empty value (`allowListAll` is watched)
+					allowListAll =
+						!value?.length &&
+						!noListAllOnEmptyQ &&
+						["ArrowDown", "ArrowUp"].includes(e.key);
 
 					//
 					const suggestion = options.active ? _renderOptionLabel(options.active) : null;

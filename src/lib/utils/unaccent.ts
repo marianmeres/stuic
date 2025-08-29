@@ -4,5 +4,5 @@
  * mark. And then removes (replaces with "") those diacritical marks.
  */
 export function unaccent(input: string): string {
-	return input.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+	return `${input}`.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
