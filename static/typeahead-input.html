@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inline Typeahead Input</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 50px;
+            background: #f5f5f5;
+        }
+
+        .typeahead-container {
+            position: relative;
+            display: inline-block;
+            width: 300px;
+        }
+
+        .typeahead-input {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+
+        .typeahead-input:focus {
+            border-color: #4A90E2;
+        }
+
+        .typeahead-suggestion {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 12px 16px;
+            font-size: 16px;
+            color: #999;
+            pointer-events: none;
+            white-space: nowrap;
+            overflow: hidden;
+            font-family: inherit;
+            border: 2px solid transparent;
+        }
+
+        .demo-section {
+            margin-bottom: 30px;
+        }
+
+        .demo-section h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .suggestion-list {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-section">
+        <h3>Search Cities</h3>
+        <div class="typeahead-container">
+            <div class="typeahead-suggestion" id="suggestion1"></div>
+            <input type="text" class="typeahead-input" id="input1" placeholder="Type a city name...">
+        </div>
+        <div class="suggestion-list">Try typing: new, san, los, chi, mia</div>
+    </div>
+
+    <div class="demo-section">
+        <h3>Programming Languages</h3>
+        <div class="typeahead-container">
+            <div class="typeahead-suggestion" id="suggestion2"></div>
+            <input type="text" class="typeahead-input" id="input2" placeholder="Type a language...">
+        </div>
+        <div class="suggestion-list">Try typing: ja, py, ty, ru, go</div>
+    </div>
+
+    <script>
+        class InlineTypeahead {
+            constructor(inputId, suggestionId, data) {
+                this.input = document.getElementById(inputId);
+                this.suggestion = document.getElementById(suggestionId);
+                this.data = data;
+                this.currentSuggestion = '';
+                
+                this.init();
+            }
+
+            init() {
+                this.input.addEventListener('input', (e) => this.handleInput(e));
+                this.input.addEventListener('keydown', (e) => this.handleKeydown(e));
+                this.input.addEventListener('blur', () => this.hideSuggestion());
+                this.input.addEventListener('focus', (e) => this.handleInput(e));
+            }
+
+            handleInput(e) {
+                const value = e.target.value.toLowerCase();
+                
+                if (!value) {
+                    this.hideSuggestion();
+                    return;
+                }
+
+                // Find first match that starts with the typed value
+                const match = this.data.find(item => 
+                    item.toLowerCase().startsWith(value) && 
+                    item.toLowerCase() !== value
+                );
+
+                if (match) {
+                    this.showSuggestion(value, match);
+                } else {
+                    this.hideSuggestion();
+                }
+            }
+
+            showSuggestion(typed, match) {
+                this.currentSuggestion = match;
+                
+                // Show typed part as invisible, suggestion part as gray
+                const remaining = match.slice(typed.length);
+                this.suggestion.innerHTML = `<span style="color: transparent;">${typed}</span>${remaining}`;
+                this.suggestion.style.display = 'block';
+            }
+
+            hideSuggestion() {
+                this.suggestion.style.display = 'none';
+                this.currentSuggestion = '';
+            }
+
+            handleKeydown(e) {
+                // Accept suggestion with Tab or Right Arrow
+                if ((e.key === 'Tab' || e.key === 'ArrowRight') && this.currentSuggestion) {
+                    e.preventDefault();
+                    this.input.value = this.currentSuggestion;
+                    this.hideSuggestion();
+                }
+                
+                // Hide suggestion on Escape
+                if (e.key === 'Escape') {
+                    this.hideSuggestion();
+                }
+            }
+        }
+
+        // Sample data
+        const cities = [
+            'New York', 'New Orleans', 'New Jersey', 'Newark',
+            'San Francisco', 'San Diego', 'San Antonio', 'San Jose',
+            'Los Angeles', 'Los Vegas', 'Louisville',
+            'Chicago', 'Charlotte', 'Charleston',
+            'Miami', 'Milwaukee', 'Minneapolis', 'Memphis'
+        ];
+
+        const languages = [
+            'JavaScript', 'Java',
+            'Python', 'PHP',
+            'TypeScript',
+            'Ruby', 'Rust',
+            'Go', 'C++', 'C#'
+        ];
+
+        // Initialize typeaheads
+        new InlineTypeahead('input1', 'suggestion1', cities);
+        new InlineTypeahead('input2', 'suggestion2', languages);
+    </script>
+</body>
+</html>

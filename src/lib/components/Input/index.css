@@ -1,0 +1,134 @@
+@import "../../_shared.css";
+@plugin '@tailwindcss/forms';
+
+/* prettier-ignore */
+@theme inline {
+	--color-input-accent: var(--color-input-accent, var(--color-red-600));
+	--color-input-accent-dark: var(--color-input-accent-dark, var(--color-red-400));
+}
+
+.stuic-input {
+	.form-input {
+		@apply rounded-md border-0 w-full flex-1
+			text-base placeholder:text-base
+			bg-transparent
+			tracking-tight
+			focus:outline-0 focus-visible:ring-0
+			placeholder:tracking-tight
+			placeholder:text-neutral-950/35 dark:placeholder:text-neutral-50/35
+			text-neutral-950 dark:text-neutral-50;
+		&.sm {
+			@apply text-sm placeholder:text-sm;
+		}
+		&.lg {
+			@apply text-lg placeholder:text-lg;
+		}
+	}
+
+	select.form-input {
+		@apply pr-8;
+	}
+
+	textarea {
+		scrollbar-width: thin;
+	}
+
+	/* https://danielstern.ca/range.css/ */
+	input[type="range"] {
+		--thumb-width: 18px;
+		--thumb-height: 18px;
+		--thumb-border-radius: 100%;
+		--track-border-radius: 18px;
+		--track-height: 4px;
+		--track-bg: #808080;
+
+		width: 100%;
+		/* margin: 7px 0; */
+		margin: calc((var(--thumb-height) - var(--track-height)) / 2) 0;
+		background-color: transparent;
+		appearance: none;
+
+		&:focus {
+			@apply ring-0 outline-0 border-0;
+		}
+		&::-webkit-slider-runnable-track {
+			/* background: var(--track-bg); */
+			border: 0;
+			border-radius: var(--track-border-radius);
+			width: 100%;
+			height: var(--track-height);
+			cursor: pointer;
+			@apply bg-neutral-300 dark:bg-neutral-600;
+		}
+		&::-webkit-slider-thumb {
+			/* margin-top: -7px; */
+			margin-top: calc(-1 * (var(--thumb-height) - var(--track-height)) / 2);
+			width: var(--thumb-width);
+			height: var(--thumb-height);
+			border: 0;
+			border-radius: var(--thumb-border-radius);
+			cursor: pointer;
+			-webkit-appearance: none;
+			@apply bg-input-accent dark:bg-input-accent-dark;
+		}
+		&:focus::-webkit-slider-runnable-track {
+			/* background: var(--track-bg); */
+			@apply bg-neutral-300 dark:bg-neutral-600;
+		}
+		&::-moz-range-track {
+			/* background: var(--track-bg); */
+			border: 0;
+			border-radius: var(--track-border-radius);
+			width: 100%;
+			height: var(--track-height);
+			cursor: pointer;
+			@apply bg-neutral-300 dark:bg-neutral-600;
+		}
+		&::-moz-range-thumb {
+			width: var(--thumb-width);
+			height: var(--thumb-height);
+			border: 0;
+			border-radius: var(--thumb-border-radius);
+			cursor: pointer;
+			@apply bg-input-accent dark:bg-input-accent-dark;
+		}
+		&::-ms-track {
+			background: transparent;
+			border-color: transparent;
+			border-width: calc((var(--thumb-height) - var(--track-height)) / 2) 0;
+			color: transparent;
+			width: 100%;
+			height: var(--track-height);
+			cursor: pointer;
+		}
+		&::-ms-fill-lower {
+			/* background: var(--track-bg); */
+			border: 0;
+			border-radius: var(--thumb-border-radius);
+			@apply bg-neutral-300 dark:bg-neutral-600;
+		}
+		&::-ms-fill-upper {
+			/* background: var(--track-bg); */
+			border: 0;
+			border-radius: var(--thumb-border-radius);
+			@apply bg-neutral-300 dark:bg-neutral-600;
+		}
+		&::-ms-thumb {
+			width: var(--thumb-width);
+			height: var(--thumb-height);
+			border: 0;
+			border-radius: var(--thumb-border-radius);
+			cursor: pointer;
+			margin-top: 0px;
+			@apply bg-input-accent dark:bg-input-accent-dark;
+		}
+		&:focus::-ms-fill-lower {
+			/* background: var(--track-bg); */
+			@apply bg-neutral-300 dark:bg-neutral-600;
+		}
+		&:focus::-ms-fill-upper {
+			/* background: var(--track-bg); */
+			@apply bg-neutral-300 dark:bg-neutral-600;
+		}
+	}
+}

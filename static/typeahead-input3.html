@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>setSelectionRange() Typeahead</title>
+		<style>
+			body {
+				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+				margin: 50px;
+				background: #f5f5f5;
+			}
+
+			.typeahead-container {
+				position: relative;
+				display: inline-block;
+				width: 300px;
+			}
+
+			.typeahead-input {
+				width: 100%;
+				padding: 12px 16px;
+				font-size: 16px;
+				border: 2px solid #ddd;
+				border-radius: 8px;
+				background: white;
+				outline: none;
+				transition: border-color 0.2s;
+				font-family: inherit;
+			}
+
+			.typeahead-input:focus {
+				border-color: #4a90e2;
+			}
+
+			.demo-section {
+				margin-bottom: 30px;
+			}
+
+			.demo-section h3 {
+				margin-bottom: 10px;
+				color: #333;
+			}
+
+			.suggestion-list {
+				margin-top: 10px;
+				font-size: 14px;
+				color: #666;
+			}
+
+			.info-box {
+				background: #e8f4f8;
+				padding: 15px;
+				border-radius: 8px;
+				margin-top: 20px;
+				font-size: 14px;
+				color: #2c5282;
+			}
+
+			.code-demo {
+				background: #f8f8f8;
+				padding: 10px;
+				border-radius: 4px;
+				font-family: "Courier New", monospace;
+				font-size: 12px;
+				margin: 10px 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="demo-section">
+			<h3>setSelectionRange() Approach</h3>
+			<div class="typeahead-container">
+				<input
+					type="text"
+					class="typeahead-input"
+					id="input1"
+					placeholder="Type a city name..."
+				/>
+			</div>
+			<div class="suggestion-list">Try typing: new, san, los, chi, mia</div>
+
+			<div class="info-box">
+				<strong>How it works:</strong> The input value is set to the full suggestion, then
+				setSelectionRange() highlights the untyped portion. The selection appears in your
+				browser's default selection color (usually blue).
+
+				<div class="code-demo">
+					input.value = "New York";<br />
+					input.setSelectionRange(3, 8); // Highlights "York"
+				</div>
+
+				<strong>Behavior:</strong>
+				<ul>
+					<li>Type to see the suggestion auto-complete</li>
+					<li>The highlighted portion can be accepted by pressing Tab/Right Arrow</li>
+					<li>Continue typing to replace the suggestion</li>
+					<li>Backspace works naturally</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="demo-section">
+			<h3>Manual Selection Demo</h3>
+			<div class="typeahead-container">
+				<input
+					type="text"
+					class="typeahead-input"
+					id="demo-input"
+					value="JavaScript is awesome"
+					placeholder="Demo input"
+				/>
+			</div>
+			<div style="margin-top: 10px">
+				<button onclick="selectRange(0, 4)">Select "Java"</button>
+				<button onclick="selectRange(4, 10)">Select "Script"</button>
+				<button onclick="selectRange(11, 13)">Select "is"</button>
+				<button onclick="selectRange(14, 21)">Select "awesome"</button>
+				<button onclick="clearSelection()">Clear Selection</button>
+			</div>
+		</div>
+
+		<script>
+			class SelectionRangeTypeahead {
+				constructor(inputId, data) {
+					this.input = document.getElementById(inputId);
+					this.data = data;
+					this.userTypedLength = 0;
+					this.isAcceptingInput = false;
+
+					this.init();
+				}
+
+				init() {
+					this.input.addEventListener("input", (e) => this.handleInput(e));
+					this.input.addEventListener("keydown", (e) => this.handleKeydown(e));
+					this.input.addEventListener("focus", () => this.handleFocus());
+					this.input.addEventListener("blur", () => this.clearSuggestion());
+				}
+
+				handleInput(e) {
+					const value = e.target.value;
+
+					// If we're in the middle of accepting a suggestion, ignore this input
+					if (this.isAcceptingInput) {
+						return;
+					}
+
+					// Calculate how much the user actually typed
+					this.userTypedLength = value.length;
+
+					if (!value) {
+						this.clearSuggestion();
+						return;
+					}
+
+					// Find first match
+					const match = this.data.find(
+						(item) =>
+							item.toLowerCase().startsWith(value.toLowerCase()) &&
+							item.toLowerCase() !== value.toLowerCase()
+					);
+
+					if (match) {
+						this.showSuggestion(value, match);
+					} else {
+						this.userTypedLength = value.length;
+					}
+				}
+
+				showSuggestion(typed, match) {
+					this.isAcceptingInput = true;
+
+					// Set the full suggestion as the value
+					this.input.value = match;
+
+					// Select the part the user didn't type
+					this.input.setSelectionRange(typed.length, match.length);
+
+					this.userTypedLength = typed.length;
+					this.isAcceptingInput = false;
+				}
+
+				clearSuggestion() {
+					// Keep only what the user typed
+					if (this.userTypedLength < this.input.value.length) {
+						this.input.value = this.input.value.substring(0, this.userTypedLength);
+					}
+				}
+
+				handleFocus() {
+					// Restore selection if there was a suggestion
+					if (this.userTypedLength < this.input.value.length) {
+						this.input.setSelectionRange(this.userTypedLength, this.input.value.length);
+					}
+				}
+
+				handleKeydown(e) {
+					const hasSelection = this.input.selectionStart !== this.input.selectionEnd;
+
+					if (e.key === "Tab" && hasSelection) {
+						// Accept the suggestion
+						e.preventDefault();
+						this.input.setSelectionRange(
+							this.input.value.length,
+							this.input.value.length
+						);
+						this.userTypedLength = this.input.value.length;
+					}
+
+					if (e.key === "ArrowRight" && hasSelection) {
+						// Accept the suggestion
+						e.preventDefault();
+						this.input.setSelectionRange(
+							this.input.value.length,
+							this.input.value.length
+						);
+						this.userTypedLength = this.input.value.length;
+					}
+
+					if (e.key === "Escape") {
+						this.clearSuggestion();
+					}
+
+					// Handle backspace
+					if (e.key === "Backspace" && hasSelection) {
+						e.preventDefault();
+						this.input.value = this.input.value.substring(0, this.userTypedLength - 1);
+						this.userTypedLength = this.input.value.length;
+						this.handleInput({ target: this.input });
+					}
+				}
+			}
+
+			// Demo functions for manual selection
+			function selectRange(start, end) {
+				const demoInput = document.getElementById("demo-input");
+				demoInput.focus();
+				demoInput.setSelectionRange(start, end);
+			}
+
+			function clearSelection() {
+				const demoInput = document.getElementById("demo-input");
+				demoInput.focus();
+				demoInput.setSelectionRange(demoInput.value.length, demoInput.value.length);
+			}
+
+			// Sample data
+			const cities = [
+				"New York",
+				"New Orleans",
+				"New Jersey",
+				"Newark",
+				"San Francisco",
+				"San Diego",
+				"San Antonio",
+				"San Jose",
+				"Los Angeles",
+				"Los Vegas",
+				"Louisville",
+				"Chicago",
+				"Charlotte",
+				"Charleston",
+				"Miami",
+				"Milwaukee",
+				"Minneapolis",
+				"Memphis",
+			];
+
+			// Initialize typeahead
+			new SelectionRangeTypeahead("input1", cities);
+		</script>
+	</body>
+</html>

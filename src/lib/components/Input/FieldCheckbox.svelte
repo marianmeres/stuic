@@ -1,184 +1,198 @@
-<script context="module" lang="ts">
-	import { slide } from 'svelte/transition';
-	import type { ValidateOptions, ValidationResult } from '../../actions/validate.js';
-	import { validate as validateAction } from '../../actions/validate.js';
-	import { getId } from '../../utils/get-id.js';
-	import { twMerge2 } from '../../utils/tw-merge2.js';
-	import type { THC } from '../Thc/Thc.svelte';
-	import Thc from '../Thc/Thc.svelte';
-
-	export interface FieldCheckboxConfigClasses {
-		box?: string;
-		label?: string;
-		input?: string;
-		invalid?: string;
-		validationMessage?: string;
-		description?: string;
-	}
-	export interface FieldCheckboxConfigClassesBySize {
-		sm?: FieldCheckboxConfigClasses;
-		md?: FieldCheckboxConfigClasses;
-		lg?: FieldCheckboxConfigClasses;
-	}
-
-	const _emptyClasses = (): FieldCheckboxConfigClasses => ({
-		box: '',
-		label: '',
-		input: '',
-		invalid: '',
-		validationMessage: '',
-		description: '',
-	});
-
-	const _PRESET: FieldCheckboxConfigClasses = {
-		box: 'flex items-start mb-4',
-		label: 'block w-full',
-		input: `
-			size-4 rounded
-			bg-neutral-100
-			border-neutral-300
-			shadow-sm
-			text-stuic-primary dark:text-stuic-primary-dark
-			cursor-pointer
-			focus:border-stuic-primary
-			focus:ring-4
-			focus:ring-offset-0
-			focus:ring-stuic-primary
-			focus:ring-opacity-20
-			disabled:cursor-not-allowed
-		`,
-		validationMessage: 'text-xs text-stuic-primary tracking-tight',
-		description: 'text-sm opacity-50',
-	};
-
-	const _PRESET_BY_SIZE: FieldCheckboxConfigClassesBySize = {
-		sm: { label: 'text-sm' },
-		md: { label: 'text-base' },
-		lg: { label: 'text-base font-bold' },
-	};
-
-	export class FieldCheckboxConfig {
-		static class: FieldCheckboxConfigClasses = _emptyClasses();
-		static classBySize: FieldCheckboxConfigClassesBySize = {
-			sm: _emptyClasses(),
-			md: _emptyClasses(),
-			lg: _emptyClasses(),
-		};
-	}
-</script>
-
 <script lang="ts">
-	let _class: FieldCheckboxConfigClasses = {};
-	export { _class as class };
-	export let classBySize: FieldCheckboxConfigClassesBySize = {};
+	import type { Snippet } from "svelte";
+	import type { HTMLInputAttributes } from "svelte/elements";
+	import { slide } from "svelte/transition";
+	import {
+		validate as validateAction,
+		type ValidateOptions,
+		type ValidationResult,
+	} from "../../actions/validate.svelte.js";
+	import { getId } from "../../utils/get-id.js";
+	import { twMerge } from "../../utils/tw-merge.js";
+	import { Thc } from "../Thc/index.js";
+	import { isTHCNotEmpty, type THC } from "../Thc/Thc.svelte";
 
-	export let size: 'sm' | 'md' | 'lg' = 'md';
+	type SnippetWithId = Snippet<[{ id: string }]>;
 
-	export let id = getId();
-	export let checked = false;
-	export let label: THC = '';
-	export let name = '';
-	export let description: THC = '';
-	export let tabindex = 0;
+	interface Props extends HTMLInputAttributes {
+		input?: HTMLInputElement;
+		id?: string;
+		checked?: boolean;
+		label?: SnippetWithId | THC;
+		required?: boolean;
+		disabled?: boolean;
+		renderSize?: "sm" | "md" | "lg" | string;
+		description?: SnippetWithId | THC;
+		//
+		validate?: boolean | Omit<ValidateOptions, "setValidationResult">;
+		//
+		class?: string;
+		classInputBox?: string;
+		classInput?: string;
+		classLabelBox?: string;
+		classLabel?: string;
+		classDescBox?: string;
+		classValidationBox?: string;
+		style?: string;
+	}
 
-	export let disabled: boolean | undefined = undefined;
-	export let readonly: boolean | undefined = undefined;
-	export let required: boolean | undefined = undefined;
+	let {
+		input = $bindable(),
+		id = getId(),
+		checked = $bindable(),
+		label,
+		required,
+		disabled,
+		renderSize = "md",
+		description,
+		validate,
+		class: classProp,
+		classInputBox,
+		classInput,
+		classLabelBox,
+		classLabel,
+		classDescBox,
+		classValidationBox,
+		style,
+		...rest
+	}: Props = $props();
 
 	//
-	export let validate: ValidateOptions | true | undefined = undefined;
-
-	//
-	let validation: ValidationResult;
+	let validation: ValidationResult | undefined = $state();
 	const setValidationResult = (res: ValidationResult) => (validation = res);
 
+	//
+	let invalid = $derived(validation && !validation?.valid);
 	let idDesc = getId();
 
-	const _collectClasses = (k: keyof FieldCheckboxConfigClasses, extra = '') =>
-		[
-			_PRESET?.[k] || '',
-			_PRESET_BY_SIZE?.[size]?.[k] || '',
-			FieldCheckboxConfig?.class?.[k] || '',
-			FieldCheckboxConfig?.classBySize?.[size]?.[k] || '',
-			extra || '',
-			_class?.[k] || '',
-			classBySize?.[size]?.[k] || '',
-		].join(' ');
+	// $inspect(33333, invalid, validation);
 
-	$: _boxClass = twMerge2(_collectClasses('box'));
-	$: _inputClass = twMerge2(
-		_collectClasses(
-			'input',
-			validation && !validation.valid ? _collectClasses('invalid') : ''
-		)
+	//
+	let _classCommon = $derived(
+		[invalid && "invalid", disabled && "disabled", required && "required", renderSize]
+			.filter(Boolean)
+			.join(" ")
 	);
-	$: _labelClass = twMerge2(_collectClasses('label'));
-	$: _validationMessageClass = twMerge2(_collectClasses('validationMessage'));
-	$: _descriptionClass = twMerge2(_collectClasses('description'));
+
+	const _preset = {
+		labelBox: {
+			label: {
+				size: {
+					sm: "text-sm mt-0.5",
+					lg: "font-bold",
+				} as any,
+			},
+		},
+	};
 </script>
 
-<div class={_boxClass}>
-	<div class="flex h-6 items-center ml-1">
+{#snippet snippetOrThc({ id, value }: { id: string; value?: SnippetWithId | THC })}
+	{#if typeof value === "function"}
+		{@render value({ id })}
+	{:else if value}
+		<Thc thc={value} forceAsHtml />
+	{/if}
+{/snippet}
+
+<label
+	class={twMerge(
+		`stuic-checkbox`,
+		_classCommon,
+		"flex items-start mb-4 text-base",
+		classProp
+	)}
+	{style}
+>
+	<div
+		class={twMerge(
+			"input-box",
+			_classCommon,
+			"flex h-6 items-center ml-1",
+			classInputBox
+		)}
+	>
 		<input
 			{id}
 			type="checkbox"
+			bind:this={input}
 			bind:checked
 			aria-checked={checked}
 			aria-describedby={description ? idDesc : undefined}
-			{name}
-			class={_inputClass}
-			{disabled}
-			{readonly}
+			use:validateAction={() => ({
+				enabled: !!validate,
+				...(typeof validate === "boolean" ? {} : validate),
+				setValidationResult,
+			})}
+			class={twMerge(
+				_classCommon,
+				`size-5 rounded
+				bg-neutral-100
+				border-neutral-300
+				text-input-accent dark:text-input-accent-dark
+				cursor-pointer
+
+				checked:border-input-accent checked:bg-input-accent 
+				checked:dark:border-input-accent-dark checked:dark:bg-input-accent-dark
+
+				focus:border-input-accent
+				focus:ring-4
+				focus:ring-offset-0
+				focus:ring-input-accent/20 focus:dark:ring-input-accent-dark/20
+
+				disabled:cursor-not-allowed`,
+				classInput
+			)}
 			{required}
-			{tabindex}
-			use:validateAction={validate
-				? { ...(validate === true ? {} : validate), setValidationResult }
-				: undefined}
-			on:blur
-			on:change
-			on:click
-			on:focus
-			on:input
-			on:keydown
-			on:keyup
-			on:touchstart|passive
-			on:touchend|passive
-			on:touchmove|passive
-			on:touchcancel
-			on:mouseenter
-			on:mouseleave
+			{disabled}
+			{...rest}
 		/>
 	</div>
-	<div class="ml-3 w-full">
+	<div class={twMerge("label-box", _classCommon, "ml-3 w-full", classLabelBox)}>
 		{#if label}
-			<label
-				for={id}
-				class={_labelClass}
-				class:cursor-pointer={!disabled}
-				class:cursor-not-allowed={disabled}
-			>
-				<Thc thc={label} forceAsHtml />
-			</label>
-		{/if}
-		{#if validation && !validation?.valid}
-			<div transition:slide={{ duration: 150 }} class={_validationMessageClass}>
-				{@html validation.message}
-			</div>
-		{/if}
-		{#if description || $$slots.description}
-			<!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
 			<div
-				class={_descriptionClass}
-				class:cursor-pointer={!disabled}
-				class:cursor-not-allowed={disabled}
-				on:click={() => !disabled && (checked = !checked)}
+				class={twMerge(
+					"label",
+					_classCommon,
+					"block w-full cursor-pointer",
+					disabled && "cursor-not-allowed",
+					required && "after:content-['*'] after:opacity-40 after:pl-1",
+					_preset.labelBox.label.size[renderSize],
+					classLabel
+				)}
 			>
-				{#if $$slots.description}
-					<slot name="description" />
+				{#if isTHCNotEmpty(label)}
+					<Thc thc={label as THC} forceAsHtml />
 				{:else}
-					<Thc thc={description} forceAsHtml />
+					{@render (label as SnippetWithId)({ id })}
 				{/if}
 			</div>
 		{/if}
+		{#if validation && !validation?.valid}
+			<div
+				transition:slide={{ duration: 150 }}
+				class={twMerge(
+					"validation-box",
+					_classCommon,
+					"text-xs text-input-accent dark:text-input-accent-dark tracking-tight",
+					classValidationBox
+				)}
+			>
+				{@html validation.message}
+			</div>
+		{/if}
+		{#if description}
+			<div
+				id={idDesc}
+				class={twMerge(
+					"desc-box",
+					_classCommon,
+					"text-sm opacity-50 cursor-pointer font-normal",
+					disabled && "cursor-not-allowed",
+					classDescBox
+				)}
+			>
+				{@render snippetOrThc({ id, value: description })}
+			</div>
+		{/if}
 	</div>
-</div>
+</label>

@@ -1,128 +1,175 @@
-<script lang="ts" context="module">
-	import { createEventDispatcher, onMount } from 'svelte';
-	import { focusTrap } from '../../actions/focus-trap.js';
-	import { writable, type Writable } from 'svelte/store';
-
-	export interface ModalDialogAPI {
-		open: () => void;
-		close: () => void;
-		isOpen: Writable<boolean>;
-	}
-</script>
-
 <script lang="ts">
-	const dispatch = createEventDispatcher();
+	import { onClickOutside } from "runed";
+	import { onMount, tick, type Snippet } from "svelte";
+	import { focusTrap } from "../../actions/focus-trap.js";
+	import { stopPropagation } from "../../utils/event-modifiers.js";
+	import { twMerge } from "../../utils/tw-merge.js";
+	import { createClog } from "@marianmeres/clog";
+	import { waitForNextRepaint } from "../../utils/paint.js";
 
-	// sane defaults
-	export let openOnMount = false;
-	export let closeOnOutsideClick = true;
-	export let closeOnEscape = true;
+	const clog = createClog("ModalDialog").debug;
 
-	// classes and styles here are meant for special cases (typically drop shadow, transparent bg)...
-	// all other styling should be preferably done within the internal slot
-	let _class = '';
-	export { _class as class };
-	export let style = '';
-
-	export let backdropFadeIn: false | 'normal' | 'slow' = 'normal';
-
-	//
-	let _el: HTMLDialogElement;
-	let _open = !!openOnMount;
-
-	// for parent consumption
-	export function toggle() {
-		_open = !_open;
+	interface Props {
+		// idea is, that the `dialog` element, should not be needed to customize
+		classDialog?: string;
+		class?: string;
+		children: Snippet;
+		noClickOutsideClose?: boolean;
+		noEscapeClose?: boolean;
+		// optional ui hint
+		type?: string;
+		// pre close hooks... escape is considered special close strategy which may be
+		// handled separately
+		preEscapeClose?: () => any;
+		preClose?: () => any;
 	}
-	export function open() {
-		_open = true;
+
+	let {
+		class: classProp,
+		classDialog,
+		children,
+		noClickOutsideClose,
+		type,
+		noEscapeClose,
+		preEscapeClose,
+		preClose,
+	}: Props = $props();
+
+	let visible = $state(false);
+	let dialog = $state<HTMLDialogElement>()!;
+	let box = $state<HTMLDivElement>()!;
+	let _opener: undefined | null | HTMLElement = $state();
+
+	export function open(openerOrEvent?: null | HTMLElement | MouseEvent) {
+		visible = true;
+		setOpener(
+			(openerOrEvent as any)?.currentTarget ?? openerOrEvent ?? document.activeElement
+		);
+		// clog("will showModal");
+		// dialog must be rendered in the DOM before it can be opened...
+		waitForNextRepaint().then(() => {
+			// clog("dialog.showModal()");
+			dialog.showModal();
+		});
 	}
+
 	export function close() {
-		_open = false;
+		(async () => {
+			const allowed = await preClose?.();
+			// explicit false prevents close
+			if (allowed !== false) {
+				// clog("dialog.close()");
+				dialog?.close();
+				visible = false;
+				_opener?.focus();
+				_opener = null;
+			}
+		})();
 	}
 
-	//
-	$: _open ? _el?.showModal() : _el?.close();
-	$: dispatch(_open ? 'open' : 'close');
+	export function setOpener(opener?: null | HTMLElement) {
+		_opener = opener;
+	}
 
-	// readonly for parent consumption
-	export const isOpen = writable<boolean>(_open);
-	$: $isOpen = _open;
+	onClickOutside(
+		() => box,
+		() => !noClickOutsideClose && close()
+	);
 
-	onMount(() => {
-		const _unsubs: CallableFunction[] = [];
+	let _original: any = {};
+	$effect(() => {
+		// if (noScrollLock) return;
+		if (visible) {
+			_original = window.getComputedStyle(document.body);
+			const scrollY = window.scrollY;
 
-		//
-		const _handleClose = (e: Event) => close();
-		_el.addEventListener('close', _handleClose);
-		_unsubs.push(() => _el.removeEventListener('close', _handleClose));
+			document.body.style.position = "fixed";
+			document.body.style.top = `-${scrollY}px`;
+			document.body.style.width = "100%";
+			document.body.style.overflow = "hidden";
+		} else {
+			const scrollY = document.body.style.top;
 
-		// prevent builtin cancel
-		const _handleCancel = (e: Event) => e.preventDefault();
-		_el.addEventListener('cancel', _handleCancel);
-		_unsubs.push(() => _el.removeEventListener('cancel', _handleCancel));
+			document.body.style.position = _original.position;
+			document.body.style.position = "";
+			document.body.style.top = "";
+			document.body.style.width = "";
+			document.body.style.overflow = "";
 
-		// handle cancel manually
-		const _handleKeyDown = (e: KeyboardEvent) => {
-			if (_open && closeOnEscape && e.key === 'Escape') {
-				e.stopPropagation();
-				close();
-			}
-		};
-		document.addEventListener('keydown', _handleKeyDown, true);
-		_unsubs.push(() => document.removeEventListener('keydown', _handleKeyDown, true));
-
-		const _handleClick = (e: MouseEvent) => {
-			if (_open) {
-				// do not propagate click as the modal may be opened on top of another click sensitive layers
-				e.stopPropagation();
-
-				// close on outside click ("outside" is actually the dialog's backdrop here... that's
-				// why we're not using the onOutside action). Note that this only works
-				// as expected if the inner content wrapped in another element (that's why
-				// we're adding the full width/height wrap below)
-				if (closeOnOutsideClick && e.target === _el) return close();
-			}
-		};
-		_el.addEventListener('click', _handleClick);
-		_unsubs.push(() => _el.removeEventListener('click', _handleClick));
-
-		// return unsub all
-		return () => _unsubs.forEach((fn) => fn());
+			// Restore scroll position
+			window.scrollTo(0, parseInt(scrollY || "0") * -1);
+		}
 	});
+
+	// $inspect("Modal dialog mounted, is visible:", visible).with(clog);
 </script>
 
-<!-- 
-    NOTE: the below padding:0 is important because of otherwise not-trivial onOutsideClick implementation
--->
-<dialog
-	bind:this={_el}
-	use:focusTrap={{ enabled: _open }}
-	style="{style ? `${style}; ` : ''}padding: 0 !important;"
-	class={`${_class} ${backdropFadeIn || ''}`}
->
-	{#if _open}
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+{#if visible}
+	<dialog
+		bind:this={dialog}
+		use:focusTrap
+		data-type={type}
+		class={twMerge(
+			"stuic-modal-dialog",
+			"fixed inset-4 m-auto size-auto",
+			"flex justify-center items-center",
+			"focus:outline-none focus-visible:outline-none",
+			"bg-transparent backdrop:bg-black/40",
+			classDialog
+		)}
+		onkeydown={async (e) => {
+			if (e.key === "Escape" && visible) {
+				clog("on Escape keydown, preventing default and stopping propagation");
+
+				// do not allow built-in close on escape
+				e.preventDefault();
+				// do not bubble
+				e.stopPropagation();
+				// ???: do not allow additional onkeydown listeners on this dialog (should there be any...)
+				e.stopImmediatePropagation();
+
+				if (!noEscapeClose) {
+					// explicit false prevents close
+					let allowed = await preEscapeClose?.();
+					if (allowed !== false) {
+						// `preClose` will be handled next
+						close();
+					}
+				}
+			}
+		}}
+	>
+		<!-- svelte-ignore a11y_click_events_have_key_events -->
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<!-- 
-			wrapping into relative full h/w div so that the inner click will never trigger close 
-			(this could be achieved in many different ways, but this seems to be the most 
-			pragmatic when taking into account the consumer usage) 
+			The `onpointerdown={stopPropagation()}` is for cases where we have
+			multiple dialogs on top of each other (which is questionable by itself) and we
+			do not want close the below ones just by interacting (clicking) on the top one 
+			(the `onClickOutside` uses `onpointerdown` with potential `onclick`)
 		-->
-		<div class="relative w-full h-full">
-			<slot />
+		<div
+			bind:this={box}
+			onpointerdown={stopPropagation()}
+			onclick={stopPropagation()}
+			data-type={type}
+			class={twMerge(
+				`box relative size-full overflow-auto
+				text-black dark:text-white bg-white dark:bg-neutral-800`,
+				classProp
+			)}
+		>
+			{@render children?.()}
 		</div>
-	{/if}
-</dialog>
+	</dialog>
+{/if}
 
 <style>
-	dialog.normal[open]::backdrop {
-		animation: fade 0.15s ease-out;
+	dialog[open]::backdrop {
+		animation: fadeIn 0.15s ease-out;
 	}
 
-	dialog.slow[open]::backdrop {
-		animation: fade 0.5s ease-out;
-	}
-
-	@keyframes fade {
+	@keyframes fadeIn {
 		from {
 			opacity: 0;
 		}

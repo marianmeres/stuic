@@ -1,116 +1,131 @@
-<script context="module" lang="ts">
-	import { createClog } from '@marianmeres/clog';
-	import { getId } from '../../utils/get-id.js';
-	import { twMerge2 } from '../../utils/tw-merge2.js';
-	import XFieldRadioInternal from './XFieldRadioInternal.svelte';
-
-	export interface FieldRadiosConfigClasses {
-		group?: string;
-		box?: string;
-		label?: string;
-		input?: string;
-		invalid?: string;
-		validationMessage?: string;
-		description?: string;
-	}
-	export interface FieldRadiosConfigClassesBySize {
-		sm?: FieldRadiosConfigClasses;
-		md?: FieldRadiosConfigClasses;
-		lg?: FieldRadiosConfigClasses;
-	}
-
-	const _emptyClasses = (): FieldRadiosConfigClasses => ({
-		group: '',
-		box: '',
-		label: '',
-		input: '',
-		invalid: '',
-		validationMessage: '',
-		description: '',
-	});
-
-	export class FieldRadiosConfig {
-		static class: FieldRadiosConfigClasses = _emptyClasses();
-		static classBySize: FieldRadiosConfigClassesBySize = {
-			sm: _emptyClasses(),
-			md: _emptyClasses(),
-			lg: _emptyClasses(),
-		};
-	}
-</script>
-
 <script lang="ts">
-	const clog = createClog('FieldRadio');
+	import { slide } from "svelte/transition";
+	import type {
+		ValidateOptions,
+		ValidationResult,
+	} from "../../actions/validate.svelte.js";
+	import { getId } from "../../utils/get-id.js";
+	import { twMerge } from "../../utils/tw-merge.js";
+	import FieldRadioInternal from "./_internal/FieldRadioInternal.svelte";
+	import type { FieldRadiosOption } from "./types.js";
 
-	interface Option {
-		label: string;
+	interface Props {
+		name?: string;
 		value?: string;
-		description?: string;
+		tabindex?: number; // tooShort
+		renderSize?: "sm" | "md" | "lg" | string;
+		//
+		options: (string | FieldRadiosOption)[];
+		//
+		required?: boolean;
+		disabled?: boolean;
+		//
+		validate?: boolean | Omit<ValidateOptions, "setValidationResult">;
+		//
+		class?: string;
+		classRadioBox?: string;
+		classInputBox?: string;
+		classInput?: string;
+		classLabelBox?: string;
+		classLabel?: string;
+		classDescBox?: string;
+		classValidationBox?: string;
+		//
+		style?: string;
 	}
-	export let options: (string | Option)[] = [];
 
-	let _class: FieldRadiosConfigClasses = {};
-	export { _class as class };
-	export let classBySize: FieldRadiosConfigClassesBySize = {};
+	let {
+		options,
+		name = getId("name-"),
+		value = $bindable(),
+		tabindex = 0,
+		required,
+		disabled,
+		renderSize = "md",
+		validate,
+		//
+		class: classProp,
+		classRadioBox,
+		classInputBox,
+		classInput,
+		classLabelBox,
+		classLabel,
+		classDescBox,
+		classValidationBox,
+		style,
+	}: Props = $props();
+
+	let _options: FieldRadiosOption[] = $derived(
+		options.map((v) => {
+			if (typeof v === "string") v = { label: v };
+			return v;
+		})
+	);
+	// $inspect(_options);
 
 	//
-	$: if (typeof _class === 'string') {
-		_class = { group: _class };
-	}
-
-	// export let invalidClass = '';
-	export let size: 'sm' | 'md' | 'lg' = 'md';
-
-	export let name = '';
-	export let value: any;
-
-	export let disabled = false;
-	export let required = false;
-	export let tabindex = 0;
-
-	// validate not supported here
+	let validation = $state<ValidationResult | undefined>();
+	let invalid = $derived(validation && !validation?.valid);
 
 	//
-	let _options: Option[] = [];
-	$: _options = options.map((v) => {
-		if (typeof v === 'string') {
-			v = { label: v };
-		}
-		return v;
-	});
-
-	$: name ||= getId();
+	let _classCommon = $derived(
+		[invalid && "invalid", disabled && "disabled", required && "required", renderSize]
+			.filter(Boolean)
+			.join(" ")
+	);
+	// $inspect(value);
 </script>
 
-{#if options.length}
-	<div class={twMerge2(`gap-y-2 grid ${_class.group || ''}`)}>
-		{#each _options as o, i}
-			<XFieldRadioInternal
-				bind:group={value}
-				{name}
-				label={o.label}
-				value={o.value || o.label}
-				description={o.description}
-				class={_class}
-				{classBySize}
-				{disabled}
-				{tabindex}
-				{required}
-				{size}
-				on:blur
-				on:change
-				on:click
-				on:focus
-				on:input
-				on:keydown
-				on:keyup
-				on:touchstart
-				on:touchend
-				on:touchmove
-				on:touchcancel
-				on:mouseenter
-				on:mouseleave
-			/>
-		{/each}
+{#if _options.length}
+	<div class={twMerge("stuic-radios", _classCommon)} {style}>
+		<div
+			class={twMerge(
+				"radios-box",
+				_classCommon,
+				"gap-y-2 grid rounded-md p-2 mb-8",
+				"border border-neutral-300 dark:border-neutral-600",
+				"bg-neutral-100 dark:bg-neutral-700",
+				invalid && "border-input-accent dark:border-input-accent-dark",
+				classProp
+			)}
+		>
+			{#each _options as o, i}
+				<!-- value={o.value || o.label} -->
+				<FieldRadioInternal
+					{name}
+					bind:group={value}
+					label={o.label}
+					value={o.value ?? o.label}
+					description={o.description}
+					{renderSize}
+					{disabled}
+					{tabindex}
+					{required}
+					{validate}
+					{classRadioBox}
+					{classInputBox}
+					{classInput}
+					{classLabelBox}
+					{classLabel}
+					{classDescBox}
+					{classValidationBox}
+					bind:validation
+				/>
+			{/each}
+		</div>
+		{#if validation && !validation?.valid}
+			<div
+				transition:slide={{ duration: 150 }}
+				class={twMerge(
+					"validation-box",
+					_classCommon,
+					`mt-1 px-2 text-xs text-input-accent dark:text-input-accent-dark 
+					tracking-tight`,
+					classValidationBox
+				)}
+			>
+				{@html validation.message}
+			</div>
+		{/if}
 	</div>
 {/if}

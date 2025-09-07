@@ -1,57 +1,58 @@
 <script lang="ts">
-	import { twMerge2 } from '../../utils/tw-merge2.js';
+	import { twMerge } from "../../utils/tw-merge.js";
 
 	// this is quite verbose, but very straight forward implementation,
 	// and always rendered without any issues (opposed to linear-gradient hackish stuff)
 
-	let _class = '';
-	export { _class as class };
+	let {
+		class: _class,
+		duration = 750, // one "loop" duration (in ms)
+		count = 8, // "hands" count
+		thickness = "thick", // looks better in small size
+		height = "normal",
+		direction = "cw",
+	}: {
+		class?: string;
+		duration?: number;
+		count?: number;
+		thickness?: "normal" | "thin" | "thick";
+		height?: "normal" | "tall" | "short";
+		direction?: "cw" | "ccw";
+	} = $props();
 
-	// one "loop" duration (in ms)
-	export let duration = 1000;
+	let _count = $derived(Math.max(3, Math.min(12, count)));
 
-	// "hands" count
-	export let count = 8;
-
-	export let thickness: 'normal' | 'thin' | 'thick' = 'normal';
-	export let height: 'normal' | 'tall' | 'short' = 'normal';
-	export let direction: 'cw' | 'ccw' = 'cw';
-
-	$: _count = Math.max(3, Math.min(12, count));
-
-	let _id = 0;
-	const _calcSegs = (c: number, d: number) => {
-		const id = _id++;
+	let _segments = $derived.by(() => {
 		let out = [];
-		for (let i = 0; i < c; i++) {
+		for (let i = 0; i < _count; i++) {
 			out.push({
-				id: `${id}_${i}`,
-				rotate: (360 / c) * i,
-				delay: (direction === 'ccw' ? 1 : -1) * (d - (d / c) * (i + 1)),
-				duration: d,
+				rotate: (360 / _count) * i,
+				delay:
+					(direction === "ccw" ? 1 : -1) * (duration - (duration / _count) * (i + 1)),
+				duration,
 			});
 		}
 		return out;
-	};
+	});
 
-	$: _segments = _calcSegs(_count, duration);
+	let _thickness = $derived(
+		"thickness-" +
+			(["normal", "thin", "thick"].includes(thickness) ? thickness : "normal")
+	);
 
-	$: _thickness =
-		'thickness-' +
-		(['normal', 'thin', 'thick'].includes(thickness) ? thickness : 'normal');
-
-	$: _height =
-		'height-' + (['normal', 'tall', 'short'].includes(height) ? height : 'normal');
+	let _height = $derived(
+		"height-" + (["normal", "tall", "short"].includes(height) ? height : "normal")
+	);
 </script>
 
-<div class="spinner {_thickness} {_height} {twMerge2('inline-block w-4', _class)}">
-	{#each _segments as s (s.id)}
+<div class="spinner {_thickness} {_height} {twMerge('inline-block w-5', _class)}">
+	{#each _segments as s}
 		<div
 			style={[
-				`transform:rotate(${s.rotate}deg);`,
-				`animation-delay:${s.delay}ms;`,
-				`animation-duration:${s.duration}ms;`,
-			].join('')}
+				`transform: rotate(${s.rotate}deg);`,
+				`animation-delay: ${s.delay}ms;`,
+				`animation-duration: ${s.duration}ms;`,
+			].join("")}
 		></div>
 	{/each}
 </div>
@@ -82,7 +83,7 @@
 	}
 
 	.spinner div:after {
-		content: ' ';
+		content: " ";
 		display: block;
 		position: absolute;
 
@@ -95,16 +96,16 @@
 	}
 	/* thickness */
 	.spinner.thickness-thin div:after {
-		left: 48%;
-		width: 4%;
+		left: 47.5%;
+		width: 5%;
 	}
 	.spinner.thickness-normal div:after {
 		left: 46%;
 		width: 8%;
 	}
 	.spinner.thickness-thick div:after {
-		left: 43%;
-		width: 14%;
+		left: 44.5%;
+		width: 11%;
 	}
 
 	/* height */

@@ -1,27 +1,58 @@
-const _window = typeof window !== 'undefined' ? window : null;
-
+/**
+ * Color scheme toggler and manager
+ */
 export class ColorScheme {
-	static readonly KEY = 'color-scheme';
-	static readonly DARK = 'dark';
-	static readonly LIGHT = 'light';
+	static readonly KEY = "stuic-color-scheme" as const;
+	static readonly DARK = "dark" as const;
+	static readonly LIGHT = "light" as const;
 
-	static getSystemValue = () =>
-		_window?.matchMedia(`(prefers-color-scheme: ${ColorScheme.DARK})`).matches
+	/**
+	 * Reads the `prefers-color-scheme` system setting
+	 */
+	static getSystemValue(): "dark" | "light" {
+		return globalThis.matchMedia?.(`(prefers-color-scheme: ${ColorScheme.DARK})`).matches
 			? ColorScheme.DARK
 			: ColorScheme.LIGHT;
+	}
 
-	static getLocalValue = (fallback: string | null = null) =>
-		localStorage?.getItem(ColorScheme.KEY) || fallback;
+	/**
+	 * Reads locally (localStorage) saved value
+	 */
+	static getLocalValue(fallback: "dark" | "light" = "light"): "dark" | "light" {
+		return (
+			(globalThis.localStorage?.getItem(ColorScheme.KEY) as "dark" | "light") || fallback
+		);
+	}
 
-	static getValue = () => ColorScheme.getLocalValue(ColorScheme.getSystemValue());
+	/**
+	 * Tries local first, fallbacks to system
+	 */
+	static getValue(): "dark" | "light" {
+		return ColorScheme.getLocalValue(ColorScheme.getSystemValue());
+	}
 
-	static toggle = () => {
+	/**
+	 * Sets and saves the opposite of current.
+	 */
+	static toggle(): void {
 		// returns bool, indicating whether token is in the list after the call or not.
-		const isDark = _window?.document.documentElement.classList.toggle(ColorScheme.DARK);
-		localStorage?.setItem(ColorScheme.KEY, isDark ? ColorScheme.DARK : ColorScheme.LIGHT);
-	};
+		const isDark = globalThis?.document?.documentElement.classList.toggle(
+			ColorScheme.DARK
+		);
+		globalThis.localStorage?.setItem(
+			ColorScheme.KEY,
+			isDark ? ColorScheme.DARK : ColorScheme.LIGHT
+		);
+	}
 
-	static reset = () => {
-		localStorage?.removeItem(ColorScheme.KEY);
-	};
+	/**
+	 *
+	 */
+	static reset(): void {
+		globalThis.localStorage?.removeItem(ColorScheme.KEY);
+		globalThis?.document?.documentElement.classList.remove(
+			ColorScheme.DARK,
+			ColorScheme.LIGHT
+		);
+	}
 }

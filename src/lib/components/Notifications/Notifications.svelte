@@ -1,26 +1,23 @@
-<script context="module" lang="ts">
-	import { createClog } from '@marianmeres/clog';
-	import { fade } from 'svelte/transition';
-	import { twMerge2 } from '../../utils/tw-merge2.js';
-	import Thc from '../Thc/Thc.svelte';
-	import X from '../X/X.svelte';
-	import { notificationsDefaultIcons } from './notifications-icons.js';
+<script lang="ts">
+	import { fade } from "svelte/transition";
+	import type { TW_COLORS } from "../../types.js";
+	import { twMerge } from "../../utils/tw-merge.js";
+	import Thc from "../Thc/Thc.svelte";
+	import X from "../X/X.svelte";
+	import { notificationsDefaultIcons } from "./notifications-icons.js";
+	import "./index.css";
 	import type {
 		Notification,
-		NotificationKnownClasses,
+		NotificationsStack,
 		NotificationType,
-		createNotificationsStore,
-	} from './notifications.js';
+	} from "./notifications-stack.svelte.js";
+	import Progress from "../Progress/Progress.svelte";
 
-	const X_POSITIONS = ['left', 'center', 'right'] as const;
-	const Y_POSITIONS = ['top', 'center', 'bottom'] as const;
+	const X_POSITIONS = ["left", "center", "right"] as const;
+	const Y_POSITIONS = ["top", "center", "bottom"] as const;
 
-	// https://github.com/microsoft/TypeScript/issues/28046#issuecomment-480516434
-	type ArrayElement<T extends ReadonlyArray<unknown>> =
-		T extends ReadonlyArray<infer ArrayElement> ? ArrayElement : never;
-
-	export type NOTIFICATIONS_POSX = ArrayElement<typeof X_POSITIONS>;
-	export type NOTIFICATIONS_POSY = ArrayElement<typeof Y_POSITIONS>;
+	type NOTIFICATIONS_POSX = (typeof X_POSITIONS)[number];
+	type NOTIFICATIONS_POSY = (typeof Y_POSITIONS)[number];
 
 	const DEFAULT: {
 		posX: NOTIFICATIONS_POSX;
@@ -28,208 +25,233 @@
 		posY: NOTIFICATIONS_POSY;
 		posYMobile: NOTIFICATIONS_POSY;
 	} = {
-		posX: 'right',
-		posXMobile: 'center',
-		posY: 'top',
-		posYMobile: 'bottom',
+		posX: "right",
+		posXMobile: "center",
+		posY: "top",
+		posYMobile: "top",
 	};
 
 	// prettier-ignore
-	const XMAP = { left: 'sm:items-start', center: 'sm:items-center', right: 'sm:items-end' };
+	const XMAP = { left: 'sm:justify-start', center: 'sm:justify-center', right: 'sm:justify-end' };
 	// prettier-ignore
-	const XMAP_M = { left: 'items-start', center: 'items-center', right: 'items-end' };
+	const XMAP_M = { left: 'justify-start', center: 'justify-center', right: 'justify-end' };
 
 	// prettier-ignore
-	const YMAP = { top: 'sm:items-start', center: 'sm:items-center', bottom: 'sm:items-end' };
+	const YMAP = { top: 'sm:justify-start', center: 'sm:justify-center', bottom: 'sm:justify-end' };
 	// prettier-ignore
-	const YMAP_M = { top: 'items-start', center: 'items-center', bottom: 'items-end' };
+	const YMAP_M = { top: 'justify-start', center: 'justify-center', bottom: 'justify-end' };
 
-	export class NotificationsConfig {
-		static preset = {
-			wrap: `
-                fixed z-50
-            `,
-			wrapInner: `
-                p-4 space-y-4
-            `,
-			notification: {
-				box: `
-                    relative flex
-                    pointer-events-auto 
-                    w-full max-w-sm
-                    rounded-md
-                    shadow-lg
-                    bg-neutral-700 text-neutral-50
-                `,
-				count: `
-                    absolute -top-2 -right-2 
-                    w-auto h-auto
-                    flex items-center justify-center
-                    px-2 py-1 rounded-full
-                    leading-none text-xs
-                    bg-neutral-950 text-neutral-50
-                `,
-				icon: `
-                    flex items-start justify-center
-                    pt-4 pr-0 pb-4 pl-4
-                    text-neutral-200
-                `,
-				content: `
-                    flex-1
-                    flex flex-col justify-center
-                    text-sm
-                    pl-4 pr-1 py-3
-                `,
-				button: `
-                    flex flex-col items-center justify-center
-                    leading-none
-                    px-3
-                    hover:bg-neutral-950/20
-                    focus-visible:bg-neutral-950/20 focus-visible:outline-none focus-visible:ring-0
-                    group
-                    rounded-tr-md rounded-br-md
-                `,
-				x: `
-                    opacity-75 group-hover:opacity-100
-                `,
-			},
-		};
-
-		// prettier-ignore
-		static presetByType: Record<NotificationType, NotificationKnownClasses> = {
-			info:    { box: ``,           count: ``, icon: ``, content: ``, button: ``, x: `` },
-			success: { box: ``,           count: ``, icon: ``, content: ``, button: ``, x: `` },
-			warn:    { box: ``,           count: ``, icon: ``, content: ``, button: ``, x: `` },
-			error:   { box: `bg-red-700`, count: ``, icon: ``, content: ``, button: ``, x: `` },
-		};
-	}
-</script>
-
-<script lang="ts">
-	const clog = createClog('Notifications');
-
-	// the store created by createNotificationsStore()
-	export let notifications: ReturnType<typeof createNotificationsStore>;
-	// $: clog($notifications);
-
-	export let forceAsHtml: boolean | undefined = undefined;
-	export let defaultIcons: Partial<Record<NotificationType, () => string>> =
-		notificationsDefaultIcons;
-
-	export let classes: Partial<NotificationKnownClasses> = {};
-	export let classesByType: Partial<
-		Record<NotificationType, Partial<NotificationKnownClasses>>
-	> = {};
-
-	export let ariaCloseLabel = 'Discard';
-
-	// right|center|left
-	export let posX: NOTIFICATIONS_POSX = DEFAULT.posX;
-	export let posXMobile: NOTIFICATIONS_POSX = DEFAULT.posXMobile;
-
-	// top|center|bottom
-	export let posY: NOTIFICATIONS_POSY = DEFAULT.posY;
-	export let posYMobile: NOTIFICATIONS_POSY = DEFAULT.posYMobile;
-
-	// sanitize
-	let x: NOTIFICATIONS_POSX,
-		y: NOTIFICATIONS_POSY,
-		xMobile: NOTIFICATIONS_POSX,
-		yMobile: NOTIFICATIONS_POSY;
-
-	export function getPositionConfig() {
-		return {
-			posX: x,
-			posY: y,
-			posXMobile: xMobile,
-			posYMobile: yMobile,
-		};
+	interface Props {
+		notifications: NotificationsStack;
+		// right|center|left
+		posX?: NOTIFICATIONS_POSX;
+		posXMobile?: NOTIFICATIONS_POSX;
+		// top|center|bottom
+		posY?: NOTIFICATIONS_POSY;
+		posYMobile?: NOTIFICATIONS_POSY;
+		//
+		themeInfo?: TW_COLORS;
+		themeError?: TW_COLORS;
+		themeWarn?: TW_COLORS;
+		themeSuccess?: TW_COLORS;
+		noTheme?: boolean;
+		//
+		classWrapY?: string;
+		classWrapX?: string;
+		class?: string; // classNotifBox
+		classNotifCount?: string;
+		classNotifIcon?: string;
+		classNotifContent?: string;
+		classNotifButton?: string;
+		classNotifButtonX?: string;
+		//
+		classProgress?: string;
+		classProgressBar?: string;
+		//
+		forceAsHtml?: boolean;
+		ariaCloseLabel?: string;
+		duration?: number;
+		//
+		noProgress?: boolean;
+		noXButton?: boolean;
 	}
 
-	// x
-	$: x = X_POSITIONS.includes(posX) ? posX : DEFAULT.posX;
-	$: xMobile = X_POSITIONS.includes(posXMobile) ? posXMobile : DEFAULT.posXMobile;
+	let {
+		notifications,
+		//
+		posX = DEFAULT.posX,
+		posXMobile = DEFAULT.posXMobile,
+		//
+		posY = DEFAULT.posY,
+		posYMobile = DEFAULT.posYMobile,
+		//
+		themeInfo = "neutral",
+		themeError = "red",
+		themeWarn = "yellow",
+		themeSuccess = "green",
+		// use truthy `noTheme` if manual css-only var customization is needed
+		noTheme,
+		//
+		classWrapY,
+		classWrapX,
+		class: classNotifBox,
+		classNotifCount,
+		classNotifIcon,
+		classNotifContent,
+		classNotifButton,
+		classNotifButtonX,
+		//
+		classProgress,
+		classProgressBar,
+		//
+		forceAsHtml,
+		ariaCloseLabel = "Close",
+		duration = 200,
+		noProgress,
+		noXButton,
+	}: Props = $props();
 
-	// y
-	$: y = Y_POSITIONS.includes(posY) ? posY : DEFAULT.posY;
-	$: yMobile = Y_POSITIONS.includes(posYMobile) ? posYMobile : DEFAULT.posYMobile;
+	let { x, y, xMobile, yMobile } = $derived.by(() => {
+		const x = X_POSITIONS.includes(posX) ? posX : DEFAULT.posX;
+		const xMobile = X_POSITIONS.includes(posXMobile) ? posXMobile : DEFAULT.posXMobile;
+		const y = Y_POSITIONS.includes(posY) ? posY : DEFAULT.posY;
+		const yMobile = Y_POSITIONS.includes(posYMobile) ? posYMobile : DEFAULT.posYMobile;
+		return { x, y, xMobile, yMobile };
+	});
 
-	$: _wrapClass = twMerge2(
-		NotificationsConfig.preset.wrap,
-		`flex flex-row inset-0 
-        pointer-events-none bg-transparent`,
-		YMAP_M[yMobile],
-		YMAP[y]
-	);
+	const maybeComponent = (n: Notification): { Cmp: any; props: any } => {
+		// todo when needed
+		return { Cmp: null, props: null };
+	};
 
-	$: _wrapInnerClass = twMerge2(
-		NotificationsConfig.preset.wrapInner,
-		`flex flex-col w-full 
-        pointer-events-none bg-transparent`,
-		XMAP_M[xMobile],
-		XMAP[x]
-	);
+	const maybeIcon = (n: Notification) => n.iconFn ?? notificationsDefaultIcons?.[n.type];
 
-	const _collectClasses = (n: Notification, k: keyof NotificationKnownClasses) => [
-		NotificationsConfig?.preset?.notification?.[k] || '',
-		classes?.[k] || '',
-		NotificationsConfig?.presetByType?.[n.type]?.[k] || '',
-		classesByType?.[n.type]?.[k] || '',
-		n.class?.[k] || '',
-	];
+	const _classWrapX = `
+        fixed z-50 flex flex-row inset-0 
+        pointer-events-none bg-transparent`;
 
-	//
-	const _boxClass = (n: Notification) => twMerge2(..._collectClasses(n, 'box'));
-	const _countClass = (n: Notification) => twMerge2(..._collectClasses(n, 'count'));
-	const _iconClass = (n: Notification) => twMerge2(..._collectClasses(n, 'icon'));
-	const _contentClass = (n: Notification) => twMerge2(..._collectClasses(n, 'content'));
-	const _buttonClass = (n: Notification) => twMerge2(..._collectClasses(n, 'button'));
-	const _xClass = (n: Notification) => twMerge2(..._collectClasses(n, 'x'));
-	const _iconFn = (o: Notification) => o.iconFn ?? defaultIcons?.[o.type];
+	const _classWrapY = `
+        p-4 space-y-4 
+        flex flex-col inset-0 
+        pointer-events-none bg-transparent`;
 
-	const _isFn = (v: any) => typeof v === 'function';
+	const _classNotifBox = `
+        relative flex 
+        pointer-events-auto 
+        w-xs sm:w-sm max-w-sm 
+        rounded-lg 
+        shadow-lg 
+        border border-notif-border dark:border-notif-border-dark 
+        bg-notif-bg text-notif-text 
+        dark:bg-notif-bg-dark dark:text-notif-text-dark`;
+
+	const _classNotifCount = `
+        absolute -top-2 -right-2 
+        w-auto h-auto 
+        flex items-center justify-center 
+        px-2 py-1 rounded-full 
+        leading-none text-xs 
+        bg-neutral-950 text-neutral-50`;
+
+	const _classNotifIcon = `
+        flex items-start justify-center 
+        pt-4 pr-0 pb-4 pl-4 
+        text-neutral-200`;
+
+	const _classNotifContent = `
+        flex-1 
+        flex flex-col justify-center 
+        text-sm tracking-tight 
+        pl-4 pr-1 py-3`;
+
+	const _classNotifButton = `
+        flex flex-col items-center justify-center 
+        leading-none 
+        px-3 
+        hover:bg-neutral-950/10 
+        focus-visible:bg-neutral-950/10 focus-visible:outline-none focus-visible:ring-0 
+        group 
+        rounded-tr-md rounded-br-md`;
+
+	const _classNotifButtonX = `opacity-75 group-hover:opacity-100`;
+
+	const _classProgress = `absolute inset-0 size-full bg-transparent rounded-tl-md rounded-bl-md`;
+	const _classProgressBar = `bg-white/10 dark:bg-white/10 size-full rounded-tl-md rounded-bl-md`;
+
+	const _buildTheme = (type: NotificationType) => {
+		if (noTheme) return "";
+		let theme =
+			{
+				info: themeInfo,
+				error: themeError,
+				success: themeSuccess,
+				warn: themeWarn,
+			}[type] || "info";
+		return [
+			`--color-notif-bg: var(--color-${theme}-700);`,
+			`--color-notif-text: var(--color-${theme}-50);`,
+			`--color-notif-border: var(--color-${theme}-800);`,
+			//
+			`--color-notif-bg-dark: var(--color-${theme}-800);`,
+			`--color-notif-text-dark: var(--color-${theme}-200);`,
+			`--color-notif-border-dark: var(--color-${theme}-700);`,
+		].join("");
+	};
 </script>
 
-{#if $notifications.length}
-	<div class={_wrapClass} aria-live="assertive">
-		<div class={_wrapInnerClass}>
-			{#each $notifications as n}
-				{@const iconFn = _iconFn(n)}
-				<!-- use your own component -->
-				{#if n?.component}
-					<svelte:component
-						this={n.component.component || n.component}
-						{...n.component.props || {}}
-						notification={n}
-						{notifications}
-					/>
+{#if notifications.stack.length}
+	<div
+		aria-live="assertive"
+		class={twMerge(
+			"stuic-notifs wrap-x",
+			_classWrapX,
+			XMAP[x],
+			XMAP_M[xMobile],
+			classWrapX
+		)}
+	>
+		<div class={twMerge("wrap-y", _classWrapY, YMAP_M[yMobile], YMAP[y], classWrapY)}>
+			{#each notifications.stack as n (n.id)}
+				{@const { Cmp, props } = maybeComponent(n)}
+				{@const iconFn = maybeIcon(n)}
+				{@const showXButton = !noXButton || n.ttl > 1000}
+				{#if Cmp}
+					<Cmp {...props || {}} notification={n} {notifications} />
 				{:else}
-					<!-- svelte-ignore 
-                            a11y-click-events-have-key-events 
-                            a11y-no-noninteractive-element-interactions 
-                            a11y-mouse-events-have-key-events -->
 					<div
-						transition:fade|global={{ duration: 200 }}
-						class={_boxClass(n)}
-						class:cursor-pointer={typeof n.onClick === 'function'}
-						data-notification-type={n.type}
-						data-notification-multiple={n.count > 1 ? true : undefined}
+						class={twMerge("box", _classNotifBox, classNotifBox)}
+						transition:fade|global={{ duration }}
 						role="alert"
-						on:mouseover={() => notifications.event(n.id, notifications.EVENT.MOUSEOVER)}
-						on:mouseout={() => notifications.event(n.id, notifications.EVENT.MOUSEOUT)}
-						on:click={() => notifications.event(n.id, notifications.EVENT.CLICK)}
+						style={_buildTheme(n.type)}
 					>
+						{#if n.ttl && !noProgress}
+							<Progress
+								progress={100 - n._ttlProgress * 100}
+								class={twMerge(_classProgress, classProgress)}
+								classBar={twMerge(_classProgressBar, classProgressBar)}
+								styleBar="transition-duration: {notifications.options.disposeInterval}ms;"
+							/>
+						{/if}
+
 						{#if n.count > 1}
-							<div class={_countClass(n)}>
+							<div class={twMerge("count", _classNotifCount, classNotifCount)}>
 								{n.count}
 							</div>
 						{/if}
-
-						{#if _isFn(iconFn)}
-							<div class={_iconClass(n)}>{@html iconFn()}</div>
+						{#if typeof iconFn === "function"}
+							<div class={twMerge("icon", _classNotifIcon, classNotifIcon)}>
+								{@html iconFn()}
+							</div>
 						{/if}
 
-						<div class={_contentClass(n)}>
+						<div
+							class={twMerge(
+								"content",
+								_classNotifContent,
+								classNotifContent,
+								!showXButton && "pr-4"
+							)}
+						>
 							<Thc
 								thc={n.content}
 								forceAsHtml={n.forceAsHtml ?? forceAsHtml}
@@ -238,13 +260,24 @@
 							/>
 						</div>
 
-						<button
-							class={_buttonClass(n)}
-							aria-label={ariaCloseLabel}
-							on:click|preventDefault|stopPropagation={() => notifications.remove(n.id)}
-						>
-							<X class={_xClass(n)} />
-						</button>
+						{#if showXButton}
+							<button
+								type="button"
+								class={twMerge("button", _classNotifButton, classNotifButton)}
+								aria-label={ariaCloseLabel}
+								onclick={(e) => {
+									e.preventDefault();
+									e.stopPropagation();
+									e.stopImmediatePropagation();
+									notifications.removeById(n.id);
+								}}
+							>
+								<X
+									class={twMerge("x", _classNotifButtonX, classNotifButtonX)}
+									strokeWidth={1.5}
+								/>
+							</button>
+						{/if}
 					</div>
 				{/if}
 			{/each}

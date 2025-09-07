@@ -1,0 +1,7 @@
+@import "../../_shared.css";
+
+/* prettier-ignore */
+@theme inline {
+	--color-progress-bg: var(--color-progress-bg, var(--color-neutral-200));
+	--color-progress-accent: var(--color-progress-accent, var(--color-neutral-600));
+}

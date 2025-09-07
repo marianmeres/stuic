@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Textarea with Line Numbers</title>
+		<style>
+			/* Use a CSS variable to keep font/line properties in sync */
+			:root {
+				--line-height: 1.5em;
+				--font-size: 16px;
+				--padding: 10px;
+			}
+
+			.editor-wrapper {
+				position: relative;
+				height: 400px; /* Or any desired height */
+				font-family: "Courier New", Courier, monospace;
+				font-size: var(--font-size);
+				line-height: var(--line-height);
+				border: 1px solid #ccc;
+				background-color: #f9f9f9;
+			}
+
+			/* The element that holds the highlight */
+			.backdrop {
+				position: absolute;
+				z-index: 1;
+				top: 0;
+				left: 0;
+				bottom: 0;
+				right: 0;
+				padding: var(--padding);
+				padding-left: 60px; /* Make space for line numbers */
+				overflow: hidden;
+				color: transparent; /* Text is not visible, just used for spacing */
+			}
+
+			/* The actual highlight */
+			.highlight {
+				position: absolute;
+				top: var(--padding); /* Start at the first line */
+				left: 0;
+				width: 100%;
+				height: var(--line-height);
+				background-color: rgba(0, 150, 255, 0.1);
+				transition: transform 0.1s ease; /* Smooth movement */
+				z-index: 1;
+			}
+
+			/* The line numbers gutter */
+			.line-numbers {
+				position: absolute;
+				z-index: 3;
+				top: 0;
+				left: 0;
+				bottom: 0;
+				width: 40px;
+				padding: var(--padding);
+				background-color: #f1f1f1;
+				color: #999;
+				text-align: right;
+				overflow: hidden; /* Hide overflowing numbers */
+				border-right: 1px solid #ddd;
+			}
+
+			/* The actual textarea */
+			#editor {
+				position: absolute;
+				z-index: 2; /* Sits on top of the backdrop */
+				top: 0;
+				left: 40px; /* Space for line numbers */
+				width: calc(100% - 40px);
+				height: 100%;
+				padding: var(--padding);
+
+				/* CRITICAL: Make textarea transparent and match font */
+				background: transparent;
+				color: #333;
+				border: none;
+				resize: none;
+				outline: none;
+				font: inherit; /* Inherits font-family, size, line-height */
+
+				/* Disable line wrapping to keep alignment simple */
+				white-space: pre;
+				overflow-wrap: normal;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="editor-wrapper">
+			<div class="line-numbers"></div>
+			<div class="backdrop">
+				<div class="highlight"></div>
+			</div>
+			<textarea id="editor" spellcheck="false"></textarea>
+		</div>
+
+		<script>
+			document.addEventListener("DOMContentLoaded", () => {
+				const editor = document.getElementById("editor");
+				const lineNumbers = document.querySelector(".line-numbers");
+				const highlight = document.querySelector(".highlight");
+
+				const getLineHeight = () => {
+					// Get the computed line-height of the editor
+					const computedStyle = window.getComputedStyle(editor);
+					return parseFloat(computedStyle.lineHeight);
+				};
+
+				const getPaddingTop = () => {
+					const computedStyle = window.getComputedStyle(editor);
+					return parseFloat(computedStyle.paddingTop);
+				};
+
+				const updateEditor = () => {
+					// 1. UPDATE LINE NUMBERS
+					const lines = editor.value.split("\n");
+					const lineCount = lines.length;
+					lineNumbers.innerHTML = Array.from({ length: lineCount }, (_, i) => i + 1).join(
+						"<br>"
+					);
+
+					// 2. UPDATE HIGHLIGHT POSITION
+					// Get current line number
+					const cursorPos = editor.selectionStart;
+					const currentLine = editor.value.substring(0, cursorPos).split("\n").length - 1;
+
+					// Calculate the position
+					const lineHeight = getLineHeight();
+					const paddingTop = getPaddingTop();
+					const highlightY = currentLine * lineHeight + paddingTop;
+
+					highlight.style.transform = `translateY(${highlightY}px)`;
+				};
+
+				const syncScroll = () => {
+					// Sync scrolling of line numbers and backdrop with the editor
+					const scrollTop = editor.scrollTop;
+					lineNumbers.scrollTop = scrollTop;
+					// The highlight moves via transform, but its container (backdrop) needs to scroll
+					document.querySelector(".backdrop").scrollTop = scrollTop;
+				};
+
+				// Initial update
+				updateEditor();
+
+				// Add event listeners
+				editor.addEventListener("input", updateEditor);
+				editor.addEventListener("scroll", syncScroll);
+
+				// Listen for cursor position changes
+				editor.addEventListener("keydown", () => setTimeout(updateEditor, 0));
+				editor.addEventListener("mousedown", () => setTimeout(updateEditor, 0));
+				editor.addEventListener("paste", () => setTimeout(updateEditor, 0));
+			});
+		</script>
+	</body>
+</html>

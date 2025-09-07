@@ -1,24 +1,47 @@
-<script context="module" lang="ts">
-	export const appShellSetHtmlBodyHeight = (): (() => any) => {
+<script module lang="ts">
+	export const MAIN_WIDTH = Symbol("MAIN_WIDTH");
+	/**
+	 * Helper utility function which sets document.body height to 100vh, and overflow: hidden.
+	 * It also returns a function which unsets the full height. So we can write:
+	 *
+	 * ```js
+	 * onMount(appShellSetHtmlBodyHeight)
+	 * ```
+	 *
+	 * From: https://www.skeleton.dev/components/app-shell
+	 *
+	 * The App Shell will need to expand to fill all available space within your app's body tag.
+	 * Open /src/app.html and add the following classes. This wrapping element is required
+	 * and the style of display: contents should remain.
+	 *
+	 * <body>
+	 *     <div style="display: contents" class="h-full overflow-hidden">%sveltekit.body%</div>
+	 * </body>
+	 *
+	 * Then update your global stylesheet with the following. This will disable overflow for
+	 * html and body tags to prevent duplicate scroll bars.
+	 *
+	 * html, body { @apply h-full overflow-hidden; }
+	 */
+	export function appShellSetHtmlBodyHeight(): () => any {
 		const _set = (flag: boolean) => {
-			document.body.style.height = flag ? '100vh' : 'auto';
-			document.body.style.overflow = flag ? 'hidden' : 'visible';
+			document.body.style.height = flag ? "100vh" : "auto";
+			document.body.style.overflow = flag ? "hidden" : "visible";
 		};
 		_set(true);
-		// returns reset, so we can write: onMount(appShellSetHtmlBodyHeight)
 		return () => _set(false);
-	};
+	}
 </script>
 
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-	import { twMerge2 } from '../../utils/tw-merge2.js';
+	import { setContext, type Snippet } from "svelte";
+	import { twMerge } from "../../utils/tw-merge.js";
 
 	// idea copied from https://www.skeleton.dev/components/app-shell
 	// adjusted and tweaked to personal opinion and taste...
 
 	/*  Layout:
-        <shell>
+		<shell>
 			<rail />
 			<div>
 				<header />
@@ -36,189 +59,209 @@
         </shell>
     */
 
-	const dispatch = createEventDispatcher();
+	interface Props {
+		id?: string;
+		class?: string;
+		railClass?: string;
+		headerClass?: string;
+		contentClass?: string;
+		sidebarLeftClass?: string;
+		pageClass?: string;
+		pageHeaderClass?: string;
+		pageMainClass?: string;
+		pageFooterClass?: string;
+		sidebarRightClass?: string;
+		footerClass?: string;
+		scrollbarGutter?: "auto" | "stable" | "both-edges";
+		pageFlexGrow?: 0 | 1 | 2 | 3 | 4 | 5;
+		//
+		rail?: Snippet;
+		header?: Snippet;
+		sidebarLeft?: Snippet;
+		pageHeader?: Snippet;
+		children?: Snippet;
+		pageFooter?: Snippet;
+		sidebarRight?: Snippet;
+		footer?: Snippet;
+		//
+		elShell?: HTMLElement;
+		elRail?: HTMLElement;
+		elHeader?: HTMLElement;
+		elSidebarLeft?: HTMLElement;
+		elPage?: HTMLElement;
+		elPageHeader?: HTMLElement;
+		elPageMain?: HTMLElement;
+		elPageFooter?: HTMLElement;
+		elSidebarRight?: HTMLElement;
+		elFooter?: HTMLElement;
+	}
 
-	let _class = '';
-	export { _class as class };
-	export let railClass: string = '';
-	export let headerClass: string = '';
-	export let contentClass: string = '';
-	export let sidebarLeftClass: string = '';
-	export let pageClass: string = '';
-	export let pageHeaderClass: string = '';
-	export let pageMainClass: string = '';
-	export let pageFooterClass: string = '';
-	export let sidebarRightClass: string = '';
-	export let footerClass: string = '';
+	let {
+		id = "shell",
+		class: classProp,
+		railClass,
+		headerClass,
+		contentClass,
+		sidebarLeftClass,
+		pageClass,
+		pageHeaderClass,
+		pageMainClass,
+		pageFooterClass,
+		sidebarRightClass,
+		footerClass,
+		scrollbarGutter = "auto",
+		pageFlexGrow = 3,
+		//
+		rail,
+		header,
+		sidebarLeft,
+		pageHeader,
+		children,
+		pageFooter,
+		sidebarRight,
+		footer,
+		//
+		elShell = $bindable(),
+		elRail = $bindable(),
+		elHeader = $bindable(),
+		elSidebarLeft = $bindable(),
+		elPage = $bindable(),
+		elPageHeader = $bindable(),
+		elPageMain = $bindable(),
+		elPageFooter = $bindable(),
+		elSidebarRight = $bindable(),
+		elFooter = $bindable(),
+	}: Props = $props();
 
-	export let scrollbarGutter = 'auto';
+	let _sidebarFlexCls = $derived(pageFlexGrow ? "flex-1" : "flex-none");
 
-	export let id = 'shell';
+	const flexMap = ["flex-1", "flex-1", "flex-[2]", "flex-[3]", "flex-[4]", "flex-[5]"];
+	let _pageFlexCls = $derived(flexMap[pageFlexGrow] || "flex-1");
 
-	// bigger number means bigger page block relative to sidebars
-	// 0 means flex-none for sidebars
-	export let pageFlexGrow: 0 | 1 | 2 | 3 | 4 | 5 = 3;
-	$: _sidebarFlexCls = pageFlexGrow ? 'flex-1' : 'flex-none';
-
-	// prettier-ignore
-	const flexMap = ['flex-1', 'flex-1', 'flex-[2]', 'flex-[3]', 'flex-[4]', 'flex-[5]'];
-	$: _pageFlexCls = flexMap[pageFlexGrow] || 'flex-1';
-
-	//
-	let shell: HTMLElement;
-	let rail: HTMLElement;
-	let header: HTMLElement;
-	let sidebarLeft: HTMLElement;
-	let page: HTMLElement;
-	let pageHeader: HTMLElement;
-	let pageMain: HTMLElement;
-	let pageFooter: HTMLElement;
-	let sidebarRight: HTMLElement;
-	let footer: HTMLElement;
-
-	//
-	$: if (shell) dispatch('element', { shell });
-	$: if (rail) dispatch('element', { rail });
-	$: if (header) dispatch('element', { header });
-	$: if (sidebarLeft) dispatch('element', { sidebarLeft });
-	$: if (page) dispatch('element', { page });
-	$: if (pageHeader) dispatch('element', { pageHeader });
-	$: if (pageMain) dispatch('element', { pageMain });
-	$: if (pageFooter) dispatch('element', { pageFooter });
-	$: if (sidebarRight) dispatch('element', { sidebarRight });
-	$: if (footer) dispatch('element', { footer });
+	// pragmatic use case...
+	let mainWidth: number = $state(0);
+	setContext(MAIN_WIDTH, {
+		get current() {
+			return mainWidth;
+		},
+	});
 </script>
 
-<!-- shell -->
 <div
-	bind:this={shell}
+	bind:this={elShell}
 	{id}
 	data-shell="shell"
-	class={twMerge2(`w-full h-full flex overflow-hidden ${_class}`)}
+	class={twMerge("w-full h-full flex overflow-hidden", classProp)}
 >
 	<!-- shell > rail -->
-	{#if $$slots.rail}
+	{#if rail}
 		<div
-			bind:this={rail}
+			bind:this={elRail}
 			data-shell="rail"
-			class={twMerge2(`flex-none overflow-x-hidden overflow-y-auto ${railClass}`)}
+			class={twMerge("flex-none overflow-x-hidden overflow-y-auto", railClass)}
 		>
-			<slot name="rail" />
+			{@render rail()}
 		</div>
 	{/if}
 
 	<!-- shell > div-->
 	<div class="h-full flex-1 flex flex-col overflow-hidden">
 		<!-- shell > div > header -->
-		{#if $$slots.header}
+		{#if header}
 			<header
-				bind:this={header}
+				bind:this={elHeader}
 				data-shell="header"
-				class={twMerge2(`flex-none ${headerClass}`)}
+				class={twMerge("flex-none", headerClass)}
 			>
-				<slot name="header" />
+				{@render header()}
 			</header>
 		{/if}
 
 		<!-- shell > div > content -->
 		<div
 			data-shell="content"
-			class={twMerge2(`flex-auto w-full h-full flex overflow-hidden ${contentClass}`)}
+			class={twMerge("flex-auto w-full h-full flex overflow-hidden", contentClass)}
 		>
 			<!-- shell > div > content > sidebar-left -->
-			{#if $$slots.sidebarLeft}
+			{#if sidebarLeft}
 				<aside
-					bind:this={sidebarLeft}
+					bind:this={elSidebarLeft}
 					data-shell="sidebar-left"
-					class={twMerge2(
-						`${_sidebarFlexCls} overflow-x-hidden overflow-y-auto w-auto ${sidebarLeftClass}`
+					class={twMerge(
+						_sidebarFlexCls,
+						"overflow-x-hidden overflow-y-auto w-auto",
+						sidebarLeftClass
 					)}
 				>
-					<slot name="sidebarLeft" />
+					{@render sidebarLeft()}
 				</aside>
 			{/if}
 
 			<!-- shell > div > content > page -->
 			<div
-				bind:this={page}
+				bind:this={elPage}
 				data-shell="page"
-				class={twMerge2(`${_pageFlexCls} overflow-x-hidden flex flex-col ${pageClass}`)}
+				class={twMerge(_pageFlexCls, "overflow-x-hidden flex flex-col", pageClass)}
 				style:scrollbar-gutter={scrollbarGutter}
-				on:scroll
 			>
 				<!-- shell > div > content > page > page-header -->
-				{#if $$slots.pageHeader}
+				{#if pageHeader}
 					<header
-						bind:this={pageHeader}
+						bind:this={elPageHeader}
 						data-shell="page-header"
-						class={twMerge2(`flex-none ${pageHeaderClass}`)}
+						class={twMerge("flex-none", pageHeaderClass)}
 					>
-						<slot name="pageHeader" />
+						{@render pageHeader()}
 					</header>
 				{/if}
 
 				<!-- shell > div > content > page > page-main -->
 				<main
-					bind:this={pageMain}
+					bind:this={elPageMain}
 					data-shell="page-main"
-					class={twMerge2(`flex-auto ${pageMainClass}`)}
+					class={twMerge("flex-auto", pageMainClass)}
+					bind:offsetWidth={mainWidth}
 				>
-					<slot />
+					{@render children?.()}
 				</main>
 
 				<!-- shell > div > content > page > page-footer -->
-				{#if $$slots.pageFooter}
+				{#if pageFooter}
 					<footer
-						bind:this={pageFooter}
+						bind:this={elPageFooter}
 						data-shell="page-footer"
-						class={twMerge2(`flex-none ${pageFooterClass}`)}
+						class={twMerge("flex-none", pageFooterClass)}
 					>
-						<slot name="pageFooter" />
+						{@render pageFooter()}
 					</footer>
 				{/if}
 			</div>
 
 			<!-- shell > div > content > sidebar-right -->
-			{#if $$slots.sidebarRight}
+			{#if sidebarRight}
 				<aside
-					bind:this={sidebarRight}
+					bind:this={elSidebarRight}
 					data-shell="sidebar-right"
-					class={twMerge2(
-						`${_sidebarFlexCls} overflow-x-hidden overflow-y-auto ${sidebarRightClass}`
+					class={twMerge(
+						_sidebarFlexCls,
+						"overflow-x-hidden overflow-y-auto",
+						sidebarRightClass
 					)}
 				>
-					<slot name="sidebarRight" />
+					{@render sidebarRight()}
 				</aside>
 			{/if}
 		</div>
 
 		<!-- shell > div > footer -->
-		{#if $$slots.footer}
+		{#if footer}
 			<footer
-				bind:this={footer}
+				bind:this={elFooter}
 				data-shell="footer"
-				class={twMerge2(`flex-none ${footerClass}`)}
+				class={twMerge("flex-none", footerClass)}
 			>
-				<slot name="footer" />
+				{@render footer()}
 			</footer>
 		{/if}
 	</div>
 </div>
-
-<style lang="scss">
-	/* from: https://www.skeleton.dev/components/app-shell
-
-	The App Shell will need to expand to fill all available space within your app's body tag. 
-	Open /src/app.html and add the following classes. This wrapping element is required 
-	and the style of display: contents should remain.
-
-	<body>
-		<div style="display: contents" class="h-full overflow-hidden">%sveltekit.body%</div>
-	</body>
-
-	Then update your global stylesheet with the following. This will disable overflow for 
-	html and body tags to prevent duplicate scroll bars.
-
-	html, body { @apply h-full overflow-hidden; }
-	*/
-</style>

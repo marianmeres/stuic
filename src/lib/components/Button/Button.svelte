@@ -1,176 +1,131 @@
-<script lang="ts" context="module">
-	import type { HTMLButtonAttributes } from 'svelte/elements';
-	import { twMerge2 } from '../../utils/tw-merge2.js';
+<script lang="ts" module>
+	export const BUTTON_STUIC_BASE_CLASSES = `
+		bg-button-bg text-button-text 
+		dark:bg-button-bg-dark dark:text-button-text-dark
+		font-mono text-sm text-center 
+		leading-none
+		border-1
+		border-button-border dark:border-button-border-dark
+		rounded-md
+		inline-flex items-center justify-center gap-x-2
+		px-3 py-2
 
-	export class ButtonConfig {
-		static defaultSize: 'xs' | 'sm' | 'md' | 'lg' | 'xl' = 'md';
-		static defaultShadow = false;
-		static defaultRounded = true;
-		static defaultVariant: string | undefined = undefined;
+		hover:brightness-[1.05]
+		active:brightness-[0.95]
+		disabled:hover:brightness-100
 
-		static presetBase = `
-			text-center 
-			inline-flex items-center gap-x-2
-			hover:brightness-[1.05]
-			active:brightness-[0.95]
-			disabled:!cursor-not-allowed disabled:!opacity-50 disabled:hover:brightness-100
-			no-underline
-			border border-neutral-300  dark:border-neutral-500
-			
-			     bg-neutral-200      text-neutral-950
-			dark:bg-neutral-600 dark:text-neutral-50
-		`.trim();
+		focus:brightness-[1.05] 
+		focus:border-button-border-focus focus:dark:border-button-border-focus-dark
 
-		static presetSquare = 'p-0 aspect-square justify-center';
+		        focus:outline-4         focus:outline-black/10         focus:dark:outline-white/20
+		focus-visible:outline-4 focus-visible:outline-black/10 focus-visible:dark:outline-white/20
+	`;
 
-		static presetsRounded = {
-			xs: 'rounded',
-			sm: 'rounded',
-			md: 'rounded',
-			lg: 'rounded-md',
-			xl: 'rounded-lg',
-		};
-
-		static presetsShadow = {
-			xs: 'shadow-sm dark:shadow-neutral-950',
-			sm: 'shadow    dark:shadow-neutral-950',
-			md: 'shadow    dark:shadow-neutral-950',
-			lg: 'shadow-md dark:shadow-neutral-950',
-			xl: 'shadow-md dark:shadow-neutral-950',
-		};
-
-		static presetsSize = {
-			xs: 'px-2   py-0.5 leading-tight text-xs',
-			sm: 'px-2.5 py-0.5 leading-normal text-sm',
-			md: 'px-3   py-1   leading-normal text-sm',
-			lg: 'px-4   py-1.5 leading-normal text-base',
-			xl: 'px-4   py-2   leading-normal text-lg',
-		};
-
-		static classBySize = {
-			xs: '',
-			sm: '',
-			md: '',
-			lg: '',
-			xl: '',
-		};
-
-		static class = '';
-
-		// to be defined at consumer level...
-		static variant: Record<string, string> = {
-			primary: `
-				     bg-stuic-primary             text-stuic-on-primary
-				dark:bg-stuic-primary-dark   dark:text-stuic-on-primary-dark
-			`.trim(),
+	export const BUTTON_STUIC_PRESET_CLASSES: any = {
+		size: {
+			sm: `text-xs rounded-sm px-2 py-0.5`,
+			lg: `text-base rounded-md`,
+		},
+		variant: {
+			primary: `font-medium`,
 			secondary: `
-				     bg-stuic-secondary           text-stuic-on-secondary
-				dark:bg-stuic-secondary-dark dark:text-stuic-on-secondary-dark
-			`.trim(),
-		};
-	}
+				bg-neutral-100 dark:bg-neutral-600
+				text-black/60 dark:text-white/80 
+				shadow-[1px_1px_0_0_rgba(0_0_0_/_.2)]
+				active:shadow-none active:translate-[1px]
+				focus:shadow-black/30
+			`,
+		},
+		muted: `text-black/70 dark:text-white/70`,
+		shadow: `
+			shadow-[1px_1px_0_0_rgba(0_0_0_/_.4)]
+			active:shadow-none active:translate-[1px]
+			disabled:shadow-none disabled:active:shadow-none disabled:active:translate-none
+		`,
+	};
 </script>
 
 <script lang="ts">
-	let _class = '';
-	export { _class as class };
+	import type { Snippet } from "svelte";
+	import type { HTMLButtonAttributes } from "svelte/elements";
+	import { twMerge } from "../../utils/tw-merge.js";
+	//
+	import "./index.css";
 
-	export let href = '';
-	export let type: HTMLButtonAttributes['type'] = 'button';
+	// interface Props extends DataAttributes, Partial<Omit<HTMLButtonElement, 'children'>> {
+	interface Props extends HTMLButtonAttributes {
+		variant?: "primary" | "secondary" | string;
+		size?: "sm" | "md" | "lg" | string;
+		muted?: boolean;
+		noshadow?: boolean;
+		unstyled?: boolean;
+		class?: string;
+		href?: string;
+		children?: Snippet<[{ checked?: boolean }]>;
+		// support for switch
+		roleSwitch?: boolean;
+		checked?: boolean;
+		el?: Element;
+	}
 
-	export let shadow: boolean = ButtonConfig.defaultShadow;
-	export let rounded: boolean | 'full' = ButtonConfig.defaultRounded;
-	export let variant: string | undefined = ButtonConfig.defaultVariant;
+	let {
+		variant,
+		size,
+		class: classProp,
+		muted,
+		noshadow,
+		unstyled,
+		href,
+		children,
+		//
+		roleSwitch = false,
+		checked = $bindable(false),
+		el = $bindable(),
+		//
+		...rest
+	}: Props = $props();
 
-	export let square: boolean = false;
-	export let disabled: boolean = false;
+	// let button: HTMLButtonElement | undefined = $state();
 
-	// button only
-	export let value: string | undefined = undefined;
+	$effect(() => {
+		const toggle = () => (checked = !checked);
+		if (!href && roleSwitch && el) {
+			el?.addEventListener("click", toggle);
+		}
+		return () => el?.removeEventListener("click", toggle);
+	});
 
-	const _whitelist = ['xs', 'sm', 'md', 'lg', 'xl'];
-	export let size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' = ButtonConfig.defaultSize;
-	$: if (!_whitelist.includes(size)) size = ButtonConfig.defaultSize;
+	const _base = BUTTON_STUIC_BASE_CLASSES;
+	const _preset: any = BUTTON_STUIC_PRESET_CLASSES;
 
-	let buttonClass: string;
-	$: buttonClass = twMerge2(
-		ButtonConfig.presetBase,
-		// either full, or config, or none
-		rounded
-			? rounded === 'full' || square
-				? 'rounded-full'
-				: ButtonConfig.presetsRounded[size]
-			: '',
-		//
-		shadow && ButtonConfig.presetsShadow[size],
-		//
-		ButtonConfig.presetsSize[size],
-		//
-		ButtonConfig.classBySize[size],
-		//
-		ButtonConfig.class,
-		//
-		variant &&
-			`${variant || ''}`.split(' ').reduce((m, v) => {
-				m += ButtonConfig.variant?.[v] + ' ';
-				return m;
-			}, ' '),
-		//
-		square && ButtonConfig.presetSquare,
-		//
-		_class
+	// see button.css
+	let _class = $derived(
+		[
+			// "namespace" (so we can target it in css files when customizing)
+			"stuic-button",
+			// pass all styling props as classnames as well
+			variant,
+			size,
+			muted && "muted",
+			noshadow && "no-shadow",
+			// now, attach the default tw classes (unless not explicitly forbidden)
+			!unstyled && _base,
+			!unstyled && size && _preset.size[size],
+			!unstyled && variant && _preset.variant[variant],
+			!unstyled && muted && _preset.muted,
+			!unstyled && !noshadow && _preset.shadow,
+		]
+			.filter(Boolean)
+			.join(" ")
 	);
 </script>
 
 {#if href}
-	<a
-		{href}
-		class={buttonClass}
-		{...$$restProps}
-		role="button"
-		data-button-size={size}
-		data-button-shadow={shadow}
-		data-button-rounded={rounded}
-		data-button-variant={variant}
-		on:focus
-		on:blur
-		on:click
-		on:change
-		on:keydown
-		on:keyup
-		on:touchstart|passive
-		on:touchend|passive
-		on:touchmove|passive
-		on:touchcancel
-		on:mouseenter
-		on:mouseleave
-	>
-		<slot />
+	<a {href} bind:this={el} class={twMerge(_class, classProp)} {...rest as any}>
+		{@render children?.({})}
 	</a>
 {:else}
-	<button
-		{type}
-		{disabled}
-		class={buttonClass}
-		{value}
-		data-button-size={size}
-		data-button-shadow={shadow}
-		data-button-rounded={rounded}
-		data-button-variant={variant}
-		{...$$restProps}
-		on:focus
-		on:blur
-		on:click
-		on:change
-		on:keydown
-		on:keyup
-		on:touchstart|passive
-		on:touchend|passive
-		on:touchmove|passive
-		on:touchcancel
-		on:mouseenter
-		on:mouseleave
-	>
-		<slot />
+	<button bind:this={el} class={twMerge(_class, classProp)} {...rest}>
+		{@render children?.({ checked })}
 	</button>
 {/if}

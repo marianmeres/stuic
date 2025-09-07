@@ -1,117 +1,159 @@
-<script lang="ts" context="module">
-	import { createClog } from '@marianmeres/clog';
-	import { createSwitchStore } from '@marianmeres/switch-store';
-	import { createEventDispatcher } from 'svelte';
-	import { fly } from 'svelte/transition';
-	import type { FocusTrapOptions } from '../../actions/focus-trap.js';
-	import { onOutside } from '../../actions/on-outside.js';
-	import { prefersReducedMotionStore } from '../../utils/prefers-reduced-motion.js';
-	import { twMerge2 } from '../../utils/tw-merge2.js';
-	import Backdrop from '../Backdrop/Backdrop.svelte';
-
-	export type DrawerStore = ReturnType<typeof createDrawerStore>;
-	export const createDrawerStore = (open = false) => createSwitchStore<any>(open);
-</script>
-
 <script lang="ts">
-	const clog = createClog('Drawer');
-	const dispatch = createEventDispatcher();
+	import { fly } from "svelte/transition";
+	import { type FocusTrapOptions } from "../../actions/focus-trap.js";
+	import { prefersReducedMotion } from "../../utils/prefers-reduced-motion.svelte.js";
+	import { twMerge } from "../../utils/tw-merge.js";
+	import Backdrop from "../Backdrop/Backdrop.svelte";
+	import type { Snippet } from "svelte";
+	// import { onClickOutside } from "runed";
 
-	export let drawer: DrawerStore;
-	export let position: 'left' | 'top' | 'right' | 'bottom' = 'left';
+	const prefersReduced = prefersReducedMotion();
+	const DEFAULT_POS = "left";
 
-	const _whitelist = ['left', 'top', 'right', 'bottom'];
-	$: if (!_whitelist.includes(position)) position = 'left';
+	interface Props {
+		visible?: boolean;
+		position?: "left" | "top" | "right" | "bottom";
+		children: Snippet;
+		class?: string;
+		classBackdrop?: string;
+		labelledby?: string;
+		describedby?: string;
+		transitionDuration?: number;
+		// transitionEnabled?: boolean;
+		elBackdrop?: HTMLDivElement;
+		el?: HTMLDivElement;
+		focusTrap?: boolean | FocusTrapOptions;
+		// will be used in `fly` config. Ideally should match with the provided tw classes
+		// to make the animation optimal. May include ccs units (will be considered as pixels otherwise).
+		animOffset?: string | number;
+		onEscape?: () => void;
+		//
+		onOutside?: () => void;
+		// onOutsideEnabled?: boolean;
+	}
 
-	// main container class
-	let _class = '';
-	export { _class as class };
+	let {
+		visible = $bindable(false),
+		position = DEFAULT_POS,
+		children,
+		class: classProp,
+		classBackdrop,
+		labelledby,
+		describedby,
+		transitionDuration = 200,
+		// transitionEnabled = true,
+		elBackdrop = $bindable(),
+		el = $bindable(),
+		focusTrap,
+		animOffset = "75vw",
+		onEscape,
+		onOutside,
+		// onOutsideEnabled = true,
+	}: Props = $props();
 
-	// Backdrop
-	export let backdropClass: string = '';
-
-	// A11y
-	export let labelledby: string = '';
-	export let describedby: string = '';
-
-	// Transitions
-	export let transitionDuration = 250;
-	export let transitionEnabled = !$prefersReducedMotionStore;
-
-	// will be used in `fly` config. Ideally should match with the provided tw classes
-	// to make the animation optimal. May include ccs units (will be considered as pixels otherwise).
-	export let animOffset: string | number = '66vw';
-
-	//
-	export let backdropFocusTrapOptions: Partial<FocusTrapOptions> = {};
+	$effect(() => {
+		if (prefersReduced.current) transitionDuration = 0;
+	});
 
 	// opinionated: make backdrop fade-in a little faster (but never longer than 200)... looks better
-	$: fadeInDuration = transitionEnabled ? Math.min(transitionDuration * 0.66, 200) : 0;
+	let fadeInDuration = $derived(Math.min(transitionDuration * 0.7, 200));
 
 	// prettier-ignore
-	const _presetsClsBackdrop = {
+	const _classPresetsBackdrop = {
 		left:   `justify-start`,
 		right:  `justify-end`,
 		top:    `items-start`,
 		bottom: `items-end`,
 	};
 
-	// sm	640px
-	// md	768px
-	// lg	1024px
-	// xl	1280px
-
 	// prettier-ignore
-	const _presetsCls = {
-		left:   `w-full sm:w-[66vw] h-full`,
-		right:  `w-full sm:w-[66vw] h-full`,
-		top:    `w-full             h-full sm:h-[66vh]`,
-		bottom: `w-full             h-full sm:h-[66vh]`,
+	const _classPresets = {
+		left:   `w-full sm:w-[75vw] h-full`,
+		right:  `w-full sm:w-[75vw] h-full`,
+        // top/bottom are full by default
+		top:    `w-full             h-full`, //  sm:h-[75vh]
+		bottom: `w-full             h-full`, //  sm:h-[75vh]
 	};
 
 	// prettier-ignore
-	$: _presetsAnim = {
-		left:   { x: `-${animOffset}`, y: 0 },
+	let _animPresets = $derived({
+        left:   { x: `-${animOffset}`, y: 0 },
 		right:  { x: animOffset,       y: 0 },
 		top:    { x: 0,                y: `-${animOffset}`},
 		bottom: { x: 0,                y: animOffset },
-	};
+    });
 
-	//
-	let el: HTMLElement;
-	$: if (el) dispatch('element', { drawer: el });
+	// onClickOutside(
+	// 	() => el,
+	// 	() => {
+	// 		// noop if not enabled
+	// 		if (!onOutsideEnabled) return;
+	// 		// explicit false means ignoring outside click
+	// 		if (typeof onOutside === "function") onOutside();
+	// 		else if (onOutside !== false) visible = false;
+	// 	}
+	// );
+
+	let _classBackdrop = $derived(
+		_classPresetsBackdrop[position] ?? _classPresetsBackdrop[DEFAULT_POS]
+	);
+
+	let _class = $derived(_classPresets[position] ?? _classPresets[DEFAULT_POS]);
+
+	let flyOptions = $derived({
+		duration: transitionDuration,
+		...(_animPresets[position] ?? _animPresets[DEFAULT_POS]),
+	});
+
+	let backdrop: Backdrop = $state()!;
+
+	export function close() {
+		backdrop.close();
+	}
+
+	export function open(openerOrEvent?: null | HTMLElement | MouseEvent) {
+		// setOpener(openerOrEvent ?? (document.activeElement as any));
+		backdrop.open(openerOrEvent);
+	}
+
+	export function setOpener(opener?: null | HTMLElement) {
+		backdrop.setOpener(opener);
+	}
 </script>
 
-{#if $drawer.isOpen}
-	<Backdrop
-		class={twMerge2(`${_presetsClsBackdrop[position] || ''} ${backdropClass}`)}
-		on:escape
-		on:mousedown={(e) => dispatch('click_backdrop')}
-		{fadeInDuration}
-		fadeOutDuration={transitionEnabled ? transitionDuration : 0}
-		on:element
-		focusTrapOptions={backdropFocusTrapOptions}
+<!-- 
+	Using `onmousedown` not `onclick` intentionally. Otherwise drag inside + release outside 
+ 	(eg selecting text and accidentally release outside) would trigger close. 
+-->
+
+<Backdrop
+	bind:this={backdrop}
+	bind:el={elBackdrop}
+	bind:visible
+	class={twMerge(_classBackdrop, classBackdrop)}
+	{focusTrap}
+	{fadeInDuration}
+	fadeOutDuration={transitionDuration}
+	{onEscape}
+	onmousedown={() => onOutside?.()}
+>
+	<!-- svelte-ignore a11y_interactive_supports_focus -->
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<div
+		bind:this={el}
+		aria-modal="true"
+		role="dialog"
+		aria-labelledby={labelledby}
+		aria-describedby={describedby}
+		class={twMerge("overflow-y-auto", _class, classProp)}
+		transition:fly={flyOptions}
+		onmousedown={(e) => {
+			if (onOutside) {
+				e.stopImmediatePropagation();
+				e.stopPropagation();
+			}
+		}}
 	>
-		<!-- 
-			svelte-ignore 
-			a11y-click-events-have-key-events 
-			a11y-no-noninteractive-element-interactions 
-		-->
-		<div
-			bind:this={el}
-			on:mousedown|stopPropagation
-			aria-modal="true"
-			role="dialog"
-			aria-labelledby={labelledby}
-			aria-describedby={describedby}
-			transition:fly={{
-				duration: transitionEnabled ? transitionDuration : 0,
-				...(_presetsAnim[position] || {}),
-			}}
-			class={twMerge2(`overflow-y-auto ${_presetsCls[position] || ''} ${_class}`)}
-			use:onOutside
-		>
-			<slot />
-		</div>
-	</Backdrop>
-{/if}
+		{@render children()}
+	</div>
+</Backdrop>

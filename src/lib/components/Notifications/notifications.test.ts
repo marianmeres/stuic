@@ -1,143 +1,82 @@
-import { createClogStr } from '@marianmeres/clog';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { expect, test } from 'vitest';
-import { strict as assert } from 'node:assert';
-import { createNotificationsStore, type Notification } from './notifications.js';
+import { expect, test, assert } from "vitest";
+import { NotificationsStack } from "./notifications-stack.svelte.js";
+import { sleep } from "../../index.js";
 
-const clog = createClogStr(path.basename(fileURLToPath(import.meta.url)));
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+test("sanity check", async () => {
+	const n = new NotificationsStack(["foo"], {
+		defaultTtl: 50,
+		disposeInterval: 10,
+		extraTtlPerChar: 0,
+	});
 
-test('initial', async () => {
-	const store = createNotificationsStore(['foo']);
-	store.subscribe((notifs: Notification[]) => {
-		// clog(notifs);
-		assert(notifs.length === 1);
-		assert(notifs[0].content === 'foo');
-		assert(notifs[0].id);
-		assert(notifs[0].created);
-		assert(notifs[0].type === store.options.defaultType);
-	})();
+	assert.equal(n.stack.length, 1);
+	assert.equal(n.stack[0], n.head);
+	assert.equal(n.head?.type, n.options.defaultType);
+	assert.equal(n.head?.count, 1);
+	assert(n.head?.id);
+
+	// checking progress update
+	let lastProgress = n.head._ttlProgress;
+	await sleep(15);
+	assert(lastProgress < n.head._ttlProgress);
+	lastProgress = n.head._ttlProgress;
+	await sleep(15);
+	assert(lastProgress < n.head._ttlProgress);
+	lastProgress = n.head._ttlProgress;
+
+	// sleep long enough to trigger disposal
+	await sleep(100);
+	assert(!n.head);
+
+	n.destroy();
 });
 
-test('add', async () => {
-	const store = createNotificationsStore([], { defaultTtl: 0 });
+test("add", async () => {
+	const n = new NotificationsStack();
 
-	store.subscribe((notifs: Notification[]) => {
-		assert(!notifs.length);
-	})();
+	n.warn("foo");
+	n.warn("foo");
 
-	store.add('foo');
+	assert.equal(n.stack.length, 1);
+	assert.equal(n.head?.count, 2);
 
-	store.subscribe((notifs: Notification[]) => {
-		assert(notifs.length === 1);
-		assert(notifs[0].content === 'foo');
-		assert(notifs[0].id);
-		assert(notifs[0].created);
-	})();
+	n.reset();
+	assert.equal(n.stack.length, 0);
 
-	const old = { id: 'old', content: 'hoho', created: new Date(0), type: 'custom' };
-	store.add(old);
+	// same id will be considered same notif (regardless of type - the first wins)
+	n.warn("foo", { id: "123" });
+	n.error("bar", { id: "123" });
+	assert.equal(n.stack.length, 1);
+	assert.equal(n.head?.count, 2);
+	assert.equal(n.head?.type, "warn"); // first wins
 
-	// test adding multiple times the same notification - must be ignored
-	store.add(old);
+	n.reset();
 
-	store.subscribe((notifs: Notification[]) => {
-		// clog(notifs);
-		// must be 2, not 3
-		assert(notifs.length === 2);
-		// must be sorted by created descending
-		assert(notifs[0].created < notifs[1].created);
-		assert(notifs[0] === old); // same instance
-		assert(notifs[1].content === 'foo'); // same instance
-	})();
+	// same content but different type is not identical
+	n.warn("foo");
+	n.error("foo");
+	n.info("foo");
+	assert.equal(n.stack.length, 3);
 
-	const notif = store.find('old');
-	// clog(notif);
-	assert(notif === old);
+	n.removeById(n.head!.id);
+	assert.equal(n.stack.length, 2);
 
-	store.remove(old.id);
-
-	store.subscribe((notifs: Notification[]) => {
-		assert(notifs.length === 1);
-		assert(notifs[0].content === 'foo');
-	})();
+	n.destroy();
 });
 
-test('events', async () => {
-	let log: any[] = [];
-	const n = {
-		id: 'some-id',
-		content: 'some-text',
-		on: (eventName: string, self: Notification, all: Notification[], data: any) =>
-			log.push({ eventName, data, self, all }),
-	};
+test("max capacity", async () => {
+	const n = new NotificationsStack([], {
+		maxCapacity: 2,
+	});
 
-	const store = createNotificationsStore([n, 'foo']);
-
-	store.event(n.id, 'some', 123);
-	store.event(n.id, 'another', 456);
-	store.event('non-existing', 'another', 456);
-
-	// clog(log);
-	assert(log.length === 2);
-	assert(log[0].eventName === 'some');
-
-	assert(log[1].data === 456);
-
-	// once removed, no more event listening
-	store.remove(n.id);
-	log = [];
-	store.event(n.id, 'some', 123);
-	assert(log.length === 0);
-});
-
-test('max capacity', async () => {
-	const store = createNotificationsStore([], { maxCapacity: 2 });
-
-	for (let n of 'abcd'.split('')) {
-		// so the created by sort makes sense
-		await sleep(10);
-		store.add(n);
+	for (const i of [1, 2, 3, 4]) {
+		n.info(`${i}`);
+		await sleep(10); // sorted by created, so sleep a little
 	}
 
-	store.subscribe((notifs: Notification[]) => {
-		// clog(notifs);
-		assert(notifs.length === 2);
-		// first 2 (a, b) must have been ignored
-		assert(notifs[0].content === 'c');
-		assert(notifs[1].content === 'd');
-	})();
-});
+	assert.equal(n.stack.length, 2);
+	assert.equal(n.stack[0].content, "3");
+	assert.equal(n.stack[1].content, "4");
 
-test('ttl', async () => {
-	const store = createNotificationsStore([], { defaultTtl: 1 });
-	store.add('foo');
-
-	store.subscribe(async (notifs: Notification[]) => {
-		assert(notifs.length);
-	})();
-
-	await sleep(1100);
-
-	store.subscribe(async (notifs: Notification[]) => {
-		assert(!notifs.length);
-	})();
-});
-
-test('multiple same id increases count', async () => {
-	const store = createNotificationsStore([
-		{ id: 'foo', content: 'Foo' },
-		{ id: 'bar', content: 'Bar' },
-		{ id: 'foo', content: 'This will be ignored because same id' },
-	]);
-	store.subscribe((notifs: Notification[]) => {
-		// clog(notifs);
-		assert(notifs.length === 2);
-		assert(notifs[0].content === 'Foo');
-		assert(notifs[0].count === 2);
-
-		assert(notifs[1].content === 'Bar');
-		assert(notifs[1].count === 1);
-	})();
+	n.destroy();
 });

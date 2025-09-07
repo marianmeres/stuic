@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 	// THC = Text or Html or Component
 
 	interface WithComponent {
@@ -14,35 +14,64 @@
 		html: string;
 	}
 
+	interface WithSnippet {
+		snippet: Snippet;
+	}
+
+	type AsSnippet = Snippet;
+
 	//
-	export type THC = string | WithText | WithHtml | WithComponent;
+	export type THC =
+		| string
+		| WithText
+		| WithHtml
+		| WithComponent
+		| WithSnippet
+		| AsSnippet;
 
-	const _is = (m: any) => typeof m === 'string' && m;
+	const _is = (m: any) => typeof m === "string" && m;
 
-	export const isTHCNotEmpty = (m: any) =>
-		_is(m) || _is(m?.text) || _is(m?.html) || m?.component;
+	export function isTHCNotEmpty(m: any) {
+		return _is(m) || _is(m?.text) || _is(m?.html) || m?.component;
+	}
+
+	/**
+	 * Will try to extract textual (or html) content from THC
+	 */
+	export function getTHCStringContent(m: any): string {
+		return m?.html || m?.text || (typeof m === "string" ? m : "") || "";
+	}
 </script>
 
 <script lang="ts">
-	// the content
-	export let thc: THC;
+	import type { Snippet } from "svelte";
 
-	// pragmatic shortcut to allow string to be rendered as html without
-	// the need to wrap it as { html: ... }
-	export let forceAsHtml = false;
+	interface Props extends Record<string, any> {
+		thc: THC;
+		forceAsHtml?: boolean;
+		allowCastToStringFallback?: boolean;
+	}
 
-	//
-	export let allowCastToStringFallback = true;
+	let {
+		thc,
+		forceAsHtml = false,
+		allowCastToStringFallback = true,
+		...rest
+	}: Props = $props();
 </script>
 
-{#if typeof thc === 'string'}
+{#if typeof thc === "string"}
 	{#if forceAsHtml}{@html thc}{:else}{thc}{/if}
-{:else if thc?.text}
+{:else if "text" in thc && thc.text}
 	{#if forceAsHtml}{@html thc.text}{:else}{thc.text}{/if}
-{:else if thc?.html}
+{:else if "html" in thc && thc.html}
 	{@html thc.html}
-{:else if thc?.component}
-	<svelte:component this={thc.component} {...thc?.props || {}} {...$$restProps || {}} />
+{:else if typeof thc === "function"}
+	{@render thc()}
+{:else if typeof thc === "object" && "snippet" in thc}
+	{@render thc.snippet()}
+{:else if typeof thc === "object" && "component" in thc}
+	<thc.component {...thc.props || {}} {...rest || {}} />
 {:else if allowCastToStringFallback}
 	<!-- cast to string as the last resort (if enabled) -->
 	{thc}

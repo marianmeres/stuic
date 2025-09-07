@@ -1,0 +1,132 @@
+<script lang="ts">
+	import type { Snippet } from "svelte";
+	import {
+		type ValidateOptions,
+		type ValidationResult,
+	} from "../../actions/validate.svelte.js";
+	import { getId } from "../../utils/get-id.js";
+	import { twMerge } from "../../utils/tw-merge.js";
+	import Switch from "../Switch/Switch.svelte";
+	import type { THC } from "../Thc/Thc.svelte";
+	import InputWrap from "./_internal/InputWrap.svelte";
+
+	type SnippetWithId = Snippet<[{ id: string }]>;
+
+	interface Props extends Record<string, any> {
+		input?: HTMLInputElement;
+		checked?: boolean;
+		label?: SnippetWithId | THC;
+		// type?: "submit" | "reset" | "button";
+		description?: SnippetWithId | THC;
+		class?: string;
+		id?: string;
+		tabindex?: number; // tooShort
+		renderSize?: "sm" | "md" | "lg" | string;
+		useTrim?: boolean;
+		name?: string;
+		//
+		required?: boolean;
+		disabled?: boolean;
+		//
+		validate?: boolean | Omit<ValidateOptions, "setValidationResult">;
+		// wrap snippets
+		labelAfter?: SnippetWithId | THC;
+		inputBefore?: SnippetWithId | THC;
+		inputAfter?: SnippetWithId | THC;
+		inputBelow?: SnippetWithId | THC;
+		below?: SnippetWithId | THC;
+		//
+		labelLeft?: boolean;
+		labelLeftWidth?: "normal" | "wide";
+		labelLeftBreakpoint?: number;
+		//
+		classInput?: string;
+		classLabel?: string;
+		classLabelBox?: string;
+		classInputBox?: string;
+		classInputBoxWrap?: string;
+		classDescBox?: string;
+		classBelowBox?: string;
+		//
+		style?: string;
+		//
+		renderValue?: (rawValue: any) => string;
+	}
+
+	let {
+		input = $bindable(),
+		checked = $bindable(),
+		label = "",
+		id = getId(),
+		// type = "button",
+		tabindex = 0,
+		description,
+		class: classProp,
+		renderSize = "md",
+		useTrim = true,
+		name,
+		//
+		required = false,
+		disabled = false,
+		//
+		validate,
+		//
+		labelAfter,
+		inputBefore,
+		inputAfter,
+		inputBelow,
+		below,
+		//
+		labelLeft = false,
+		labelLeftWidth = "normal",
+		labelLeftBreakpoint = 480,
+		//
+		classInput,
+		classLabel,
+		classLabelBox,
+		classInputBox,
+		classInputBoxWrap,
+		classDescBox,
+		classBelowBox,
+		style = "",
+		//
+		renderValue,
+		//
+		...rest
+	}: Props = $props();
+
+	//
+	let validation: ValidationResult | undefined = $state();
+	const setValidationResult = (res: ValidationResult) => (validation = res);
+</script>
+
+<InputWrap
+	{description}
+	class={classProp}
+	size={renderSize}
+	{id}
+	{label}
+	{labelAfter}
+	{inputBefore}
+	{inputAfter}
+	{below}
+	{required}
+	{disabled}
+	{labelLeft}
+	{labelLeftWidth}
+	{labelLeftBreakpoint}
+	{classLabel}
+	{classLabelBox}
+	{classInputBox}
+	classInputBoxWrap={twMerge(
+		"border-0 focus-within:border-0 focus-within:dark:border-0 focus-within:ring-0",
+		"bg-transparent dark:bg-transparent",
+		classInputBoxWrap
+	)}
+	{classDescBox}
+	{classBelowBox}
+	{validation}
+	{style}
+>
+	<Switch bind:checked {name} {required} {disabled} {validate} {setValidationResult} />
+</InputWrap>
