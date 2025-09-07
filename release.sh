@@ -89,4 +89,8 @@ echo "Version bumped to: $NEW_VERSION"
 echo "Pushing to remote..."
 git push && git push --tags
 
+# npm publish
+echo "Publishing to registry..."
+npm publish --access=public
+
 echo "Release complete! New version: $NEW_VERSION"
