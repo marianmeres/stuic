@@ -1,3 +1,9 @@
+<script lang="ts" module>
+	const LONG_LOREM = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam sed nisl volutpat arcu luctus lacinia. Nulla non tellus rutrum, cursus nibh vehicula, ultrices tellus. Mauris sodales orci interdum iaculis congue. Ut porta viverra dui vel aliquet. Phasellus aliquam dapibus ante, in porttitor lectus fringilla ultricies. Sed sapien est, sodales eget feugiat non, mollis a quam. Nullam pharetra tristique diam, non venenatis urna scelerisque id. Donec sodales eu nunc ac finibus. Integer eget lectus malesuada arcu condimentum gravida ac vulputate quam.
+
+Sed metus sapien, feugiat eget mauris quis, pellentesque porta enim. In hac habitasse platea dictumst. Suspendisse faucibus nisl ac urna tincidunt, non viverra nibh dignissim. Nam porttitor eleifend elementum. Phasellus sed pellentesque lectus. Nullam vitae auctor massa. Aenean malesuada sed risus eu faucibus. Phasellus imperdiet, ex at varius volutpat, nisl nibh hendrerit libero, a eleifend turpis metus a diam. Aliquam posuere enim erat. Suspendisse neque neque, dignissim at metus rhoncus, fermentum cursus turpis. Vivamus pretium rhoncus molestie. Vestibulum tincidunt purus non tortor ultrices molestie. Proin luctus sed urna quis sagittis. Praesent at fringilla lacus.`;
+</script>
+
 <script lang="ts">
 	import Button from "$lib/components/Button/Button.svelte";
 	import FieldCheckbox from "$lib/components/Input/FieldCheckbox.svelte";
@@ -38,7 +44,7 @@
 		options: '[{"id":"initial"},{"id":"not listed"}]',
 		switch: false,
 	});
-	$inspect("field_like_hidden", values.field_like_hidden);
+	// $inspect("values", values).with(clog);
 
 	let labelLeft = $state(false);
 
@@ -74,9 +80,18 @@
 	}
 </script>
 
-<Button size="sm" class="border px-2 mb-4" onclick={() => (labelLeft = !labelLeft)}
-	>left/full</Button
->
+<div>
+	<Button size="sm" class="border px-2 mb-4" onclick={() => (labelLeft = !labelLeft)}
+		>left/full</Button
+	>
+	<Button
+		size="sm"
+		class="border px-2 mb-4"
+		onclick={() => {
+			values.input2 = LONG_LOREM;
+		}}>set big text</Button
+	>
+</div>
 
 <!--  -->
 <!--  -->
@@ -206,6 +221,7 @@
 			name="input2"
 			required
 			validate
+			useAutogrow
 			description="inline description"
 			{labelLeft}
 		/>

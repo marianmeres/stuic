@@ -137,6 +137,7 @@
 		use:autogrow={() => ({
 			enabled: !!useAutogrow,
 			...(typeof useAutogrow === "boolean" ? {} : useAutogrow),
+			value,
 		})}
 		{tabindex}
 		{required}
