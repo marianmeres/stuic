@@ -1,5 +1,3 @@
-@import "../../_shared.css";
-
 /* prettier-ignore */
 @theme inline {
 	--color-switch-accent: var(--color-switch-accent, var(--color-red-600));

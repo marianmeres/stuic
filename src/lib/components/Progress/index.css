@@ -1,5 +1,3 @@
-@import "../../_shared.css";
-
 /* prettier-ignore */
 @theme inline {
 	--color-progress-bg: var(--color-progress-bg, var(--color-neutral-200));

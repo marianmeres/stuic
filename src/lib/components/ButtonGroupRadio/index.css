@@ -1,6 +1,3 @@
-@import "../../_shared.css";
-@plugin '@tailwindcss/forms';
-
 /* prettier-ignore */
 @theme inline {
 	--color-button-group-bg: var(--color-button-group-bg, var(--color-white));

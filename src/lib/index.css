@@ -1,16 +1,21 @@
-@import "./_shared.css";
+@import "tailwindcss";
+@plugin '@tailwindcss/forms';
 
-@source "./";
+@custom-variant dark (&:where(.dark, .dark *));
 
-@import "./actions/tooltip/index.css";
-@import "./components/Button/index.css";
-@import "./components/ButtonGroupRadio/index.css";
-@import "./components/DismissibleMessage/index.css";
-@import "./components/Input/index.css";
-@import "./components/Notifications/index.css" layer(utilities);
-@import "./components/Progress/index.css";
-@import "./components/Switch/index.css";
-@import "./components/TwCheck/index.css";
+/* @source "./"; */
+
+@layer components {
+	@import "./actions/tooltip/index.css";
+	@import "./components/Button/index.css";
+	@import "./components/ButtonGroupRadio/index.css";
+	@import "./components/DismissibleMessage/index.css";
+	@import "./components/Input/index.css";
+	@import "./components/Notifications/index.css";
+	@import "./components/Progress/index.css";
+	@import "./components/Switch/index.css";
+	@import "./components/TwCheck/index.css";
+}
 
 @layer base {
 	button:not(:disabled),

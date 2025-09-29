@@ -1,5 +1,3 @@
-@import "../../_shared.css";
-
 @theme inline {
 	--color-twcheck-bg: var(--color-twcheck-bg, var(--color-red-600));
 }
