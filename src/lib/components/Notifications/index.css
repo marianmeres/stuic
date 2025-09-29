@@ -1,4 +1,14 @@
-@import "../../_shared.css";
+/* @import "../../_shared.css"; */
+
+/* 
+    When defining theme variables that reference other variables, use the inline option.
+
+    Using the inline option, the utility class will use the theme variable value instead 
+    of referencing the actual theme variable.
+
+    Without using inline, your utility classes might resolve to unexpected values because 
+    of how variables are resolved in CSS.
+*/
 
 /* prettier-ignore */
 @theme inline {
