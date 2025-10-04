@@ -12,6 +12,7 @@
 		type FnOnEscape,
 		type FnOnOK,
 	} from "$lib/index.js";
+	import { tick } from "svelte";
 	import { dummySentence } from "../../_utils/dummy-text.js";
 
 	const acp = new AlertConfirmPromptStack();
@@ -65,10 +66,10 @@
 				onCancel,
 				onCustom,
 				onEscape,
-				content: dummySentence(8),
+				content: dummySentence(30),
 			})}
 	>
-		alert
+		long alert
 	</Button>
 
 	<Button
@@ -89,13 +90,28 @@
 	<Button
 		size="sm"
 		onclick={() => {
-			acp.prompt(onOk, {
-				onCancel,
-				onCustom,
-				onEscape,
-				content: dummySentence(2),
-				variant: "error",
-			});
+			acp.prompt(
+				async (val: any) => {
+					console.log("OK", val);
+					await tick(); // hm...
+					acp.shift();
+				},
+				{
+					onCancel,
+					onCustom,
+					onEscape,
+					content: dummySentence(2),
+					value: "",
+					promptFieldProps: {
+						description: "Field must contain number",
+						validate: {
+							customValidator(val: any, ctx: any, el) {
+								if (!/\d+/.test(val)) return "Must include numbers";
+							},
+						},
+					},
+				}
+			);
 		}}
 	>
 		prompt

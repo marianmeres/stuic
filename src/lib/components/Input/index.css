@@ -10,7 +10,8 @@
 			text-base placeholder:text-base
 			bg-transparent
 			tracking-tight
-			focus:outline-0 focus-visible:ring-0
+			focus:outline-none focus:ring-0
+			focus-visible:outline-none focus-visible:ring-0
 			placeholder:tracking-tight
 			placeholder:text-neutral-950/35 dark:placeholder:text-neutral-50/35
 			text-neutral-950 dark:text-neutral-50;

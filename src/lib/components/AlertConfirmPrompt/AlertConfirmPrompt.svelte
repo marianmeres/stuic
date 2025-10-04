@@ -27,7 +27,6 @@
 		}
 	});
 
-	let value = $state();
 	let isPending = $state(false);
 </script>
 
@@ -49,13 +48,13 @@
 		noClickOutsideClose
 		type={acp?.current?.type}
 		class={twMerge(
-			"max-w-xl justify-end max-h-[62vh] sm:max-h-[200px] border p-4 rounded-lg",
+			"max-w-xl justify-end max-h-[62vh] h-auto border p-4 rounded-lg",
 			// different max-h based on not/existing content
-			isTHCNotEmpty(acp?.current?.content) ? "sm:max-h-[200px]" : "sm:max-h-[150px]",
-			acp?.current?.type === PROMPT && "sm:max-h-[250px]",
+			// isTHCNotEmpty(acp?.current?.content) ? "sm:max-h-[200px]" : "sm:max-h-[150px]",
+			// acp?.current?.type === PROMPT && "sm:max-h-[250px]",
 			classProp
 		)}
 	>
-		<Current bind:value bind:isPending {acp} />
+		<Current bind:isPending {acp} />
 	</ModalDialog>
 {/if}

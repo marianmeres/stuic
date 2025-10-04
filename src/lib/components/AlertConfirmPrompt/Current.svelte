@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { tick } from "svelte";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import Button from "../Button/Button.svelte";
 	import FieldInput from "../Input/FieldInput.svelte";
@@ -16,7 +17,6 @@
 
 	interface Props {
 		acp?: AlertConfirmPromptStack;
-		value?: any;
 		isPending?: boolean;
 		forceAsHtml?: boolean;
 		class?: string;
@@ -35,7 +35,6 @@
 
 	let {
 		acp,
-		value = $bindable(),
 		isPending = $bindable(false),
 		forceAsHtml = true,
 		class: classProp,
@@ -62,22 +61,35 @@
 		return out;
 	});
 
-	const createOnClick = (worker: CallableFunction) => async (e: Event) => {
-		e.preventDefault();
-		isPending = true;
-		await Promise.resolve(worker(current.type === PROMPT ? value : true));
-		isPending = false;
-		value = null;
-	};
+	let inputEl = $state<any>();
+	let okButtonEl = $state<any>();
+
+	const createOnClick =
+		(type: "cancel" | "ok" | "custom", worker: CallableFunction) =>
+		async (e: Event | null) => {
+			e?.preventDefault();
+
+			// trigger validate
+			if (inputEl && type === "ok" && current.type === PROMPT) {
+				inputEl.dispatchEvent(new Event("input", { bubbles: true }));
+				inputEl.dispatchEvent(new Event("change", { bubbles: true }));
+				if (!inputEl.checkValidity()) return;
+			}
+
+			//
+			isPending = true;
+			await Promise.resolve(worker(current.type === PROMPT ? current.value : true));
+			isPending = false;
+		};
 
 	const debug = (c?: string, flag = 0) =>
 		c && flag ? `outline outline-dashed ${c}` : "";
 
 	// Default classes
 
-	const _class = "p-1 sm:p-2 h-full flex flex-col overflow-hidden";
+	const _class = "p-1 sm:p-2 h-full flex flex-col min-h-[150px]"; // overflow-hidden
 
-	const _classWrap = `flex-1 sm:flex sm:items-start overflow-hidden`;
+	const _classWrap = `flex-1 sm:flex sm:items-start `; // overflow-hidden
 
 	const _classIconBox = `size-12 sm:size-10
 		mt-1 mb-4 sm:my-0 sm:mr-5
@@ -87,7 +99,7 @@
 		bg-neutral-950/10 text-neutral-950/80
 		dark:bg-neutral-50/20 dark:text-neutral-50/80`;
 
-	const _classContentBox = `mt-3 sm:mt-0 flex-1 overflow-hidden h-full flex flex-col`;
+	const _classContentBox = `mt-3 sm:mt-0 flex-1 h-full flex flex-col`; // overflow-hidden
 
 	const _classTitle = `text-center sm:text-left text-base font-semibold leading-6`;
 
@@ -128,7 +140,10 @@
 				<Thc thc={current.title} {forceAsHtml} />
 			</h1>
 
-			<div class="scrollable overflow-y-auto flex-1" style="scrollbar-width: thin;">
+			<div
+				class="scrollable overflow-y-auto flex-1 max-h-[30vh]"
+				style="scrollbar-width: thin;"
+			>
 				{#if isTHCNotEmpty(current.content)}
 					<div class={twMerge("content", _classContent, classContent)}>
 						<Thc thc={current.content} {forceAsHtml} />
@@ -136,10 +151,11 @@
 				{/if}
 
 				{#if current.type === PROMPT}
-					<div class={twMerge("input-box", "mt-1 p-2", classInputBox)}>
+					<div class={twMerge("input-box", "mt-3 p-1", classInputBox)}>
 						{#if current?.promptFieldProps?.options?.length}
 							<FieldSelect
-								bind:value
+								bind:value={current.value}
+								bind:input={inputEl}
 								class={twMerge("input", "m-0", classInput)}
 								options={current.promptFieldProps.options}
 								renderSize="sm"
@@ -148,11 +164,17 @@
 							/>
 						{:else}
 							<FieldInput
-								bind:value
-								class={twMerge("input", classInput)}
+								bind:value={current.value}
+								bind:input={inputEl}
+								class={twMerge("input", "m-0", classInput)}
 								renderSize="sm"
 								disabled={isPending}
 								{...current?.promptFieldProps || {}}
+								onkeydown={(e) => {
+									if (e.key === "Enter" && inputEl.checkValidity()) {
+										okButtonEl?.focus()?.click(); // hm...
+									}
+								}}
 							/>
 						{/if}
 					</div>
@@ -166,7 +188,7 @@
 				<Button
 					class={twMerge("cancel", _classButton, classButton)}
 					disabled={isPending}
-					onclick={createOnClick(current.onCancel)}
+					onclick={createOnClick("cancel", current.onCancel)}
 				>
 					<Thc thc={current.labelCancel} {forceAsHtml} />
 				</Button>
@@ -177,7 +199,7 @@
 				<Button
 					class={twMerge("custom", _classButton, classButton)}
 					disabled={isPending}
-					onclick={createOnClick(current.onCustom)}
+					onclick={createOnClick("custom", current.onCustom)}
 				>
 					<Thc thc={current.labelCustom} {forceAsHtml} />
 				</Button>
@@ -188,7 +210,8 @@
 				class={twMerge("ok", _classButton, classButton)}
 				variant="primary"
 				disabled={isPending}
-				onclick={createOnClick(current.onOk)}
+				onclick={createOnClick("ok", current.onOk)}
+				bind:el={okButtonEl}
 			>
 				<Thc thc={current.labelOk} {forceAsHtml} />
 			</Button>
