@@ -76,6 +76,7 @@
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
 	interface Props extends Record<string, any> {
+		trigger?: Snippet<[{ value: string; modal: Modal }]>;
 		input?: HTMLInputElement;
 		value: string;
 		label?: SnippetWithId | THC;
@@ -135,9 +136,12 @@
 		searchPlaceholder?: string;
 		name: string;
 		itemIdPropName?: string;
+		// for custom stuff...
+		onChange?: (value: string) => void;
 	}
 
 	let {
+		trigger,
 		input = $bindable(),
 		value = $bindable(), //
 		label = "",
@@ -191,6 +195,7 @@
 		searchPlaceholder,
 		name,
 		itemIdPropName = "id",
+		onChange,
 		...rest
 	}: Props = $props();
 
@@ -344,7 +349,7 @@
 
 	// "inner" submit
 	function try_submit(force = false) {
-		clog("try_submit", innerValue);
+		// clog("try_submit", innerValue);
 		if (innerValue) {
 			let found = have_option_label_like(_optionsColl.items, innerValue);
 			if (!found && !allowUnknown) {
@@ -396,6 +401,7 @@
 		_optionsColl.clear();
 		modal.close();
 		_dispatch_change_to_owner();
+		onChange?.(value);
 	}
 
 	// clears, closes, submits nothing
@@ -497,33 +503,36 @@
 
 <!-- must wrap both -->
 <div>
-	<FieldLikeButton
-		bind:value
-		bind:input={parentHiddenInputEl}
-		{name}
-		class={classProp}
-		{label}
-		{description}
-		{labelLeft}
-		{labelAfter}
-		{below}
-		{labelLeftWidth}
-		{labelLeftBreakpoint}
-		{classLabel}
-		{classLabelBox}
-		{classInputBox}
-		{classInputBoxWrap}
-		{classDescBox}
-		{classBelowBox}
-		{style}
-		validate={wrappedValidate}
-		{required}
-		{disabled}
-		renderValue={(v) => {
-			if (typeof renderValue === "function") return renderValue(v);
-			// console.log(123123, "renderValue", v);
-			// prettier-ignore
-			try {
+	{#if trigger}
+		{@render trigger({ value, modal })}
+	{:else}
+		<FieldLikeButton
+			bind:value
+			bind:input={parentHiddenInputEl}
+			{name}
+			class={classProp}
+			{label}
+			{description}
+			{labelLeft}
+			{labelAfter}
+			{below}
+			{labelLeftWidth}
+			{labelLeftBreakpoint}
+			{classLabel}
+			{classLabelBox}
+			{classInputBox}
+			{classInputBoxWrap}
+			{classDescBox}
+			{classBelowBox}
+			{style}
+			validate={wrappedValidate}
+			{required}
+			{disabled}
+			renderValue={(v) => {
+				if (typeof renderValue === "function") return renderValue(v);
+				// console.log(123123, "renderValue", v);
+				// prettier-ignore
+				try {
 				// defensive
 				if (!v) v = "[]";
 
@@ -541,9 +550,10 @@
 				clog.warn(e);
 				return `${e}`; // either invalid json or not array...
 			}
-		}}
-		onclick={modal?.open}
-	/>
+			}}
+			onclick={modal?.open}
+		/>
+	{/if}
 
 	<Modal
 		bind:this={modal}
