@@ -6,7 +6,7 @@
 	import { iconLucideSquare } from "@marianmeres/icons-fns/lucide/iconLucideSquare.js";
 	import { ItemCollection, type Item } from "@marianmeres/item-collection";
 	import { Debounced, watch } from "runed";
-	import { tick, type Snippet } from "svelte";
+	import { tick, untrack, type Snippet } from "svelte";
 	import { tooltip } from "../../actions/index.js";
 	import { type ValidateOptions } from "../../actions/validate.svelte.js";
 	import { getId } from "../../utils/get-id.js";
@@ -26,6 +26,7 @@
 	import { replaceMap } from "../../utils/replace-map.js";
 	import { isPlainObject } from "../../utils/is-plain-object.js";
 	import type { TranslateFn } from "../../types.js";
+	import { sleep } from "../../utils/sleep.js";
 
 	export interface Option {
 		label: string;
@@ -289,34 +290,29 @@
 	// add_new dance...
 	let addNewBtn: HTMLButtonElement | undefined = $state();
 	let isAddNewBtnActive = $state(false);
+	let touch = $state(new Date());
 
 	// set value on open
-	watch(
-		() => modal.visibility().visible,
-		(isVisible, wasVisible) => {
-			// modal was just opened
-			if (!wasVisible && isVisible) {
-				_selectedColl.clear().addMany(maybeJsonParse(value));
-				// IMPORTANT: focus first selected so it scrolls into view on open
-				if (_selectedColl.size) {
-					waitForNextRepaint().then(() => {
-						_optionsColl.setActive(_selectedColl.items[0]);
-					});
-				}
-			}
-		}
-	);
-
-	// scroll the active option into view
-	$effect(() => {
-		if (modal.visibility().visible && options.active?.[itemIdPropName]) {
-			activeEl = qsa(`#${btn_id(options.active[itemIdPropName])}`, optionsBox)[0] as any;
-			activeEl?.scrollIntoView({ behavior: "smooth", block: "center" });
-			activeEl?.focus();
-		} else {
-			activeEl = undefined;
-		}
-	});
+	// watch(
+	// 	() => modal.visibility().visible,
+	// 	(isVisible, wasVisible) => {
+	// 		// modal was just opened
+	// 		if (isVisible) {
+	// 			_selectedColl.clear().addMany(maybeJsonParse(value));
+	// 			console.log(_selectedColl.dump());
+	// 			// IMPORTANT: focus first selected so it scrolls into view on open
+	// 			if (_selectedColl.size) {
+	// 				console.log(1111);
+	// 				waitForNextRepaint().then(() => {
+	// 					_optionsColl.setActive(_selectedColl.items[0]);
+	// 					waitForNextRepaint().then(() => {
+	// 						scrollIntoViewTrigger = new Date();
+	// 					});
+	// 				});
+	// 			}
+	// 		}
+	// 	}
+	// );
 
 	// suggest options as a typeahead feature
 	const debounced = new Debounced(() => innerValue, 150);
@@ -329,10 +325,13 @@
 				.then((res) => {
 					const { found, coll } = res;
 
-					// always update the existing with recent server data
-					_selectedColl.patchMany(found);
 					// continue normally, with (server) provided options...
 					_optionsColl.clear().addMany(found);
+					// always update the existing with recent server data
+					_selectedColl.patchMany(found);
+
+					// update signal...
+					touch = new Date();
 				})
 				.catch((e) => {
 					console.error(e);
@@ -341,6 +340,29 @@
 				.finally(() => (isFetching = false));
 		}
 	);
+
+	$effect(() => {
+		if (modal.visibility().visible && touch) {
+			_selectedColl.clear().addMany(maybeJsonParse(value));
+			// IMPORTANT: focus first selected so it scrolls into view on open
+			if (_selectedColl.size) {
+				waitForNextRepaint().then(() => {
+					_optionsColl.setActive(_selectedColl.items[0]);
+				});
+			}
+		}
+	});
+
+	// scroll the active option into view
+	$effect(() => {
+		if (options.active?.[itemIdPropName]) {
+			activeEl = qsa(`#${btn_id(options.active[itemIdPropName])}`, optionsBox)[0] as any;
+			activeEl?.scrollIntoView({ behavior: "smooth", block: "center" });
+			activeEl?.focus();
+		} else {
+			activeEl = undefined;
+		}
+	});
 
 	// internal DRY
 	function btn_id(id: string | number, prefix = "btn-") {
