@@ -6,13 +6,16 @@
 	import { iconLucideSquare } from "@marianmeres/icons-fns/lucide/iconLucideSquare.js";
 	import { ItemCollection, type Item } from "@marianmeres/item-collection";
 	import { Debounced, watch } from "runed";
-	import { tick, untrack, type Snippet } from "svelte";
+	import { tick, type Snippet } from "svelte";
 	import { tooltip } from "../../actions/index.js";
 	import { type ValidateOptions } from "../../actions/validate.svelte.js";
+	import type { TranslateFn } from "../../types.js";
 	import { getId } from "../../utils/get-id.js";
+	import { isPlainObject } from "../../utils/is-plain-object.js";
 	import { maybeJsonParse } from "../../utils/maybe-json-parse.js";
 	import { waitForNextRepaint } from "../../utils/paint.js";
 	import { qsa } from "../../utils/qsa.js";
+	import { replaceMap } from "../../utils/replace-map.js";
 	import { strHash } from "../../utils/str-hash.js";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import Button from "../Button/Button.svelte";
@@ -23,10 +26,6 @@
 	import X from "../X/X.svelte";
 	import InputWrap from "./_internal/InputWrap.svelte";
 	import FieldLikeButton from "./FieldLikeButton.svelte";
-	import { replaceMap } from "../../utils/replace-map.js";
-	import { isPlainObject } from "../../utils/is-plain-object.js";
-	import type { TranslateFn } from "../../types.js";
-	import { sleep } from "../../utils/sleep.js";
 
 	export interface Option {
 		label: string;
@@ -249,7 +248,6 @@
 		allowNextPrevCycle: false,
 		sortFn,
 		idPropName: itemIdPropName,
-		searchable: { getContent: (item) => _renderOptionLabel(item) },
 	});
 
 	// second, the selected ones
