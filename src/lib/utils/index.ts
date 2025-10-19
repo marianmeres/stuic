@@ -10,6 +10,7 @@ export * from "./is-mac.js";
 export * from "./is-nullish.js";
 export * from "./maybe-json-parse.js";
 export * from "./maybe-json-stringify.js";
+export * from "./nl2br.js";
 export * from "./omit-pick.js";
 export * from "./paint.js";
 export * from "./persistent-state.svelte.js";
