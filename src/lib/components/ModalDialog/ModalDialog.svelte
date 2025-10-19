@@ -120,7 +120,7 @@
 		)}
 		onkeydown={async (e) => {
 			if (e.key === "Escape" && visible) {
-				clog("on Escape keydown, preventing default and stopping propagation");
+				// clog("on Escape keydown, preventing default and stopping propagation");
 
 				// do not allow built-in close on escape
 				e.preventDefault();

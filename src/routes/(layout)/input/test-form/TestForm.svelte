@@ -195,7 +195,7 @@ Sed metus sapien, feugiat eget mauris quis, pellentesque porta enim. In hac habi
 		<FieldSwitch
 			bind:checked={values.switch}
 			label="Do you agree?"
-			name="swich"
+			name="switch"
 			required
 			description="some description"
 			{labelLeft}

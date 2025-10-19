@@ -37,7 +37,7 @@
 		name,
 		class: classProp,
 		dotClass,
-		checked = $bindable(false),
+		checked = $bindable(),
 		required,
 		disabled,
 		tabindex = 0,

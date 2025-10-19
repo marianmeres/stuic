@@ -26,7 +26,7 @@
 		size = "md",
 		class: classProp,
 		dotClass,
-		checked = $bindable(false),
+		checked = $bindable(),
 		disabled,
 		tabindex = 0,
 		label,
