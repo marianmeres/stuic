@@ -10,5 +10,7 @@ export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
 	server: {
 		port: parseInt(process.env.DEV_PORT || "8888"),
+		// expose on all
+		host: true,
 	},
 });

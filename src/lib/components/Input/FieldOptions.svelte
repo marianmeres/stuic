@@ -369,11 +369,16 @@
 
 	// "inner" submit
 	function try_submit(force = false) {
-		// clog("try_submit", innerValue);
+		// clog("try_submit", innerValue, _selectedColl.dump());
 		if (innerValue) {
 			let found = have_option_label_like(_optionsColl.items, innerValue);
+			// clog("found", found, allowUnknown, _selectedColl.dump());
 			if (!found && !allowUnknown) {
-				return notifications?.error(t("select_from_list"), { ttl: 1000 });
+				if (isMultiple && _selectedColl.size) {
+					// this is actually ok... (not simplifying the outer if so its easily readable)
+				} else {
+					return notifications?.error(t("select_from_list"), { ttl: 1000 });
+				}
 			}
 
 			if (!found && !_optionsColl.size) {
