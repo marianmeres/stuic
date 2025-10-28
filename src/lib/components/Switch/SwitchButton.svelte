@@ -68,7 +68,7 @@
 	
 			transition-colors duration-100
 	
-			hover:brightness-[1.05] active:brightness-[0.95]
+			hover:brightness-105 active:brightness-95
 			disabled:!cursor-not-allowed disabled:!opacity-50 disabled:hover:brightness-100
 	
 			bg-neutral-400 dark:bg-neutral-400

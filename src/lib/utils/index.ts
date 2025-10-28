@@ -5,6 +5,8 @@ export * from "./escape-regex.js";
 export * from "./event-emitter.js";
 export * from "./event-modifiers.js";
 export * from "./get-id.js";
+export * from "./hex-to-oklch.js";
+export * from "./hex-to-rgb.js";
 export * from "./is-browser.js";
 export * from "./is-mac.js";
 export * from "./is-nullish.js";

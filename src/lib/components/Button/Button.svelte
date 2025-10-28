@@ -10,11 +10,11 @@
 		inline-flex items-center justify-center gap-x-2
 		px-3 py-2
 
-		hover:brightness-[1.05]
-		active:brightness-[0.95]
+		hover:brightness-105
+		active:brightness-95
 		disabled:hover:brightness-100
 
-		focus:brightness-[1.05] 
+		focus:brightness-105
 		focus:border-button-border-focus focus:dark:border-button-border-focus-dark
 
 		        focus:outline-4         focus:outline-black/10         focus:dark:outline-white/20
@@ -42,6 +42,11 @@
 			active:shadow-none active:translate-[1px]
 			disabled:shadow-none disabled:active:shadow-none disabled:active:translate-none
 		`,
+		inverse: `
+			bg-transparent dark:bg-transparent 
+			hover:bg-button-bg hover:dark:bg-button-bg-dark
+			hover:brightness-100 
+		`,
 	};
 </script>
 
@@ -58,7 +63,9 @@
 		size?: "sm" | "md" | "lg" | string;
 		muted?: boolean;
 		noshadow?: boolean;
+		noborder?: boolean;
 		unstyled?: boolean;
+		inverse?: boolean; // a.k.a. formerly "outlined"
 		class?: string;
 		href?: string;
 		children?: Snippet<[{ checked?: boolean }]>;
@@ -74,6 +81,8 @@
 		class: classProp,
 		muted,
 		noshadow,
+		noborder,
+		inverse,
 		unstyled,
 		href,
 		children,
@@ -108,12 +117,15 @@
 			size,
 			muted && "muted",
 			noshadow && "no-shadow",
+			noborder && "border-none",
+			inverse && "inverse",
 			// now, attach the default tw classes (unless not explicitly forbidden)
 			!unstyled && _base,
 			!unstyled && size && _preset.size[size],
 			!unstyled && variant && _preset.variant[variant],
 			!unstyled && muted && _preset.muted,
 			!unstyled && !noshadow && _preset.shadow,
+			!unstyled && inverse && _preset.inverse,
 		]
 			.filter(Boolean)
 			.join(" ")

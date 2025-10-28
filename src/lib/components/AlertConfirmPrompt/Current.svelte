@@ -31,6 +31,9 @@
 		classMenuLi?: string;
 		classButton?: string;
 		classSpinnerBox?: string;
+		defaultIcons?: Partial<
+			Record<"info" | "success" | "warn" | "error" | "spinner", () => string | undefined>
+		>;
 	}
 
 	let {
@@ -49,6 +52,7 @@
 		classMenuLi,
 		classButton,
 		classSpinnerBox,
+		defaultIcons = acpDefaultIcons,
 	}: Props = $props();
 
 	let current = $derived(acp?.current!);
@@ -56,7 +60,7 @@
 	let iconFn = $derived.by(() => {
 		let out = current.iconFn;
 		if (current.iconFn === true) {
-			out = acpDefaultIcons[current.variant];
+			out = defaultIcons[current.variant];
 		}
 		return out;
 	});
