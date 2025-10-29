@@ -9,6 +9,7 @@
 		rounded-md
 		inline-flex items-center justify-center gap-x-2
 		px-3 py-2
+		select-none
 
 		hover:brightness-105
 		active:brightness-95

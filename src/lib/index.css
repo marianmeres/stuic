@@ -29,6 +29,6 @@ so, since we need to override, sticking with that*/
 	[role="button"]:disabled,
 	input:disabled {
 		cursor: not-allowed !important;
-		opacity: 0.5 !important;
+		/* opacity: 0.5 !important; */
 	}
 }
