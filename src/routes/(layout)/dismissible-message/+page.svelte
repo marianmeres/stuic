@@ -7,37 +7,40 @@
 	let theme = $state<TW_COLORS>();
 </script>
 
-<DismissibleMessage {message} {theme} class="border-1" />
+<div>
+	<DismissibleMessage {message} {theme} class="border-1" />
+	<!-- --color-dismiss-bg="var(--color-red-500)" -->
 
-<FieldSelect
-	bind:value={theme}
-	class="inline-block"
-	renderSize="sm"
-	options={[
-		"",
-		"amber",
-		"blue",
-		"cyan",
-		"emerald",
-		"fuchsia",
-		"gray",
-		"green",
-		"indigo",
-		"lime",
-		"neutral",
-		"orange",
-		"pink",
-		"purple",
-		"red",
-		"rose",
-		"sky",
-		"slate",
-		"stone",
-		"teal",
-		"violet",
-		"yellow",
-		"zinc",
-	]}
-/>
+	<FieldSelect
+		bind:value={theme}
+		class="inline-block"
+		renderSize="sm"
+		options={[
+			"",
+			"amber",
+			"blue",
+			"cyan",
+			"emerald",
+			"fuchsia",
+			"gray",
+			"green",
+			"indigo",
+			"lime",
+			"neutral",
+			"orange",
+			"pink",
+			"purple",
+			"red",
+			"rose",
+			"sky",
+			"slate",
+			"stone",
+			"teal",
+			"violet",
+			"yellow",
+			"zinc",
+		]}
+	/>
 
-<Button size="sm" onclick={() => (message = dummySentence(5))}>create</Button>
+	<Button onclick={() => (message = dummySentence(5))}>create</Button>
+</div>

@@ -133,7 +133,11 @@
 
 	let _iconFns = $derived({ ...notificationsDefaultIcons, ...iconFns });
 
-	const maybeIcon = (n: Notification) => (n.iconFn ?? _iconFns?.[n.type])?.();
+	const maybeIcon = (n: Notification) => {
+		if (n.iconFn === false) return "";
+		if (typeof n.iconFn === "function") return n.iconFn();
+		return (_iconFns?.[n.type] as any)?.();
+	};
 
 	const _classWrapX = `
         fixed z-50 flex flex-row inset-0 

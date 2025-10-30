@@ -56,7 +56,7 @@
                     --color-dismiss-border: var(--color-${theme}-500);
                     --color-dismiss-border-dark: var(--color-${theme}-500);
                 `
-			: ""}
+			: ``}
 		transition:slide={{ duration }}
 	>
 		<div class={twMerge("content", "flex-1 px-4 py-3", classContent)}>
