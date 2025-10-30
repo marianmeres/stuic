@@ -1,3 +1,4 @@
+export * from "./body-scroll-locker.js";
 export * from "./breakpoint.svelte.js";
 export * from "./colors.js";
 export * from "./debounce.js";

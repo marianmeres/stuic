@@ -1,33 +1,3 @@
-<script lang="ts" module>
-	interface BodyStyles {
-		position: string | null;
-		top: string | null;
-		width: string | null;
-		overflow: string | null;
-	}
-
-	function get_body_style(): BodyStyles {
-		// const style = window.getComputedStyle(document.body);
-		const style = document.body.style; // we want only explicitly defined, not computed
-		return {
-			position: style.position || null,
-			top: style.top || null,
-			width: style.width || null,
-			overflow: style.overflow || null,
-		};
-	}
-
-	function restore_body_styles(original: BodyStyles) {
-		(["position", "top", "width", "overflow"] as (keyof BodyStyles)[]).forEach((k) => {
-			if (original[k] !== null) {
-				document.body.style[k] = original[k];
-			} else {
-				document.body.style.removeProperty(k);
-			}
-		});
-	}
-</script>
-
 <script lang="ts">
 	import { onClickOutside } from "runed";
 	import { onDestroy, onMount, tick, type Snippet } from "svelte";
@@ -36,6 +6,7 @@
 	import { twMerge } from "../../utils/tw-merge.js";
 	import { createClog } from "@marianmeres/clog";
 	import { waitForNextRepaint } from "../../utils/paint.js";
+	import { BodyScroll } from "../../utils/body-scroll-locker.js";
 
 	const clog = createClog("ModalDialog").debug;
 
@@ -65,7 +36,9 @@
 		preClose,
 	}: Props = $props();
 
-	let visible = $state(false);
+	// important to start as undefined (because of scroll save/restore)
+	let visible: boolean | undefined = $state(undefined);
+
 	let dialog = $state<HTMLDialogElement>()!;
 	let box = $state<HTMLDivElement>()!;
 	let _opener: undefined | null | HTMLElement = $state();
@@ -106,35 +79,15 @@
 		() => !noClickOutsideClose && close()
 	);
 
-	// lock body scroll when open and restore back
-	let _original: BodyStyles = {
-		position: null,
-		top: null,
-		width: null,
-		overflow: null,
-	};
-
-	function _restore() {
-		const scrollY = document.body.style.top;
-		restore_body_styles(_original);
-		// Restore scroll position
-		window.scrollTo(0, parseInt(scrollY || "0") * -1);
-	}
-
 	$effect(() => {
-		if (visible) {
-			_original = get_body_style();
-			const scrollY = window.scrollY;
-			document.body.style.position = "fixed";
-			document.body.style.top = `-${scrollY}px`;
-			document.body.style.width = "100%";
-			document.body.style.overflow = "hidden";
-		} else {
-			_restore();
-		}
-		// also onDestroy (will also reset if nested... which is not desired, but ignoring currently)
-		return _restore;
+		// noop if we're undefined ($effect runs immediately as onMount)
+		if (visible === undefined) return;
+		visible ? BodyScroll.lock() : BodyScroll.unlock();
 	});
+
+	// we need onDestroy as well
+	// Note, that this will also reset if nested... (which is not desired, but ignoring)
+	onDestroy(BodyScroll.unlock);
 
 	// $inspect("Modal dialog mounted, is visible:", visible).with(clog);
 </script>
