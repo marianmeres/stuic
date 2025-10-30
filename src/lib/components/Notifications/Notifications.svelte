@@ -133,7 +133,7 @@
 
 	let _iconFns = $derived({ ...notificationsDefaultIcons, ...iconFns });
 
-	const maybeIcon = (n: Notification) => n.iconFn ?? _iconFns?.[n.type];
+	const maybeIcon = (n: Notification) => (n.iconFn ?? _iconFns?.[n.type])?.();
 
 	const _classWrapX = `
         fixed z-50 flex flex-row inset-0 
@@ -222,7 +222,7 @@
 		<div class={twMerge("wrap-y", _classWrapY, YMAP_M[yMobile], YMAP[y], classWrapY)}>
 			{#each notifications.stack as n (n.id)}
 				{@const { Cmp, props } = maybeComponent(n)}
-				{@const iconFn = maybeIcon(n)}
+				{@const iconHtml = maybeIcon(n)}
 				{@const showXButton = !noXButton || n.ttl > 1000}
 				{#if Cmp}
 					<Cmp {...props || {}} notification={n} {notifications} />
@@ -247,9 +247,9 @@
 								{n.count}
 							</div>
 						{/if}
-						{#if !noIcons && typeof iconFn === "function"}
+						{#if !noIcons && iconHtml}
 							<div class={twMerge("icon", _classNotifIcon, classNotifIcon)}>
-								{@html iconFn()}
+								{@html iconHtml}
 							</div>
 						{/if}
 
