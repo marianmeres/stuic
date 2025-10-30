@@ -87,6 +87,9 @@ export class AlertConfirmPromptStack {
 		o.labelCancel ??= this.defaults.labelCancel;
 		o.iconFn ??= this.defaults.iconFn;
 		o.title ??= ucf(`${o.type || ""}`);
+		o.CmpButtonOk ??= this.defaults.CmpButtonOk;
+		o.CmpButtonCancel ??= this.defaults.CmpButtonCancel;
+		o.CmpButtonCustom ??= this.defaults.CmpButtonCustom;
 
 		// variant defaults to info
 		if (!["info", "success", "warn", "error"].includes(o?.variant as string)) {
