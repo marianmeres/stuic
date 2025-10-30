@@ -13,7 +13,7 @@
 
 		hover:brightness-105
 		active:brightness-95
-		disabled:hover:brightness-100
+		disabled:hover:brightness-100 disabled:opacity-50
 
 		focus:brightness-105
 		focus:border-button-border-focus focus:dark:border-button-border-focus-dark

@@ -27,9 +27,9 @@
 		Custom direct colors
 	</Button>
 	<hr class="my-8" />
-	<Button unstyled variant="secondary" class="bg-pink-400 rounded px-2"
-		>no default styles</Button
-	>
+	<Button unstyled variant="secondary" class="bg-pink-400 rounded px-2">
+		no default styles
+	</Button>
 	<hr class="my-8" />
 	<Button roleSwitch onclick={() => console.log("outer click")} bind:checked>
 		<!-- {#snippet children({ checked })} -->
