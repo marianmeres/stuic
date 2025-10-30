@@ -55,6 +55,7 @@
 		themeWarn?: TW_COLORS;
 		themeSuccess?: TW_COLORS;
 		noTheme?: boolean;
+		noIcons?: boolean;
 		//
 		classWrapY?: string;
 		classWrapX?: string;
@@ -74,6 +75,8 @@
 		//
 		noProgress?: boolean;
 		noXButton?: boolean;
+		//
+		iconFns?: Partial<Record<keyof typeof notificationsDefaultIcons, CallableFunction>>;
 	}
 
 	let {
@@ -91,6 +94,7 @@
 		themeSuccess = "green",
 		// use truthy `noTheme` if manual css-only var customization is needed
 		noTheme,
+		noIcons,
 		//
 		classWrapY,
 		classWrapX,
@@ -109,6 +113,7 @@
 		duration = 200,
 		noProgress,
 		noXButton,
+		iconFns = {},
 	}: Props = $props();
 
 	let { x, y, xMobile, yMobile } = $derived.by(() => {
@@ -124,7 +129,9 @@
 		return { Cmp: null, props: null };
 	};
 
-	const maybeIcon = (n: Notification) => n.iconFn ?? notificationsDefaultIcons?.[n.type];
+	let _iconFns = $derived({ ...iconFns, ...notificationsDefaultIcons });
+
+	const maybeIcon = (n: Notification) => n.iconFn ?? _iconFns?.[n.type];
 
 	const _classWrapX = `
         fixed z-50 flex flex-row inset-0 
@@ -154,7 +161,7 @@
         bg-neutral-950 text-neutral-50`;
 
 	const _classNotifIcon = `
-        flex items-start justify-center 
+        flex items-center justify-center 
         pt-4 pr-0 pb-4 pl-4 
         text-neutral-200`;
 
@@ -188,13 +195,13 @@
 				warn: themeWarn,
 			}[type] || "info";
 		return [
-			`--color-notif-bg: var(--color-${theme}-700);`,
-			`--color-notif-text: var(--color-${theme}-50);`,
-			`--color-notif-border: var(--color-${theme}-800);`,
+			`--color-notif-bg: var(--color-bg-${type}, var(--color-${theme}-700));`,
+			`--color-notif-text: var(--color-text-${type}, var(--color-${theme}-50));`,
+			`--color-notif-border: var(--color-border-${type}, var(--color-${theme}-800));`,
 			//
-			`--color-notif-bg-dark: var(--color-${theme}-800);`,
-			`--color-notif-text-dark: var(--color-${theme}-200);`,
-			`--color-notif-border-dark: var(--color-${theme}-700);`,
+			`--color-notif-bg-dark: var(--color-bg-dark-${type}, var(--color-${theme}-800));`,
+			`--color-notif-text-dark: var(--color-text-dark-${type}, var(--color-${theme}-200));`,
+			`--color-notif-border-dark: var(--color-border-dark-${type}, var(--color-${theme}-700));`,
 		].join("");
 	};
 </script>
@@ -238,7 +245,7 @@
 								{n.count}
 							</div>
 						{/if}
-						{#if typeof iconFn === "function"}
+						{#if !noIcons && typeof iconFn === "function"}
 							<div class={twMerge("icon", _classNotifIcon, classNotifIcon)}>
 								{@html iconFn()}
 							</div>
