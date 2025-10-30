@@ -113,7 +113,7 @@
 
 	const _classContent = `mt-2 mx-3 sm:mx-0 text-center sm:text-left text-sm opacity-75`;
 
-	const _classMenu = `mt-6 sm:flex sm:space-x-4 justify-end space-y-3 sm:space-y-0`;
+	const _classMenu = `mt-6 sm:flex sm:space-x-4 justify-end space-y-4 sm:space-y-0`;
 
 	const _classMenuLi = `flex-1 sm:flex-none w-full sm:w-auto sm:inline-block`;
 
@@ -125,16 +125,20 @@
 <div class={twMerge("stuic-acp", _class, classProp)}>
 	<div class={twMerge("wrap", _classWrap, classWrap)}>
 		{#if typeof iconFn === "function"}
-			<div
-				class={twMerge(
-					"icon-box",
-					debug("outline-green-500"),
-					_classIconBox,
-					classIconBox
-				)}
-			>
-				{@html iconFn()}
-			</div>
+			{@const iconHtml = iconFn()}
+			<!-- fn can return empty -->
+			{#if iconHtml}
+				<div
+					class={twMerge(
+						"icon-box",
+						debug("outline-green-500"),
+						_classIconBox,
+						classIconBox
+					)}
+				>
+					{@html iconFn()}
+				</div>
+			{/if}
 		{/if}
 		<div class={twMerge("content-box", _classContentBox, classContentBox)}>
 			<h1
