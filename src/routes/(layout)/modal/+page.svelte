@@ -10,7 +10,9 @@
 	const acp = new AlertConfirmPromptStack();
 </script>
 
-<p class="mb-4">General modal dialog (no dialog element implementation - no top-layer)</p>
+<p class="mb-4 h-[300px]">
+	General modal dialog (no dialog element implementation - no top-layer)
+</p>
 
 <Button onclick={modal?.open}>Open</Button>
 <hr class="my-4" />

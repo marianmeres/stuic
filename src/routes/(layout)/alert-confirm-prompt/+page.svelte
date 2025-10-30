@@ -13,7 +13,7 @@
 		type FnOnOK,
 	} from "$lib/index.js";
 	import { tick } from "svelte";
-	import { dummySentence } from "../../_utils/dummy-text.js";
+	import { dummySentence, dummyText } from "../../_utils/dummy-text.js";
 
 	const acp = new AlertConfirmPromptStack();
 	const alert = createAlert(acp);
@@ -41,6 +41,8 @@
 		acp.shift();
 	};
 </script>
+
+<div class="h-[300px]">intentional white space to test scroll restore</div>
 
 <div>
 	<Button
@@ -151,3 +153,7 @@
 	</style>
 	<AlertConfirmPrompt {acp} />
 </css-wrap>
+
+<div class="p-4">
+	{@html dummyText(20)}
+</div>

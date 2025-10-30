@@ -1,6 +1,36 @@
+<script lang="ts" module>
+	interface BodyStyles {
+		position: string | null;
+		top: string | null;
+		width: string | null;
+		overflow: string | null;
+	}
+
+	function get_body_style(): BodyStyles {
+		// const style = window.getComputedStyle(document.body);
+		const style = document.body.style; // we want only explicitly defined, not computed
+		return {
+			position: style.position || null,
+			top: style.top || null,
+			width: style.width || null,
+			overflow: style.overflow || null,
+		};
+	}
+
+	function restore_body_styles(original: BodyStyles) {
+		(["position", "top", "width", "overflow"] as (keyof BodyStyles)[]).forEach((k) => {
+			if (original[k] !== null) {
+				document.body.style[k] = original[k];
+			} else {
+				document.body.style.removeProperty(k);
+			}
+		});
+	}
+</script>
+
 <script lang="ts">
 	import { onClickOutside } from "runed";
-	import { onMount, tick, type Snippet } from "svelte";
+	import { onDestroy, onMount, tick, type Snippet } from "svelte";
 	import { focusTrap } from "../../actions/focus-trap.js";
 	import { stopPropagation } from "../../utils/event-modifiers.js";
 	import { twMerge } from "../../utils/tw-merge.js";
@@ -76,29 +106,34 @@
 		() => !noClickOutsideClose && close()
 	);
 
-	let _original: any = {};
-	$effect(() => {
-		// if (noScrollLock) return;
-		if (visible) {
-			_original = window.getComputedStyle(document.body);
-			const scrollY = window.scrollY;
+	// lock body scroll when open and restore back
+	let _original: BodyStyles = {
+		position: null,
+		top: null,
+		width: null,
+		overflow: null,
+	};
 
+	function _restore() {
+		const scrollY = document.body.style.top;
+		restore_body_styles(_original);
+		// Restore scroll position
+		window.scrollTo(0, parseInt(scrollY || "0") * -1);
+	}
+
+	$effect(() => {
+		if (visible) {
+			_original = get_body_style();
+			const scrollY = window.scrollY;
 			document.body.style.position = "fixed";
 			document.body.style.top = `-${scrollY}px`;
 			document.body.style.width = "100%";
 			document.body.style.overflow = "hidden";
 		} else {
-			const scrollY = document.body.style.top;
-
-			document.body.style.position = _original.position;
-			document.body.style.position = "";
-			document.body.style.top = "";
-			document.body.style.width = "";
-			document.body.style.overflow = "";
-
-			// Restore scroll position
-			window.scrollTo(0, parseInt(scrollY || "0") * -1);
+			_restore();
 		}
+		// also onDestroy (will also reset if nested... which is not desired, but ignoring currently)
+		return _restore;
 	});
 
 	// $inspect("Modal dialog mounted, is visible:", visible).with(clog);

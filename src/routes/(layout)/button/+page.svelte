@@ -1,5 +1,6 @@
 <script>
 	import { Button } from "$lib/index.js";
+	import { dummyText } from "../../_utils/dummy-text.js";
 
 	let checked = $state(true);
 </script>
