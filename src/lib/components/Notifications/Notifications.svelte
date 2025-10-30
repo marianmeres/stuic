@@ -131,7 +131,7 @@
 		return { Cmp: null, props: null };
 	};
 
-	let _iconFns = $derived({ ...iconFns, ...notificationsDefaultIcons });
+	let _iconFns = $derived({ ...notificationsDefaultIcons, ...iconFns });
 
 	const maybeIcon = (n: Notification) => n.iconFn ?? _iconFns?.[n.type];
 
