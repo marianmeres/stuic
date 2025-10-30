@@ -57,12 +57,12 @@
 
 	let current = $derived(acp?.current!);
 
-	let iconFn = $derived.by(() => {
-		let out = current.iconFn;
+	let iconHtml = $derived.by(() => {
+		let fn = current.iconFn as any;
 		if (current.iconFn === true) {
-			out = defaultIcons[current.variant];
+			fn = defaultIcons[current.variant];
 		}
-		return out;
+		return fn?.();
 	});
 
 	let CmpButtonOk = $derived(current.CmpButtonOk ?? Button);
@@ -124,28 +124,24 @@
 
 <div class={twMerge("stuic-acp", _class, classProp)}>
 	<div class={twMerge("wrap", _classWrap, classWrap)}>
-		{#if typeof iconFn === "function"}
-			{@const iconHtml = iconFn()}
-			<!-- fn can return empty -->
-			{#if iconHtml}
-				<div
-					class={twMerge(
-						"icon-box",
-						debug("outline-green-500"),
-						_classIconBox,
-						classIconBox
-					)}
-				>
-					{@html iconFn()}
-				</div>
-			{/if}
+		{#if iconHtml}
+			<div
+				class={twMerge(
+					"icon-box",
+					debug("outline-green-500"),
+					_classIconBox,
+					classIconBox
+				)}
+			>
+				{@html iconHtml}
+			</div>
 		{/if}
 		<div class={twMerge("content-box", _classContentBox, classContentBox)}>
 			<h1
 				class={twMerge(
 					"title",
 					_classTitle,
-					typeof iconFn === "function" && "pt-2",
+					typeof iconHtml === "function" && "pt-2",
 					classTitle
 				)}
 			>
