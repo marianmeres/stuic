@@ -65,6 +65,7 @@
 		classNotifContent?: string;
 		classNotifButton?: string;
 		classNotifButtonX?: string;
+		buttonXStrokeWidth?: 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | 3.5 | 4;
 		//
 		classProgress?: string;
 		classProgressBar?: string;
@@ -104,6 +105,7 @@
 		classNotifContent,
 		classNotifButton,
 		classNotifButtonX,
+		buttonXStrokeWidth = 1.5,
 		//
 		classProgress,
 		classProgressBar,
@@ -281,7 +283,7 @@
 							>
 								<X
 									class={twMerge("x", _classNotifButtonX, classNotifButtonX)}
-									strokeWidth={1.5}
+									strokeWidth={buttonXStrokeWidth}
 								/>
 							</button>
 						{/if}
