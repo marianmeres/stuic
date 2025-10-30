@@ -15,9 +15,42 @@
 		forceAsHtml?: boolean;
 		class?: string;
 		classModalInnerBox?: string;
+		//
+		classWrap?: string;
+		classIconBox?: string;
+		classContentBox?: string;
+		classTitle?: string;
+		classContent?: string;
+		classInputBox?: string;
+		classInput?: string;
+		classMenu?: string;
+		classMenuLi?: string;
+		classButton?: string;
+		classSpinnerBox?: string;
+		defaultIcons?: Partial<
+			Record<"info" | "success" | "warn" | "error" | "spinner", () => string | undefined>
+		>;
 	}
 
-	let { acp, forceAsHtml, class: classProp, classModalInnerBox }: Props = $props();
+	let {
+		acp,
+		forceAsHtml,
+		class: classProp,
+		classModalInnerBox,
+		//
+		classWrap,
+		classIconBox,
+		classContentBox,
+		classTitle,
+		classContent,
+		classInputBox,
+		classInput,
+		classMenu,
+		classMenuLi,
+		classButton,
+		classSpinnerBox,
+		defaultIcons,
+	}: Props = $props();
 
 	let modal = $state<ModalDialog>();
 
@@ -55,6 +88,21 @@
 			classProp
 		)}
 	>
-		<Current bind:isPending {acp} />
+		<Current
+			bind:isPending
+			{acp}
+			{classWrap}
+			{classIconBox}
+			{classContentBox}
+			{classTitle}
+			{classContent}
+			{classInputBox}
+			{classInput}
+			{classMenu}
+			{classMenuLi}
+			{classButton}
+			{classSpinnerBox}
+			{defaultIcons}
+		/>
 	</ModalDialog>
 {/if}
