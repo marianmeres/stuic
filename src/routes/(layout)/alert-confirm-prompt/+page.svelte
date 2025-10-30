@@ -14,6 +14,7 @@
 	} from "$lib/index.js";
 	import { tick } from "svelte";
 	import { dummySentence, dummyText } from "../../_utils/dummy-text.js";
+	import FooButton from "./FooButton.svelte";
 
 	const acp = new AlertConfirmPromptStack();
 	const alert = createAlert(acp);
@@ -54,6 +55,8 @@
 				onCustom,
 				onEscape,
 				// content: dummySentence(2),
+				// example of custom button component
+				CmpButtonOk: FooButton,
 			})}
 	>
 		sure?

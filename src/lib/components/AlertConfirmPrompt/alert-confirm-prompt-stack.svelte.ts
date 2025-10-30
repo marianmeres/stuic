@@ -47,6 +47,11 @@ export interface AlertConfirmPromptObj extends Record<string, any> {
 
 	// class?: Partial<AlertConfirmPromptKnownClasses>;
 	forceAsHtml?: boolean;
+
+	//
+	CmpButtonOk?: any;
+	CmpButtonCancel?: any;
+	CmpButtonCustom?: any;
 }
 
 const isFn = (v: any) => typeof v === "function";

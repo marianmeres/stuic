@@ -65,6 +65,10 @@
 		return out;
 	});
 
+	let CmpButtonOk = $derived(current.CmpButtonOk ?? Button);
+	let CmpButtonCancel = $derived(current.CmpButtonCancel ?? Button);
+	let CmpButtonCustom = $derived(current.CmpButtonCustom ?? Button);
+
 	let inputEl = $state<any>();
 	let okButtonEl = $state<any>();
 
@@ -189,28 +193,28 @@
 	<menu class={twMerge(_classMenu, classMenu)}>
 		{#if current.type !== ALERT}
 			<li class={twMerge(_classMenuLi, classMenuLi)}>
-				<Button
+				<CmpButtonCancel
 					class={twMerge("cancel", _classButton, classButton)}
 					disabled={isPending}
 					onclick={createOnClick("cancel", current.onCancel)}
 				>
 					<Thc thc={current.labelCancel} {forceAsHtml} />
-				</Button>
+				</CmpButtonCancel>
 			</li>
 		{/if}
 		{#if current.labelCustom && typeof current.onCustom === "function"}
 			<li class={twMerge(_classMenuLi, classMenuLi)}>
-				<Button
+				<CmpButtonCustom
 					class={twMerge("custom", _classButton, classButton)}
 					disabled={isPending}
 					onclick={createOnClick("custom", current.onCustom)}
 				>
 					<Thc thc={current.labelCustom} {forceAsHtml} />
-				</Button>
+				</CmpButtonCustom>
 			</li>
 		{/if}
 		<li class={twMerge(_classMenuLi, classMenuLi)}>
-			<Button
+			<CmpButtonOk
 				class={twMerge("ok", _classButton, classButton)}
 				variant="primary"
 				disabled={isPending}
@@ -218,7 +222,7 @@
 				bind:el={okButtonEl}
 			>
 				<Thc thc={current.labelOk} {forceAsHtml} />
-			</Button>
+			</CmpButtonOk>
 		</li>
 	</menu>
 	{#if isPending}
