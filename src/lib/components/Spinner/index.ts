@@ -1,6 +1,7 @@
 export { default as Spinner } from "./Spinner.svelte";
+export { default as SpinnerCircle } from "./SpinnerCircle.svelte";
 export {
-	default as SpinnerUnicode,
 	spinnerCreateBackAndForthCharFrames,
+	default as SpinnerUnicode,
 	type SpinnerUnicodeVariant,
 } from "./SpinnerUnicode.svelte";

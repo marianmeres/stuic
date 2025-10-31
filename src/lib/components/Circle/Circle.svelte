@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from "svelte";
 	import { svgCircle, type SvgCircleOptions } from "../../utils/svg-circle.js";
 	import { twMerge } from "../../utils/tw-merge.js";
 

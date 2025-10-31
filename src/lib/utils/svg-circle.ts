@@ -14,7 +14,7 @@ function _normalize_completness(v: number) {
 }
 
 function _normalize_rotate(v: number) {
-	return `${v % 360}`;
+	return v % 360;
 }
 
 function _normalize_cls(v: string) {
@@ -28,7 +28,7 @@ function _normalize_cls(v: string) {
 	];
 }
 
-/** Will construct and return svg DOM element based on input options */
+/** Will construct and return svg circle DOM element based on input options */
 export function svgCircle(options: Partial<SvgCircleOptions> = {}) {
 	let {
 		strokeWidth = 10,
