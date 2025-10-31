@@ -13,6 +13,7 @@ export * from "./is-nullish.js";
 export * from "./maybe-json-parse.js";
 export * from "./maybe-json-stringify.js";
 export * from "./nl2br.js";
+export * from "./observe-exists.svelte.js";
 export * from "./omit-pick.js";
 export * from "./oscillate.js";
 export * from "./paint.js";
