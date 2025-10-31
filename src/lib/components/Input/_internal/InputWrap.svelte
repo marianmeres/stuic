@@ -31,6 +31,7 @@
 		classLabelBox?: string;
 		classInputBox?: string;
 		classInputBoxWrap?: string;
+		classInputBoxWrapInvalid?: string;
 		classDescBox?: string;
 		classBelowBox?: string;
 		classValidationBox?: string;
@@ -60,6 +61,7 @@
 		classLabelBox,
 		classInputBox,
 		classInputBoxWrap,
+		classInputBoxWrapInvalid,
 		classDescBox,
 		classBelowBox,
 		classValidationBox,
@@ -168,9 +170,12 @@
 				focus-within:ring-input-accent/20 focus-within:dark:ring-input-accent-dark/20
 				focus-within:ring-4`,
 				invalid &&
-					`border-input-accent-invalid dark:border-input-accent-invalid-dark
-					focus-within:border-input-accent-invalid focus-within:dark:border-input-accent-invalid-dark
-					focus-within:ring-input-accent-invalid/20 focus-within:dark:ring-input-accent-invalid-dark/20`,
+					twMerge(
+						`border-input-accent-invalid dark:border-input-accent-invalid-dark
+						focus-within:border-input-accent-invalid focus-within:dark:border-input-accent-invalid-dark
+						focus-within:ring-input-accent-invalid/20 focus-within:dark:ring-input-accent-invalid-dark/20`,
+						classInputBoxWrapInvalid
+					),
 				disabled && "cursor-not-allowed opacity-50",
 				_preset.inputBox.size[size],
 				classInputBoxWrap
