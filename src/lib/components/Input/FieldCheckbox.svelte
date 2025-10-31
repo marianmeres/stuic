@@ -173,7 +173,7 @@
 				class={twMerge(
 					"validation-box",
 					_classCommon,
-					"text-xs text-input-accent-invalid dark:text-input-accent-invalid-dark tracking-tight",
+					"text-sm text-input-accent-invalid dark:text-input-accent-invalid-dark tracking-tight",
 					classValidationBox
 				)}
 			>

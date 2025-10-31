@@ -195,7 +195,7 @@
 				class={twMerge(
 					"validation-box",
 					_classCommon,
-					"my-1 text-xs px-2 text-input-accent-invalid dark:text-input-accent-invalid-dark",
+					"my-1 text-sm px-2 text-input-accent-invalid dark:text-input-accent-invalid-dark",
 					classValidationBox
 				)}
 			>

@@ -84,6 +84,7 @@
 		classLabelBox,
 		classInputBox,
 		classInputBoxWrap,
+		classInputBoxWrapInvalid,
 		classDescBox,
 		classBelowBox,
 		style,
@@ -116,6 +117,7 @@
 	{classLabelBox}
 	{classInputBox}
 	{classInputBoxWrap}
+	{classInputBoxWrapInvalid}
 	{classDescBox}
 	{classBelowBox}
 	{validation}
