@@ -167,7 +167,10 @@
 				focus-within:border-input-accent focus-within:dark:border-input-accent-dark
 				focus-within:ring-input-accent/20 focus-within:dark:ring-input-accent-dark/20
 				focus-within:ring-4`,
-				invalid && "border-input-accent dark:border-input-accent-dark",
+				invalid &&
+					`border-input-accent-invalid dark:border-input-accent-invalid-dark
+					focus-within:border-input-accent-invalid focus-within:dark:border-input-accent-invalid-dark
+					focus-within:ring-input-accent-invalid/20 focus-within:dark:ring-input-accent-invalid-dark/20`,
 				disabled && "cursor-not-allowed opacity-50",
 				_preset.inputBox.size[size],
 				classInputBoxWrap
@@ -187,7 +190,7 @@
 				class={twMerge(
 					"validation-box",
 					_classCommon,
-					"my-1 text-xs px-2 text-input-accent dark:text-input-accent-dark",
+					"my-1 text-xs px-2 text-input-accent-invalid dark:text-input-accent-invalid-dark",
 					classValidationBox
 				)}
 			>

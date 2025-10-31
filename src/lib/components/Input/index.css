@@ -1,7 +1,10 @@
 /* prettier-ignore */
 @theme inline {
-	--color-input-accent: var(--color-input-accent, var(--color-red-600));
-	--color-input-accent-dark: var(--color-input-accent-dark, var(--color-red-400));
+	--color-input-accent: var(--color-input-accent, var(--color-sky-600));
+	--color-input-accent-dark: var(--color-input-accent-dark, var(--color-sky-400));
+
+	--color-input-accent-invalid: var(--color-input-accent-invalid, var(--color-red-600));
+	--color-input-accent-invalid-dark: var(--color-input-accent-invalid-dark, var(--color-red-400));
 }
 
 .stuic-input {

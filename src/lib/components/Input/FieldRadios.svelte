@@ -85,7 +85,7 @@
 				"gap-y-2 grid rounded-md p-2 mb-8",
 				"border border-neutral-300 dark:border-neutral-600",
 				"bg-neutral-100 dark:bg-neutral-700",
-				invalid && "border-input-accent dark:border-input-accent-dark",
+				invalid && "border-input-accent-invalid dark:border-input-accent-invalid-dark",
 				classProp
 			)}
 		>
