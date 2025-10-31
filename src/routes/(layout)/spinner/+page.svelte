@@ -4,6 +4,12 @@
 		spinnerCreateBackAndForthCharFrames,
 		type SpinnerUnicodeVariant,
 	} from "$lib/components/Spinner/SpinnerUnicode.svelte";
+	import { onMount, untrack } from "svelte";
+	import { svgCircle } from "../../../lib/utils/svg-circle.js";
+	import { createTicker, createTickerRAF } from "@marianmeres/ticker";
+	import { oscillate } from "../../../lib/utils/oscillate.js";
+	import Circle from "../../../lib/components/Circle/Circle.svelte";
+	import SpinnerCircle from "../../../lib/components/Spinner/SpinnerCircle.svelte";
 
 	let w = ["w-4", "w-5", "w-8", "w-16"];
 	let size = 1;
@@ -24,6 +30,43 @@
 		"arrows",
 		"arrows2",
 	];
+
+	const ticker = createTickerRAF(50, true);
+	let completeness = $derived(oscillate($ticker / 1000, 0.1, 0.9, 1));
+	// let completeness = 0.5;
+	let rotate = $state(45);
+
+	$effect(() => {
+		// $ticker && rotate++;
+		if ($ticker) {
+			untrack(() => {
+				rotate += 20;
+			});
+		}
+		// console.log($ticker / 1000);
+	});
+
+	// let rotate = $derived($ticker ? _counter++ : _counter);
+
+	// $inspect(12312, rotate);
+
+	// let completeness = 0.5;
+
+	// let circleEl: HTMLDivElement = $state()!;
+	// $effect(() => {
+	// 	circleEl.innerHTML = "";
+	// 	circleEl.appendChild(
+	// 		svgCircle({
+	// 			completeness,
+	// 			strokeWidth: 10,
+	// 			strokeWidthRatio: 0.5,
+	// 			// rotate: -90,
+	// 			class: "text-red-500", //
+	// 			bgColor: "#ddd",
+	// 			roundedEdges: true,
+	// 		})
+	// 	);
+	// });
 </script>
 
 <div class="flex items-center space-x-6">
@@ -80,3 +123,7 @@
 	speed={130}
 	frames={spinnerCreateBackAndForthCharFrames(5, "■", "□")}
 />
+
+<hr class="my-6" />
+
+<SpinnerCircle class="text-red-500" />
