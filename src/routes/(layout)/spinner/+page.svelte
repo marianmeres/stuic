@@ -104,6 +104,18 @@
 
 <hr class="my-6" />
 
+<div class="flex items-center space-x-4">
+	<SpinnerCircle class="text-red-500" />
+	<SpinnerCircle
+		class="text-blue-600 size-5"
+		strokeWidth={6}
+		bgStrokeColor=""
+		noOscillate
+	/>
+</div>
+
+<hr class="my-6" />
+
 <div class="space-x-4">
 	{#each unicodeVariants as variant}
 		<SpinnerUnicode {variant} />
@@ -123,7 +135,10 @@
 	speed={130}
 	frames={spinnerCreateBackAndForthCharFrames(5, "■", "□")}
 />
-
 <hr class="my-6" />
 
-<SpinnerCircle class="text-red-500" />
+<SpinnerUnicode
+	class="text-sm text-blue-600 font-mono"
+	speed={130}
+	frames={spinnerCreateBackAndForthCharFrames(5, "_", "-")}
+/>

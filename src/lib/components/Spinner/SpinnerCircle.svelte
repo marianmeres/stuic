@@ -8,7 +8,16 @@
 	let {
 		class: classProp = "",
 		bgStrokeColor = "rgba(0 0 0 / .1)",
-	}: { class?: string; bgStrokeColor?: string } = $props();
+		strokeWidth,
+		noOscillate,
+		rotateDuration = ".75s",
+	}: {
+		class?: string;
+		bgStrokeColor?: string;
+		strokeWidth?: number;
+		noOscillate?: boolean;
+		rotateDuration?: string;
+	} = $props();
 
 	/**
 	 * NOTE: we happen to have 4 distinct values here which effect the overall look and feel...
@@ -19,7 +28,7 @@
 	 */
 
 	const ticker = createTickerRAF(50, true);
-	let completeness = $derived(oscillate($ticker / 1000, 0.15, 0.85));
+	let completeness = $derived(noOscillate ? 0.66 : oscillate($ticker / 1000, 0.15, 0.85));
 
 	onDestroy(ticker.stop);
 </script>
@@ -28,5 +37,6 @@
 	{completeness}
 	class={twMerge("stuic-spinner-circle animate-spin", classProp)}
 	{bgStrokeColor}
-	style="animation-duration: .75s"
+	{strokeWidth}
+	style="animation-duration: {rotateDuration}"
 />
