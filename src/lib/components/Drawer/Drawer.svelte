@@ -30,7 +30,7 @@
 		//
 		onOutside?: () => void;
 		// onOutsideEnabled?: boolean;
-		noBackropScrollLock?: boolean;
+		noBackdropScrollLock?: boolean;
 	}
 
 	let {
@@ -49,7 +49,7 @@
 		animOffset = "75vw",
 		onEscape,
 		onOutside,
-		noBackropScrollLock,
+		noBackdropScrollLock,
 		// onOutsideEnabled = true,
 	}: Props = $props();
 
@@ -138,7 +138,7 @@
 	fadeOutDuration={transitionDuration}
 	{onEscape}
 	onmousedown={() => onOutside?.()}
-	noScrollLock={noBackropScrollLock}
+	noScrollLock={noBackdropScrollLock}
 >
 	<!-- svelte-ignore a11y_interactive_supports_focus -->
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
