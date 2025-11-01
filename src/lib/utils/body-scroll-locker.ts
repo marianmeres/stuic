@@ -1,4 +1,5 @@
 import { createClog } from "@marianmeres/clog";
+import { isBrowser } from "./is-browser.js";
 
 interface BodyStyles {
 	position: string | null;
@@ -8,12 +9,15 @@ interface BodyStyles {
 }
 
 const clog = createClog("BodyScroll").debug;
+const document = globalThis.document ?? {};
 
 /**
  * Helper for "locking" and "unlocking" body scroll (window.scrollY) position
  */
 export class BodyScroll {
 	static lock() {
+		if (!isBrowser()) return;
+
 		const data = document.body.dataset;
 
 		// Only save the scroll position if it hasn't been saved already
@@ -40,6 +44,8 @@ export class BodyScroll {
 	}
 
 	static unlock() {
+		if (!isBrowser()) return;
+
 		const data = document.body.dataset;
 
 		// Only proceed if scroll is currently locked
