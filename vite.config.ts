@@ -9,7 +9,7 @@ dotenv.config();
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
 	server: {
-		port: parseInt(process.env.DEV_PORT || "8888"),
+		port: parseInt(process.env.DEV_PORT || "8886"),
 		// expose on all
 		host: true,
 	},
