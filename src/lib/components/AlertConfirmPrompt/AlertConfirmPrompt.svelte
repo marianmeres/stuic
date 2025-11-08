@@ -29,6 +29,9 @@
 		classButtonCancel?: string;
 		classButtonCustom?: string;
 		classButtonPrimary?: string;
+		variantButtonCancel?: string;
+		variantButtonCustom?: string;
+		variantButtonPrimary?: string;
 		classSpinnerBox?: string;
 		defaultIcons?: Partial<
 			Record<"info" | "success" | "warn" | "error" | "spinner", () => string | undefined>
@@ -56,6 +59,9 @@
 		classButtonCancel,
 		classButtonCustom,
 		classButtonPrimary,
+		variantButtonCancel,
+		variantButtonCustom,
+		variantButtonPrimary,
 	}: Props = $props();
 
 	let modal = $state<ModalDialog>();
@@ -112,6 +118,9 @@
 			{classButtonCancel}
 			{classButtonCustom}
 			{classButtonPrimary}
+			{variantButtonCancel}
+			{variantButtonCustom}
+			{variantButtonPrimary}
 		/>
 	</ModalDialog>
 {/if}
