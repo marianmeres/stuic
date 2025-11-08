@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Sticky Header Layout</title>
+		<style>
+			body {
+				margin: 0;
+				font-family: sans-serif;
+			}
+
+			header {
+				/* This makes the header "stick" to the top once you scroll past it */
+				position: sticky;
+				top: 0;
+
+				/* A background-color is CRITICAL so content doesn't scroll visibly underneath it */
+				background-color: white;
+
+				/* A subtle shadow helps it "lift" above the content */
+				box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+				/* Add some padding for looks */
+				padding: 1rem;
+
+				/* Ensure it's on top of other content, though often not needed with this structure */
+				z-index: 100;
+			}
+
+			/* * 2. The Main Content
+ * No special positioning is needed!
+*/
+			main {
+				/* Just add padding for aesthetics */
+				padding: 1rem;
+			}
+
+			/* * 3. (For demonstration) 
+ * Add dummy content to make the page scrollable 
+*/
+			main p {
+				line-height: 1.6;
+				margin-bottom: 2rem;
+			}
+
+			main p:nth-child(n + 3) {
+				/* Just to create a long page for the demo */
+				height: 150px;
+				background-color: #f4f4f4;
+				padding: 1rem;
+				border-radius: 8px;
+				margin-bottom: 1rem;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<h1>My Website</h1>
+			<nav>
+				<a href="#">Home</a>
+				<a href="#">About</a>
+				<a href="#">Contact</a>
+			</nav>
+			<p>A sub-navigation or extra info line.</p>
+		</header>
+
+		<main>
+			<h2>Page Content</h2>
+			<p>This is the main content area. Start scrolling to see the effect.</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>Lorem ipsum...</p>
+			<p>This is the end of the content.</p>
+		</main>
+	</body>
+</html>
