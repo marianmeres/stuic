@@ -30,6 +30,9 @@
 		classMenu?: string;
 		classMenuLi?: string;
 		classButton?: string;
+		classButtonCancel?: string;
+		classButtonCustom?: string;
+		classButtonPrimary?: string;
 		classSpinnerBox?: string;
 		defaultIcons?: Partial<
 			Record<"info" | "success" | "warn" | "error" | "spinner", () => string | undefined>
@@ -51,6 +54,9 @@
 		classMenu,
 		classMenuLi,
 		classButton,
+		classButtonCancel,
+		classButtonCustom,
+		classButtonPrimary,
 		classSpinnerBox,
 		defaultIcons = acpDefaultIcons,
 	}: Props = $props();
@@ -194,7 +200,7 @@
 		{#if current.type !== ALERT}
 			<li class={twMerge(_classMenuLi, classMenuLi)}>
 				<CmpButtonCancel
-					class={twMerge("cancel", _classButton, classButton)}
+					class={twMerge("cancel", _classButton, classButton, classButtonCancel)}
 					disabled={isPending}
 					onclick={createOnClick("cancel", current.onCancel)}
 				>
@@ -205,7 +211,7 @@
 		{#if current.labelCustom && typeof current.onCustom === "function"}
 			<li class={twMerge(_classMenuLi, classMenuLi)}>
 				<CmpButtonCustom
-					class={twMerge("custom", _classButton, classButton)}
+					class={twMerge("custom", _classButton, classButton, classButtonCustom)}
 					disabled={isPending}
 					onclick={createOnClick("custom", current.onCustom)}
 				>
@@ -215,7 +221,7 @@
 		{/if}
 		<li class={twMerge(_classMenuLi, classMenuLi)}>
 			<CmpButtonOk
-				class={twMerge("ok", _classButton, classButton)}
+				class={twMerge("ok", _classButton, classButton, classButtonPrimary)}
 				variant="primary"
 				disabled={isPending}
 				onclick={createOnClick("ok", current.onOk)}
