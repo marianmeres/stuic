@@ -91,6 +91,6 @@ git push && git push --tags
 
 # npm publish
 echo "Publishing to registry..."
-npm publish --access=public
+pnpm publish
 
 echo "Release complete! New version: $NEW_VERSION"
