@@ -25,6 +25,8 @@
 		classInput?: string;
 		classMenu?: string;
 		classMenuLi?: string;
+		classMenuCustom?: string;
+		classMenuLiCustom?: string;
 		classButton?: string;
 		classButtonCancel?: string;
 		classButtonCustom?: string;
@@ -53,6 +55,8 @@
 		classInput,
 		classMenu,
 		classMenuLi,
+		classMenuCustom,
+		classMenuLiCustom,
 		classButton,
 		classSpinnerBox,
 		defaultIcons,
@@ -112,6 +116,8 @@
 			{classInput}
 			{classMenu}
 			{classMenuLi}
+			{classMenuCustom}
+			{classMenuLiCustom}
 			{classButton}
 			{classSpinnerBox}
 			{defaultIcons}
