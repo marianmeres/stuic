@@ -29,6 +29,10 @@
 		classInput?: string;
 		classMenu?: string;
 		classMenuLi?: string;
+		//
+		classMenuCustom?: string;
+		classMenuLiCustom?: string;
+		//
 		classButton?: string;
 		classButtonCancel?: string;
 		classButtonCustom?: string;
@@ -56,6 +60,8 @@
 		classInput,
 		classMenu,
 		classMenuLi,
+		classMenuCustom,
+		classMenuLiCustom,
 		classButton,
 		classButtonCancel,
 		classButtonCustom,
@@ -132,6 +138,8 @@
 	const _classButton = "min-w-24 text-center w-full sm:w-auto";
 
 	const _classSpinnerBox = `absolute inset-0 flex items-center justify-center bg-white/75 dark:bg-black/75`;
+
+	let hasCustom = $derived(current.labelCustom && typeof current.onCustom === "function");
 </script>
 
 <div class={twMerge("stuic-acp", _class, classProp)}>
@@ -202,9 +210,9 @@
 			</div>
 		</div>
 	</div>
-	<menu class={twMerge(_classMenu, classMenu)}>
+	<menu class={twMerge(_classMenu, classMenu, hasCustom && classMenuCustom)}>
 		{#if current.type !== ALERT}
-			<li class={twMerge(_classMenuLi, classMenuLi)}>
+			<li class={twMerge(_classMenuLi, classMenuLi, hasCustom && classMenuLiCustom)}>
 				<CmpButtonCancel
 					class={twMerge("cancel", _classButton, classButton, classButtonCancel)}
 					variant={variantButtonCancel}
@@ -215,19 +223,19 @@
 				</CmpButtonCancel>
 			</li>
 		{/if}
-		{#if current.labelCustom && typeof current.onCustom === "function"}
-			<li class={twMerge(_classMenuLi, classMenuLi)}>
+		{#if hasCustom}
+			<li class={twMerge(_classMenuLi, classMenuLi, classMenuLiCustom)}>
 				<CmpButtonCustom
 					class={twMerge("custom", _classButton, classButton, classButtonCustom)}
 					variant={variantButtonCustom}
 					disabled={isPending}
-					onclick={createOnClick("custom", current.onCustom)}
+					onclick={createOnClick("custom", current.onCustom!)}
 				>
-					<Thc thc={current.labelCustom} {forceAsHtml} />
+					<Thc thc={current.labelCustom!} {forceAsHtml} />
 				</CmpButtonCustom>
 			</li>
 		{/if}
-		<li class={twMerge(_classMenuLi, classMenuLi)}>
+		<li class={twMerge(_classMenuLi, classMenuLi, hasCustom && classMenuLiCustom)}>
 			<CmpButtonOk
 				class={twMerge("ok", _classButton, classButton, classButtonPrimary)}
 				variant={variantButtonPrimary}
