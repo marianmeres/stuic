@@ -668,7 +668,7 @@
 					<!-- {#if options.items.length} -->
 					<div
 						class={[
-							"options overflow-y-auto overflow-x-hidden space-y-1",
+							"options overflow-y-auto overflow-x-hidden space-y-1 scrollbar-thin",
 							"h-[220px] max-h-[220px]",
 						]}
 						bind:this={optionsBox}

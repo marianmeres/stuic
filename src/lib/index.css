@@ -32,3 +32,7 @@ so, since we need to override, sticking with that */
 		/* opacity: 0.5 !important; moved to Button itself, so it can be overridden */
 	}
 }
+
+.scrollbar-thin {
+	scrollbar-width: thin;
+}
