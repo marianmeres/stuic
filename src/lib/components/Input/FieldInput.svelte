@@ -46,6 +46,7 @@
 		classLabelBox?: string;
 		classInputBox?: string;
 		classInputBoxWrap?: string;
+		classInputBoxWrapInvalid?: string;
 		classDescBox?: string;
 		classBelowBox?: string;
 		//

@@ -47,6 +47,7 @@
 		classLabelBox?: string;
 		classInputBox?: string;
 		classInputBoxWrap?: string;
+		classInputBoxWrapInvalid?: string;
 		classDescBox?: string;
 		classBelowBox?: string;
 		style?: string;
@@ -84,6 +85,7 @@
 		classLabelBox,
 		classInputBox,
 		classInputBoxWrap,
+		classInputBoxWrapInvalid,
 		classDescBox,
 		classBelowBox,
 		style,
@@ -115,6 +117,7 @@
 	{classLabelBox}
 	{classInputBox}
 	{classInputBoxWrap}
+	{classInputBoxWrapInvalid}
 	{classDescBox}
 	{classBelowBox}
 	{validation}
