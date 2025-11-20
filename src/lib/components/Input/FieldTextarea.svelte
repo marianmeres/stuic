@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from "svelte";
-	import type { HTMLInputAttributes, HTMLTextareaAttributes } from "svelte/elements";
+	import type { HTMLTextareaAttributes } from "svelte/elements";
+	import { autogrow } from "../../actions/autogrow.svelte.js";
 	import { trim } from "../../actions/trim.svelte.js";
 	import {
 		validate as validateAction,
@@ -11,7 +12,6 @@
 	import { twMerge } from "../../utils/tw-merge.js";
 	import type { THC } from "../Thc/Thc.svelte";
 	import InputWrap from "./_internal/InputWrap.svelte";
-	import { autogrow } from "../../actions/autogrow.svelte.js";
 
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
