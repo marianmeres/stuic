@@ -25,6 +25,7 @@
 		// 'popover', 
 		'progress',
 		'resizable-width',
+		'sliding-panels',
 		'spinner', 
         'switch', 
 		// 'table', 
