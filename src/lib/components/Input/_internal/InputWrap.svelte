@@ -55,6 +55,7 @@
 		//
 		labelLeft = false,
 		labelLeftWidth = "normal",
+		// non-zere value has priority over `labelLeft`
 		labelLeftBreakpoint = 480,
 		//
 		classLabel,

@@ -40,8 +40,11 @@ export function fileDropzone(el: HTMLElement, fn?: () => FileDropzoneOptions) {
 			processFiles?.(files);
 		}
 
-		function handle_click() {
-			allowClick && inputEl.click();
+		function handle_click(e: Event) {
+			if (allowClick) {
+				e.stopPropagation();
+				inputEl.click();
+			}
 		}
 
 		// over/drop are critical, enter/leave I'm not sure
