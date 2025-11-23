@@ -1,7 +1,11 @@
 /**
  * forceDownload('https://example.com/report.pdf', 'yearly-report.pdf');
  */
-export async function forceDownload(url: string, fileName?: string) {
+export async function forceDownload(
+	url: string,
+	fileName?: string,
+	_errorLog: (msg: string) => void = console.error
+) {
 	try {
 		// fetch the resource
 		const response = await fetch(url);
@@ -24,7 +28,7 @@ export async function forceDownload(url: string, fileName?: string) {
 
 		return true;
 	} catch (error) {
-		console.error("Download failed:", error);
+		_errorLog?.(`Download failed: ${error}`);
 		return false;
 	}
 }

@@ -238,7 +238,6 @@
 	let objectFitStyle = $state("object-cover");
 	let objectSize = $state("size-20");
 
-	//
 	function parse(val: string) {
 		try {
 			return JSON.parse(val);
@@ -272,7 +271,7 @@
 		previewIdx = (previewIdx + 1) % assets.length;
 	}
 
-	const BUTTON_CLS = "rounded bg-white hover:bg-neutral-200 p-1";
+	const TOP_BUTTON_CLS = "rounded bg-white hover:bg-neutral-200 p-1";
 </script>
 
 <!-- this must be on window as we're catching any typing anywhere -->
@@ -437,7 +436,7 @@
 		<!--  bg-white rounded-md p-2 -->
 		<div class="absolute top-4 right-4 flex items-center space-x-3">
 			<button
-				class={BUTTON_CLS}
+				class={TOP_BUTTON_CLS}
 				onclick={() => {
 					remove_by_idx(previewIdx);
 					previewIdx = previewIdx % assets.length; // important
@@ -448,7 +447,7 @@
 				{@html iconDelete({ class: "size-6" })}
 			</button>
 			<button
-				class={BUTTON_CLS}
+				class={TOP_BUTTON_CLS}
 				onclick={() => forceDownload(url.original ?? url.full, previewAsset?.label || "")}
 				aria-label={t("download")}
 				use:tooltip
@@ -456,7 +455,7 @@
 				{@html iconDownload({ class: "size-6" })}
 			</button>
 			<button
-				class={BUTTON_CLS}
+				class={TOP_BUTTON_CLS}
 				onclick={modal.close}
 				aria-label={t("close")}
 				use:tooltip
