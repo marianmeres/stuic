@@ -312,7 +312,10 @@
 					{:else}
 						{@html iconFile({ size: 32, class: "mx-auto" })}
 					{/if}
-					<span class="absolute bottom-1 left-1 right-1 grid bg-white/50 rounded">
+					<span
+						class="absolute bottom-1 left-1 right-1 grid bg-white/50 rounded"
+						use:tooltip={() => ({ content: asset.label })}
+					>
 						<span class="truncate px-2 text-xs">{asset.label}</span>
 					</span>
 				</button>
