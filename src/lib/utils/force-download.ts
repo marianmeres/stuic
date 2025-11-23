@@ -8,11 +8,11 @@ export async function forceDownload(
 ) {
 	try {
 		// fetch the resource
-		const response = await fetch(url);
-		if (!response.ok) throw new Error("Network response was not ok");
+		const res = await fetch(url);
+		if (!res.ok) throw new Error(`Response ${res.statusText}`);
 
 		// convert response to a Blob and create a temporary URL
-		const blob = await response.blob();
+		const blob = await res.blob();
 		const blobUrl = window.URL.createObjectURL(blob);
 
 		// use the "Invisible Link" trick with the Blob URL
