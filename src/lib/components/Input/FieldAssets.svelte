@@ -198,7 +198,7 @@
 	let previewIdx = $state<number>(-1);
 
 	let assets: Asset[] = $derived(parse(value));
-	$inspect("assets", assets);
+	// $inspect("assets", assets);
 
 	$effect(() => {
 		if (!assets.length) modal?.close?.();
