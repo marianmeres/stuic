@@ -1,14 +1,12 @@
 <script lang="ts">
 	import {
 		FieldAssets,
-		fileFromBlobUrl,
 		getId,
 		Notifications,
 		NotificationsStack,
 		sleep,
 		type AssetWithBlobUrl,
 	} from "$lib/index.js";
-	import { ItemCollection, type Item } from "@marianmeres/item-collection";
 	import { createTickerRAF } from "@marianmeres/ticker";
 	// import { type AssetWithBlobUrl } from "../../../../lib/components/Input/FieldAssets.svelte";
 

@@ -1,5 +1,4 @@
 <script lang="ts" module>
-	import { asset } from "$app/paths";
 	import { createClog } from "@marianmeres/clog";
 	import { iconFeatherArrowLeft as iconPrevious } from "@marianmeres/icons-fns/feather/iconFeatherArrowLeft.js";
 	import { iconFeatherArrowRight as iconNext } from "@marianmeres/icons-fns/feather/iconFeatherArrowRight.js";
@@ -16,22 +15,20 @@
 		ValidationResult,
 	} from "../../actions/validate.svelte.js";
 	import type { TranslateFn } from "../../types.js";
-	import { fileFromBlobUrl } from "../../utils/file-from-bloburl.js";
 	import { forceDownload } from "../../utils/force-download.js";
 	import { getId } from "../../utils/get-id.js";
 	import { isImage } from "../../utils/is-image.js";
 	import { isPlainObject } from "../../utils/is-plain-object.js";
+	import { preloadImgs } from "../../utils/preload-img.js";
 	import { replaceMap } from "../../utils/replace-map.js";
 	import { twMerge } from "../../utils/tw-merge.js";
+	import Circle from "../Circle/Circle.svelte";
 	import { Modal } from "../Modal/index.js";
 	import { NotificationsStack } from "../Notifications/notifications-stack.svelte.js";
-	import { Spinner } from "../Spinner/index.js";
+	import SpinnerCircle from "../Spinner/SpinnerCircle.svelte";
 	import { isTHCNotEmpty, type THC } from "../Thc/Thc.svelte";
 	import { X } from "../X/index.js";
 	import InputWrap from "./_internal/InputWrap.svelte";
-	import SpinnerCircle from "../Spinner/SpinnerCircle.svelte";
-	import Circle from "../Circle/Circle.svelte";
-	import { preloadImgs } from "../../utils/preload-img.js";
 
 	const clog = createClog("FieldAssets");
 
