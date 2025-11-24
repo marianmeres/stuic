@@ -22,6 +22,7 @@ export * from "./oscillate.js";
 export * from "./paint.js";
 export * from "./persistent-state.svelte.js";
 export * from "./prefers-reduced-motion.svelte.js";
+export * from "./preload-img.js";
 export * from "./qsa.js";
 export * from "./replace-map.js";
 export * from "./seconds.js";

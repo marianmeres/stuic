@@ -31,6 +31,7 @@
 	import InputWrap from "./_internal/InputWrap.svelte";
 	import SpinnerCircle from "../Spinner/SpinnerCircle.svelte";
 	import Circle from "../Circle/Circle.svelte";
+	import { preloadImgs } from "../../utils/preload-img.js";
 
 	const clog = createClog("FieldAssets");
 
@@ -314,6 +315,25 @@
 			});
 		} catch (e) {
 			clog.warn(`${e}`);
+		}
+	});
+
+	// cosmetic side effect - once the modal is open we want to preload all "full" resolutions
+	// so the navigation feels more instant
+	$effect(() => {
+		if (modal.visibility().visible) {
+			// perhaps we should have some upper limit here...
+			const toPreload = (assets ?? [])
+				.map((asset) => {
+					const url = asset_urls(asset);
+					return isImage(asset.type ?? url.full) && !url.full.startsWith("blob:")
+						? url.full
+						: "";
+				})
+				.filter(Boolean);
+
+			clog.debug("going to (maybe) preload", toPreload);
+			preloadImgs(toPreload);
 		}
 	});
 </script>
