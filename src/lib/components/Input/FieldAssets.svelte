@@ -358,9 +358,11 @@
 					class={[objectSize, "bg-black/10 grid place-content-center"]}
 					onclick={(e) => {
 						e.stopPropagation();
+						e.preventDefault();
 						previewIdx = idx;
 						modal.open();
 					}}
+					type="button"
 				>
 					{#if _is_img}
 						<img
@@ -399,7 +401,9 @@
 			</div>
 		{/each}
 		<button
+			type="button"
 			onclick={(e) => {
+				e.preventDefault();
 				e.stopPropagation();
 				inputEl.click();
 			}}
@@ -420,7 +424,7 @@
 		enabled: typeof processAssets === "function",
 		inputEl,
 		processFiles(files: FileList | null) {
-			if (asset.length + (files?.length ?? 0) >= cardinality) {
+			if (assets.length + (files?.length ?? 0) >= cardinality) {
 				const msg = t("cardinality_reached", { max: cardinality });
 				return notifications ? notifications.error(msg) : alert(msg);
 			}
@@ -450,19 +454,21 @@
 				isUploading = true;
 				processAssets(toBeProcessed, onProgress)
 					.then((uploaded: AssetWithBlobUrl[]) => {
-						for (const ass of uploaded) {
+						for (const ass of uploaded ?? []) {
+							ass.meta ??= {};
+							ass.meta.isUploading = false;
 							if (ass.blobUrl) {
 								const idx = assets.findIndex((a) => a.id === ass.blobUrl);
 								console.log(assets, idx);
 								if (idx > -1) {
-									ass.meta ??= {};
-									ass.meta.isUploading = false;
+									// ass.meta ??= {};
+									// ass.meta.isUploading = false;
 									assets[idx] = ass;
 								} else {
 									clog.error(`Asset idx ${idx} not found?!?`, ass);
 								}
 							} else {
-								clog.error(`Missing blobUrl in`, asset);
+								clog.warn(`Missing blobUrl in`, ass);
 							}
 						}
 						value = JSON.stringify(assets);
@@ -553,10 +559,12 @@
 		<div class="absolute top-4 right-4 flex items-center space-x-3">
 			<button
 				class={TOP_BUTTON_CLS}
-				onclick={() => {
+				onclick={(e) => {
+					e.preventDefault();
 					remove_by_idx(previewIdx);
 					previewIdx = previewIdx % assets.length; // important
 				}}
+				type="button"
 				aria-label={t("delete")}
 				use:tooltip
 			>
@@ -564,7 +572,11 @@
 			</button>
 			<button
 				class={TOP_BUTTON_CLS}
-				onclick={() => forceDownload(url.original ?? url.full, previewAsset?.name || "")}
+				type="button"
+				onclick={(e) => {
+					e.preventDefault();
+					forceDownload(url.original ?? url.full, previewAsset?.name || "");
+				}}
 				aria-label={t("download")}
 				use:tooltip
 			>
@@ -574,6 +586,7 @@
 				class={TOP_BUTTON_CLS}
 				onclick={modal.close}
 				aria-label={t("close")}
+				type="button"
 				use:tooltip
 			>
 				<X />

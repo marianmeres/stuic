@@ -16,7 +16,14 @@ Sed metus sapien, feugiat eget mauris quis, pellentesque porta enim. In hac habi
 	import FieldSwitch from "$lib/components/Input/FieldSwitch.svelte";
 	import FieldTextarea from "$lib/components/Input/FieldTextarea.svelte";
 	import Fieldset from "$lib/components/Input/Fieldset.svelte";
-	import { NotificationsStack, onSubmitValidityCheck, sleep } from "$lib/index.js";
+	import {
+		FieldAssets,
+		getId,
+		NotificationsStack,
+		onSubmitValidityCheck,
+		sleep,
+		type AssetWithBlobUrl,
+	} from "$lib/index.js";
 	import { createClog } from "@marianmeres/clog";
 	import { ItemCollection, type Item } from "@marianmeres/item-collection";
 	import { onMount } from "svelte";
@@ -43,6 +50,7 @@ Sed metus sapien, feugiat eget mauris quis, pellentesque porta enim. In hac habi
 		field_like_hidden: "[1,2,3]",
 		options: '[{"id":"initial"},{"id":"not listed"}]',
 		switch: false,
+		images: "[]",
 	});
 	// $inspect("values", values).with(clog);
 
@@ -332,6 +340,33 @@ Sed metus sapien, feugiat eget mauris quis, pellentesque porta enim. In hac habi
 				},
 			}}
 			{labelLeft}
+		/>
+
+		<FieldAssets
+			name="images"
+			bind:value={values.images}
+			label="Images"
+			{labelLeft}
+			processAssets={(assets) => {
+				let out: AssetWithBlobUrl[] = [];
+				for (const ass of assets ?? []) {
+					const blobUrl = ass.id;
+
+					// if we were truly uploading (here we are not), this how we would create
+					// the FormData suitable File object
+					// const file = await fileFromBlobUrl(blobUrl, ass.name, ass.type);
+
+					out.push({
+						id: getId("uploaded-"),
+						url: { thumb: blobUrl, full: blobUrl, original: blobUrl },
+						type: ass.type,
+						name: ass.name,
+						blobUrl, // so we can pair it
+					});
+				}
+
+				return Promise.resolve(out);
+			}}
 		/>
 	</div>
 
