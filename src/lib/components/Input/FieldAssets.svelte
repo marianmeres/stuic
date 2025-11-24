@@ -74,7 +74,7 @@
 		blobUrl: string;
 	}
 
-	function parseFieldValue(val: string) {
+	function parseFieldValue(val: string = "[]") {
 		try {
 			return JSON.parse(val);
 		} catch (e) {
@@ -284,10 +284,9 @@
 	}
 
 	function remove_by_idx(idx: number) {
-		let parsed: Asset[] = parseFieldValue(value);
-		const name = parsed[idx].name!;
-		parsed.splice(idx, 1);
-		value = JSON.stringify(parsed);
+		const name = assets[idx].name!;
+		assets.splice(idx, 1);
+		value = JSON.stringify(assets);
 		notifications?.info(t("deleted", { name }));
 	}
 
@@ -477,7 +476,7 @@
 					.finally(() => (isUploading = false));
 			}
 		},
-		allowClick: !parseFieldValue(value)?.length,
+		allowClick: !assets?.length,
 	})}
 >
 	<InputWrap
