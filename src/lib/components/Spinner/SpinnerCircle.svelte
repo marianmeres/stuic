@@ -34,6 +34,7 @@
 </script>
 
 <Circle
+	animateCompletenessMs={0}
 	{completeness}
 	class={twMerge("stuic-spinner-circle animate-spin", classProp)}
 	{bgStrokeColor}

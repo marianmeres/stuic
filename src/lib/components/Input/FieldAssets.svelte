@@ -1,32 +1,38 @@
 <script lang="ts" module>
+	import { asset } from "$app/paths";
 	import { createClog } from "@marianmeres/clog";
+	import { iconFeatherArrowLeft as iconPrevious } from "@marianmeres/icons-fns/feather/iconFeatherArrowLeft.js";
+	import { iconFeatherArrowRight as iconNext } from "@marianmeres/icons-fns/feather/iconFeatherArrowRight.js";
+	import { iconFeatherDownload as iconDownload } from "@marianmeres/icons-fns/feather/iconFeatherDownload.js";
 	import { iconFeatherFile as iconFile } from "@marianmeres/icons-fns/feather/iconFeatherFile.js";
 	import { iconFeatherPlus as iconAdd } from "@marianmeres/icons-fns/feather/iconFeatherPlus.js";
-	import { iconFeatherDownload as iconDownload } from "@marianmeres/icons-fns/feather/iconFeatherDownload.js";
 	import { iconFeatherTrash2 as iconDelete } from "@marianmeres/icons-fns/feather/iconFeatherTrash2.js";
-	import { iconFeatherArrowRight as iconNext } from "@marianmeres/icons-fns/feather/iconFeatherArrowRight.js";
-	import { iconFeatherArrowLeft as iconPrevious } from "@marianmeres/icons-fns/feather/iconFeatherArrowLeft.js";
-	import type { Snippet } from "svelte";
+	import { onDestroy, type Snippet } from "svelte";
 	import { fileDropzone } from "../../actions/file-dropzone.svelte.js";
 	import { highlightDragover } from "../../actions/highlight-dragover.svelte.js";
+	import { tooltip } from "../../actions/index.js";
 	import type {
 		ValidateOptions,
 		ValidationResult,
 	} from "../../actions/validate.svelte.js";
 	import type { TranslateFn } from "../../types.js";
+	import { fileFromBlobUrl } from "../../utils/file-from-bloburl.js";
+	import { forceDownload } from "../../utils/force-download.js";
 	import { getId } from "../../utils/get-id.js";
 	import { isImage } from "../../utils/is-image.js";
 	import { isPlainObject } from "../../utils/is-plain-object.js";
 	import { replaceMap } from "../../utils/replace-map.js";
 	import { twMerge } from "../../utils/tw-merge.js";
-	import { ModalDialog } from "../ModalDialog/index.js";
+	import { Modal } from "../Modal/index.js";
 	import { NotificationsStack } from "../Notifications/notifications-stack.svelte.js";
+	import { Spinner } from "../Spinner/index.js";
 	import { isTHCNotEmpty, type THC } from "../Thc/Thc.svelte";
 	import { X } from "../X/index.js";
 	import InputWrap from "./_internal/InputWrap.svelte";
-	import { forceDownload } from "../../utils/force-download.js";
-	import { Modal } from "../Modal/index.js";
-	import { tooltip } from "../../actions/index.js";
+	import SpinnerCircle from "../Spinner/SpinnerCircle.svelte";
+	import Circle from "../Circle/Circle.svelte";
+
+	const clog = createClog("FieldAssets");
 
 	// i18n ready
 	function t_default(
@@ -37,9 +43,10 @@
 	) {
 		const m: Record<string, string> = {
 			field_req_att: "This field requires attention. Please review and try again.",
+			cardinality_reached: "Upload limit of {{max}} files reached",
 			unable_to_preview: "This file cannot be previewed",
 			delete: "Delete",
-			deleted: "{{label}} deleted",
+			deleted: "{{name}} deleted",
 			close: "Close preview window",
 			download: "Download original",
 		};
@@ -48,20 +55,38 @@
 		return isPlainObject(values) ? replaceMap(out, values as any) : out;
 	}
 
-	export type AssetUrlObj = { thumb: string; full: string; original?: string };
+	export type AssetUrlObj = {
+		// used in non-modal preview
+		thumb: string;
+		// used in modal preview
+		full: string;
+		// (potentially high res) used for download
+		original?: string;
+	};
 
 	export interface Asset {
 		id: string;
 		url: string | AssetUrlObj;
-		label?: string;
-		type?: string;
+		name: string;
+		type: string;
 		meta?: Record<string, any>;
+	}
+
+	export interface AssetWithBlobUrl extends Asset {
+		blobUrl: string;
+	}
+
+	function parseFieldValue(val: string) {
+		try {
+			return JSON.parse(val);
+		} catch (e) {
+			clog.error(e);
+			return [];
+		}
 	}
 </script>
 
 <script lang="ts">
-	const clog = createClog("FieldAssets");
-
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
 	interface Props extends Record<string, any> {
@@ -125,7 +150,15 @@
 		// itemIdPropName?: string;
 		// for custom stuff...
 		onChange?: (value: string) => void;
-		processFiles?: (files: FileList | null) => Promise<void>;
+		/**
+		 * this does not accept the raw FileList but already preprocessed list of assets.
+		 */
+		processAssets?: (
+			assets: Asset[],
+			onProgress?: (blobUrl: string, progress: number) => any
+		) => Promise<AssetWithBlobUrl[]>;
+		// should we display onProgress?
+		withOnProgress?: boolean;
 	}
 
 	let {
@@ -183,12 +216,13 @@
 		name,
 		// itemIdPropName = "id",
 		onChange,
-		processFiles,
+		processAssets,
+		withOnProgress,
 		// ...rest
 	}: Props = $props();
 
 	// let innerValue = $state("");
-	let isFetching = $state(false);
+	let isUploading = $state(false);
 	let cardinality = $derived(_cardinality === -1 ? Infinity : _cardinality);
 	let isMultiple = $derived(cardinality > 1);
 	let parentHiddenInputEl: HTMLInputElement | undefined = $state();
@@ -197,8 +231,14 @@
 	let modal: Modal = $state()!;
 	let previewIdx = $state<number>(-1);
 
-	let assets: Asset[] = $derived(parse(value));
+	let assets: Asset[] = $derived(parseFieldValue(value));
 	// $inspect("assets", assets);
+
+	// { blobUrl: number } map to be optionally shown as upload progress when uploading new asset
+	// otherwise normal spinner will be shown
+	let progress = $state<Record<string, number>>({});
+	const onProgress = (id: string, value: number) => (progress[id] = value);
+	// $inspect("progress", progress);
 
 	$effect(() => {
 		if (!assets.length) modal?.close?.();
@@ -238,15 +278,6 @@
 	let objectFitStyle = $state("object-cover");
 	let objectSize = $state("size-20");
 
-	function parse(val: string) {
-		try {
-			return JSON.parse(val);
-		} catch (e) {
-			clog.error(e);
-			return [];
-		}
-	}
-
 	function asset_urls(asset: Asset): AssetUrlObj {
 		if (typeof asset.url === "string") {
 			return { thumb: asset.url, full: asset.url, original: asset.url };
@@ -255,12 +286,11 @@
 	}
 
 	function remove_by_idx(idx: number) {
-		let parsed: Asset[] = parse(value);
-		const label = parsed[idx].label!;
+		let parsed: Asset[] = parseFieldValue(value);
+		const name = parsed[idx].name!;
 		parsed.splice(idx, 1);
 		value = JSON.stringify(parsed);
-		// notifications?.info(`${label} removed`);
-		notifications?.info(t("deleted", { label }));
+		notifications?.info(t("deleted", { name }));
 	}
 
 	function preview_previous() {
@@ -272,13 +302,26 @@
 	}
 
 	const TOP_BUTTON_CLS = "rounded bg-white hover:bg-neutral-200 p-1";
+
+	onDestroy(() => {
+		try {
+			assets.forEach((a) => {
+				Object.entries(a.url).forEach(([_k, url]) => {
+					// memory cleanup (not sure if really needed as browser should
+					// know we're loosing reference and should garbage collect by itself)
+					if (url.startsWith("blob:")) URL.revokeObjectURL(url);
+				});
+			});
+		} catch (e) {
+			clog.warn(`${e}`);
+		}
+	});
 </script>
 
 <!-- this must be on window as we're catching any typing anywhere -->
 <svelte:window
 	onkeydown={(e) => {
 		if (modal.visibility().visible) {
-			// arrow navigation
 			if (["ArrowRight"].includes(e.key)) {
 				preview_next();
 			} else if (["ArrowLeft"].includes(e.key)) {
@@ -305,7 +348,7 @@
 					{#if _is_img}
 						<img
 							src={thumb}
-							alt={asset.label}
+							alt={asset.name}
 							class={[objectSize, objectFitStyle, "hover:saturate-150"]}
 						/>
 					{:else}
@@ -313,10 +356,28 @@
 					{/if}
 					<span
 						class="absolute bottom-1 left-1 right-1 grid bg-white/50 rounded"
-						use:tooltip={() => ({ content: asset.label })}
+						use:tooltip={() => ({ content: asset.name })}
 					>
-						<span class="truncate px-2 text-xs">{asset.label}</span>
+						<span class="truncate px-2 text-xs">{asset.name}</span>
 					</span>
+
+					{#if asset.meta?.isUploading}
+						<span
+							class="absolute inset-0 grid place-content-center pointer-events-none text-white"
+						>
+							{#if withOnProgress}
+								<Circle
+									class="text-white"
+									animateCompletenessMs={300}
+									bgStrokeColor="rgba(0 0 0 / 0.2)"
+									completeness={progress[asset.id] / 100}
+									rotate={-90}
+								/>
+							{:else}
+								<SpinnerCircle bgStrokeColor="gray" />
+							{/if}
+						</span>
+					{/if}
 				</button>
 			</div>
 		{/each}
@@ -335,27 +396,65 @@
 <div
 	class="w-full"
 	use:highlightDragover={() => ({
-		enabled: typeof processFiles === "function",
+		enabled: typeof processAssets === "function",
 		classes: ["outline-dashed outline-2 outline-neutral-300"],
 	})}
 	use:fileDropzone={() => ({
-		enabled: typeof processFiles === "function",
+		enabled: typeof processAssets === "function",
 		inputEl,
 		processFiles(files: FileList | null) {
-			if (typeof processFiles === "function") {
-				console.log("processFiles", files?.length, files);
-				isFetching = true;
-				processFiles(files)
-					.catch((e) => notifications?.error(`${e}`))
-					.finally(() => (isFetching = false));
+			if (asset.length + (files?.length ?? 0) >= cardinality) {
+				const msg = t("cardinality_reached", { max: cardinality });
+				return notifications ? notifications.error(msg) : alert(msg);
 			}
-			const max = 2;
-			// if (files?.length && files.length > max) {
-			// 	return (names = [`MAX ${max} ALLOWED`]);
-			// }
-			// names = Array.from(files ?? []).map((f) => f.name);
+
+			const toBeProcessed: Asset[] = [];
+
+			for (const file of files ?? []) {
+				// this create a unique blob url, which we'll use as id as well
+				const url = URL.createObjectURL(file);
+				const asset: Asset = {
+					id: url,
+					url: { thumb: url, full: url, original: url },
+					type: file.type,
+					name: file.name,
+					meta: { isUploading: true },
+				};
+
+				// ASAP optimistic UI update
+				assets.push(asset);
+
+				// prepare data for server upload
+				toBeProcessed.push(asset);
+			}
+			value = JSON.stringify(assets);
+
+			if (typeof processAssets === "function") {
+				isUploading = true;
+				processAssets(toBeProcessed, onProgress)
+					.then((uploaded: AssetWithBlobUrl[]) => {
+						for (const ass of uploaded) {
+							if (ass.blobUrl) {
+								const idx = assets.findIndex((a) => a.id === ass.blobUrl);
+								console.log(assets, idx);
+								if (idx > -1) {
+									ass.meta ??= {};
+									ass.meta.isUploading = false;
+									assets[idx] = ass;
+								} else {
+									clog.error(`Asset idx ${idx} not found?!?`, ass);
+								}
+							} else {
+								clog.error(`Missing blobUrl in`, asset);
+							}
+						}
+						value = JSON.stringify(assets);
+					})
+					.catch((e) => notifications?.error(`${e}`))
+					.finally(() => (isUploading = false));
+			}
 		},
-		allowClick: !parse(value)?.length,
+		allowClick: !parseFieldValue(value)?.length,
 	})}
 >
 	<InputWrap
@@ -381,7 +480,7 @@
 		{style}
 	>
 		{#if typeof renderValue === "function"}
-			{@html renderValue(parse(value))}
+			{@html renderValue(parseFieldValue(value))}
 		{:else}
 			{@render default_render()}
 		{/if}
@@ -406,7 +505,7 @@
 			<img
 				src={url.full}
 				class="w-full h-full object-scale-down"
-				alt={previewAsset?.label}
+				alt={previewAsset?.name}
 			/>
 		{:else}
 			<div>
@@ -448,7 +547,7 @@
 			</button>
 			<button
 				class={TOP_BUTTON_CLS}
-				onclick={() => forceDownload(url.original ?? url.full, previewAsset?.label || "")}
+				onclick={() => forceDownload(url.original ?? url.full, previewAsset?.name || "")}
 				aria-label={t("download")}
 				use:tooltip
 			>
@@ -464,9 +563,9 @@
 			</button>
 		</div>
 
-		{#if previewAsset?.label}
-			<span class="absolute top-4 left-4 bg-white/50 px-1 text-sm rounded">
-				{previewAsset?.label}
+		{#if previewAsset?.name}
+			<span class="absolute top-4 left-4 bg-white px-1 text-sm rounded">
+				{previewAsset?.name}
 			</span>
 		{/if}
 	{/if}

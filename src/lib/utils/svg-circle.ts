@@ -7,6 +7,7 @@ export interface SvgCircleOptions {
 	roundedEdges: boolean;
 	rotate: number;
 	strokeWidthRatio: number;
+	circleStyle: string;
 }
 
 function _normalize_completness(v: number) {
@@ -38,6 +39,7 @@ export function svgCircle(options: Partial<SvgCircleOptions> = {}) {
 		roundedEdges = true,
 		rotate = 0,
 		strokeWidthRatio = 0,
+		circleStyle,
 	} = options ?? {};
 
 	completeness = _normalize_completness(completeness);
@@ -89,6 +91,7 @@ export function svgCircle(options: Partial<SvgCircleOptions> = {}) {
 	circle.setAttribute("stroke-linecap", linecap);
 	circle.setAttribute("transform-origin", "center");
 	circle.setAttribute("transform", `rotate(${_normalize_rotate(rotate)})`);
+	if (circleStyle) circle.style.cssText += circleStyle;
 
 	//
 	svg.appendChild(circle);

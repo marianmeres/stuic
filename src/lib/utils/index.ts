@@ -6,6 +6,7 @@ export * from "./device-pointer.svelte.js";
 export * from "./escape-regex.js";
 export * from "./event-emitter.js";
 export * from "./event-modifiers.js";
+export * from "./file-from-bloburl.js";
 export * from "./force-download.js";
 export * from "./get-id.js";
 export * from "./is-browser.js";

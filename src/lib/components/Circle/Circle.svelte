@@ -11,7 +11,16 @@
 		rotate = 0,
 		strokeWidthRatio = 0,
 		style,
-	}: Partial<SvgCircleOptions> & { style?: string } = $props();
+		circleClass,
+		circleStyle = "",
+		animateCompletenessMs = 0,
+	}: Partial<SvgCircleOptions> & {
+		style?: string;
+		circleClass?: string;
+		circleStyle?: string;
+		// transition duration in ms on the stroke-dashoffset
+		animateCompletenessMs?: number;
+	} = $props();
 
 	let container: HTMLDivElement = $state()!;
 
@@ -22,6 +31,12 @@
 		roundedEdges,
 		rotate,
 		strokeWidthRatio,
+		class: circleClass,
+		circleStyle:
+			circleStyle +
+			(animateCompletenessMs
+				? `;transition: stroke-dashoffset ${animateCompletenessMs}ms linear;`
+				: ""),
 	});
 
 	$effect(() => {
