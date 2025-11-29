@@ -3,20 +3,32 @@ import type { THC } from "../Thc/Thc.svelte";
 
 const clog = createClog("alert-confirm-prompt-stack").debug;
 
+/**
+ * Types of alert/confirm/prompt dialogs.
+ */
 export enum AlertConfirmPromptType {
 	ALERT = "alert",
 	CONFIRM = "confirm",
 	PROMPT = "prompt",
 }
 
-// basically a label for color scheme and icon
+/**
+ * Visual variant for the dialog - affects color scheme and icon.
+ */
 export type AlertConfirmPromptVariant = "info" | "success" | "warn" | "error";
 
+/** Callback type for OK button click. */
 export type FnOnOK = (value: any) => any;
+/** Callback type for Cancel button click. */
 export type FnOnCancel = (value: false) => any;
+/** Callback type for Escape key press. */
 export type FnOnEscape = () => void;
+/** Callback type for custom button click. */
 export type FnOnCustom = (value: any) => any;
 
+/**
+ * Configuration object for an alert/confirm/prompt dialog.
+ */
 export interface AlertConfirmPromptObj extends Record<string, any> {
 	//keyof AlertConfirmPromptType;
 	type:
@@ -57,6 +69,35 @@ export interface AlertConfirmPromptObj extends Record<string, any> {
 const isFn = (v: any) => typeof v === "function";
 const ucf = (s: string) => `${s}`[0].toUpperCase() + `${s}`.slice(1);
 
+/**
+ * A reactive stack manager for alert, confirm, and prompt dialogs.
+ *
+ * Manages a FIFO queue of dialogs, allowing one dialog to be displayed at a time.
+ * Provides a modern, customizable replacement for native browser dialogs.
+ *
+ * @example
+ * ```ts
+ * const acp = new AlertConfirmPromptStack({
+ *   labelOk: 'Confirm',
+ *   labelCancel: 'Dismiss'
+ * });
+ *
+ * // Simple alert
+ * acp.alert({ title: 'Notice', content: 'Operation complete' });
+ *
+ * // Confirm with callback
+ * acp.confirm(
+ *   () => console.log('Confirmed!'),
+ *   { title: 'Delete?', content: 'This cannot be undone', variant: 'warn' }
+ * );
+ *
+ * // Prompt for input
+ * acp.prompt(
+ *   (value) => console.log('User entered:', value),
+ *   { title: 'Name', content: 'Enter your name', value: 'Default' }
+ * );
+ * ```
+ */
 export class AlertConfirmPromptStack {
 	// fifo
 	#stack = $state<AlertConfirmPromptObj[]>([]);
@@ -140,7 +181,20 @@ export class AlertConfirmPromptStack {
 }
 
 /**
- * Sugar helper to monkey patch the native window.alert
+ * Creates a Promise-based alert function compatible with `window.alert`.
+ *
+ * Returns a function that shows an alert dialog and resolves when dismissed.
+ *
+ * @param acp - The AlertConfirmPromptStack instance
+ * @param defaults - Default options for all alerts
+ * @returns A Promise-based alert function
+ *
+ * @example
+ * ```ts
+ * const alert = createAlert(acpStack);
+ * await alert('Hello World!');
+ * console.log('Alert dismissed');
+ * ```
  */
 export function createAlert(
 	acp: AlertConfirmPromptStack,
@@ -166,7 +220,21 @@ export function createAlert(
 }
 
 /**
- * Sugar helper to monkey patch the native window.confirm
+ * Creates a Promise-based confirm function compatible with `window.confirm`.
+ *
+ * Returns a function that shows a confirm dialog and resolves with `true` (OK) or `false` (Cancel/Escape).
+ *
+ * @param acp - The AlertConfirmPromptStack instance
+ * @param defaults - Default options for all confirms
+ * @returns A Promise-based confirm function
+ *
+ * @example
+ * ```ts
+ * const confirm = createConfirm(acpStack);
+ * if (await confirm('Delete this item?')) {
+ *   deleteItem();
+ * }
+ * ```
  */
 export function createConfirm(
 	acp: AlertConfirmPromptStack,
@@ -198,7 +266,22 @@ export function createConfirm(
 }
 
 /**
- * Sugar helper to monkey patch the native window.prompt
+ * Creates a Promise-based prompt function compatible with `window.prompt`.
+ *
+ * Returns a function that shows a prompt dialog and resolves with the entered value or `null` (Cancel/Escape).
+ *
+ * @param acp - The AlertConfirmPromptStack instance
+ * @param defaults - Default options for all prompts
+ * @returns A Promise-based prompt function
+ *
+ * @example
+ * ```ts
+ * const prompt = createPrompt(acpStack);
+ * const name = await prompt('What is your name?', 'Anonymous');
+ * if (name !== null) {
+ *   console.log('Hello,', name);
+ * }
+ * ```
  */
 export function createPrompt(
 	acp: AlertConfirmPromptStack,

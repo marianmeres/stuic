@@ -1,3 +1,17 @@
+/**
+ * Converts a total number of seconds into days, hours, minutes, and seconds.
+ *
+ * @param totalSeconds - The total number of seconds (must be non-negative)
+ * @returns An object with `days`, `hours`, `minutes`, and `seconds` properties
+ * @throws Error if totalSeconds is negative
+ *
+ * @example
+ * ```ts
+ * convertSeconds(90061);  // { days: 1, hours: 1, minutes: 1, seconds: 1 }
+ * convertSeconds(3661);   // { days: 0, hours: 1, minutes: 1, seconds: 1 }
+ * convertSeconds(61);     // { days: 0, hours: 0, minutes: 1, seconds: 1 }
+ * ```
+ */
 export function convertSeconds(totalSeconds: number) {
 	if (totalSeconds < 0) {
 		throw new Error("Seconds cannot be negative");
@@ -20,6 +34,19 @@ export function convertSeconds(totalSeconds: number) {
 	};
 }
 
+/**
+ * Formats a duration in seconds as a human-readable string.
+ *
+ * @param totalSeconds - The total number of seconds
+ * @returns A formatted string like "1 day, 2 hours, 3 minutes, 4 seconds"
+ *
+ * @example
+ * ```ts
+ * formatDuration(90061);  // "1 day, 1 hour, 1 minute, 1 second"
+ * formatDuration(3661);   // "1 hour, 1 minute, 1 second"
+ * formatDuration(0);      // "0 seconds"
+ * ```
+ */
 export function formatDuration(totalSeconds: number) {
 	const time = convertSeconds(totalSeconds);
 	const parts = [];

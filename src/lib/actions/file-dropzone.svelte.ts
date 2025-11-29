@@ -1,3 +1,6 @@
+/**
+ * Options for the file dropzone action.
+ */
 interface FileDropzoneOptions {
 	enabled?: boolean;
 	inputEl: HTMLInputElement;
@@ -5,6 +8,46 @@ interface FileDropzoneOptions {
 	processFiles?: (files: FileList | null) => any | Promise<any>;
 }
 
+/**
+ * A Svelte action that turns any element into a file drop zone.
+ *
+ * Handles drag-and-drop file uploads and optionally allows clicking to select files.
+ * Works in conjunction with a hidden file input element.
+ *
+ * @param el - The drop zone element
+ * @param fn - Function returning configuration options
+ * @param fn.enabled - Whether the dropzone is active (default: true)
+ * @param fn.inputEl - **Required** - Hidden file input element for file selection
+ * @param fn.allowClick - Allow clicking the zone to open file picker (default: true)
+ * @param fn.processFiles - Callback function to handle selected/dropped files
+ *
+ * @example
+ * ```svelte
+ * <script>
+ *   let inputEl: HTMLInputElement;
+ *
+ *   function handleFiles(files: FileList | null) {
+ *     if (files) {
+ *       for (const file of files) {
+ *         console.log('File:', file.name);
+ *       }
+ *     }
+ *   }
+ * </script>
+ *
+ * <input type="file" bind:this={inputEl} hidden multiple />
+ *
+ * <div
+ *   use:fileDropzone={() => ({
+ *     inputEl,
+ *     processFiles: handleFiles
+ *   })}
+ *   class="border-2 border-dashed p-8"
+ * >
+ *   Drop files here or click to select
+ * </div>
+ * ```
+ */
 export function fileDropzone(el: HTMLElement, fn?: () => FileDropzoneOptions) {
 	$effect(() => {
 		let {

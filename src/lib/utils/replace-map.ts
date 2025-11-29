@@ -1,6 +1,36 @@
 import { escapeRegex } from "./escape-regex.js";
 
-/** Will replace all keys from k-v pair map with corresponding value  */
+/**
+ * Replaces template placeholders in a string using a key-value map.
+ *
+ * By default, looks for mustache-style `{{key}}` placeholders. Keys are processed
+ * longest-first to avoid partial replacement issues.
+ *
+ * @param str - The template string with placeholders
+ * @param replacementMap - Object mapping keys to replacement values (or functions returning values)
+ * @param options - Optional configuration
+ * @param options.ignoreCase - Case-insensitive matching (default: true)
+ * @param options.preSearchKeyTransform - Function to transform keys before searching (default: wraps in `{{}}`)
+ * @returns The string with all placeholders replaced
+ *
+ * @example
+ * ```ts
+ * replaceMap('Hello {{name}}!', { name: 'World' });
+ * // 'Hello World!'
+ *
+ * replaceMap('{{greeting}} {{name}}', {
+ *   greeting: () => new Date().getHours() < 12 ? 'Good morning' : 'Hello',
+ *   name: 'World'
+ * });
+ * // 'Good morning World!' or 'Hello World!'
+ *
+ * // Custom placeholder format:
+ * replaceMap('Hello %name%', { name: 'World' }, {
+ *   preSearchKeyTransform: (k) => `%${k}%`
+ * });
+ * // 'Hello World!'
+ * ```
+ */
 export function replaceMap(
 	str: string,
 	replacementMap: Record<string, string | CallableFunction>,

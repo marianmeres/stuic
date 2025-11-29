@@ -1,5 +1,25 @@
 import { MediaQuery } from "svelte/reactivity";
 
+/**
+ * A reactive class that detects the device's pointer capabilities.
+ *
+ * Uses CSS media queries to determine if the device has:
+ * - No pointing device (`isNone`)
+ * - A coarse pointer like a touchscreen (`isCoarse`)
+ * - A fine pointer like a mouse (`isFine`)
+ *
+ * @example
+ * ```ts
+ * const pointer = new DevicePointer();
+ *
+ * // In a component:
+ * {#if pointer.isCoarse}
+ *   <TouchFriendlyButton />
+ * {:else}
+ *   <StandardButton />
+ * {/if}
+ * ```
+ */
 export class DevicePointer {
 	/** none - The primary input mechanism does not include a pointing device. */
 	#isNone = new MediaQuery("any-pointer: none");

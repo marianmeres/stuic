@@ -1,5 +1,18 @@
 /**
- * forceDownload('https://example.com/report.pdf', 'yearly-report.pdf');
+ * Forces a file download from a URL, bypassing the browser's default behavior.
+ *
+ * Fetches the resource, creates a blob URL, and triggers a download via an invisible link.
+ * Works even for URLs that would normally open in the browser (PDFs, images, etc.).
+ *
+ * @param url - The URL of the file to download
+ * @param fileName - Optional filename for the downloaded file
+ * @param _errorLog - Optional error logging function (default: console.error)
+ * @returns `true` if download succeeded, `false` on error
+ *
+ * @example
+ * ```ts
+ * await forceDownload('https://example.com/report.pdf', 'yearly-report.pdf');
+ * ```
  */
 export async function forceDownload(
 	url: string,

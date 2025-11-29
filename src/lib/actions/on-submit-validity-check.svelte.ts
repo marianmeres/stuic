@@ -1,15 +1,48 @@
+/**
+ * Event name dispatched when form is valid on submit.
+ */
 const SUBMIT_VALID_EVENT_NAME = "submit_valid";
+
+/**
+ * Event name dispatched when form is invalid on submit.
+ */
 const SUBMIT_INVALID_EVENT_NAME = "submit_invalid";
 
 /**
- * The problem: custom validity checks via `validate` action are registered on
- * "input" or "change" events. When a form is submitted without touching those custom
- * validated elements, those will not be validity-checked...
- * I'm not able to come up with better solution than to manually trigger events which will
- * then trigger the custom validation... (utilizing the `requestSubmit` seems like
- * a right direction, but that still is not good)
+ * A Svelte action that validates all form fields before allowing submission.
  *
- * Still, smells like a hack...
+ * Solves the problem where custom validators (via the `validate` action) are only triggered
+ * on input/change events. This action ensures all fields are validated on submit, even if
+ * the user hasn't interacted with them.
+ *
+ * Dispatches custom events instead of the native submit:
+ * - `submit_valid` - Form is valid, includes `{ formData: FormData }` in detail
+ * - `submit_invalid` - Form is invalid, includes `{ invalid: HTMLElement[] }` in detail
+ *
+ * @param node - The form element to enhance
+ *
+ * @example
+ * ```svelte
+ * <form
+ *   use:onSubmitValidityCheck
+ *   onsubmit_valid={(e) => {
+ *     const formData = e.detail.formData;
+ *     // Handle valid submission
+ *   }}
+ *   onsubmit_invalid={(e) => {
+ *     const invalidFields = e.detail.invalid;
+ *     // Focus first invalid field, show errors, etc.
+ *   }}
+ * >
+ *   <input required use:validate />
+ *   <button type="submit">Submit</button>
+ * </form>
+ * ```
+ *
+ * @remarks
+ * Access event names via static properties:
+ * - `onSubmitValidityCheck.SUBMIT_VALID_EVENT_NAME`
+ * - `onSubmitValidityCheck.SUBMIT_INVALID_EVENT_NAME`
  */
 export function onSubmitValidityCheck(node: HTMLFormElement) {
 	const onSubmit = (e: Event) => {

@@ -1,5 +1,28 @@
 /**
- * Will just add classes to el when being dragged over
+ * A Svelte action that adds CSS classes to an element during drag-over events.
+ *
+ * Useful for providing visual feedback when files are being dragged over a drop zone.
+ * Uses `$effect` for reactive updates when options change.
+ *
+ * @param el - The element to apply highlight classes to
+ * @param fn - Optional function returning configuration options
+ * @param fn.enabled - Whether the action is active (default: true)
+ * @param fn.classes - CSS class(es) to add during dragover (default: ['dragover'])
+ *
+ * @example
+ * ```svelte
+ * <div
+ *   use:highlightDragover={() => ({ classes: ['border-blue-500', 'bg-blue-50'] })}
+ *   ondrop={handleDrop}
+ * >
+ *   Drop files here
+ * </div>
+ *
+ * <!-- With reactive enabled state -->
+ * <div use:highlightDragover={() => ({ enabled: isDropEnabled })}>
+ *   ...
+ * </div>
+ * ```
  */
 export function highlightDragover(
 	el: HTMLElement,

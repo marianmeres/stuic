@@ -1,4 +1,28 @@
-/** Will observe DOM changes and triggers callback when element presence changes */
+/**
+ * Observes DOM changes and reactively tracks whether an element matching the selector exists.
+ *
+ * Uses MutationObserver to watch for DOM changes and updates a reactive `current` property
+ * that indicates whether the element is present.
+ *
+ * @param selector - A CSS selector to watch for
+ * @param options - Optional configuration
+ * @param options.rootElement - The root element to observe (default: document.body)
+ * @returns An object with reactive `current` property, `disconnect()` and `forceCheck()` methods
+ * @throws TypeError if selector is empty
+ *
+ * @example
+ * ```ts
+ * const modalExists = observeExists('.modal-open');
+ *
+ * // In a component:
+ * {#if modalExists.current}
+ *   <Backdrop />
+ * {/if}
+ *
+ * // Cleanup:
+ * onDestroy(() => modalExists.disconnect());
+ * ```
+ */
 export function observeExists(
 	selector: string,
 	options: Partial<{

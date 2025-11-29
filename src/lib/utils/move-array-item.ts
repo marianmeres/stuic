@@ -1,5 +1,20 @@
 /**
+ * Moves an item within an array from one index to another.
  *
+ * Returns a new array (does not mutate the original).
+ *
+ * @param array - The source array
+ * @param fromIndex - The current index of the item to move
+ * @param toIndex - The target index for the item
+ * @returns A new array with the item moved to the new position
+ * @throws Error if either index is out of bounds
+ *
+ * @example
+ * ```ts
+ * moveArrayItem(['a', 'b', 'c'], 0, 2);  // ['b', 'c', 'a']
+ * moveArrayItem(['a', 'b', 'c'], 2, 0);  // ['c', 'a', 'b']
+ * moveArrayItem(['a', 'b', 'c'], 1, 1);  // ['a', 'b', 'c'] (clone)
+ * ```
  */
 export function moveArrayItem(array: any[], fromIndex: number, toIndex: number) {
 	if (fromIndex < 0 || fromIndex >= array.length) {

@@ -1,3 +1,27 @@
+/**
+ * @packageDocumentation
+ *
+ * Stuic - Svelte Tailwind UI Components
+ *
+ * An opinionated Svelte 5 component library built with TailwindCSS v4.
+ *
+ * @remarks
+ * This package provides a collection of accessible, customizable UI components,
+ * utility functions, and Svelte actions for building modern web applications.
+ *
+ * @example
+ * ```ts
+ * // Import components
+ * import { Button, Modal, Notifications } from '@marianmeres/stuic';
+ *
+ * // Import utilities
+ * import { twMerge, debounce, localStorageState } from '@marianmeres/stuic';
+ *
+ * // Import actions
+ * import { focusTrap, validate, autogrow } from '@marianmeres/stuic';
+ * ```
+ */
+
 // components
 export * from "./components/AlertConfirmPrompt/index.js";
 export * from "./components/AnimatedElipsis/index.js";

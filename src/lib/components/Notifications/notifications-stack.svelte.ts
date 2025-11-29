@@ -3,15 +3,27 @@ import type { Component } from "svelte";
 import { strHash } from "../../utils/str-hash.js";
 import { getTHCStringContent, type THC } from "../Thc/Thc.svelte";
 
+/**
+ * Wrapper for passing a Svelte component with props.
+ */
 export interface ComponentWrap {
 	component: Component;
 	props?: any;
 }
 
+/**
+ * Sort order for notifications in the stack.
+ */
 export type NotificationsSortOrder = "asc" | "desc";
 
+/**
+ * Visual type/category of a notification. Affects styling and icon.
+ */
 export type NotificationType = "info" | "success" | "warn" | "error" | string;
 
+/**
+ * Input options for creating a notification.
+ */
 export interface NotificationInput extends Record<string, any> {
 	/** Unique id of the notification. If not provided, will be calculated from content.
 	Multiple notifications with the same id will be ignored (but the `count` will be increased). */
@@ -52,6 +64,9 @@ export interface NotificationInput extends Record<string, any> {
 	// pragmatic shortcut to THC
 	forceAsHtml?: boolean;
 }
+/**
+ * Internal notification object with computed properties.
+ */
 export interface Notification extends NotificationInput {
 	/** For sorting the queue, will default to now. */
 	created: Date;
@@ -61,8 +76,14 @@ export interface Notification extends NotificationInput {
 	_ttlProgress: number;
 }
 
+/**
+ * Parameter type for creating notifications - either a simple string message or full options.
+ */
 export type NotificationCreateParam = string | Partial<NotificationInput>;
 
+/**
+ * Configuration options for the NotificationsStack.
+ */
 export interface NotificationsStackOptions {
 	/** Maximum number of notifications kept in the queue, if exceeded, older ones (by `created`)
 	will be discarded. Use 0 (zero) to disable capacity check. */
@@ -109,7 +130,34 @@ const _id = (type: string, content: any) => {
 };
 
 /**
+ * A reactive notification queue manager with auto-disposal and deduplication.
  *
+ * Manages a stack of notifications with automatic time-to-live (TTL) disposal,
+ * duplicate detection, and capacity limits.
+ *
+ * @example
+ * ```ts
+ * // Create a notification stack
+ * const notifications = new NotificationsStack([], {
+ *   maxCapacity: 5,
+ *   defaultTtl: 5000
+ * });
+ *
+ * // Add notifications
+ * notifications.info('Operation completed');
+ * notifications.success('File saved!');
+ * notifications.warn('Low disk space');
+ * notifications.error('Connection failed', { ttl: 0 }); // Won't auto-dismiss
+ *
+ * // Remove a notification
+ * notifications.removeById('some-id');
+ *
+ * // Access the stack (reactive)
+ * console.log(notifications.stack);
+ *
+ * // Cleanup
+ * notifications.destroy();
+ * ```
  */
 export class NotificationsStack {
 	#stack = $state<Notification[]>([]);

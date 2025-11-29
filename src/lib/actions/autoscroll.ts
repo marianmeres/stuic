@@ -11,6 +11,9 @@ interface StoreLike<T> extends StoreReadable<T> {
 	update(cb: Update<T>): void;
 }
 
+/**
+ * Options for the autoscroll action.
+ */
 export type AutoscrollOptions = ScrollOptions & {
 	dependencies?: StoreReadable<any>[];
 	logger?: (...args: any[]) => void;
@@ -24,6 +27,42 @@ const DEFAULTS = {
 	startScrollTimeout: 300,
 };
 
+/**
+ * A Svelte action that automatically scrolls a container when new content is added.
+ *
+ * Only scrolls if the user is already near the bottom of the content (within threshold).
+ * Useful for chat interfaces, log viewers, or any container with streaming content.
+ *
+ * Features:
+ * - Smooth scrolling by default
+ * - Respects user scroll position (won't interrupt manual scrolling)
+ * - Observes child mutations and resize events
+ * - Supports reactive store dependencies for manual trigger
+ *
+ * @param node - The scrollable container element
+ * @param options - Configuration options
+ * @param options.behavior - Scroll behavior: 'smooth' | 'instant' | 'auto' (default: 'smooth')
+ * @param options.shouldScrollThresholdPx - Distance from bottom to trigger auto-scroll (default: 100)
+ * @param options.startScrollTimeout - Delay before scrolling on dependency change (default: 300ms)
+ * @param options.dependencies - Stores that trigger scroll when updated
+ * @param options.newScrollableContentSignal - Store to signal when new content is available but not scrolled
+ * @param options.logger - Optional debug logger function
+ * @returns Svelte action lifecycle methods
+ *
+ * @example
+ * ```svelte
+ * <div class="chat-messages" use:autoscroll>
+ *   {#each messages as msg}
+ *     <div>{msg.text}</div>
+ *   {/each}
+ * </div>
+ *
+ * <!-- With options -->
+ * <div use:autoscroll={{ behavior: 'instant', shouldScrollThresholdPx: 50 }}>
+ *   ...
+ * </div>
+ * ```
+ */
 export function autoscroll(
 	node: HTMLElement,
 	options: AutoscrollOptions = {

@@ -1,4 +1,21 @@
-/** Sugar, Ah, Honey, Honey... */
+/**
+ * A convenient wrapper around `EventTarget` with a friendlier API.
+ *
+ * Provides `on`, `off`, `once`, `emit`, and `removeAllListeners` methods similar to Node.js EventEmitter.
+ * Uses AbortController internally for efficient listener cleanup.
+ *
+ * @example
+ * ```ts
+ * const emitter = new EventEmitter();
+ *
+ * const unsub = emitter.on('message', (e) => console.log(e.detail));
+ * emitter.emit('message', { text: 'Hello!' });
+ *
+ * unsub(); // Remove the listener
+ * // or
+ * emitter.removeAllListeners(); // Remove all listeners
+ * ```
+ */
 export class EventEmitter extends EventTarget {
 	#abortController = new AbortController();
 
@@ -6,7 +23,10 @@ export class EventEmitter extends EventTarget {
 		super();
 	}
 
-	/** Overriding so we can use removeAll (via the abortController) later... */
+	/**
+	 * Adds an event listener with automatic abort signal attachment.
+	 * Overrides the native method to enable `removeAllListeners()` functionality.
+	 */
 	override addEventListener(
 		type: string,
 		listener: any, // fuck it (we would need 3 signatures)
@@ -21,18 +41,30 @@ export class EventEmitter extends EventTarget {
 		super.addEventListener(type, listener, options);
 	}
 
-	/** Yeah! */
+	/**
+	 * Removes all registered event listeners at once.
+	 */
 	removeAllListeners() {
 		this.#abortController.abort();
 		this.#abortController = new AbortController(); // reset for future listeners
 	}
 
-	/** Alias for dispatchEvent(CustomEvent) */
+	/**
+	 * Emits an event with optional detail data.
+	 * @param eventName - The name of the event to emit
+	 * @param detail - Optional data to attach to the event
+	 */
 	emit(eventName: string, detail: any = null) {
 		this.dispatchEvent(new CustomEvent(eventName, { detail }));
 	}
 
-	/** Alias for addEventListener */
+	/**
+	 * Subscribes to an event. Returns an unsubscribe function.
+	 * @param eventName - The name of the event
+	 * @param listener - The callback function
+	 * @param options - Optional event listener options
+	 * @returns A function to remove the listener
+	 */
 	on(
 		eventName: string,
 		listener: EventListenerOrEventListenerObject,
@@ -42,13 +74,23 @@ export class EventEmitter extends EventTarget {
 		return () => this.removeEventListener(eventName, listener);
 	}
 
-	/** Alias for removeEventListener */
+	/**
+	 * Removes an event listener.
+	 * @param eventName - The name of the event
+	 * @param listener - The callback function to remove
+	 * @returns `this` for chaining
+	 */
 	off(eventName: string, listener: EventListenerOrEventListenerObject) {
 		this.removeEventListener(eventName, listener);
 		return this;
 	}
 
-	/** Alias for addEventListener with once flag */
+	/**
+	 * Subscribes to an event for a single invocation only.
+	 * @param eventName - The name of the event
+	 * @param listener - The callback function (called at most once)
+	 * @returns A function to remove the listener before it fires
+	 */
 	once(eventName: string, listener: EventListenerOrEventListenerObject) {
 		this.addEventListener(eventName, listener, { once: true });
 		return () => this.removeEventListener(eventName, listener);

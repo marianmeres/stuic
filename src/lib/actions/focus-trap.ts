@@ -1,5 +1,6 @@
-// initially copied from skeleton, adjusted
-
+/**
+ * Options for the focus trap action.
+ */
 export interface FocusTrapOptions {
 	enabled?: boolean;
 	autoFocusFirst?: boolean;
@@ -7,6 +8,38 @@ export interface FocusTrapOptions {
 
 const defaults: FocusTrapOptions = { enabled: true, autoFocusFirst: true };
 
+/**
+ * A Svelte action that traps keyboard focus within a container element.
+ *
+ * Prevents focus from leaving the container when using Tab/Shift+Tab navigation.
+ * Useful for modals, dialogs, and other overlay components for accessibility compliance.
+ *
+ * Features:
+ * - Auto-focuses the first focusable element on mount
+ * - Respects tabindex ordering
+ * - Handles dynamically added/removed elements via MutationObserver
+ * - Excludes disabled elements and negative tabindexes
+ *
+ * @param node - The container element to trap focus within
+ * @param options - Configuration options
+ * @param options.enabled - Whether the trap is active (default: true)
+ * @param options.autoFocusFirst - Auto-focus first focusable element (default: true)
+ * @returns Svelte action lifecycle methods
+ *
+ * @example
+ * ```svelte
+ * <div use:focusTrap>
+ *   <button>First (focused on mount)</button>
+ *   <input type="text" />
+ *   <button>Last (Tab wraps to First)</button>
+ * </div>
+ *
+ * <!-- With options -->
+ * <div use:focusTrap={{ enabled: isOpen, autoFocusFirst: false }}>
+ *   ...
+ * </div>
+ * ```
+ */
 export function focusTrap(node: HTMLElement, options: FocusTrapOptions = {}) {
 	let { enabled, autoFocusFirst } = { ...defaults, ...(options || {}) };
 

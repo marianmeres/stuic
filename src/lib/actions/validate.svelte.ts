@@ -1,6 +1,9 @@
 import { tick } from "svelte";
 import { waitForNextRepaint, waitForTwoRepaints } from "../utils/paint.js";
 
+/**
+ * Result object returned after validation.
+ */
 export interface ValidationResult {
 	validity: ValidityState;
 	reasons: (keyof ValidityStateFlags)[];
@@ -15,7 +18,8 @@ type ReasonTranslate = (
 ) => string;
 
 /**
- *
+ * Known validity state reasons from the HTML constraint validation API.
+ * @internal
  */
 const KNOWN_REASONS = [
 	"badInput",
@@ -30,7 +34,9 @@ const KNOWN_REASONS = [
 	"valueMissing",
 ];
 
-/** */
+/**
+ * Options for the validate action.
+ */
 export interface ValidateOptions {
 	enabled?: boolean;
 	// anything, typically all form data
@@ -49,7 +55,69 @@ export interface ValidateOptions {
 	t?: false | ReasonTranslate;
 }
 
-/** Main action api */
+/**
+ * A Svelte action for form field validation with custom validators and i18n support.
+ *
+ * Integrates with the HTML constraint validation API and extends it with custom validation
+ * functions. Provides structured validation results with translatable error messages.
+ *
+ * Features:
+ * - Works with native HTML validation attributes (required, pattern, min, max, etc.)
+ * - Custom validation functions with access to form context
+ * - Translatable error messages via `t` function
+ * - Validates on input/change events and first blur
+ * - Returns structured validation result with reasons
+ *
+ * @param el - The form field element to validate
+ * @param fn - Function returning options (or just a boolean for enabled state)
+ *
+ * @example
+ * ```svelte
+ * <script>
+ *   let validationResult: ValidationResult;
+ * </script>
+ *
+ * <input
+ *   required
+ *   minlength="3"
+ *   use:validate={() => ({
+ *     enabled: true,
+ *     setValidationResult: (res) => validationResult = res
+ *   })}
+ * />
+ * {#if !validationResult?.valid}
+ *   <span class="error">{validationResult?.message}</span>
+ * {/if}
+ *
+ * <!-- With custom validator -->
+ * <input
+ *   use:validate={() => ({
+ *     customValidator: (value) => {
+ *       if (value !== 'secret') return 'Must be "secret"';
+ *     },
+ *     setValidationResult: (res) => result = res
+ *   })}
+ * />
+ *
+ * <!-- With form context -->
+ * <input
+ *   name="confirmPassword"
+ *   use:validate={() => ({
+ *     context: { password },
+ *     customValidator: (value, ctx) => {
+ *       if (value !== ctx?.password) return 'Passwords must match';
+ *     },
+ *     setValidationResult: (res) => result = res
+ *   })}
+ * />
+ * ```
+ *
+ * @remarks
+ * Set a global translation function via `validate.t` for i18n support:
+ * ```ts
+ * validate.t = (reason, value, fallback) => translations[reason] ?? fallback;
+ * ```
+ */
 export function validate(
 	el: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,
 	fn?: () => boolean | ValidateOptions

@@ -1,3 +1,27 @@
+/**
+ * A Svelte action that automatically grows a textarea to fit its content.
+ *
+ * Adjusts the textarea height as the user types, up to a maximum height.
+ * Uses `$effect` for reactive updates when options change.
+ *
+ * @param el - The textarea element to apply autogrow to
+ * @param fn - Optional function returning configuration options
+ * @param fn.enabled - Whether autogrow is active (default: true)
+ * @param fn.max - Maximum height in pixels (default: 250)
+ * @param fn.immediate - Set height immediately on mount (default: true)
+ * @param fn.value - If provided, triggers resize when value changes programmatically
+ *
+ * @example
+ * ```svelte
+ * <textarea use:autogrow />
+ *
+ * <!-- With options -->
+ * <textarea use:autogrow={() => ({ max: 400 })} />
+ *
+ * <!-- With bound value for programmatic updates -->
+ * <textarea bind:value use:autogrow={() => ({ value })} />
+ * ```
+ */
 export function autogrow(
 	el: HTMLTextAreaElement,
 	fn?: () => {

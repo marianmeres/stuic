@@ -1,16 +1,23 @@
 /**
- * A simple throttle function that limits how often a function can be called.
- * The function will be called at most once in the specified time period.
+ * Creates a throttled function that limits how often the original function can be called.
  *
- * Example:
+ * The function will be invoked at most once per `limit` milliseconds. If called multiple
+ * times within the limit, the last call's arguments will be used for a trailing invocation.
  *
- * ```js
- * const scroll = (e: Event) => { console.log('Handling scroll event'); };
- * const throttledScroll = throttle(scroll, 300);
+ * @typeParam T - The type of the function to throttle
+ * @param func - The function to throttle
+ * @param limit - Minimum time in milliseconds between invocations
+ * @returns A throttled version of the function
+ *
+ * @example
+ * ```ts
+ * const handleScroll = (e: Event) => console.log('Scrolled!');
+ * const throttledScroll = throttle(handleScroll, 300);
  * window.addEventListener('scroll', throttledScroll);
+ * // handleScroll will be called at most once every 300ms
  * ```
  */
-function throttle<T extends (...args: any[]) => any>(
+export function throttle<T extends (...args: any[]) => any>(
 	func: T,
 	limit: number
 ): (...args: Parameters<T>) => void {

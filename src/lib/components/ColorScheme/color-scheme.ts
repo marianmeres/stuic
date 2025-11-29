@@ -1,5 +1,28 @@
 /**
- * Color scheme toggler and manager
+ * A utility class for managing light/dark color scheme preferences.
+ *
+ * Handles system preferences, localStorage persistence, and DOM class toggling.
+ * Works with Tailwind CSS dark mode (class-based strategy).
+ *
+ * @example
+ * ```ts
+ * // Get current color scheme (local preference or system default)
+ * const scheme = ColorScheme.getValue(); // 'light' or 'dark'
+ *
+ * // Toggle between light and dark
+ * ColorScheme.toggle();
+ *
+ * // Check system preference only
+ * const systemPref = ColorScheme.getSystemValue();
+ *
+ * // Reset to system preference
+ * ColorScheme.reset();
+ * ```
+ *
+ * @remarks
+ * - Uses localStorage key: "stuic-color-scheme"
+ * - Adds/removes "dark" class on `<html>` element
+ * - Works with Tailwind's `darkMode: 'class'` configuration
  */
 export class ColorScheme {
 	static readonly KEY = "stuic-color-scheme" as const;
@@ -46,7 +69,7 @@ export class ColorScheme {
 	}
 
 	/**
-	 *
+	 * Resets color scheme to system preference by removing localStorage value and classes.
 	 */
 	static reset(): void {
 		globalThis.localStorage?.removeItem(ColorScheme.KEY);

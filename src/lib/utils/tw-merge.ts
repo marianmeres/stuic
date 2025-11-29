@@ -2,7 +2,20 @@ import { twMerge as _twMerge, type ClassNameValue } from "tailwind-merge";
 import { clsx } from "clsx";
 
 /**
- * Normalizes and dedupes whitespaces
+ * Normalizes and deduplicates whitespace in a class name value.
+ *
+ * Converts arrays to space-separated strings, collapses multiple whitespace characters,
+ * and trims leading/trailing whitespace.
+ *
+ * @param s - A class name value (string, array, or nested array)
+ * @returns A cleaned, space-separated string of class names
+ *
+ * @example
+ * ```ts
+ * clsClean('foo   bar');        // 'foo bar'
+ * clsClean(['foo', 'bar']);     // 'foo bar'
+ * clsClean('foo\n\tbar');       // 'foo bar'
+ * ```
  */
 export function clsClean(s: ClassNameValue) {
 	if (Array.isArray(s)) s = s.filter(Boolean).join(" ");
@@ -10,10 +23,22 @@ export function clsClean(s: ClassNameValue) {
 }
 
 /**
- * twMerge does not seem to handle "\r", "\n" and/or "\t" within the input strings correctly,
- * so we need to do the cleanup ourselves
+ * Merges Tailwind CSS class names with conflict resolution and whitespace cleanup.
  *
- * Note: adding clsx preprocess, so we can accept nested/arrays as well (should we need it)
+ * A wrapper around `tailwind-merge` that handles multiline strings, tabs, and other
+ * whitespace characters that the original doesn't handle well.
+ *
+ * @param args - Class name values to merge
+ * @returns A single merged class name string with conflicts resolved
+ *
+ * @example
+ * ```ts
+ * twMerge('px-2 py-1', 'px-4');  // 'py-1 px-4'
+ * twMerge(`
+ *   bg-red-500
+ *   text-white
+ * `, 'bg-blue-500');             // 'text-white bg-blue-500'
+ * ```
  */
 export function twMerge(...args: ClassNameValue[]) {
 	// return _twMerge(...args.map(clsx).filter(Boolean).map(clsClean));

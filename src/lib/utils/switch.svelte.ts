@@ -10,7 +10,37 @@ const storageTypeFactory = {
 	memory: memoryStorageValue,
 };
 
-/** 3 state (true, false, undefined) DRY helper */
+/**
+ * A reactive three-state switch (true, false, null/undefined) with optional associated data.
+ *
+ * Useful for managing modal visibility, toggle states, or any tri-state boolean with metadata.
+ * Optionally persists to localStorage, sessionStorage, or memory.
+ *
+ * @typeParam T - The type of associated data
+ *
+ * @example
+ * ```ts
+ * // Create a modal state with associated data
+ * const modal = new SwitchState<{ id: number }>('edit-modal');
+ *
+ * // Open with data:
+ * modal.on({ id: 123 });
+ *
+ * // Check state:
+ * if (modal.isOn) {
+ *   console.log(modal.data.id); // 123
+ * }
+ *
+ * // Close:
+ * modal.off();
+ *
+ * // Toggle:
+ * modal.toggle();
+ *
+ * // Reset to undefined/null state:
+ * modal.reset();
+ * ```
+ */
 export class SwitchState<T> {
 	// actual switch value (1 of 3 possible). Note that outer `undefined` is always inner `null`.
 	#current: boolean | null = $state(null);

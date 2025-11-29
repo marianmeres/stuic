@@ -4,6 +4,9 @@ import {
 } from "../utils/persistent-state.svelte.js";
 import { twMerge } from "../utils/tw-merge.js";
 
+/**
+ * Options for the resizable width action.
+ */
 export interface ResizableWidthOptions {
 	// master switch
 	enabled?: boolean;
@@ -20,7 +23,46 @@ export interface ResizableWidthOptions {
 }
 
 /**
- * Note: units should not be changed on the fly...
+ * A Svelte action that makes an element's width resizable via drag handle.
+ *
+ * Adds a draggable handle to the right edge of the element. Supports mouse and touch input.
+ * Optionally persists the width to localStorage/sessionStorage.
+ *
+ * Features:
+ * - Drag handle with visual feedback
+ * - Min/max width constraints
+ * - Support for px or % units
+ * - Optional storage persistence with custom key
+ * - Double-click handle to reset to initial width
+ * - Touch device support
+ *
+ * @param el - The element to make resizable
+ * @param fn - Function returning configuration options
+ *
+ * @remarks
+ * The `units` option should not be changed dynamically after initialization.
+ *
+ * @example
+ * ```svelte
+ * <div
+ *   use:resizableWidth={() => ({
+ *     initial: 300,
+ *     min: 200,
+ *     max: 600,
+ *     key: 'sidebar',
+ *     storage: 'local',
+ *     onResize: ({ width }) => console.log('Width:', width)
+ *   })}
+ *   class="h-full"
+ * >
+ *   Resizable sidebar content
+ * </div>
+ *
+ * <!-- With percentage units -->
+ * <div use:resizableWidth={() => ({ initial: 25, units: '%', max: 50 })}>
+ *   ...
+ * </div>
+ * ```
  */
 export function resizableWidth(el: HTMLDivElement, fn?: () => ResizableWidthOptions) {
 	const DEFAULT_HANDLE_CLS = [

@@ -1,7 +1,39 @@
+/**
+ * Type for HTML data-* attributes.
+ *
+ * Allows any attribute starting with "data-" with string, number, or boolean values.
+ *
+ * @example
+ * ```ts
+ * const attrs: DataAttributes = {
+ *   'data-id': 123,
+ *   'data-active': true,
+ *   'data-label': 'test'
+ * };
+ * ```
+ */
 export type DataAttributes = {
 	[key: `data-${string}`]: string | number | boolean;
 };
 
+/**
+ * Function signature for i18n translation lookups.
+ *
+ * @param k - The translation key to look up
+ * @param values - Optional interpolation values for placeholders
+ * @param fallback - Fallback string if key not found (or false to use key)
+ * @param i18nSpanWrap - Whether to wrap in a span for i18n tools
+ * @returns The translated string
+ *
+ * @example
+ * ```ts
+ * const t: TranslateFn = (k, values, fallback) => {
+ *   return translations[k] ?? fallback ?? k;
+ * };
+ *
+ * t('greeting', { name: 'World' }); // "Hello, World!"
+ * ```
+ */
 export type TranslateFn = (
 	k: string,
 	values?: false | null | undefined | Record<string, string | number>,
@@ -9,6 +41,11 @@ export type TranslateFn = (
 	i18nSpanWrap?: boolean
 ) => string;
 
+/**
+ * Union type of Tailwind CSS color palette names.
+ *
+ * Includes all standard Tailwind colors (excluding black/white).
+ */
 export type TW_COLORS =
 	| "amber"
 	| "blue"

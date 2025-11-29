@@ -12,7 +12,25 @@ const clog = createClog("BodyScroll").debug;
 const document = globalThis.document ?? {};
 
 /**
- * Helper for "locking" and "unlocking" body scroll (window.scrollY) position
+ * A utility class for locking and unlocking body scroll position.
+ *
+ * Useful for modals, drawers, and other overlay components that need to prevent
+ * background scrolling. Uses a reference counter to support nested lock/unlock calls.
+ *
+ * @example
+ * ```ts
+ * // Lock scroll when opening modal
+ * BodyScroll.lock();
+ *
+ * // Unlock when closing
+ * BodyScroll.unlock();
+ *
+ * // Supports nested calls - only unlocks when all locks are released
+ * BodyScroll.lock();  // count: 1
+ * BodyScroll.lock();  // count: 2
+ * BodyScroll.unlock(); // count: 1 (still locked)
+ * BodyScroll.unlock(); // count: 0 (now unlocked)
+ * ```
  */
 export class BodyScroll {
 	static lock() {

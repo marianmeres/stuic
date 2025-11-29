@@ -21,6 +21,27 @@ interface BreakpointValue {
 	"2xl": boolean;
 }
 
+/**
+ * A reactive class that tracks the current Tailwind CSS breakpoint.
+ *
+ * Uses Svelte 5's `$derived` rune to reactively update when the window is resized.
+ * Breakpoints follow Tailwind's default values: sm (640px), md (768px), lg (1024px), xl (1280px), 2xl (1536px).
+ *
+ * @example
+ * ```ts
+ * const bp = new Breakpoint();
+ *
+ * // In a component:
+ * {#if bp.md}
+ *   <DesktopNav />
+ * {:else}
+ *   <MobileNav />
+ * {/if}
+ *
+ * // Current breakpoint name:
+ * console.log(bp.current); // "md", "lg", etc. or null for < 640px
+ * ```
+ */
 export class Breakpoint {
 	#bp = $derived.by(() => {
 		const w = innerWidth.current || 0;

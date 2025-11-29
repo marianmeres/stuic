@@ -1,5 +1,10 @@
 import { isBrowser } from "./is-browser.js";
 
+/**
+ * An in-memory storage implementation with the same interface as `localStorage`/`sessionStorage`.
+ *
+ * Used as a fallback when browser storage is unavailable (e.g., SSR, private browsing).
+ */
 export class MemoryStorage {
 	#storage = new Map();
 
@@ -23,6 +28,19 @@ export class MemoryStorage {
 	}
 }
 
+/**
+ * A unified abstraction over localStorage, sessionStorage, and memory storage.
+ *
+ * Automatically falls back to memory storage in non-browser environments.
+ * Handles JSON serialization/deserialization automatically.
+ *
+ * @example
+ * ```ts
+ * const storage = new StorageAbstraction('local');
+ * storage.set('user', { name: 'John' });
+ * storage.get('user'); // { name: 'John' }
+ * ```
+ */
 export class StorageAbstraction {
 	#type: "local" | "session" | "memory";
 	#storage: Storage | MemoryStorage;
@@ -139,14 +157,50 @@ function storage_value(type: "local" | "session" | "memory", key: string, initia
 	};
 }
 
+/**
+ * Creates a reactive-like value backed by localStorage.
+ *
+ * @param key - The storage key
+ * @param initial - Initial value if key doesn't exist
+ * @returns An object with `get()`, `set()`, and `remove()` methods
+ *
+ * @example
+ * ```ts
+ * const theme = localStorageValue('theme', 'light');
+ * theme.get();        // 'light'
+ * theme.set('dark');  // Persists to localStorage
+ * ```
+ */
 export function localStorageValue(key: string, initial: any) {
 	return storage_value("local", key, initial);
 }
 
+/**
+ * Creates a reactive-like value backed by sessionStorage.
+ *
+ * @param key - The storage key
+ * @param initial - Initial value if key doesn't exist
+ * @returns An object with `get()`, `set()`, and `remove()` methods
+ *
+ * @example
+ * ```ts
+ * const token = sessionStorageValue('token', null);
+ * token.set('abc123');
+ * ```
+ */
 export function sessionStorageValue(key: string, initial: any) {
 	return storage_value("session", key, initial);
 }
 
+/**
+ * Creates a reactive-like value backed by in-memory storage.
+ *
+ * Useful for temporary storage that doesn't persist across page reloads.
+ *
+ * @param key - The storage key
+ * @param initial - Initial value if key doesn't exist
+ * @returns An object with `get()`, `set()`, and `remove()` methods
+ */
 export function memoryStorageValue(key: string, initial: any) {
 	return storage_value("memory", key, initial);
 }
