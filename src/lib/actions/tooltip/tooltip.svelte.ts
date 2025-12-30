@@ -63,9 +63,9 @@ export function tooltip(
 
 	//
 	let tooltipEl: HTMLDivElement;
-	let hide_timer: any = null;
-	let show_timer: any = null;
-	let do_debug: any = false;
+	let hide_timer: ReturnType<typeof setTimeout> | null = null;
+	let show_timer: ReturnType<typeof setTimeout> | null = null;
+	let do_debug = false;
 	let on_show: CallableFunction | null | undefined = null;
 	let on_hide: CallableFunction | null | undefined = null;
 	let content: string | null | undefined = null;
@@ -102,8 +102,8 @@ export function tooltip(
 			tooltipEl.classList.add(...twMerge("stuic-tooltip", _classTooltip).split(/\s/));
 			document.body.appendChild(tooltipEl);
 			//
-			tooltipEl.addEventListener("mouseover", schedule_show);
-			tooltipEl.addEventListener("mouseout", schedule_hide);
+			tooltipEl.addEventListener("mouseenter", schedule_show);
+			tooltipEl.addEventListener("mouseleave", schedule_hide);
 		}
 
 		// re/set based on params
@@ -122,18 +122,17 @@ export function tooltip(
 				tooltipEl.className = ""; // reset
 				tooltipEl.classList.add(...twMerge(old, classTooltip).split(/\s/));
 			}
-			tooltipEl.textContent = "";
 			tooltipEl.innerHTML = `${content}`;
 		}
 	}
 
 	function clear_show() {
-		clearTimeout(show_timer);
+		if (show_timer) clearTimeout(show_timer);
 		show_timer = null;
 	}
 
 	function clear_hide() {
-		clearTimeout(hide_timer);
+		if (hide_timer) clearTimeout(hide_timer);
 		hide_timer = null;
 	}
 
@@ -153,10 +152,10 @@ export function tooltip(
 				anchorEl.setAttribute("aria-expanded", "true");
 				//
 				tooltipEl.classList.add("tt-block");
-				setTimeout(() => {
+				requestAnimationFrame(() => {
 					tooltipEl.classList.add("tt-visible");
 					on_show?.();
-				}, TRANSITION);
+				});
 				// waitForTwoRepaints().then(() => {
 				// 	tooltipEl.classList.add("tt-visible");
 				// this approach is nicer, but I have a suspicion of the event handlers not being destroyed properly (maybe just a hot-reload issues...)
@@ -219,16 +218,20 @@ export function tooltip(
 
 	// add/remove listeners effect ("non-reactive")
 	$effect(() => {
-		anchorEl.addEventListener("mouseover", schedule_show);
-		anchorEl.addEventListener("mouseout", schedule_hide);
+		anchorEl.addEventListener("mouseenter", schedule_show);
+		anchorEl.addEventListener("mouseleave", schedule_hide);
+		anchorEl.addEventListener("focus", schedule_show);
+		anchorEl.addEventListener("blur", schedule_hide);
 
 		return () => {
-			anchorEl.removeEventListener("mouseover", schedule_show);
-			anchorEl.removeEventListener("mouseout", schedule_hide);
+			anchorEl.removeEventListener("mouseenter", schedule_show);
+			anchorEl.removeEventListener("mouseleave", schedule_hide);
+			anchorEl.removeEventListener("focus", schedule_show);
+			anchorEl.removeEventListener("blur", schedule_hide);
 
 			// might not have been initialized
-			tooltipEl?.removeEventListener("mouseover", schedule_show);
-			tooltipEl?.removeEventListener("mouseout", schedule_hide);
+			tooltipEl?.removeEventListener("mouseenter", schedule_show);
+			tooltipEl?.removeEventListener("mouseleave", schedule_hide);
 			tooltipEl?.remove();
 
 			clear_both();
