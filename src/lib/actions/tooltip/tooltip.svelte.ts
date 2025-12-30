@@ -14,46 +14,6 @@ export function isTooltipSupported() {
 	);
 }
 
-//
-// let _initialized = false;
-// function global_init_once() {
-// 	if (!is_tooltip_supported()) {
-// 		console.warn("Tooltips not supported...");
-// 		return false;
-// 	}
-
-// 	if (!_initialized) {
-// 		_initialized = true;
-// 		// const sheet = new CSSStyleSheet();
-// 		// sheet.replaceSync(`
-// 		//     .stuic-tooltip {
-// 		//         position: fixed;
-// 		//         display: none;
-// 		//         opacity: 0;
-// 		//         transition-property: opacity;
-// 		//         transition-duration: ${TRANSITION}ms;
-// 		//     }
-// 		//     @supports (anchor-name: --anchor) {
-// 		//         .stuic-tooltip {
-// 		// 			position-area: top span-right;
-// 		// 			position-try-fallbacks: flip-inline, flip-block, flip-block flip-inline;
-// 		//         }
-// 		//         .stuic-tooltip.tt-block {
-// 		//             display: block;
-// 		//             opacity: 0;
-// 		// 		}
-// 		//         .stuic-tooltip.tt-block.tt-visible {
-// 		//             display: block;
-// 		//             opacity: 1;
-// 		// 		}
-// 		//     }
-// 		// `);
-// 		// document.adoptedStyleSheets = [sheet];
-// 	}
-
-// 	return true;
-// }
-
 const _classTooltip = `
     bg-tooltip-bg dark:bg-tooltip-bg-dark text-tooltip-text dark:text-tooltip-text-dark
     text-xs tracking-tight rounded my-1
@@ -62,14 +22,36 @@ const _classTooltip = `
     z-50
 `;
 
+const POSITION_MAP: Record<string, string> = {
+	top: "top",
+	"top-left": "top left",
+	"top-right": "top right",
+	bottom: "bottom",
+	"bottom-left": "bottom left",
+	"bottom-right": "bottom right",
+	left: "left",
+	right: "right",
+};
+
 /**
  *
  */
+export type TooltipPosition =
+	| "top"
+	| "top-left"
+	| "top-right"
+	| "bottom"
+	| "bottom-left"
+	| "bottom-right"
+	| "left"
+	| "right";
+
 export function tooltip(
 	anchorEl: HTMLElement,
 	fn?: () => {
 		enabled?: boolean;
 		content?: string | null;
+		position?: TooltipPosition;
 		debug?: boolean;
 		class?: string;
 		onShow?: CallableFunction;
@@ -89,6 +71,7 @@ export function tooltip(
 	let content: string | null | undefined = null;
 	let classTooltip: string | null | undefined = null;
 	let enabled: boolean = true;
+	let position: TooltipPosition = "top";
 
 	//
 	const rnd = Math.random().toString(36).slice(2);
@@ -115,7 +98,7 @@ export function tooltip(
 			tooltipEl = document.createElement("div");
 			tooltipEl.setAttribute("id", id);
 			tooltipEl.setAttribute("role", "tooltip");
-			tooltipEl.style.cssText += `position-anchor: ${anchorName}; transition-duration: ${TRANSITION}ms;`;
+			tooltipEl.style.cssText += `position-anchor: ${anchorName}; transition-duration: ${TRANSITION}ms; position-area: ${POSITION_MAP[position] || "top"};`;
 			tooltipEl.classList.add(...twMerge("stuic-tooltip", _classTooltip).split(/\s/));
 			document.body.appendChild(tooltipEl);
 			//
@@ -131,7 +114,9 @@ export function tooltip(
 
 	function set_content() {
 		if (tooltipEl) {
-			debug("set_content()", classTooltip, content);
+			debug("set_content()", classTooltip, content, position);
+			// update position-area in case it changed
+			tooltipEl.style.setProperty("position-area", POSITION_MAP[position] || "top");
 			if (classTooltip) {
 				let old = tooltipEl.className;
 				tooltipEl.className = ""; // reset
@@ -210,6 +195,7 @@ export function tooltip(
 		let {
 			enabled: _enabled,
 			content: _content,
+			position: _position,
 			debug: debugParam,
 			class: _classTooltip,
 			onShow,
@@ -223,6 +209,7 @@ export function tooltip(
 		content = _content ||= anchorEl.getAttribute("aria-label");
 		classTooltip = _classTooltip;
 		enabled = _enabled ?? true;
+		position = _position || "top";
 
 		// this will be effective here only if currently in open state, otherwise noop
 		set_content();

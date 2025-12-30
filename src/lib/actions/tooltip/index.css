@@ -15,13 +15,39 @@
 	transition-property: opacity;
 }
 
+/* Define fallback positions for auto-repositioning when tooltip overflows viewport */
+/* span-right/span-left keep tooltip "above/below" but shift horizontally */
+@position-try --tt-top-span-right {
+	position-area: top span-right; /* above, aligned to anchor's left edge */
+}
+@position-try --tt-top-span-left {
+	position-area: top span-left; /* above, aligned to anchor's right edge */
+}
+@position-try --tt-bottom-span-right {
+	position-area: bottom span-right;
+}
+@position-try --tt-bottom-span-left {
+	position-area: bottom span-left;
+}
+@position-try --tt-left {
+	position-area: left;
+}
+@position-try --tt-right {
+	position-area: right;
+}
+
 @supports (anchor-name: --anchor) {
 	.stuic-tooltip {
-		position-area: top span-right;
+		/* position-area is set via inline style based on position param */
+		/* fallbacks ensure tooltip stays within viewport */
 		position-try-fallbacks:
-			flip-inline,
+			--tt-top-span-right,
+			--tt-top-span-left,
 			flip-block,
-			flip-block flip-inline;
+			--tt-bottom-span-right,
+			--tt-bottom-span-left,
+			--tt-left,
+			--tt-right;
 
 		&.tt-block {
 			display: block;

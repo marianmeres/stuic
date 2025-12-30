@@ -13,7 +13,7 @@
 	let label3 = dummySentence(1);
 </script>
 
-<div class="w-full h-[2000px] flex items-start justify-between">
+<div class="w-full h-500 flex items-start justify-between">
 	<div aria-label={label1} use:tooltip class="border">default</div>
 
 	<div aria-label={label2} use:tooltip class="border">default</div>
