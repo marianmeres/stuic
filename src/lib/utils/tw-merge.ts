@@ -1,5 +1,4 @@
 import { twMerge as _twMerge, type ClassNameValue } from "tailwind-merge";
-import { clsx } from "clsx";
 
 /**
  * Normalizes and deduplicates whitespace in a class name value.
@@ -41,6 +40,5 @@ export function clsClean(s: ClassNameValue) {
  * ```
  */
 export function twMerge(...args: ClassNameValue[]) {
-	// return _twMerge(...args.map(clsx).filter(Boolean).map(clsClean));
 	return _twMerge(...args.map(clsClean));
 }

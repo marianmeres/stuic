@@ -11,7 +11,12 @@
 		| "bar_h"
 		| "shade"
 		| "arrows"
-		| "arrows2";
+		| "arrows2"
+		| "asterix"
+		| "asterix2"
+		| "asterix3"
+		| "asterix4"
+		| "asterix5";
 
 	//
 	export function spinnerCreateBackAndForthCharFrames(
@@ -56,7 +61,7 @@
 
 	let {
 		class: _class = "",
-		speed = 70,
+		speed = 100,
 		variant = "braille_bar_dot",
 		reversed = false,
 		frames,
@@ -68,18 +73,34 @@
 		frames?: string[];
 	} = $props();
 
-	const braille_bar_dot = ["⣾", "⣷", "⣯", "⣟", "⡿", "⢿", "⣻", "⣽"];
-	const braille_bar = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
-	const braille_dot_circle = ["⠁", "⠈", "⠐", "⠠", "⢀", "⡀", "⠄", "⠂"];
-	const braille_dot_bounce = ["⠈", "⠐", "⠠", "⢀", "⠠", "⠐"];
-	const half_circle = ["◐", "◓", "◑", "◒"];
-	const quarter_circle = ["◴", "◷", "◶", "◵"];
-	const ascii = ["|", "/", "-", "\\"];
-	const bar_v = ["▁", "▃", "▄", "▅", "▆", "▇", "█", "▇", "▆", "▅", "▄", "▃"];
-	const bar_h = ["▏", "▎", "▍", "▌", "▋", "▊", "▉", "█", "▉", "▋", "▌", "▍", "▎"];
-	const shade = ["░", "▒", "▓", "█", "▓", "▒"];
-	const arrows = ["←", "↖", "↑", "↗", "→", "↘", "↓", "↙"];
-	const arrows2 = ["⇠", "⇡", "⇢", "⇣"];
+	const braille_bar_dot = Array.from("⣾⣷⣯⣟⡿⢿⣻⣽");
+	const braille_bar = Array.from("⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏");
+	const braille_dot_circle = Array.from("⠁⠈⠐⠠⢀⡀⠄⠂");
+	const braille_dot_bounce = Array.from("⠈⠐⠠⢀⠠⠐");
+	const half_circle = Array.from("◐◓◑◒");
+	const quarter_circle = Array.from("◴◷◶◵");
+	const ascii = Array.from("|/-\\");
+	const bar_v = Array.from("▁▃▄▅▆▇█▇▆▅▄▃");
+	const bar_h = Array.from("▏▎▍▌▋▊▉█▉▋▌▍▎");
+	const shade = Array.from("░▒▓█▓▒");
+	const arrows = Array.from("←↖↑↗→↘↓↙");
+	const arrows2 = Array.from("⇠⇡⇢⇣");
+	// https://www.amp-what.com/unicode/search/asterisk
+	const asterix = Array.from("🞯🞰🞱🞲🞳🞴🞳🞲🞱🞰");
+	const asterix2 = Array.from("🞵🞶🞷🞸🞹🞺🞹🞸🞷🞶");
+	const asterix3 = Array.from("🞻🞼🞽🞾🞿🞾🞽🞼");
+	const asterix4 = Array.from("✢✣✤✣");
+	const asterix5 = Array.from(
+		[
+			"🞯🞵🞻🞵",
+			"🞰🞶🞼🞶",
+			"🞱🞷🞽🞷",
+			"🞲🞸🞾🞲",
+			//
+			"🞱🞷🞽🞷",
+			"🞰🞶🞼🞶",
+		].join("")
+	);
 
 	let _frames = $derived.by(() => {
 		if (frames) return frames;
@@ -96,6 +117,11 @@
 			shade,
 			arrows,
 			arrows2,
+			asterix,
+			asterix2,
+			asterix3,
+			asterix4,
+			asterix5,
 		};
 
 		const _frames = map[variant] ?? braille_bar;

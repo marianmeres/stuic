@@ -22,7 +22,7 @@ Sed metus sapien, feugiat eget mauris quis, pellentesque porta enim. In hac habi
 		NotificationsStack,
 		onSubmitValidityCheck,
 		sleep,
-		type AssetWithBlobUrl,
+		type FieldAssetWithBlobUrl,
 	} from "$lib/index.js";
 	import { createClog } from "@marianmeres/clog";
 	import { ItemCollection, type Item } from "@marianmeres/item-collection";
@@ -60,7 +60,7 @@ Sed metus sapien, feugiat eget mauris quis, pellentesque porta enim. In hac habi
 
 	onMount(() => {
 		function on_submit_valid(e: any) {
-			clog.color("green")(
+			clog(
 				"submit_valid handler",
 				[...e.detail.formData.entries()],
 				$state.snapshot(values)
@@ -348,7 +348,7 @@ Sed metus sapien, feugiat eget mauris quis, pellentesque porta enim. In hac habi
 			label="Images"
 			{labelLeft}
 			processAssets={(assets) => {
-				let out: AssetWithBlobUrl[] = [];
+				let out: FieldAssetWithBlobUrl[] = [];
 				for (const ass of assets ?? []) {
 					const blobUrl = ass.id;
 

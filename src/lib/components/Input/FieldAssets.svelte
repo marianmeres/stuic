@@ -1,21 +1,34 @@
 <script lang="ts" module>
 	import { createClog } from "@marianmeres/clog";
+	import { iconBsFileEarmark } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmark.js";
+	import { iconBsFileEarmarkBinary } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkBinary.js";
+	import { iconBsFileEarmarkCode } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkCode.js";
+	import { iconBsFileEarmarkImage } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkImage.js";
+	import { iconBsFileEarmarkMusic } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkMusic.js";
+	import { iconBsFileEarmarkPdf } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkPdf.js";
+	import { iconBsFileEarmarkRichtext } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkRichtext.js";
+	import { iconBsFileEarmarkSlides } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkSlides.js";
+	import { iconBsFileEarmarkSpreadsheet } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkSpreadsheet.js";
+	import { iconBsFileEarmarkText } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkText.js";
+	import { iconBsFileEarmarkWord } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkWord.js";
+	import { iconBsFileEarmarkZip } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkZip.js";
 	import { iconFeatherArrowLeft as iconPrevious } from "@marianmeres/icons-fns/feather/iconFeatherArrowLeft.js";
 	import { iconFeatherArrowRight as iconNext } from "@marianmeres/icons-fns/feather/iconFeatherArrowRight.js";
 	import { iconFeatherDownload as iconDownload } from "@marianmeres/icons-fns/feather/iconFeatherDownload.js";
-	import { iconFeatherFile as iconFile } from "@marianmeres/icons-fns/feather/iconFeatherFile.js";
 	import { iconFeatherPlus as iconAdd } from "@marianmeres/icons-fns/feather/iconFeatherPlus.js";
 	import { iconFeatherTrash2 as iconDelete } from "@marianmeres/icons-fns/feather/iconFeatherTrash2.js";
 	import { onDestroy, type Snippet } from "svelte";
 	import { fileDropzone } from "../../actions/file-dropzone.svelte.js";
 	import { highlightDragover } from "../../actions/highlight-dragover.svelte.js";
-	import { tooltip } from "../../actions/index.js";
-	import type {
-		ValidateOptions,
-		ValidationResult,
+	import { createValidationResult, tooltip } from "../../actions/index.js";
+	import {
+		type ValidateOptions,
+		type ValidationResult,
+		validate as validateAction,
 	} from "../../actions/validate.svelte.js";
 	import type { TranslateFn } from "../../types.js";
 	import { forceDownload } from "../../utils/force-download.js";
+	import { getFileTypeLabel } from "../../utils/get-file-type-label.js";
 	import { getId } from "../../utils/get-id.js";
 	import { isImage } from "../../utils/is-image.js";
 	import { isPlainObject } from "../../utils/is-plain-object.js";
@@ -47,13 +60,14 @@
 			deleted: "{{name}} deleted",
 			close: "Close preview window",
 			download: "Download original",
+			invalid_type: 'Some of the files are not supported. Allowed are only "{{accept}}".',
 		};
 		let out = m[k] ?? fallback ?? k;
 
 		return isPlainObject(values) ? replaceMap(out, values as any) : out;
 	}
 
-	export type AssetUrlObj = {
+	export type FieldAssetUrlObj = {
 		// used in non-modal preview
 		thumb: string;
 		// used in modal preview
@@ -62,25 +76,56 @@
 		original?: string;
 	};
 
-	export interface Asset {
+	export interface FieldAsset {
 		id: string;
-		url: string | AssetUrlObj;
+		url: string | FieldAssetUrlObj;
 		name: string;
 		type: string;
 		meta?: Record<string, any>;
+		_raw?: Record<string, any>;
 	}
 
-	export interface AssetWithBlobUrl extends Asset {
+	export interface FieldAssetWithBlobUrl extends FieldAsset {
 		blobUrl: string;
 	}
 
-	function parseFieldValue(val: string = "[]") {
-		try {
-			return JSON.parse(val);
-		} catch (e) {
-			clog.error(e);
-			return [];
-		}
+	function is_accepted_type(allowedAccept?: string, type?: string) {
+		// on empty allow
+		if (!allowedAccept || !type) return true;
+
+		// normalize allowed (eg "images/*, video/mpg")
+		const allowed = (allowedAccept ?? "")
+			.split(",")
+			.map((v) => `${v || ""}`.trim().toLowerCase())
+			.map((v) => {
+				if (v.includes("*")) {
+					v = v.slice(0, v.indexOf("*"));
+				}
+				return v;
+			})
+			.filter(Boolean);
+
+		if (!allowed.length) return true;
+
+		return allowed.some((a) => type.toLowerCase().startsWith(a));
+	}
+
+	export function getAssetIcon(ext?: string) {
+		const map: Record<string, CallableFunction> = {
+			archive: iconBsFileEarmarkZip,
+			audio: iconBsFileEarmarkMusic,
+			binary: iconBsFileEarmarkBinary,
+			code: iconBsFileEarmarkCode,
+			doc: iconBsFileEarmarkWord,
+			image: iconBsFileEarmarkImage,
+			pdf: iconBsFileEarmarkPdf,
+			presentation: iconBsFileEarmarkSlides,
+			richtext: iconBsFileEarmarkRichtext,
+			spreadsheet: iconBsFileEarmarkSpreadsheet,
+			text: iconBsFileEarmarkText,
+			unknown: iconBsFileEarmark,
+		};
+		return map[getFileTypeLabel(ext ?? "unknown")] ?? iconBsFileEarmark;
 	}
 </script>
 
@@ -129,7 +174,8 @@
 		style?: string;
 		t?: TranslateFn;
 		//
-		renderValue?: (strigifiedItems: string) => string;
+		parseValue?: (strigifiedModels: string) => FieldAsset[];
+		serializeValue?: (assets: FieldAsset[]) => string;
 		// getOptions: (
 		// 	q: string,
 		// 	current: Item[]
@@ -138,29 +184,22 @@
 		// -1 no limit
 		// +n max selected limit
 		cardinality?: number;
-		// renderOptionLabel?: (item: Item) => string;
-		// renderOptionGroup?: (s: string) => string;
-		// whether to allow adding unknown options
-		// allowUnknown?: boolean;
-		// showIconsCheckbox?: boolean;
-		// showIconsRadio?: boolean;
-		// searchPlaceholder?: string;
-		// itemIdPropName?: string;
+		// csv list of mime types
+		accept?: string; // "image/*"
 		// for custom stuff...
-		onChange?: (value: string) => void;
+		// onChange?: (value: string) => void;
 		/**
 		 * this does not accept the raw FileList but already preprocessed list of assets.
 		 */
 		processAssets?: (
-			assets: Asset[],
+			assets: FieldAsset[],
 			onProgress?: (blobUrl: string, progress: number) => any
-		) => Promise<AssetWithBlobUrl[]>;
+		) => Promise<FieldAssetWithBlobUrl[]>;
 		// should we display onProgress?
 		withOnProgress?: boolean;
 	}
 
 	let {
-		trigger,
 		value = $bindable(), //
 		label = "",
 		id = getId(),
@@ -205,17 +244,23 @@
 		// getOptions,
 		notifications,
 		cardinality: _cardinality = Infinity,
-		// renderOptionLabel,
-		// renderOptionGroup = (s: string) => `${s}`.replaceAll("_", " "),
-		// allowUnknown = false,
-		// showIconsCheckbox = true,
-		// showIconsRadio = false,
-		// searchPlaceholder,
+
 		name,
 		// itemIdPropName = "id",
-		onChange,
+		accept,
+		// onChange,
 		processAssets,
 		withOnProgress,
+		parseValue = (strigifiedModels: string) => {
+			const val = strigifiedModels ?? "[]";
+			try {
+				return JSON.parse(val);
+			} catch (e) {
+				clog.error(e);
+				return [];
+			}
+		},
+		serializeValue = JSON.stringify,
 		// ...rest
 	}: Props = $props();
 
@@ -229,43 +274,17 @@
 	let modal: Modal = $state()!;
 	let previewIdx = $state<number>(-1);
 
-	let assets: Asset[] = $derived(parseFieldValue(value));
+	let assets: FieldAsset[] = $derived(parseValue(value));
 	// $inspect("assets", assets);
 
 	// { blobUrl: number } map to be optionally shown as upload progress when uploading new asset
 	// otherwise normal spinner will be shown
 	let progress = $state<Record<string, number>>({});
-	const onProgress = (id: string, value: number) => (progress[id] = value);
-	// $inspect("progress", progress);
+	const onProgress = (id: string, value: number) => (progress[id] = Math.round(value));
+	$inspect("progress", progress);
 
 	$effect(() => {
-		if (!assets.length) modal?.close?.();
-	});
-
-	//
-	let wrappedValidate: Omit<ValidateOptions, "setValidationResult"> = $derived({
-		enabled: true,
-		customValidator(value: any, context: Record<string, any> | undefined, el: any) {
-			return "";
-			// NOTE: the below error message code will be ignored, so it's just cosmetics.
-			// This, built-in JSON array validator cannot be bypassed. Strictly expecting array.
-			// let selected = [];
-			// try {
-			// 	selected = JSON.parse(value);
-			// 	if (!Array.isArray(selected)) return "typeMismatch";
-			// } catch (e) {
-			// 	return "typeMismatch";
-			// }
-			// // cardinality check
-			// if (selected.length > cardinality) return "rangeOverflow";
-
-			// // continue with provided validator
-			// return (validate as any)?.customValidator?.(value, context, el) || "";
-		},
-		t(reason: keyof ValidityStateFlags, value: any, fallback: string) {
-			// Unfortunately, for hidden, everything is a `customError` reason. So, we must generalize...
-			return t("field_req_att");
-		},
+		if (!assets?.length) modal?.close?.();
 	});
 
 	//
@@ -273,10 +292,37 @@
 	const setValidationResult = (res: ValidationResult) => (validation = res);
 
 	//
+	let wrappedValidate: Omit<ValidateOptions, "setValidationResult"> = $derived({
+		enabled: true,
+		customValidator(value: any, context: Record<string, any> | undefined, el: any) {
+			// NOTE: the below error message code will be ignored, so it's just cosmetics.
+			// NOTE2: we are NOT validating
+			// 	  - neither the actual form value.
+			//    - nor the hidden input's value
+
+			if (required && !assets.length) return "valueMissing";
+			if (assets.length > cardinality) return "rangeOverflow";
+
+			// normally, with other fieldtypes, we would continue with provided validator:
+			// return (validate as any)?.customValidator?.(value, context, el) || "";
+			// but not here, we just warn
+			if ((validate as any)?.customValidator) {
+				console.warn("Custom validator was provided, but is ignored in <FieldAssets />");
+			}
+			return "";
+		},
+		t(reason: keyof ValidityStateFlags, value: any, fallback: string) {
+			// Unfortunately, for hidden, everything is a `customError` reason. So, we must generalize...
+			return t("field_req_att");
+		},
+		setValidationResult,
+	});
+
+	//
 	let objectFitStyle = $state("object-cover");
 	let objectSize = $state("size-20");
 
-	function asset_urls(asset: Asset): AssetUrlObj {
+	function asset_urls(asset: FieldAsset): FieldAssetUrlObj {
 		if (typeof asset.url === "string") {
 			return { thumb: asset.url, full: asset.url, original: asset.url };
 		}
@@ -286,7 +332,7 @@
 	function remove_by_idx(idx: number) {
 		const name = assets[idx].name!;
 		assets.splice(idx, 1);
-		value = JSON.stringify(assets);
+		value = serializeValue(assets);
 		notifications?.info(t("deleted", { name }));
 	}
 
@@ -370,7 +416,10 @@
 							class={[objectSize, objectFitStyle, "hover:saturate-150"]}
 						/>
 					{:else}
-						{@html iconFile({ size: 32, class: "mx-auto" })}
+						{@html getAssetIcon((asset.name ?? "").split(".").at(-1))({
+							size: 32,
+							class: "mx-auto",
+						})}
 					{/if}
 					<span
 						class="absolute bottom-1 left-1 right-1 grid bg-white/50 rounded"
@@ -422,18 +471,31 @@
 	use:fileDropzone={() => ({
 		enabled: typeof processAssets === "function",
 		inputEl,
-		processFiles(files: FileList | null) {
-			if (assets.length + (files?.length ?? 0) >= cardinality) {
-				const msg = t("cardinality_reached", { max: cardinality });
+		processFiles(files: FileList | null, wasDrop?: boolean) {
+			clog.debug(`processFiles`, wasDrop ? "[DROPPED]" : "", files);
+
+			if (accept && [...(files ?? [])].some((f) => !is_accepted_type(accept, f.type))) {
+				const msg = t("invalid_type", { accept });
 				return notifications ? notifications.error(msg) : alert(msg);
 			}
 
-			const toBeProcessed: Asset[] = [];
+			const cardErrMsg = t("cardinality_reached", { max: cardinality });
+			if (assets.length > cardinality) {
+				// if (assets.length + (files?.length ?? 0) > cardinality) {
+				return notifications ? notifications.error(cardErrMsg) : alert(cardErrMsg);
+			}
+
+			const toBeProcessed: FieldAsset[] = [];
 
 			for (const file of files ?? []) {
+				if (assets.length > cardinality) {
+					notifications ? notifications.error(cardErrMsg) : alert(cardErrMsg);
+					break;
+				}
+
 				// this create a unique blob url, which we'll use as id as well
 				const url = URL.createObjectURL(file);
-				const asset: Asset = {
+				const asset: FieldAsset = {
 					id: url,
 					url: { thumb: url, full: url, original: url },
 					type: file.type,
@@ -447,21 +509,21 @@
 				// prepare data for server upload
 				toBeProcessed.push(asset);
 			}
-			value = JSON.stringify(assets);
+			value = serializeValue(assets);
 
 			if (typeof processAssets === "function") {
 				isUploading = true;
 				processAssets(toBeProcessed, onProgress)
-					.then((uploaded: AssetWithBlobUrl[]) => {
+					.then((uploaded: FieldAssetWithBlobUrl[]) => {
+						// clog("uploaded", uploaded);
 						for (const ass of uploaded ?? []) {
 							ass.meta ??= {};
 							ass.meta.isUploading = false;
 							if (ass.blobUrl) {
 								const idx = assets.findIndex((a) => a.id === ass.blobUrl);
-								console.log(assets, idx);
 								if (idx > -1) {
-									// ass.meta ??= {};
-									// ass.meta.isUploading = false;
+									ass.meta ??= {};
+									ass.meta.isUploading = false;
 									assets[idx] = ass;
 								} else {
 									clog.error(`Asset idx ${idx} not found?!?`, ass);
@@ -470,7 +532,7 @@
 								clog.warn(`Missing blobUrl in`, ass);
 							}
 						}
-						value = JSON.stringify(assets);
+						value = serializeValue(assets);
 					})
 					.catch((e) => notifications?.error(`${e}`))
 					.finally(() => (isUploading = false));
@@ -501,15 +563,13 @@
 		{validation}
 		{style}
 	>
-		{#if typeof renderValue === "function"}
-			{@html renderValue(parseFieldValue(value))}
-		{:else}
-			{@render default_render()}
-		{/if}
+		{@render default_render()}
 	</InputWrap>
 </div>
 
-<input type="file" bind:this={inputEl} multiple style="display: none" />
+<input type="file" bind:this={inputEl} multiple style="display: none" {accept} />
+<!-- hack to be able to validate the conventional way -->
+<input type="hidden" {name} use:validateAction={() => wrappedValidate} />
 
 <Modal
 	bind:this={modal}
@@ -532,13 +592,16 @@
 		{:else}
 			<div>
 				<div>
-					{@html iconFile({ size: 64, class: "mx-auto" })}
+					{@html getAssetIcon((previewAsset?.name ?? "").split(".").at(-1))({
+						size: 32,
+						class: "mx-auto",
+					})}
 				</div>
 				<div class="opacity-50 mt-4 text-sm">{t("unable_to_preview")}</div>
 			</div>
 		{/if}
 
-		{#if assets.length > 1}
+		{#if assets?.length > 1}
 			<div class={["absolute inset-0 flex items-center justify-between"]}>
 				<button class="p-4 focus:outline-0" onclick={preview_previous}>
 					<span class="bg-white rounded-full p-3 block">

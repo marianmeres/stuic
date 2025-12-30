@@ -5,7 +5,7 @@ interface FileDropzoneOptions {
 	enabled?: boolean;
 	inputEl: HTMLInputElement;
 	allowClick?: boolean;
-	processFiles?: (files: FileList | null) => any | Promise<any>;
+	processFiles?: (files: FileList | null, wasDrop?: boolean) => any | Promise<any>;
 }
 
 /**
@@ -70,7 +70,7 @@ export function fileDropzone(el: HTMLElement, fn?: () => FileDropzoneOptions) {
 		}
 
 		function handle_drop(e: DragEvent) {
-			handle_files(e?.dataTransfer?.files ?? null);
+			handle_files(e?.dataTransfer?.files ?? null, true);
 		}
 
 		function handle_change(e: Event) {
@@ -79,8 +79,8 @@ export function fileDropzone(el: HTMLElement, fn?: () => FileDropzoneOptions) {
 			}
 		}
 
-		function handle_files(files: FileList | null) {
-			processFiles?.(files);
+		function handle_files(files: FileList | null, wasDrop = false) {
+			processFiles?.(files, wasDrop);
 		}
 
 		function handle_click(e: Event) {

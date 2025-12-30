@@ -130,7 +130,7 @@
 			{id}
 			class={twMerge(
 				"form-input",
-				"block border-0 w-full !text-sm",
+				"block border-0 w-full text-sm!",
 				"file:rounded file:border-0 file:mr-4 file:bg-neutral-200",
 				"file:px-2 file:py-0.5 file:cursor-pointer file:text-sm",
 				"focus-visible:ring-0 focus:ring-0 focus:leading-0",

@@ -4,17 +4,15 @@
 		spinnerCreateBackAndForthCharFrames,
 		type SpinnerUnicodeVariant,
 	} from "$lib/components/Spinner/SpinnerUnicode.svelte";
-	import { onMount, untrack } from "svelte";
-	import { svgCircle } from "../../../lib/utils/svg-circle.js";
-	import { createTicker, createTickerRAF } from "@marianmeres/ticker";
-	import { oscillate } from "../../../lib/utils/oscillate.js";
-	import Circle from "../../../lib/components/Circle/Circle.svelte";
+	import { createTickerRAF } from "@marianmeres/ticker";
+	import { untrack } from "svelte";
 	import SpinnerCircle from "../../../lib/components/Spinner/SpinnerCircle.svelte";
+	import { oscillate } from "../../../lib/utils/oscillate.js";
 
 	let w = ["w-4", "w-5", "w-8", "w-16"];
-	let size = 1;
-	let count = 8;
-	let duration = 750;
+	let size = $state(1);
+	let count = $state(8);
+	let duration = $state(750);
 
 	const unicodeVariants: SpinnerUnicodeVariant[] = [
 		"braille_bar_dot",
@@ -29,6 +27,11 @@
 		"shade",
 		"arrows",
 		"arrows2",
+		"asterix",
+		"asterix2",
+		"asterix3",
+		"asterix4",
+		"asterix5",
 	];
 
 	const ticker = createTickerRAF(50, true);
@@ -124,7 +127,9 @@
 
 <div class="space-x-4">
 	{#each unicodeVariants as variant}
-		<SpinnerUnicode {variant} reversed />
+		{#if !/asterix/.test(variant)}
+			<SpinnerUnicode {variant} reversed />
+		{/if}
 	{/each}
 </div>
 

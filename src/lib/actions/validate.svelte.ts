@@ -1,12 +1,62 @@
 import { tick } from "svelte";
 import { waitForNextRepaint, waitForTwoRepaints } from "../utils/paint.js";
 
+export interface ValidityStateLike {
+	valueMissing: boolean;
+	typeMismatch: boolean;
+	patternMismatch: boolean;
+	tooLong: boolean;
+	tooShort: boolean;
+	rangeUnderflow: boolean;
+	rangeOverflow: boolean;
+	stepMismatch: boolean;
+	badInput: boolean;
+	customError: boolean;
+	//
+	valid: boolean;
+}
+
+/**
+ * Helper for mocking...
+ */
+export function createValidityStateLike(
+	overrides: Partial<Omit<ValidityStateLike, "valid">> = {}
+): ValidityStateLike {
+	const state = {
+		valueMissing: false,
+		typeMismatch: false,
+		patternMismatch: false,
+		tooLong: false,
+		tooShort: false,
+		rangeUnderflow: false,
+		rangeOverflow: false,
+		stepMismatch: false,
+		badInput: false,
+		customError: false,
+		...overrides,
+	};
+
+	return {
+		...state,
+		get valid(): boolean {
+			return Object.values(state).some((v) => !!v);
+		},
+	};
+}
+
+/**
+ * Helper for mocking... empty message means valid, non-empty means invalid
+ */
+export function createValidationResult(message: string): ValidationResult {
+	return { message, valid: !message };
+}
+
 /**
  * Result object returned after validation.
  */
 export interface ValidationResult {
-	validity: ValidityState;
-	reasons: (keyof ValidityStateFlags)[];
+	validity?: ValidityState | ValidityStateLike;
+	reasons?: (keyof ValidityStateFlags)[];
 	valid: boolean;
 	message: string;
 }
