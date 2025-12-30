@@ -125,7 +125,7 @@ Sed metus sapien, feugiat eget mauris quis, pellentesque porta enim. In hac habi
 			labelLeftBreakpoint={480}
 			validate={{
 				customValidator(val, ctx, el) {
-					if (val && !/\d+/.test(val)) return "Numbers only";
+					if (val && !/\d+/.test(val as string)) return "Numbers only";
 				},
 			}}
 		>
@@ -192,7 +192,8 @@ Sed metus sapien, feugiat eget mauris quis, pellentesque porta enim. In hac habi
 				customValidator(val, ctx, el) {
 					// we know val is valid JSON ARRAY string here (no need to check)
 					// also we know it satisfies the cardinality constraints
-					const selected = JSON.parse(val);
+					const selected = JSON.parse(val as string);
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 					const fooExists = selected?.find((v: any) => v.id === "foo");
 					return fooExists ? "" : "invalid";
 				},
@@ -261,7 +262,7 @@ Sed metus sapien, feugiat eget mauris quis, pellentesque porta enim. In hac habi
 				--color-input-accent="var(--color-violet-600)"
 				validate={{
 					customValidator(val, ctx, el) {
-						const n = parseInt(val);
+						const n = parseInt(val as string);
 						if (n < 75) return "Gimme some more!";
 					},
 				}}
@@ -308,7 +309,7 @@ Sed metus sapien, feugiat eget mauris quis, pellentesque porta enim. In hac habi
 			required
 			validate={{
 				customValidator(val, ctx, el) {
-					if (val && !/ho/i.test(val)) return "Ho ho ho!";
+					if (val && !/ho/i.test(val as string)) return "Ho ho ho!";
 				},
 			}}
 			{labelLeft}

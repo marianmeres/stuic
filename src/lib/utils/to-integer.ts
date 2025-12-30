@@ -16,7 +16,7 @@
  * toInteger('abc', 0);   // 0 (custom fallback)
  * ```
  */
-export function toInteger(value: any, fallback: number = 1) {
+export function toInteger(value: unknown, fallback: number = 1) {
 	if (typeof value === "number" && !isNaN(value)) {
 		return Math.floor(value);
 	}

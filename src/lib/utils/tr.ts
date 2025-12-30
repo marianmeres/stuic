@@ -32,7 +32,7 @@ export function tr(
 ): string {
 	if (!locale) return `${val ?? fallback ?? ""}`;
 
-	val = maybeJsonParse(val);
+	val = maybeJsonParse(val) as MaybeLocalized | null | undefined;
 
 	// if string - no translation support
 	if (typeof val === "string") return val;

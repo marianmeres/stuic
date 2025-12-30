@@ -13,6 +13,6 @@
  * isNullish(false);     // false
  * ```
  */
-export function isNullish(v: any) {
+export function isNullish(v: unknown) {
 	return v === null || v === undefined;
 }

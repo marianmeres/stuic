@@ -25,7 +25,7 @@ class PersistentState<T> {
 	}
 
 	#save() {
-		this.#stored().set(this.#current);
+		this.#stored().set(this.#current as T);
 	}
 
 	get current(): T {

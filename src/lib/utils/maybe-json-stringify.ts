@@ -17,7 +17,7 @@
  * ```
  */
 export function maybeJsonStringify(
-	val: any,
+	val: unknown,
 	prettyIndent: number | string = "\t"
 ): string | null | number | boolean | undefined {
 	// do not stringify primitives

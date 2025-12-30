@@ -8,7 +8,7 @@ import { getTHCStringContent, type THC } from "../Thc/Thc.svelte";
  */
 export interface ComponentWrap {
 	component: Component;
-	props?: any;
+	props?: Record<string, unknown>;
 }
 
 /**
@@ -24,10 +24,10 @@ export type NotificationType = "info" | "success" | "warn" | "error" | string;
 /**
  * Input options for creating a notification.
  */
-export interface NotificationInput extends Record<string, any> {
+export interface NotificationInput extends Record<string, unknown> {
 	/** Unique id of the notification. If not provided, will be calculated from content.
 	Multiple notifications with the same id will be ignored (but the `count` will be increased). */
-	id: any;
+	id: string | number;
 
 	/** Optional UI rendering well known hint (has no effect on the functionality, can be
 	any string), defaults to "info". */
@@ -42,7 +42,7 @@ export interface NotificationInput extends Record<string, any> {
 
 	// Same as `on('click', ...)` except that UI may detect if this exists (e.g. show
 	// pointer cursor), which would not be possible for `on('click', ...)`
-	onClick: (self: Notification, all: Notification[], data: any) => void;
+	onClick: (self: Notification, all: Notification[], data: unknown) => void;
 
 	/** Notification specific time-to-live in milliseconds (after which notif will be auto discarded)
 	use 0 to disable auto disposal */
@@ -120,13 +120,15 @@ const DEFAULT_OPTIONS: Partial<NotificationsStackOptions> = {
 	disposeInterval: 500,
 };
 
-const isFn = (v: any) => typeof v === "function";
+// const isFn = (v: unknown) => typeof v === "function";
 
-const _id = (type: string, content: any) => {
-	const str = content?.component
-		? "component"
-		: content?.html || content?.text || content;
-	return ["id", type, strHash(str)].join("-");
+const _id = (type: string, content: unknown) => {
+	const c = content as { component?: unknown; html?: string; text?: string } | string;
+	const str =
+		typeof c === "object" && c?.component
+			? "component"
+			: (typeof c === "object" ? c?.html || c?.text : c) || content;
+	return ["id", type, strHash(String(str))].join("-");
 };
 
 /**
@@ -211,7 +213,7 @@ export class NotificationsStack {
 
 	/** Will normalize item to internal shape. */
 	#normalize = (n: NotificationCreateParam): Notification | null => {
-		let o: Partial<Notification> = typeof n === "string" ? { id: 0, content: n } : n;
+		const o: Partial<Notification> = typeof n === "string" ? { id: 0, content: n } : n;
 
 		if (!o.content) return null;
 
@@ -225,7 +227,7 @@ export class NotificationsStack {
 		return o as Notification;
 	};
 
-	#findIndexById = (id: string) => {
+	#findIndexById = (id: string | number) => {
 		return this.#stack.findIndex((n) => n.id === id);
 	};
 
@@ -251,8 +253,8 @@ export class NotificationsStack {
 		} else {
 			stack.push(notif);
 			stack.sort((a, b) => {
-				let _a = a.created.valueOf();
-				let _b = b.created.valueOf();
+				const _a = a.created.valueOf();
+				const _b = b.created.valueOf();
 				return sortOrder === "desc" ? _b - _a : _a - _b;
 			});
 		}
@@ -271,7 +273,7 @@ export class NotificationsStack {
 	};
 
 	/** Will remove the notification from stack */
-	removeById = (id: string) => {
+	removeById = (id: string | number) => {
 		this.#removeByIndex(this.#findIndexById(id));
 		return this;
 	};

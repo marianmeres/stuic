@@ -5,7 +5,7 @@ interface FileDropzoneOptions {
 	enabled?: boolean;
 	inputEl: HTMLInputElement;
 	allowClick?: boolean;
-	processFiles?: (files: FileList | null, wasDrop?: boolean) => any | Promise<any>;
+	processFiles?: (files: FileList | null, wasDrop?: boolean) => void | Promise<void>;
 }
 
 /**
@@ -50,7 +50,7 @@ interface FileDropzoneOptions {
  */
 export function fileDropzone(el: HTMLElement, fn?: () => FileDropzoneOptions) {
 	$effect(() => {
-		let {
+		const {
 			enabled = true,
 			allowClick = true,
 			inputEl,

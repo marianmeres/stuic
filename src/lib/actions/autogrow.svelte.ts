@@ -33,13 +33,13 @@ export function autogrow(
 		value?: string;
 	}
 ) {
-	let lastValue: any = el.value;
+	let lastValue: string = el.value;
 
 	$effect(() => {
-		let { enabled = true, max = 250, immediate = true, value } = fn?.() || {};
+		const { enabled = true, max = 250, immediate = true, value } = fn?.() || {};
 		if (!enabled) return;
 
-		function set_height(_e: Event | null) {
+		function set_height() {
 			// console.log(123, el.value);
 			if (enabled) {
 				el.style.height = "auto"; // Reset height to auto to correctly calculate scrollHeight
@@ -49,14 +49,14 @@ export function autogrow(
 
 		// eventlistener strategy (we're not passing value)
 		if (value === undefined) {
-			if (immediate) set_height(null);
+			if (immediate) set_height();
 			el.addEventListener("input", set_height);
 			el.addEventListener("blur", set_height);
 		}
 		// strategy with provided value
 		else {
 			if (value !== lastValue) {
-				set_height(null);
+				set_height();
 				lastValue = value;
 			}
 		}

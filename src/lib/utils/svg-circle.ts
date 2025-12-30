@@ -75,9 +75,9 @@ function _normalize_cls(v: string) {
  * ```
  */
 export function svgCircle(options: Partial<SvgCircleOptions> = {}) {
-	let {
+	const {
 		strokeWidth = 10,
-		completeness = 1,
+		completeness: completenessInput = 1,
 		bgStrokeColor = "",
 		class: classProp = "",
 		roundedEdges = true,
@@ -85,6 +85,8 @@ export function svgCircle(options: Partial<SvgCircleOptions> = {}) {
 		strokeWidthRatio = 0,
 		circleStyle,
 	} = options ?? {};
+
+	let completeness = completenessInput;
 
 	completeness = _normalize_completness(completeness);
 

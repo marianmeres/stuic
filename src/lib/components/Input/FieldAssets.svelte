@@ -454,13 +454,17 @@
 
 			if (accept && [...(files ?? [])].some((f) => !is_accepted_type(accept, f.type))) {
 				const msg = t("invalid_type", { accept });
-				return notifications ? notifications.error(msg) : alert(msg);
+				if (notifications) notifications.error(msg);
+				else alert(msg);
+				return;
 			}
 
 			const cardErrMsg = t("cardinality_reached", { max: cardinality });
 			if (assets.length > cardinality) {
 				// if (assets.length + (files?.length ?? 0) > cardinality) {
-				return notifications ? notifications.error(cardErrMsg) : alert(cardErrMsg);
+				if (notifications) notifications.error(cardErrMsg);
+				else alert(cardErrMsg);
+				return;
 			}
 
 			const toBeProcessed: FieldAsset[] = [];
@@ -547,7 +551,7 @@
 
 <input type="file" bind:this={inputEl} multiple style="display: none" {accept} />
 <!-- hack to be able to validate the conventional way -->
-<input type="hidden" {name} value={value} use:validateAction={() => wrappedValidate} />
+<input type="hidden" {name} {value} use:validateAction={() => wrappedValidate} />
 
 <Modal
 	bind:this={modal}

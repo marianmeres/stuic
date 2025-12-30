@@ -32,7 +32,7 @@ export function observeExists(
 	if (!selector) throw new TypeError("Expecting non empty selector");
 	const { rootElement = document.body } = options;
 	const ns = `[observeExists] [${selector}]`;
-	const clog = (...args: any[]) => console.debug(ns, ...args);
+	const clog = (...args: unknown[]) => console.debug(ns, ...args);
 
 	const check = () => rootElement.querySelector(selector) !== null;
 

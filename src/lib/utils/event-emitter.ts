@@ -29,7 +29,7 @@ export class EventEmitter extends EventTarget {
 	 */
 	override addEventListener(
 		type: string,
-		listener: any, // fuck it (we would need 3 signatures)
+		listener: EventListenerOrEventListenerObject | null,
 		options: boolean | AddEventListenerOptions = {}
 	): void {
 		// normalize opts (for the `once` shorthand)
@@ -54,7 +54,7 @@ export class EventEmitter extends EventTarget {
 	 * @param eventName - The name of the event to emit
 	 * @param detail - Optional data to attach to the event
 	 */
-	emit(eventName: string, detail: any = null) {
+	emit(eventName: string, detail: unknown = null) {
 		this.dispatchEvent(new CustomEvent(eventName, { detail }));
 	}
 

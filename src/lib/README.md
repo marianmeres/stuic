@@ -12,21 +12,22 @@ npm install @marianmeres/stuic
 
 ```svelte
 <script>
-  import { Button, Modal } from '@marianmeres/stuic';
+	import { Button, Modal } from "@marianmeres/stuic";
 
-  let modal;
+	let modal;
 </script>
 
 <Button onclick={() => modal.open()}>Open Modal</Button>
 
 <Modal bind:this={modal}>
-  <p>Hello from Modal!</p>
+	<p>Hello from Modal!</p>
 </Modal>
 ```
 
 ## Components
 
 ### Layout & Overlays
+
 - **AppShell** - Application layout wrapper with header, sidebar, main content
 - **Backdrop** - Fullscreen overlay with transitions
 - **Modal** - Dialog overlay with focus trap and scroll lock
@@ -34,6 +35,7 @@ npm install @marianmeres/stuic
 - **Drawer** - Slide-in panel from screen edges
 
 ### Forms & Inputs
+
 - **FieldInput** - Text input with label, validation, description
 - **FieldTextarea** - Multiline text input with autogrow support
 - **FieldSelect** - Native select dropdown
@@ -46,12 +48,14 @@ npm install @marianmeres/stuic
 - **Fieldset** - Group of form fields with legend
 
 ### Buttons & Controls
+
 - **Button** - Styled button with variants (primary, secondary, ghost)
 - **ButtonGroupRadio** - Radio-style button group
 - **Switch** - Toggle switch component
 - **X** - Close/dismiss button icon
 
 ### Feedback & Notifications
+
 - **Notifications** - Toast notification system
 - **AlertConfirmPrompt** - Modal dialogs for alerts, confirms, and prompts
 - **DismissibleMessage** - Closable message banner
@@ -59,11 +63,13 @@ npm install @marianmeres/stuic
 - **Spinner** - Loading spinner animation
 
 ### Navigation & Interaction
+
 - **CommandMenu** - Keyboard-driven command palette
 - **TypeaheadInput** - Autocomplete text input
 - **KbdShortcut** - Keyboard shortcut display
 
 ### Utilities
+
 - **ColorScheme** - Dark/light mode management
 - **Thc** - Render text, HTML, or component dynamically
 - **SlidingPanels** - Animated panel transitions
@@ -86,7 +92,7 @@ npm install @marianmeres/stuic
 ## Utilities
 
 ```ts
-import { debounce, throttle, twMerge, localStorageState } from '@marianmeres/stuic';
+import { debounce, throttle, twMerge, localStorageState } from "@marianmeres/stuic";
 ```
 
 - **debounce/throttle** - Function rate limiting
@@ -103,10 +109,10 @@ Components use CSS custom properties for theming. Override in your CSS:
 
 ```css
 :root {
-  --color-button-bg: theme('colors.blue.500');
-  --color-button-text: white;
-  --color-input-accent: theme('colors.blue.500');
-  /* ... */
+	--color-button-bg: theme("colors.blue.500");
+	--color-button-text: white;
+	--color-input-accent: theme("colors.blue.500");
+	/* ... */
 }
 ```
 
@@ -117,10 +123,10 @@ See `src/lib/theme.css` for all available custom properties.
 All components export their Props types:
 
 ```ts
-import type { ButtonProps, ModalProps } from '@marianmeres/stuic';
+import type { ButtonProps, ModalProps } from "@marianmeres/stuic";
 
 const buttonConfig: Partial<ButtonProps> = {
-  variant: 'primary',
-  size: 'lg',
+	variant: "primary",
+	size: "lg",
 };
 ```

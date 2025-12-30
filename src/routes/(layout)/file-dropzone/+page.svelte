@@ -15,7 +15,8 @@
 			const max = 2;
 			console.log("processFiles", files?.length, files);
 			if (files?.length && files.length > max) {
-				return (names = [`MAX ${max} ALLOWED`]);
+				names = [`MAX ${max} ALLOWED`];
+				return;
 			}
 			names = Array.from(files ?? []).map((f) => f.name);
 		},

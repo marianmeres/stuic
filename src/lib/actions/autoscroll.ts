@@ -15,8 +15,8 @@ interface StoreLike<T> extends StoreReadable<T> {
  * Options for the autoscroll action.
  */
 export type AutoscrollOptions = ScrollOptions & {
-	dependencies?: StoreReadable<any>[];
-	logger?: (...args: any[]) => void;
+	dependencies?: StoreReadable<unknown>[];
+	logger?: (...args: unknown[]) => void;
 	newScrollableContentSignal?: StoreLike<boolean>;
 	shouldScrollThresholdPx?: number;
 	startScrollTimeout?: number;
@@ -71,7 +71,7 @@ export function autoscroll(
 	}
 ) {
 	// use "smooth" by default
-	options.behavior ??= 'smooth';
+	options.behavior ??= "smooth";
 	options.shouldScrollThresholdPx ??= DEFAULTS.shouldScrollThresholdPx;
 	options.startScrollTimeout ??= DEFAULTS.startScrollTimeout;
 
@@ -86,14 +86,15 @@ export function autoscroll(
 
 	let origScrollHeight = 0;
 
-	const log = (...args: any[]) =>
-		typeof logger === 'function' && logger.apply(null, [...args]);
+	const log = (...args: unknown[]) => {
+		if (typeof logger === "function") logger.apply(null, [...args]);
+	};
 
 	const shouldScroll = () => {
 		const { scrollTop, clientHeight } = node;
 		const result =
 			origScrollHeight - scrollTop - clientHeight < (shouldScrollThresholdPx as number);
-		log('shouldScroll?', result, { scrollTop, origScrollHeight, clientHeight });
+		log("shouldScroll?", result, { scrollTop, origScrollHeight, clientHeight });
 		return result;
 	};
 
@@ -105,21 +106,25 @@ export function autoscroll(
 
 	// for when children change sizes
 	const resizeObserver = new ResizeObserver(() => {
-		log('observed resize...');
-		shouldScroll() && scroll();
+		log("observed resize...");
+		if (shouldScroll()) scroll();
 	});
 
 	// for when children
 	const mutationObserver = new MutationObserver(() => {
-		log('observed mutation...');
-		shouldScroll() ? scroll() : newScrollableContentSignal?.set(true);
+		log("observed mutation...");
+		if (shouldScroll()) {
+			scroll();
+		} else {
+			newScrollableContentSignal?.set(true);
+		}
 		origScrollHeight = node.scrollHeight;
 	});
 
 	const unsubs =
 		dependencies?.map((dep) =>
 			dep.subscribe((v) => {
-				log('dependency update...', v);
+				log("dependency update...", v);
 				setTimeout(scroll, startScrollTimeout);
 			})
 		) ?? [];

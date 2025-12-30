@@ -38,17 +38,18 @@ export function highlightDragover(
 	// 	el.dispatchEvent(new Event("change"));
 	// }
 
-	function prevent(e: DragEvent) {
-		e.preventDefault();
-		// e.stopPropagation();
-	}
+	// function prevent(e: DragEvent) {
+	// 	e.preventDefault();
+	// 	// e.stopPropagation();
+	// }
 
 	const HIGH = ["dragenter", "dragover"];
 	const UNHIGH = ["dragleave", "drop"];
 	// const ALL = [...HIGH, ...UNHIGH];
 
 	$effect(() => {
-		let { classes = ["dragover"], enabled = true } = fn?.() || {};
+		const { enabled = true } = fn?.() || {};
+		let { classes = ["dragover"] } = fn?.() || {};
 		if (!enabled) return;
 
 		if (!Array.isArray(classes)) classes = [classes];

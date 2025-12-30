@@ -15,10 +15,10 @@
  * maybeJsonParse('bad', true);   // throws SyntaxError
  * ```
  */
-export function maybeJsonParse(val: any, strict = false) {
+export function maybeJsonParse(val: unknown, strict = false): unknown {
 	if (typeof val === "string") {
 		try {
-			val = JSON.parse(val);
+			return JSON.parse(val);
 		} catch (e) {
 			if (strict) throw e;
 		}

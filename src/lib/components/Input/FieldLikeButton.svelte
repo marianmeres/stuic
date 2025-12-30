@@ -195,7 +195,7 @@
 
 							// also, by default, JSON validation is built in
 							try {
-								JSON.parse(val);
+								JSON.parse(val as string);
 								return "";
 							} catch (e) {
 								return "typeMismatch";

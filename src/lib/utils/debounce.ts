@@ -10,14 +10,13 @@
  * input.addEventListener('input', (e) => debouncedSearch(e.target.value));
  * ```
  */
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: unknown[]) => unknown>(
 	fn: T,
 	wait: number
 ): (...args: Parameters<T>) => void {
 	let timeout: ReturnType<typeof setTimeout> | null = null;
 	return function (this: unknown, ...args: Parameters<T>): void {
-		const context = this;
 		if (timeout !== null) clearTimeout(timeout);
-		timeout = setTimeout(() => fn.apply(context, args), wait);
+		timeout = setTimeout(() => fn.apply(this, args), wait);
 	};
 }

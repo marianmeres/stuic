@@ -41,13 +41,8 @@
 		/* position-area is set via inline style based on position param */
 		/* fallbacks ensure tooltip stays within viewport */
 		position-try-fallbacks:
-			--tt-top-span-right,
-			--tt-top-span-left,
-			flip-block,
-			--tt-bottom-span-right,
-			--tt-bottom-span-left,
-			--tt-left,
-			--tt-right;
+			--tt-top-span-right, --tt-top-span-left, flip-block, --tt-bottom-span-right,
+			--tt-bottom-span-left, --tt-left, --tt-right;
 
 		&.tt-block {
 			display: block;

@@ -1,220 +1,228 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sticky Footer - Mobile Keyboard</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Sticky Footer - Mobile Keyboard</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #f5f5f5;
-        }
+			body {
+				font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+				background: #f5f5f5;
+			}
 
-        /* Main container using flexbox */
-        .container {
-            min-height: 100dvh; /* Dynamic viewport height */
-            display: flex;
-            flex-direction: column;
-        }
+			/* Main container using flexbox */
+			.container {
+				min-height: 100dvh; /* Dynamic viewport height */
+				display: flex;
+				flex-direction: column;
+			}
 
-        /* Content area that grows to fill space */
-        .content {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-        }
+			/* Content area that grows to fill space */
+			.content {
+				flex: 1;
+				padding: 20px;
+				overflow-y: auto;
+			}
 
-        .form-section {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+			.form-section {
+				background: white;
+				padding: 20px;
+				border-radius: 8px;
+				margin-bottom: 20px;
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			}
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+			.form-group {
+				margin-bottom: 15px;
+			}
 
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
+			label {
+				display: block;
+				margin-bottom: 5px;
+				font-weight: 500;
+			}
 
-        input, textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px; /* Prevents zoom on iOS */
-        }
+			input,
+			textarea {
+				width: 100%;
+				padding: 12px;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				font-size: 16px; /* Prevents zoom on iOS */
+			}
 
-        textarea {
-            min-height: 80px;
-            resize: vertical;
-        }
+			textarea {
+				min-height: 80px;
+				resize: vertical;
+			}
 
-        /* Sticky footer */
-        .footer {
-            background: #333;
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-        }
+			/* Sticky footer */
+			.footer {
+				background: #333;
+				color: white;
+				padding: 15px 20px;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+			}
 
-        .footer-btn {
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
+			.footer-btn {
+				background: #007bff;
+				color: white;
+				border: none;
+				padding: 10px 20px;
+				border-radius: 4px;
+				cursor: pointer;
+				font-size: 14px;
+			}
 
-        .footer-btn:hover {
-            background: #0056b3;
-        }
+			.footer-btn:hover {
+				background: #0056b3;
+			}
 
-        /* Alternative approach using position fixed */
-        .fixed-footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #333;
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            z-index: 1000;
-        }
+			/* Alternative approach using position fixed */
+			.fixed-footer {
+				position: fixed;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				background: #333;
+				color: white;
+				padding: 15px 20px;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+				z-index: 1000;
+			}
 
-        /* Add bottom padding to content when using fixed footer */
-        .content-with-fixed-footer {
-            padding-bottom: 70px;
-        }
+			/* Add bottom padding to content when using fixed footer */
+			.content-with-fixed-footer {
+				padding-bottom: 70px;
+			}
 
-        /* Hide fixed footer initially */
-        .fixed-footer {
-            display: none;
-        }
+			/* Hide fixed footer initially */
+			.fixed-footer {
+				display: none;
+			}
 
-        /* Toggle between approaches */
-        .toggle-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 4px;
-            z-index: 1001;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-    <button class="toggle-btn" onclick="toggleFooterStyle()">Toggle Footer Style</button>
+			/* Toggle between approaches */
+			.toggle-btn {
+				position: fixed;
+				top: 20px;
+				right: 20px;
+				background: #28a745;
+				color: white;
+				border: none;
+				padding: 10px;
+				border-radius: 4px;
+				z-index: 1001;
+				cursor: pointer;
+			}
+		</style>
+	</head>
+	<body>
+		<button class="toggle-btn" onclick="toggleFooterStyle()">Toggle Footer Style</button>
 
-    <div class="container">
-        <div class="content" id="content">
-            <div class="form-section">
-                <h2>Contact Form</h2>
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" placeholder="Enter your name">
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="Enter your email">
-                </div>
-                <div class="form-group">
-                    <label for="phone">Phone</label>
-                    <input type="tel" id="phone" placeholder="Enter your phone">
-                </div>
-                <div class="form-group">
-                    <label for="message">Message</label>
-                    <textarea id="message" placeholder="Enter your message"></textarea>
-                </div>
-            </div>
+		<div class="container">
+			<div class="content" id="content">
+				<div class="form-section">
+					<h2>Contact Form</h2>
+					<div class="form-group">
+						<label for="name">Name</label>
+						<input type="text" id="name" placeholder="Enter your name" />
+					</div>
+					<div class="form-group">
+						<label for="email">Email</label>
+						<input type="email" id="email" placeholder="Enter your email" />
+					</div>
+					<div class="form-group">
+						<label for="phone">Phone</label>
+						<input type="tel" id="phone" placeholder="Enter your phone" />
+					</div>
+					<div class="form-group">
+						<label for="message">Message</label>
+						<textarea id="message" placeholder="Enter your message"></textarea>
+					</div>
+				</div>
 
-            <div class="form-section">
-                <h3>Test Content</h3>
-                <p>This is additional content to test scrolling behavior. Try focusing on the form fields above to see how the footer behaves when the virtual keyboard appears.</p>
-                <p>The footer should remain visible and accessible even when the keyboard is open.</p>
-            </div>
-        </div>
+				<div class="form-section">
+					<h3>Test Content</h3>
+					<p>
+						This is additional content to test scrolling behavior. Try focusing on the
+						form fields above to see how the footer behaves when the virtual keyboard
+						appears.
+					</p>
+					<p>
+						The footer should remain visible and accessible even when the keyboard is
+						open.
+					</p>
+				</div>
+			</div>
 
-        <div class="footer" id="flexFooter">
-            <span>Total: $99.99</span>
-            <button class="footer-btn">Complete Order</button>
-        </div>
-    </div>
+			<div class="footer" id="flexFooter">
+				<span>Total: $99.99</span>
+				<button class="footer-btn">Complete Order</button>
+			</div>
+		</div>
 
-    <div class="fixed-footer" id="fixedFooter">
-        <span>Total: $99.99</span>
-        <button class="footer-btn">Complete Order</button>
-    </div>
+		<div class="fixed-footer" id="fixedFooter">
+			<span>Total: $99.99</span>
+			<button class="footer-btn">Complete Order</button>
+		</div>
 
-    <script>
-        let useFixedFooter = false;
+		<script>
+			let useFixedFooter = false;
 
-        function toggleFooterStyle() {
-            const flexFooter = document.getElementById('flexFooter');
-            const fixedFooter = document.getElementById('fixedFooter');
-            const content = document.getElementById('content');
-            const toggleBtn = document.querySelector('.toggle-btn');
+			function toggleFooterStyle() {
+				const flexFooter = document.getElementById("flexFooter");
+				const fixedFooter = document.getElementById("fixedFooter");
+				const content = document.getElementById("content");
+				const toggleBtn = document.querySelector(".toggle-btn");
 
-            useFixedFooter = !useFixedFooter;
+				useFixedFooter = !useFixedFooter;
 
-            if (useFixedFooter) {
-                flexFooter.style.display = 'none';
-                fixedFooter.style.display = 'flex';
-                content.classList.add('content-with-fixed-footer');
-                toggleBtn.textContent = 'Use Flex Footer';
-            } else {
-                flexFooter.style.display = 'flex';
-                fixedFooter.style.display = 'none';
-                content.classList.remove('content-with-fixed-footer');
-                toggleBtn.textContent = 'Use Fixed Footer';
-            }
-        }
+				if (useFixedFooter) {
+					flexFooter.style.display = "none";
+					fixedFooter.style.display = "flex";
+					content.classList.add("content-with-fixed-footer");
+					toggleBtn.textContent = "Use Flex Footer";
+				} else {
+					flexFooter.style.display = "flex";
+					fixedFooter.style.display = "none";
+					content.classList.remove("content-with-fixed-footer");
+					toggleBtn.textContent = "Use Fixed Footer";
+				}
+			}
 
-        // Optional: Handle visual viewport API for better keyboard detection
-        if ('visualViewport' in window) {
-            function handleViewportChange() {
-                const viewport = window.visualViewport;
-                const footer = useFixedFooter ? 
-                    document.getElementById('fixedFooter') : 
-                    document.getElementById('flexFooter');
-                
-                // Adjust footer position when keyboard opens
-                if (viewport.height < window.innerHeight * 0.75) {
-                    // Keyboard is likely open
-                    footer.style.transform = `translateY(${window.innerHeight - viewport.height - footer.offsetHeight}px)`;
-                } else {
-                    // Keyboard is closed
-                    footer.style.transform = 'translateY(0)';
-                }
-            }
+			// Optional: Handle visual viewport API for better keyboard detection
+			if ("visualViewport" in window) {
+				function handleViewportChange() {
+					const viewport = window.visualViewport;
+					const footer = useFixedFooter
+						? document.getElementById("fixedFooter")
+						: document.getElementById("flexFooter");
 
-            window.visualViewport.addEventListener('resize', handleViewportChange);
-            window.visualViewport.addEventListener('scroll', handleViewportChange);
-        }
-    </script>
-</body>
+					// Adjust footer position when keyboard opens
+					if (viewport.height < window.innerHeight * 0.75) {
+						// Keyboard is likely open
+						footer.style.transform = `translateY(${window.innerHeight - viewport.height - footer.offsetHeight}px)`;
+					} else {
+						// Keyboard is closed
+						footer.style.transform = "translateY(0)";
+					}
+				}
+
+				window.visualViewport.addEventListener("resize", handleViewportChange);
+				window.visualViewport.addEventListener("scroll", handleViewportChange);
+			}
+		</script>
+	</body>
 </html>

@@ -56,13 +56,16 @@ export class SwitchState<T> {
 		public readonly key: string,
 		initial: boolean | null = null,
 		public readonly storageType: "memory" | "local" | "session" = "memory",
-		initialData: any = null
+		initialData: T | null = null
 	) {
 		this.#current = initial;
 		this.#data = initialData;
 
 		if (typeof storageTypeFactory[this.storageType] === "function") {
-			this.#storage = storageTypeFactory[this.storageType](this.key, {
+			this.#storage = storageTypeFactory[this.storageType]<{
+				value: boolean | null;
+				data: T | null;
+			}>(this.key, {
 				value: initial,
 				data: null,
 			});
@@ -80,7 +83,7 @@ export class SwitchState<T> {
 		if (data !== undefined) this.#data = data;
 
 		// mirror to storage
-		this.#storage?.set({ value, data });
+		this.#storage?.set({ value, data: data ?? null });
 
 		// if we're closing fire (once) onOff if exists
 		if (!value) {

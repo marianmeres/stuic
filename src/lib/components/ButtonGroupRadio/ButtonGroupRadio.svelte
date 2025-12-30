@@ -30,7 +30,10 @@
 
 <script lang="ts">
 	import { ItemCollection } from "@marianmeres/item-collection";
-	type ItemCollectionItem = { id: string; option: import("../Input/types.js").FieldRadiosOption };
+	type ItemCollectionItem = {
+		id: string;
+		option: import("../Input/types.js").FieldRadiosOption;
+	};
 	import { twMerge } from "../../utils/tw-merge.js";
 	import Button from "../Button/Button.svelte";
 	//

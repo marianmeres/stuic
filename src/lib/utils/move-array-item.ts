@@ -16,7 +16,7 @@
  * moveArrayItem(['a', 'b', 'c'], 1, 1);  // ['a', 'b', 'c'] (clone)
  * ```
  */
-export function moveArrayItem(array: any[], fromIndex: number, toIndex: number) {
+export function moveArrayItem<T>(array: T[], fromIndex: number, toIndex: number): T[] {
 	if (fromIndex < 0 || fromIndex >= array.length) {
 		throw new Error("Invalid fromIndex");
 	}

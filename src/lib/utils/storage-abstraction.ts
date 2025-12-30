@@ -8,7 +8,7 @@ import { isBrowser } from "./is-browser.js";
 export class MemoryStorage {
 	#storage = new Map();
 
-	setItem(key: string, value: any) {
+	setItem(key: string, value: unknown) {
 		this.#storage.set(key, value);
 	}
 	getItem(key: string) {
@@ -44,13 +44,13 @@ export class MemoryStorage {
 export class StorageAbstraction {
 	#type: "local" | "session" | "memory";
 	#storage: Storage | MemoryStorage;
-	#serializer: (v: any) => string = JSON.stringify;
-	#deserializer: (v: string) => any = JSON.parse;
+	#serializer: (v: unknown) => string = JSON.stringify;
+	#deserializer: (v: string) => unknown = JSON.parse;
 
 	constructor(
 		storageType: "local" | "session" | "memory" = "local",
-		serializer?: (v: any) => string,
-		deserializer?: (v: string) => any
+		serializer?: (v: unknown) => string,
+		deserializer?: (v: string) => unknown
 	) {
 		this.#type = `${storageType}`.toLowerCase() as "local" | "session" | "memory";
 
@@ -66,12 +66,13 @@ export class StorageAbstraction {
 		if (deserializer) this.#deserializer = deserializer;
 	}
 
-	#serialize(value: any) {
+	#serialize(value: unknown) {
 		return this.#serializer(value);
 	}
 
-	#deserialize(value: any) {
+	#deserialize(value: string | null) {
 		try {
+			if (value === null) return null;
 			return this.#deserializer(value);
 		} catch (e) {
 			console.error(`Unable to deserialize value "${value}". Details: ${e}`);
@@ -79,7 +80,7 @@ export class StorageAbstraction {
 		}
 	}
 
-	set(key: string, value: any) {
+	set(key: string, value: unknown) {
 		try {
 			this.#storage.setItem(key, this.#serialize(value));
 		} catch (e) {
@@ -140,15 +141,15 @@ export class StorageAbstraction {
 	}
 }
 
-function storage_value(type: "local" | "session" | "memory", key: string, initial: any) {
+function storage_value<T>(type: "local" | "session" | "memory", key: string, initial: T) {
 	const s = new StorageAbstraction(type);
 	if (!s.has(key)) s.set(key, initial);
 
 	return {
-		get() {
-			return s.get(key);
+		get(): T {
+			return s.get(key) as T;
 		},
-		set(v: any) {
+		set(v: T) {
 			return s.set(key, v);
 		},
 		remove() {
@@ -171,7 +172,7 @@ function storage_value(type: "local" | "session" | "memory", key: string, initia
  * theme.set('dark');  // Persists to localStorage
  * ```
  */
-export function localStorageValue(key: string, initial: any) {
+export function localStorageValue<T>(key: string, initial: T) {
 	return storage_value("local", key, initial);
 }
 
@@ -188,7 +189,7 @@ export function localStorageValue(key: string, initial: any) {
  * token.set('abc123');
  * ```
  */
-export function sessionStorageValue(key: string, initial: any) {
+export function sessionStorageValue<T>(key: string, initial: T) {
 	return storage_value("session", key, initial);
 }
 
@@ -201,6 +202,6 @@ export function sessionStorageValue(key: string, initial: any) {
  * @param initial - Initial value if key doesn't exist
  * @returns An object with `get()`, `set()`, and `remove()` methods
  */
-export function memoryStorageValue(key: string, initial: any) {
+export function memoryStorageValue<T>(key: string, initial: T) {
 	return storage_value("memory", key, initial);
 }

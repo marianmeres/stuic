@@ -16,7 +16,11 @@ export async function isMac() {
 	const rx = /mac/i;
 
 	// modern
-	const nav: any = navigator as any;
+	const nav = navigator as Navigator & {
+		userAgentData?: {
+			getHighEntropyValues: (hints: string[]) => Promise<{ platform: string }>;
+		};
+	};
 	if (nav.userAgentData) {
 		const uad = await nav.userAgentData.getHighEntropyValues(["platform"]);
 		return rx.test(uad.platform);

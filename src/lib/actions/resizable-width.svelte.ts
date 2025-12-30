@@ -19,7 +19,7 @@ export interface ResizableWidthOptions {
 	handleClass?: string;
 	handleDragClass?: string;
 	onResize?: (info: { width: number; units: "px" | "%"; container: number }) => void;
-	debug?: (...args: any[]) => void;
+	debug?: (...args: unknown[]) => void;
 }
 
 /**
@@ -108,9 +108,9 @@ export function resizableWidth(el: HTMLDivElement, fn?: () => ResizableWidthOpti
 	}
 
 	$effect(() => {
-		let {
+		const {
 			enabled = true,
-			initial = 0,
+			initial: initialValue = 0,
 			min = 0,
 			max = 0,
 			units = "px",
@@ -121,8 +121,9 @@ export function resizableWidth(el: HTMLDivElement, fn?: () => ResizableWidthOpti
 			onResize,
 			debug,
 		} = fn?.() || {};
+		let initial = initialValue;
 
-		const _debug = (...args: any[]) => debug?.("[resizable-width]", ...args);
+		const _debug = (...args: unknown[]) => debug?.("[resizable-width]", ...args);
 		_debug("$effect");
 
 		if (!enabled) return;
@@ -162,7 +163,7 @@ export function resizableWidth(el: HTMLDivElement, fn?: () => ResizableWidthOpti
 				const _initial = value;
 				if (min) value = Math.max(min, value);
 				if (max) value = Math.min(max, value);
-				_initial !== value && _debug("clamped", value, units);
+				if (_initial !== value) _debug("clamped", value, units);
 				return value;
 			};
 
@@ -186,12 +187,12 @@ export function resizableWidth(el: HTMLDivElement, fn?: () => ResizableWidthOpti
 			return info;
 		}
 
-		function resize_start(e: any) {
+		function resize_start(e: MouseEvent | TouchEvent) {
 			e.preventDefault(); // prevent scrolling on touch devices
 			isResizing = true;
 
 			//
-			const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+			const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
 			startX = clientX;
 			startWidth = parseInt(getComputedStyle(el).width, 10);
 			containerW = container.offsetWidth;
@@ -201,14 +202,14 @@ export function resizableWidth(el: HTMLDivElement, fn?: () => ResizableWidthOpti
 			document.body.style.userSelect = "none";
 		}
 
-		function resize(e: any) {
+		function resize(e: MouseEvent | TouchEvent) {
 			if (!isResizing) return;
 			e.preventDefault(); // prevent scrolling on touch devices
 
 			//
-			const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+			const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
 			const deltaX = clientX - startX;
-			let width = startWidth + deltaX;
+			const width = startWidth + deltaX;
 
 			set_width_px(width);
 		}

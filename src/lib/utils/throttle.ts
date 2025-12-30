@@ -17,16 +17,15 @@
  * // handleScroll will be called at most once every 300ms
  * ```
  */
-export function throttle<T extends (...args: any[]) => any>(
+export function throttle<T extends (...args: unknown[]) => unknown>(
 	func: T,
 	limit: number
 ): (...args: Parameters<T>) => void {
 	let lastCall: number = 0;
 	let timeout: ReturnType<typeof setTimeout> | null = null;
-	let lastArgs: Parameters<T> | null = null;
+	let pendingCall: { args: Parameters<T>; context: unknown } | null = null;
 
 	return function (this: unknown, ...args: Parameters<T>): void {
-		const context = this;
 		const now = Date.now();
 
 		// If enough time has passed since the last call
@@ -37,10 +36,10 @@ export function throttle<T extends (...args: any[]) => any>(
 			}
 
 			lastCall = now;
-			func.apply(context, args);
+			func.apply(this, args);
 		} else {
-			// Save the latest arguments
-			lastArgs = args;
+			// Save the latest arguments and context
+			pendingCall = { args, context: this };
 
 			// If there's no pending execution scheduled
 			if (timeout === null) {
@@ -49,9 +48,9 @@ export function throttle<T extends (...args: any[]) => any>(
 						lastCall = Date.now();
 						timeout = null;
 
-						if (lastArgs !== null) {
-							func.apply(context, lastArgs);
-							lastArgs = null;
+						if (pendingCall !== null) {
+							func.apply(pendingCall.context, pendingCall.args);
+							pendingCall = null;
 						}
 					},
 					limit - (now - lastCall)

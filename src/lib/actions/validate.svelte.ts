@@ -1,6 +1,3 @@
-import { tick } from "svelte";
-import { waitForNextRepaint, waitForTwoRepaints } from "../utils/paint.js";
-
 /**
  * A mock-friendly interface matching the browser's ValidityState.
  *
@@ -105,7 +102,7 @@ export interface ValidationResult {
 
 type ReasonTranslate = (
 	reason: keyof ValidityStateFlags,
-	value: any,
+	value: unknown,
 	fallback: string
 ) => string;
 
@@ -132,11 +129,11 @@ const KNOWN_REASONS = [
 export interface ValidateOptions {
 	enabled?: boolean;
 	// anything, typically all form data
-	context?: Record<string, any>;
+	context?: Record<string, unknown>;
 	// custom validator fn
 	customValidator?: (
-		value: any,
-		context: Record<string, any> | undefined,
+		value: unknown,
+		context: Record<string, unknown> | undefined,
 		el: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
 	) => string | undefined;
 	// on which event to trigger validation (default change)
@@ -216,8 +213,8 @@ export function validate(
 ) {
 	$effect(() => {
 		//
-		let fnResult = fn?.() ?? {};
-		let {
+		const fnResult = fn?.() ?? {};
+		const {
 			enabled,
 			context,
 			customValidator,
@@ -227,7 +224,7 @@ export function validate(
 		} = typeof fnResult === "boolean" ? { enabled: !!fnResult } : fnResult;
 
 		//
-		const _t = (reason: keyof ValidityStateFlags, value: any, fallback: string) => {
+		const _t = (reason: keyof ValidityStateFlags, value: unknown, fallback: string) => {
 			// explicit false
 			if (!reason || t === false) {
 				return fallback;
@@ -238,7 +235,7 @@ export function validate(
 			}
 			// global t (if any)
 			else if (typeof validate.t === "function") {
-				return (validate as any).t(reason, value, fallback);
+				return validate.t(reason, value, fallback);
 			}
 			return fallback;
 		};
@@ -258,7 +255,8 @@ export function validate(
 			const validityState = el.validity;
 			const reasons: (keyof ValidityStateFlags)[] = KNOWN_REASONS.reduce(
 				(m, k) => {
-					if ((validityState as any)[k]) m.push(k as keyof ValidityStateFlags);
+					if (validityState[k as keyof ValidityState])
+						m.push(k as keyof ValidityStateFlags);
 					return m;
 				},
 				[] as (keyof ValidityStateFlags)[]
@@ -292,11 +290,13 @@ export function validate(
 
 		//
 		let _touchCount = 0;
-		const onFocus = (e: Event) => _touchCount++;
+		const onFocus = () => _touchCount++;
 		el.addEventListener("focus", onFocus);
 
 		// also validate on first blur
-		const onBlur = (e: Event) => _touchCount === 1 && _doValidate();
+		const onBlur = () => {
+			if (_touchCount === 1) _doValidate();
+		};
 		el.addEventListener("blur", onBlur);
 
 		return () => {
@@ -307,6 +307,5 @@ export function validate(
 	});
 }
 
-// ReasonTranslate
-const t: ReasonTranslate | null = null;
-validate.t = t;
+// Global translation function - can be set by consumers
+validate.t = null as ReasonTranslate | null;

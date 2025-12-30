@@ -136,8 +136,8 @@ export function tooltip(
 	anchorEl.setAttribute("aria-describedby", id);
 	anchorEl.setAttribute("aria-expanded", "false");
 
-	const debug = (...args: any[]) => {
-		do_debug && console.debug("[tooltip]", rnd, ...args);
+	const debug = (...args: unknown[]) => {
+		if (do_debug) console.debug("[tooltip]", rnd, ...args);
 	};
 
 	function ensure_tooltip() {
@@ -171,7 +171,7 @@ export function tooltip(
 			// update position-area in case it changed
 			tooltipEl.style.setProperty("position-area", POSITION_MAP[position] || "top");
 			if (classTooltip) {
-				let old = tooltipEl.className;
+				const old = tooltipEl.className;
 				tooltipEl.className = ""; // reset
 				tooltipEl.classList.add(...twMerge(old, classTooltip).split(/\s/));
 			}
@@ -244,7 +244,7 @@ export function tooltip(
 
 	// "reactive" params re/set
 	$effect(() => {
-		let {
+		const {
 			enabled: _enabled,
 			content: _content,
 			position: _position,
@@ -258,7 +258,7 @@ export function tooltip(
 		do_debug = !!debugParam;
 		on_show = onShow;
 		on_hide = onHide;
-		content = _content ||= anchorEl.getAttribute("aria-label");
+		content = _content || anchorEl.getAttribute("aria-label");
 		classTooltip = _classTooltip;
 		enabled = _enabled ?? true;
 		position = _position || "top";

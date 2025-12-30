@@ -22,15 +22,15 @@
  */
 export function trim(
 	el: HTMLInputElement | HTMLTextAreaElement,
-	fn?: () => { enabled?: boolean; setValue?: (v: string) => any }
+	fn?: () => { enabled?: boolean; setValue?: (v: string) => void }
 ) {
 	// the node has been mounted in the DOM
 
 	$effect(() => {
 		// setup goes here
-		let { enabled, setValue } = fn?.() || { enabled: true };
+		const { enabled, setValue } = fn?.() || { enabled: true };
 
-		function trim(e: Event) {
+		function trim() {
 			if (enabled && typeof el.value === "string") {
 				el.value = el.value.trim();
 				setValue?.(el.value);

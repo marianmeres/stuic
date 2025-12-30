@@ -72,12 +72,12 @@ export function rgbToOklch(rgb: { r: number; g: number; b: number }) {
  * ```
  */
 export function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
-	let shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+	const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
 	hex = hex.replace(shorthandRegex, (m, r, g, b) => {
 		return r + r + g + g + b + b;
 	});
 
-	let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 	return result
 		? {
 				r: parseInt(result[1], 16),
@@ -104,7 +104,7 @@ export function hexToRgb(hex: string): { r: number; g: number; b: number } | nul
  */
 export function srgbToLinearRgb({ r, g, b }: { r: number; g: number; b: number }) {
 	const convert = (val: number) => {
-		let v = val / 255;
+		const v = val / 255;
 		return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
 	};
 	return {

@@ -16,9 +16,10 @@ export function omit<T extends Record<string, unknown>, K extends keyof T>(
 	keys: K | K[]
 ): Omit<T, K> {
 	const _keys = new Set(Array.isArray(keys) ? keys : [keys]) as Set<string>;
-	return Object.fromEntries(
-		Object.entries(obj).filter(([k]) => !_keys.has(k))
-	) as Omit<T, K>;
+	return Object.fromEntries(Object.entries(obj).filter(([k]) => !_keys.has(k))) as Omit<
+		T,
+		K
+	>;
 }
 
 /**
@@ -39,7 +40,8 @@ export function pick<T extends Record<string, unknown>, K extends keyof T>(
 	keys: K | K[]
 ): Pick<T, K> {
 	const _keys = new Set(Array.isArray(keys) ? keys : [keys]) as Set<string>;
-	return Object.fromEntries(
-		Object.entries(obj).filter(([k]) => _keys.has(k))
-	) as Pick<T, K>;
+	return Object.fromEntries(Object.entries(obj).filter(([k]) => _keys.has(k))) as Pick<
+		T,
+		K
+	>;
 }

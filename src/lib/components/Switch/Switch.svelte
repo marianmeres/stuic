@@ -1,7 +1,10 @@
 <script lang="ts" module>
 	import type { Snippet } from "svelte";
 	import type { FormEventHandler, HTMLLabelAttributes } from "svelte/elements";
-	import type { ValidateOptions, ValidationResult } from "../../actions/validate.svelte.js";
+	import type {
+		ValidateOptions,
+		ValidationResult,
+	} from "../../actions/validate.svelte.js";
 
 	export interface Props extends Omit<HTMLLabelAttributes, "children" | "onchange"> {
 		button?: HTMLButtonElement;
@@ -136,7 +139,7 @@
 
 		if (typeof onclick === "function") onclick(e);
 	}}
-	{...(rest as Record<string, unknown>)}
+	{...rest as Record<string, unknown>}
 >
 	<span
 		class={twMerge(

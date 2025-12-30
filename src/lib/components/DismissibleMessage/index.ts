@@ -1,1 +1,4 @@
-export { default as DismissibleMessage, type Props as DismissibleMessageProps } from "./DismissibleMessage.svelte";
+export {
+	default as DismissibleMessage,
+	type Props as DismissibleMessageProps,
+} from "./DismissibleMessage.svelte";

@@ -15,8 +15,8 @@
  * isPlainObject(new Date());   // false
  * ```
  */
-export function isPlainObject(v: any): boolean {
-	return (
-		v !== null && typeof v === "object" && [undefined, Object].includes(v.constructor)
-	);
+export function isPlainObject(v: unknown): boolean {
+	if (v === null || typeof v !== "object") return false;
+	const ctor = (v as { constructor?: unknown }).constructor;
+	return ctor === undefined || ctor === Object;
 }

@@ -1,7 +1,4 @@
-import { createClog } from "@marianmeres/clog";
 import { innerWidth } from "svelte/reactivity/window";
-
-const clog = createClog("breakpoint").debug;
 
 // https://tailwindcss.com/docs/responsive-design
 const _breakpoints = <[string, number][]>[

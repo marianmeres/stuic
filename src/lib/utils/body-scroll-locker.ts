@@ -1,4 +1,3 @@
-import { createClog } from "@marianmeres/clog";
 import { isBrowser } from "./is-browser.js";
 
 interface BodyStyles {
@@ -8,7 +7,7 @@ interface BodyStyles {
 	overflow: string | null;
 }
 
-const clog = createClog("BodyScroll").debug;
+// const clog = createClog("BodyScroll").debug;
 const document = globalThis.document ?? {};
 
 /**
@@ -104,7 +103,9 @@ export class BodyScroll {
 		let original: BodyStyles = { position: null, top: null, width: null, overflow: null };
 		try {
 			original = JSON.parse(originalJsonString);
-		} catch (e) {}
+		} catch {
+			// ignore parse errors, use defaults
+		}
 
 		(["position", "top", "width", "overflow"] as (keyof BodyStyles)[]).forEach((k) => {
 			if (original[k] !== null) {

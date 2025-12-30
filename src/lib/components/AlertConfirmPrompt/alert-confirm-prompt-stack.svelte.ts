@@ -1,7 +1,7 @@
-import { createClog } from "@marianmeres/clog";
+import type { Component } from "svelte";
 import type { THC } from "../Thc/Thc.svelte";
 
-const clog = createClog("alert-confirm-prompt-stack").debug;
+// const clog = createClog("alert-confirm-prompt-stack").debug;
 
 /**
  * Types of alert/confirm/prompt dialogs.
@@ -18,17 +18,20 @@ export enum AlertConfirmPromptType {
 export type AlertConfirmPromptVariant = "info" | "success" | "warn" | "error";
 
 /** Callback type for OK button click. */
-export type FnOnOK = (value: any) => any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type FnOnOK = (value: any) => void;
 /** Callback type for Cancel button click. */
-export type FnOnCancel = (value: false) => any;
+export type FnOnCancel = (value: false) => void;
 /** Callback type for Escape key press. */
 export type FnOnEscape = () => void;
 /** Callback type for custom button click. */
-export type FnOnCustom = (value: any) => any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type FnOnCustom = (value: any) => void;
 
 /**
  * Configuration object for an alert/confirm/prompt dialog.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface AlertConfirmPromptObj extends Record<string, any> {
 	//keyof AlertConfirmPromptType;
 	type:
@@ -39,6 +42,7 @@ export interface AlertConfirmPromptObj extends Record<string, any> {
 	title: THC;
 	content: THC;
 	//
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	value: any;
 	//
 	labelOk: THC;
@@ -52,6 +56,7 @@ export interface AlertConfirmPromptObj extends Record<string, any> {
 	labelCustom?: THC;
 	onCustom?: FnOnCustom;
 	//
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	promptFieldProps?: any;
 	// visuals
 	variant: AlertConfirmPromptVariant;
@@ -61,12 +66,12 @@ export interface AlertConfirmPromptObj extends Record<string, any> {
 	forceAsHtml?: boolean;
 
 	//
-	CmpButtonOk?: any;
-	CmpButtonCancel?: any;
-	CmpButtonCustom?: any;
+	CmpButtonOk?: Component;
+	CmpButtonCancel?: Component;
+	CmpButtonCustom?: Component;
 }
 
-const isFn = (v: any) => typeof v === "function";
+const isFn = (v: unknown) => typeof v === "function";
 const ucf = (s: string) => `${s}`[0].toUpperCase() + `${s}`.slice(1);
 
 /**

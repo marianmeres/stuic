@@ -329,7 +329,7 @@
 
 	$effect(() => {
 		if (modal.visibility().visible && touch) {
-			_selectedColl.clear().addMany(maybeJsonParse(value));
+			_selectedColl.clear().addMany(maybeJsonParse(value) as Item[]);
 			// IMPORTANT: focus first selected so it scrolls into view on open
 			if (_selectedColl.size) {
 				waitForNextRepaint().then(() => {

@@ -51,9 +51,9 @@ export function onSubmitValidityCheck(node: HTMLFormElement) {
 		// this will disable all other onsubmit listeners...
 		e.stopImmediatePropagation();
 
-		let invalid = [];
+		const invalid = [];
 		for (let i = 0; i < node.elements?.length; i++) {
-			let el = node.elements[i] as any;
+			const el = node.elements[i] as HTMLInputElement;
 
 			if (typeof el.checkValidity === "function") {
 				// hm... radios are tricky, as triggering change automatically checks the last

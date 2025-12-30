@@ -97,7 +97,7 @@ export const EXTS = {
 
 const MAP = Object.entries(EXTS).reduce(
 	(m, [label, exts]) => {
-		// @ts-ignore
+		// @ts-expect-error - label is a valid key
 		exts.forEach((ext) => (m[ext] = label));
 		return m;
 	},
