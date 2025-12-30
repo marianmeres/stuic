@@ -547,7 +547,7 @@
 
 <input type="file" bind:this={inputEl} multiple style="display: none" {accept} />
 <!-- hack to be able to validate the conventional way -->
-<input type="hidden" {name} use:validateAction={() => wrappedValidate} />
+<input type="hidden" {name} value={value} use:validateAction={() => wrappedValidate} />
 
 <Modal
 	bind:this={modal}
