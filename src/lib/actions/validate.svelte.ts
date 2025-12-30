@@ -1,23 +1,51 @@
 import { tick } from "svelte";
 import { waitForNextRepaint, waitForTwoRepaints } from "../utils/paint.js";
 
+/**
+ * A mock-friendly interface matching the browser's ValidityState.
+ *
+ * Each property corresponds to a constraint validation failure reason.
+ * The `valid` property is true when no error flags are set.
+ */
 export interface ValidityStateLike {
+	/** Input is required but empty */
 	valueMissing: boolean;
+	/** Value doesn't match the input type (email, url, etc.) */
 	typeMismatch: boolean;
+	/** Value doesn't match the pattern attribute regex */
 	patternMismatch: boolean;
+	/** Value exceeds maxlength */
 	tooLong: boolean;
+	/** Value is shorter than minlength */
 	tooShort: boolean;
+	/** Numeric value is below min */
 	rangeUnderflow: boolean;
+	/** Numeric value exceeds max */
 	rangeOverflow: boolean;
+	/** Numeric value doesn't match step */
 	stepMismatch: boolean;
+	/** Browser cannot parse the input */
 	badInput: boolean;
+	/** Custom validation failed (via setCustomValidity) */
 	customError: boolean;
-	//
+	/** True when all validation constraints pass */
 	valid: boolean;
 }
 
 /**
- * Helper for mocking...
+ * Creates a ValidityStateLike object for testing/mocking validation states.
+ *
+ * @param overrides - Error flags to set (all default to false)
+ * @returns A ValidityStateLike object with a computed `valid` property
+ *
+ * @example
+ * ```ts
+ * // Create a valid state
+ * createValidityStateLike(); // { ..., valid: true }
+ *
+ * // Create state with valueMissing error
+ * createValidityStateLike({ valueMissing: true }); // { ..., valid: false }
+ * ```
  */
 export function createValidityStateLike(
 	overrides: Partial<Omit<ValidityStateLike, "valid">> = {}
@@ -39,13 +67,22 @@ export function createValidityStateLike(
 	return {
 		...state,
 		get valid(): boolean {
-			return Object.values(state).some((v) => !!v);
+			return !Object.values(state).some((v) => !!v);
 		},
 	};
 }
 
 /**
- * Helper for mocking... empty message means valid, non-empty means invalid
+ * Creates a ValidationResult object for testing/mocking.
+ *
+ * @param message - Error message (empty string means valid)
+ * @returns A ValidationResult object
+ *
+ * @example
+ * ```ts
+ * createValidationResult("");           // { message: "", valid: true }
+ * createValidationResult("Required");   // { message: "Required", valid: false }
+ * ```
  */
 export function createValidationResult(message: string): ValidationResult {
 	return { message, valid: !message };
@@ -53,10 +90,15 @@ export function createValidationResult(message: string): ValidationResult {
 
 /**
  * Result object returned after validation.
+ *
+ * Contains the validation state, failure reasons, and error message.
  */
 export interface ValidationResult {
+	/** The full ValidityState object from the element */
 	validity?: ValidityState | ValidityStateLike;
+	/** Array of validation constraint names that failed */
 	reasons?: (keyof ValidityStateFlags)[];
+	/** Whether the input is valid */
 	valid: boolean;
 	message: string;
 }

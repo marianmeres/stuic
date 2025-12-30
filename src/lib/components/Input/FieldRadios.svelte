@@ -120,7 +120,7 @@
 					classValidationBox
 				)}
 			>
-				{@html validation.message}
+				{validation.message}
 			</div>
 		{/if}
 	</div>

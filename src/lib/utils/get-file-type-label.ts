@@ -69,6 +69,18 @@ const EXT_CODE = [
 	"xml",
 ];
 
+/**
+ * Mapping of file type categories to their associated file extensions.
+ *
+ * Categories include: archive, audio, binary, code, doc, image, pdf,
+ * presentation, richtext, spreadsheet, text.
+ *
+ * @example
+ * ```ts
+ * EXTS.image; // ["jpg", "jpeg", "png", "gif", ...]
+ * EXTS.code;  // ["js", "ts", "py", "java", ...]
+ * ```
+ */
 export const EXTS = {
 	archive: EXT_ARCHIVE,
 	audio: EXT_AUDIO,
@@ -92,6 +104,20 @@ const MAP = Object.entries(EXTS).reduce(
 	{} as Record<string, keyof typeof EXTS>
 );
 
+/**
+ * Returns the file type category for a given file extension.
+ *
+ * @param ext - The file extension (with or without leading dot)
+ * @returns The category name (e.g., "image", "code", "doc") or "unknown"
+ *
+ * @example
+ * ```ts
+ * getFileTypeLabel("jpg");   // "image"
+ * getFileTypeLabel(".ts");   // "code"
+ * getFileTypeLabel("PDF");   // "pdf"
+ * getFileTypeLabel("xyz");   // "unknown"
+ * ```
+ */
 export function getFileTypeLabel(ext: string): keyof typeof EXTS | "unknown" {
 	ext = `${ext}`.toLowerCase().trim().replace(/^\./, "");
 	return MAP[ext] || "unknown";

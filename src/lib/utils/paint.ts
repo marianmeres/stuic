@@ -19,13 +19,20 @@ export function waitForNextRepaint() {
 }
 
 /**
- * For more complex timing needs, you might sometimes need to wait for two animation frames
- * to ensure changes have been painted, especially if you're making DOM changes that affect
- * layout...
+ * Waits for two browser repaint cycles to ensure DOM changes are fully painted.
  *
- * 1. The first one waits for the next frame where the browser processes the DOM update
- * 2. The second one waits for the frame after that, where the browser has had time to apply
- *    styles, calculate layout, and paint
+ * For complex timing needs where layout changes must be complete before continuing.
+ * The first frame processes DOM updates, the second ensures styles and layout are applied.
+ *
+ * @returns A Promise that resolves after two animation frames
+ *
+ * @example
+ * ```ts
+ * element.style.display = 'block';
+ * await waitForTwoRepaints();
+ * // Element is now fully rendered with computed styles
+ * element.classList.add('fade-in');
+ * ```
  */
 export async function waitForTwoRepaints() {
 	await waitForNextRepaint();

@@ -1,27 +1,61 @@
 <script lang="ts" module>
 	import type { Snippet, Component } from "svelte";
 
-	// THC = Text or Html or Component
-
+	/**
+	 * Configuration for rendering a Svelte component.
+	 */
 	interface WithComponent {
 		component: Component<any>;
 		props?: Record<string, any>;
 	}
 
+	/**
+	 * Configuration for rendering plain text.
+	 */
 	interface WithText {
 		text: string;
 	}
 
+	/**
+	 * Configuration for rendering raw HTML.
+	 */
 	interface WithHtml {
 		html: string;
 	}
 
+	/**
+	 * Configuration for rendering a Svelte snippet.
+	 */
 	interface WithSnippet {
 		snippet: Snippet;
 	}
 
 	type AsSnippet = Snippet;
 
+	/**
+	 * Flexible content type that accepts Text, Html, or Component (THC).
+	 *
+	 * Used throughout stuic components to allow flexible content rendering.
+	 * Accepts multiple formats:
+	 * - Plain string (rendered as text or HTML based on component settings)
+	 * - `{ text: string }` - explicit plain text
+	 * - `{ html: string }` - explicit HTML (rendered with {@html})
+	 * - `{ component: Component, props?: object }` - Svelte component
+	 * - `{ snippet: Snippet }` - Svelte snippet
+	 * - Svelte snippet function directly
+	 *
+	 * @example
+	 * ```ts
+	 * // Plain string
+	 * const label: THC = "Click me";
+	 *
+	 * // HTML content
+	 * const label: THC = { html: "<strong>Bold</strong> text" };
+	 *
+	 * // Component
+	 * const label: THC = { component: MyIcon, props: { size: 24 } };
+	 * ```
+	 */
 	export type THC =
 		| string
 		| WithText
@@ -38,6 +72,20 @@
 
 	const _is = (m: THC | undefined | null): m is string => typeof m === "string" && !!m;
 
+	/**
+	 * Checks if a THC value has renderable content.
+	 *
+	 * @param m - The THC value to check
+	 * @returns `true` if the value contains non-empty text, html, or a component
+	 *
+	 * @example
+	 * ```ts
+	 * isTHCNotEmpty("Hello");           // true
+	 * isTHCNotEmpty({ text: "Hi" });    // true
+	 * isTHCNotEmpty("");                // false
+	 * isTHCNotEmpty(null);              // false
+	 * ```
+	 */
 	export function isTHCNotEmpty(m: THC | Snippet<any> | undefined | null): boolean {
 		if (!m) return false;
 		return (
@@ -49,7 +97,21 @@
 	}
 
 	/**
-	 * Will try to extract textual (or html) content from THC
+	 * Extracts the string content from a THC value.
+	 *
+	 * Returns the text or html string from the THC, or empty string if not available.
+	 * Does not extract content from component or snippet types.
+	 *
+	 * @param m - The THC value to extract content from
+	 * @returns The extracted string content, or empty string
+	 *
+	 * @example
+	 * ```ts
+	 * getTHCStringContent("Hello");           // "Hello"
+	 * getTHCStringContent({ text: "Hi" });    // "Hi"
+	 * getTHCStringContent({ html: "<b>X</b>" }); // "<b>X</b>"
+	 * getTHCStringContent(null);              // ""
+	 * ```
 	 */
 	export function getTHCStringContent(m: THC | undefined | null): string {
 		if (!m) return "";

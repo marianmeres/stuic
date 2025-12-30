@@ -1,8 +1,23 @@
 /**
- * a.k.a. "djb2"
- * It ensures a consistent, positive numerical representation.
- * It preserves all 32 bits of information, maintaining the full collision space.
- * The resulting values are always within the range 0 to 4,294,967,295 (2^32 - 1)
+ * Computes a hash of a string using the djb2 algorithm.
+ *
+ * Produces a consistent, positive 32-bit hash value represented as a hexadecimal string.
+ * The resulting values are always within the range 0 to 4,294,967,295 (2^32 - 1).
+ *
+ * @param str - The string to hash
+ * @returns Hexadecimal string representation of the hash
+ *
+ * @example
+ * ```ts
+ * strHash("hello");  // "4cf8b96e"
+ * strHash("");       // "0"
+ * strHash("a");      // "61"
+ * ```
+ *
+ * @remarks
+ * The djb2 algorithm uses `hash * 31 + char` (implemented as `(hash << 5) - hash + char`)
+ * which provides good distribution and avalanche properties. The 31 multiplier is a prime
+ * number that helps minimize collisions.
  */
 export function strHash(str: string) {
 	/**

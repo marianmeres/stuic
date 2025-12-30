@@ -1,5 +1,22 @@
 /**
- * Returns an oscillating value (sine wave) between a min and max.
+ * Returns an oscillating value using a sine wave between min and max.
+ *
+ * Useful for animations, pulsing effects, or any cyclic interpolation.
+ *
+ * @param time - The time value (typically from requestAnimationFrame or similar)
+ * @param min - Minimum value of the oscillation range (default: 0)
+ * @param max - Maximum value of the oscillation range (default: 1)
+ * @param speed - Speed multiplier for the oscillation (default: 1)
+ * @returns A value smoothly oscillating between min and max
+ *
+ * @example
+ * ```ts
+ * // Oscillate opacity between 0.5 and 1.0
+ * const opacity = oscillate(timestamp / 1000, 0.5, 1.0);
+ *
+ * // Faster oscillation
+ * const value = oscillate(time, 0, 100, 2);
+ * ```
  */
 export function oscillate(time: number, min: number = 0, max: number = 1, speed = 1) {
 	// Calculate the midpoint (the center of the oscillation)

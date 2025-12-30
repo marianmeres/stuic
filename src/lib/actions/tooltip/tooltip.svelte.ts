@@ -5,6 +5,23 @@ import "./index.css";
 const TIMEOUT = 200;
 const TRANSITION = 200;
 
+/**
+ * Checks if the browser supports CSS Anchor Positioning for tooltips.
+ *
+ * Tests for support of `anchor-name`, `position-area`, `position-try`,
+ * and `position-try-fallbacks` CSS properties.
+ *
+ * @returns `true` if CSS Anchor Positioning is fully supported
+ *
+ * @example
+ * ```ts
+ * if (isTooltipSupported()) {
+ *   // Use native anchor positioning
+ * } else {
+ *   // Fall back to JS-based positioning
+ * }
+ * ```
+ */
 export function isTooltipSupported() {
 	return (
 		CSS.supports("anchor-name", "--anchor") &&
@@ -34,7 +51,7 @@ const POSITION_MAP: Record<string, string> = {
 };
 
 /**
- *
+ * Valid positions for tooltip placement relative to the anchor element.
  */
 export type TooltipPosition =
 	| "top"
@@ -46,6 +63,42 @@ export type TooltipPosition =
 	| "left"
 	| "right";
 
+/**
+ * A Svelte action that displays a tooltip anchored to an element using CSS Anchor Positioning.
+ *
+ * The tooltip appears on hover/focus after a short delay and supports multiple positions
+ * with automatic fallback. Requires browser support for CSS Anchor Positioning
+ * (check with `isTooltipSupported()`).
+ *
+ * @param anchorEl - The element to attach the tooltip to
+ * @param fn - Function returning tooltip options (reactive)
+ *
+ * @example
+ * ```svelte
+ * <button
+ *   aria-label="Save document"
+ *   use:tooltip={() => ({
+ *     content: "Save your changes",
+ *     position: "top"
+ *   })}
+ * >
+ *   Save
+ * </button>
+ * ```
+ *
+ * @example
+ * ```svelte
+ * <!-- Uses aria-label as content when no content provided -->
+ * <button aria-label="Delete" use:tooltip>
+ *   🗑️
+ * </button>
+ * ```
+ *
+ * @remarks
+ * - Falls back to `aria-label` attribute if no content is provided
+ * - Tooltip persists when hovering over it (useful for interactive content)
+ * - Automatically cleans up DOM elements on unmount
+ */
 export function tooltip(
 	anchorEl: HTMLElement,
 	fn?: () => {

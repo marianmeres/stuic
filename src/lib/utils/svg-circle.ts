@@ -1,12 +1,24 @@
+/**
+ * Configuration options for creating an SVG circle element.
+ */
 export interface SvgCircleOptions {
+	/** Radius of the circle (currently unused, calculated from viewBox) */
 	radius: number;
+	/** Width of the stroke in viewBox units (default: 10) */
 	strokeWidth: number;
-	completeness: number; // 0 to 1, --> 1 is a full circle
-	class: string; // css classes
-	bgStrokeColor: string; // css classes
+	/** Completion percentage from 0 to 1, where 1 is a full circle */
+	completeness: number;
+	/** CSS classes to apply to the SVG element */
+	class: string;
+	/** CSS color for an optional background circle stroke */
+	bgStrokeColor: string;
+	/** Whether to use rounded line caps (default: true) */
 	roundedEdges: boolean;
+	/** Rotation angle in degrees (default: 0) */
 	rotate: number;
+	/** Maximum stroke width as a ratio of radius (0 = no limit) */
 	strokeWidthRatio: number;
+	/** Inline CSS styles to apply to the circle element */
 	circleStyle: string;
 }
 
@@ -29,7 +41,39 @@ function _normalize_cls(v: string) {
 	];
 }
 
-/** Will construct and return svg circle DOM element based on input options */
+/**
+ * Creates an SVG circle element suitable for progress indicators or decorative rings.
+ *
+ * The circle uses a 100x100 viewBox and scales to fit its container.
+ * Supports partial completion (for progress indicators), rotation, and optional
+ * background circle.
+ *
+ * @param options - Configuration options for the circle
+ * @returns Object containing the SVG element and methods to update it
+ *
+ * @example
+ * ```ts
+ * // Create a 75% complete progress ring
+ * const { svg, setCompleteness } = svgCircle({
+ *   completeness: 0.75,
+ *   strokeWidth: 8,
+ *   bgStrokeColor: "#e5e5e5"
+ * });
+ * document.body.appendChild(svg);
+ *
+ * // Update progress later
+ * setCompleteness(0.9);
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Create a spinning indicator
+ * const { svg, setRotate } = svgCircle({
+ *   completeness: 0.25,
+ *   rotate: -90
+ * });
+ * ```
+ */
 export function svgCircle(options: Partial<SvgCircleOptions> = {}) {
 	let {
 		strokeWidth = 10,
