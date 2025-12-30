@@ -1,5 +1,12 @@
 <script lang="ts" module>
-	type KnownMeta = "cmd" | "opt" | "shift" | "ctrl" | "alt" | "win" | "meta";
+	export type KnownMeta = "cmd" | "opt" | "shift" | "ctrl" | "alt" | "win" | "meta";
+
+	export interface Props {
+		class?: string;
+		metas?: KnownMeta[];
+		keys: string;
+		forcedOs?: "mac" | "win" | "linux";
+	}
 
 	// just the base ones...
 	// Windows Ctrl         → macOS Command (⌘)
@@ -33,17 +40,6 @@
 	import { isMac } from "../../utils/is-mac.js";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import { ucfirst } from "../../utils/ucfirst.js";
-
-	/**
-	 * This needs more thoughts... now just quick-n-dirty...
-	 */
-
-	interface Props {
-		class?: string;
-		metas?: KnownMeta[];
-		keys: string;
-		forcedOs?: "mac" | "win" | "linux";
-	}
 
 	let { class: classProp, metas, keys, forcedOs }: Props = $props();
 

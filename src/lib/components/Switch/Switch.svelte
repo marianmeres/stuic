@@ -1,35 +1,41 @@
-<script lang="ts">
-	import { tick, type Snippet } from "svelte";
-	import type { FormEventHandler, HTMLButtonAttributes } from "svelte/elements";
-	import { twMerge } from "../../utils/tw-merge.js";
-	import {
-		validate as validateAction,
-		type ValidateOptions,
-		type ValidationResult,
-	} from "../../actions/validate.svelte.js";
+<script lang="ts" module>
+	import type { Snippet } from "svelte";
+	import type { FormEventHandler, HTMLLabelAttributes } from "svelte/elements";
+	import type { ValidateOptions, ValidationResult } from "../../actions/validate.svelte.js";
 
-	import "./index.css";
-
-	interface Props extends HTMLButtonAttributes {
+	export interface Props extends Omit<HTMLLabelAttributes, "children" | "onchange"> {
 		button?: HTMLButtonElement;
 		checked?: boolean;
 		size?: "xs" | "sm" | "md" | "lg" | "xl" | string;
+		/** Form field name for the hidden checkbox */
 		name?: string;
 		class?: string;
+		/** Classes for the toggle dot/knob element */
 		dotClass?: string;
+		/** Screen reader label (visually hidden) */
 		label?: string;
 		required?: boolean;
 		disabled?: boolean;
 		tabindex?: number;
+		/** Snippet to render inside dot when checked */
 		on?: Snippet;
+		/** Snippet to render inside dot when unchecked */
 		off?: Snippet;
 		onclick?: (event: MouseEvent) => void;
 		onchange?: FormEventHandler<HTMLButtonElement> | null | undefined;
+		/** Async validation before toggle - return false to prevent change */
 		preHook?: (current: boolean) => Promise<false | any>;
-		//
 		validate?: boolean | Omit<ValidateOptions, "setValidationResult">;
 		setValidationResult?: (res: ValidationResult) => void;
 	}
+</script>
+
+<script lang="ts">
+	import { tick } from "svelte";
+	import { twMerge } from "../../utils/tw-merge.js";
+	import { validate as validateAction } from "../../actions/validate.svelte.js";
+
+	import "./index.css";
 
 	let {
 		button = $bindable(),
@@ -120,7 +126,7 @@
 		e.preventDefault();
 		if (disabled) return false;
 
-		if (typeof preHook === "function" && (await preHook(checked)) === false) {
+		if (typeof preHook === "function" && (await preHook(checked ?? false)) === false) {
 			return false;
 		}
 
@@ -130,7 +136,7 @@
 
 		if (typeof onclick === "function") onclick(e);
 	}}
-	{...rest}
+	{...(rest as Record<string, unknown>)}
 >
 	<span
 		class={twMerge(

@@ -1,14 +1,7 @@
-<script lang="ts">
+<script lang="ts" module>
 	import type { Snippet } from "svelte";
-	import { innerHeight, innerWidth } from "svelte/reactivity/window";
-	import { DevicePointer } from "../../utils/device-pointer.svelte.js";
-	import { waitForNextRepaint, waitForTransitionEnd } from "../../utils/paint.js";
-	import { prefersReducedMotion } from "../../utils/prefers-reduced-motion.svelte.js";
-	import { twMerge } from "../../utils/tw-merge.js";
 
-	const dp = new DevicePointer();
-
-	interface Props {
+	export interface Props {
 		enabled?: boolean;
 		class?: string;
 		shadowOpacity?: number;
@@ -27,6 +20,16 @@
 			]
 		>;
 	}
+</script>
+
+<script lang="ts">
+	import { innerHeight, innerWidth } from "svelte/reactivity/window";
+	import { DevicePointer } from "../../utils/device-pointer.svelte.js";
+	import { waitForNextRepaint, waitForTransitionEnd } from "../../utils/paint.js";
+	import { prefersReducedMotion } from "../../utils/prefers-reduced-motion.svelte.js";
+	import { twMerge } from "../../utils/tw-merge.js";
+
+	const dp = new DevicePointer();
 
 	let {
 		enabled = dp.isFine,

@@ -15,8 +15,7 @@ export function debounce<T extends (...args: any[]) => any>(
 	wait: number
 ): (...args: Parameters<T>) => void {
 	let timeout: ReturnType<typeof setTimeout> | null = null;
-	return function (...args: Parameters<T>): void {
-		// @ts-ignore
+	return function (this: unknown, ...args: Parameters<T>): void {
 		const context = this;
 		if (timeout !== null) clearTimeout(timeout);
 		timeout = setTimeout(() => fn.apply(context, args), wait);

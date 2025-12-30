@@ -1,17 +1,18 @@
-<script lang="ts">
+<script lang="ts" module>
 	import type { Snippet } from "svelte";
-	import "./index.css";
-	import { twMerge } from "tailwind-merge";
 
-	let {
-		class: classProp,
-		children,
-		theme,
-	}: {
+	export interface Props {
 		class?: string;
 		children?: Snippet;
 		theme?: string;
-	} = $props();
+	}
+</script>
+
+<script lang="ts">
+	import "./index.css";
+	import { twMerge } from "tailwind-merge";
+
+	let { class: classProp, children, theme }: Props = $props();
 
 	const _default = `
 		stuic-twcheck bg-twcheck-bg 

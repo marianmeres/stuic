@@ -1,4 +1,9 @@
-<!-- 
+<script lang="ts" module>
+	/** ColorSchemeSystemAware has no props - it's a pure hydration component */
+	export interface Props {}
+</script>
+
+<!--
 	If you do not wish to take the system preference into account use LocalColorScheme sibling
 -->
 <svelte:head>

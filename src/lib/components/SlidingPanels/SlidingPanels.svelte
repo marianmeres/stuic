@@ -7,7 +7,7 @@
 
 	const clog = createClog("SlidingContainer");
 
-	type PanelId = "A" | "B";
+	export type PanelId = "A" | "B";
 
 	// internal state values DRY consts
 	const DIRECTION_RTL = "rtl";
@@ -18,6 +18,17 @@
 	const INACTIVE_LEFT = "inactive-left";
 	const INACTIVE_RIGHT = "inactive-right";
 	const DESTROYED = "destroyed";
+
+	type ShowFn = (targetPanel: PanelId) => Promise<boolean>;
+
+	export interface Props {
+		class?: string;
+		destroyInactive?: boolean;
+		duration?: number;
+		initial?: PanelId;
+		panelA: Snippet<[{ show: ShowFn; active: PanelId; inTransition: boolean }]>;
+		panelB?: null | Snippet<[{ show: ShowFn; active: PanelId; inTransition: boolean }]>;
+	}
 </script>
 
 <script lang="ts">
@@ -28,16 +39,7 @@
 		initial = "A",
 		panelA,
 		panelB = null,
-	}: {
-		class?: string;
-		destroyInactive?: boolean;
-		duration?: number;
-		initial?: PanelId;
-		panelA: Snippet<[{ show: typeof show; active: PanelId; inTransition: boolean }]>;
-		panelB?: null | Snippet<
-			[{ show: typeof show; active: PanelId; inTransition: boolean }]
-		>;
-	} = $props();
+	}: Props = $props();
 
 	//
 	let active: PanelId = $state(initial);

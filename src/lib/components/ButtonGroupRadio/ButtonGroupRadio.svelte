@@ -1,37 +1,40 @@
-<script lang="ts">
-	import { ItemCollection } from "@marianmeres/item-collection";
-	import { twMerge } from "../../utils/tw-merge.js";
-	import Button from "../Button/Button.svelte";
+<script lang="ts" module>
+	import type { ItemCollection as ItemCollectionBase } from "@marianmeres/item-collection";
 	import type { FieldRadiosOption } from "../Input/types.js";
-	//
-	import "./index.css";
 
-	interface ItemCollectionType {
+	interface ItemCollectionItem {
 		id: string;
 		option: FieldRadiosOption;
 	}
-	interface ItemColl extends ItemCollection<ItemCollectionType> {}
+	export interface ItemColl extends ItemCollectionBase<ItemCollectionItem> {}
 
-	interface Props {
+	export interface Props {
 		value?: string;
-		tabindex?: number; // tooShort
+		tabindex?: number;
 		size?: "sm" | "md" | "lg" | string;
-		//
 		options: (string | FieldRadiosOption)[];
 		disabled?: boolean;
 		activeIndex?: number | undefined;
-		//
 		class?: string;
 		classButton?: string;
 		classButtonActive?: string;
 		style?: string;
-		// for side-effects, or validation... if would return explicit false, will not activate
+		/** Return false to prevent activation */
 		onButtonClick?: (
 			index: number,
 			coll: ItemColl
 		) => Promise<boolean | undefined | void> | boolean | undefined | void;
 		buttonProps?: (index: number, coll: ItemColl) => undefined | Record<string, any>;
 	}
+</script>
+
+<script lang="ts">
+	import { ItemCollection } from "@marianmeres/item-collection";
+	type ItemCollectionItem = { id: string; option: import("../Input/types.js").FieldRadiosOption };
+	import { twMerge } from "../../utils/tw-merge.js";
+	import Button from "../Button/Button.svelte";
+	//
+	import "./index.css";
 
 	let {
 		options,
@@ -62,7 +65,7 @@
 		);
 
 		if (value !== undefined) {
-			const index = out.items.findIndex((item: ItemCollectionType) => {
+			const index = out.items.findIndex((item: ItemCollectionItem) => {
 				return value === (item?.option.value ?? item.option.label);
 			});
 			if (index > -1) out.setActiveIndex(index);

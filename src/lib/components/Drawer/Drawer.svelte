@@ -1,16 +1,8 @@
-<script lang="ts">
-	import { fly } from "svelte/transition";
-	import { type FocusTrapOptions } from "../../actions/focus-trap.js";
-	import { prefersReducedMotion } from "../../utils/prefers-reduced-motion.svelte.js";
-	import { twMerge } from "../../utils/tw-merge.js";
-	import Backdrop from "../Backdrop/Backdrop.svelte";
+<script lang="ts" module>
 	import type { Snippet } from "svelte";
-	// import { onClickOutside } from "runed";
+	import type { FocusTrapOptions } from "../../actions/focus-trap.js";
 
-	const prefersReduced = prefersReducedMotion();
-	const DEFAULT_POS = "left";
-
-	interface Props {
+	export interface Props {
 		visible?: boolean;
 		position?: "left" | "top" | "right" | "bottom";
 		children: Snippet;
@@ -19,19 +11,26 @@
 		labelledby?: string;
 		describedby?: string;
 		transitionDuration?: number;
-		// transitionEnabled?: boolean;
 		elBackdrop?: HTMLDivElement;
 		el?: HTMLDivElement;
 		focusTrap?: boolean | FocusTrapOptions;
-		// will be used in `fly` config. Ideally should match with the provided tw classes
-		// to make the animation optimal. May include ccs units (will be considered as pixels otherwise).
+		/** Used in `fly` config. Should match tw classes for optimal animation. May include css units. */
 		animOffset?: string | number;
 		onEscape?: () => void;
-		//
 		onOutside?: () => void;
-		// onOutsideEnabled?: boolean;
 		noBackdropScrollLock?: boolean;
 	}
+</script>
+
+<script lang="ts">
+	import { fly } from "svelte/transition";
+	import { prefersReducedMotion } from "../../utils/prefers-reduced-motion.svelte.js";
+	import { twMerge } from "../../utils/tw-merge.js";
+	import Backdrop from "../Backdrop/Backdrop.svelte";
+	// import { onClickOutside } from "runed";
+
+	const prefersReduced = prefersReducedMotion();
+	const DEFAULT_POS = "left";
 
 	let {
 		visible = $bindable(false),

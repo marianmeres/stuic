@@ -1,27 +1,16 @@
-<script lang="ts">
-	import { slide } from "svelte/transition";
-	import type {
-		ValidateOptions,
-		ValidationResult,
-	} from "../../actions/validate.svelte.js";
-	import { getId } from "../../utils/get-id.js";
-	import { twMerge } from "../../utils/tw-merge.js";
-	import FieldRadioInternal from "./_internal/FieldRadioInternal.svelte";
+<script lang="ts" module>
+	import type { ValidateOptions } from "../../actions/validate.svelte.js";
 	import type { FieldRadiosOption } from "./types.js";
 
-	interface Props {
+	export interface Props {
 		name?: string;
 		value?: string;
-		tabindex?: number; // tooShort
+		tabindex?: number;
 		renderSize?: "sm" | "md" | "lg" | string;
-		//
 		options: (string | FieldRadiosOption)[];
-		//
 		required?: boolean;
 		disabled?: boolean;
-		//
 		validate?: boolean | Omit<ValidateOptions, "setValidationResult">;
-		//
 		class?: string;
 		classRadioBox?: string;
 		classInputBox?: string;
@@ -30,9 +19,16 @@
 		classLabel?: string;
 		classDescBox?: string;
 		classValidationBox?: string;
-		//
 		style?: string;
 	}
+</script>
+
+<script lang="ts">
+	import { slide } from "svelte/transition";
+	import type { ValidationResult } from "../../actions/validate.svelte.js";
+	import { getId } from "../../utils/get-id.js";
+	import { twMerge } from "../../utils/tw-merge.js";
+	import FieldRadioInternal from "./_internal/FieldRadioInternal.svelte";
 
 	let {
 		options,

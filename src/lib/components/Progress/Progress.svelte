@@ -1,14 +1,16 @@
-<script lang="ts">
-	import Bar from "./_internal/Bar.svelte";
-	import Circle from "./_internal/Circle.svelte";
-
-	interface Props {
+<script lang="ts" module>
+	export interface Props {
 		type?: "bar" | "circle";
 		progress?: number;
 		class?: string;
 		classBar?: string;
 		styleBar?: string;
 	}
+</script>
+
+<script lang="ts">
+	import Bar from "./_internal/Bar.svelte";
+	import Circle from "./_internal/Circle.svelte";
 
 	let {
 		type = "bar",

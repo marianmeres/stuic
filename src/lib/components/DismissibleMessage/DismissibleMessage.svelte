@@ -1,13 +1,8 @@
-<script lang="ts">
-	import { slide } from "svelte/transition";
+<script lang="ts" module>
 	import type { TW_COLORS } from "../../types.js";
-	import Thc, { isTHCNotEmpty, type THC } from "../Thc/Thc.svelte";
-	import X from "../X/X.svelte";
-	import { twMerge } from "../../utils/tw-merge.js";
+	import type { THC } from "../Thc/Thc.svelte";
 
-	import "./index.css";
-
-	interface Props {
+	export interface Props {
 		class?: string;
 		classContent?: string;
 		classDismiss?: string;
@@ -18,6 +13,15 @@
 		duration?: number;
 		onDismiss?: (() => void) | null | false;
 	}
+</script>
+
+<script lang="ts">
+	import { slide } from "svelte/transition";
+	import Thc, { isTHCNotEmpty } from "../Thc/Thc.svelte";
+	import X from "../X/X.svelte";
+	import { twMerge } from "../../utils/tw-merge.js";
+
+	import "./index.css";
 
 	let {
 		class: classProps,

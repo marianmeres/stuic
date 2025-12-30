@@ -1,46 +1,33 @@
-<script lang="ts">
+<script lang="ts" module>
 	import type { Snippet } from "svelte";
 	import type { HTMLSelectAttributes } from "svelte/elements";
-	import {
-		validate as validateAction,
-		type ValidateOptions,
-		type ValidationResult,
-	} from "../../actions/validate.svelte.js";
-	import { getId } from "../../utils/get-id.js";
-	import { twMerge } from "../../utils/tw-merge.js";
+	import type { ValidateOptions } from "../../actions/validate.svelte.js";
 	import type { THC } from "../Thc/Thc.svelte";
-	import InputWrap from "./_internal/InputWrap.svelte";
 	import type { FieldSelectOption } from "./types.js";
 
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
-	interface Props extends HTMLSelectAttributes {
+	export interface Props extends HTMLSelectAttributes {
 		input?: HTMLSelectElement;
-		value?: string | number; // badInput
+		value?: string | number;
 		label?: SnippetWithId | THC;
 		description?: SnippetWithId | THC;
 		class?: string;
 		id?: string;
-		tabindex?: number; // tooShort
+		tabindex?: number;
 		renderSize?: "sm" | "md" | "lg" | string;
-		//
 		options: (string | FieldSelectOption)[];
-		//
 		required?: boolean;
 		disabled?: boolean;
-		//
 		validate?: boolean | Omit<ValidateOptions, "setValidationResult">;
-		// wrap snippets
 		labelAfter?: SnippetWithId | THC;
 		inputBefore?: SnippetWithId | THC;
 		inputAfter?: SnippetWithId | THC;
 		inputBelow?: SnippetWithId | THC;
 		below?: SnippetWithId | THC;
-		//
 		labelLeft?: boolean;
 		labelLeftWidth?: "normal" | "wide";
 		labelLeftBreakpoint?: number;
-		//
 		classInput?: string;
 		classLabel?: string;
 		classLabelBox?: string;
@@ -50,6 +37,18 @@
 		classBelowBox?: string;
 		style?: string;
 	}
+</script>
+
+<script lang="ts">
+	import {
+		validate as validateAction,
+		type ValidationResult,
+	} from "../../actions/validate.svelte.js";
+	import { getId } from "../../utils/get-id.js";
+	import { twMerge } from "../../utils/tw-merge.js";
+	import InputWrap from "./_internal/InputWrap.svelte";
+	import type { FieldSelectOption as _FieldSelectOption } from "./types.js";
+	type FieldSelectOption = _FieldSelectOption;
 
 	let {
 		input = $bindable(),

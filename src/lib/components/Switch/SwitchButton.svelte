@@ -1,11 +1,8 @@
-<script lang="ts">
-	import { tick, type Snippet } from "svelte";
+<script lang="ts" module>
+	import type { Snippet } from "svelte";
 	import type { FormEventHandler, HTMLButtonAttributes } from "svelte/elements";
-	import { twMerge } from "../../utils/tw-merge.js";
 
-	import "./index.css";
-
-	interface Props extends HTMLButtonAttributes {
+	export interface Props extends Omit<HTMLButtonAttributes, "children"> {
 		button?: HTMLButtonElement;
 		checked?: boolean;
 		size?: "xs" | "sm" | "md" | "lg" | "xl" | string;
@@ -20,6 +17,13 @@
 		onchange?: FormEventHandler<HTMLButtonElement> | null | undefined;
 		preHook?: (current: boolean) => Promise<false | any>;
 	}
+</script>
+
+<script lang="ts">
+	import { tick } from "svelte";
+	import { twMerge } from "../../utils/tw-merge.js";
+
+	import "./index.css";
 
 	let {
 		button = $bindable(),
@@ -90,7 +94,7 @@
 	{tabindex}
 	{disabled}
 	onclick={async (e) => {
-		if (typeof preHook === "function" && (await preHook(checked)) === false) {
+		if (typeof preHook === "function" && (await preHook(checked ?? false)) === false) {
 			return false;
 		}
 		checked = !checked;

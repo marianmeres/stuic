@@ -1,19 +1,8 @@
-<script lang="ts">
-	import {
-		BodyScroll,
-		focusTrap as focusTrapAction,
-		twMerge,
-		waitForNextRepaint,
-		type FocusTrapOptions,
-	} from "$lib/index.js";
-	import { createClog } from "@marianmeres/clog";
-	import { PressedKeys, watch } from "runed";
-	import { onDestroy, onMount, tick, type Snippet } from "svelte";
-	import { fade } from "svelte/transition";
+<script lang="ts" module>
+	import type { Snippet } from "svelte";
+	import type { FocusTrapOptions } from "../../actions/focus-trap.js";
 
-	const clog = createClog("Backdrop").debug;
-
-	interface Props extends Record<string, any> {
+	export interface Props extends Record<string, any> {
 		class?: string;
 		focusTrap?: boolean | FocusTrapOptions;
 		fadeInDuration?: number;
@@ -25,6 +14,21 @@
 		visible?: boolean;
 		noScrollLock?: boolean;
 	}
+</script>
+
+<script lang="ts">
+	import {
+		BodyScroll,
+		focusTrap as focusTrapAction,
+		twMerge,
+		waitForNextRepaint,
+	} from "$lib/index.js";
+	import { createClog } from "@marianmeres/clog";
+	import { PressedKeys, watch } from "runed";
+	import { onDestroy, onMount, tick } from "svelte";
+	import { fade } from "svelte/transition";
+
+	const clog = createClog("Backdrop").debug;
 
 	let {
 		class: classProp,

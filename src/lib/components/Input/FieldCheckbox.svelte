@@ -1,20 +1,12 @@
-<script lang="ts">
+<script lang="ts" module>
 	import type { Snippet } from "svelte";
 	import type { HTMLInputAttributes } from "svelte/elements";
-	import { slide } from "svelte/transition";
-	import {
-		validate as validateAction,
-		type ValidateOptions,
-		type ValidationResult,
-	} from "../../actions/validate.svelte.js";
-	import { getId } from "../../utils/get-id.js";
-	import { twMerge } from "../../utils/tw-merge.js";
-	import { Thc } from "../Thc/index.js";
-	import { isTHCNotEmpty, type THC } from "../Thc/Thc.svelte";
+	import type { ValidateOptions } from "../../actions/validate.svelte.js";
+	import type { THC } from "../Thc/Thc.svelte";
 
-	type SnippetWithId = Snippet<[{ id: string }]>;
+	export type SnippetWithId = Snippet<[{ id: string }]>;
 
-	interface Props extends HTMLInputAttributes {
+	export interface Props extends HTMLInputAttributes {
 		input?: HTMLInputElement;
 		id?: string;
 		checked?: boolean;
@@ -23,9 +15,7 @@
 		disabled?: boolean;
 		renderSize?: "sm" | "md" | "lg" | string;
 		description?: SnippetWithId | THC;
-		//
 		validate?: boolean | Omit<ValidateOptions, "setValidationResult">;
-		//
 		class?: string;
 		classInputBox?: string;
 		classInput?: string;
@@ -35,6 +25,18 @@
 		classValidationBox?: string;
 		style?: string;
 	}
+</script>
+
+<script lang="ts">
+	import { slide } from "svelte/transition";
+	import {
+		validate as validateAction,
+		type ValidationResult,
+	} from "../../actions/validate.svelte.js";
+	import { getId } from "../../utils/get-id.js";
+	import { twMerge } from "../../utils/tw-merge.js";
+	import { Thc, isTHCNotEmpty } from "../Thc/index.js";
+	type THC = import("../Thc/index.js").THC;
 
 	let {
 		input = $bindable(),

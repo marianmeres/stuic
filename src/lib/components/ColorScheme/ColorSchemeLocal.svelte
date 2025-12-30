@@ -1,4 +1,9 @@
-<!-- 
+<script lang="ts" module>
+	/** ColorSchemeLocal has no props - it's a pure hydration component */
+	export interface Props {}
+</script>
+
+<!--
     Similar to PrefersColorScheme, except that it never reads window.matchMedia and only
     relies on the local userland setting
 -->

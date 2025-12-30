@@ -1,21 +1,11 @@
-<script lang="ts">
-	import { twMerge } from "../../utils/tw-merge.js";
-	import ModalDialog from "../ModalDialog/ModalDialog.svelte";
-	import { isTHCNotEmpty } from "../Thc/Thc.svelte";
-	import {
-		AlertConfirmPromptType,
-		type AlertConfirmPromptStack,
-	} from "./alert-confirm-prompt-stack.svelte.js";
-	import Current from "./Current.svelte";
+<script lang="ts" module>
+	import type { AlertConfirmPromptStack } from "./alert-confirm-prompt-stack.svelte.js";
 
-	const { ALERT, CONFIRM, PROMPT } = AlertConfirmPromptType;
-
-	interface Props {
+	export interface Props {
 		acp?: AlertConfirmPromptStack;
 		forceAsHtml?: boolean;
 		class?: string;
 		classModalInnerBox?: string;
-		//
 		classWrap?: string;
 		classIconBox?: string;
 		classContentBox?: string;
@@ -39,6 +29,16 @@
 			Record<"info" | "success" | "warn" | "error" | "spinner", () => string | undefined>
 		>;
 	}
+</script>
+
+<script lang="ts">
+	import { twMerge } from "../../utils/tw-merge.js";
+	import ModalDialog from "../ModalDialog/ModalDialog.svelte";
+	import { isTHCNotEmpty } from "../Thc/Thc.svelte";
+	import { AlertConfirmPromptType } from "./alert-confirm-prompt-stack.svelte.js";
+	import Current from "./Current.svelte";
+
+	const { ALERT, CONFIRM, PROMPT } = AlertConfirmPromptType;
 
 	let {
 		acp,

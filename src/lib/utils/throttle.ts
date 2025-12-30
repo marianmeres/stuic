@@ -25,8 +25,7 @@ export function throttle<T extends (...args: any[]) => any>(
 	let timeout: ReturnType<typeof setTimeout> | null = null;
 	let lastArgs: Parameters<T> | null = null;
 
-	return function (...args: Parameters<T>): void {
-		// @ts-ignore
+	return function (this: unknown, ...args: Parameters<T>): void {
 		const context = this;
 		const now = Date.now();
 

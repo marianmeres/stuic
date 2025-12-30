@@ -1,20 +1,12 @@
-<script lang="ts">
+<script lang="ts" module>
 	import type { Snippet } from "svelte";
 	import type { HTMLInputAttributes } from "svelte/elements";
-	import { highlightDragover } from "../../actions/highlight-dragover.svelte.js";
-	import {
-		validate as validateAction,
-		type ValidateOptions,
-		type ValidationResult,
-	} from "../../actions/validate.svelte.js";
-	import { getId } from "../../utils/get-id.js";
-	import { twMerge } from "../../utils/tw-merge.js";
+	import type { ValidateOptions } from "../../actions/validate.svelte.js";
 	import type { THC } from "../Thc/Thc.svelte";
-	import InputWrap from "./_internal/InputWrap.svelte";
 
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
-	interface Props extends HTMLInputAttributes, Record<string, any> {
+	export interface Props extends HTMLInputAttributes, Record<string, any> {
 		input?: HTMLInputElement;
 		files?: FileList;
 		multiple?: boolean;
@@ -22,24 +14,19 @@
 		description?: SnippetWithId | THC;
 		class?: string;
 		id?: string;
-		tabindex?: number; // tooShort
+		tabindex?: number;
 		renderSize?: "sm" | "md" | "lg" | string;
-		//
 		required?: boolean;
 		disabled?: boolean;
-		//
 		validate?: boolean | Omit<ValidateOptions, "setValidationResult">;
-		// wrap snippets
 		labelAfter?: SnippetWithId | THC;
 		inputBefore?: SnippetWithId | THC;
 		inputAfter?: SnippetWithId | THC;
 		inputBelow?: SnippetWithId | THC;
 		below?: SnippetWithId | THC;
-		//
 		labelLeft?: boolean;
 		labelLeftWidth?: "normal" | "wide";
 		labelLeftBreakpoint?: number;
-		//
 		classInput?: string;
 		classLabel?: string;
 		classLabelBox?: string;
@@ -48,9 +35,19 @@
 		classDescBox?: string;
 		classBelowBox?: string;
 		classFileList?: string;
-		//
 		style?: string;
 	}
+</script>
+
+<script lang="ts">
+	import { highlightDragover } from "../../actions/highlight-dragover.svelte.js";
+	import {
+		validate as validateAction,
+		type ValidationResult,
+	} from "../../actions/validate.svelte.js";
+	import { getId } from "../../utils/get-id.js";
+	import { twMerge } from "../../utils/tw-merge.js";
+	import InputWrap from "./_internal/InputWrap.svelte";
 
 	let {
 		input = $bindable(),

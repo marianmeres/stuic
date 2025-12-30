@@ -127,12 +127,10 @@
 		};
 		return map[getFileTypeLabel(ext ?? "unknown")] ?? iconBsFileEarmark;
 	}
-</script>
 
-<script lang="ts">
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
-	interface Props extends Record<string, any> {
+	export interface Props extends Record<string, any> {
 		value: string;
 		label?: SnippetWithId | THC;
 		type?: string;
@@ -140,22 +138,17 @@
 		class?: string;
 		id?: string;
 		name: string;
-		tabindex?: number; // tooShort
+		tabindex?: number;
 		renderSize?: "sm" | "md" | "lg" | string;
 		useTrim?: boolean;
-		//
 		required?: boolean;
 		disabled?: boolean;
-		//
 		validate?: boolean | Omit<ValidateOptions, "setValidationResult">;
-		// wrap snippets
 		labelAfter?: SnippetWithId | THC;
 		below?: SnippetWithId | THC;
-		//
 		labelLeft?: boolean;
 		labelLeftWidth?: "normal" | "wide";
 		labelLeftBreakpoint?: number;
-		//
 		classInput?: string;
 		classLabel?: string;
 		classLabelBox?: string;
@@ -163,42 +156,27 @@
 		classInputBoxWrap?: string;
 		classDescBox?: string;
 		classBelowBox?: string;
-		//
 		classOption?: string;
 		classOptionActive?: string;
 		classOptgroup?: string;
-		//
 		classModalField?: string;
 		noScrollLock?: boolean;
-		//
 		style?: string;
 		t?: TranslateFn;
-		//
 		parseValue?: (strigifiedModels: string) => FieldAsset[];
 		serializeValue?: (assets: FieldAsset[]) => string;
-		// getOptions: (
-		// 	q: string,
-		// 	current: Item[]
-		// ) => Promise<{ coll?: ItemCollection<Item>; found: Item[] }>;
 		notifications?: NotificationsStack;
-		// -1 no limit
-		// +n max selected limit
 		cardinality?: number;
-		// csv list of mime types
-		accept?: string; // "image/*"
-		// for custom stuff...
-		// onChange?: (value: string) => void;
-		/**
-		 * this does not accept the raw FileList but already preprocessed list of assets.
-		 */
+		accept?: string;
 		processAssets?: (
 			assets: FieldAsset[],
 			onProgress?: (blobUrl: string, progress: number) => any
 		) => Promise<FieldAssetWithBlobUrl[]>;
-		// should we display onProgress?
 		withOnProgress?: boolean;
 	}
+</script>
 
+<script lang="ts">
 	let {
 		value = $bindable(), //
 		label = "",
@@ -603,13 +581,13 @@
 
 		{#if assets?.length > 1}
 			<div class={["absolute inset-0 flex items-center justify-between"]}>
-				<button class="p-4 focus:outline-0" onclick={preview_previous}>
+				<button class="p-4 focus:outline-0" onclick={preview_previous} type="button">
 					<span class="bg-white rounded-full p-3 block">
 						{@html iconPrevious()}
 					</span>
 				</button>
 
-				<button class="p-4 focus:outline-0" onclick={preview_next}>
+				<button class="p-4 focus:outline-0" onclick={preview_next} type="button">
 					<span class="bg-white rounded-full p-3 block">
 						{@html iconNext()}
 					</span>

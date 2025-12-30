@@ -1,8 +1,15 @@
+<script lang="ts" module>
+	export interface Props {
+		class?: string;
+		enabled?: boolean;
+	}
+</script>
+
 <script lang="ts">
 	import { createTickerRAF } from "@marianmeres/ticker";
 	import { onMount } from "svelte";
 
-	let { class: _class, enabled = true }: { class?: string; enabled?: boolean } = $props();
+	let { class: _class, enabled = true }: Props = $props();
 
 	const speed = 250;
 	let visible = $state([false, false, false]);

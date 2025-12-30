@@ -39,12 +39,8 @@
 
 		return isPlainObject(values) ? replaceMap(out, values as any) : out;
 	}
-</script>
 
-<script lang="ts">
-	const clog = createClog("CommandMenu");
-
-	interface Props {
+	export interface Props {
 		input?: HTMLInputElement;
 		value: any;
 		getOptions: (s: string, current: Item[]) => Promise<Item[]>;
@@ -62,6 +58,10 @@
 		classOptionActive?: string;
 		showAllOnEmptyQ?: boolean;
 	}
+</script>
+
+<script lang="ts">
+	const clog = createClog("CommandMenu");
 
 	let {
 		input = $bindable(),

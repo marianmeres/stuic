@@ -1,1 +1,1 @@
-export { default as ButtonGroupRadio } from "./ButtonGroupRadio.svelte";
+export { default as ButtonGroupRadio, type Props as ButtonGroupRadioProps } from "./ButtonGroupRadio.svelte";

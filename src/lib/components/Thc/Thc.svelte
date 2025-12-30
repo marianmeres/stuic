@@ -1,8 +1,10 @@
 <script lang="ts" module>
+	import type { Snippet, Component } from "svelte";
+
 	// THC = Text or Html or Component
 
 	interface WithComponent {
-		component: any;
+		component: Component<any>;
 		props?: Record<string, any>;
 	}
 
@@ -20,7 +22,6 @@
 
 	type AsSnippet = Snippet;
 
-	//
 	export type THC =
 		| string
 		| WithText
@@ -29,29 +30,35 @@
 		| WithSnippet
 		| AsSnippet;
 
-	const _is = (m: any) => typeof m === "string" && m;
-
-	export function isTHCNotEmpty(m: any) {
-		return _is(m) || _is(m?.text) || _is(m?.html) || m?.component;
-	}
-
-	/**
-	 * Will try to extract textual (or html) content from THC
-	 */
-	export function getTHCStringContent(m: any): string {
-		return m?.html || m?.text || (typeof m === "string" ? m : "") || "";
-	}
-</script>
-
-<script lang="ts">
-	import type { Snippet } from "svelte";
-
-	interface Props extends Record<string, any> {
+	export interface Props extends Record<string, any> {
 		thc: THC;
 		forceAsHtml?: boolean;
 		allowCastToStringFallback?: boolean;
 	}
 
+	const _is = (m: THC | undefined | null): m is string => typeof m === "string" && !!m;
+
+	export function isTHCNotEmpty(m: THC | Snippet<any> | undefined | null): boolean {
+		if (!m) return false;
+		return (
+			_is(m) ||
+			_is((m as WithText)?.text) ||
+			_is((m as WithHtml)?.html) ||
+			!!(m as WithComponent)?.component
+		);
+	}
+
+	/**
+	 * Will try to extract textual (or html) content from THC
+	 */
+	export function getTHCStringContent(m: THC | undefined | null): string {
+		if (!m) return "";
+		if (typeof m === "string") return m;
+		return (m as WithHtml)?.html || (m as WithText)?.text || "";
+	}
+</script>
+
+<script lang="ts">
 	let {
 		thc,
 		forceAsHtml = false,

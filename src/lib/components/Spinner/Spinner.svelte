@@ -1,3 +1,16 @@
+<script lang="ts" module>
+	export interface Props {
+		class?: string;
+		/** One "loop" duration in ms */
+		duration?: number;
+		/** Number of "hands" (3-12) */
+		count?: number;
+		thickness?: "normal" | "thin" | "thick";
+		height?: "normal" | "tall" | "short";
+		direction?: "cw" | "ccw";
+	}
+</script>
+
 <script lang="ts">
 	import { twMerge } from "../../utils/tw-merge.js";
 
@@ -6,19 +19,12 @@
 
 	let {
 		class: _class,
-		duration = 750, // one "loop" duration (in ms)
-		count = 8, // "hands" count
-		thickness = "thick", // looks better in small size
+		duration = 750,
+		count = 8,
+		thickness = "thick",
 		height = "normal",
 		direction = "cw",
-	}: {
-		class?: string;
-		duration?: number;
-		count?: number;
-		thickness?: "normal" | "thin" | "thick";
-		height?: "normal" | "tall" | "short";
-		direction?: "cw" | "ccw";
-	} = $props();
+	}: Props = $props();
 
 	let _count = $derived(Math.max(3, Math.min(12, count)));
 

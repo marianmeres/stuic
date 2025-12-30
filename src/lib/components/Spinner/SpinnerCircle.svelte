@@ -1,3 +1,13 @@
+<script lang="ts" module>
+	export interface Props {
+		class?: string;
+		bgStrokeColor?: string;
+		strokeWidth?: number;
+		noOscillate?: boolean;
+		rotateDuration?: string;
+	}
+</script>
+
 <script lang="ts">
 	import { createTickerRAF } from "@marianmeres/ticker";
 	import { onDestroy } from "svelte";
@@ -11,13 +21,7 @@
 		strokeWidth,
 		noOscillate,
 		rotateDuration = ".75s",
-	}: {
-		class?: string;
-		bgStrokeColor?: string;
-		strokeWidth?: number;
-		noOscillate?: boolean;
-		rotateDuration?: string;
-	} = $props();
+	}: Props = $props();
 
 	/**
 	 * NOTE: we happen to have 4 distinct values here which effect the overall look and feel...

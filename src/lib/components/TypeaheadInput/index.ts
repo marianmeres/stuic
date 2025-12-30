@@ -1,1 +1,1 @@
-export { default as TypeaheadInput } from "./TypeaheadInput.svelte";
+export { default as TypeaheadInput, type Props as TypeaheadInputProps } from "./TypeaheadInput.svelte";

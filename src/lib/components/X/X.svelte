@@ -1,10 +1,12 @@
-<script lang="ts">
-	import { twMerge } from "$lib/index.js";
-
-	interface Props {
+<script lang="ts" module>
+	export interface Props {
 		class?: string;
 		strokeWidth?: 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | 3.5 | 4;
 	}
+</script>
+
+<script lang="ts">
+	import { twMerge } from "$lib/index.js";
 
 	let { class: classProps, strokeWidth = 2 }: Props = $props();
 

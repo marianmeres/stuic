@@ -1,1 +1,1 @@
-export { default as KbdShortcut } from "./KbdShortcut.svelte";
+export { default as KbdShortcut, type Props as KbdShortcutProps } from "./KbdShortcut.svelte";

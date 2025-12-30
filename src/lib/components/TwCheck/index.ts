@@ -1,1 +1,1 @@
-export { default as TwCheck } from "./TwCheck.svelte";
+export { default as TwCheck, type Props as TwCheckProps } from "./TwCheck.svelte";

@@ -1,17 +1,7 @@
-<script lang="ts">
-	import { fade } from "svelte/transition";
+<script lang="ts" module>
 	import type { TW_COLORS } from "../../types.js";
-	import { twMerge } from "../../utils/tw-merge.js";
-	import Thc from "../Thc/Thc.svelte";
-	import X from "../X/X.svelte";
+	import type { NotificationsStack } from "./notifications-stack.svelte.js";
 	import { notificationsDefaultIcons } from "./notifications-icons.js";
-	import "./index.css";
-	import type {
-		Notification,
-		NotificationsStack,
-		NotificationType,
-	} from "./notifications-stack.svelte.js";
-	import Progress from "../Progress/Progress.svelte";
 
 	const X_POSITIONS = ["left", "center", "right"] as const;
 	const Y_POSITIONS = ["top", "center", "bottom"] as const;
@@ -19,11 +9,52 @@
 	type NOTIFICATIONS_POSX = (typeof X_POSITIONS)[number];
 	type NOTIFICATIONS_POSY = (typeof Y_POSITIONS)[number];
 
+	export interface Props {
+		notifications: NotificationsStack;
+		posX?: NOTIFICATIONS_POSX;
+		posXMobile?: NOTIFICATIONS_POSX;
+		posY?: NOTIFICATIONS_POSY;
+		posYMobile?: NOTIFICATIONS_POSY;
+		themeInfo?: TW_COLORS;
+		themeError?: TW_COLORS;
+		themeWarn?: TW_COLORS;
+		themeSuccess?: TW_COLORS;
+		noTheme?: boolean;
+		noIcons?: boolean;
+		classWrapY?: string;
+		classWrapX?: string;
+		class?: string;
+		classNotifCount?: string;
+		classNotifIcon?: string;
+		classNotifContent?: string;
+		classNotifButton?: string;
+		classNotifButtonX?: string;
+		buttonXStrokeWidth?: 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | 3.5 | 4;
+		classProgress?: string;
+		classProgressBar?: string;
+		forceAsHtml?: boolean;
+		ariaCloseLabel?: string;
+		duration?: number;
+		noProgress?: boolean;
+		noXButton?: boolean;
+		iconFns?: Partial<Record<keyof typeof notificationsDefaultIcons, CallableFunction>>;
+	}
+</script>
+
+<script lang="ts">
+	import { fade } from "svelte/transition";
+	import { twMerge } from "../../utils/tw-merge.js";
+	import Thc from "../Thc/Thc.svelte";
+	import X from "../X/X.svelte";
+	import "./index.css";
+	import type { Notification, NotificationType } from "./notifications-stack.svelte.js";
+	import Progress from "../Progress/Progress.svelte";
+
 	const DEFAULT: {
-		posX: NOTIFICATIONS_POSX;
-		posXMobile: NOTIFICATIONS_POSX;
-		posY: NOTIFICATIONS_POSY;
-		posYMobile: NOTIFICATIONS_POSY;
+		posX: "left" | "center" | "right";
+		posXMobile: "left" | "center" | "right";
+		posY: "top" | "center" | "bottom";
+		posYMobile: "top" | "center" | "bottom";
 	} = {
 		posX: "right",
 		posXMobile: "center",
@@ -40,45 +71,6 @@
 	const YMAP = { top: 'sm:justify-start', center: 'sm:justify-center', bottom: 'sm:justify-end' };
 	// prettier-ignore
 	const YMAP_M = { top: 'justify-start', center: 'justify-center', bottom: 'justify-end' };
-
-	interface Props {
-		notifications: NotificationsStack;
-		// right|center|left
-		posX?: NOTIFICATIONS_POSX;
-		posXMobile?: NOTIFICATIONS_POSX;
-		// top|center|bottom
-		posY?: NOTIFICATIONS_POSY;
-		posYMobile?: NOTIFICATIONS_POSY;
-		//
-		themeInfo?: TW_COLORS;
-		themeError?: TW_COLORS;
-		themeWarn?: TW_COLORS;
-		themeSuccess?: TW_COLORS;
-		noTheme?: boolean;
-		noIcons?: boolean;
-		//
-		classWrapY?: string;
-		classWrapX?: string;
-		class?: string; // classNotifBox
-		classNotifCount?: string;
-		classNotifIcon?: string;
-		classNotifContent?: string;
-		classNotifButton?: string;
-		classNotifButtonX?: string;
-		buttonXStrokeWidth?: 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | 3.5 | 4;
-		//
-		classProgress?: string;
-		classProgressBar?: string;
-		//
-		forceAsHtml?: boolean;
-		ariaCloseLabel?: string;
-		duration?: number;
-		//
-		noProgress?: boolean;
-		noXButton?: boolean;
-		//
-		iconFns?: Partial<Record<keyof typeof notificationsDefaultIcons, CallableFunction>>;
-	}
 
 	let {
 		notifications,

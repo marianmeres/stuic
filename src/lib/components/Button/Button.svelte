@@ -1,8 +1,41 @@
 <script lang="ts" module>
+	import type { Snippet } from "svelte";
+	import type { HTMLButtonAttributes } from "svelte/elements";
+
+	export interface Props extends Omit<HTMLButtonAttributes, "children"> {
+		/** Style variant (primary = accent colors, secondary = neutral) */
+		variant?: "primary" | "secondary" | string;
+		size?: "sm" | "md" | "lg" | string;
+		/** Reduce text contrast for less emphasis */
+		muted?: boolean;
+		noshadow?: boolean;
+		noborder?: boolean;
+		/** Skip all default styling, use only custom classes */
+		unstyled?: boolean;
+		/** Transparent bg, styled on hover */
+		inverse?: boolean;
+		class?: string;
+		/** Render as anchor tag instead of button */
+		href?: string;
+		children?: Snippet<[{ checked?: boolean }]>;
+		/** Enable switch/toggle behavior (uses aria-checked) */
+		roleSwitch?: boolean;
+		checked?: boolean;
+		el?: Element;
+	}
+
+	export interface ButtonPresetClasses {
+		size: Record<string, string>;
+		variant: Record<string, string>;
+		muted: string;
+		shadow: string;
+		inverse: string;
+	}
+
 	export const BUTTON_STUIC_BASE_CLASSES = `
-		bg-button-bg text-button-text 
+		bg-button-bg text-button-text
 		dark:bg-button-bg-dark dark:text-button-text-dark
-		font-mono text-sm text-center 
+		font-mono text-sm text-center
 		leading-none
 		border-1
 		border-button-border dark:border-button-border-dark
@@ -22,7 +55,7 @@
 		focus-visible:outline-4 focus-visible:outline-black/10 focus-visible:dark:outline-white/20
 	`;
 
-	export const BUTTON_STUIC_PRESET_CLASSES: any = {
+	export const BUTTON_STUIC_PRESET_CLASSES: ButtonPresetClasses = {
 		size: {
 			sm: `text-sm rounded-sm px-2 py-1`,
 			lg: `text-base rounded-md`,
@@ -31,7 +64,7 @@
 			primary: `font-medium`,
 			secondary: `
 				bg-neutral-100 dark:bg-neutral-600
-				text-black/60 dark:text-white/80 
+				text-black/60 dark:text-white/80
 				shadow-[1px_1px_0_0_rgba(0_0_0_/_.2)]
 				active:shadow-none active:translate-[1px]
 				focus:shadow-black/30
@@ -44,37 +77,17 @@
 			disabled:shadow-none disabled:active:shadow-none disabled:active:translate-none
 		`,
 		inverse: `
-			bg-transparent dark:bg-transparent 
+			bg-transparent dark:bg-transparent
 			hover:bg-button-bg hover:dark:bg-button-bg-dark
-			hover:brightness-100 
+			hover:brightness-100
 		`,
 	};
 </script>
 
 <script lang="ts">
-	import type { Snippet } from "svelte";
-	import type { HTMLButtonAttributes } from "svelte/elements";
 	import { twMerge } from "../../utils/tw-merge.js";
 	//
 	import "./index.css";
-
-	// interface Props extends DataAttributes, Partial<Omit<HTMLButtonElement, 'children'>> {
-	interface Props extends HTMLButtonAttributes {
-		variant?: "primary" | "secondary" | string;
-		size?: "sm" | "md" | "lg" | string;
-		muted?: boolean;
-		noshadow?: boolean;
-		noborder?: boolean;
-		unstyled?: boolean;
-		inverse?: boolean; // a.k.a. formerly "outlined"
-		class?: string;
-		href?: string;
-		children?: Snippet<[{ checked?: boolean }]>;
-		// support for switch
-		roleSwitch?: boolean;
-		checked?: boolean;
-		el?: Element;
-	}
 
 	let {
 		variant,

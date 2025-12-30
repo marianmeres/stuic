@@ -1,6 +1,24 @@
+<script lang="ts" module>
+	import type { Snippet } from "svelte";
+
+	export interface Props {
+		classDialog?: string;
+		class?: string;
+		children: Snippet;
+		noClickOutsideClose?: boolean;
+		noEscapeClose?: boolean;
+		/** Optional UI hint */
+		type?: string;
+		/** Pre-close hook for escape. Return false to prevent close. */
+		preEscapeClose?: () => any;
+		/** Pre-close hook. Return false to prevent close. */
+		preClose?: () => any;
+	}
+</script>
+
 <script lang="ts">
 	import { onClickOutside } from "runed";
-	import { onDestroy, onMount, tick, type Snippet } from "svelte";
+	import { onDestroy, onMount, tick } from "svelte";
 	import { focusTrap } from "../../actions/focus-trap.js";
 	import { stopPropagation } from "../../utils/event-modifiers.js";
 	import { twMerge } from "../../utils/tw-merge.js";
@@ -9,21 +27,6 @@
 	import { BodyScroll } from "../../utils/body-scroll-locker.js";
 
 	const clog = createClog("ModalDialog").debug;
-
-	interface Props {
-		// idea is, that the `dialog` element, should not be needed to customize
-		classDialog?: string;
-		class?: string;
-		children: Snippet;
-		noClickOutsideClose?: boolean;
-		noEscapeClose?: boolean;
-		// optional ui hint
-		type?: string;
-		// pre close hooks... escape is considered special close strategy which may be
-		// handled separately
-		preEscapeClose?: () => any;
-		preClose?: () => any;
-	}
 
 	let {
 		class: classProp,

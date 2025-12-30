@@ -18,7 +18,14 @@
 		| "asterix4"
 		| "asterix5";
 
-	//
+	export interface Props {
+		class?: string;
+		speed?: number;
+		variant?: SpinnerUnicodeVariant;
+		reversed?: boolean;
+		frames?: string[];
+	}
+
 	export function spinnerCreateBackAndForthCharFrames(
 		width: number,
 		hiChar: string,
@@ -65,13 +72,7 @@
 		variant = "braille_bar_dot",
 		reversed = false,
 		frames,
-	}: {
-		class?: string;
-		speed?: number;
-		variant?: SpinnerUnicodeVariant;
-		reversed?: boolean;
-		frames?: string[];
-	} = $props();
+	}: Props = $props();
 
 	const braille_bar_dot = Array.from("⣾⣷⣯⣟⡿⢿⣻⣽");
 	const braille_bar = Array.from("⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏");

@@ -1,14 +1,7 @@
-<script lang="ts" generics="T extends Item">
-	import { createClog } from "@marianmeres/clog";
-	import { ItemCollection, type Item } from "@marianmeres/item-collection";
-	import { Debounced, watch } from "runed";
-	import { twMerge } from "../../utils/tw-merge.js";
-	import { unaccent } from "../../utils/unaccent.js";
-	import Spinner from "../Spinner/Spinner.svelte";
+<script lang="ts" module>
+	import type { Item } from "@marianmeres/item-collection";
 
-	const clog = createClog("TypeaheadInput");
-
-	interface Props {
+	export interface Props<T extends Item = Item> {
 		input?: HTMLInputElement;
 		value: any;
 		placeholder?: string;
@@ -16,21 +9,25 @@
 		renderOptionLabel?: (item: T) => string;
 		itemIdPropName?: string;
 		name?: string;
-		// consumer might need to differentiate between "value" and a "true submitted value"
-		// (eg. when hitting Enter)... so we have `onSubmit`. Note, that this is NOT a "form.onSubmit"
 		onSubmit?: (s: string) => void;
-		// when we hit backspace, and we are at cursor position 0... this is useful for
-		// consumer...
 		onDeleteRequest?: () => void;
-		//
 		class?: string;
 		classInput?: string;
 		noSpinner?: boolean;
-		// master disable flag not allowing to list all options on empty query
 		noListAllOnEmptyQ?: boolean;
-		// use empty string to disable hint
 		appendHint?: string;
 	}
+</script>
+
+<script lang="ts" generics="T extends Item">
+	import { createClog } from "@marianmeres/clog";
+	import { ItemCollection } from "@marianmeres/item-collection";
+	import { Debounced, watch } from "runed";
+	import { twMerge } from "../../utils/tw-merge.js";
+	import { unaccent } from "../../utils/unaccent.js";
+	import Spinner from "../Spinner/Spinner.svelte";
+
+	const clog = createClog("TypeaheadInput");
 
 	let {
 		input = $bindable(),
@@ -49,7 +46,7 @@
 		noSpinner,
 		noListAllOnEmptyQ,
 		appendHint = " [tab]",
-	}: Props = $props();
+	}: Props<T> = $props();
 
 	let inputEl: HTMLInputElement = $state()!;
 	const randName = "name-" + Math.random().toString(36).slice(2);

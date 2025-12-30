@@ -32,6 +32,60 @@
 		value: any;
 	}
 
+	type SnippetWithId = Snippet<[{ id: string }]>;
+
+	export interface Props extends Record<string, any> {
+		trigger?: Snippet<[{ value: string; modal: Modal }]>;
+		input?: HTMLInputElement;
+		value: string;
+		label?: SnippetWithId | THC;
+		type?: string;
+		description?: SnippetWithId | THC;
+		class?: string;
+		id?: string;
+		tabindex?: number;
+		renderSize?: "sm" | "md" | "lg" | string;
+		useTrim?: boolean;
+		required?: boolean;
+		disabled?: boolean;
+		validate?: boolean | Omit<ValidateOptions, "setValidationResult">;
+		labelAfter?: SnippetWithId | THC;
+		below?: SnippetWithId | THC;
+		labelLeft?: boolean;
+		labelLeftWidth?: "normal" | "wide";
+		labelLeftBreakpoint?: number;
+		classInput?: string;
+		classLabel?: string;
+		classLabelBox?: string;
+		classInputBox?: string;
+		classInputBoxWrap?: string;
+		classDescBox?: string;
+		classBelowBox?: string;
+		classOption?: string;
+		classOptionActive?: string;
+		classOptgroup?: string;
+		classModalField?: string;
+		noScrollLock?: boolean;
+		style?: string;
+		t?: TranslateFn;
+		renderValue?: (strigifiedItems: string) => string;
+		getOptions: (
+			q: string,
+			current: Item[]
+		) => Promise<{ coll?: ItemCollection<Item>; found: Item[] }>;
+		notifications?: NotificationsStack;
+		cardinality?: number;
+		renderOptionLabel?: (item: Item) => string;
+		renderOptionGroup?: (s: string) => string;
+		allowUnknown?: boolean;
+		showIconsCheckbox?: boolean;
+		showIconsRadio?: boolean;
+		searchPlaceholder?: string;
+		name: string;
+		itemIdPropName?: string;
+		onChange?: (value: string) => void;
+	}
+
 	// i18n ready
 	function t_default(
 		k: string,
@@ -72,73 +126,6 @@
 
 	const iconRadioEmpty = iconLucideCircle;
 	const iconRadioCheck = iconLucideCheck;
-
-	type SnippetWithId = Snippet<[{ id: string }]>;
-
-	interface Props extends Record<string, any> {
-		trigger?: Snippet<[{ value: string; modal: Modal }]>;
-		input?: HTMLInputElement;
-		value: string;
-		label?: SnippetWithId | THC;
-		type?: string;
-		description?: SnippetWithId | THC;
-		class?: string;
-		id?: string;
-		tabindex?: number; // tooShort
-		renderSize?: "sm" | "md" | "lg" | string;
-		useTrim?: boolean;
-		//
-		required?: boolean;
-		disabled?: boolean;
-		//
-		validate?: boolean | Omit<ValidateOptions, "setValidationResult">;
-		// wrap snippets
-		labelAfter?: SnippetWithId | THC;
-		below?: SnippetWithId | THC;
-		//
-		labelLeft?: boolean;
-		labelLeftWidth?: "normal" | "wide";
-		labelLeftBreakpoint?: number;
-		//
-		classInput?: string;
-		classLabel?: string;
-		classLabelBox?: string;
-		classInputBox?: string;
-		classInputBoxWrap?: string;
-		classDescBox?: string;
-		classBelowBox?: string;
-		//
-		classOption?: string;
-		classOptionActive?: string;
-		classOptgroup?: string;
-		//
-		classModalField?: string;
-		noScrollLock?: boolean;
-		//
-		style?: string;
-		t?: TranslateFn;
-		//
-		renderValue?: (strigifiedItems: string) => string;
-		getOptions: (
-			q: string,
-			current: Item[]
-		) => Promise<{ coll?: ItemCollection<Item>; found: Item[] }>;
-		notifications?: NotificationsStack;
-		// -1 no limit
-		// +n max selected limit
-		cardinality?: number;
-		renderOptionLabel?: (item: Item) => string;
-		renderOptionGroup?: (s: string) => string;
-		// whether to allow adding unknown options
-		allowUnknown?: boolean;
-		showIconsCheckbox?: boolean;
-		showIconsRadio?: boolean;
-		searchPlaceholder?: string;
-		name: string;
-		itemIdPropName?: string;
-		// for custom stuff...
-		onChange?: (value: string) => void;
-	}
 
 	let {
 		trigger,
