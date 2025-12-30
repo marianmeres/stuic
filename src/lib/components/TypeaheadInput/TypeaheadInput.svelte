@@ -58,6 +58,7 @@
 	let allowListAll = $state(false);
 
 	// ItemCollection of all possible candidates based on the current query (value)
+	// svelte-ignore state_referenced_locally
 	const options = new ItemCollection<T>([], {
 		idPropName: itemIdPropName,
 		searchable: { getContent: (item) => _renderOptionLabel(item) },

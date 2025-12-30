@@ -98,6 +98,7 @@
 	let activeEl: HTMLButtonElement | undefined = $state();
 
 	//
+	// svelte-ignore state_referenced_locally
 	const _optionsColl = new ItemCollection([], {
 		allowNextPrevCycle: false,
 		sortFn,
@@ -359,7 +360,7 @@
 </Modal>
 
 <style>
-	ul.options {
+	.options {
 		scrollbar-width: thin;
 	}
 </style>

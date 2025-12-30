@@ -110,7 +110,7 @@
 					promptFieldProps: {
 						description: "Field must contain number",
 						validate: {
-							customValidator(val: any, ctx: any, el) {
+							customValidator(val: any, ctx: any, el: HTMLInputElement) {
 								if (!/\d+/.test(val)) return "Must include numbers";
 							},
 						},

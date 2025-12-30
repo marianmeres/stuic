@@ -24,20 +24,22 @@
 
 	let container: HTMLDivElement = $state()!;
 
-	const circle = svgCircle({
-		strokeWidth,
-		completeness,
-		bgStrokeColor,
-		roundedEdges,
-		rotate,
-		strokeWidthRatio,
-		class: circleClass,
-		circleStyle:
-			circleStyle +
-			(animateCompletenessMs
-				? `;transition: stroke-dashoffset ${animateCompletenessMs}ms linear;`
-				: ""),
-	});
+	let circle = $derived(
+		svgCircle({
+			strokeWidth,
+			completeness,
+			bgStrokeColor,
+			roundedEdges,
+			rotate,
+			strokeWidthRatio,
+			class: circleClass,
+			circleStyle:
+				circleStyle +
+				(animateCompletenessMs
+					? `;transition: stroke-dashoffset ${animateCompletenessMs}ms linear;`
+					: ""),
+		})
+	);
 
 	$effect(() => {
 		container.appendChild(circle.svg);

@@ -231,6 +231,7 @@
 
 	// let's have two distinct collections for the job, they are independent on each other
 	// first, the all available options
+	// svelte-ignore state_referenced_locally
 	const _optionsColl = new ItemCollection([], {
 		allowNextPrevCycle: false,
 		sortFn,
@@ -238,8 +239,8 @@
 	});
 
 	// second, the selected ones
+	// svelte-ignore state_referenced_locally
 	const _selectedColl = new ItemCollection([], {
-		// svelte-ignore state_referenced_locally
 		cardinality,
 		sortFn,
 		idPropName: itemIdPropName,
@@ -834,7 +835,7 @@
 </div>
 
 <style>
-	ul.options {
+	div.options {
 		scrollbar-width: thin;
 	}
 </style>

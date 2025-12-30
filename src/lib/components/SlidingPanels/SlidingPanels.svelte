@@ -42,11 +42,14 @@
 	}: Props = $props();
 
 	//
+	// svelte-ignore state_referenced_locally
 	let active: PanelId = $state(initial);
 	let inTransition = $state(false);
 
 	// panel states
+	// svelte-ignore state_referenced_locally
 	let A = $state(initial === "A" ? ACTIVE : INACTIVE_LEFT);
+	// svelte-ignore state_referenced_locally
 	let B = $state(initial === "B" ? ACTIVE : INACTIVE_RIGHT);
 
 	/** */
