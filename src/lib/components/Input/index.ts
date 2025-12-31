@@ -45,3 +45,9 @@ export {
 	default as FieldTextarea,
 	type Props as FieldTextareaProps,
 } from "./FieldTextarea.svelte";
+
+export {
+	default as FieldKeyValues,
+	type Props as FieldKeyValuesProps,
+	type KeyValueEntry,
+} from "./FieldKeyValues.svelte";
