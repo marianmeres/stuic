@@ -173,6 +173,7 @@
 			onProgress?: (blobUrl: string, progress: number) => any
 		) => Promise<FieldAssetWithBlobUrl[]>;
 		withOnProgress?: boolean;
+		classControls?: string;
 	}
 </script>
 
@@ -229,6 +230,7 @@
 		// onChange,
 		processAssets,
 		withOnProgress,
+		classControls = "",
 		parseValue = (strigifiedModels: string) => {
 			const val = strigifiedModels ?? "[]";
 			try {
@@ -378,7 +380,7 @@
 			{@const _is_img = isImage(asset.type ?? thumb)}
 			<div class="relative group">
 				<button
-					class={[objectSize, "bg-black/10 grid place-content-center"]}
+					class={[objectSize, "bg-black/10 grid place-content-center", classControls]}
 					onclick={(e) => {
 						e.stopPropagation();
 						e.preventDefault();
@@ -433,7 +435,7 @@
 				e.stopPropagation();
 				inputEl.click();
 			}}
-			class={[objectSize, " grid place-content-center group"]}
+			class={[objectSize, " grid place-content-center group", classControls]}
 		>
 			{@html iconAdd({ size: 32, class: "opacity-75 group-hover:opacity-100" })}
 		</button>
@@ -441,7 +443,7 @@
 {/snippet}
 
 <div
-	class="w-full"
+	class="w-full stuic-field-assets"
 	use:highlightDragover={() => ({
 		enabled: typeof processAssets === "function",
 		classes: ["outline-dashed outline-2 outline-neutral-300"],
@@ -559,7 +561,7 @@
 	classBackdrop="p-4 md:p-4"
 	classInner="max-w-full h-full"
 	class="max-h-full md:max-h-full"
-	classMain="flex items-center justify-center relative "
+	classMain="flex items-center justify-center relative stuic-field-assets stuic-field-assets-open"
 >
 	{@const previewAsset = assets?.[previewIdx]}
 	{#if previewAsset}
@@ -585,13 +587,21 @@
 
 		{#if assets?.length > 1}
 			<div class={["absolute inset-0 flex items-center justify-between"]}>
-				<button class="p-4 focus:outline-0" onclick={preview_previous} type="button">
+				<button
+					class={twMerge("p-4", classControls)}
+					onclick={preview_previous}
+					type="button"
+				>
 					<span class="bg-white rounded-full p-3 block">
 						{@html iconPrevious()}
 					</span>
 				</button>
 
-				<button class="p-4 focus:outline-0" onclick={preview_next} type="button">
+				<button
+					class={twMerge("p-4", classControls)}
+					onclick={preview_next}
+					type="button"
+				>
 					<span class="bg-white rounded-full p-3 block">
 						{@html iconNext()}
 					</span>
@@ -602,7 +612,7 @@
 		<!--  bg-white rounded-md p-2 -->
 		<div class="absolute top-4 right-4 flex items-center space-x-3">
 			<button
-				class={TOP_BUTTON_CLS}
+				class={twMerge(TOP_BUTTON_CLS, classControls)}
 				onclick={(e) => {
 					e.preventDefault();
 					remove_by_idx(previewIdx);
@@ -615,7 +625,7 @@
 				{@html iconDelete({ class: "size-6" })}
 			</button>
 			<button
-				class={TOP_BUTTON_CLS}
+				class={twMerge(TOP_BUTTON_CLS, classControls)}
 				type="button"
 				onclick={(e) => {
 					e.preventDefault();
@@ -627,7 +637,7 @@
 				{@html iconDownload({ class: "size-6" })}
 			</button>
 			<button
-				class={TOP_BUTTON_CLS}
+				class={twMerge(TOP_BUTTON_CLS, classControls)}
 				onclick={modal.close}
 				aria-label={t("close")}
 				type="button"

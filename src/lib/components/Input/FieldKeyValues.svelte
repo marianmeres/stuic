@@ -86,15 +86,17 @@
 		return isPlainObject(values) ? replaceMap(out, values as any) : out;
 	}
 
+	const SERIALIZED_DEFAULT = "[]";
+
 	let {
-		value = $bindable("[]"),
+		value = $bindable(),
 		name,
 		id = getId(),
 		label,
 		description,
 		class: classProp,
 		tabindex = 0,
-		renderSize = "md",
+		renderSize = "sm",
 		required = false,
 		disabled = false,
 		validate,
@@ -124,13 +126,13 @@
 	let hiddenInputEl: HTMLInputElement | undefined = $state();
 	let keyInputRefs: HTMLInputElement[] = $state([]);
 
-	// Internal state
-	let entries: KeyValueEntry[] = $state(parseValue(value));
+	// Internal state - handle undefined value from async form initialization
+	let entries: KeyValueEntry[] = $state(parseValue(value ?? SERIALIZED_DEFAULT));
 
 	// Parse external JSON string to internal entries
 	function parseValue(jsonString: string): KeyValueEntry[] {
 		try {
-			const parsed = JSON.parse(jsonString || "[]");
+			const parsed = JSON.parse(jsonString || SERIALIZED_DEFAULT);
 			if (!Array.isArray(parsed)) return [];
 			return parsed.map(([key, val]: [string, string]) => ({
 				id: getId("entry-"),
@@ -158,7 +160,7 @@
 
 	// Sync external value to internal state when it changes externally
 	$effect(() => {
-		const newEntries = parseValue(value);
+		const newEntries = parseValue(value ?? SERIALIZED_DEFAULT);
 		const currentSerialized = serializeValue(entries);
 		const newSerialized = serializeValue(newEntries);
 		if (currentSerialized !== newSerialized) {
@@ -210,7 +212,7 @@
 		customValidator(val: any, context: Record<string, any> | undefined, el: any) {
 			// Validate JSON structure
 			try {
-				const parsed = JSON.parse(val || "[]");
+				const parsed = JSON.parse(val || SERIALIZED_DEFAULT);
 				if (!Array.isArray(parsed)) return "typeMismatch";
 				for (const entry of parsed) {
 					if (!Array.isArray(entry) || entry.length !== 2) return "typeMismatch";
@@ -386,7 +388,7 @@
 <input
 	type="hidden"
 	{name}
-	{value}
+	value={value ?? SERIALIZED_DEFAULT}
 	bind:this={hiddenInputEl}
 	use:validateAction={() => wrappedValidate}
 />

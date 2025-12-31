@@ -43,9 +43,13 @@ const POSITION_MAP: Record<string, string> = {
 	top: "top",
 	"top-left": "top left",
 	"top-right": "top right",
+	"top-span-left": "top span-left",
+	"top-span-right": "top span-right",
 	bottom: "bottom",
 	"bottom-left": "bottom left",
 	"bottom-right": "bottom right",
+	"bottom-span-left": "bottom span-left",
+	"bottom-span-right": "bottom span-right",
 	left: "left",
 	right: "right",
 };
@@ -57,9 +61,13 @@ export type TooltipPosition =
 	| "top"
 	| "top-left"
 	| "top-right"
+	| "top-span-left"
+	| "top-span-right"
 	| "bottom"
 	| "bottom-left"
 	| "bottom-right"
+	| "bottom-span-left"
+	| "bottom-span-right"
 	| "left"
 	| "right";
 
