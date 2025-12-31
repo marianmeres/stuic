@@ -57,6 +57,7 @@
 	import { iconFeatherPlus } from "@marianmeres/icons-fns/feather/iconFeatherPlus.js";
 	import { iconFeatherTrash2 } from "@marianmeres/icons-fns/feather/iconFeatherTrash2.js";
 	import { tick } from "svelte";
+	import { autogrow } from "../../actions/autogrow.svelte.js";
 	import { validate as validateAction } from "../../actions/validate.svelte.js";
 	import { getId } from "../../utils/get-id.js";
 	import { isPlainObject } from "../../utils/is-plain-object.js";
@@ -239,8 +240,11 @@
 	].join(" ");
 
 	const INPUT_CLS = [
-		"form-input min-w-0 px-2 py-1 rounded",
-		// "border border-neutral-300 dark:border-neutral-500/50",
+		"rounded bg-neutral-50 dark:bg-neutral-800",
+		"border border-neutral-300 dark:border-neutral-600",
+		"focus:outline-none focus:ring-0 focus:border-neutral-400 focus:dark:border-neutral-500",
+		"focus-visible:outline-none focus-visible:ring-0",
+		// "form-input min-w-0 px-2 py-1 rounded",
 		// "bg-transparent focus:ring-0",
 		// "focus:border-neutral-400 dark:focus:border-neutral-400",
 	].join(" ");
@@ -309,13 +313,15 @@
 								placeholder={valuePlaceholder ?? t("value_placeholder")}
 								class={twMerge(
 									INPUT_CLS,
-									"min-h-8 resize-y",
+									"min-h-8",
 									renderSize === "sm" && "text-sm",
 									classValueInput
 								)}
+								style="resize: vertical;"
 								rows={1}
 								{disabled}
 								{tabindex}
+								use:autogrow={() => ({ enabled: true, value: entry.value })}
 							></textarea>
 						</div>
 
