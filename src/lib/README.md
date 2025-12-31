@@ -44,6 +44,7 @@ npm install @marianmeres/stuic
 - **FieldFile** - File upload input
 - **FieldAssets** - Multi-file upload with preview
 - **FieldOptions** - Modal-based multi-select picker
+- **FieldKeyValues** - Key-value pairs editor with JSON serialization
 - **FieldSwitch** - Toggle switch within a form
 - **Fieldset** - Group of form fields with legend
 

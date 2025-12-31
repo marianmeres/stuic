@@ -14,6 +14,7 @@ A comprehensive form input system with multiple field components, validation sup
 | `FieldSwitch` | Toggle switch field |
 | `FieldFile` | File upload input |
 | `FieldAssets` | Asset/image upload with preview |
+| `FieldKeyValues` | Key-value pairs editor with JSON serialization |
 | `FieldLikeButton` | Like/favorite toggle button |
 | `Fieldset` | Fieldset with legend |
 
@@ -171,6 +172,47 @@ A comprehensive form input system with multiple field components, validation sup
   labelLeftWidth="wide"
 />
 ```
+
+### Key-Value Pairs
+
+```svelte
+<script lang="ts">
+  import { FieldKeyValues } from 'stuic';
+
+  // Value is a JSON string of [[key, value], [key, value], ...]
+  let headers = $state('[]');
+</script>
+
+<FieldKeyValues
+  label="HTTP Headers"
+  description="Add custom headers as key-value pairs"
+  bind:value={headers}
+  name="headers"
+  required
+/>
+```
+
+#### FieldKeyValues Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | `"[]"` | JSON string of `[[key, value], ...]` (bindable) |
+| `name` | `string` | - | Form field name |
+| `keyPlaceholder` | `string` | `"Key"` | Placeholder for key input |
+| `valuePlaceholder` | `string` | `"Value"` | Placeholder for value textarea |
+| `addLabel` | `string` | `"Add"` | Label for add button |
+| `emptyMessage` | `string` | `"No entries"` | Message when no entries |
+| `classEntry` | `string` | - | CSS for each entry row |
+| `classKeyInput` | `string` | - | CSS for key inputs |
+| `classValueInput` | `string` | - | CSS for value textareas |
+| `onChange` | `(value: string) => void` | - | Callback on value change |
+
+Features:
+- Add/remove key-value pairs with + and trash buttons
+- Reorder entries with up/down arrow buttons
+- Duplicate keys are allowed
+- Value is serialized as ordered map: `[[key, value], [key2, value2]]`
+- Validation at top level only (not individual pairs)
 
 ## Validation
 
