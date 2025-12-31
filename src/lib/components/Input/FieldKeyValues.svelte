@@ -54,8 +54,8 @@
 <script lang="ts">
 	import { iconFeatherChevronDown } from "@marianmeres/icons-fns/feather/iconFeatherChevronDown.js";
 	import { iconFeatherChevronUp } from "@marianmeres/icons-fns/feather/iconFeatherChevronUp.js";
-	import { iconFeatherMinus } from "@marianmeres/icons-fns/feather/iconFeatherMinus.js";
 	import { iconFeatherPlus } from "@marianmeres/icons-fns/feather/iconFeatherPlus.js";
+	import { iconFeatherTrash2 } from "@marianmeres/icons-fns/feather/iconFeatherTrash2.js";
 	import { tick } from "svelte";
 	import { validate as validateAction } from "../../actions/validate.svelte.js";
 	import { getId } from "../../utils/get-id.js";
@@ -230,8 +230,20 @@
 		setValidationResult,
 	});
 
-	const BTN_CLS =
-		"p-1 rounded opacity-50 hover:opacity-100 hover:bg-neutral-200 dark:hover:bg-neutral-600 focus-visible:outline-neutral-400 disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:bg-transparent";
+	const BTN_CLS = [
+		"p-1 rounded",
+		"opacity-50 hover:opacity-100",
+		"hover:bg-neutral-200 dark:hover:bg-neutral-600",
+		"focus-visible:outline-neutral-400",
+		"disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:bg-transparent",
+	].join(" ");
+
+	const INPUT_CLS = [
+		"form-input min-w-0 px-2 py-1 rounded",
+		// "border border-neutral-300 dark:border-neutral-500/50",
+		// "bg-transparent focus:ring-0",
+		// "focus:border-neutral-400 dark:focus:border-neutral-400",
+	].join(" ");
 </script>
 
 <InputWrap
@@ -262,11 +274,53 @@
 				{emptyMessage ?? t("empty_message")}
 			</div>
 		{:else}
-			<div class="p-2 space-y-2">
+			<div class="p-2">
 				{#each entries as entry, idx (entry.id)}
-					<div class={twMerge("flex gap-2 items-start", classEntry)}>
-						<!-- Up/Down buttons -->
-						<div class="flex flex-col gap-0.5">
+					<div
+						class={twMerge(
+							"flex gap-2 items-start py-2",
+							idx > 0 && "border-t border-neutral-200 dark:border-neutral-600",
+							classEntry
+						)}
+					>
+						<!-- Key/Value inputs -->
+						<div class="flex-1 flex flex-col gap-1">
+							<!-- Key input (single-line) -->
+							<input
+								type="text"
+								value={entry.key}
+								oninput={(e) => updateEntry(idx, "key", e.currentTarget.value)}
+								placeholder={keyPlaceholder ?? t("key_placeholder")}
+								class={twMerge(
+									INPUT_CLS,
+									"flex-1",
+									renderSize === "sm" && "text-sm",
+									classKeyInput
+								)}
+								{disabled}
+								{tabindex}
+								bind:this={keyInputRefs[idx]}
+							/>
+
+							<!-- Value textarea -->
+							<textarea
+								value={entry.value}
+								oninput={(e) => updateEntry(idx, "value", e.currentTarget.value)}
+								placeholder={valuePlaceholder ?? t("value_placeholder")}
+								class={twMerge(
+									INPUT_CLS,
+									"min-h-8 resize-y",
+									renderSize === "sm" && "text-sm",
+									classValueInput
+								)}
+								rows={1}
+								{disabled}
+								{tabindex}
+							></textarea>
+						</div>
+
+						<!-- Controls: Up/Down + Delete -->
+						<div class="flex flex-col gap-0.5 pt-0.5">
 							<button
 								type="button"
 								onclick={() => moveEntry(idx, "up")}
@@ -285,49 +339,16 @@
 							>
 								{@html iconFeatherChevronDown({ size: 14 })}
 							</button>
+							<button
+								type="button"
+								onclick={() => removeEntry(idx)}
+								class={BTN_CLS}
+								{disabled}
+								aria-label={t("remove_entry")}
+							>
+								{@html iconFeatherTrash2({ size: 14 })}
+							</button>
 						</div>
-
-						<!-- Key input (single-line) -->
-						<input
-							type="text"
-							value={entry.key}
-							oninput={(e) => updateEntry(idx, "key", e.currentTarget.value)}
-							placeholder={keyPlaceholder ?? t("key_placeholder")}
-							class={twMerge(
-								"form-input flex-1 min-w-0 px-2 py-1 rounded border-0 bg-transparent focus:ring-0",
-								renderSize === "sm" && "text-sm",
-								classKeyInput
-							)}
-							{disabled}
-							{tabindex}
-							bind:this={keyInputRefs[idx]}
-						/>
-
-						<!-- Value textarea -->
-						<textarea
-							value={entry.value}
-							oninput={(e) => updateEntry(idx, "value", e.currentTarget.value)}
-							placeholder={valuePlaceholder ?? t("value_placeholder")}
-							class={twMerge(
-								"form-input flex-2 min-w-0 min-h-8 px-2 py-1 rounded border-0 bg-transparent focus:ring-0 resize-y",
-								renderSize === "sm" && "text-sm",
-								classValueInput
-							)}
-							rows={1}
-							{disabled}
-							{tabindex}
-						></textarea>
-
-						<!-- Remove button -->
-						<button
-							type="button"
-							onclick={() => removeEntry(idx)}
-							class={BTN_CLS}
-							{disabled}
-							aria-label={t("remove_entry")}
-						>
-							{@html iconFeatherMinus({ size: 16 })}
-						</button>
 					</div>
 				{/each}
 			</div>
