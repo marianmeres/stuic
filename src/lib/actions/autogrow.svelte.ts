@@ -33,7 +33,7 @@ export function autogrow(
 		value?: string;
 	}
 ) {
-	let lastValue: string = el.value;
+	let lastValue: string | undefined = undefined;
 
 	$effect(() => {
 		const { enabled = true, max = 250, immediate = true, value } = fn?.() || {};
@@ -55,8 +55,11 @@ export function autogrow(
 		}
 		// strategy with provided value
 		else {
-			if (value !== lastValue) {
-				set_height();
+			// On first run or when value changes, resize
+			if (lastValue === undefined || value !== lastValue) {
+				if (immediate || value !== lastValue) {
+					set_height();
+				}
 				lastValue = value;
 			}
 		}
