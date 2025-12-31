@@ -23,7 +23,7 @@ fi
 # echo "Starting release process with version bump: $VERSION_TYPE"
 
 # Check if we're in a git repository
-if [ ! -d ".git" ]; then
+if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
     echo "Error: Not in a git repository"
     exit 1
 fi
