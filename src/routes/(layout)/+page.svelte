@@ -22,7 +22,7 @@
 		'modal',
 		'notifications',
 		// 'on-outside',
-		// 'popover', 
+		'popover', 
 		'progress',
 		'resizable-width',
 		'sliding-panels',

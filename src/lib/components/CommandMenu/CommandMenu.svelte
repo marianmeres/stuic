@@ -291,7 +291,7 @@
 							"options block space-y-1 p-1",
 							"overflow-y-auto overflow-x-hidden mb-1",
 							"border-t border-black/20",
-							"max-h-[240px]"
+							"max-h-60"
 						)}
 						bind:this={optionsBox}
 						tabindex="-1"

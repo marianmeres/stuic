@@ -1,0 +1,78 @@
+/* prettier-ignore */
+@theme inline {
+	/* style props will not work as with regular components, because popovers are created outside of the anchor dom tree */
+	--color-popover-bg: var(--color-popover-bg, var(--color-white));
+	--color-popover-bg-dark: var(--color-popover-bg-dark, var(--color-neutral-800));
+	--color-popover-text: var(--color-popover-text, var(--color-neutral-900));
+	--color-popover-text-dark: var(--color-popover-text-dark, var(--color-neutral-100));
+	--color-popover-border: var(--color-popover-border, var(--color-neutral-200));
+	--color-popover-border-dark: var(--color-popover-border-dark, var(--color-neutral-700));
+}
+
+/* Base popover styles */
+.stuic-popover,
+.stuic-popover-fallback {
+	display: none;
+	opacity: 0;
+	transition-property: opacity;
+}
+
+/* Backdrop for fallback mode */
+.stuic-popover-backdrop {
+	opacity: 0;
+	transition-property: opacity;
+	&.pop-visible {
+		opacity: 1;
+	}
+}
+
+/* Define fallback positions for auto-repositioning when popover overflows viewport */
+/* span-right/span-left keep popover "above/below" but shift horizontally */
+@position-try --pop-top-span-right {
+	position-area: top span-right; /* above, aligned to anchor's left edge */
+}
+@position-try --pop-top-span-left {
+	position-area: top span-left; /* above, aligned to anchor's right edge */
+}
+@position-try --pop-bottom-span-right {
+	position-area: bottom span-right;
+}
+@position-try --pop-bottom-span-left {
+	position-area: bottom span-left;
+}
+@position-try --pop-left {
+	position-area: left;
+}
+@position-try --pop-right {
+	position-area: right;
+}
+
+/* CSS Anchor Positioning supported mode */
+@supports (anchor-name: --anchor) {
+	.stuic-popover {
+		/* position-area is set via inline style based on position param */
+		/* fallbacks ensure popover stays within viewport */
+		position-try-fallbacks:
+			--pop-top-span-right, --pop-top-span-left, flip-block, --pop-bottom-span-right,
+			--pop-bottom-span-left, --pop-left, --pop-right;
+
+		&.pop-block {
+			display: block;
+			opacity: 0;
+			&.pop-visible {
+				opacity: 1;
+			}
+		}
+	}
+}
+
+/* Fallback mode (centered modal) */
+.stuic-popover-fallback {
+	&.pop-block {
+		display: block;
+		opacity: 0;
+		&.pop-visible {
+			opacity: 1;
+		}
+	}
+}
