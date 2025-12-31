@@ -7,6 +7,7 @@
  * @param el - The textarea element to apply autogrow to
  * @param fn - Optional function returning configuration options
  * @param fn.enabled - Whether autogrow is active (default: true)
+ * @param fn.min - Minimum height in pixels (default: 0)
  * @param fn.max - Maximum height in pixels (default: 250)
  * @param fn.immediate - Set height immediately on mount (default: true)
  * @param fn.value - If provided, triggers resize when value changes programmatically
@@ -36,14 +37,14 @@ export function autogrow(
 	let lastValue: string | undefined = undefined;
 
 	$effect(() => {
-		const { enabled = true, max = 250, immediate = true, value } = fn?.() || {};
+		const { enabled = true, min = 0, max = 250, immediate = true, value } = fn?.() || {};
 		if (!enabled) return;
 
 		function set_height() {
 			// console.log(123, el.value);
 			if (enabled) {
 				el.style.height = "auto"; // Reset height to auto to correctly calculate scrollHeight
-				el.style.height = Math.min(el.scrollHeight, max) + "px";
+				el.style.height = Math.max(min, Math.min(el.scrollHeight, max)) + "px";
 			}
 		}
 

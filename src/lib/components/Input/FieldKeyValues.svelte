@@ -241,12 +241,11 @@
 
 	const INPUT_CLS = [
 		"rounded bg-neutral-50 dark:bg-neutral-800",
+		"focus:outline-none focus:ring-0",
 		"border border-neutral-300 dark:border-neutral-600",
-		"focus:outline-none focus:ring-0 focus:border-neutral-400 focus:dark:border-neutral-500",
+		"focus:border-neutral-400 focus:dark:border-neutral-500",
 		"focus-visible:outline-none focus-visible:ring-0",
-		// "form-input min-w-0 px-2 py-1 rounded",
-		// "bg-transparent focus:ring-0",
-		// "focus:border-neutral-400 dark:focus:border-neutral-400",
+		// "py-1.5 px-2.5",
 	].join(" ");
 </script>
 
@@ -259,7 +258,7 @@
 	{required}
 	{disabled}
 	size={renderSize}
-	class={twMerge("m-0", classProp)}
+	class={classProp}
 	{labelLeft}
 	{labelLeftWidth}
 	{labelLeftBreakpoint}
@@ -313,16 +312,15 @@
 								placeholder={valuePlaceholder ?? t("value_placeholder")}
 								class={twMerge(
 									INPUT_CLS,
-									"min-h-8",
+									"min-h-10 overflow-auto",
 									renderSize === "sm" && "text-sm",
 									classValueInput
 								)}
 								style="resize: vertical;"
-								rows={1}
 								{disabled}
 								{tabindex}
-								use:autogrow={() => ({ enabled: true, value: entry.value })}
 							></textarea>
+							<!-- use:autogrow={() => ({ enabled: true, value: entry.value })} -->
 						</div>
 
 						<!-- Controls: Up/Down + Delete -->
@@ -372,7 +370,8 @@
 				onclick={addEntry}
 				class={twMerge(
 					"flex items-center gap-1 text-sm opacity-75 hover:opacity-100",
-					"p-1 rounded hover:bg-neutral-200 dark:hover:bg-neutral-600"
+					"bg-neutral-200 dark:bg-neutral-600",
+					"p-1 pr-2 rounded hover:bg-neutral-300 dark:hover:bg-neutral-500"
 				)}
 				{disabled}
 			>
