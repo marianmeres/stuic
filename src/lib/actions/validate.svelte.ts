@@ -206,6 +206,11 @@ export interface ValidateOptions {
  * ```ts
  * validate.t = (reason, value, fallback) => translations[reason] ?? fallback;
  * ```
+ *
+ * **Hidden Input Limitation**: Browsers don't populate `el.validationMessage`
+ * for hidden inputs (`type="hidden"`) even when `setCustomValidity()` is called.
+ * This action works around this by preserving the `customValidator` return value
+ * and using it directly as the error message fallback.
  */
 export function validate(
 	el: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,
@@ -245,8 +250,14 @@ export function validate(
 
 			el.checkValidity();
 
+			// Store customValidator message directly - hidden inputs (type="hidden")
+			// don't populate el.validationMessage even when setCustomValidity() is called.
+			// This is a browser limitation. We preserve the message here and use it
+			// directly as the fallback in ValidationResult.message below.
+			let customValidatorMessage = "";
 			if (typeof customValidator === "function") {
-				el.setCustomValidity(customValidator(el.value, context, el) || "");
+				customValidatorMessage = customValidator(el.value, context, el) || "";
+				el.setCustomValidity(customValidatorMessage);
 			}
 
 			// this triggers the bubble, which is not what we want
@@ -271,15 +282,14 @@ export function validate(
 				validity: validityState,
 				reasons,
 				valid: validityState?.valid,
-				// use translate fn for first reason (if fn provided and allowed),
-				// otherwise fallback to native msg
+				// Use translate fn for first reason (if fn provided and allowed),
+				// otherwise fallback to native msg. We use customValidatorMessage first
+				// because hidden inputs don't populate el.validationMessage (see above).
 				message: _t(
 					reasons?.[0],
 					el.value,
-					el.validationMessage ||
-						// PROBLEM: hidden inputs do not report validationMessage-s even
-						// if correctly reported as invalid. So all we can do, is
-						// put only something generic here...
+					customValidatorMessage ||
+						el.validationMessage ||
 						"This field is invalid. Please review and try again."
 				),
 			});

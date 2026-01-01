@@ -185,20 +185,19 @@
 			enabled: !!validate,
 			...(typeof validate === "boolean"
 				? {
-						// PROBLEM with hidden inputs is that they:
-						// 1. do not report required (AFAICT)
-						// 2. do not report el.validationMessage even if invalid via custom validation
+						// Return actual messages (not reason names) because hidden inputs
+						// don't support el.validationMessage - the validate action preserves
+						// our return value and uses it directly as the error message.
 						customValidator(val, ctx, el) {
-							// so, here, we're fixing (1.) and will handle the (2.) elsewhere
-							// (the message will be ignored anyway, we just need to send non-empty string)
-							if (required && !val) return "valueMissing";
+							if (required && !val)
+								return "This field requires attention. Please review and try again.";
 
 							// also, by default, JSON validation is built in
 							try {
 								JSON.parse(val as string);
 								return "";
 							} catch (e) {
-								return "typeMismatch";
+								return "This field is invalid. Please review and try again.";
 							}
 						},
 					}

@@ -14,21 +14,21 @@
 	const notifications = new NotificationsStack([]);
 
 	let values = $state({
-		simple: "[]",
-		prefilled: JSON.stringify([
-			["Content-Type", "application/json"],
-			["Authorization", "Bearer token123"],
-			["X-Custom-Header", "A longer value that might span\nmultiple lines"],
-		]),
-		required: "[]",
-		withValidation: "[]",
+		simple: "{}",
+		prefilled: JSON.stringify({
+			"Content-Type": "application/json",
+			Authorization: "Bearer token123",
+			"X-Custom-Header": "A longer value that might span\nmultiple lines",
+		}),
+		required: "{}",
+		withValidation: "{}",
 	});
 
 	function customValidator(val: any, ctx: any, el: any) {
-		const entries = JSON.parse(val || "[]");
+		const entries = JSON.parse(val || "{}");
 		// Must have at least one entry with non-empty key
-		const hasValidEntry = entries.some(([k, v]: [string, string]) => k.trim() !== "");
-		return hasValidEntry ? "" : "At least one entry with a non-empty key is required";
+		const keys = Object.keys(entries).filter((k) => k.trim() !== "");
+		return keys.length > 0 ? "" : "At least one entry with a non-empty key is required";
 	}
 </script>
 
@@ -55,7 +55,7 @@
 			bind:value={values.prefilled}
 			name="prefilled"
 			label="Configuration"
-			description="Entries can be reordered using up/down buttons"
+			description="Values can be any valid JSON (strings auto-detected)"
 		/>
 		<pre class="text-xs mt-2 bg-neutral-100 dark:bg-neutral-800 p-2 rounded overflow-auto">{JSON.stringify(maybeJsonParse(values.prefilled), null, 2)}</pre>
 	</form>
@@ -91,19 +91,19 @@
 		<h3 class="text-lg font-semibold mb-4">Size Variants</h3>
 		<div class="space-y-4">
 			<FieldKeyValues
-				value={JSON.stringify([["small", "example"]])}
+				value={JSON.stringify({ small: "example" })}
 				name="size-sm"
 				label="Small (sm)"
 				renderSize="sm"
 			/>
 			<FieldKeyValues
-				value={JSON.stringify([["medium", "example"]])}
+				value={JSON.stringify({ medium: "example" })}
 				name="size-md"
 				label="Medium (md)"
 				renderSize="md"
 			/>
 			<FieldKeyValues
-				value={JSON.stringify([["large", "example"]])}
+				value={JSON.stringify({ large: "example" })}
 				name="size-lg"
 				label="Large (lg)"
 				renderSize="lg"

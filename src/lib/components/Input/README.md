@@ -179,8 +179,8 @@ A comprehensive form input system with multiple field components, validation sup
 <script lang="ts">
   import { FieldKeyValues } from 'stuic';
 
-  // Value is a JSON string of [[key, value], [key, value], ...]
-  let headers = $state('[]');
+  // Value is a JSON string of {key: value, key2: value2, ...}
+  let headers = $state('{}');
 </script>
 
 <FieldKeyValues
@@ -196,7 +196,7 @@ A comprehensive form input system with multiple field components, validation sup
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `value` | `string` | `"[]"` | JSON string of `[[key, value], ...]` (bindable) |
+| `value` | `string` | `"{}"` | JSON string of `{key: value, ...}` (bindable) |
 | `name` | `string` | - | Form field name |
 | `keyPlaceholder` | `string` | `"Key"` | Placeholder for key input |
 | `valuePlaceholder` | `string` | `"Value"` | Placeholder for value textarea |
@@ -209,9 +209,9 @@ A comprehensive form input system with multiple field components, validation sup
 
 Features:
 - Add/remove key-value pairs with + and trash buttons
-- Reorder entries with up/down arrow buttons
-- Duplicate keys are allowed
-- Value is serialized as ordered map: `[[key, value], [key2, value2]]`
+- Values support any JSON type (auto-detected): plain text → string, `42` → number, `true` → boolean, `{"a":1}` → object
+- Duplicate keys are validated and rejected on form submission
+- Value is serialized as plain object: `{key: value, key2: value2}`
 - Validation at top level only (not individual pairs)
 
 ## Validation

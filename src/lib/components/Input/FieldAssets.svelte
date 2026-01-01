@@ -275,13 +275,12 @@
 	let wrappedValidate: Omit<ValidateOptions, "setValidationResult"> = $derived({
 		enabled: true,
 		customValidator(value: any, context: Record<string, any> | undefined, el: any) {
-			// NOTE: the below error message code will be ignored, so it's just cosmetics.
-			// NOTE2: we are NOT validating
-			// 	  - neither the actual form value.
-			//    - nor the hidden input's value
+			// Return actual translated messages (not reason names) because hidden inputs
+			// don't support el.validationMessage - the validate action preserves our
+			// return value and uses it directly as the error message.
 
-			if (required && !assets.length) return "valueMissing";
-			if (assets.length > cardinality) return "rangeOverflow";
+			if (required && !assets.length) return t("field_req_att");
+			if (assets.length > cardinality) return t("cardinality_reached", { max: cardinality });
 
 			// normally, with other fieldtypes, we would continue with provided validator:
 			// return (validate as any)?.customValidator?.(value, context, el) || "";
@@ -290,10 +289,6 @@
 				console.warn("Custom validator was provided, but is ignored in <FieldAssets />");
 			}
 			return "";
-		},
-		t(reason: keyof ValidityStateFlags, value: any, fallback: string) {
-			// Unfortunately, for hidden, everything is a `customError` reason. So, we must generalize...
-			return t("field_req_att");
 		},
 		setValidationResult,
 	});

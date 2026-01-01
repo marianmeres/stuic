@@ -10,9 +10,9 @@
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
 	export interface KeyValueEntry {
-		id: string;
 		key: string;
-		value: string;
+		value: string; // Raw input from user
+		parsedValue: unknown; // Parsed JSON value
 	}
 
 	export interface Props extends Record<string, any> {
@@ -52,8 +52,6 @@
 </script>
 
 <script lang="ts">
-	import { iconFeatherChevronDown } from "@marianmeres/icons-fns/feather/iconFeatherChevronDown.js";
-	import { iconFeatherChevronUp } from "@marianmeres/icons-fns/feather/iconFeatherChevronUp.js";
 	import { iconFeatherPlus } from "@marianmeres/icons-fns/feather/iconFeatherPlus.js";
 	import { iconFeatherTrash2 } from "@marianmeres/icons-fns/feather/iconFeatherTrash2.js";
 	import { tick } from "svelte";
@@ -74,19 +72,19 @@
 	) {
 		const m: Record<string, string> = {
 			field_req_att: "This field requires attention. Please review and try again.",
+			entry_required: "At least one entry is required",
 			key_placeholder: "Key",
 			value_placeholder: "Value",
 			add_label: "Add",
 			empty_message: "No entries",
 			remove_entry: "Remove entry",
-			move_up: "Move up",
-			move_down: "Move down",
+			duplicate_keys: "Duplicate keys are not allowed",
 		};
 		let out = m[k] ?? fallback ?? k;
 		return isPlainObject(values) ? replaceMap(out, values as any) : out;
 	}
 
-	const SERIALIZED_DEFAULT = "[]";
+	const SERIALIZED_DEFAULT = "{}";
 
 	let {
 		value = $bindable(),
@@ -129,15 +127,29 @@
 	// Internal state - handle undefined value from async form initialization
 	let entries: KeyValueEntry[] = $state(parseValue(value ?? SERIALIZED_DEFAULT));
 
+	// Parse JSON value with auto-detect: try JSON first, fallback to plain string
+	function parseJsonValue(input: string): { value: unknown } {
+		const trimmed = input.trim();
+		if (trimmed === "") return { value: "" };
+
+		try {
+			const parsed = JSON.parse(trimmed);
+			return { value: parsed };
+		} catch {
+			// If parse fails, treat as plain string
+			return { value: trimmed };
+		}
+	}
+
 	// Parse external JSON string to internal entries
 	function parseValue(jsonString: string): KeyValueEntry[] {
 		try {
 			const parsed = JSON.parse(jsonString || SERIALIZED_DEFAULT);
-			if (!Array.isArray(parsed)) return [];
-			return parsed.map(([key, val]: [string, string]) => ({
-				id: getId("entry-"),
-				key: key ?? "",
-				value: val ?? "",
+			if (!isPlainObject(parsed)) return [];
+			return Object.entries(parsed).map(([key, val]) => ({
+				key,
+				value: typeof val === "string" ? val : JSON.stringify(val),
+				parsedValue: val,
 			}));
 		} catch (e) {
 			return [];
@@ -146,7 +158,13 @@
 
 	// Serialize internal entries to external JSON string
 	function serializeValue(entries: KeyValueEntry[]): string {
-		return JSON.stringify(entries.map((e) => [e.key, e.value]));
+		const obj: Record<string, unknown> = {};
+		for (const e of entries) {
+			if (e.key) {
+				obj[e.key] = e.parsedValue;
+			}
+		}
+		return JSON.stringify(obj);
 	}
 
 	// Sync internal state to external value
@@ -170,7 +188,7 @@
 
 	// Add new entry
 	function addEntry() {
-		const newEntry = { id: getId("entry-"), key: "", value: "" };
+		const newEntry: KeyValueEntry = { key: "", value: "", parsedValue: "" };
 		entries = [...entries, newEntry];
 		syncToValue();
 		// Focus the new key input after render
@@ -186,20 +204,15 @@
 		syncToValue();
 	}
 
-	// Move entry up or down
-	function moveEntry(idx: number, direction: "up" | "down") {
-		const newIdx = direction === "up" ? idx - 1 : idx + 1;
-		if (newIdx < 0 || newIdx >= entries.length) return;
-
-		const newEntries = [...entries];
-		[newEntries[idx], newEntries[newIdx]] = [newEntries[newIdx], newEntries[idx]];
-		entries = newEntries;
-		syncToValue();
-	}
-
 	// Update entry field
 	function updateEntry(idx: number, field: "key" | "value", newValue: string) {
-		entries[idx][field] = newValue;
+		if (field === "value") {
+			const { value: parsed } = parseJsonValue(newValue);
+			entries[idx].value = newValue;
+			entries[idx].parsedValue = parsed;
+		} else {
+			entries[idx].key = newValue;
+		}
 		syncToValue();
 	}
 
@@ -213,22 +226,25 @@
 			// Validate JSON structure
 			try {
 				const parsed = JSON.parse(val || SERIALIZED_DEFAULT);
-				if (!Array.isArray(parsed)) return "typeMismatch";
-				for (const entry of parsed) {
-					if (!Array.isArray(entry) || entry.length !== 2) return "typeMismatch";
-				}
+				if (!isPlainObject(parsed)) return t("field_req_att");
 			} catch (e) {
-				return "typeMismatch";
+				return t("field_req_att");
 			}
 
-			// Required check
-			if (required && !entries.length) return "valueMissing";
+			// Get non-empty keys first (used for both required and duplicate checks)
+			const keys = entries.map((e) => e.key).filter((k) => k.trim() !== "");
+
+			// Required check FIRST - must have at least one entry with non-empty key
+			if (required && keys.length === 0) return t("entry_required");
+
+			// Then check for duplicate keys
+			const uniqueKeys = new Set(keys);
+			if (keys.length !== uniqueKeys.size) {
+				return t("duplicate_keys");
+			}
 
 			// Continue with provided validator
 			return (validate as any)?.customValidator?.(val, context, el) || "";
-		},
-		t(reason: keyof ValidityStateFlags, val: any, fallback: string) {
-			return t("field_req_att");
 		},
 		setValidationResult,
 	});
@@ -280,7 +296,7 @@
 			</div>
 		{:else}
 			<div class="p-2">
-				{#each entries as entry, idx (entry.id)}
+				{#each entries as entry, idx (idx)}
 					<div
 						class={twMerge(
 							"flex gap-2 items-start py-2",
@@ -325,26 +341,8 @@
 							<!-- use:autogrow={() => ({ enabled: true, value: entry.value })} -->
 						</div>
 
-						<!-- Controls: Up/Down + Delete -->
-						<div class="flex flex-col gap-0.5 pt-0.5">
-							<button
-								type="button"
-								onclick={() => moveEntry(idx, "up")}
-								disabled={disabled || idx === 0}
-								class={BTN_CLS}
-								aria-label={t("move_up")}
-							>
-								{@html iconFeatherChevronUp({ size: 14 })}
-							</button>
-							<button
-								type="button"
-								onclick={() => moveEntry(idx, "down")}
-								disabled={disabled || idx === entries.length - 1}
-								class={BTN_CLS}
-								aria-label={t("move_down")}
-							>
-								{@html iconFeatherChevronDown({ size: 14 })}
-							</button>
+						<!-- Delete button -->
+						<div class="pt-0.5">
 							<button
 								type="button"
 								onclick={() => removeEntry(idx)}
