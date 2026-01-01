@@ -263,7 +263,7 @@
 	// otherwise normal spinner will be shown
 	let progress = $state<Record<string, number>>({});
 	const onProgress = (id: string, value: number) => (progress[id] = Math.round(value));
-	$inspect("progress", progress);
+	// $inspect("progress", progress);
 
 	$effect(() => {
 		if (!assets?.length) modal?.close?.();
