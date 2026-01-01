@@ -85,7 +85,6 @@
 	});
 
 	const rounded = "rounded-md";
-	const roundedBtn = "rounded-md";
 	//
 	const CLS = `
 		stuic-button-group
@@ -119,7 +118,6 @@
         text-button-group-text-active dark:text-button-group-text-active-dark
         hover:bg-button-group-bg-active hover:dark:bg-button-group-bg-active
         hover:text-button-group-text-active hover:dark:text-button-group-text-active-dark
-        ${roundedBtn}
     `;
 	// shadow-[0px_0px_1px_1px_rgba(0_0_0_/_.6)]
 
@@ -169,7 +167,7 @@
 				id={item.id}
 				{...buttonProps?.(i, coll) || {}}
 			>
-				{item.option.label}
+				{@html item.option.label}
 			</Button>
 		{/each}
 	</div>
