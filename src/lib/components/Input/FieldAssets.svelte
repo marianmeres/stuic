@@ -174,6 +174,7 @@
 		) => Promise<FieldAssetWithBlobUrl[]>;
 		withOnProgress?: boolean;
 		classControls?: string;
+		isLoading?: boolean;
 	}
 </script>
 
@@ -231,6 +232,7 @@
 		processAssets,
 		withOnProgress,
 		classControls = "",
+		isLoading = false,
 		parseValue = (strigifiedModels: string) => {
 			const val = strigifiedModels ?? "[]";
 			try {
@@ -280,7 +282,8 @@
 			// return value and uses it directly as the error message.
 
 			if (required && !assets.length) return t("field_req_att");
-			if (assets.length > cardinality) return t("cardinality_reached", { max: cardinality });
+			if (assets.length > cardinality)
+				return t("cardinality_reached", { max: cardinality });
 
 			// normally, with other fieldtypes, we would continue with provided validator:
 			// return (validate as any)?.customValidator?.(value, context, el) || "";
@@ -369,72 +372,78 @@
 />
 
 {#snippet default_render()}
-	<div class={["p-2 flex items-center gap-0.5 flex-wrap"]}>
-		{#each assets as asset, idx}
-			{@const { thumb, full, original } = asset_urls(asset)}
-			{@const _is_img = isImage(asset.type ?? thumb)}
-			<div class="relative group">
-				<button
-					class={[objectSize, "bg-black/10 grid place-content-center", classControls]}
-					onclick={(e) => {
-						e.stopPropagation();
-						e.preventDefault();
-						previewIdx = idx;
-						modal.open();
-					}}
-					type="button"
-				>
-					{#if _is_img}
-						<img
-							src={thumb}
-							alt={asset.name}
-							class={[objectSize, objectFitStyle, "hover:saturate-150"]}
-						/>
-					{:else}
-						{@html getAssetIcon((asset.name ?? "").split(".").at(-1))({
-							size: 32,
-							class: "mx-auto",
-						})}
-					{/if}
-					<span
-						class="absolute bottom-1 left-1 right-1 grid bg-white/50 rounded"
-						use:tooltip={() => ({ content: asset.name })}
+	{#if isLoading}
+		<div class="p-2 pl-8 flex items-center justify-center min-h-24">
+			<SpinnerCircle />
+		</div>
+	{:else}
+		<div class={["p-2 flex items-center gap-0.5 flex-wrap"]}>
+			{#each assets as asset, idx}
+				{@const { thumb, full, original } = asset_urls(asset)}
+				{@const _is_img = isImage(asset.type ?? thumb)}
+				<div class="relative group">
+					<button
+						class={[objectSize, "bg-black/10 grid place-content-center", classControls]}
+						onclick={(e) => {
+							e.stopPropagation();
+							e.preventDefault();
+							previewIdx = idx;
+							modal.open();
+						}}
+						type="button"
 					>
-						<span class="truncate px-2 text-xs">{asset.name}</span>
-					</span>
-
-					{#if asset.meta?.isUploading}
+						{#if _is_img}
+							<img
+								src={thumb}
+								alt={asset.name}
+								class={[objectSize, objectFitStyle, "hover:saturate-150"]}
+							/>
+						{:else}
+							{@html getAssetIcon((asset.name ?? "").split(".").at(-1))({
+								size: 32,
+								class: "mx-auto",
+							})}
+						{/if}
 						<span
-							class="absolute inset-0 grid place-content-center pointer-events-none text-white"
+							class="absolute bottom-1 left-1 right-1 grid bg-white/50 rounded"
+							use:tooltip={() => ({ content: asset.name })}
 						>
-							{#if withOnProgress}
-								<Circle
-									class="text-white"
-									animateCompletenessMs={300}
-									bgStrokeColor="rgba(0 0 0 / 0.2)"
-									completeness={progress[asset.id] / 100}
-									rotate={-90}
-								/>
-							{:else}
-								<SpinnerCircle bgStrokeColor="gray" />
-							{/if}
+							<span class="truncate px-2 text-xs">{asset.name}</span>
 						</span>
-					{/if}
-				</button>
-			</div>
-		{/each}
-		<button
-			type="button"
-			onclick={(e) => {
-				e.preventDefault();
-				e.stopPropagation();
-				inputEl.click();
-			}}
-			class={[objectSize, " grid place-content-center group", classControls]}
-		>
-			{@html iconAdd({ size: 32, class: "opacity-75 group-hover:opacity-100" })}
-		</button>
-	</div>
+
+						{#if asset.meta?.isUploading}
+							<span
+								class="absolute inset-0 grid place-content-center pointer-events-none text-white"
+							>
+								{#if withOnProgress}
+									<Circle
+										class="text-white"
+										animateCompletenessMs={300}
+										bgStrokeColor="rgba(0 0 0 / 0.2)"
+										completeness={progress[asset.id] / 100}
+										rotate={-90}
+									/>
+								{:else}
+									<SpinnerCircle bgStrokeColor="gray" />
+								{/if}
+							</span>
+						{/if}
+					</button>
+				</div>
+			{/each}
+			<button
+				type="button"
+				onclick={(e) => {
+					e.preventDefault();
+					e.stopPropagation();
+					inputEl.click();
+				}}
+				class={[objectSize, " grid place-content-center group", classControls]}
+			>
+				{@html iconAdd({ size: 32, class: "opacity-75 group-hover:opacity-100" })}
+			</button>
+		</div>
+	{/if}
 {/snippet}
 
 <div

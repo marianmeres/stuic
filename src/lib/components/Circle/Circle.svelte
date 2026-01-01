@@ -24,13 +24,13 @@
 
 	let container: HTMLDivElement = $state()!;
 
+	// Note: completeness and rotate are NOT included here - they're updated via setters
+	// to avoid recreating the SVG on every change
 	let circle = $derived(
 		svgCircle({
 			strokeWidth,
-			completeness,
 			bgStrokeColor,
 			roundedEdges,
-			rotate,
 			strokeWidthRatio,
 			class: circleClass,
 			circleStyle:
@@ -43,6 +43,9 @@
 
 	$effect(() => {
 		container.appendChild(circle.svg);
+		return () => {
+			circle.svg.remove();
+		};
 	});
 
 	$effect(() => {

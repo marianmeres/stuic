@@ -35,12 +35,18 @@
 
 	let f = $state<HTMLFormElement>()!;
 
-	// let ticker = createTicker(500, true);
-	// onMount(() => {
-	// 	return ticker.subscribe(() => {
-	// 		clog("tick tick");
-	// 	});
-	// });
+	// isLoading demo
+	let isLoadingDemo = $state(true);
+	let loadedValues = $state("[]");
+
+	onMount(async () => {
+		await sleep(2000); // simulate API fetch
+		loadedValues = JSON.stringify([
+			{ id: "x1", url: "/assets/01.jpg", name: "01.jpg", type: "image/jpeg" },
+			{ id: "x2", url: "/assets/02.jpg", name: "02.jpg", type: "image/jpeg" },
+		]);
+		isLoadingDemo = false;
+	});
 </script>
 
 <Notifications {notifications} />
@@ -98,3 +104,15 @@
 		<Button type="submit">Proceed</Button>
 	</div>
 </form>
+
+<hr class="my-8" />
+
+<h2 class="text-lg font-semibold mb-4">With isLoading (initial fetch simulation)</h2>
+<FieldAssets
+	bind:value={loadedValues}
+	name="loaded"
+	label="Assets (with initial loading)"
+	isLoading={isLoadingDemo}
+	{notifications}
+	cardinality={6}
+/>
