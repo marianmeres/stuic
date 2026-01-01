@@ -47,6 +47,7 @@
 		addLabel?: string;
 		emptyMessage?: string;
 		onChange?: (value: string) => void;
+		strictJsonValidation?: boolean;
 		t?: TranslateFn;
 	}
 </script>
@@ -79,6 +80,7 @@
 			empty_message: "No entries",
 			remove_entry: "Remove entry",
 			duplicate_keys: "Duplicate keys are not allowed",
+			invalid_json_syntax: "Invalid JSON syntax. Check for missing quotes or brackets.",
 		};
 		let out = m[k] ?? fallback ?? k;
 		return isPlainObject(values) ? replaceMap(out, values as any) : out;
@@ -118,26 +120,37 @@
 		addLabel,
 		emptyMessage,
 		onChange,
+		strictJsonValidation = true,
 		t = t_default,
 	}: Props = $props();
 
 	let hiddenInputEl: HTMLInputElement | undefined = $state();
 	let keyInputRefs: HTMLInputElement[] = $state([]);
+	let entryJsonErrors: boolean[] = $state([]);
 
 	// Internal state - handle undefined value from async form initialization
 	let entries: KeyValueEntry[] = $state(parseValue(value ?? SERIALIZED_DEFAULT));
 
 	// Parse JSON value with auto-detect: try JSON first, fallback to plain string
-	function parseJsonValue(input: string): { value: unknown } {
+	// Returns intendedJson=true if input looks like JSON (starts with { or [)
+	// Returns parseError=true if JSON parse failed
+	function parseJsonValue(input: string): {
+		value: unknown;
+		intendedJson: boolean;
+		parseError: boolean;
+	} {
 		const trimmed = input.trim();
-		if (trimmed === "") return { value: "" };
+		if (trimmed === "") return { value: "", intendedJson: false, parseError: false };
+
+		// Heuristics: input looks like it's trying to be JSON
+		const intendedJson = trimmed.startsWith("{") || trimmed.startsWith("[");
 
 		try {
 			const parsed = JSON.parse(trimmed);
-			return { value: parsed };
+			return { value: parsed, intendedJson, parseError: false };
 		} catch {
-			// If parse fails, treat as plain string
-			return { value: trimmed };
+			// If parse fails, treat as plain string but flag the error
+			return { value: trimmed, intendedJson, parseError: intendedJson };
 		}
 	}
 
@@ -183,6 +196,8 @@
 		const newSerialized = serializeValue(newEntries);
 		if (currentSerialized !== newSerialized) {
 			entries = newEntries;
+			// Reset JSON errors when external value changes (assume valid JSON from external source)
+			entryJsonErrors = new Array(newEntries.length).fill(false);
 		}
 	});
 
@@ -190,6 +205,7 @@
 	function addEntry() {
 		const newEntry: KeyValueEntry = { key: "", value: "", parsedValue: "" };
 		entries = [...entries, newEntry];
+		entryJsonErrors = [...entryJsonErrors, false];
 		syncToValue();
 		// Focus the new key input after render
 		tick().then(() => {
@@ -201,15 +217,17 @@
 	// Remove entry by index
 	function removeEntry(idx: number) {
 		entries = entries.filter((_, i) => i !== idx);
+		entryJsonErrors = entryJsonErrors.filter((_, i) => i !== idx);
 		syncToValue();
 	}
 
 	// Update entry field
 	function updateEntry(idx: number, field: "key" | "value", newValue: string) {
 		if (field === "value") {
-			const { value: parsed } = parseJsonValue(newValue);
+			const { value: parsed, parseError } = parseJsonValue(newValue);
 			entries[idx].value = newValue;
 			entries[idx].parsedValue = parsed;
+			entryJsonErrors[idx] = parseError;
 		} else {
 			entries[idx].key = newValue;
 		}
@@ -241,6 +259,11 @@
 			const uniqueKeys = new Set(keys);
 			if (keys.length !== uniqueKeys.size) {
 				return t("duplicate_keys");
+			}
+
+			// Check for JSON syntax errors when strictJsonValidation is enabled
+			if (strictJsonValidation && entryJsonErrors.some(Boolean)) {
+				return t("invalid_json_syntax");
 			}
 
 			// Continue with provided validator
