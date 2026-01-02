@@ -25,6 +25,8 @@
 			coll: ItemColl
 		) => Promise<boolean | undefined | void> | boolean | undefined | void;
 		buttonProps?: (index: number, coll: ItemColl) => undefined | Record<string, any>;
+		//
+		tooltip?: TooltipConfig;
 	}
 </script>
 
@@ -38,6 +40,7 @@
 	import Button from "../Button/Button.svelte";
 	//
 	import "./index.css";
+	import { tooltip, type TooltipConfig } from "../../actions/index.js";
 
 	let {
 		options,
@@ -54,6 +57,7 @@
 		style,
 		onButtonClick,
 		buttonProps,
+		tooltip: tooltipConfig = () => ({ enabled: false }),
 	}: Props = $props();
 
 	const coll: ItemColl = $derived.by(() => {
@@ -137,6 +141,7 @@
 		{style}
 		role="radiogroup"
 		aria-labelledby={$coll?.active?.id || ""}
+		use:tooltip={tooltipConfig}
 	>
 		{#each coll.items as item, i}
 			<Button

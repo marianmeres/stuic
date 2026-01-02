@@ -72,6 +72,31 @@ export type TooltipPosition =
 	| "right";
 
 /**
+ * Configuration function for the tooltip action.
+ *
+ * Returns an object with tooltip options. Using a function allows reactive
+ * updates when Svelte state changes.
+ *
+ * @returns Tooltip configuration object
+ * @property enabled - Whether the tooltip is active (default: `true`)
+ * @property content - Tooltip text content, falls back to `aria-label` if not provided
+ * @property position - Placement relative to anchor element (default: `"top"`)
+ * @property debug - Enable console debug logging
+ * @property class - Additional CSS classes to merge with default styles
+ * @property onShow - Callback fired after tooltip becomes visible
+ * @property onHide - Callback fired after tooltip is hidden
+ */
+export type TooltipConfig = () => {
+	enabled?: boolean;
+	content?: string | null;
+	position?: TooltipPosition;
+	debug?: boolean;
+	class?: string;
+	onShow?: CallableFunction;
+	onHide?: CallableFunction;
+};
+
+/**
  * A Svelte action that displays a tooltip anchored to an element using CSS Anchor Positioning.
  *
  * The tooltip appears on hover/focus after a short delay and supports multiple positions
@@ -107,18 +132,7 @@ export type TooltipPosition =
  * - Tooltip persists when hovering over it (useful for interactive content)
  * - Automatically cleans up DOM elements on unmount
  */
-export function tooltip(
-	anchorEl: HTMLElement,
-	fn?: () => {
-		enabled?: boolean;
-		content?: string | null;
-		position?: TooltipPosition;
-		debug?: boolean;
-		class?: string;
-		onShow?: CallableFunction;
-		onHide?: CallableFunction;
-	}
-) {
+export function tooltip(anchorEl: HTMLElement, fn?: TooltipConfig) {
 	// the node has been mounted in the DOM
 	if (!isTooltipSupported()) return;
 

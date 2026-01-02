@@ -22,6 +22,8 @@
 		roleSwitch?: boolean;
 		checked?: boolean;
 		el?: Element;
+		/*  */
+		tooltip?: TooltipConfig;
 	}
 
 	export interface ButtonPresetClasses {
@@ -88,6 +90,7 @@
 	import { twMerge } from "../../utils/tw-merge.js";
 	//
 	import "./index.css";
+	import { tooltip, type TooltipConfig } from "../../actions/index.js";
 
 	let {
 		variant,
@@ -104,6 +107,8 @@
 		roleSwitch = false,
 		checked = $bindable(false),
 		el = $bindable(),
+		//
+		tooltip: tooltipConfig = () => ({ enabled: false }),
 		//
 		...rest
 	}: Props = $props();
@@ -147,11 +152,22 @@
 </script>
 
 {#if href}
-	<a {href} bind:this={el} class={twMerge(_class, classProp)} {...rest as any}>
+	<a
+		{href}
+		bind:this={el}
+		class={twMerge(_class, classProp)}
+		use:tooltip={tooltipConfig}
+		{...rest as any}
+	>
 		{@render children?.({})}
 	</a>
 {:else}
-	<button bind:this={el} class={twMerge(_class, classProp)} {...rest}>
+	<button
+		bind:this={el}
+		class={twMerge(_class, classProp)}
+		use:tooltip={tooltipConfig}
+		{...rest}
+	>
 		{@render children?.({ checked })}
 	</button>
 {/if}
