@@ -20,11 +20,11 @@
 	import { onDestroy, type Snippet } from "svelte";
 	import { fileDropzone } from "../../actions/file-dropzone.svelte.js";
 	import { highlightDragover } from "../../actions/highlight-dragover.svelte.js";
-	import { createValidationResult, tooltip } from "../../actions/index.js";
+	import { tooltip } from "../../actions/index.js";
 	import {
+		validate as validateAction,
 		type ValidateOptions,
 		type ValidationResult,
-		validate as validateAction,
 	} from "../../actions/validate.svelte.js";
 	import type { TranslateFn } from "../../types.js";
 	import { forceDownload } from "../../utils/force-download.js";
@@ -175,6 +175,8 @@
 		withOnProgress?: boolean;
 		classControls?: string;
 		isLoading?: boolean;
+		//
+		classWrap?: string;
 	}
 </script>
 
@@ -243,6 +245,7 @@
 			}
 		},
 		serializeValue = JSON.stringify,
+		classWrap = "",
 		// ...rest
 	}: Props = $props();
 
@@ -447,7 +450,7 @@
 {/snippet}
 
 <div
-	class="w-full stuic-field-assets"
+	class={twMerge("w-full stuic-field-assets mb-8", classWrap)}
 	use:highlightDragover={() => ({
 		enabled: typeof processAssets === "function",
 		classes: ["outline-dashed outline-2 outline-neutral-300"],
