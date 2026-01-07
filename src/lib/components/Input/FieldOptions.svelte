@@ -558,7 +558,7 @@
 					vals = vals.slice(0, limit);
 					extra = `, ... <span class="text-sm opacity-50">(+${(origLength - limit)})</span>`;
 				}
-				return vals.map(_renderOptionLabel).join(", ") + extra;
+				return vals.filter(v => v != null).map(_renderOptionLabel).join(", ") + extra;
 			} catch (e) {
 				clog.warn(e);
 				return `${e}`; // either invalid json or not array...
