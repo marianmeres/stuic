@@ -15,7 +15,11 @@
 		"lint": "eslint . && prettier --check .",
 		"test": "vitest --dir src/",
 		"svelte-check": "svelte-check",
-		"svelte-package": "svelte-package"
+		"svelte-package": "svelte-package",
+		"release": "./release.sh",
+		"publish": "npm run build && npm publish --access public",
+		"rp": "npm run release patch && npm run publish",
+		"rpm": "npm run release minor && npm run publish"
 	},
 	"files": [
 		"dist",
