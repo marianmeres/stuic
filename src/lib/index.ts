@@ -43,6 +43,7 @@ export * from "./components/Progress/index.js";
 export * from "./components/SlidingPanels/index.js";
 export * from "./components/Spinner/index.js";
 export * from "./components/Switch/index.js";
+export * from "./components/Thc/index.js";
 export * from "./components/TwCheck/index.js";
 export * from "./components/TypeaheadInput/index.js";
 export * from "./components/X/index.js";
