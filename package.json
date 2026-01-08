@@ -16,10 +16,8 @@
 		"test": "vitest --dir src/",
 		"svelte-check": "svelte-check",
 		"svelte-package": "svelte-package",
-		"release": "./release.sh",
-		"publish": "npm run build && npm publish --access public",
-		"rp": "npm run release patch && npm run publish",
-		"rpm": "npm run release minor && npm run publish"
+		"rp": "npm run build && ./release.sh patch",
+		"rpm": "npm run build && ./release.sh minor"
 	},
 	"files": [
 		"dist",
