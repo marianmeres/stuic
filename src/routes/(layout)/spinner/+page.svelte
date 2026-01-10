@@ -1,14 +1,13 @@
 <script lang="ts">
 	import Spinner from "$lib/components/Spinner/Spinner.svelte";
-	import Spinner2 from "$lib/components/Spinner/Spinner2.svelte";
-	import SpinnerBasic from "$lib/components/Spinner/SpinnerBasic.svelte";
+	import SpinnerCircle from "$lib/components/Spinner/SpinnerCircle.svelte";
 	import SpinnerUnicode, {
 		spinnerCreateBackAndForthCharFrames,
 		type SpinnerUnicodeVariant,
 	} from "$lib/components/Spinner/SpinnerUnicode.svelte";
 	import { createTickerRAF } from "@marianmeres/ticker";
 	import { untrack } from "svelte";
-	import SpinnerCircle from "../../../lib/components/Spinner/SpinnerCircle.svelte";
+	import SpinnerCircleOscillate from "../../../lib/components/Spinner/SpinnerCircleOscillate.svelte";
 	import { oscillate } from "../../../lib/utils/oscillate.js";
 
 	let w = ["w-4", "w-5", "w-8", "w-16"];
@@ -74,100 +73,75 @@
 	// });
 </script>
 
-<div class="flex items-center space-x-6">
-	<span class="flex items-center space-x-2">
-		<input type="range" bind:value={count} min={3} max={12} step="1" />
-		<span>{count}</span>
-	</span>
-	<span class="flex items-center space-x-2">
-		<input type="range" bind:value={duration} min={400} max={2000} step="100" />
-		<span>{duration}</span>
-	</span>
-	<span class="flex items-center space-x-2">
-		<input type="range" bind:value={size} min={0} max={3} step="1" />
-		<span>{w[size]}</span>
-	</span>
-</div>
-
-<div class="space-y-6 mt-6">
-	<div class="space-x-6">
-		<Spinner class={w[size]} {count} {duration} thickness="thin" height="short" />
-		<Spinner class={w[size]} {count} {duration} thickness="thin" height="normal" />
-		<Spinner class={w[size]} {count} {duration} thickness="thin" height="tall" />
-	</div>
-	<div class="space-x-6">
-		<Spinner class={w[size]} {count} {duration} thickness="normal" height="short" />
-		<Spinner class={w[size]} {count} {duration} thickness="normal" height="normal" />
-		<Spinner class={w[size]} {count} {duration} thickness="normal" height="tall" />
-	</div>
-	<div class="space-x-6">
-		<Spinner class={w[size]} {count} {duration} thickness="thick" height="short" />
-		<Spinner class={w[size]} {count} {duration} thickness="thick" height="normal" />
-		<Spinner class={w[size]} {count} {duration} thickness="thick" height="tall" />
-	</div>
-</div>
+<Spinner />
 
 <hr class="my-6" />
 
 <div class="space-y-6">
 	<!-- Thickness variations -->
 	<div class="flex items-center space-x-6">
-		<SpinnerBasic thickness="thin" />
-		<SpinnerBasic thickness="normal" />
-		<SpinnerBasic thickness="thick" />
-	</div>
-
-	<!-- Size variations using class -->
-	<div class="flex items-center space-x-6">
-		<SpinnerBasic class="size-4" />
-		<SpinnerBasic class="size-6" />
-		<SpinnerBasic class="size-10" />
-	</div>
-
-	<!-- Color variations via text color -->
-	<div class="flex items-center space-x-6">
-		<SpinnerBasic class="text-red-500" />
-		<SpinnerBasic class="text-blue-600" />
-		<SpinnerBasic class="text-green-500 opacity-50" />
-	</div>
-
-	<!-- Direction -->
-	<div class="flex items-center space-x-6">
-		<SpinnerBasic direction="cw" />
-		<SpinnerBasic direction="ccw" />
-	</div>
-</div>
-
-<hr class="my-6" />
-
-<div class="space-y-6">
-	<!-- Thickness variations -->
-	<div class="flex items-center space-x-6">
-		<Spinner2 thickness="thin" />
-		<Spinner2 thickness="normal" />
-		<Spinner2 thickness="thick" />
+		<Spinner thickness="thin" />
+		<Spinner thickness="normal" />
+		<Spinner thickness="thick" />
 	</div>
 
 	<!-- Height variations -->
 	<div class="flex items-center space-x-6">
-		<Spinner2 height="short" />
-		<Spinner2 height="normal" />
-		<Spinner2 height="tall" />
+		<Spinner height="short" />
+		<Spinner height="normal" />
+		<Spinner height="tall" thickness="thick" rounded={1} />
 	</div>
 
 	<!-- Color and direction -->
 	<div class="flex items-center space-x-6">
-		<Spinner2 class="text-red-500" />
-		<Spinner2 class="text-blue-600" direction="ccw" />
-		<Spinner2 class="text-green-500" count={12} />
+		<Spinner class="text-red-500" />
+		<Spinner class="text-blue-600" direction="ccw" />
+		<Spinner class="text-green-500" count={12} />
 	</div>
 </div>
 
 <hr class="my-6" />
 
+<SpinnerCircle />
+
+<hr class="my-6" />
+
+<div class="space-y-6">
+	<!-- Thickness variations -->
+	<div class="flex items-center space-x-6">
+		<SpinnerCircle thickness="thin" />
+		<SpinnerCircle thickness="normal" />
+		<SpinnerCircle thickness="thick" />
+	</div>
+
+	<!-- Size variations using class -->
+	<div class="flex items-center space-x-6">
+		<SpinnerCircle class="size-4" />
+		<SpinnerCircle class="size-6" />
+		<SpinnerCircle class="size-10" />
+	</div>
+
+	<!-- Color variations via text color -->
+	<div class="flex items-center space-x-6">
+		<SpinnerCircle class="text-red-500" />
+		<SpinnerCircle class="text-blue-600" />
+		<SpinnerCircle class="text-green-500 opacity-50" />
+	</div>
+
+	<!-- Direction -->
+	<div class="flex items-center space-x-6">
+		<SpinnerCircle direction="cw" />
+		<SpinnerCircle direction="ccw" />
+	</div>
+</div>
+
+<hr class="my-6" />
+
+<hr class="my-6" />
+
 <div class="flex items-center space-x-4">
-	<SpinnerCircle class="text-red-500" />
-	<SpinnerCircle
+	<SpinnerCircleOscillate class="text-red-500" />
+	<SpinnerCircleOscillate
 		class="text-blue-600 size-5"
 		strokeWidth={6}
 		bgStrokeColor=""

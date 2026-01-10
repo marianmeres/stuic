@@ -1,47 +1,62 @@
 <script lang="ts" module>
 	export interface Props {
 		class?: string;
-		bgStrokeColor?: string;
-		strokeWidth?: number;
-		noOscillate?: boolean;
-		rotateDuration?: string;
+		/** One "loop" duration in ms */
+		duration?: number;
+		/** Border thickness preset */
+		thickness?: "normal" | "thin" | "thick";
+		/** Rotation direction */
+		direction?: "cw" | "ccw";
 	}
 </script>
 
 <script lang="ts">
-	import { createTickerRAF } from "@marianmeres/ticker";
-	import { onDestroy } from "svelte";
-	import { oscillate } from "../../utils/oscillate.js";
 	import { twMerge } from "../../utils/tw-merge.js";
-	import Circle from "../Circle/Circle.svelte";
 
 	let {
-		class: classProp = "",
-		bgStrokeColor = "rgba(0 0 0 / .1)",
-		strokeWidth,
-		noOscillate,
-		rotateDuration = ".75s",
+		class: classProp,
+		duration = 750,
+		thickness = "normal",
+		direction = "cw",
 	}: Props = $props();
 
-	/**
-	 * NOTE: we happen to have 4 distinct values here which effect the overall look and feel...
-	 *  1. the tick frequency
-	 *  2. the oscillation time input (seconds)
-	 *  3. the oscillation speed factor (1)
-	 *  4. the animation-spin duration
-	 */
-
-	const ticker = createTickerRAF(50, true);
-	let completeness = $derived(noOscillate ? 0.66 : oscillate($ticker / 1000, 0.15, 0.85));
-
-	onDestroy(ticker.stop);
+	let _thickness = $derived(
+		"thickness-" +
+			(["normal", "thin", "thick"].includes(thickness) ? thickness : "normal")
+	);
 </script>
 
-<Circle
-	animateCompletenessMs={0}
-	{completeness}
-	class={twMerge("stuic-spinner-circle animate-spin", classProp)}
-	{bgStrokeColor}
-	{strokeWidth}
-	style="animation-duration: {rotateDuration}"
-/>
+<span
+	class={twMerge("stuic-spinner-basic inline-block size-5", _thickness, classProp)}
+	style="animation-duration: {duration}ms; animation-direction: {direction === 'ccw'
+		? 'reverse'
+		: 'normal'};"
+></span>
+
+<style>
+	.stuic-spinner-basic {
+		box-sizing: border-box;
+		border-radius: 50%;
+		border-style: solid;
+		border-color: currentColor;
+		border-top-color: transparent;
+		animation: spin linear infinite;
+	}
+
+	/* Thickness presets */
+	.stuic-spinner-basic.thickness-thin {
+		border-width: 1px;
+	}
+	.stuic-spinner-basic.thickness-normal {
+		border-width: 2px;
+	}
+	.stuic-spinner-basic.thickness-thick {
+		border-width: 4px;
+	}
+
+	@keyframes spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+</style>

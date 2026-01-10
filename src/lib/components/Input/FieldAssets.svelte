@@ -38,7 +38,7 @@
 	import Circle from "../Circle/Circle.svelte";
 	import { Modal } from "../Modal/index.js";
 	import { NotificationsStack } from "../Notifications/notifications-stack.svelte.js";
-	import SpinnerCircle from "../Spinner/SpinnerCircle.svelte";
+	import SpinnerCircleOscillate from "../Spinner/SpinnerCircleOscillate.svelte";
 	import { isTHCNotEmpty, type THC } from "../Thc/Thc.svelte";
 	import { X } from "../X/index.js";
 	import InputWrap from "./_internal/InputWrap.svelte";
@@ -377,7 +377,7 @@
 {#snippet default_render()}
 	{#if isLoading}
 		<div class="p-2 pl-8 flex items-center justify-center min-h-24">
-			<SpinnerCircle />
+			<SpinnerCircleOscillate />
 		</div>
 	{:else}
 		<div class={["p-2 flex items-center gap-0.5 flex-wrap"]}>
@@ -427,7 +427,7 @@
 										rotate={-90}
 									/>
 								{:else}
-									<SpinnerCircle bgStrokeColor="gray" />
+									<SpinnerCircleOscillate bgStrokeColor="gray" />
 								{/if}
 							</span>
 						{/if}

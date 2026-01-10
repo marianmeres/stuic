@@ -657,7 +657,7 @@
 					<div
 						class={[
 							"options overflow-y-auto overflow-x-hidden space-y-1 scrollbar-thin",
-							"h-[220px] max-h-[220px]",
+							"h-55 max-h-55",
 						]}
 						bind:this={optionsBox}
 						tabindex="-1"

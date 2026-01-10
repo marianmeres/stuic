@@ -1,136 +1,85 @@
 <script lang="ts" module>
 	export interface Props {
 		class?: string;
-		/** One "loop" duration in ms */
-		duration?: number;
-		/** Number of "hands" (3-12) */
 		count?: number;
-		thickness?: "normal" | "thin" | "thick";
-		height?: "normal" | "tall" | "short";
+		thickness?: "thin" | "normal" | "thick";
+		height?: "short" | "normal" | "tall";
 		direction?: "cw" | "ccw";
+		rounded?: number;
+		duration?: number;
 	}
 </script>
 
 <script lang="ts">
-	import { twMerge } from "../../utils/tw-merge.js";
-
-	// this is quite verbose, but very straight forward implementation,
-	// and always rendered without any issues (opposed to linear-gradient hackish stuff)
-
 	let {
-		class: _class,
-		duration = 750,
+		class: classProp,
 		count = 8,
-		thickness = "thick",
+		thickness = "normal",
 		height = "normal",
 		direction = "cw",
+		rounded = 2,
+		duration = 750,
 	}: Props = $props();
 
-	let _count = $derived(Math.max(3, Math.min(12, count)));
+	const thicknessMap: Record<NonNullable<Props["thickness"]>, number> = {
+		thin: 1,
+		normal: 2,
+		thick: 4,
+	};
+	const heightMap: Record<NonNullable<Props["height"]>, number> = {
+		short: 5,
+		normal: 7,
+		tall: 10,
+	};
 
-	let _segments = $derived.by(() => {
-		let out = [];
-		for (let i = 0; i < _count; i++) {
-			out.push({
-				rotate: (360 / _count) * i,
-				delay:
-					(direction === "ccw" ? 1 : -1) * (duration - (duration / _count) * (i + 1)),
-				duration,
-			});
-		}
-		return out;
-	});
-
-	let _thickness = $derived(
-		"thickness-" +
-			(["normal", "thin", "thick"].includes(thickness) ? thickness : "normal")
-	);
-
-	let _height = $derived(
-		"height-" + (["normal", "tall", "short"].includes(height) ? height : "normal")
-	);
+	const barLength = $derived(heightMap[height]);
+	const barWidth = $derived(thicknessMap[thickness]);
+	const size = $derived(barLength * 3);
+	const center = $derived(size / 2);
+	const barHeight = $derived(barLength - 1);
 </script>
 
-<div class="spinner {_thickness} {_height} {twMerge('inline-block w-5', _class)}">
-	{#each _segments as s}
-		<div
-			style={[
-				`transform: rotate(${s.rotate}deg);`,
-				`animation-delay: ${s.delay}ms;`,
-				`animation-duration: ${s.duration}ms;`,
-			].join("")}
-		></div>
+<div
+	class="spinner {classProp ?? ''}"
+	style:--size="{size}px"
+	style:--duration="{duration}ms"
+>
+	{#each Array(count) as _, i}
+		{@const angle = (360 / count) * i}
+		{@const delay = direction === "ccw" ? i / count : (count - i) / count}
+		<span
+			class="bar"
+			style:width="{barWidth}px"
+			style:height="{barHeight}px"
+			style:border-radius="{rounded}px"
+			style:transform-origin="center {center}px"
+			style:transform="translateX(-50%) rotate({angle}deg)"
+			style:animation-delay="{-delay * duration}ms"
+		></span>
 	{/each}
 </div>
 
 <style>
-	.spinner,
-	.spinner div,
-	.spinner div:after {
-		box-sizing: border-box;
-	}
-
 	.spinner {
-		/* display: inline-block; */
 		position: relative;
-		aspect-ratio: 1/1;
-		pointer-events: none;
+		width: var(--size);
+		height: var(--size);
 	}
 
-	.spinner div {
-		width: 100%;
-		height: 100%;
+	.bar {
 		position: absolute;
-		inset: 0;
-		/* animation: spinner 1.2s linear infinite; */
-		animation-name: spinner;
-		animation-timing-function: linear;
-		animation-iteration-count: infinite;
-	}
-
-	.spinner div:after {
-		content: " ";
-		display: block;
-		position: absolute;
-
-		top: 0;
-		/* left: 46%;
-		width: 8%; 
-		height: 27%; */
-		border-radius: 35%;
+		left: 50%;
+		top: 0px;
 		background: currentColor;
-	}
-	/* thickness */
-	.spinner.thickness-thin div:after {
-		left: 47.5%;
-		width: 5%;
-	}
-	.spinner.thickness-normal div:after {
-		left: 46%;
-		width: 8%;
-	}
-	.spinner.thickness-thick div:after {
-		left: 44.5%;
-		width: 11%;
+		animation: fade var(--duration) linear infinite;
 	}
 
-	/* height */
-	.spinner.height-short div:after {
-		height: 21%;
-	}
-	.spinner.height-normal div:after {
-		height: 27%;
-	}
-	.spinner.height-tall div:after {
-		height: 33%;
-	}
-
-	@keyframes spinner {
-		0% {
+	@keyframes fade {
+		from {
 			opacity: 1;
 		}
-		100% {
-			opacity: 0;
+		to {
+			opacity: 0.12;
 		}
 	}
 </style>
