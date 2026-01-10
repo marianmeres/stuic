@@ -159,8 +159,8 @@
 		onOpen?: () => void;
 		/** Called when menu closes */
 		onClose?: () => void;
-		/** Called when any action item is selected */
-		onSelect?: (item: DropdownMenuActionItem) => void;
+		/** Called when any action item is selected (fallback if item has no onSelect) */
+		onSelect?: (item: DropdownMenuActionItem) => void | boolean;
 		/** Reference to trigger element */
 		triggerEl?: HTMLButtonElement;
 		/** Reference to dropdown element */
@@ -213,7 +213,7 @@
 		bg-white dark:bg-neutral-800
 		text-neutral-900 dark:text-neutral-100
 		border border-neutral-200 dark:border-neutral-700
-		rounded-md shadow-lg
+		rounded-md shadow-md
 		p-1
 		overflow-y-auto
 		z-50
@@ -432,8 +432,8 @@
 	function selectItem(item: DropdownMenuActionItem) {
 		if (item.disabled) return;
 
-		const result = item.onSelect?.();
-		onSelect?.(item);
+		// Call item's onSelect if defined, otherwise fall back to component's onSelect
+		const result = item.onSelect ? item.onSelect() : onSelect?.(item);
 
 		if (result !== false && closeOnSelect) {
 			isOpen = false;
