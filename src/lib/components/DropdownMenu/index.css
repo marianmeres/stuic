@@ -1,0 +1,16 @@
+/* Base dropdown styles */
+.stuic-dropdown-menu-dropdown {
+	scrollbar-width: thin;
+}
+
+/* CSS Anchor Positioning supported mode - flip only when viewport overflow */
+@supports (anchor-name: --anchor) {
+	.stuic-dropdown-menu-dropdown {
+		position-try-fallbacks: flip-block, flip-inline;
+	}
+}
+
+/* Expandable section animation handled by Svelte slide transition */
+.stuic-dropdown-menu-expandable-content {
+	overflow: hidden;
+}

@@ -14,6 +14,7 @@
 		'dismissible-message', 
         // 'drag-drop', 
         'drawer',
+        'dropdown-menu',
 		'file-dropzone',
 		'hover-expandable-width',
 		'input',
