@@ -1,5 +1,7 @@
 <script lang="ts">
 	import Spinner from "$lib/components/Spinner/Spinner.svelte";
+	import Spinner2 from "$lib/components/Spinner/Spinner2.svelte";
+	import SpinnerBasic from "$lib/components/Spinner/SpinnerBasic.svelte";
 	import SpinnerUnicode, {
 		spinnerCreateBackAndForthCharFrames,
 		type SpinnerUnicodeVariant,
@@ -102,6 +104,62 @@
 		<Spinner class={w[size]} {count} {duration} thickness="thick" height="short" />
 		<Spinner class={w[size]} {count} {duration} thickness="thick" height="normal" />
 		<Spinner class={w[size]} {count} {duration} thickness="thick" height="tall" />
+	</div>
+</div>
+
+<hr class="my-6" />
+
+<div class="space-y-6">
+	<!-- Thickness variations -->
+	<div class="flex items-center space-x-6">
+		<SpinnerBasic thickness="thin" />
+		<SpinnerBasic thickness="normal" />
+		<SpinnerBasic thickness="thick" />
+	</div>
+
+	<!-- Size variations using class -->
+	<div class="flex items-center space-x-6">
+		<SpinnerBasic class="size-4" />
+		<SpinnerBasic class="size-6" />
+		<SpinnerBasic class="size-10" />
+	</div>
+
+	<!-- Color variations via text color -->
+	<div class="flex items-center space-x-6">
+		<SpinnerBasic class="text-red-500" />
+		<SpinnerBasic class="text-blue-600" />
+		<SpinnerBasic class="text-green-500 opacity-50" />
+	</div>
+
+	<!-- Direction -->
+	<div class="flex items-center space-x-6">
+		<SpinnerBasic direction="cw" />
+		<SpinnerBasic direction="ccw" />
+	</div>
+</div>
+
+<hr class="my-6" />
+
+<div class="space-y-6">
+	<!-- Thickness variations -->
+	<div class="flex items-center space-x-6">
+		<Spinner2 thickness="thin" />
+		<Spinner2 thickness="normal" />
+		<Spinner2 thickness="thick" />
+	</div>
+
+	<!-- Height variations -->
+	<div class="flex items-center space-x-6">
+		<Spinner2 height="short" />
+		<Spinner2 height="normal" />
+		<Spinner2 height="tall" />
+	</div>
+
+	<!-- Color and direction -->
+	<div class="flex items-center space-x-6">
+		<Spinner2 class="text-red-500" />
+		<Spinner2 class="text-blue-600" direction="ccw" />
+		<Spinner2 class="text-green-500" count={12} />
 	</div>
 </div>
 
