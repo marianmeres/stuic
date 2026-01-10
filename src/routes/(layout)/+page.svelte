@@ -3,6 +3,7 @@
 	let links = [
 		'alert-confirm-prompt', 
 		'animated-ellipsis',
+		'avatar-initials',
 		'app-shell', 
 		// 'avatar', 
 		'backdrop', 

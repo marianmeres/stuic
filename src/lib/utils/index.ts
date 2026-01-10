@@ -1,3 +1,4 @@
+export * from "./avatar-colors.js";
 export * from "./body-scroll-locker.js";
 export * from "./breakpoint.svelte.js";
 export * from "./colors.js";
