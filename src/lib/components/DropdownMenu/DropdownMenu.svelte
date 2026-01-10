@@ -299,7 +299,7 @@
 	let wrapperEl: HTMLDivElement = $state()!;
 	let activeItemEl: HTMLButtonElement | undefined = $state();
 	const reducedMotion = prefersReducedMotion();
-	const isSupported = !forceFallback && isAnchorPositioningSupported();
+	const isSupported = untrack(() => !forceFallback && isAnchorPositioningSupported());
 
 	// Track expanded sections (independent toggle - multiple can be open)
 	let expandedSections = $state<Set<string | number>>(new Set());
