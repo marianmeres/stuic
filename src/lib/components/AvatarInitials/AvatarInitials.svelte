@@ -52,7 +52,7 @@
 		if (_input.includes("@")) {
 			const username = _input.split("@")[0];
 			// Split by common separators (., _, -)
-			const parts = username.split(/[._-]/).filter(Boolean);
+			const parts = username.split(/[._+-]/).filter(Boolean);
 			if (parts.length > 1) {
 				_input = parts.map((p) => p.charAt(0)).join("");
 			} else {

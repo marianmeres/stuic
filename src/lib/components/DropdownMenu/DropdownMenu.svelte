@@ -213,7 +213,7 @@
 		bg-white dark:bg-neutral-800
 		text-neutral-900 dark:text-neutral-100
 		border border-neutral-200 dark:border-neutral-700
-		rounded-md shadow-md
+		rounded-md shadow-sm
 		p-1
 		overflow-y-auto
 		z-50
