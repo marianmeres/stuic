@@ -5,7 +5,7 @@
 		/** Optional string for color hash calculation (e.g., email, user ID). Falls back to `input` */
 		hashSource?: string;
 		/** Size preset or custom Tailwind size class */
-		size?: "sm" | "md" | "lg" | string;
+		size?: "sm" | "md" | "lg" | "xl" | string;
 		/** Click handler - when provided, renders as a button */
 		onclick?: (event: MouseEvent) => void;
 		/** Background color (Tailwind class). Ignored if autoColor=true */
@@ -41,6 +41,7 @@
 		sm: "size-8 text-xs",
 		md: "size-10 text-sm",
 		lg: "size-14 text-base",
+		xl: "size-16 text-lg",
 	};
 
 	let initials = $derived.by(() => {

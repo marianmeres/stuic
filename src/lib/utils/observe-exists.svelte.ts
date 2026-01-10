@@ -32,7 +32,7 @@ export function observeExists(
 	if (!selector) throw new TypeError("Expecting non empty selector");
 	const { rootElement = document.body } = options;
 	const ns = `[observeExists] [${selector}]`;
-	const clog = (...args: unknown[]) => console.debug(ns, ...args);
+	const clogDebug = (...args: unknown[]) => console.debug(ns, ...args);
 
 	const check = () => rootElement.querySelector(selector) !== null;
 
@@ -56,7 +56,7 @@ export function observeExists(
 	});
 
 	// start observing now
-	clog(`connecting...`);
+	clogDebug(`connecting...`);
 	observer.observe(rootElement, { childList: true, subtree: true });
 
 	return {
@@ -64,7 +64,7 @@ export function observeExists(
 			return current;
 		},
 		disconnect() {
-			clog(`disconnecting...`);
+			clogDebug(`disconnecting...`);
 			observer.disconnect();
 		},
 		forceCheck() {
