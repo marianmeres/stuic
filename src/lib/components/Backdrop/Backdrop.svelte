@@ -14,6 +14,9 @@
 		visible?: boolean;
 		noScrollLock?: boolean;
 	}
+
+	// Stack to track visible Backdrops - only topmost handles Escape
+	const escapeStack: Set<symbol> = new Set();
 </script>
 
 <script lang="ts">
@@ -104,17 +107,34 @@
 	// Note, that this will also reset if nested... (which is not desired, but ignoring)
 	onDestroy(BodyScroll.unlock);
 
+	// Unique ID for this Backdrop instance
+	const instanceId = Symbol();
+
 	$effect(() => {
+		if (!visible || typeof onEscape !== "function") return;
+
+		// Add to stack when visible
+		escapeStack.add(instanceId);
+
 		function onkeydown(e: KeyboardEvent) {
-			if (e.key === "Escape" && typeof onEscape === "function") {
-				e.stopPropagation();
-				e.stopImmediatePropagation();
+			// Skip if already handled by another component (ModalDialog, DropdownMenu, etc.)
+			if (e.defaultPrevented) return;
+
+			// Only handle if this is the topmost Backdrop
+			const stack = [...escapeStack];
+			if (stack[stack.length - 1] !== instanceId) return;
+
+			if (e.key === "Escape") {
 				e.preventDefault();
-				onEscape();
+				onEscape?.();
 			}
 		}
-		el?.addEventListener("keydown", onkeydown);
-		return () => el?.removeEventListener("keydown", onkeydown);
+
+		window.addEventListener("keydown", onkeydown);
+		return () => {
+			escapeStack.delete(instanceId);
+			window.removeEventListener("keydown", onkeydown);
+		};
 	});
 </script>
 
