@@ -11,6 +11,7 @@ export * from "./file-from-bloburl.js";
 export * from "./force-download.js";
 export * from "./get-file-type-label.js";
 export * from "./get-id.js";
+export * from "./input-history.svelte.js";
 export * from "./is-browser.js";
 export * from "./is-image.js";
 export * from "./is-mac.js";

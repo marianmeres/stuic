@@ -19,6 +19,7 @@
 		'file-dropzone',
 		'hover-expandable-width',
 		'input',
+		'input-history',
 		'kbd-shortcut',
 		'modal-dialog',
 		'modal',
