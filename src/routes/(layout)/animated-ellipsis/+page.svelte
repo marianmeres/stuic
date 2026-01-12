@@ -2,4 +2,6 @@
 	import { AnimatedEllipsis } from "$lib/index.js";
 </script>
 
-Loading<AnimatedEllipsis /><br />
+<div>
+	Loading<AnimatedEllipsis /><br />
+</div>

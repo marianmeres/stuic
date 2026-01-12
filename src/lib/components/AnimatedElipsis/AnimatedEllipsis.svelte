@@ -2,53 +2,87 @@
 	export interface Props {
 		class?: string;
 		enabled?: boolean;
+		/** Animation cycle duration in ms (default: 1000) */
+		speed?: number;
 	}
 </script>
 
 <script lang="ts">
-	import { createTickerRAF } from "@marianmeres/ticker";
-	import { onMount } from "svelte";
-
-	let { class: _class, enabled = true }: Props = $props();
-
-	const speed = 250;
-	let visible = $state([false, false, false]);
-	let i = $state(0);
-
-	onMount(() => {
-		const ticker = createTickerRAF(speed, true);
-		const unsub = ticker.subscribe((t) => {
-			if (i > visible.length - 1) {
-				i = 0;
-				visible = visible.map((v) => false);
-			} else {
-				visible[i] = true;
-				i++;
-			}
-		});
-		return () => {
-			ticker.stop();
-			unsub();
-		};
-	});
+	let { class: _class, enabled = true, speed = 1000 }: Props = $props();
 </script>
 
 <!-- prettier-ignore -->
-<span class={_class}>
-	<span 
-		class={visible[0] || !enabled ? 'opacity-100' : 'opacity-0'} 
-		style="transition-duration: {speed}ms;"
-	>.</span><span 
-		class={visible[1] || !enabled ? 'opacity-100' : 'opacity-0'}
-		style="transition-duration: {speed}ms;"
-	>.</span><span 
-		class={visible[2] || !enabled ? 'opacity-100' : 'opacity-0'}
-		style="transition-duration: {speed}ms;"
-	>.</span>
-</span>
+<span class={_class} style:--duration="{speed}ms"
+	><span class="dot dot1" class:paused={!enabled}>.</span
+	><span class="dot dot2" class:paused={!enabled}>.</span
+	><span class="dot dot3" class:paused={!enabled}>.</span
+></span>
 
 <style>
-	span span {
-		transition-property: opacity;
+	.dot {
+		opacity: 0;
+	}
+
+	.dot1 {
+		animation: dot1 var(--duration, 1s) infinite linear;
+	}
+	.dot2 {
+		animation: dot2 var(--duration, 1s) infinite linear;
+	}
+	.dot3 {
+		animation: dot3 var(--duration, 1s) infinite linear;
+	}
+
+	.dot.paused {
+		animation: none;
+		opacity: 1;
+	}
+
+	@keyframes dot1 {
+		0%,
+		20% {
+			opacity: 0;
+		}
+		25% {
+			opacity: 1;
+		}
+		80% {
+			opacity: 1;
+		}
+		100% {
+			opacity: 0;
+		}
+	}
+
+	@keyframes dot2 {
+		0%,
+		45% {
+			opacity: 0;
+		}
+		50% {
+			opacity: 1;
+		}
+		80% {
+			opacity: 1;
+		}
+		100% {
+			opacity: 0;
+		}
+	}
+
+	@keyframes dot3 {
+		0%,
+		70% {
+			opacity: 0;
+		}
+		75% {
+			opacity: 1;
+		}
+		80% {
+			opacity: 1;
+		}
+		100% {
+			opacity: 0;
+		}
 	}
 </style>
