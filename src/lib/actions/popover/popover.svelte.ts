@@ -279,15 +279,8 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 
 	function onClickTrigger(e: MouseEvent) {
 		e.stopPropagation();
-		const trigger = currentOptions.trigger || "click";
-		if (trigger === "hover-or-click") {
-			// Click only opens, doesn't close (fallback for touch)
-			if (!isVisible) show();
-		} else {
-			// Normal click toggle behavior
-			if (isVisible) hide();
-			else show();
-		}
+		if (isVisible) hide();
+		else show();
 	}
 
 	// Render content into popover element
