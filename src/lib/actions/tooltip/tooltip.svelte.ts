@@ -1,4 +1,5 @@
 import { twMerge } from "../../utils/tw-merge.js";
+import { addAnchorName, removeAnchorName } from "../../utils/anchor-name.js";
 //
 import "./index.css";
 
@@ -154,7 +155,8 @@ export function tooltip(anchorEl: HTMLElement, fn?: TooltipConfig) {
 	const anchorName = `--anchor-${rnd}`;
 
 	// node once init
-	anchorEl.style.cssText += `anchor-name: ${anchorName};`;
+	// Use addAnchorName to support multiple anchor names on same element (e.g., popover + tooltip)
+	addAnchorName(anchorEl, anchorName);
 	anchorEl.setAttribute("aria-describedby", id);
 	anchorEl.setAttribute("aria-expanded", "false");
 
@@ -303,6 +305,9 @@ export function tooltip(anchorEl: HTMLElement, fn?: TooltipConfig) {
 			anchorEl.removeEventListener("mouseleave", schedule_hide);
 			anchorEl.removeEventListener("focus", schedule_show);
 			anchorEl.removeEventListener("blur", schedule_hide);
+
+			// Remove anchor name (preserves other anchor names on element)
+			removeAnchorName(anchorEl, anchorName);
 
 			// might not have been initialized
 			tooltipEl?.removeEventListener("mouseenter", schedule_show);

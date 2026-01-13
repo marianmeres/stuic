@@ -1,5 +1,6 @@
 import { mount, unmount } from "svelte";
 import { twMerge } from "../../utils/tw-merge.js";
+import { addAnchorName, removeAnchorName } from "../../utils/anchor-name.js";
 import type { THC } from "../../components/Thc/Thc.svelte";
 import PopoverContent from "./PopoverContent.svelte";
 //
@@ -234,7 +235,8 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 
 	// Initialize anchor element - anchor-name is always set
 	// In forceFallback mode, the CSS is just ignored
-	anchorEl.style.cssText += `anchor-name: ${anchorName};`;
+	// Use addAnchorName to support multiple anchor names on same element (e.g., popover + tooltip)
+	addAnchorName(anchorEl, anchorName);
 	anchorEl.setAttribute("aria-haspopup", "dialog");
 	anchorEl.setAttribute("aria-expanded", "false");
 	anchorEl.setAttribute("aria-controls", id);
@@ -564,6 +566,9 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 			anchorEl.removeEventListener("mouseleave", scheduleHide);
 			anchorEl.removeEventListener("focus", scheduleShow);
 			anchorEl.removeEventListener("blur", scheduleHide);
+
+			// Remove anchor name (preserves other anchor names on element)
+			removeAnchorName(anchorEl, anchorName);
 
 			// Cleanup popover on unmount
 			if (mountedComponent) {

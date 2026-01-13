@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { popover, isPopoverSupported, type PopoverPosition } from "$lib/index.js";
+	import { popover, isPopoverSupported, type PopoverPosition, tooltip } from "$lib/index.js";
 	import { Spinner } from "$lib/index.js";
 	import { dummySentence } from "../../_utils/dummy-text.js";
 
@@ -374,6 +374,63 @@
 				})}
 			>
 				No Backdrop
+			</button>
+		</div>
+	</section>
+
+	<hr class="my-4" />
+
+	<section class="space-y-4">
+		<h2 class="text-xl font-semibold">Combined with Tooltip</h2>
+		<p class="text-sm text-neutral-600 dark:text-neutral-400">
+			Popover and tooltip can be used on the same element thanks to the anchor-name helper
+		</p>
+
+		<div class="flex gap-4 flex-wrap">
+			<button
+				class="px-4 py-2 bg-cyan-500 text-white rounded"
+				aria-label="Hover for tooltip, click for popover"
+				use:tooltip
+				use:popover={() => ({
+					content: "This is a popover (click triggered)",
+					position: "bottom",
+					class: "p-3 bg-white dark:bg-neutral-800",
+				})}
+			>
+				Tooltip + Popover
+			</button>
+
+			<button
+				class="px-4 py-2 bg-cyan-500 text-white rounded"
+				use:tooltip={() => ({
+					content: "Helpful tooltip text",
+					position: "top",
+				})}
+				use:popover={() => ({
+					content: {
+						html: "<div class='p-2'><strong>Rich popover content</strong><p class='text-sm mt-1'>Click to see, hover for tooltip</p></div>",
+					},
+					position: "bottom",
+					class: "bg-white dark:bg-neutral-800",
+				})}
+			>
+				Custom Both
+			</button>
+
+			<button
+				class="px-4 py-2 bg-cyan-500 text-white rounded"
+				use:tooltip={() => ({
+					content: "Quick info on hover",
+					position: "left",
+				})}
+				use:popover={() => ({
+					content: "Detailed popover on click",
+					trigger: "click",
+					position: "right",
+					class: "p-3 bg-white dark:bg-neutral-800",
+				})}
+			>
+				Left Tooltip / Right Popover
 			</button>
 		</div>
 	</section>
