@@ -97,7 +97,7 @@
 	class={twMerge(
 		"stuic-switch",
 		`m-2 
-		relative inline-flex flex-shrink-0 items-center
+		relative inline-flex shrink-0 items-center
 		rounded-full cursor-pointer
 
 		transition-colors duration-100

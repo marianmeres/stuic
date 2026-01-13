@@ -1,0 +1,62 @@
+/* Define CSS custom properties for use in gradients */
+:root {
+	--skeleton-base: #e5e5e5;
+	--skeleton-highlight: #f5f5f5;
+}
+
+.dark {
+	--skeleton-base: #404040;
+	--skeleton-highlight: #525252;
+}
+
+.stuic-skeleton-circle {
+	border-radius: 50%;
+}
+
+.stuic-skeleton-text-container {
+	display: flex;
+	flex-direction: column;
+}
+
+/* Shimmer animation */
+@keyframes skeleton-shimmer {
+	0% {
+		background-position: -200% 0;
+	}
+	100% {
+		background-position: 200% 0;
+	}
+}
+
+.stuic-skeleton-shimmer {
+	background: linear-gradient(
+		90deg,
+		var(--skeleton-base) 25%,
+		var(--skeleton-highlight) 50%,
+		var(--skeleton-base) 75%
+	);
+	background-size: 200% 100%;
+	animation: skeleton-shimmer var(--skeleton-duration, 1.5s) ease-in-out infinite;
+}
+
+/* Pulse animation */
+@keyframes skeleton-pulse {
+	0%, 100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.4;
+	}
+}
+
+.stuic-skeleton-pulse {
+	animation: skeleton-pulse var(--skeleton-duration, 1.5s) ease-in-out infinite;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+	.stuic-skeleton-shimmer,
+	.stuic-skeleton-pulse {
+		animation: none;
+	}
+}

@@ -28,6 +28,7 @@
 		'popover', 
 		'progress',
 		'resizable-width',
+		'skeleton', 
 		'sliding-panels',
 		'spinner', 
         'switch', 
