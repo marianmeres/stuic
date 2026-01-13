@@ -420,12 +420,8 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 			popoverEl.addEventListener("mouseleave", scheduleHide);
 		}
 
-		// For click mode with closeOnClickOutside
-		if (
-			currentOptions.trigger === "click" &&
-			currentOptions.closeOnClickOutside !== false &&
-			useAnchorPositioning
-		) {
+		// For click or hover mode with closeOnClickOutside
+		if (currentOptions.closeOnClickOutside !== false && useAnchorPositioning) {
 			// Delay adding click listener to avoid immediate close
 			setTimeout(() => {
 				document.addEventListener("click", onClickOutside);
