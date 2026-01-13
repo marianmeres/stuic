@@ -84,8 +84,11 @@ export type PopoverPosition =
 
 /**
  * Trigger mode for the popover.
+ * - "click": Opens/closes on click (default)
+ * - "hover": Opens on hover/focus, closes on leave/blur
+ * - "hover-or-click": Hover primary, click as fallback (for touch devices)
  */
-export type PopoverTrigger = "click" | "hover";
+export type PopoverTrigger = "click" | "hover" | "hover-or-click";
 
 /**
  * Options for the popover action.
@@ -97,7 +100,7 @@ export interface PopoverOptions {
 	content?: THC | null;
 	/** Preferred position relative to anchor */
 	position?: PopoverPosition;
-	/** Trigger mode: "click" (default) or "hover" */
+	/** Trigger mode: "click" (default), "hover", or "hover-or-click" (both, click as touch fallback) */
 	trigger?: PopoverTrigger;
 	/** Delay before showing (ms), mainly for hover mode */
 	showDelay?: number;
@@ -177,6 +180,18 @@ function getStringContent(content: THC | null | undefined): string {
  *   position: "top"
  * })}>
  *   Hover Me
+ * </button>
+ * ```
+ *
+ * @example
+ * ```svelte
+ * <!-- Hover with click fallback (for touch devices) -->
+ * <button use:popover={() => ({
+ *   content: "Works on hover and touch!",
+ *   trigger: "hover-or-click",
+ *   position: "top"
+ * })}>
+ *   Hover or Tap
  * </button>
  * ```
  *
@@ -264,10 +279,14 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 
 	function onClickTrigger(e: MouseEvent) {
 		e.stopPropagation();
-		if (isVisible) {
-			hide();
+		const trigger = currentOptions.trigger || "click";
+		if (trigger === "hover-or-click") {
+			// Click only opens, doesn't close (fallback for touch)
+			if (!isVisible) show();
 		} else {
-			show();
+			// Normal click toggle behavior
+			if (isVisible) hide();
+			else show();
 		}
 	}
 
@@ -532,12 +551,18 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 
 		if (trigger === "click") {
 			anchorEl.addEventListener("click", onClickTrigger);
-		} else {
-			// hover mode
+		} else if (trigger === "hover") {
 			anchorEl.addEventListener("mouseenter", scheduleShow);
 			anchorEl.addEventListener("mouseleave", scheduleHide);
 			anchorEl.addEventListener("focus", scheduleShow);
 			anchorEl.addEventListener("blur", scheduleHide);
+		} else if (trigger === "hover-or-click") {
+			// Both: hover primary, click fallback for touch
+			anchorEl.addEventListener("mouseenter", scheduleShow);
+			anchorEl.addEventListener("mouseleave", scheduleHide);
+			anchorEl.addEventListener("focus", scheduleShow);
+			anchorEl.addEventListener("blur", scheduleHide);
+			anchorEl.addEventListener("click", onClickTrigger);
 		}
 
 		return () => {
