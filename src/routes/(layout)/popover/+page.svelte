@@ -1,5 +1,11 @@
 <script lang="ts">
-	import { popover, isPopoverSupported, type PopoverPosition, tooltip } from "$lib/index.js";
+	import {
+		popover,
+		isPopoverSupported,
+		openPopover,
+		type PopoverPosition,
+		tooltip,
+	} from "$lib/index.js";
 	import { Spinner } from "$lib/index.js";
 	import { dummySentence } from "../../_utils/dummy-text.js";
 
@@ -156,28 +162,40 @@
 	<section class="space-y-4">
 		<h2 class="text-xl font-semibold">Programmatic Open</h2>
 		<p class="text-sm text-neutral-600 dark:text-neutral-400">
-			Control the popover state from outside using the <code>open</code> option
+			Control the popover using the <code>openPopover(id)</code> function from anywhere
 		</p>
 
 		<div class="flex gap-4 items-center flex-wrap">
 			<button
 				class="px-4 py-2 bg-violet-500 text-white rounded"
-				onclick={() => (isOpen = !isOpen)}
+				onclick={() => openPopover("programmatic-popover")}
 			>
-				{isOpen ? "Close" : "Open"} Programmatically
+				Open Programmatically 1
+			</button>
+
+			<button
+				class="px-4 py-2 bg-violet-500 text-white rounded"
+				onclick={() => openPopover("programmatic-popover")}
+			>
+				Open Programmatically 2
 			</button>
 
 			<span
 				class="px-4 py-2 bg-neutral-200 dark:bg-neutral-700 rounded cursor-default"
 				use:popover={() => ({
-					content: "Controlled by external state!",
+					id: "programmatic-popover",
+					content: "Controlled via registry!",
 					position: "bottom",
 					class: "p-3 bg-white dark:bg-neutral-800",
-					open: isOpen,
 					onHide: () => (isOpen = false),
+					onShow: () => (isOpen = true),
 				})}
 			>
 				Anchor (state: {isOpen ? "open" : "closed"})
+			</span>
+
+			<span>
+				isOpen: {isOpen}
 			</span>
 		</div>
 	</section>

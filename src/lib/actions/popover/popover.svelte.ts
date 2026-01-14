@@ -9,6 +9,65 @@ import "./index.css";
 // Registry of open popover hide functions for closeOthers feature
 const openPopovers = new Set<() => void>();
 
+// Registry of popovers by ID for programmatic control
+const popoverRegistry = new Map<
+	string,
+	{
+		show: () => void;
+		hide: () => void;
+		toggle: () => void;
+	}
+>();
+
+// Track if an open was just requested (to prevent same-click outside close)
+let openRequestedThisCycle = false;
+
+/**
+ * Open a popover by its registered ID.
+ *
+ * @param id - The popover ID to open
+ *
+ * @example
+ * ```svelte
+ * <script>
+ * import { openPopover } from '$lib/actions/popover';
+ * </script>
+ * <button onclick={() => openPopover('my-popover')}>Open</button>
+ * ```
+ */
+export function openPopover(id: string) {
+	const entry = popoverRegistry.get(id);
+	if (entry) {
+		openRequestedThisCycle = true;
+		setTimeout(() => {
+			openRequestedThisCycle = false;
+		}, 0);
+		// Close all other open popovers first
+		openPopovers.forEach((hideFn) => {
+			if (hideFn !== entry.hide) hideFn();
+		});
+		entry.show();
+	}
+}
+
+/**
+ * Close a popover by its registered ID.
+ *
+ * @param id - The popover ID to close
+ */
+export function closePopover(id: string) {
+	popoverRegistry.get(id)?.hide();
+}
+
+/**
+ * Toggle a popover by its registered ID.
+ *
+ * @param id - The popover ID to toggle
+ */
+export function togglePopover(id: string) {
+	popoverRegistry.get(id)?.toggle();
+}
+
 const SHOW_DELAY = 100;
 const HIDE_DELAY = 200;
 const TRANSITION = 200;
@@ -129,6 +188,8 @@ export interface PopoverOptions {
 	debug?: boolean;
 	/** Programmatically control open state (reactive) */
 	open?: boolean;
+	/** Unique ID for registry-based programmatic control (use with openPopover/closePopover/togglePopover) */
+	id?: string;
 }
 
 /**
@@ -278,12 +339,20 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 			!popoverEl.contains(e.target as Node) &&
 			!anchorEl.contains(e.target as Node)
 		) {
+			// Skip if an open was just requested via registry (same click event)
+			if (openRequestedThisCycle) {
+				return;
+			}
 			hide();
 		}
 	}
 
 	function onClickTrigger(e: MouseEvent) {
 		e.stopPropagation();
+		// Close all other open popovers (since stopPropagation prevents onClickOutside from firing)
+		openPopovers.forEach((hideFn) => {
+			if (hideFn !== hide) hideFn();
+		});
 		if (isVisible) hide();
 		else show();
 	}
@@ -522,9 +591,22 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 			onShow: opts.onShow,
 			onHide: opts.onHide,
 			debug: opts.debug,
+			id: opts.id,
 		};
 
 		do_debug = !!opts.debug;
+
+		// Register in global registry if id provided
+		if (opts.id) {
+			popoverRegistry.set(opts.id, {
+				show,
+				hide,
+				toggle: () => {
+					if (isVisible) hide();
+					else show();
+				},
+			});
+		}
 
 		// Update popover if visible
 		if (isVisible && popoverEl) {
@@ -596,6 +678,11 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 
 			// Unregister from open popovers
 			openPopovers.delete(hide);
+
+			// Unregister from popover registry
+			if (currentOptions.id) {
+				popoverRegistry.delete(currentOptions.id);
+			}
 
 			document.removeEventListener("keydown", onEscape);
 			document.removeEventListener("click", onClickOutside);
