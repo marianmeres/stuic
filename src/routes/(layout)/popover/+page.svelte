@@ -7,6 +7,7 @@
 
 	let dynamicContent = $state("Edit me to see reactive updates");
 	let clickCount = $state(0);
+	let isOpen = $state(false);
 </script>
 
 <div class="space-y-8 p-4">
@@ -147,6 +148,37 @@
 			>
 				Click to track opens ({clickCount})
 			</button>
+		</div>
+	</section>
+
+	<hr class="my-4" />
+
+	<section class="space-y-4">
+		<h2 class="text-xl font-semibold">Programmatic Open</h2>
+		<p class="text-sm text-neutral-600 dark:text-neutral-400">
+			Control the popover state from outside using the <code>open</code> option
+		</p>
+
+		<div class="flex gap-4 items-center flex-wrap">
+			<button
+				class="px-4 py-2 bg-violet-500 text-white rounded"
+				onclick={() => (isOpen = !isOpen)}
+			>
+				{isOpen ? "Close" : "Open"} Programmatically
+			</button>
+
+			<span
+				class="px-4 py-2 bg-neutral-200 dark:bg-neutral-700 rounded cursor-default"
+				use:popover={() => ({
+					content: "Controlled by external state!",
+					position: "bottom",
+					class: "p-3 bg-white dark:bg-neutral-800",
+					open: isOpen,
+					onHide: () => (isOpen = false),
+				})}
+			>
+				Anchor (state: {isOpen ? "open" : "closed"})
+			</span>
 		</div>
 	</section>
 

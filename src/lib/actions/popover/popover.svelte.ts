@@ -127,6 +127,8 @@ export interface PopoverOptions {
 	onHide?: () => void;
 	/** Debug mode */
 	debug?: boolean;
+	/** Programmatically control open state (reactive) */
+	open?: boolean;
 }
 
 /**
@@ -224,6 +226,7 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 	let hideTimer: ReturnType<typeof setTimeout> | null = null;
 	let isVisible = false;
 	let do_debug = false;
+	let prevOpen: boolean | undefined = undefined;
 
 	// Unique identifiers
 	const rnd = Math.random().toString(36).slice(2);
@@ -538,6 +541,17 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 
 		// Note: trigger mode change while visible is not fully handled
 		// User should close and reopen for trigger mode change to take effect
+
+		// Handle programmatic open/close
+		const openValue = opts.open;
+		if (openValue !== undefined && openValue !== prevOpen) {
+			if (openValue && !isVisible) {
+				show();
+			} else if (!openValue && isVisible) {
+				hide();
+			}
+		}
+		prevOpen = openValue;
 	});
 
 	// Event listeners effect
