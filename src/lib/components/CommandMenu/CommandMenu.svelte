@@ -301,7 +301,7 @@
 							<div class="p-1">
 								{#if _optgroup}
 									<div
-										class="text-xs capitalize opacity-50 border-b border-black/10 mb-1 p-1"
+										class="text-sm capitalize opacity-50 border-b border-black/10 mb-1 p-1"
 									>
 										{_optgroup}
 									</div>

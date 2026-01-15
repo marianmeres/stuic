@@ -617,7 +617,7 @@
 								type="button"
 								onclick={() => _selectedColl.addMany(options.items)}
 								class={twMerge(
-									"control flex items-center p-1 m-1 text-xs opacity-75 underline rounded",
+									"control flex items-center p-1 m-1 text-sm opacity-75 underline rounded",
 									"hover:opacity-100 focus-visible:outline-neutral-400 focus-visible:opacity-100"
 								)}
 								tabindex={4}
@@ -633,7 +633,7 @@
 								input?.focus();
 							}}
 							class={twMerge(
-								"control flex items-center p-1 m-1 text-xs opacity-75 underline rounded",
+								"control flex items-center p-1 m-1 text-sm opacity-75 underline rounded",
 								"hover:opacity-100 focus-visible:outline-neutral-400 focus-visible:opacity-100"
 							)}
 							class:opacity-20={!selected.items.length}
@@ -643,8 +643,8 @@
 							{@html t(cardinality === 1 ? "clear" : "clear_all")}
 						</button>
 
-						<span class="p-1 m-1 text-xs">&nbsp;</span>
-						<span class="flex-1 block justify-end opacity-50 text-right text-xs p-1 pr-2">
+						<span class="p-1 m-1 text-sm">&nbsp;</span>
+						<span class="flex-1 block justify-end opacity-50 text-right text-sm p-1 pr-2">
 							{selected.items.length}
 							{#if cardinality > 0 && cardinality < Infinity}
 								{@html t("cardinality_of")} {cardinality}
@@ -694,7 +694,7 @@
 							{#if _optgroup}
 								<div
 									class={twMerge(
-										"text-xs capitalize opacity-50 border-b border-black/10 mb-0.5 p-1 mx-1",
+										"text-sm capitalize opacity-50 border-b border-black/10 mb-0.5 p-1 mx-1",
 										classOptgroup
 									)}
 								>
@@ -767,7 +767,7 @@
 					</div>
 					<!-- {/if} -->
 					<div class="p-2 px-3 flex items-end justify-between">
-						<div class="text-xs opacity-50">
+						<div class="text-sm opacity-50">
 							<!-- Use arrows to navigate. Spacebar and Enter to select and/or submit. -->
 							{#if allowUnknown}
 								{@html t("unknown_allowed")}
