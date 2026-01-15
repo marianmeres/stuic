@@ -9,6 +9,9 @@ import "./index.css";
 // Registry of open popover hide functions for closeOthers feature
 const openPopovers = new Set<() => void>();
 
+// Reactive state tracking which popovers are open by ID
+const popoverOpenStates: Record<string, boolean> = $state({});
+
 // Registry of popovers by ID for programmatic control
 const popoverRegistry = new Map<
 	string,
@@ -66,6 +69,16 @@ export function closePopover(id: string) {
  */
 export function togglePopover(id: string) {
 	popoverRegistry.get(id)?.toggle();
+}
+
+/**
+ * Check if a popover is currently open by its registered ID.
+ *
+ * @param id - The popover ID to check
+ * @returns true if the popover is open, false otherwise
+ */
+export function isPopoverOpen(id: string): boolean {
+	return popoverOpenStates[id] ?? false;
 }
 
 const SHOW_DELAY = 100;
@@ -404,6 +417,9 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 		openPopovers.add(hide);
 
 		isVisible = true;
+		if (currentOptions.id) {
+			popoverOpenStates[currentOptions.id] = true;
+		}
 		anchorEl.setAttribute("aria-expanded", "true");
 
 		const offsetValue = currentOptions.offset || "0.25rem";
@@ -522,6 +538,9 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 
 		if (!isVisible) return;
 		isVisible = false;
+		if (currentOptions.id) {
+			popoverOpenStates[currentOptions.id] = false;
+		}
 
 		// Unregister from open popovers
 		openPopovers.delete(hide);
@@ -682,6 +701,7 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 			// Unregister from popover registry
 			if (currentOptions.id) {
 				popoverRegistry.delete(currentOptions.id);
+				delete popoverOpenStates[currentOptions.id];
 			}
 
 			document.removeEventListener("keydown", onEscape);

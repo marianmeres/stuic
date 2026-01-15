@@ -5,6 +5,7 @@
 		openPopover,
 		type PopoverPosition,
 		tooltip,
+		isPopoverOpen,
 	} from "$lib/index.js";
 	import { Spinner } from "$lib/index.js";
 	import { dummySentence } from "../../_utils/dummy-text.js";
@@ -13,7 +14,8 @@
 
 	let dynamicContent = $state("Edit me to see reactive updates");
 	let clickCount = $state(0);
-	let isOpen = $state(false);
+
+	const PROGRAMATIC_POPOVER = "pp";
 </script>
 
 <div class="space-y-8 p-4">
@@ -168,14 +170,14 @@
 		<div class="flex gap-4 items-center flex-wrap">
 			<button
 				class="px-4 py-2 bg-violet-500 text-white rounded"
-				onclick={() => openPopover("programmatic-popover")}
+				onclick={() => openPopover(PROGRAMATIC_POPOVER)}
 			>
 				Open Programmatically 1
 			</button>
 
 			<button
 				class="px-4 py-2 bg-violet-500 text-white rounded"
-				onclick={() => openPopover("programmatic-popover")}
+				onclick={() => openPopover(PROGRAMATIC_POPOVER)}
 			>
 				Open Programmatically 2
 			</button>
@@ -183,19 +185,13 @@
 			<span
 				class="px-4 py-2 bg-neutral-200 dark:bg-neutral-700 rounded cursor-default"
 				use:popover={() => ({
-					id: "programmatic-popover",
+					id: PROGRAMATIC_POPOVER,
 					content: "Controlled via registry!",
 					position: "bottom",
 					class: "p-3 bg-white dark:bg-neutral-800",
-					onHide: () => (isOpen = false),
-					onShow: () => (isOpen = true),
 				})}
 			>
-				Anchor (state: {isOpen ? "open" : "closed"})
-			</span>
-
-			<span>
-				isOpen: {isOpen}
+				Anchor (state: {isPopoverOpen(PROGRAMATIC_POPOVER) ? "open" : "closed"})
 			</span>
 		</div>
 	</section>
