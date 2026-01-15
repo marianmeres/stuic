@@ -43,8 +43,9 @@
 		border-button-border dark:border-button-border-dark
 		rounded-md
 		inline-flex items-center justify-center gap-x-2
-		px-3 py-2.5
+		px-4 py-3
 		select-none
+		min-h-[44px] min-w-[44px]
 
 		hover:brightness-105
 		active:brightness-95
@@ -59,7 +60,7 @@
 
 	export const BUTTON_STUIC_PRESET_CLASSES: ButtonPresetClasses = {
 		size: {
-			sm: `text-sm rounded-sm px-2 py-1`,
+			sm: `text-sm rounded-sm px-3 py-2 min-h-none min-w-none`,
 			lg: `text-base rounded-md`,
 		},
 		variant: {
