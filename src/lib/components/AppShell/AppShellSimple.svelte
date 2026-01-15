@@ -3,6 +3,7 @@
 	import { twMerge } from "../../utils/tw-merge.js";
 
 	export interface Props {
+		class?: string;
 		//
 		headerClass?: string;
 		railClass?: string;
@@ -25,6 +26,8 @@
 
 <script lang="ts">
 	let {
+		class: classProp,
+		//
 		headerClass,
 		railClass,
 		asideClass,
@@ -63,7 +66,7 @@
 	</header>
 {/if}
 
-<div class="flex">
+<div class={twMerge("flex", classProp)}>
 	{#if rail}
 		<div
 			bind:this={elRail}

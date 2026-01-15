@@ -24,6 +24,7 @@
 </svelte:head>
 
 <AppShellSimple
+	class=""
 	headerClass="p-4 bg-red-400 {onoff(flag.header)}"
 	railClass="w-13 p-4 bg-gray-300 text-center {onoff(flag.rail)}"
 	asideClass="w-40 p-4 bg-gray-200 {onoff(flag.aside)}"
