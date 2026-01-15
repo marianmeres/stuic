@@ -1,6 +1,6 @@
 {
 	"name": "@marianmeres/stuic",
-	"version": "2.32.2",
+	"version": "2.32.3",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build && pnpm run prepack",
