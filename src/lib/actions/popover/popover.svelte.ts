@@ -503,6 +503,29 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 		// Render content
 		renderContent();
 
+		// Add close button for fallback mode (after content so it's not cleared)
+		if (!useAnchorPositioning && popoverEl) {
+			const closeBtn = document.createElement("button");
+			closeBtn.setAttribute("type", "button");
+			closeBtn.setAttribute("aria-label", "Close");
+			closeBtn.innerHTML = `<svg fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width:1.25rem;height:1.25rem"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>`;
+			closeBtn.style.cssText = `
+				position: absolute;
+				top: 0;
+				right: 0;
+				background: black;
+				color: white;
+				border: none;
+				border-bottom-left-radius: 0.5rem;
+				cursor: pointer;
+				opacity: 0.8;
+				padding: 0.33rem;
+				line-height: 1;
+			`;
+			closeBtn.addEventListener("click", hide);
+			popoverEl.appendChild(closeBtn);
+		}
+
 		// Transition in
 		popoverEl.classList.add("pop-block");
 		requestAnimationFrame(() => {
