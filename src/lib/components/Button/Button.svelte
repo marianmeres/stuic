@@ -37,7 +37,7 @@
 	export const BUTTON_STUIC_BASE_CLASSES = `
 		bg-button-bg text-button-text
 		dark:bg-button-bg-dark dark:text-button-text-dark
-		font-mono text-sm text-center
+		text-base text-center
 		leading-none
 		border-1
 		border-button-border dark:border-button-border-dark
@@ -61,7 +61,7 @@
 	export const BUTTON_STUIC_PRESET_CLASSES: ButtonPresetClasses = {
 		size: {
 			sm: `text-sm rounded-md px-3 py-2 min-h-none min-w-none`,
-			lg: `text-base rounded-xl`,
+			lg: `text-lg rounded-xl`,
 		},
 		variant: {
 			primary: `font-medium`,

@@ -31,7 +31,7 @@
 		<div class="p-4 bg-gray-200 dark:bg-neutral-950">
 			<Button onclick={drawer?.close} size="sm" class="[.sm]:p-0"><X /></Button>
 		</div>
-		<div class="p-4 w-[400px] max-w-[400px]">
+		<div class="p-4 w-100 max-w-100">
 			<Button onclick={() => console.log("noop")} size="sm">noop</Button>
 			{@html dummyText(30)}
 		</div>

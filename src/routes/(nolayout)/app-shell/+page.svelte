@@ -8,7 +8,7 @@
 	import HeadButtonSwitcher from "./_components/HeadButtonSwitcher.svelte";
 	import LeftSidebar from "./_components/LeftSidebar.svelte";
 
-	onMount(appShellSetHtmlBodyHeight);
+	// onMount(appShellSetHtmlBodyHeight);
 
 	let pageFlexGrow: 0 | 1 | 2 | 3 | 4 | 5 = $state(0);
 

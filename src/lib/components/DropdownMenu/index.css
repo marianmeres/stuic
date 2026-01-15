@@ -14,3 +14,8 @@
 .stuic-dropdown-menu-expandable-content {
 	overflow: hidden;
 }
+
+/* Backdrop for fallback mode */
+.stuic-dropdown-menu-backdrop {
+	transition-property: opacity;
+}

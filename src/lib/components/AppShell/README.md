@@ -97,3 +97,8 @@ import { onMount } from 'svelte';
 // Returns cleanup function automatically
 onMount(appShellSetHtmlBodyHeight);
 ```
+
+## AppShellSimple
+
+A simplified approach using a sticky header and a sticky left sidebar, allowing the 
+page body to follow its natural flow (and the chrome UI is adjusted on scroll correctly).

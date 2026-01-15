@@ -5,6 +5,7 @@
 		'animated-ellipsis',
 		'avatar-initials',
 		'app-shell', 
+		'app-shell-simple', 
 		// 'avatar', 
 		'backdrop', 
         'button', 

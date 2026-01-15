@@ -138,6 +138,10 @@
 		classExpandable?: string;
 		/** Classes for expandable section content */
 		classExpandableContent?: string;
+		/** Classes for backdrop (fallback mode only) */
+		classBackdrop?: string;
+		/** Show backdrop in fallback mode (default: true) */
+		showBackdrop?: boolean;
 		/** Custom trigger snippet - receives isOpen state, toggle function, and ARIA props for full control */
 		trigger?: Snippet<
 			[
@@ -165,6 +169,8 @@
 		triggerEl?: HTMLButtonElement;
 		/** Reference to dropdown element */
 		dropdownEl?: HTMLDivElement;
+		/** Optional, used only when css positioning not supported (iPhone)*/
+		noScrollLock?: boolean;
 	}
 
 	const POSITION_MAP: Record<string, string> = {
@@ -245,6 +251,12 @@
 		text-neutral-500 dark:text-neutral-400
 		select-none
 	`;
+
+	export const DROPDOWN_MENU_BACKDROP_CLASSES = `
+		stuic-dropdown-menu-backdrop
+		fixed inset-0 bg-black/25
+		z-40
+	`;
 </script>
 
 <script lang="ts">
@@ -255,10 +267,11 @@
 	import { iconLucideChevronDown } from "@marianmeres/icons-fns/lucide/iconLucideChevronDown.js";
 	import { iconLucideChevronRight } from "@marianmeres/icons-fns/lucide/iconLucideChevronRight.js";
 	import { onClickOutside } from "runed";
-	import { slide } from "svelte/transition";
+	import { slide, fade } from "svelte/transition";
 	import { untrack } from "svelte";
 	import Thc from "../Thc/Thc.svelte";
 	import "./index.css";
+	import { BodyScroll } from "../../utils/body-scroll-locker.js";
 
 	let {
 		items,
@@ -280,6 +293,8 @@
 		classHeader,
 		classExpandable,
 		classExpandableContent,
+		classBackdrop,
+		showBackdrop = true,
 		trigger,
 		children,
 		onOpen,
@@ -287,6 +302,7 @@
 		onSelect,
 		triggerEl = $bindable(),
 		dropdownEl = $bindable(),
+		noScrollLock,
 		...rest
 	}: Props = $props();
 
@@ -396,6 +412,11 @@
 		wasOpen = isOpen;
 	});
 
+	$effect(() => {
+		if (noScrollLock || isSupported) return;
+		isOpen ? BodyScroll.lock() : BodyScroll.unlock();
+	});
+
 	// Click outside handler
 	onClickOutside(
 		() => wrapperEl,
@@ -455,22 +476,15 @@
 				max-height: ${maxHeight};
 			`;
 		} else {
-			// Fallback: absolute positioning
-			if (position === "left") {
-				return `position: absolute; right: 100%; top: 0; margin-right: ${offset}; max-height: ${maxHeight};`;
-			} else if (position === "right") {
-				return `position: absolute; left: 100%; top: 0; margin-left: ${offset}; max-height: ${maxHeight};`;
-			}
-			const isTop = position.startsWith("top");
-			const isLeft =
-				position.includes("left") || position === "bottom" || position === "top";
+			// Fallback: centered modal overlay
 			return `
-				position: absolute;
-				${isTop ? "bottom: 100%;" : "top: 100%;"}
-				${isLeft ? "left: 0;" : "right: 0;"}
-				margin-top: ${isTop ? "0" : offset};
-				margin-bottom: ${isTop ? offset : "0"};
+				position: fixed;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				max-width: 90vw;
 				max-height: ${maxHeight};
+				z-index: 50;
 			`;
 		}
 	});
@@ -567,6 +581,22 @@
 		</button>
 	{/if}
 
+	<!-- Backdrop (fallback mode only) -->
+	{#if isOpen && !isSupported && showBackdrop}
+		<div
+			class={twMerge(DROPDOWN_MENU_BACKDROP_CLASSES, classBackdrop)}
+			onclick={() => {
+				if (closeOnClickOutside) {
+					isOpen = false;
+					triggerEl?.focus();
+				}
+			}}
+			onkeydown={() => {}}
+			role="presentation"
+			transition:fade={{ duration: transitionDuration }}
+		></div>
+	{/if}
+
 	<!-- Dropdown Menu -->
 	{#if isOpen}
 		<div
@@ -574,10 +604,46 @@
 			id={dropdownId}
 			role="menu"
 			aria-labelledby={triggerId}
-			class={twMerge(DROPDOWN_MENU_DROPDOWN_CLASSES, classDropdown)}
+			class={twMerge(
+				DROPDOWN_MENU_DROPDOWN_CLASSES,
+				!isSupported && "w-4/5 max-w-32",
+				classDropdown
+			)}
 			style={dropdownStyle}
 			transition:slide={{ duration: transitionDuration }}
 		>
+			<!-- Close button (fallback mode only) -->
+			{#if !isSupported}
+				<div class="sticky top-0 right-0 z-10 flex just pointer-events-none">
+					<button
+						type="button"
+						aria-label="Close"
+						class={[
+							"bg-black text-white rounded-md cursor-pointer opacity-60",
+							"absolute right-0 top-0 p-2",
+							"leading-none hover:opacity-100 pointer-events-auto",
+						]}
+						onclick={() => {
+							isOpen = false;
+							triggerEl?.focus();
+						}}
+					>
+						<svg
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="2.5"
+							stroke="currentColor"
+							class="w-5 h-5"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="M6 18 18 6M6 6l12 12"
+							/>
+						</svg>
+					</button>
+				</div>
+			{/if}
 			{#each items as item}
 				{#if item.type === "action"}
 					{@const isActive = _navItems.active?.id === item.id}

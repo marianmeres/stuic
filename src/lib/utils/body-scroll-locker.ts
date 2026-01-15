@@ -5,6 +5,8 @@ interface BodyStyles {
 	top: string | null;
 	width: string | null;
 	overflow: string | null;
+	left: string | null;
+	right: string | null;
 }
 
 // const clog = createClog("BodyScroll").debug;
@@ -53,6 +55,9 @@ export class BodyScroll {
 			document.body.style.top = `-${scrollY}px`;
 			document.body.style.width = "100%";
 			document.body.style.overflow = "hidden";
+			//
+			document.body.style.left = "0";
+			document.body.style.right = "0";
 		} else {
 			// Another component already locked the scroll, just increment the counter
 			const currentCount = parseInt(data.scrollLockCount!, 10);
@@ -96,11 +101,20 @@ export class BodyScroll {
 			top: style.position || null,
 			width: style.width || null,
 			overflow: style.overflow || null,
+			left: style.left || null,
+			right: style.left || null,
 		});
 	}
 
 	private static _restore_body_styles(originalJsonString: string) {
-		let original: BodyStyles = { position: null, top: null, width: null, overflow: null };
+		let original: BodyStyles = {
+			position: null,
+			top: null,
+			width: null,
+			overflow: null,
+			left: null,
+			right: null,
+		};
 		try {
 			original = JSON.parse(originalJsonString);
 		} catch {

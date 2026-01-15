@@ -1,5 +1,7 @@
 <script module lang="ts">
 	import type { Snippet } from "svelte";
+	import { setContext } from "svelte";
+	import { twMerge } from "../../utils/tw-merge.js";
 
 	export interface Props {
 		id?: string;
@@ -57,9 +59,6 @@
 </script>
 
 <script lang="ts">
-	import { setContext } from "svelte";
-	import { twMerge } from "../../utils/tw-merge.js";
-
 	let {
 		id = "shell",
 		class: classProp,

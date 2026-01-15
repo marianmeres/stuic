@@ -511,14 +511,14 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 			closeBtn.innerHTML = `<svg fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width:1.25rem;height:1.25rem"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>`;
 			closeBtn.style.cssText = `
 				position: absolute;
-				top: 0;
-				right: 0;
+				top: 4px;
+				right: 4px;
 				background: black;
 				color: white;
 				border: none;
-				border-bottom-left-radius: 0.5rem;
+				border-radius: 0.25rem;
 				cursor: pointer;
-				opacity: 0.8;
+				opacity: 0.6;
 				padding: 0.33rem;
 				line-height: 1;
 			`;
