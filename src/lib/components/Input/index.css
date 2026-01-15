@@ -10,7 +10,7 @@
 .stuic-input {
 	.form-input {
 		@apply rounded-md border-0 w-full flex-1
-			py-2.5
+			py-2.5 px-3
 			text-base placeholder:text-base
 			bg-transparent
 			tracking-tight

@@ -156,8 +156,8 @@
 	<button
 		type="button"
 		class={twMerge(
-			"no-focus-visible",
-			"w-full text-left py-2 px-3 border-0 bg-transparent",
+			"no-focus-visible form-field",
+			"w-full text-left py-2.5 px-3 border-0 bg-transparent",
 			"focus:outline-0 focus-visible:outline-0",
 			renderSize,
 			classInput

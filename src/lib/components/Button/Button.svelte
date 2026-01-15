@@ -41,7 +41,7 @@
 		leading-none
 		border-1
 		border-button-border dark:border-button-border-dark
-		rounded-md
+		rounded-lg
 		inline-flex items-center justify-center gap-x-2
 		px-4 py-3
 		select-none
@@ -60,8 +60,8 @@
 
 	export const BUTTON_STUIC_PRESET_CLASSES: ButtonPresetClasses = {
 		size: {
-			sm: `text-sm rounded-sm px-3 py-2 min-h-none min-w-none`,
-			lg: `text-base rounded-md`,
+			sm: `text-sm rounded-md px-3 py-2 min-h-none min-w-none`,
+			lg: `text-base rounded-xl`,
 		},
 		variant: {
 			primary: `font-medium`,
