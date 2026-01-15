@@ -8,4 +8,5 @@ export {
 export {
 	default as AppShellSimple,
 	type Props as AppShellSimpleProps,
+	MAIN_WIDTH as APP_SHELL_SIMPLE_MAIN_WIDTH,
 } from "./AppShellSimple.svelte";
