@@ -116,6 +116,6 @@
 <style>
 	.scrollbar-thin {
 		scrollbar-width: thin;
-		scrollbar-gutter: stable;
+		/* scrollbar-gutter: stable; */
 	}
 </style>
