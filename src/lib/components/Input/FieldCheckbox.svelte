@@ -184,19 +184,16 @@
 			</div>
 		{/if}
 		{#if description}
-			<Collapsible>
-				<div
-					id={idDesc}
-					class={twMerge(
-						"desc-box",
-						_classCommon,
-						"text-sm opacity-50 cursor-pointer font-normal",
-						disabled && "cursor-not-allowed",
-						classDescBox
-					)}
-				>
-					{@render snippetOrThc({ id, value: description })}
-				</div>
+			<Collapsible
+				class={twMerge(
+					"desc-box",
+					_classCommon,
+					"text-sm opacity-50 cursor-pointer font-normal",
+					disabled && "cursor-not-allowed",
+					classDescBox
+				)}
+			>
+				{@render snippetOrThc({ id, value: description })}
 			</Collapsible>
 			<!-- <div
 				id={idDesc}
