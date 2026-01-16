@@ -31,7 +31,6 @@
 	import { X } from "../X/index.js";
 	import { preloadImgs } from "../../utils/preload-img.js";
 	import { fade } from "svelte/transition";
-	import { C } from "vitest/dist/chunks/reporters.d.BFLkQcL6.js";
 
 	export type AssetPreviewUrlObj = {
 		// o
