@@ -36,6 +36,7 @@
 		'spinner', 
         'switch', 
 		// 'table', 
+		'tabbed-menu',
         'thc', 
         'tooltip',
         'tw-check',

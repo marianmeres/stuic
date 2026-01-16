@@ -16,6 +16,7 @@ so, since we need to override, sticking with that */
 	@import "./components/Notifications/index.css";
 	@import "./components/Progress/index.css";
 	@import "./components/Switch/index.css";
+	@import "./components/TabbedMenu/index.css";
 	@import "./components/TwCheck/index.css";
 }
 

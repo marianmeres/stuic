@@ -1,0 +1,23 @@
+/* prettier-ignore */
+@theme inline {
+	/* Tab button background */
+	--color-tabbed-menu-tab-bg: var(--color-tabbed-menu-tab-bg, var(--color-neutral-100));
+	--color-tabbed-menu-tab-bg-dark: var(--color-tabbed-menu-tab-bg-dark, var(--color-neutral-700));
+
+	/* Tab button text */
+	--color-tabbed-menu-tab-text: var(--color-tabbed-menu-tab-text, var(--color-neutral-600));
+	--color-tabbed-menu-tab-text-dark: var(--color-tabbed-menu-tab-text-dark, var(--color-neutral-300));
+
+	/* Active tab background */
+	--color-tabbed-menu-tab-active-bg: var(--color-tabbed-menu-tab-active-bg, var(--color-white));
+	--color-tabbed-menu-tab-active-bg-dark: var(--color-tabbed-menu-tab-active-bg-dark, var(--color-neutral-800));
+
+	/* Active tab text */
+	--color-tabbed-menu-tab-active-text: var(--color-tabbed-menu-tab-active-text, var(--color-neutral-900));
+	--color-tabbed-menu-tab-active-text-dark: var(--color-tabbed-menu-tab-active-text-dark, var(--color-white));
+
+	/* Border */
+	--color-tabbed-menu-border: var(--color-tabbed-menu-border, var(--color-neutral-300));
+	--color-tabbed-menu-border-dark: var(--color-tabbed-menu-border-dark, var(--color-neutral-600));
+
+}
