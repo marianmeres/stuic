@@ -129,7 +129,7 @@
 
 	const _classTitle = `text-center sm:text-left text-base font-semibold leading-6`;
 
-	const _classContent = `mt-2 mx-3 sm:mx-0 text-center sm:text-left text-sm opacity-75`;
+	const _classContent = `mt-2 mx-3 sm:mx-0 text-center sm:text-left opacity-75`;
 
 	const _classMenu = `mt-6 sm:flex sm:space-x-4 justify-end space-y-4 sm:space-y-0`;
 

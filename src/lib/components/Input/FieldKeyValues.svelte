@@ -338,7 +338,7 @@
 								class={twMerge(
 									INPUT_CLS,
 									"flex-1",
-									renderSize === "sm" && "text-sm",
+									// renderSize === "sm" && "text-sm",
 									classKeyInput
 								)}
 								{disabled}
@@ -354,7 +354,7 @@
 								class={twMerge(
 									INPUT_CLS,
 									"min-h-10 overflow-auto",
-									renderSize === "sm" && "text-sm",
+									// renderSize === "sm" && "text-sm",
 									classValueInput
 								)}
 								style="resize: vertical;"
@@ -394,7 +394,7 @@
 				class={twMerge(
 					"flex items-center gap-1 text-sm opacity-75 hover:opacity-100",
 					"bg-neutral-200 dark:bg-neutral-600",
-					"p-1 pr-2 rounded hover:bg-neutral-300 dark:hover:bg-neutral-500"
+					"p-1.5 pr-2 rounded hover:bg-neutral-300 dark:hover:bg-neutral-500"
 				)}
 				{disabled}
 			>
