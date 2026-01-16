@@ -67,6 +67,8 @@
 				close: () => void;
 			}
 		) => void;
+		/** optional "do not display file name" switch flag */
+		noName?: boolean;
 	}
 
 	export function getAssetIcon(ext?: string) {
@@ -163,7 +165,13 @@
 <script lang="ts">
 	const clog = createClog("AssetsPreview", { color: "auto" });
 
-	let { assets: _assets, t = t_default, classControls = "", onDelete }: Props = $props();
+	let {
+		assets: _assets,
+		t = t_default,
+		classControls = "",
+		onDelete,
+		noName,
+	}: Props = $props();
 
 	let assets: AssetPreviewNormalized[] = $derived(
 		(_assets ?? []).map(normalizeInput).filter(Boolean) as AssetPreviewNormalized[]
@@ -501,14 +509,14 @@
 				</button>
 			</div>
 
-			{#if previewAsset?.name}
+			{#if !noName && previewAsset?.name}
 				<span class="absolute top-4 left-4 bg-white px-1 rounded">
 					{previewAsset?.name}
 				</span>
 			{/if}
 
 			{#if assets.length > 1}
-				{#if dotTooltip}
+				{#if !noName && dotTooltip}
 					<div
 						class="absolute bottom-10 left-0 right-0 text-center"
 						transition:fade={{ duration: 100 }}
