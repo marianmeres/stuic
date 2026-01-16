@@ -229,10 +229,10 @@
 	export const DROPDOWN_MENU_ITEM_CLASSES = `
 		w-full
 		flex items-center gap-2
-		px-2 py-1.5
+		px-3 py-1.5
 		min-h-[44px]
 		text-left text-sm
-		rounded-sm
+		rounded-md
 		cursor-pointer
 		touch-action-manipulation
 		hover:bg-neutral-100 dark:hover:bg-neutral-700
