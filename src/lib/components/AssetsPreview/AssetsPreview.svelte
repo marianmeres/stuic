@@ -306,7 +306,10 @@
 		isPanning = false;
 	}
 
-	export function open() {
+	export function open(index?: number) {
+		if (typeof index === "number") {
+			previewIdx = index;
+		}
 		modal?.open();
 	}
 
@@ -447,7 +450,7 @@
 					</button>
 				{/if}
 
-				{#if onDelete}
+				{#if typeof onDelete === "function"}
 					<button
 						class={twMerge(TOP_BUTTON_CLS, classControls)}
 						type="button"

@@ -12,11 +12,7 @@
 	import { iconBsFileEarmarkText } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkText.js";
 	import { iconBsFileEarmarkWord } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkWord.js";
 	import { iconBsFileEarmarkZip } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkZip.js";
-	import { iconFeatherArrowLeft as iconPrevious } from "@marianmeres/icons-fns/feather/iconFeatherArrowLeft.js";
-	import { iconFeatherArrowRight as iconNext } from "@marianmeres/icons-fns/feather/iconFeatherArrowRight.js";
-	import { iconFeatherDownload as iconDownload } from "@marianmeres/icons-fns/feather/iconFeatherDownload.js";
 	import { iconFeatherPlus as iconAdd } from "@marianmeres/icons-fns/feather/iconFeatherPlus.js";
-	import { iconFeatherTrash2 as iconDelete } from "@marianmeres/icons-fns/feather/iconFeatherTrash2.js";
 	import { onDestroy, type Snippet } from "svelte";
 	import { fileDropzone } from "../../actions/file-dropzone.svelte.js";
 	import { highlightDragover } from "../../actions/highlight-dragover.svelte.js";
@@ -27,20 +23,17 @@
 		type ValidationResult,
 	} from "../../actions/validate.svelte.js";
 	import type { TranslateFn } from "../../types.js";
-	import { forceDownload } from "../../utils/force-download.js";
 	import { getFileTypeLabel } from "../../utils/get-file-type-label.js";
 	import { getId } from "../../utils/get-id.js";
 	import { isImage } from "../../utils/is-image.js";
 	import { isPlainObject } from "../../utils/is-plain-object.js";
-	import { preloadImgs } from "../../utils/preload-img.js";
 	import { replaceMap } from "../../utils/replace-map.js";
 	import { twMerge } from "../../utils/tw-merge.js";
+	import { AssetsPreview } from "../AssetsPreview/index.js";
 	import Circle from "../Circle/Circle.svelte";
-	import { Modal } from "../Modal/index.js";
 	import { NotificationsStack } from "../Notifications/notifications-stack.svelte.js";
 	import SpinnerCircleOscillate from "../Spinner/SpinnerCircleOscillate.svelte";
 	import { isTHCNotEmpty, type THC } from "../Thc/Thc.svelte";
-	import { X } from "../X/index.js";
 	import InputWrap from "./_internal/InputWrap.svelte";
 
 	const clog = createClog("FieldAssets");
@@ -256,8 +249,7 @@
 	let parentHiddenInputEl: HTMLInputElement | undefined = $state();
 	let hasLabel = $derived(isTHCNotEmpty(label) || typeof label === "function");
 	let inputEl = $state<HTMLInputElement>()!;
-	let modal: Modal = $state()!;
-	let previewIdx = $state<number>(-1);
+	let assetsPreview: AssetsPreview = $state()!;
 
 	let assets: FieldAsset[] = $derived(parseValue(value));
 	// $inspect("assets", assets);
@@ -269,7 +261,7 @@
 	// $inspect("progress", progress);
 
 	$effect(() => {
-		if (!assets?.length) modal?.close?.();
+		if (!assets?.length) assetsPreview?.close?.();
 	});
 
 	//
@@ -317,16 +309,6 @@
 		notifications?.info(t("deleted", { name }));
 	}
 
-	function preview_previous() {
-		previewIdx = (previewIdx - 1 + assets.length) % assets.length;
-	}
-
-	function preview_next() {
-		previewIdx = (previewIdx + 1) % assets.length;
-	}
-
-	const TOP_BUTTON_CLS = "rounded bg-white hover:bg-neutral-200 p-1";
-
 	onDestroy(() => {
 		try {
 			assets.forEach((a) => {
@@ -341,38 +323,7 @@
 		}
 	});
 
-	// cosmetic side effect - once the modal is open we want to preload all "full" resolutions
-	// so the navigation feels more instant
-	$effect(() => {
-		if (modal.visibility().visible) {
-			// perhaps we should have some upper limit here...
-			const toPreload = (assets ?? [])
-				.map((asset) => {
-					const url = asset_urls(asset);
-					return isImage(asset.type ?? url.full) && !url.full.startsWith("blob:")
-						? url.full
-						: "";
-				})
-				.filter(Boolean);
-
-			clog.debug("going to (maybe) preload", toPreload);
-			preloadImgs(toPreload);
-		}
-	});
 </script>
-
-<!-- this must be on window as we're catching any typing anywhere -->
-<svelte:window
-	onkeydown={(e) => {
-		if (modal.visibility().visible) {
-			if (["ArrowRight"].includes(e.key)) {
-				preview_next();
-			} else if (["ArrowLeft"].includes(e.key)) {
-				preview_previous();
-			}
-		}
-	}}
-/>
 
 {#snippet default_render()}
 	{#if isLoading}
@@ -390,8 +341,7 @@
 						onclick={(e) => {
 							e.stopPropagation();
 							e.preventDefault();
-							previewIdx = idx;
-							modal.open();
+							assetsPreview.open(idx);
 						}}
 						type="button"
 					>
@@ -562,102 +512,23 @@
 <!-- hack to be able to validate the conventional way -->
 <input type="hidden" {name} {value} use:validateAction={() => wrappedValidate} />
 
-<Modal
-	bind:this={modal}
-	onEscape={modal?.close}
-	classBackdrop="p-4 md:p-4"
-	classInner="max-w-full h-full"
-	class="max-h-full md:max-h-full"
-	classMain="flex items-center justify-center relative stuic-field-assets stuic-field-assets-open"
->
-	{@const previewAsset = assets?.[previewIdx]}
-	{#if previewAsset}
-		{@const url = asset_urls(previewAsset!)}
-		{@const _is_img = isImage(previewAsset!.type ?? url.thumb)}
-		{#if _is_img}
-			<img
-				src={url.full}
-				class="w-full h-full object-scale-down"
-				alt={previewAsset?.name}
-			/>
-		{:else}
-			<div>
-				<div>
-					{@html getAssetIcon((previewAsset?.name ?? "").split(".").at(-1))({
-						size: 32,
-						class: "mx-auto",
-					})}
-				</div>
-				<div class="opacity-50 mt-4 text-sm">{t("unable_to_preview")}</div>
-			</div>
-		{/if}
-
-		{#if assets?.length > 1}
-			<div class={["absolute inset-0 flex items-center justify-between"]}>
-				<button
-					class={twMerge("p-4", classControls)}
-					onclick={preview_previous}
-					type="button"
-				>
-					<span class="bg-white rounded-full p-3 block">
-						{@html iconPrevious()}
-					</span>
-				</button>
-
-				<button
-					class={twMerge("p-4", classControls)}
-					onclick={preview_next}
-					type="button"
-				>
-					<span class="bg-white rounded-full p-3 block">
-						{@html iconNext()}
-					</span>
-				</button>
-			</div>
-		{/if}
-
-		<!--  bg-white rounded-md p-2 -->
-		<div class="absolute top-4 right-4 flex items-center space-x-3">
-			<button
-				class={twMerge(TOP_BUTTON_CLS, classControls)}
-				onclick={(e) => {
-					e.preventDefault();
-					remove_by_idx(previewIdx);
-					previewIdx = previewIdx % assets.length; // important
-				}}
-				type="button"
-				aria-label={t("delete")}
-				use:tooltip
-			>
-				{@html iconDelete({ class: "size-6" })}
-			</button>
-			<button
-				class={twMerge(TOP_BUTTON_CLS, classControls)}
-				type="button"
-				onclick={(e) => {
-					e.preventDefault();
-					forceDownload(url.original ?? url.full, previewAsset?.name || "");
-				}}
-				aria-label={t("download")}
-				use:tooltip
-			>
-				{@html iconDownload({ class: "size-6" })}
-			</button>
-			<button
-				class={twMerge(TOP_BUTTON_CLS, classControls)}
-				onclick={modal.close}
-				aria-label={t("close")}
-				type="button"
-				use:tooltip
-			>
-				<X />
-			</button>
-		</div>
-
-		{#if previewAsset?.name}
-			<span class="absolute top-4 left-4 bg-white px-1 text-sm rounded">
-				{previewAsset?.name}
-			</span>
-		{/if}
-	{/if}
-</Modal>
+<AssetsPreview
+	bind:this={assetsPreview}
+	assets={assets.map((a) => {
+		const urls = asset_urls(a);
+		return {
+			url: {
+				thumb: urls.thumb,
+				full: urls.full,
+				original: urls.original ?? urls.full,
+			},
+			name: a.name,
+			type: a.type,
+		};
+	})}
+	{t}
+	{classControls}
+	onDelete={(_, index) => {
+		remove_by_idx(index);
+	}}
+/>
