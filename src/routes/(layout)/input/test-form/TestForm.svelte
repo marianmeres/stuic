@@ -244,7 +244,7 @@ Sed metus sapien, feugiat eget mauris quis, pellentesque porta enim. In hac habi
 			<FieldCheckbox
 				bind:checked={values.check}
 				label="Some super label"
-				description="Some longer description"
+				description={"Some longer description. " + dummySentence(3)}
 				name="check"
 				required
 				validate

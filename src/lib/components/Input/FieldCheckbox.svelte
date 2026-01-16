@@ -36,6 +36,7 @@
 	import { getId } from "../../utils/get-id.js";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import { Thc, isTHCNotEmpty } from "../Thc/index.js";
+	import { Collapsible } from "../Collapsible/index.js";
 	type THC = import("../Thc/index.js").THC;
 
 	let {
@@ -183,7 +184,21 @@
 			</div>
 		{/if}
 		{#if description}
-			<div
+			<Collapsible>
+				<div
+					id={idDesc}
+					class={twMerge(
+						"desc-box",
+						_classCommon,
+						"text-sm opacity-50 cursor-pointer font-normal",
+						disabled && "cursor-not-allowed",
+						classDescBox
+					)}
+				>
+					{@render snippetOrThc({ id, value: description })}
+				</div>
+			</Collapsible>
+			<!-- <div
 				id={idDesc}
 				class={twMerge(
 					"desc-box",
@@ -194,7 +209,7 @@
 				)}
 			>
 				{@render snippetOrThc({ id, value: description })}
-			</div>
+			</div> -->
 		{/if}
 	</div>
 </label>
