@@ -11,6 +11,7 @@
         'button', 
         'button-group-radio', 
 		// 'carousel', 
+		'collapsible', 
         'color-scheme', 
 		'command-menu',
 		'dismissible-message', 

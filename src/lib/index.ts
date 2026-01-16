@@ -30,6 +30,7 @@ export * from "./components/AvatarInitials/index.js";
 export * from "./components/Backdrop/index.js";
 export * from "./components/Button/index.js";
 export * from "./components/ButtonGroupRadio/index.js";
+export * from "./components/Collapsible/index.js";
 export * from "./components/ColorScheme/index.js";
 export * from "./components/CommandMenu/index.js";
 export * from "./components/DismissibleMessage/index.js";
