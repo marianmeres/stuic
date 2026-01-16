@@ -11,8 +11,10 @@
 </script>
 
 <script lang="ts">
+	import { twMerge } from "../../utils/tw-merge.js";
+
 	let {
-		class: classProp = "opacity-50",
+		class: classProp,
 		count = 8,
 		thickness = "normal",
 		height = "normal",
@@ -40,7 +42,7 @@
 </script>
 
 <div
-	class="spinner {classProp ?? ''}"
+	class={twMerge("spinner opacity-50", classProp)}
 	style:--size="{size}px"
 	style:--duration="{duration}ms"
 >
