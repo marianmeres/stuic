@@ -195,8 +195,18 @@
 
 	// Zoom state
 	const ZOOM_LEVELS = [1, 1.5, 2, 3, 4] as const;
+	const MIN_ZOOM = ZOOM_LEVELS[0];
+	const MAX_ZOOM = ZOOM_LEVELS[ZOOM_LEVELS.length - 1];
 	let zoomLevelIdx = $state(0);
-	let zoomLevel = $derived(ZOOM_LEVELS[zoomLevelIdx]);
+
+	// Pinch zoom state
+	let isPinching = $state(false);
+	let initialPinchDistance = 0;
+	let initialPinchZoom = 1;
+	let continuousZoom = $state(1);
+
+	// Use continuous zoom during pinch, discrete levels otherwise
+	let zoomLevel = $derived(isPinching ? continuousZoom : ZOOM_LEVELS[zoomLevelIdx]);
 
 	// Pan state
 	let isPanning = $state(false);
@@ -232,11 +242,22 @@
 		}
 	});
 
+	// Wheel zoom handler
+	function handleWheel(e: WheelEvent) {
+		e.preventDefault();
+		if (e.deltaY > 0) {
+			zoomOut();
+		} else {
+			zoomIn();
+		}
+	}
+
 	// Svelte action for pan event listeners - guaranteed to run when element is created
 	function pannable(node: HTMLImageElement) {
 		imgEl = node;
 		node.addEventListener("mousedown", panStart);
 		node.addEventListener("touchstart", panStart, { passive: false });
+		node.addEventListener("wheel", handleWheel, { passive: false });
 
 		document.addEventListener("mousemove", panMove);
 		document.addEventListener("mouseup", panEnd);
@@ -249,6 +270,7 @@
 				imgEl = null;
 				node.removeEventListener("mousedown", panStart);
 				node.removeEventListener("touchstart", panStart);
+				node.removeEventListener("wheel", handleWheel);
 				document.removeEventListener("mousemove", panMove);
 				document.removeEventListener("mouseup", panEnd);
 				document.removeEventListener("touchmove", panMove);
@@ -300,12 +322,45 @@
 
 	function resetZoom() {
 		zoomLevelIdx = 0;
+		continuousZoom = 1;
 		panX = 0;
 		panY = 0;
+		isPinching = false;
+	}
+
+	// Pinch zoom helpers
+	function getDistance(touch1: Touch, touch2: Touch): number {
+		const dx = touch1.clientX - touch2.clientX;
+		const dy = touch1.clientY - touch2.clientY;
+		return Math.hypot(dx, dy);
+	}
+
+	function findNearestZoomLevelIdx(zoom: number): number {
+		let nearestIdx = 0;
+		let minDiff = Math.abs(ZOOM_LEVELS[0] - zoom);
+		for (let i = 1; i < ZOOM_LEVELS.length; i++) {
+			const diff = Math.abs(ZOOM_LEVELS[i] - zoom);
+			if (diff < minDiff) {
+				minDiff = diff;
+				nearestIdx = i;
+			}
+		}
+		return nearestIdx;
 	}
 
 	// Pan/drag handlers
 	function panStart(e: MouseEvent | TouchEvent) {
+		// Detect two-finger pinch gesture
+		if ("touches" in e && e.touches.length === 2) {
+			e.preventDefault();
+			isPinching = true;
+			isPanning = false;
+			initialPinchDistance = getDistance(e.touches[0], e.touches[1]);
+			initialPinchZoom = continuousZoom;
+			return;
+		}
+
+		// Single-finger pan (only when zoomed in)
 		if (zoomLevel <= 1) return;
 		e.preventDefault();
 		isPanning = true;
@@ -320,6 +375,16 @@
 	}
 
 	function panMove(e: MouseEvent | TouchEvent) {
+		// Handle pinch zoom
+		if ("touches" in e && e.touches.length === 2 && isPinching) {
+			e.preventDefault();
+			const currentDistance = getDistance(e.touches[0], e.touches[1]);
+			const scale = currentDistance / initialPinchDistance;
+			continuousZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, initialPinchZoom * scale));
+			return;
+		}
+
+		// Handle single-finger pan
 		if (!isPanning) return;
 		e.preventDefault();
 
@@ -340,6 +405,18 @@
 	}
 
 	function panEnd() {
+		// Handle pinch end - snap to nearest discrete level
+		if (isPinching) {
+			isPinching = false;
+			zoomLevelIdx = findNearestZoomLevelIdx(continuousZoom);
+			continuousZoom = ZOOM_LEVELS[zoomLevelIdx];
+			// Reset pan when zoomed out to 1x
+			if (zoomLevelIdx === 0) {
+				panX = 0;
+				panY = 0;
+			}
+			return;
+		}
 		isPanning = false;
 	}
 
@@ -402,7 +479,7 @@
 	<Modal
 		bind:this={modal}
 		onEscape={modal?.close}
-		classBackdrop="p-4 md:p-4 {modalClassBackdrop}"
+		classBackdrop="p-2 md:p-2 {modalClassBackdrop}"
 		classInner="max-w-full h-full {modalClassInner}"
 		class="max-h-full md:max-h-full rounded-lg {modalClass}"
 		classMain="flex items-center justify-center relative stuic-assets-preview stuic-assets-preview-open {modalClassMain}"
