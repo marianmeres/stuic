@@ -75,6 +75,8 @@
 		) => void;
 		/** optional "do not display file name" switch flag */
 		noName?: boolean;
+		/** When true (default), panning is clamped to keep image within bounds */
+		clampPan?: boolean;
 	}
 
 	export function getAssetIcon(ext?: string) {
@@ -181,6 +183,7 @@
 		classControls = "",
 		onDelete,
 		noName,
+		clampPan = false,
 	}: Props = $props();
 
 	let assets: AssetPreviewNormalized[] = $derived(
@@ -256,7 +259,7 @@
 	}
 
 	// Clamp pan values to keep image within bounds
-	function clampPan(newPanX: number, newPanY: number): { x: number; y: number } {
+	function getClampedPan(newPanX: number, newPanY: number): { x: number; y: number } {
 		if (!imgEl || !containerEl) return { x: newPanX, y: newPanY };
 
 		const imgRect = imgEl.getBoundingClientRect();
@@ -326,9 +329,14 @@
 		const newPanX = startPanX + (clientX - startMouseX);
 		const newPanY = startPanY + (clientY - startMouseY);
 
-		const clamped = clampPan(newPanX, newPanY);
-		panX = clamped.x;
-		panY = clamped.y;
+		if (clampPan) {
+			const clamped = getClampedPan(newPanX, newPanY);
+			panX = clamped.x;
+			panY = clamped.y;
+		} else {
+			panX = newPanX;
+			panY = newPanY;
+		}
 	}
 
 	function panEnd() {
