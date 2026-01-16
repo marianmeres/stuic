@@ -168,7 +168,7 @@
 	const clog = createClog("AssetsPreview", { color: "auto" });
 
 	let {
-		class: classProp,
+		class: classProp = "",
 		assets: _assets,
 		t = t_default,
 		classControls = "",
