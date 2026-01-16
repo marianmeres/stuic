@@ -3,12 +3,19 @@
 
 	let value1 = $state<string | number>("tab1");
 	let value2 = $state<string | number>("home");
+	let valueShort = $state<string | number>("short1");
 	let value3 = $state<string | number>("a");
 
 	const basicItems = [
 		{ id: "tab1", label: "First Tab And Some Longer Content" },
 		{ id: "tab2", label: "Second Tab Also Some Quite Long Content" },
 		{ id: "tab3", label: "Third Tab Ang Here Some Fairly Long Content Too" },
+	];
+
+	const shortItems = [
+		{ id: "short1", label: "First", href: "#" },
+		{ id: "short2", label: "Second", href: "#" },
+		{ id: "short3", label: "Third", href: "#" },
 	];
 
 	const itemsWithDisabled = [
@@ -50,8 +57,8 @@
 	<section>
 		<h2 class="text-lg font-semibold mb-4">Pill like</h2>
 		<TabbedMenu
-			items={basicItems}
-			bind:value={value1}
+			items={shortItems}
+			bind:value={valueShort}
 			class="border rounded-full p-1 bg-blue-100"
 			classItem=""
 			classButton="border-0 rounded-full bg-white/25"

@@ -77,6 +77,8 @@
 		hover:brightness-105
 		focus-visible:outline-2 focus-visible:outline-offset-2
         truncate w-full
+        block
+        text-center
 	`;
 
 	const CLS_BUTTON_ACTIVE = `
