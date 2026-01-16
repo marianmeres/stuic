@@ -1,5 +1,10 @@
 <script lang="ts" module>
 	import type { Snippet } from "svelte";
+	import { twMerge } from "../../utils/tw-merge.js";
+	import { tooltip } from "../../actions/index.js";
+	import { isPlainObject } from "../../utils/is-plain-object.js";
+	import { replaceMap } from "../../utils/replace-map.js";
+	import type { TranslateFn } from "../../types.js";
 
 	export interface Props {
 		/** Content to display */
@@ -22,12 +27,28 @@
 		toggleOpacity?: string;
 		/** Bind reference to container element */
 		el?: HTMLDivElement;
+		/** Optional translate function */
+		t?: TranslateFn;
+	}
+
+	// i18n ready
+	function t_default(
+		k: string,
+		values: false | null | undefined | Record<string, string | number> = null,
+		fallback: string | boolean = "",
+		i18nSpanWrap: boolean = true
+	) {
+		const m: Record<string, string> = {
+			more: "Show more...",
+			less: "Show less...",
+		};
+		let out = m[k] ?? fallback ?? k;
+
+		return isPlainObject(values) ? replaceMap(out, values as any) : out;
 	}
 </script>
 
 <script lang="ts">
-	import { twMerge } from "../../utils/tw-merge.js";
-
 	let {
 		children,
 		lines = 1,
@@ -39,6 +60,7 @@
 		classToggle,
 		toggleOpacity = "opacity-75",
 		el = $bindable(),
+		t = t_default,
 	}: Props = $props();
 
 	let contentEl: HTMLDivElement | undefined;
@@ -81,6 +103,9 @@
 					classToggle
 				)}
 				onclick={() => (expanded = !expanded)}
+				use:tooltip={() => ({
+					content: expanded ? t("less") : t("more"),
+				})}
 			>
 				{expanded ? expandedIndicator : collapsedIndicator}
 			</button>
