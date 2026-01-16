@@ -543,7 +543,15 @@
 				</div>
 			{/if}
 
-			<div class="absolute top-4 right-4 flex items-center space-x-3">
+			<div class="absolute top-4 left-4 right-4 flex items-center justify-between gap-3">
+				{#if !noName && previewAsset?.name}
+					<span class="truncate bg-white px-1 rounded">
+						{previewAsset?.name}
+					</span>
+				{:else}
+					<span></span>
+				{/if}
+				<div class="flex items-center space-x-3 shrink-0">
 				{#if previewAsset.isImage}
 					<button
 						class={twMerge(TOP_BUTTON_CLS, classControls)}
@@ -602,13 +610,8 @@
 				>
 					<X />
 				</button>
+				</div>
 			</div>
-
-			{#if !noName && previewAsset?.name}
-				<span class="absolute top-4 left-4 bg-white px-1 rounded">
-					{previewAsset?.name}
-				</span>
-			{/if}
 
 			{#if assets.length > 1}
 				{#if !noName && dotTooltip}
