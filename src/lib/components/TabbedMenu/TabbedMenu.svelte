@@ -11,6 +11,7 @@
 		class?: string;
 		data?: Record<string, any>;
 		onSelect?: () => void | boolean;
+		href?: string;
 	}
 
 	export interface Props extends Omit<HTMLAttributes<HTMLUListElement>, "children"> {
@@ -89,7 +90,9 @@
 		pointer-events-none
 	`;
 
-	let buttonEls = $state<Record<string | number, HTMLButtonElement>>({});
+	let buttonEls = $state<Record<string | number, HTMLButtonElement | HTMLAnchorElement>>(
+		{}
+	);
 
 	function selectItem(item: TabbedMenuItem) {
 		if (item.disabled || disabled) return;
@@ -115,6 +118,8 @@
 			const prevItem = enabledItems[prevIndex];
 			buttonEls[prevItem.id]?.focus();
 		} else if (["Enter", " "].includes(e.key)) {
+			// For anchors, let Enter trigger native navigation (onclick still fires)
+			if (e.key === "Enter" && item.href) return;
 			e.preventDefault();
 			selectItem(item);
 		} else if (e.key === "Home") {
@@ -152,20 +157,25 @@
 		{...rest}
 	>
 		{#each items as item (item.id)}
+			{@const props = {
+				role: "tab",
+				["aria-selected"]: value === item.id,
+				["aria-disabled"]: item.disabled || disabled || undefined,
+				tabindex: value === item.id ? 0 : -1,
+				class: getButtonClass(item),
+				onclick: () => selectItem(item),
+				onkeydown: (e: KeyboardEvent) => handleKeydown(e, item),
+			}}
 			<li class={twMerge(CLS_ITEM, classItem)} role="presentation">
-				<button
-					type="button"
-					role="tab"
-					aria-selected={value === item.id}
-					aria-disabled={item.disabled || disabled || undefined}
-					tabindex={value === item.id ? 0 : -1}
-					class={getButtonClass(item)}
-					onclick={() => selectItem(item)}
-					onkeydown={(e) => handleKeydown(e, item)}
-					bind:this={buttonEls[item.id]}
-				>
-					<Thc thc={item.label} />
-				</button>
+				{#if item.href}
+					<a href={item.href} {...props} bind:this={buttonEls[item.id]}>
+						<Thc thc={item.label} />
+					</a>
+				{:else}
+					<button type="button" {...props} bind:this={buttonEls[item.id]}>
+						<Thc thc={item.label} />
+					</button>
+				{/if}
 			</li>
 		{/each}
 	</ul>
