@@ -29,6 +29,7 @@ Sed metus sapien, feugiat eget mauris quis, pellentesque porta enim. In hac habi
 	import { onMount } from "svelte";
 	import ButtonGroupRadio from "../../../../lib/components/ButtonGroupRadio/ButtonGroupRadio.svelte";
 	import { citiesByContinent } from "../../../_utils/options.js";
+	import { dummySentence, dummyText } from "../../../_utils/dummy-text.js";
 
 	const clog = createClog("TestForm");
 
@@ -139,7 +140,7 @@ Sed metus sapien, feugiat eget mauris quis, pellentesque porta enim. In hac habi
 				input-after
 			{/snippet}
 			{#snippet description({ id })}
-				some description for {id}
+				some description for {id} {dummySentence()}
 			{/snippet}
 			{#snippet below({ id })}
 				below for {id}
