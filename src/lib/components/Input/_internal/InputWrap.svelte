@@ -3,6 +3,7 @@
 	import { slide } from "svelte/transition";
 	import type { ValidationResult } from "../../../actions/validate.svelte.js";
 	import { twMerge } from "../../../utils/tw-merge.js";
+	import { Collapsible } from "../../Collapsible/index.js";
 	import Thc, { isTHCNotEmpty, type THC } from "../../Thc/Thc.svelte";
 
 	type SnippetWithId = Snippet<[{ id: string }]>;
@@ -78,22 +79,11 @@
 	let invalid = $derived(validation && !validation?.valid);
 
 	let width = $state<number>(0);
-	let descExpanded = $state(descriptionDefaultExpanded);
-	let descContentEl: HTMLDivElement | undefined;
-	let descNeedsCollapse = $state(false);
 
 	$effect(() => {
 		// a non-zero breakpoint has priority
 		if (labelLeftBreakpoint) {
 			labelLeft = !(width && width < labelLeftBreakpoint);
-		}
-	});
-
-	$effect(() => {
-		// only measure when collapsed (line-clamp applied) to detect if truncation is needed
-		// width dependency ensures re-measurement on resize
-		if (descContentEl && descriptionCollapsible && !descExpanded && width) {
-			descNeedsCollapse = descContentEl.scrollHeight > descContentEl.clientHeight;
 		}
 	});
 
@@ -232,26 +222,12 @@
 				)}
 			>
 				{#if descriptionCollapsible}
-					<div class="flex items-start">
-						<div
-							bind:this={descContentEl}
-							class={twMerge("flex-1", !descExpanded && "line-clamp-1")}
-						>
-							{@render snippetOrThc({ id, value: description })}
-						</div>
-						{#if descNeedsCollapse}
-							<button
-								type="button"
-								class={twMerge(
-									"opacity-70 hover:opacity-100 cursor-pointer px-2 py-1 -my-1 -mr-2",
-									classDescBoxToggle
-								)}
-								onclick={() => (descExpanded = !descExpanded)}
-							>
-								{descExpanded ? "↑" : "↓"}
-							</button>
-						{/if}
-					</div>
+					<Collapsible
+						expanded={descriptionDefaultExpanded}
+						classToggle={classDescBoxToggle}
+					>
+						{@render snippetOrThc({ id, value: description })}
+					</Collapsible>
 				{:else}
 					{@render snippetOrThc({ id, value: description })}
 				{/if}

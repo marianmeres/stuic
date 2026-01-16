@@ -52,6 +52,12 @@
 			needsCollapse = contentEl.scrollHeight > contentEl.clientHeight;
 		}
 	});
+
+	// normalize, range validation
+	let _lines = $derived.by(() => {
+		const l = Math.abs(lines);
+		return l > 10 ? 10 : l;
+	});
 </script>
 
 <div
@@ -59,10 +65,10 @@
 	bind:clientWidth={containerWidth}
 	class={twMerge("stuic-collapsible", classProp)}
 >
-	<div class="flex items-start">
+	<div class="flex items-end">
 		<div
 			bind:this={contentEl}
-			class={twMerge("flex-1", !expanded && `line-clamp-${lines}`, classContent)}
+			class={twMerge("flex-1", !expanded && `line-clamp-${_lines}`, classContent)}
 		>
 			{@render children()}
 		</div>
@@ -81,3 +87,17 @@
 		{/if}
 	</div>
 </div>
+
+<!-- 
+DO NOT REMOVE: Food for TW compiler
+line-clamp-1
+line-clamp-2
+line-clamp-3
+line-clamp-4
+line-clamp-5
+line-clamp-6
+line-clamp-7
+line-clamp-8
+line-clamp-9
+line-clamp-10
+-->
