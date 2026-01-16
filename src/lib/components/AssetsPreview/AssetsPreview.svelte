@@ -30,6 +30,7 @@
 	import { tooltip } from "../../actions/index.js";
 	import { X } from "../X/index.js";
 	import { preloadImgs } from "../../utils/preload-img.js";
+	import { fade } from "svelte/transition";
 
 	export type AssetPreviewUrlObj = {
 		// o
@@ -163,6 +164,7 @@
 	);
 	let previewIdx = $state<number>(0);
 	let modal: Modal | undefined = $state();
+	let dotTooltip: string | undefined = $state();
 
 	// Zoom state
 	const ZOOM_LEVELS = [1, 1.5, 2, 3, 4] as const;
@@ -493,8 +495,19 @@
 			{/if}
 
 			{#if assets.length > 1}
+				{#if dotTooltip}
+					<div
+						class="absolute bottom-10 left-0 right-0 text-center"
+						transition:fade={{ duration: 100 }}
+					>
+						<span class="bg-white p-1 rounded opacity/75">
+							{dotTooltip}
+						</span>
+					</div>
+				{/if}
 				<div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3">
 					{#each assets as _, i}
+						<!-- svelte-ignore a11y_mouse_events_have_key_events -->
 						<button
 							type="button"
 							class={twMerge(
@@ -505,7 +518,13 @@
 								previewIdx = i;
 								resetZoom();
 							}}
-							aria-label={`Go to image ${i + 1}`}
+							aria-label={assets[i]?.name}
+							onmouseover={() => {
+								dotTooltip = assets[i]?.name;
+							}}
+							onmouseout={() => {
+								dotTooltip = undefined;
+							}}
 						></button>
 					{/each}
 				</div>
