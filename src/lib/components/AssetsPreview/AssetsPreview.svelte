@@ -31,6 +31,7 @@
 	import { X } from "../X/index.js";
 	import { preloadImgs } from "../../utils/preload-img.js";
 	import { fade } from "svelte/transition";
+	import { C } from "vitest/dist/chunks/reporters.d.BFLkQcL6.js";
 
 	export type AssetPreviewUrlObj = {
 		// o
@@ -55,6 +56,7 @@
 	}
 
 	export interface Props {
+		class?: string;
 		assets: string[] | AssetPreview[];
 		classControls?: string;
 		/** Optional translate function */
@@ -166,6 +168,7 @@
 	const clog = createClog("AssetsPreview", { color: "auto" });
 
 	let {
+		class: classProp,
 		assets: _assets,
 		t = t_default,
 		classControls = "",
@@ -386,7 +389,7 @@
 		onEscape={modal?.close}
 		classBackdrop="p-4 md:p-4"
 		classInner="max-w-full h-full"
-		class="max-h-full md:max-h-full rounded-lg"
+		class="max-h-full md:max-h-full rounded-lg {classProp}"
 		classMain="flex items-center justify-center relative stuic-assets-preview stuic-assets-preview-open"
 	>
 		{@const previewAsset = assets?.[previewIdx]}
