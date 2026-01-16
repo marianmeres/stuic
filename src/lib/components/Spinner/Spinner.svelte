@@ -12,7 +12,7 @@
 
 <script lang="ts">
 	let {
-		class: classProp,
+		class: classProp = "opacity-50",
 		count = 8,
 		thickness = "normal",
 		height = "normal",
