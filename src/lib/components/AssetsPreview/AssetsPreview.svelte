@@ -60,7 +60,13 @@
 		/** Optional translate function */
 		t?: TranslateFn;
 		/** Optional delete handler - receives the current asset and its index */
-		onDelete?: (asset: AssetPreview, index: number) => void;
+		onDelete?: (
+			asset: AssetPreview,
+			index: number,
+			controls: {
+				close: () => void;
+			}
+		) => void;
 	}
 
 	export function getAssetIcon(ext?: string) {
@@ -189,6 +195,9 @@
 	$effect(() => {
 		const visible = modal?.visibility().visible;
 		if (visible) {
+			// Reset preview index on modal open
+			previewIdx = 0;
+
 			// perhaps we should have some upper limit here...
 			const toPreload = (assets ?? [])
 				.map((asset) => (asset.isImage ? String(asset.url.full) : ""))
@@ -343,6 +352,10 @@
 		resetZoom();
 	}
 
+	function preview(idx: number) {
+		previewIdx = idx % assets.length;
+	}
+
 	// $inspect(assets).with(clog);
 </script>
 
@@ -456,7 +469,7 @@
 					<button
 						class={twMerge(TOP_BUTTON_CLS, classControls)}
 						type="button"
-						onclick={() => onDelete(previewAsset, previewIdx)}
+						onclick={() => onDelete(previewAsset, previewIdx, { close })}
 						aria-label={t("delete")}
 						use:tooltip
 					>

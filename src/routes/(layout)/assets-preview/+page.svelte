@@ -1,22 +1,35 @@
 <script lang="ts">
 	import Button from "../../../lib/components/Button/Button.svelte";
-	import { AssetsPreview } from "../../../lib/index.js";
+	import {
+		AlertConfirmPrompt,
+		AlertConfirmPromptStack,
+		AssetsPreview,
+	} from "../../../lib/index.js";
 
 	let preview = $state<AssetsPreview>()!;
+
+	const acp = new AlertConfirmPromptStack();
+
+	let assets = $state([
+		"/assets/00.jpg",
+		"/assets/01.jpg",
+		"/assets/02.jpg",
+		"/assets/README.md",
+		"/assets/03.jpg",
+	]);
 </script>
 
 <Button onclick={() => preview.open()}>open</Button>
 
 <AssetsPreview
 	bind:this={preview}
-	assets={[
-		"/assets/00.jpg",
-		"/assets/01.jpg",
-		"/assets/02.jpg",
-		"/assets/README.md",
-		"/assets/03.jpg",
-	]}
-	onDelete={(...args) => {
-		console.log("onDelete", ...args);
+	{assets}
+	onDelete={(a, index, ctrl) => {
+		acp.confirm(() => {
+			assets.splice(index, 1);
+			acp.shift();
+		});
 	}}
 />
+
+<AlertConfirmPrompt {acp} />
