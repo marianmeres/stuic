@@ -26,6 +26,7 @@
 export * from "./components/AlertConfirmPrompt/index.js";
 export * from "./components/AnimatedElipsis/index.js";
 export * from "./components/AppShell/index.js";
+export * from "./components/AssetsPreview/index.js";
 export * from "./components/AvatarInitials/index.js";
 export * from "./components/Backdrop/index.js";
 export * from "./components/Button/index.js";

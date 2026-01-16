@@ -6,6 +6,7 @@
 		'avatar-initials',
 		'app-shell', 
 		'app-shell-simple', 
+		'assets-preview', 
 		// 'avatar', 
 		'backdrop', 
         'button', 
