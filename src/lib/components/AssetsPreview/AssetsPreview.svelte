@@ -16,6 +16,8 @@
 	import { iconFeatherDownload as iconDownload } from "@marianmeres/icons-fns/feather/iconFeatherDownload.js";
 	import { iconFeatherPlus as iconAdd } from "@marianmeres/icons-fns/feather/iconFeatherPlus.js";
 	import { iconFeatherTrash2 as iconDelete } from "@marianmeres/icons-fns/feather/iconFeatherTrash2.js";
+	import { iconFeatherZoomIn } from "@marianmeres/icons-fns/feather/iconFeatherZoomIn.js";
+	import { iconFeatherZoomOut } from "@marianmeres/icons-fns/feather/iconFeatherZoomOut.js";
 	import { getFileTypeLabel } from "../../utils/get-file-type-label.js";
 	import { Modal } from "../Modal/index.js";
 	import { createClog } from "@marianmeres/clog";
@@ -56,6 +58,8 @@
 		classControls?: string;
 		/** Optional translate function */
 		t?: TranslateFn;
+		/** Optional delete handler - receives the current asset and its index */
+		onDelete?: (asset: AssetPreview, index: number) => void;
 	}
 
 	export function getAssetIcon(ext?: string) {
@@ -87,6 +91,9 @@
 			unable_to_preview: "Unable to preview",
 			download: "Download",
 			close: "Close",
+			zoom_in: "Zoom in",
+			zoom_out: "Zoom out",
+			delete: "Delete",
 		};
 		let out = m[k] ?? fallback ?? k;
 
@@ -149,7 +156,7 @@
 <script lang="ts">
 	const clog = createClog("AssetsPreview", { color: "auto" });
 
-	let { assets: _assets, t = t_default, classControls = "" }: Props = $props();
+	let { assets: _assets, t = t_default, classControls = "", onDelete }: Props = $props();
 
 	let assets: AssetPreviewNormalized[] = $derived(
 		(_assets ?? []).map(normalizeInput).filter(Boolean) as AssetPreviewNormalized[]
@@ -157,10 +164,29 @@
 	let previewIdx = $state<number>(0);
 	let modal: Modal | undefined = $state();
 
+	// Zoom state
+	const ZOOM_LEVELS = [1, 1.5, 2, 3, 4] as const;
+	let zoomLevelIdx = $state(0);
+	let zoomLevel = $derived(ZOOM_LEVELS[zoomLevelIdx]);
+
+	// Pan state
+	let isPanning = $state(false);
+	let panX = $state(0);
+	let panY = $state(0);
+	let startPanX = 0;
+	let startPanY = 0;
+	let startMouseX = 0;
+	let startMouseY = 0;
+
+	// Image and container dimensions for pan clamping
+	let imgEl: HTMLImageElement | null = null;
+	let containerEl: HTMLDivElement | null = $state(null);
+
 	const TOP_BUTTON_CLS = "rounded bg-white hover:bg-neutral-200 p-1";
 
 	$effect(() => {
-		if (modal?.visibility().visible) {
+		const visible = modal?.visibility().visible;
+		if (visible) {
 			// perhaps we should have some upper limit here...
 			const toPreload = (assets ?? [])
 				.map((asset) => (asset.isImage ? String(asset.url.full) : ""))
@@ -168,8 +194,117 @@
 
 			clog.debug("going to (maybe) preload", toPreload);
 			preloadImgs(toPreload);
+		} else {
+			// Reset zoom when modal closes
+			resetZoom();
 		}
 	});
+
+	// Svelte action for pan event listeners - guaranteed to run when element is created
+	function pannable(node: HTMLImageElement) {
+		imgEl = node;
+		node.addEventListener("mousedown", panStart);
+		node.addEventListener("touchstart", panStart, { passive: false });
+
+		document.addEventListener("mousemove", panMove);
+		document.addEventListener("mouseup", panEnd);
+		document.addEventListener("touchmove", panMove, { passive: false });
+		document.addEventListener("touchend", panEnd);
+		document.addEventListener("touchcancel", panEnd);
+
+		return {
+			destroy() {
+				imgEl = null;
+				node.removeEventListener("mousedown", panStart);
+				node.removeEventListener("touchstart", panStart);
+				document.removeEventListener("mousemove", panMove);
+				document.removeEventListener("mouseup", panEnd);
+				document.removeEventListener("touchmove", panMove);
+				document.removeEventListener("touchend", panEnd);
+				document.removeEventListener("touchcancel", panEnd);
+			},
+		};
+	}
+
+	// Clamp pan values to keep image within bounds
+	function clampPan(newPanX: number, newPanY: number): { x: number; y: number } {
+		if (!imgEl || !containerEl) return { x: newPanX, y: newPanY };
+
+		const imgRect = imgEl.getBoundingClientRect();
+		const containerRect = containerEl.getBoundingClientRect();
+
+		// Calculate the scaled image dimensions
+		const scaledWidth = imgRect.width; // already includes transform scale
+		const scaledHeight = imgRect.height;
+
+		// Calculate max pan distance (how much the scaled image exceeds the container)
+		// Divide by zoomLevel because translate values are applied before scale in our transform
+		const maxPanX = Math.max(0, (scaledWidth - containerRect.width) / 2 / zoomLevel);
+		const maxPanY = Math.max(0, (scaledHeight - containerRect.height) / 2 / zoomLevel);
+
+		return {
+			x: Math.max(-maxPanX, Math.min(maxPanX, newPanX)),
+			y: Math.max(-maxPanY, Math.min(maxPanY, newPanY)),
+		};
+	}
+
+	// Zoom functions
+	function zoomIn() {
+		if (zoomLevelIdx < ZOOM_LEVELS.length - 1) {
+			zoomLevelIdx++;
+		}
+	}
+
+	function zoomOut() {
+		if (zoomLevelIdx > 0) {
+			zoomLevelIdx--;
+			// Reset pan when zooming out to 1x
+			if (zoomLevelIdx === 0) {
+				panX = 0;
+				panY = 0;
+			}
+		}
+	}
+
+	function resetZoom() {
+		zoomLevelIdx = 0;
+		panX = 0;
+		panY = 0;
+	}
+
+	// Pan/drag handlers
+	function panStart(e: MouseEvent | TouchEvent) {
+		if (zoomLevel <= 1) return;
+		e.preventDefault();
+		isPanning = true;
+
+		const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+		const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
+
+		startMouseX = clientX;
+		startMouseY = clientY;
+		startPanX = panX;
+		startPanY = panY;
+	}
+
+	function panMove(e: MouseEvent | TouchEvent) {
+		if (!isPanning) return;
+		e.preventDefault();
+
+		const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+		const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
+
+		const newPanX = startPanX + (clientX - startMouseX);
+		const newPanY = startPanY + (clientY - startMouseY);
+
+		const clamped = clampPan(newPanX, newPanY);
+		panX = clamped.x;
+		panY = clamped.y;
+	}
+
+	function panEnd() {
+		isPanning = false;
+	}
 
 	export function open() {
 		modal?.open();
@@ -195,10 +330,12 @@
 
 	function preview_previous() {
 		previewIdx = (previewIdx - 1 + assets.length) % assets.length;
+		resetZoom();
 	}
 
 	function preview_next() {
 		previewIdx = (previewIdx + 1) % assets.length;
+		resetZoom();
 	}
 
 	// $inspect(assets).with(clog);
@@ -223,18 +360,30 @@
 		onEscape={modal?.close}
 		classBackdrop="p-4 md:p-4"
 		classInner="max-w-full h-full"
-		class="max-h-full md:max-h-full"
+		class="max-h-full md:max-h-full rounded-lg"
 		classMain="flex items-center justify-center relative stuic-assets-preview stuic-assets-preview-open"
 	>
 		{@const previewAsset = assets?.[previewIdx]}
 		{#if previewAsset}
 			<!-- <pre>{JSON.stringify(previewAsset)}</pre> -->
 			{#if previewAsset.isImage}
-				<img
-					src={String(previewAsset.url.full)}
-					class="w-full h-full object-scale-down"
-					alt={previewAsset?.name}
-				/>
+				<div
+					bind:this={containerEl}
+					class="w-full h-full overflow-hidden flex items-center justify-center"
+				>
+					<img
+						use:pannable
+						src={String(previewAsset.url.full)}
+						class="max-w-full max-h-full object-scale-down select-none"
+						class:cursor-grab={zoomLevel > 1 && !isPanning}
+						class:cursor-grabbing={isPanning}
+						alt={previewAsset?.name}
+						style:transform="scale({zoomLevel}) translate({panX / zoomLevel}px, {panY /
+							zoomLevel}px)"
+						style:transform-origin="center center"
+						draggable="false"
+					/>
+				</div>
 			{:else}
 				<div>
 					<div>
@@ -243,14 +392,16 @@
 							class: "mx-auto",
 						})}
 					</div>
-					<div class="opacity-50 mt-4 text-sm">{t("unable_to_preview")}</div>
+					<div class="opacity-50 mt-4">{t("unable_to_preview")}</div>
 				</div>
 			{/if}
 
 			{#if assets?.length > 1}
-				<div class={["absolute inset-0 flex items-center justify-between"]}>
+				<div
+					class="absolute inset-0 flex items-center justify-between pointer-events-none"
+				>
 					<button
-						class={twMerge("p-4", classControls)}
+						class={twMerge("p-4 pointer-events-auto", classControls)}
 						onclick={preview_previous}
 						type="button"
 					>
@@ -260,7 +411,7 @@
 					</button>
 
 					<button
-						class={twMerge("p-4", classControls)}
+						class={twMerge("p-4 pointer-events-auto", classControls)}
 						onclick={preview_next}
 						type="button"
 					>
@@ -272,6 +423,42 @@
 			{/if}
 
 			<div class="absolute top-4 right-4 flex items-center space-x-3">
+				{#if previewAsset.isImage}
+					<button
+						class={twMerge(TOP_BUTTON_CLS, classControls)}
+						type="button"
+						onclick={zoomOut}
+						disabled={zoomLevelIdx === 0}
+						aria-label={t("zoom_out")}
+						use:tooltip
+					>
+						{@html iconFeatherZoomOut({ class: "size-6" })}
+					</button>
+
+					<button
+						class={twMerge(TOP_BUTTON_CLS, classControls)}
+						type="button"
+						onclick={zoomIn}
+						disabled={zoomLevelIdx === ZOOM_LEVELS.length - 1}
+						aria-label={t("zoom_in")}
+						use:tooltip
+					>
+						{@html iconFeatherZoomIn({ class: "size-6" })}
+					</button>
+				{/if}
+
+				{#if onDelete}
+					<button
+						class={twMerge(TOP_BUTTON_CLS, classControls)}
+						type="button"
+						onclick={() => onDelete(previewAsset, previewIdx)}
+						aria-label={t("delete")}
+						use:tooltip
+					>
+						{@html iconDelete({ class: "size-6" })}
+					</button>
+				{/if}
+
 				<button
 					class={twMerge(TOP_BUTTON_CLS, classControls)}
 					type="button"
@@ -297,9 +484,28 @@
 			</div>
 
 			{#if previewAsset?.name}
-				<span class="absolute top-4 left-4 bg-white px-1 text-sm rounded">
+				<span class="absolute top-4 left-4 bg-white px-1 rounded">
 					{previewAsset?.name}
 				</span>
+			{/if}
+
+			{#if assets.length > 1}
+				<div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3">
+					{#each assets as _, i}
+						<button
+							type="button"
+							class={twMerge(
+								"size-3 rounded-full transition-colors border border-black/50",
+								i === previewIdx ? "bg-white" : "bg-white/50 hover:bg-neutral-200"
+							)}
+							onclick={() => {
+								previewIdx = i;
+								resetZoom();
+							}}
+							aria-label={`Go to image ${i + 1}`}
+						></button>
+					{/each}
+				</div>
 			{/if}
 		{/if}
 	</Modal>

@@ -16,4 +16,7 @@
 		"/assets/README.md",
 		"/assets/03.jpg",
 	]}
+	onDelete={(...args) => {
+		console.log("onDelete", ...args);
+	}}
 />
