@@ -55,9 +55,14 @@
 	}
 
 	export interface Props {
-		class?: string;
 		assets: string[] | AssetPreview[];
 		classControls?: string;
+		//
+		modalClassBackdrop?: string;
+		modalClassInner?: string;
+		modalClass?: string;
+		modalClassMain?: string;
+		//
 		/** Optional translate function */
 		t?: TranslateFn;
 		/** Optional delete handler - receives the current asset and its index */
@@ -167,7 +172,10 @@
 	const clog = createClog("AssetsPreview", { color: "auto" });
 
 	let {
-		class: classProp = "",
+		modalClassBackdrop = "",
+		modalClassInner = "",
+		modalClass = "",
+		modalClassMain = "",
 		assets: _assets,
 		t = t_default,
 		classControls = "",
@@ -386,10 +394,10 @@
 	<Modal
 		bind:this={modal}
 		onEscape={modal?.close}
-		classBackdrop="p-4 md:p-4"
-		classInner="max-w-full h-full"
-		class="max-h-full md:max-h-full rounded-lg {classProp}"
-		classMain="flex items-center justify-center relative stuic-assets-preview stuic-assets-preview-open"
+		classBackdrop="p-4 md:p-4 {modalClassBackdrop}"
+		classInner="max-w-full h-full {modalClassInner}"
+		class="max-h-full md:max-h-full rounded-lg {modalClass}"
+		classMain="flex items-center justify-center relative stuic-assets-preview stuic-assets-preview-open {modalClassMain}"
 	>
 		{@const previewAsset = assets?.[previewIdx]}
 		{#if previewAsset}
