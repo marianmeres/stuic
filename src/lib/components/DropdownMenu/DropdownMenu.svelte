@@ -231,7 +231,7 @@
 		flex items-center gap-2
 		px-3 py-1.5
 		min-h-[44px]
-		text-left text-sm
+		text-left 
 		rounded-md
 		cursor-pointer
 		touch-action-manipulation

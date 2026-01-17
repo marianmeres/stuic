@@ -44,7 +44,7 @@ export class BodyScroll {
 			const scrollY = window.scrollY || window.pageYOffset;
 
 			// Save body styles as serialized json
-			data.originalScrollStyleBackup = BodyScroll._get_body_style();
+			data.originalScrollStyleBackup = BodyScroll.#get_body_style();
 
 			// Save the original scroll position in dataset
 			data.originalScrollY = `${scrollY}`;
@@ -80,7 +80,7 @@ export class BodyScroll {
 			} else {
 				// This is the last component, restore everything
 				const originalScrollY = parseInt(data.originalScrollY!, 10);
-				BodyScroll._restore_body_styles(data.originalScrollStyleBackup!);
+				BodyScroll.#restore_body_styles(data.originalScrollStyleBackup!);
 
 				// Remove our data attributes
 				delete data.originalScrollY;
@@ -93,7 +93,7 @@ export class BodyScroll {
 		}
 	}
 
-	private static _get_body_style() {
+	static #get_body_style() {
 		// we want only explicitly defined, not computed
 		const style = document.body.style;
 		return JSON.stringify({
@@ -106,7 +106,7 @@ export class BodyScroll {
 		});
 	}
 
-	private static _restore_body_styles(originalJsonString: string) {
+	static #restore_body_styles(originalJsonString: string) {
 		let original: BodyStyles = {
 			position: null,
 			top: null,

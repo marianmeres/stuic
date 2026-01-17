@@ -51,6 +51,8 @@
 @supports (anchor-name: --anchor) {
 	.stuic-popover {
 		/* position-area is set via inline style based on position param */
+		/* prefer fallback position with most available width (helps on narrow mobile screens) */
+		position-try-order: most-width;
 		/* fallbacks ensure popover stays within viewport */
 		position-try-fallbacks:
 			--pop-top-span-right, --pop-top-span-left, flip-block, --pop-bottom-span-right,

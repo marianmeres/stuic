@@ -1,6 +1,7 @@
 import { mount, unmount } from "svelte";
 import { twMerge } from "../../utils/tw-merge.js";
 import { addAnchorName, removeAnchorName } from "../../utils/anchor-name.js";
+import { BodyScroll } from "../../utils/body-scroll-locker.js";
 import type { THC } from "../../components/Thc/Thc.svelte";
 import PopoverContent from "./PopoverContent.svelte";
 //
@@ -301,6 +302,7 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 	let isVisible = false;
 	let do_debug = false;
 	let prevOpen: boolean | undefined = undefined;
+	let switchingToFallback = false; // flag to prevent recursion during fallback switch
 
 	// Unique identifiers
 	const rnd = Math.random().toString(36).slice(2);
@@ -492,6 +494,9 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 			wrapperEl.appendChild(popoverEl);
 			document.body.appendChild(wrapperEl);
 
+			// Lock body scroll in fallback (modal) mode
+			BodyScroll.lock();
+
 			// Click on wrapper (outside popover) closes
 			if (currentOptions.closeOnClickOutside !== false) {
 				wrapperEl.addEventListener("click", (e) => {
@@ -531,6 +536,40 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 		requestAnimationFrame(() => {
 			popoverEl?.classList.add("pop-visible");
 			backdropEl?.classList.add("pop-visible");
+
+			// Check for viewport overflow and switch to fallback if needed
+			if (useAnchorPositioning && popoverEl && !switchingToFallback) {
+				// Use another RAF to let browser finalize positioning
+				requestAnimationFrame(() => {
+					if (!popoverEl) return;
+					const rect = popoverEl.getBoundingClientRect();
+					const viewportWidth = window.innerWidth;
+
+					if (rect.left < 0 || rect.right > viewportWidth) {
+						debug("overflow detected, switching to fallback mode");
+						switchingToFallback = true;
+
+						// Quick cleanup (skip transition)
+						if (mountedComponent) {
+							unmount(mountedComponent);
+							mountedComponent = null;
+						}
+						popoverEl.remove();
+						popoverEl = null;
+						isVisible = false;
+
+						// Re-show in fallback mode
+						const originalForceFallback = currentOptions.forceFallback;
+						currentOptions.forceFallback = true;
+						show();
+						currentOptions.forceFallback = originalForceFallback;
+
+						switchingToFallback = false;
+						return;
+					}
+				});
+			}
+
 			currentOptions.onShow?.();
 		});
 
@@ -573,6 +612,11 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 		// Remove event listeners
 		document.removeEventListener("keydown", onEscape);
 		document.removeEventListener("click", onClickOutside);
+
+		// Unlock body scroll if we were in fallback mode (wrapperEl only exists in fallback)
+		if (wrapperEl) {
+			BodyScroll.unlock();
+		}
 
 		// Transition out
 		popoverEl?.classList.remove("pop-visible");
@@ -712,6 +756,10 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 			if (mountedComponent) {
 				unmount(mountedComponent);
 				mountedComponent = null;
+			}
+			// Unlock body scroll if we were in fallback mode
+			if (wrapperEl) {
+				BodyScroll.unlock();
 			}
 			popoverEl?.remove();
 			backdropEl?.remove();

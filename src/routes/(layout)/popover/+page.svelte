@@ -274,7 +274,7 @@
 				use:popover={() => ({
 					content: "Only closes by clicking the button again",
 					position: "bottom",
-					class: "p-3 bg-white dark:bg-neutral-800",
+					class: "p-3 bg-white dark:bg-neutral-800 w-[400px]",
 					closeOnEscape: false,
 					closeOnClickOutside: false,
 				})}
