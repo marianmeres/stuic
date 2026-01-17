@@ -20,15 +20,10 @@
 </script>
 
 <script lang="ts">
-	import {
-		BodyScroll,
-		focusTrap as focusTrapAction,
-		twMerge,
-		waitForNextRepaint,
-	} from "$lib/index.js";
+	import { BodyScroll, focusTrap as focusTrapAction, twMerge } from "$lib/index.js";
 	import { createClog } from "@marianmeres/clog";
-	import { PressedKeys, watch } from "runed";
-	import { onDestroy, onMount, tick } from "svelte";
+	import { watch } from "runed";
+	import { onDestroy } from "svelte";
 	import { fade } from "svelte/transition";
 
 	const clog = createClog("Backdrop").debug;
@@ -136,6 +131,16 @@
 			window.removeEventListener("keydown", onkeydown);
 		};
 	});
+
+	let focusTrapOptions: FocusTrapOptions = $derived.by(() => {
+		let opts = { enabled: true };
+		if (typeof focusTrap === "boolean") {
+			opts.enabled = focusTrap;
+		} else if (typeof focusTrap === "object") {
+			opts = { ...opts, ...focusTrap };
+		}
+		return opts;
+	});
 </script>
 
 {#if visible}
@@ -146,10 +151,7 @@
 		class={twMerge("fixed inset-0 flex z-10 h-dvh", classProp)}
 		in:fade={{ duration: fadeInDuration }}
 		out:fade={{ duration: fadeOutDuration }}
-		use:focusTrapAction={{
-			...(typeof focusTrap === "object" ? focusTrap : {}),
-			enabled: typeof focusTrap === "boolean" ? focusTrap : !!focusTrap.enabled,
-		}}
+		use:focusTrapAction={focusTrapOptions}
 		{...rest}
 	>
 		{@render children?.()}
