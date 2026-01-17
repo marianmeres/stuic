@@ -271,11 +271,12 @@
 	import Thc from "../Thc/Thc.svelte";
 	import "./index.css";
 	import { BodyScroll } from "../../utils/body-scroll-locker.js";
+	import { waitForTwoRepaints } from "../../utils/paint.js";
 
 	let {
 		items,
 		isOpen = $bindable(false),
-		position = "bottom-span-left",
+		position = "bottom-span-right",
 		offset = "0.25rem",
 		maxHeight = "300px",
 		closeOnSelect = true,
@@ -314,7 +315,14 @@
 	let wrapperEl: HTMLDivElement = $state()!;
 	let activeItemEl: HTMLButtonElement | undefined = $state();
 	const reducedMotion = prefersReducedMotion();
-	const isSupported = untrack(() => !forceFallback && isAnchorPositioningSupported());
+
+	// Runtime overflow detection state
+	let runtimeFallback = $state(false);
+	let switchingToFallback = false; // Non-reactive flag to prevent recursion
+
+	const isSupported = $derived(
+		!forceFallback && !runtimeFallback && isAnchorPositioningSupported()
+	);
 
 	// Track expanded sections (independent toggle - multiple can be open)
 	let expandedSections = $state<Set<string | number>>(new Set());
@@ -378,6 +386,50 @@
 		if (!isOpen) {
 			navItems.unsetActive();
 		}
+	});
+
+	// Reset runtime fallback when menu closes
+	$effect(() => {
+		if (!isOpen) {
+			// Unlock body scroll if we were in runtime fallback mode
+			// (must do this before resetting runtimeFallback, otherwise isSupported
+			// becomes true and the main body scroll effect skips the unlock)
+			if (runtimeFallback && !noScrollLock) {
+				BodyScroll.unlock();
+			}
+			runtimeFallback = false;
+		}
+	});
+
+	// Runtime viewport overflow detection
+	$effect(() => {
+		if (!isOpen || !dropdownEl || forceFallback || runtimeFallback) return;
+		if (!isAnchorPositioningSupported()) return;
+		if (switchingToFallback) return;
+
+		const checkOverflow = async () => {
+			await waitForTwoRepaints();
+			if (!dropdownEl || !isOpen) return;
+
+			const rect = dropdownEl.getBoundingClientRect();
+			const viewportWidth = window.innerWidth;
+			const viewportHeight = window.innerHeight;
+
+			if (
+				rect.left < 0 ||
+				rect.right > viewportWidth ||
+				rect.top < 0 ||
+				rect.bottom > viewportHeight
+			) {
+				switchingToFallback = true;
+				runtimeFallback = true;
+				requestAnimationFrame(() => {
+					switchingToFallback = false;
+				});
+			}
+		};
+
+		checkOverflow();
 	});
 
 	// Scroll active item into view

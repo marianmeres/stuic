@@ -98,7 +98,16 @@
 	<Avatar initials="SM" size="sm" />
 	<Avatar initials="MD" size="md" />
 	<Avatar initials="LG" size="lg" />
-	<Avatar initials="XL" size="size-20 text-xl" />
+	<Avatar initials="XL" size="xl" />
+	<Avatar initials="2XL" size="2xl" />
+</div>
+
+<div class="flex items-center gap-4 mt-2">
+	<Avatar size="sm" />
+	<Avatar size="md" />
+	<Avatar size="lg" />
+	<Avatar size="xl" />
+	<Avatar size="2xl" />
 </div>
 
 <hr class="my-6" />

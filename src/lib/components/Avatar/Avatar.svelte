@@ -22,7 +22,7 @@
 		/** Optional string for color hash calculation (e.g., email, user ID). Falls back to `initials` */
 		hashSource?: string;
 		/** Size preset or custom Tailwind size class */
-		size?: "sm" | "md" | "lg" | "xl" | string;
+		size?: "sm" | "md" | "lg" | "xl" | "2xl" | string;
 		/** Click handler - when provided, renders as a button */
 		onclick?: (event: MouseEvent) => void;
 		/** Background color (Tailwind class). Ignored if autoColor=true */
@@ -62,9 +62,10 @@
 
 	const SIZE_PRESETS: Record<string, { container: string; icon: number }> = {
 		sm: { container: "size-8 text-xs", icon: 16 },
-		md: { container: "size-10 text-sm", icon: 20 },
-		lg: { container: "size-14 text-base", icon: 28 },
-		xl: { container: "size-16 text-lg", icon: 32 },
+		md: { container: "size-10 text-base", icon: 20 },
+		lg: { container: "size-12 text-lg", icon: 28 },
+		xl: { container: "size-14 text-xl", icon: 32 },
+		"2xl": { container: "size-16 text-2xl", icon: 36 },
 	};
 
 	// Extract initials from input string (email, name, or raw initials)

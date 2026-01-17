@@ -3,10 +3,44 @@
 	scrollbar-width: thin;
 }
 
+@position-try --pop-top {
+	position-area: top; /* above, centered */
+}
+@position-try --pop-top-span-right {
+	position-area: top span-right; /* above, aligned to anchor's left edge */
+}
+@position-try --pop-top-span-left {
+	position-area: top span-left; /* above, aligned to anchor's right edge */
+}
+@position-try --pop-bottom {
+	position-area: bottom; /* below, centered */
+}
+@position-try --pop-bottom-span-right {
+	position-area: bottom span-right;
+}
+@position-try --pop-bottom-span-left {
+	position-area: bottom span-left;
+}
+@position-try --pop-left {
+	position-area: left;
+}
+@position-try --pop-right {
+	position-area: right;
+}
+
 /* CSS Anchor Positioning supported mode - flip only when viewport overflow */
 @supports (anchor-name: --anchor) {
 	.stuic-dropdown-menu-dropdown {
-		position-try-fallbacks: flip-block, flip-inline;
+		/* position-try-fallbacks: flip-block, flip-inline; */
+
+		/* position-area is set via inline style based on position param */
+
+		/* fallbacks ensure popover stays within viewport */
+		/* order: try other bottom positions first, then top, then left/right */
+		position-try-fallbacks:
+			flip-inline, --pop-bottom-span-right, --pop-bottom-span-left, --pop-bottom,
+			flip-block, --pop-top-span-right, --pop-top-span-left, --pop-top,
+			--pop-left, --pop-right;
 	}
 }
 
