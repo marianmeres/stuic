@@ -60,7 +60,7 @@
 			items={shortItems}
 			bind:value={valueShort}
 			class="border rounded-full p-1 bg-blue-100"
-			classItem=""
+			classItem="max-w-none"
 			classButton="border-0 rounded-full bg-white/25"
 			classButtonActive="text-white bg-red-600"
 		/>
@@ -78,7 +78,7 @@
 			items={itemsWithCallback}
 			bind:value={value3}
 			onSelect={(item) => console.log("Selected:", item)}
-			classItem="max-w-40"
+			classItem=""
 			classButton=""
 		/>
 		<div class="mt-4 text-sm opacity-70">Selected: {value3}</div>

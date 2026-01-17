@@ -62,7 +62,7 @@
 	`;
 
 	const CLS_ITEM = `
-        min-w-0 flex-1
+        min-w-0 flex-1 max-w-40
     `;
 
 	const CLS_BUTTON = `

@@ -76,6 +76,10 @@ export class Breakpoint {
 		return this.#bp["2xl"];
 	}
 
+	get isMobile() {
+		return !this.#bp.md;
+	}
+
 	get dump() {
 		return this.#bp;
 	}
