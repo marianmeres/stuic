@@ -40,6 +40,8 @@ interface BreakpointValue {
  * ```
  */
 export class Breakpoint {
+	static #singleton: Breakpoint | undefined;
+
 	#bp = $derived.by(() => {
 		const w = innerWidth.current || 0;
 		return _breakpoints.reduce<BreakpointValue>(
@@ -51,6 +53,10 @@ export class Breakpoint {
 			{ current: null, sm: false, md: false, lg: false, xl: false, "2xl": false }
 		);
 	});
+
+	static get instance() {
+		return (Breakpoint.#singleton ??= new Breakpoint());
+	}
 
 	get current() {
 		return this.#bp.current;
