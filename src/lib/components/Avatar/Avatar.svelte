@@ -1,6 +1,10 @@
 <script lang="ts" module>
 	export type IconFn = (opts?: { size?: number; class?: string }) => string;
-	export type AvatarFallback = "icon" | "initials" | { icon: IconFn } | { initials: string };
+	export type AvatarFallback =
+		| "icon"
+		| "initials"
+		| { icon: IconFn }
+		| { initials: string };
 
 	export interface Props {
 		/** Photo URL - when provided, renders in photo mode */
@@ -9,6 +13,8 @@
 		alt?: string;
 		/** String to extract initials from. Supports: "AB", "John Doe", or "john.doe@example.com" */
 		initials?: string;
+		/** optional length */
+		initialsLength?: number;
 		/** Icon function to display - when provided alone, renders in icon mode */
 		icon?: IconFn;
 		/** Fallback when photo fails to load. Defaults to "icon" */
@@ -41,6 +47,7 @@
 		src,
 		alt,
 		initials: initialsProp,
+		initialsLength = 2,
 		icon,
 		fallback = "icon",
 		hashSource,
@@ -60,6 +67,34 @@
 		xl: { container: "size-16 text-lg", icon: 32 },
 	};
 
+	// Extract initials from input string (email, name, or raw initials)
+	function extractInitials(input: string, length: number): string {
+		let _input = (input || "").trim();
+		if (!_input) return "?";
+
+		// Email handling
+		if (_input.includes("@")) {
+			const username = _input.split("@")[0];
+			const parts = username.split(/[._+-]/).filter(Boolean);
+			if (parts.length > 1) {
+				_input = parts.map((p) => p.charAt(0)).join("");
+			} else {
+				_input = username;
+			}
+		}
+		// Full name handling
+		else if (_input.length > length && /\s/.test(_input)) {
+			_input = _input
+				.split(/\s/)
+				.map((v) => v.trim())
+				.filter(Boolean)
+				.map((v) => v.charAt(0))
+				.join("");
+		}
+
+		return _input.slice(0, length).toUpperCase();
+	}
+
 	// Image loading state
 	let imageError = $state(false);
 
@@ -70,36 +105,7 @@
 		}
 	});
 
-	// Extract initials from string
-	let extractedInitials = $derived.by(() => {
-		let _input = (initialsProp || "").trim();
-
-		if (!_input) return "?";
-
-		// Check if input looks like an email
-		if (_input.includes("@")) {
-			const username = _input.split("@")[0];
-			// Split by common separators (., _, -)
-			const parts = username.split(/[._+-]/).filter(Boolean);
-			if (parts.length > 1) {
-				_input = parts.map((p) => p.charAt(0)).join("");
-			} else {
-				_input = username;
-			}
-		}
-		// Check if input looks like a full name (multiple words)
-		else if (_input.length > 2 && /\s/.test(_input)) {
-			_input = _input
-				.split(/\s/)
-				.map((v) => v.trim())
-				.filter(Boolean)
-				.map((v) => v.charAt(0))
-				.join("");
-		}
-
-		// Extract first 2 chars, uppercase
-		return _input.slice(0, 2).toUpperCase();
-	});
+	let extractedInitials = $derived(extractInitials(initialsProp || "", initialsLength));
 
 	// Determine the current render mode
 	let renderMode = $derived.by((): "photo" | "initials" | "icon" => {
@@ -121,28 +127,7 @@
 	// Get fallback initials (from fallback prop or initialsProp)
 	let fallbackInitials = $derived.by(() => {
 		if (typeof fallback === "object" && "initials" in fallback) {
-			const _input = (fallback.initials || "").trim();
-			if (!_input) return "?";
-
-			// Apply same extraction logic
-			let result = _input;
-			if (_input.includes("@")) {
-				const username = _input.split("@")[0];
-				const parts = username.split(/[._+-]/).filter(Boolean);
-				if (parts.length > 1) {
-					result = parts.map((p) => p.charAt(0)).join("");
-				} else {
-					result = username;
-				}
-			} else if (_input.length > 2 && /\s/.test(_input)) {
-				result = _input
-					.split(/\s/)
-					.map((v) => v.trim())
-					.filter(Boolean)
-					.map((v) => v.charAt(0))
-					.join("");
-			}
-			return result.slice(0, 2).toUpperCase();
+			return extractInitials(fallback.initials || "", initialsLength);
 		}
 		return extractedInitials;
 	});
@@ -207,12 +192,7 @@
 {#if onclick}
 	<button bind:this={el} type="button" class={baseClass} {style} {onclick}>
 		{#if renderMode === "photo"}
-			<img
-				{src}
-				{alt}
-				class="size-full object-cover"
-				onerror={handleImageError}
-			/>
+			<img {src} {alt} class="size-full object-cover" onerror={handleImageError} />
 		{:else if renderMode === "initials"}
 			{fallbackInitials}
 		{:else}
@@ -222,12 +202,7 @@
 {:else}
 	<div bind:this={el} class={baseClass} {style}>
 		{#if renderMode === "photo"}
-			<img
-				{src}
-				{alt}
-				class="size-full object-cover"
-				onerror={handleImageError}
-			/>
+			<img {src} {alt} class="size-full object-cover" onerror={handleImageError} />
 		{:else if renderMode === "initials"}
 			{fallbackInitials}
 		{:else}

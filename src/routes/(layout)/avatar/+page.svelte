@@ -34,9 +34,7 @@
 <hr class="my-6" />
 
 <h2 class="text-lg font-semibold mb-4">Photo Mode</h2>
-<p class="text-sm text-neutral-500 mb-4">
-	Shows an image when src is provided.
-</p>
+<p class="text-sm text-neutral-500 mb-4">Shows an image when src is provided.</p>
 <div class="flex items-center gap-4">
 	<Avatar src={validPhotoUrl} alt="Sample user" />
 	<Avatar src={validPhotoUrl} alt="Sample user" size="lg" />
@@ -89,6 +87,7 @@
 	<Avatar initials="AB" />
 	<Avatar initials="CD" />
 	<Avatar initials="EF" />
+	<Avatar initials="GH" initialsLength={1} />
 	<Avatar initials="" />
 </div>
 
