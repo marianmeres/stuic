@@ -12,26 +12,27 @@ export { iconBsFileEarmarkText as iconFileText } from "@marianmeres/icons-fns/bo
 export { iconBsFileEarmarkWord as iconFileWord } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkWord.js";
 export { iconBsFileEarmarkZip as iconFileZip } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkZip.js";
 
-// Alert/Notification Icons (Feather)
-export { iconFeatherAlertTriangle as iconAlertWarning } from "@marianmeres/icons-fns/feather/iconFeatherAlertTriangle.js";
-export { iconFeatherCheckCircle as iconAlertSuccess } from "@marianmeres/icons-fns/feather/iconFeatherCheckCircle.js";
-export { iconFeatherInfo as iconAlertInfo } from "@marianmeres/icons-fns/feather/iconFeatherInfo.js";
-export { iconFeatherXOctagon as iconAlertError } from "@marianmeres/icons-fns/feather/iconFeatherXOctagon.js";
-export { iconFeatherRefreshCw as iconRefresh } from "@marianmeres/icons-fns/feather/iconFeatherRefreshCw.js";
+// Alert/Notification Icons (Lucide)
+export { iconLucideTriangleAlert as iconAlertWarning } from "@marianmeres/icons-fns/lucide/iconLucideTriangleAlert.js";
+export { iconLucideCircleCheck as iconAlertSuccess } from "@marianmeres/icons-fns/lucide/iconLucideCircleCheck.js";
+export { iconLucideInfo as iconAlertInfo } from "@marianmeres/icons-fns/lucide/iconLucideInfo.js";
+export { iconLucideOctagonX as iconAlertError } from "@marianmeres/icons-fns/lucide/iconLucideOctagonX.js";
+export { iconLucideRefreshCw as iconRefresh } from "@marianmeres/icons-fns/lucide/iconLucideRefreshCw.js";
 
-// Action Icons
-export { iconFeatherArrowLeft as iconArrowLeft } from "@marianmeres/icons-fns/feather/iconFeatherArrowLeft.js";
-export { iconFeatherArrowRight as iconArrowRight } from "@marianmeres/icons-fns/feather/iconFeatherArrowRight.js";
-export { iconFeatherArrowUp as iconArrowUp } from "@marianmeres/icons-fns/feather/iconFeatherArrowUp.js";
-export { iconFeatherArrowDown as iconArrowDown } from "@marianmeres/icons-fns/feather/iconFeatherArrowDown.js";
+// Action Icons (Lucide)
+export { iconLucideArrowLeft as iconArrowLeft } from "@marianmeres/icons-fns/lucide/iconLucideArrowLeft.js";
+export { iconLucideArrowRight as iconArrowRight } from "@marianmeres/icons-fns/lucide/iconLucideArrowRight.js";
+export { iconLucideArrowUp as iconArrowUp } from "@marianmeres/icons-fns/lucide/iconLucideArrowUp.js";
+export { iconLucideArrowDown as iconArrowDown } from "@marianmeres/icons-fns/lucide/iconLucideArrowDown.js";
 export { iconLucideDownload as iconDownload } from "@marianmeres/icons-fns/lucide/iconLucideDownload.js";
-export { iconFeatherPlus as iconPlus } from "@marianmeres/icons-fns/feather/iconFeatherPlus.js";
+export { iconLucidePlus as iconPlus } from "@marianmeres/icons-fns/lucide/iconLucidePlus.js";
+export { iconLucideMinus as iconMinus } from "@marianmeres/icons-fns/lucide/iconLucideMinus.js";
 export { iconLucideTrash2 as iconTrash } from "@marianmeres/icons-fns/lucide/iconLucideTrash2.js";
-export { iconFeatherZoomIn as iconZoomIn } from "@marianmeres/icons-fns/feather/iconFeatherZoomIn.js";
-export { iconFeatherZoomOut as iconZoomOut } from "@marianmeres/icons-fns/feather/iconFeatherZoomOut.js";
+export { iconLucideZoomIn as iconZoomIn } from "@marianmeres/icons-fns/lucide/iconLucideZoomIn.js";
+export { iconLucideZoomOut as iconZoomOut } from "@marianmeres/icons-fns/lucide/iconLucideZoomOut.js";
 
-// UI Control Icons
-export { iconFeatherSearch as iconSearch } from "@marianmeres/icons-fns/feather/iconFeatherSearch.js";
+// UI Control Icons (Lucide)
+export { iconLucideSearch as iconSearch } from "@marianmeres/icons-fns/lucide/iconLucideSearch.js";
 export { iconLucideChevronDown as iconChevronDown } from "@marianmeres/icons-fns/lucide/iconLucideChevronDown.js";
 export { iconLucideChevronUp as iconChevronUp } from "@marianmeres/icons-fns/lucide/iconLucideChevronUp.js";
 export { iconLucideChevronRight as iconChevronRight } from "@marianmeres/icons-fns/lucide/iconLucideChevronRight.js";

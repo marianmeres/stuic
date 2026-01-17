@@ -39,6 +39,7 @@
 		iconCircle,
 		iconSquare,
 		iconMenu,
+		iconMinus,
 	} from "$lib/icons/index.js";
 
 	const fileIcons = [
@@ -71,6 +72,7 @@
 		{ name: "iconArrowUp", icon: iconArrowUp },
 		{ name: "iconDownload", icon: iconDownload },
 		{ name: "iconPlus", icon: iconPlus },
+		{ name: "iconMinus", icon: iconMinus },
 		{ name: "iconTrash", icon: iconTrash },
 		{ name: "iconZoomIn", icon: iconZoomIn },
 		{ name: "iconZoomOut", icon: iconZoomOut },
