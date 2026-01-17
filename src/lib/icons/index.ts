@@ -41,3 +41,4 @@ export { iconLucideCheck as iconCheck } from "@marianmeres/icons-fns/lucide/icon
 export { iconLucideCircle as iconCircle } from "@marianmeres/icons-fns/lucide/iconLucideCircle.js";
 export { iconLucideSquare as iconSquare } from "@marianmeres/icons-fns/lucide/iconLucideSquare.js";
 export { iconLucideMenu as iconMenu } from "@marianmeres/icons-fns/lucide/iconLucideMenu.js";
+export { iconLucideUser as iconUser } from "@marianmeres/icons-fns/lucide/iconLucideUser.js";
