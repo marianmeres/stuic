@@ -40,7 +40,8 @@ interface BreakpointValue {
  * ```
  */
 export class Breakpoint {
-	static #singleton: Breakpoint | undefined;
+	/** Singleton */
+	static #instance: Breakpoint | undefined;
 
 	#bp = $derived.by(() => {
 		const w = innerWidth.current || 0;
@@ -55,7 +56,11 @@ export class Breakpoint {
 	});
 
 	static get instance() {
-		return (Breakpoint.#singleton ??= new Breakpoint());
+		// return (Breakpoint.#instance ??= new Breakpoint();) // does not work with Svelte correctly...
+		if (!Breakpoint.#instance) {
+			Breakpoint.#instance = new Breakpoint();
+		}
+		return Breakpoint.#instance;
 	}
 
 	get current() {
