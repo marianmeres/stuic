@@ -210,9 +210,9 @@
 		text-neutral-900 dark:text-neutral-100
 		border-neutral-200 dark:border-neutral-700
 		hover:brightness-95 dark:hover:brightness-110
-		focus-visible:outline-2 focus-visible:outline-offset-2
 		cursor-pointer
-	`;
+		`;
+	// focus-visible:outline-2 focus-visible:outline-offset-2
 
 	export const DROPDOWN_MENU_DROPDOWN_CLASSES = `
 		stuic-dropdown-menu-dropdown
@@ -703,12 +703,12 @@
 						role="menuitem"
 						class={twMerge(
 							DROPDOWN_MENU_ITEM_CLASSES,
+							classItem,
+							item.class,
 							isActive && "bg-neutral-200 dark:bg-neutral-600",
 							isActive && classItemActive,
 							item.disabled && "opacity-50 cursor-not-allowed pointer-events-none",
-							item.disabled && classItemDisabled,
-							classItem,
-							item.class
+							item.disabled && classItemDisabled
 						)}
 						onclick={() => selectItem(item)}
 						onmouseenter={() => navItems.setActive(item)}
@@ -761,12 +761,12 @@
 							class={twMerge(
 								DROPDOWN_MENU_ITEM_CLASSES,
 								"font-medium",
+								classExpandable,
+								item.class,
 								isExpandableActive && "bg-neutral-200 dark:bg-neutral-600",
 								isExpandableActive && classItemActive,
 								item.disabled && "opacity-50 cursor-not-allowed pointer-events-none",
-								item.disabled && classItemDisabled,
-								classExpandable,
-								item.class
+								item.disabled && classItemDisabled
 							)}
 							onclick={() => toggleExpanded(item.id)}
 							onmouseenter={() =>
@@ -815,13 +815,13 @@
 											role="menuitem"
 											class={twMerge(
 												DROPDOWN_MENU_ITEM_CLASSES,
+												classItem,
+												childItem.class,
 												isChildActive && "bg-neutral-200 dark:bg-neutral-600",
 												isChildActive && classItemActive,
 												childItem.disabled &&
 													"opacity-50 cursor-not-allowed pointer-events-none",
-												childItem.disabled && classItemDisabled,
-												classItem,
-												childItem.class
+												childItem.disabled && classItemDisabled
 											)}
 											onclick={() => selectItem(childItem)}
 											onmouseenter={() => navItems.setActive(childItem)}

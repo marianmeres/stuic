@@ -75,7 +75,7 @@
 
 <kbd
 	class={twMerge(
-		"text-xs leading-0 space-x-0.5 rounded px-1 py-0 outline outline-neutral-400",
+		"text-sm leading-0 space-x-0.5 rounded px-1 py-0 outline outline-neutral-400",
 		classProp
 	)}
 >

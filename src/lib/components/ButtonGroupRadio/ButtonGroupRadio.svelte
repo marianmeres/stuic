@@ -101,7 +101,7 @@
         border-button-group-border dark:border-button-group-border-dark
 		flex justify-between
         
-        focus-within:border-button-group-accent focus-within:dark:border-button-group-accent-dark
+        focus-within:border-button-group-accent  focus-within:dark:border-button-group-accent-dark
         focus-within:ring-button-group-accent/20 focus-within:dark:ring-button-group-accent-dark/20
         focus-within:ring-4
     `;

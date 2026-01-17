@@ -40,6 +40,7 @@
 		iconSquare,
 		iconMenu,
 		iconMinus,
+		iconEllipsisVertical,
 	} from "$lib/icons/index.js";
 
 	const fileIcons = [
@@ -88,6 +89,7 @@
 		{ name: "iconCircle", icon: iconCircle },
 		{ name: "iconSquare", icon: iconSquare },
 		{ name: "iconMenu", icon: iconMenu },
+		{ name: "iconEllipsisVertical", icon: iconEllipsisVertical },
 	];
 </script>
 
