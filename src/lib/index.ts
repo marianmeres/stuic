@@ -59,3 +59,6 @@ export * from "./utils/index.js";
 
 // actions
 export * from "./actions/index.js";
+
+// icons
+export * from "./icons/index.js";

@@ -56,7 +56,7 @@
 
 	const CLS = `
 		stuic-tabbed-menu
-		flex flex-row items-end
+		flex flex-row
 		gap-1
 		list-none m-0 p-0
 	`;
@@ -75,11 +75,11 @@
 		cursor-pointer
 		transition-colors duration-150
 		hover:brightness-105
-		focus-visible:outline-2 focus-visible:outline-offset-2
         truncate w-full
         block
         text-center
 	`;
+	// focus-visible:outline-2 focus-visible:outline-offset-2
 
 	const CLS_BUTTON_ACTIVE = `
 		bg-tabbed-menu-tab-active-bg dark:bg-tabbed-menu-tab-active-bg-dark

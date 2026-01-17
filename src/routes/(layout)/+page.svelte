@@ -21,6 +21,7 @@
         'dropdown-menu',
 		'file-dropzone',
 		'hover-expandable-width',
+		'icons',
 		'input',
 		'input-history',
 		'kbd-shortcut',

@@ -1,18 +1,20 @@
 <script lang="ts" module>
 	import { createClog } from "@marianmeres/clog";
-	import { iconBsFileEarmark } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmark.js";
-	import { iconBsFileEarmarkBinary } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkBinary.js";
-	import { iconBsFileEarmarkCode } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkCode.js";
-	import { iconBsFileEarmarkImage } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkImage.js";
-	import { iconBsFileEarmarkMusic } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkMusic.js";
-	import { iconBsFileEarmarkPdf } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkPdf.js";
-	import { iconBsFileEarmarkRichtext } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkRichtext.js";
-	import { iconBsFileEarmarkSlides } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkSlides.js";
-	import { iconBsFileEarmarkSpreadsheet } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkSpreadsheet.js";
-	import { iconBsFileEarmarkText } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkText.js";
-	import { iconBsFileEarmarkWord } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkWord.js";
-	import { iconBsFileEarmarkZip } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkZip.js";
-	import { iconFeatherPlus as iconAdd } from "@marianmeres/icons-fns/feather/iconFeatherPlus.js";
+	import {
+		iconFile,
+		iconFileBinary,
+		iconFileCode,
+		iconFileImage,
+		iconFileMusic,
+		iconFilePdf,
+		iconFileRichtext,
+		iconFileSlides,
+		iconFileSpreadsheet,
+		iconFileText,
+		iconFileWord,
+		iconFileZip,
+		iconPlus as iconAdd,
+	} from "$lib/icons/index.js";
 	import { onDestroy, type Snippet } from "svelte";
 	import { fileDropzone } from "../../actions/file-dropzone.svelte.js";
 	import { highlightDragover } from "../../actions/highlight-dragover.svelte.js";
@@ -105,20 +107,20 @@
 
 	export function getAssetIcon(ext?: string) {
 		const map: Record<string, CallableFunction> = {
-			archive: iconBsFileEarmarkZip,
-			audio: iconBsFileEarmarkMusic,
-			binary: iconBsFileEarmarkBinary,
-			code: iconBsFileEarmarkCode,
-			doc: iconBsFileEarmarkWord,
-			image: iconBsFileEarmarkImage,
-			pdf: iconBsFileEarmarkPdf,
-			presentation: iconBsFileEarmarkSlides,
-			richtext: iconBsFileEarmarkRichtext,
-			spreadsheet: iconBsFileEarmarkSpreadsheet,
-			text: iconBsFileEarmarkText,
-			unknown: iconBsFileEarmark,
+			archive: iconFileZip,
+			audio: iconFileMusic,
+			binary: iconFileBinary,
+			code: iconFileCode,
+			doc: iconFileWord,
+			image: iconFileImage,
+			pdf: iconFilePdf,
+			presentation: iconFileSlides,
+			richtext: iconFileRichtext,
+			spreadsheet: iconFileSpreadsheet,
+			text: iconFileText,
+			unknown: iconFile,
 		};
-		return map[getFileTypeLabel(ext ?? "unknown")] ?? iconBsFileEarmark;
+		return map[getFileTypeLabel(ext ?? "unknown")] ?? iconFile;
 	}
 
 	type SnippetWithId = Snippet<[{ id: string }]>;

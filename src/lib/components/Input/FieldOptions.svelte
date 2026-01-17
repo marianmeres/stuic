@@ -1,9 +1,6 @@
 <script lang="ts" module>
 	import { createClog } from "@marianmeres/clog";
-	import { iconBsSearch } from "@marianmeres/icons-fns/bootstrap/iconBsSearch.js";
-	import { iconLucideCheck } from "@marianmeres/icons-fns/lucide/iconLucideCheck.js";
-	import { iconLucideCircle } from "@marianmeres/icons-fns/lucide/iconLucideCircle.js";
-	import { iconLucideSquare } from "@marianmeres/icons-fns/lucide/iconLucideSquare.js";
+	import { iconSearch, iconCheck, iconCircle, iconSquare } from "$lib/icons/index.js";
 	import { ItemCollection, type Item } from "@marianmeres/item-collection";
 	import { Debounced, watch } from "runed";
 	import { tick, type Snippet } from "svelte";
@@ -121,11 +118,11 @@
 <script lang="ts">
 	const clog = createClog("FieldOptions");
 
-	const iconCheckboxEmpty = iconLucideSquare;
-	const iconCheckboxCheck = iconLucideCheck;
+	const iconCheckboxEmpty = iconSquare;
+	const iconCheckboxCheck = iconCheck;
 
-	const iconRadioEmpty = iconLucideCircle;
-	const iconRadioCheck = iconLucideCheck;
+	const iconRadioEmpty = iconCircle;
+	const iconRadioCheck = iconCheck;
 
 	let {
 		trigger,
@@ -827,7 +824,7 @@
 
 			{#snippet inputBefore()}
 				<div class="flex flex-col items-center justify-center pl-3 opacity-50">
-					{@html iconBsSearch({ size: 14 })}
+					{@html iconSearch({ size: 14 })}
 				</div>
 			{/snippet}
 		</InputWrap>

@@ -264,8 +264,7 @@
 	import { getId } from "../../utils/get-id.js";
 	import { prefersReducedMotion } from "../../utils/prefers-reduced-motion.svelte.js";
 	import { ItemCollection } from "@marianmeres/item-collection";
-	import { iconLucideChevronDown } from "@marianmeres/icons-fns/lucide/iconLucideChevronDown.js";
-	import { iconLucideChevronRight } from "@marianmeres/icons-fns/lucide/iconLucideChevronRight.js";
+	import { iconChevronDown, iconChevronRight } from "$lib/icons/index.js";
 	import { onClickOutside } from "runed";
 	import { slide, fade } from "svelte/transition";
 	import { untrack } from "svelte";
@@ -575,7 +574,7 @@
 			{:else}
 				Menu
 				<span class={isOpen ? "rotate-180 inline-block" : "inline-block"}>
-					{@html iconLucideChevronDown({ size: 16 })}
+					{@html iconChevronDown({ size: 16 })}
 				</span>
 			{/if}
 		</button>
@@ -743,7 +742,7 @@
 									isExpanded && "rotate-90"
 								)}
 							>
-								{@html iconLucideChevronRight({ size: 16 })}
+								{@html iconChevronRight({ size: 16 })}
 							</span>
 						</button>
 

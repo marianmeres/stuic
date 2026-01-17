@@ -53,8 +53,7 @@
 </script>
 
 <script lang="ts">
-	import { iconFeatherPlus } from "@marianmeres/icons-fns/feather/iconFeatherPlus.js";
-	import { iconFeatherTrash2 } from "@marianmeres/icons-fns/feather/iconFeatherTrash2.js";
+	import { iconPlus, iconTrash } from "$lib/icons/index.js";
 	import { tick } from "svelte";
 	import { autogrow } from "../../actions/autogrow.svelte.js";
 	import { validate as validateAction } from "../../actions/validate.svelte.js";
@@ -373,7 +372,7 @@
 								{disabled}
 								aria-label={t("remove_entry")}
 							>
-								{@html iconFeatherTrash2({ size: 14 })}
+								{@html iconTrash({ size: 14 })}
 							</button>
 						</div>
 					</div>
@@ -398,7 +397,7 @@
 				)}
 				{disabled}
 			>
-				{@html iconFeatherPlus({ size: 16 })}
+				{@html iconPlus({ size: 16 })}
 				<span>{addLabel ?? t("add_label")}</span>
 			</button>
 		</div>

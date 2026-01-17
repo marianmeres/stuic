@@ -4,7 +4,7 @@
 	import { createClog } from "@marianmeres/clog";
 	import { FieldInput } from "../Input/index.js";
 	import { twMerge } from "../../utils/tw-merge.js";
-	import { iconBsSearch as iconSearch } from "@marianmeres/icons-fns/bootstrap/iconBsSearch.js";
+	import { iconSearch } from "$lib/icons/index.js";
 	import { X } from "../X/index.js";
 	import { Debounced, watch } from "runed";
 	import { NotificationsStack } from "../Notifications/index.js";

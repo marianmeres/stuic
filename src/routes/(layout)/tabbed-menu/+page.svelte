@@ -78,6 +78,8 @@
 			items={itemsWithCallback}
 			bind:value={value3}
 			onSelect={(item) => console.log("Selected:", item)}
+			classItem="max-w-40"
+			classButton=""
 		/>
 		<div class="mt-4 text-sm opacity-70">Selected: {value3}</div>
 	</section>
