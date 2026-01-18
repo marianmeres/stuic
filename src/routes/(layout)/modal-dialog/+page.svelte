@@ -1,10 +1,21 @@
 <script lang="ts">
-	import { Button, ModalDialog, X } from "$lib/index.js";
-	import { dummyText } from "../../_utils/dummy-text.js";
+	import {
+		Button,
+		ModalDialog,
+		Notifications,
+		NotificationsStack,
+		X,
+	} from "$lib/index.js";
+	import { dummySentence, dummyText } from "../../_utils/dummy-text.js";
 
 	let modal1 = $state<ModalDialog>();
 	let modal2 = $state<ModalDialog>();
 	let modal3 = $state<ModalDialog>();
+
+	const notifications = new NotificationsStack([], {
+		defaultTtl: 2_000,
+		// disposeInterval: 1_000,
+	});
 </script>
 
 <p class="mb-4">General modal dialog (internally with dialog element implementation)</p>
@@ -16,6 +27,8 @@
 	<!-- <div class="inset-0 absolute overflow-auto bg-orange-200 p-4 text-black"> -->
 	<Button onclick={modal1?.close} size="sm" class="mb-4">close</Button>
 	<Button onclick={modal2?.open}>second</Button>
+
+	<Button onclick={() => notifications.info(dummySentence(1))}>notif info</Button>
 	<div>
 		<input type="text" />
 		{@html dummyText(20)}
@@ -35,3 +48,5 @@
 		<input type="text" />
 	</div>
 </ModalDialog>
+
+<Notifications {notifications} />

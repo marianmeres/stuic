@@ -45,30 +45,42 @@
 	let dialog = $state<HTMLDialogElement>()!;
 	let box = $state<HTMLDivElement>()!;
 	let _opener: undefined | null | HTMLElement = $state();
+	let _isClosing = false;
 
 	export function open(openerOrEvent?: null | HTMLElement | MouseEvent) {
+		if (visible) return; // Already open
 		visible = true;
 		setOpener(
-			(openerOrEvent as any)?.currentTarget ?? openerOrEvent ?? document.activeElement
+			openerOrEvent instanceof MouseEvent
+				? (openerOrEvent.currentTarget as HTMLElement)
+				: openerOrEvent ?? (document.activeElement as HTMLElement)
 		);
-		// clog("will showModal");
 		// dialog must be rendered in the DOM before it can be opened...
 		waitForNextRepaint().then(() => {
-			// clog("dialog.showModal()");
-			dialog.showModal();
+			try {
+				dialog?.showModal();
+			} catch (e) {
+				console.error("ModalDialog: Failed to open dialog:", e);
+				visible = false;
+			}
 		});
 	}
 
 	export function close() {
+		if (_isClosing || !visible) return;
+		_isClosing = true;
 		(async () => {
-			const allowed = await preClose?.();
-			// explicit false prevents close
-			if (allowed !== false) {
-				// clog("dialog.close()");
-				dialog?.close();
-				visible = false;
-				_opener?.focus();
-				_opener = null;
+			try {
+				const allowed = await preClose?.();
+				// explicit false prevents close
+				if (allowed !== false) {
+					dialog?.close();
+					visible = false;
+					_opener?.focus();
+					_opener = null;
+				}
+			} finally {
+				_isClosing = false;
 			}
 		})();
 	}
