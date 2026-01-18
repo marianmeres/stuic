@@ -50,6 +50,9 @@
 
 	let headerHeight = $state(0);
 
+	// Safari was showing scrollbar so adding 1px extra which solves the problem
+	let topOffset = $derived(headerHeight + 1);
+
 	// pragmatic use case...
 	let mainWidth: number = $state(0);
 	setContext(APP_SHELL_SIMPLE_MAIN_WIDTH, {
@@ -77,7 +80,7 @@
 			bind:this={elRail}
 			data-shell="rail"
 			style:top="{headerHeight}px"
-			style:height="calc(100dvh - {headerHeight}px)"
+			style:height="calc(100dvh - {topOffset}px)"
 			class={twMerge(
 				"sticky shrink-0",
 				"flex flex-col items-center",
@@ -95,7 +98,7 @@
 			bind:this={elAside}
 			data-shell="aside"
 			style:top="{headerHeight}px"
-			style:height="calc(100dvh - {headerHeight}px)"
+			style:height="calc(100dvh - {topOffset}px)"
 			class={twMerge(
 				"sticky shrink-0",
 				"flex flex-col items-center",
