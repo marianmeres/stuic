@@ -87,6 +87,12 @@ A searchable command palette/menu modal for quick navigation and selection. Supp
 />
 ```
 
+## Layout
+
+The command menu uses `ModalDialog` internally with top-aligned positioning:
+- **Mobile**: Input at top of screen with 1rem margins from edges
+- **Desktop (md+)**: Input positioned at ~20% from top, max-width 768px, centered horizontally
+
 ## Keyboard Navigation
 
 - **Arrow Up/Down**: Navigate options

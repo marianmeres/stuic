@@ -60,7 +60,6 @@
 		assets: string[] | AssetPreview[];
 		classControls?: string;
 		//
-		modalClassBackdrop?: string;
 		modalClassInner?: string;
 		modalClass?: string;
 		modalClassMain?: string;
@@ -176,7 +175,6 @@
 	const clog = createClog("AssetsPreview", { color: "auto" });
 
 	let {
-		modalClassBackdrop = "",
 		modalClassInner = "",
 		modalClass = "",
 		modalClassMain = "",
@@ -481,7 +479,6 @@
 	<Modal
 		bind:this={modal}
 		onEscape={modal?.close}
-		classBackdrop="p-2 md:p-2 {modalClassBackdrop}"
 		classInner="max-w-full h-full {modalClassInner}"
 		class="max-h-full md:max-h-full rounded-lg {modalClass}"
 		classMain="flex items-center justify-center relative stuic-assets-preview stuic-assets-preview-open {modalClassMain}"

@@ -7,14 +7,19 @@
 	let modal: Modal = $state()!;
 	let value = $state();
 
+	let modal2: Modal = $state()!;
+
 	const acp = new AlertConfirmPromptStack();
 </script>
 
 <p class="mb-4 h-[300px]">
-	General modal dialog (no dialog element implementation - no top-layer)
+	General modal dialog content wrap provided (internally using ModalDialog)
 </p>
 
-<Button onclick={modal?.open}>Open</Button>
+<div class="flex gap-4">
+	<Button onclick={modal?.open}>Open</Button>
+	<Button onclick={modal2?.open}>Open modal 2</Button>
+</div>
 <hr class="my-4" />
 {value}
 
@@ -36,8 +41,8 @@
 
 	<input type="text" />
 
-	<!-- <div>{@html dummyText(30)}</div> -->
-	<div>{@html dummyText(1)}</div>
+	<div>{@html dummyText(30)}</div>
+	<!-- <div>{@html dummyText(1)}</div> -->
 
 	{#snippet footer()}
 		<div class="flex justify-between w-full">
@@ -60,5 +65,7 @@
 <div class="my-12">
 	{@html dummyText(20)}
 </div>
+
+<Modal bind:this={modal2} onEscape={modal2?.close}>hey ho I am in modal 2</Modal>
 
 <AlertConfirmPrompt {acp} />

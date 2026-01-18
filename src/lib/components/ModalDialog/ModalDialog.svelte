@@ -13,6 +13,12 @@
 		preEscapeClose?: () => any;
 		/** Pre-close hook. Return false to prevent close. */
 		preClose?: () => any;
+		/** ID reference for aria-labelledby */
+		ariaLabelledby?: string;
+		/** ID reference for aria-describedby */
+		ariaDescribedby?: string;
+		/** Disable body scroll lock when dialog is open */
+		noScrollLock?: boolean;
 	}
 </script>
 
@@ -37,6 +43,9 @@
 		noEscapeClose,
 		preEscapeClose,
 		preClose,
+		ariaLabelledby,
+		ariaDescribedby,
+		noScrollLock,
 	}: Props = $props();
 
 	// important to start as undefined (because of scroll save/restore)
@@ -89,6 +98,14 @@
 		_opener = opener;
 	}
 
+	export function visibility() {
+		return {
+			get visible() {
+				return visible;
+			},
+		};
+	}
+
 	onClickOutside(
 		() => box,
 		() => !noClickOutsideClose && close()
@@ -96,7 +113,7 @@
 
 	$effect(() => {
 		// noop if we're undefined ($effect runs immediately as onMount)
-		if (visible === undefined) return;
+		if (visible === undefined || noScrollLock) return;
 		visible ? BodyScroll.lock() : BodyScroll.unlock();
 	});
 
@@ -113,6 +130,8 @@
 		bind:this={dialog}
 		use:focusTrap
 		data-type={type}
+		aria-labelledby={ariaLabelledby}
+		aria-describedby={ariaDescribedby}
 		class={twMerge(
 			"stuic-modal-dialog",
 			"fixed inset-4 m-auto size-auto",
@@ -121,6 +140,12 @@
 			"bg-transparent backdrop:bg-black/40",
 			classDialog
 		)}
+		onclick={(e) => {
+			// Close when clicking directly on the dialog (backdrop area), not its children
+			if (e.target === dialog && !noClickOutsideClose) {
+				close();
+			}
+		}}
 		onkeydown={async (e) => {
 			if (e.key === "Escape" && visible) {
 				// clog("on Escape keydown, preventing default and stopping propagation");

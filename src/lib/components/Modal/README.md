@@ -1,17 +1,14 @@
 # Modal
 
-A centered modal dialog with optional header and footer sections. Built on top of `Backdrop` with focus trap and scroll locking.
+A styled modal dialog with optional header and footer sections. Built on top of `ModalDialog` (native `<dialog>` element) with focus trap and scroll locking.
 
 ## Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `visible` | `boolean` | `false` | Controls visibility (bindable) |
-| `focusTrap` | `boolean \| FocusTrapOptions` | `true` | Enable focus trapping |
-| `transitionDuration` | `number` | `100` | Fade transition duration (ms) |
 | `onEscape` | `() => void` | - | Callback on Escape key |
 | `noScrollLock` | `boolean` | `false` | Disable body scroll lock |
-| `classBackdrop` | `string` | - | CSS for backdrop overlay |
 | `classInner` | `string` | - | CSS for inner width container |
 | `class` | `string` | - | CSS for modal box |
 | `classHeader` | `string` | - | CSS for header section |
@@ -20,7 +17,6 @@ A centered modal dialog with optional header and footer sections. Built on top o
 | `labelledby` | `string` | - | ARIA labelledby ID |
 | `describedby` | `string` | - | ARIA describedby ID |
 | `el` | `HTMLDivElement` | - | Modal element reference (bindable) |
-| `elBackdrop` | `HTMLDivElement` | - | Backdrop element reference (bindable) |
 
 ## Snippets
 
@@ -109,9 +105,24 @@ A centered modal dialog with optional header and footer sections. Built on top o
 ```svelte
 <Modal
   bind:this={modal}
-  classInner="max-w-lg"
+  classInner="md:w-lg"
   class="rounded-lg"
 >
   <div class="p-6">Smaller modal</div>
 </Modal>
 ```
+
+## Responsive Behavior
+
+By default, Modal is:
+- **Mobile**: Full screen with 1rem margins from viewport edges
+- **Desktop (md+)**: Centered, max-width 768px, auto height with max 80vh
+
+## Relationship to ModalDialog
+
+Modal is a higher-level component built on `ModalDialog`. It provides:
+- Pre-styled header/main/footer layout
+- Responsive sizing (fullscreen mobile, centered desktop)
+- Conventional styling (background, rounded corners, etc.)
+
+Use `ModalDialog` directly when you need full control over the content layout.

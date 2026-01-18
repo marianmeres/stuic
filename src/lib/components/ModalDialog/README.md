@@ -8,11 +8,14 @@ A modal component using the native HTML `<dialog>` element with `showModal()`. P
 |------|------|---------|-------------|
 | `noClickOutsideClose` | `boolean` | `false` | Disable close on outside click |
 | `noEscapeClose` | `boolean` | `false` | Disable close on Escape key |
+| `noScrollLock` | `boolean` | `false` | Disable body scroll lock |
 | `preEscapeClose` | `() => any` | - | Hook before Escape close (return `false` to prevent) |
 | `preClose` | `() => any` | - | Hook before any close (return `false` to prevent) |
 | `type` | `string` | - | Optional UI hint (added as `data-type` attribute) |
 | `class` | `string` | - | CSS for content box |
 | `classDialog` | `string` | - | CSS for dialog element |
+| `ariaLabelledby` | `string` | - | ID reference for aria-labelledby |
+| `ariaDescribedby` | `string` | - | ID reference for aria-describedby |
 
 ## Methods
 
@@ -21,6 +24,7 @@ A modal component using the native HTML `<dialog>` element with `showModal()`. P
 | `open(opener?)` | Open modal with `showModal()`, optionally track opener |
 | `close()` | Close modal |
 | `setOpener(el)` | Set element to refocus when closed |
+| `visibility()` | Returns object with `visible` getter |
 
 ## Usage
 
@@ -92,12 +96,27 @@ A modal component using the native HTML `<dialog>` element with `showModal()`. P
 </ModalDialog>
 ```
 
-## Differences from Modal
+### Check Visibility State
 
-| Feature | Modal | ModalDialog |
-|---------|-------|-------------|
-| Implementation | Custom backdrop | Native `<dialog>` |
-| Backdrop | Via `Backdrop` component | Native `::backdrop` |
-| Browser support | All modern | Requires `<dialog>` support |
-| Stacking | Manual z-index | Top layer (always on top) |
-| Accessibility | Manual ARIA | Built-in |
+```svelte
+<script lang="ts">
+  let dialog: ModalDialog;
+
+  function logVisibility() {
+    console.log('Is visible:', dialog.visibility().visible);
+  }
+</script>
+```
+
+## Relationship to Modal
+
+`Modal` is a higher-level component built on top of `ModalDialog`.
+
+| Feature | ModalDialog | Modal |
+|---------|-------------|-------|
+| Layout | Raw content | Header/main/footer structure |
+| Styling | Minimal | Pre-styled box with backgrounds |
+| Sizing | Manual | Responsive (fullscreen mobile, centered desktop) |
+| Use case | Full control | Quick conventional modals |
+
+Use `ModalDialog` when you need complete control over the modal content and styling. Use `Modal` for conventional modal dialogs with header/footer sections.
