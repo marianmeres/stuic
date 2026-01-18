@@ -21,7 +21,7 @@
 		iconZoomOut,
 	} from "$lib/icons/index.js";
 	import { getFileTypeLabel } from "../../utils/get-file-type-label.js";
-	import { Modal } from "../Modal/index.js";
+	import { ModalDialog } from "../ModalDialog/index.js";
 	import { createClog } from "@marianmeres/clog";
 	import { isImage } from "../../utils/is-image.js";
 	import { isPlainObject } from "../../utils/is-plain-object.js";
@@ -60,9 +60,8 @@
 		assets: string[] | AssetPreview[];
 		classControls?: string;
 		//
-		modalClassInner?: string;
+		modalClassDialog?: string;
 		modalClass?: string;
-		modalClassMain?: string;
 		//
 		/** Optional translate function */
 		t?: TranslateFn;
@@ -175,9 +174,8 @@
 	const clog = createClog("AssetsPreview", { color: "auto" });
 
 	let {
-		modalClassInner = "",
+		modalClassDialog = "",
 		modalClass = "",
-		modalClassMain = "",
 		assets: _assets,
 		t = t_default,
 		classControls = "",
@@ -190,7 +188,7 @@
 		(_assets ?? []).map(normalizeInput).filter(Boolean) as AssetPreviewNormalized[]
 	);
 	let previewIdx = $state<number>(0);
-	let modal: Modal | undefined = $state();
+	let modal: ModalDialog | undefined = $state();
 	let dotTooltip: string | undefined = $state();
 
 	// Zoom state
@@ -476,12 +474,15 @@
 />
 
 {#if assets.length}
-	<Modal
+	<ModalDialog
 		bind:this={modal}
-		onEscape={modal?.close}
-		classInner="max-w-full h-full {modalClassInner}"
-		class="max-h-full md:max-h-full rounded-lg {modalClass}"
-		classMain="flex items-center justify-center relative stuic-assets-preview stuic-assets-preview-open {modalClassMain}"
+		classDialog={modalClassDialog}
+		class={twMerge(
+			"max-w-full max-h-full h-full rounded-lg",
+			"flex items-center justify-center relative",
+			"stuic-assets-preview stuic-assets-preview-open",
+			modalClass
+		)}
 	>
 		{@const previewAsset = assets?.[previewIdx]}
 		{#if previewAsset}
@@ -648,5 +649,5 @@
 				</div>
 			{/if}
 		{/if}
-	</Modal>
+	</ModalDialog>
 {/if}
