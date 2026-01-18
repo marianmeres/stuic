@@ -241,7 +241,7 @@ interface DropdownMenuExpandableItem {
 
 ```svelte
 <script lang="ts">
-  import { AvatarInitials, DropdownMenu } from 'stuic';
+  import { Avatar, DropdownMenu } from 'stuic';
 </script>
 
 <DropdownMenu
@@ -252,7 +252,7 @@ interface DropdownMenuExpandableItem {
 >
   {#snippet trigger({ isOpen, toggle, triggerProps })}
     <button {...triggerProps} onclick={toggle}>
-      <AvatarInitials input="john.doe@example.com" autoColor />
+      <Avatar input="john.doe@example.com" autoColor />
     </button>
   {/snippet}
 </DropdownMenu>

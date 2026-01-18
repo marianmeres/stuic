@@ -61,14 +61,6 @@
 		}}>eternal long</Button
 	>
 
-	<Notifications
-		{notifications}
-		{posX}
-		{posY}
-		--color-bg-info="var(--color-pink-500)"
-		--color-text-info="var(--color-pink-100)"
-		buttonXStrokeWidth={1.5}
-	/>
 	<!-- noTheme --color-notif-bg="var(--color-amber-500)" -->
 
 	<pre class="text-xs mt-4 opacity-75">{JSON.stringify(
@@ -77,3 +69,11 @@
 			2
 		)}</pre>
 </div>
+
+<Notifications
+	{notifications}
+	{posX}
+	{posY}
+	--color-bg-info="var(--color-pink-500)"
+	--color-text-info="var(--color-pink-100)"
+/>

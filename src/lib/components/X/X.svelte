@@ -8,7 +8,7 @@
 <script lang="ts">
 	import { twMerge } from "$lib/index.js";
 
-	let { class: classProps, strokeWidth = 2.5 }: Props = $props();
+	let { class: classProps, strokeWidth = 3 }: Props = $props();
 
 	// size-6 = 1.5rem = 24px
 </script>

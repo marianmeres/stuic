@@ -97,7 +97,7 @@
 		classNotifContent,
 		classNotifButton,
 		classNotifButtonX,
-		buttonXStrokeWidth = 1.5,
+		buttonXStrokeWidth = 3,
 		//
 		classProgress,
 		classProgressBar,
@@ -110,6 +110,8 @@
 		iconFns = {},
 	}: Props = $props();
 
+	let popoverEl: HTMLDivElement | null = $state(null);
+
 	let { x, y, xMobile, yMobile } = $derived.by(() => {
 		const x = X_POSITIONS.includes(posX) ? posX : DEFAULT.posX;
 		const xMobile = X_POSITIONS.includes(posXMobile) ? posXMobile : DEFAULT.posXMobile;
@@ -117,11 +119,6 @@
 		const yMobile = Y_POSITIONS.includes(posYMobile) ? posYMobile : DEFAULT.posYMobile;
 		return { x, y, xMobile, yMobile };
 	});
-
-	const maybeComponent = (n: Notification): { Cmp: any; props: any } => {
-		// todo when needed
-		return { Cmp: null, props: null };
-	};
 
 	let _iconFns = $derived({ ...notificationsDefaultIcons, ...iconFns });
 
@@ -132,50 +129,51 @@
 	};
 
 	const _classWrapX = `
-        fixed z-50 flex flex-row inset-0 
+        fixed z-50 flex flex-row inset-0
         pointer-events-none bg-transparent`;
 
 	const _classWrapY = `
-        p-4 space-y-4 
-        flex flex-col inset-0 
+        p-4 space-y-4
+        flex flex-col inset-0
+        w-full sm:w-auto
         pointer-events-none bg-transparent`;
 
 	const _classNotifBox = `
-        relative flex 
-        pointer-events-auto 
-        w-xs sm:w-sm max-w-sm 
-        rounded-lg 
-        shadow-lg 
-        border border-notif-border dark:border-notif-border-dark 
-        bg-notif-bg text-notif-text 
+        relative flex
+        pointer-events-auto
+        w-full sm:w-sm max-w-full sm:max-w-sm
+        rounded-lg
+        shadow-lg
+        border border-notif-border dark:border-notif-border-dark
+        bg-notif-bg text-notif-text
         dark:bg-notif-bg-dark dark:text-notif-text-dark`;
 
 	const _classNotifCount = `
-        absolute -top-2 -right-2 
-        w-auto h-auto 
-        flex items-center justify-center 
-        px-2 py-1 rounded-full 
-        leading-none text-xs 
+        absolute -top-2 -right-2
+        w-auto h-auto
+        flex items-center justify-center
+        px-2 py-1 rounded-full
+        leading-none text-xs
         bg-neutral-950 text-neutral-50`;
 
 	const _classNotifIcon = `
-        flex items-center justify-center 
-        pt-4 pr-0 pb-4 pl-4 
+        flex items-center justify-center
+        pt-4 pr-0 pb-4 pl-4
         text-neutral-200`;
 
 	const _classNotifContent = `
-        flex-1 
-        flex flex-col justify-center 
-        text-sm tracking-tight 
+        flex-1
+        flex flex-col justify-center
+        tracking-tight
         pl-4 pr-1 py-3`;
 
 	const _classNotifButton = `
-        flex flex-col items-center justify-center 
-        leading-none 
-        px-3 
-        hover:bg-neutral-950/10 
-        focus-visible:bg-neutral-950/10 focus-visible:outline-none focus-visible:ring-0 
-        group 
+        flex flex-col items-center justify-center
+        leading-none
+        px-3
+        hover:bg-neutral-950/10
+        focus-visible:bg-neutral-950/10 focus-visible:outline-none focus-visible:ring-0
+        group
         rounded-tr-md rounded-br-md`;
 
 	const _classNotifButtonX = `opacity-75 group-hover:opacity-100`;
@@ -202,11 +200,32 @@
 			`--color-notif-border-dark: var(--color-border-dark-${type}, var(--color-${theme}-700));`,
 		].join("");
 	};
+
+	// Manage popover visibility based on notifications
+	$effect(() => {
+		if (!popoverEl) return;
+
+		const hasNotifications = notifications.stack.length > 0;
+
+		try {
+			if (hasNotifications && !popoverEl.matches(":popover-open")) {
+				popoverEl.showPopover();
+			} else if (!hasNotifications && popoverEl.matches(":popover-open")) {
+				popoverEl.hidePopover();
+			}
+		} catch {
+			// Popover API not supported - element remains in DOM flow
+		}
+	});
 </script>
 
-{#if notifications.stack.length}
+<div
+	bind:this={popoverEl}
+	popover="manual"
+	class="stuic-notifs-popover"
+	aria-live="assertive"
+>
 	<div
-		aria-live="assertive"
 		class={twMerge(
 			"stuic-notifs wrap-x",
 			_classWrapX,
@@ -217,75 +236,95 @@
 	>
 		<div class={twMerge("wrap-y", _classWrapY, YMAP_M[yMobile], YMAP[y], classWrapY)}>
 			{#each notifications.stack as n (n.id)}
-				{@const { Cmp, props } = maybeComponent(n)}
 				{@const iconHtml = maybeIcon(n)}
 				{@const showXButton = !noXButton || n.ttl > 1000}
-				{#if Cmp}
-					<Cmp {...props || {}} notification={n} {notifications} />
-				{:else}
-					<div
-						class={twMerge("box", _classNotifBox, classNotifBox)}
-						transition:fade|global={{ duration }}
-						role="alert"
-						style={_buildTheme(n.type)}
-					>
-						{#if n.ttl && !noProgress}
-							<Progress
-								progress={100 - n._ttlProgress * 100}
-								class={twMerge(_classProgress, classProgress)}
-								classBar={twMerge(_classProgressBar, classProgressBar)}
-								styleBar="transition-duration: {notifications.options.disposeInterval}ms;"
-							/>
-						{/if}
+				<div
+					class={twMerge("box", _classNotifBox, classNotifBox)}
+					transition:fade|global={{ duration }}
+					role="alert"
+					style={_buildTheme(n.type)}
+				>
+					{#if n.ttl && !noProgress}
+						<Progress
+							progress={100 - n._ttlProgress * 100}
+							class={twMerge(_classProgress, classProgress)}
+							classBar={twMerge(_classProgressBar, classProgressBar)}
+							styleBar="transition-duration: {notifications.options.disposeInterval}ms;"
+						/>
+					{/if}
 
-						{#if n.count > 1}
-							<div class={twMerge("count", _classNotifCount, classNotifCount)}>
-								{n.count}
-							</div>
-						{/if}
-						{#if !noIcons && iconHtml}
-							<div class={twMerge("icon", _classNotifIcon, classNotifIcon)}>
-								{@html iconHtml}
-							</div>
-						{/if}
-
-						<div
-							class={twMerge(
-								"content",
-								_classNotifContent,
-								classNotifContent,
-								!showXButton && "pr-4"
-							)}
-						>
-							<Thc
-								thc={n.content}
-								forceAsHtml={n.forceAsHtml ?? forceAsHtml}
-								notification={n}
-								{notifications}
-							/>
+					{#if n.count > 1}
+						<div class={twMerge("count", _classNotifCount, classNotifCount)}>
+							{n.count}
 						</div>
+					{/if}
+					{#if !noIcons && iconHtml}
+						<div class={twMerge("icon", _classNotifIcon, classNotifIcon)}>
+							{@html iconHtml}
+						</div>
+					{/if}
 
-						{#if showXButton}
-							<button
-								type="button"
-								class={twMerge("button", _classNotifButton, classNotifButton)}
-								aria-label={ariaCloseLabel}
-								onclick={(e) => {
-									e.preventDefault();
-									e.stopPropagation();
-									e.stopImmediatePropagation();
-									notifications.removeById(n.id);
-								}}
-							>
-								<X
-									class={twMerge("x", _classNotifButtonX, classNotifButtonX)}
-									strokeWidth={buttonXStrokeWidth}
-								/>
-							</button>
-						{/if}
+					<div
+						class={twMerge(
+							"content",
+							_classNotifContent,
+							classNotifContent,
+							!showXButton && "pr-4"
+						)}
+					>
+						<Thc
+							thc={n.content}
+							forceAsHtml={n.forceAsHtml ?? forceAsHtml}
+							notification={n}
+							{notifications}
+						/>
 					</div>
-				{/if}
+
+					{#if showXButton}
+						<button
+							type="button"
+							class={twMerge("button", _classNotifButton, classNotifButton)}
+							aria-label={ariaCloseLabel}
+							onclick={(e) => {
+								e.preventDefault();
+								e.stopPropagation();
+								e.stopImmediatePropagation();
+								notifications.removeById(n.id);
+							}}
+						>
+							<X
+								class={twMerge("x", _classNotifButtonX, classNotifButtonX)}
+								strokeWidth={buttonXStrokeWidth}
+							/>
+						</button>
+					{/if}
+				</div>
 			{/each}
 		</div>
 	</div>
-{/if}
+</div>
+
+<style>
+	/* Override default popover positioning */
+	.stuic-notifs-popover {
+		/* Reset popover defaults */
+		position: fixed;
+		inset: 0;
+		margin: 0;
+		padding: 0;
+		border: none;
+		background: transparent;
+		max-width: none;
+		max-height: none;
+		width: 100%;
+		height: 100%;
+		overflow: visible;
+		pointer-events: none;
+	}
+
+	/* Transparent backdrop so content behind is clickable */
+	.stuic-notifs-popover::backdrop {
+		background: transparent;
+		pointer-events: none;
+	}
+</style>
