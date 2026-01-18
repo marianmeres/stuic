@@ -38,7 +38,7 @@
 		elFooter?: HTMLElement;
 	}
 
-	export const MAIN_WIDTH = Symbol("MAIN_WIDTH");
+	export const APP_SHELL_MAIN_WIDTH = Symbol("APP_SHELL_MAIN_WIDTH");
 
 	/**
 	 * Helper utility function which sets document.body height to 100vh, and overflow: hidden.
@@ -103,7 +103,7 @@
 
 	// pragmatic use case...
 	let mainWidth: number = $state(0);
-	setContext(MAIN_WIDTH, {
+	setContext(APP_SHELL_MAIN_WIDTH, {
 		get current() {
 			return mainWidth;
 		},

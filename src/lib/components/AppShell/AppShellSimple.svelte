@@ -9,6 +9,8 @@
 		railClass?: string;
 		asideClass?: string;
 		mainClass?: string;
+		// header support style as well (for iOS theming, seem to be better supported)
+		headerStyle?: string;
 		//
 		rail?: Snippet;
 		header?: Snippet;
@@ -21,7 +23,7 @@
 		elMain?: HTMLElement;
 	}
 
-	export const MAIN_WIDTH = Symbol("MAIN_WIDTH");
+	export const APP_SHELL_SIMPLE_MAIN_WIDTH = Symbol("APP_SHELL_SIMPLE_MAIN_WIDTH");
 </script>
 
 <script lang="ts">
@@ -32,6 +34,8 @@
 		railClass,
 		asideClass,
 		mainClass,
+		//
+		headerStyle = "",
 		//
 		rail,
 		header,
@@ -48,7 +52,7 @@
 
 	// pragmatic use case...
 	let mainWidth: number = $state(0);
-	setContext(MAIN_WIDTH, {
+	setContext(APP_SHELL_SIMPLE_MAIN_WIDTH, {
 		get current() {
 			return mainWidth;
 		},
@@ -61,6 +65,7 @@
 		bind:clientHeight={headerHeight}
 		data-shell="header"
 		class={twMerge("sticky top-0 z-10", headerClass)}
+		style={headerStyle}
 	>
 		{@render header()}
 	</header>
@@ -106,7 +111,7 @@
 	<main
 		bind:this={elMain}
 		data-shell="main"
-		class={twMerge("flex-1", mainClass)}
+		class={twMerge("flex-1 max-w-full", mainClass)}
 		bind:offsetWidth={mainWidth}
 	>
 		{@render children?.()}
