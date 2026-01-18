@@ -16,7 +16,7 @@
 	import { strHash } from "../../utils/str-hash.js";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import Button from "../Button/Button.svelte";
-	import Modal from "../Modal/Modal.svelte";
+	import { ModalDialog } from "../ModalDialog/index.js";
 	import { NotificationsStack } from "../Notifications/index.js";
 	import Spinner from "../Spinner/Spinner.svelte";
 	import type { THC } from "../Thc/Thc.svelte";
@@ -32,7 +32,7 @@
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
 	export interface Props extends Record<string, any> {
-		trigger?: Snippet<[{ value: string; modal: Modal }]>;
+		trigger?: Snippet<[{ value: string; modal: ModalDialog }]>;
 		input?: HTMLInputElement;
 		value: string;
 		label?: SnippetWithId | THC;
@@ -134,7 +134,7 @@
 		tabindex = 0,
 		description,
 		class: classProp,
-		renderSize = "md",
+		renderSize = "lg",
 		useTrim = true,
 		//
 		required = false,
@@ -183,7 +183,7 @@
 		...rest
 	}: Props = $props();
 
-	let modal: Modal = $state()!;
+	let modalDialog: ModalDialog = $state()!;
 	let innerValue = $state("");
 	let isFetching = $state(false);
 	let cardinality = $derived(_cardinality === -1 ? Infinity : _cardinality);
@@ -268,7 +268,6 @@
 
 	let activeEl: HTMLButtonElement | undefined = $state();
 	let optionsBox: HTMLDivElement | undefined = $state();
-	let modalEl: HTMLDivElement | undefined = $state();
 
 	// add_new dance...
 	let addNewBtn: HTMLButtonElement | undefined = $state();
@@ -277,7 +276,7 @@
 
 	// set value on open
 	// watch(
-	// 	() => modal.visibility().visible,
+	// 	() => modalDialog.visibility().visible,
 	// 	(isVisible, wasVisible) => {
 	// 		// modal was just opened
 	// 		if (isVisible) {
@@ -300,7 +299,7 @@
 	// suggest options as a typeahead feature
 	const debounced = new Debounced(() => innerValue, 150);
 	watch(
-		[() => modal.visibility().visible, () => debounced.current],
+		[() => modalDialog.visibility().visible, () => debounced.current],
 		([isVisible, currVal]) => {
 			if (!isVisible) return;
 			isFetching = true;
@@ -325,7 +324,7 @@
 	);
 
 	$effect(() => {
-		if (modal.visibility().visible && touch) {
+		if (modalDialog.visibility().visible && touch) {
 			_selectedColl.clear().addMany(maybeJsonParse(value) as Item[]);
 			// IMPORTANT: focus first selected so it scrolls into view on open
 			if (_selectedColl.size) {
@@ -409,16 +408,15 @@
 		value = JSON.stringify(selected.items);
 		innerValue = "";
 		_optionsColl.clear();
-		modal.close();
+		modalDialog.close();
 		_dispatch_change_to_owner();
 		onChange?.(value);
 	}
 
-	// clears, closes, submits nothing
+	// clears state and dispatches change; close is handled by ModalDialog's preEscapeClose
 	function escape() {
 		innerValue = "";
 		_optionsColl.clear();
-		modal?.close();
 		_dispatch_change_to_owner();
 	}
 
@@ -483,7 +481,7 @@
 <!-- this must be on window as we're catching any typing anywhere -->
 <svelte:window
 	onkeydown={(e) => {
-		if (modal.visibility().visible) {
+		if (modalDialog.visibility().visible) {
 			// arrow navigation
 			if (["ArrowDown", "ArrowUp"].includes(e.key)) {
 				e.preventDefault();
@@ -514,7 +512,7 @@
 <!-- must wrap both -->
 <div>
 	{#if trigger}
-		{@render trigger({ value, modal })}
+		{@render trigger({ value, modal: modalDialog })}
 	{:else}
 		<FieldLikeButton
 			bind:value
@@ -561,274 +559,279 @@
 				return `${e}`; // either invalid json or not array...
 			}
 			}}
-			onclick={modal?.open}
+			onclick={modalDialog?.open}
 		/>
 	{/if}
 
-	<Modal
-		bind:this={modal}
-		onEscape={escape}
-		class="bg-transparent dark:bg-transparent"
-		classInner="max-w-2xl"
-		bind:el={modalEl}
+	<ModalDialog
+		bind:this={modalDialog}
+		preEscapeClose={escape}
+		classDialog="items-start"
+		class="w-full max-w-2xl bg-transparent pointer-events-none"
 		{noScrollLock}
 	>
-		<InputWrap
-			size={renderSize}
-			class={twMerge("m-2 mb-12 shadow-xl", classModalField)}
-			classInputBoxWrap={twMerge(
-				// always look like focused
-				`border border-input-accent dark:border-input-accent-dark`,
-				`ring-input-accent/20 dark:ring-input-accent-dark/20 ring-4`
-			)}
-			{id}
-			{required}
-		>
-			<input
-				bind:value={innerValue}
-				bind:this={input}
-				{type}
-				{id}
-				class={twMerge("form-input", renderSize, classInput)}
-				tabindex={1}
-				{required}
-				{disabled}
-				placeholder={searchPlaceholder ??
-					t(allowUnknown ? "search_submit_placeholder" : "search_placeholder")}
-				onkeydown={(e) => {
-					if (e.key === "Enter") {
-						e.preventDefault();
-						try_submit();
-					}
-				}}
-				autocomplete="off"
-				name={`rand-${Math.random().toString(36).slice(2)}`}
-				{...rest}
-			/>
+		<div class="pt-0 md:pt-[20vh] w-full">
+			<div class="pointer-events-auto">
+				<InputWrap
+					size={renderSize}
+					class={twMerge("m-2 mb-12 shadow-xl", classModalField)}
+					classInputBoxWrap={twMerge(
+						// always look like focused
+						`border border-input-accent dark:border-input-accent-dark`,
+						`ring-input-accent/20 dark:ring-input-accent-dark/20 ring-4`
+					)}
+					{id}
+					{required}
+				>
+					<input
+						bind:value={innerValue}
+						bind:this={input}
+						{type}
+						{id}
+						class={twMerge("form-input", renderSize, classInput)}
+						tabindex={1}
+						{required}
+						{disabled}
+						placeholder={searchPlaceholder ??
+							t(allowUnknown ? "search_submit_placeholder" : "search_placeholder")}
+						onkeydown={(e) => {
+							if (e.key === "Enter") {
+								e.preventDefault();
+								try_submit();
+							}
+						}}
+						autocomplete="off"
+						name={`rand-${Math.random().toString(36).slice(2)}`}
+						{...rest}
+					/>
 
-			{#snippet inputBelow()}
-				<div class="h-full border-t p-2 border-black/20">
-					<div class="text-sm -mt-1 flex items-center">
-						{#if isMultiple}
-							<button
-								type="button"
-								onclick={() => _selectedColl.addMany(options.items)}
-								class={twMerge(
-									"control flex items-center p-1 m-1 text-sm opacity-75 underline rounded",
-									"hover:opacity-100 focus-visible:outline-neutral-400 focus-visible:opacity-100"
-								)}
-								tabindex={4}
-								disabled={!options.size}
-							>
-								{@html t("select_all")}
-							</button>
-						{/if}
-						<button
-							type="button"
-							onclick={() => {
-								_selectedColl.clear();
-								input?.focus();
-							}}
-							class={twMerge(
-								"control flex items-center p-1 m-1 text-sm opacity-75 underline rounded",
-								"hover:opacity-100 focus-visible:outline-neutral-400 focus-visible:opacity-100"
-							)}
-							class:opacity-20={!selected.items.length}
-							tabindex={5}
-							disabled={!selected.items.length}
-						>
-							{@html t(cardinality === 1 ? "clear" : "clear_all")}
-						</button>
-
-						<span class="p-1 m-1 text-sm">&nbsp;</span>
-						<span class="flex-1 block justify-end opacity-50 text-right text-sm p-1 pr-2">
-							{selected.items.length}
-							{#if cardinality > 0 && cardinality < Infinity}
-								{@html t("cardinality_of")} {cardinality}
-							{/if}
-							{@html t("cardinality_selected")}
-						</span>
-					</div>
-
-					<!-- {#if options.items.length} -->
-					<div
-						class={[
-							"options overflow-y-auto overflow-x-hidden space-y-1 scrollbar-thin",
-							"h-55 max-h-55",
-						]}
-						bind:this={optionsBox}
-						tabindex="-1"
-					>
-						{#if isFetching && !options.items.length}
-							<!-- <div class="p-4 opacity-50"> -->
-							<div class="flex opacity-50 text-sm h-full items-center justify-center">
-								<Spinner class="w-4" />
-							</div>
-						{:else if !options.items.length && !allowUnknown}
-							<div class="flex opacity-50 text-sm h-full items-center justify-center">
-								{@html t("no_results")}
-							</div>
-						{/if}
-
-						{#if !isFetching && allowUnknown && innerValue && !have_option_label_like(options.items, innerValue)}
-							<div class="px-1">
+					{#snippet inputBelow()}
+						<div class="h-full border-t p-2 border-black/20">
+							<div class="text-sm -mt-1 flex items-center">
+								{#if isMultiple}
+									<button
+										type="button"
+										onclick={() => _selectedColl.addMany(options.items)}
+										class={twMerge(
+											"control flex items-center p-1 m-1 text-sm opacity-75 underline rounded",
+											"hover:opacity-100 focus-visible:outline-neutral-400 focus-visible:opacity-100"
+										)}
+										tabindex={4}
+										disabled={!options.size}
+									>
+										{@html t("select_all")}
+									</button>
+								{/if}
 								<button
 									type="button"
-									bind:this={addNewBtn}
-									onclick={add_new}
+									onclick={() => {
+										_selectedColl.clear();
+										input?.focus();
+									}}
 									class={twMerge(
-										BTN_CLS,
-										classOption,
-										isAddNewBtnActive && classOptionActive
+										"control flex items-center p-1 m-1 text-sm opacity-75 underline rounded",
+										"hover:opacity-100 focus-visible:outline-neutral-400 focus-visible:opacity-100"
 									)}
+									class:opacity-20={!selected.items.length}
+									tabindex={5}
+									disabled={!selected.items.length}
 								>
-									{t("add_new", { value: innerValue })}
+									{@html t(cardinality === 1 ? "clear" : "clear_all")}
 								</button>
-							</div>
-						{/if}
 
-						{#each _normalize_and_group_options(options.items) as [_optgroup, _opts]}
-							{#if _optgroup}
-								<div
-									class={twMerge(
-										"text-sm capitalize opacity-50 border-b border-black/10 mb-0.5 p-1 mx-1",
-										classOptgroup
-									)}
+								<span class="p-1 m-1 text-sm">&nbsp;</span>
+								<span
+									class="flex-1 block justify-end opacity-50 text-right text-sm p-1 pr-2"
 								>
-									{_optgroup}
-								</div>
-							{/if}
-							<ul class="space-y-0.5">
-								<!-- {#each options.items as item} -->
-								{#each _opts as item (item[itemIdPropName])}
-									{@const active =
-										item[itemIdPropName] === options.active?.[itemIdPropName]}
-									{@const isSelected =
-										selected.items && _selectedColl.exists(item[itemIdPropName])}
-									<li class:active class="px-1">
+									{selected.items.length}
+									{#if cardinality > 0 && cardinality < Infinity}
+										{@html t("cardinality_of")} {cardinality}
+									{/if}
+									{@html t("cardinality_selected")}
+								</span>
+							</div>
+
+							<!-- {#if options.items.length} -->
+							<div
+								class={[
+									"options overflow-y-auto overflow-x-hidden space-y-1 scrollbar-thin",
+									"h-55 max-h-55",
+								]}
+								bind:this={optionsBox}
+								tabindex="-1"
+							>
+								{#if isFetching && !options.items.length}
+									<!-- <div class="p-4 opacity-50"> -->
+									<div class="flex opacity-50 text-sm h-full items-center justify-center">
+										<Spinner class="w-4" />
+									</div>
+								{:else if !options.items.length && !allowUnknown}
+									<div class="flex opacity-50 text-sm h-full items-center justify-center">
+										{@html t("no_results")}
+									</div>
+								{/if}
+
+								{#if !isFetching && allowUnknown && innerValue && !have_option_label_like(options.items, innerValue)}
+									<div class="px-1">
 										<button
 											type="button"
-											id={btn_id(item[itemIdPropName])}
-											onclick={() => {
-												if (isMultiple) {
-													if (selected.isFull && !_selectedColl.exists(item)) {
-														return notifications?.error(t("cardinality_full"), {
-															ttl: 1000,
-														});
-													}
-													_selectedColl.toggleAdd(item);
-												} else {
-													_selectedColl.clear();
-													_selectedColl.add(item);
-													submit();
-												}
-											}}
-											class:active
-											class:selected={isSelected}
+											bind:this={addNewBtn}
+											onclick={add_new}
 											class={twMerge(
 												BTN_CLS,
-												isSelected && "bg-neutral-200 dark:bg-neutral-800",
 												classOption,
-												// active && "border-neutral-400",
-												active && classOptionActive
+												isAddNewBtnActive && classOptionActive
 											)}
-											tabindex="-1"
-											role="checkbox"
-											aria-checked={isSelected}
 										>
-											{#if showIcons}
-												<span class={isSelected ? "opacity-100" : "opacity-25"}>
-													{#if isMultiple}
-														{#if isSelected}
-															{@html iconCheckboxCheck()}
-														{:else}
-															{@html iconCheckboxEmpty()}
-														{/if}
-													{:else if isSelected}
-														{@html iconRadioCheck()}
-													{:else}
-														{@html iconRadioEmpty()}
-													{/if}
-												</span>
-											{/if}
-											<span
-												class={twMerge(
-													"min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap"
-												)}>{_renderOptionLabel(item)}</span
-											>
+											{t("add_new", { value: innerValue })}
 										</button>
-									</li>
+									</div>
+								{/if}
+
+								{#each _normalize_and_group_options(options.items) as [_optgroup, _opts]}
+									{#if _optgroup}
+										<div
+											class={twMerge(
+												"text-sm capitalize opacity-50 border-b border-black/10 mb-0.5 p-1 mx-1",
+												classOptgroup
+											)}
+										>
+											{_optgroup}
+										</div>
+									{/if}
+									<ul class="space-y-0.5">
+										<!-- {#each options.items as item} -->
+										{#each _opts as item (item[itemIdPropName])}
+											{@const active =
+												item[itemIdPropName] === options.active?.[itemIdPropName]}
+											{@const isSelected =
+												selected.items && _selectedColl.exists(item[itemIdPropName])}
+											<li class:active class="px-1">
+												<button
+													type="button"
+													id={btn_id(item[itemIdPropName])}
+													onclick={() => {
+														if (isMultiple) {
+															if (selected.isFull && !_selectedColl.exists(item)) {
+																return notifications?.error(t("cardinality_full"), {
+																	ttl: 1000,
+																});
+															}
+															_selectedColl.toggleAdd(item);
+														} else {
+															_selectedColl.clear();
+															_selectedColl.add(item);
+															submit();
+														}
+													}}
+													class:active
+													class:selected={isSelected}
+													class={twMerge(
+														BTN_CLS,
+														isSelected && "bg-neutral-200 dark:bg-neutral-800",
+														classOption,
+														// active && "border-neutral-400",
+														active && classOptionActive
+													)}
+													tabindex="-1"
+													role="checkbox"
+													aria-checked={isSelected}
+												>
+													{#if showIcons}
+														<span class={isSelected ? "opacity-100" : "opacity-25"}>
+															{#if isMultiple}
+																{#if isSelected}
+																	{@html iconCheckboxCheck()}
+																{:else}
+																	{@html iconCheckboxEmpty()}
+																{/if}
+															{:else if isSelected}
+																{@html iconRadioCheck()}
+															{:else}
+																{@html iconRadioEmpty()}
+															{/if}
+														</span>
+													{/if}
+													<span
+														class={twMerge(
+															"min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap"
+														)}>{_renderOptionLabel(item)}</span
+													>
+												</button>
+											</li>
+										{/each}
+									</ul>
 								{/each}
-							</ul>
-						{/each}
-					</div>
-					<!-- {/if} -->
-					<div class="p-2 px-3 flex items-end justify-between">
-						<div class="text-sm opacity-50">
-							<!-- Use arrows to navigate. Spacebar and Enter to select and/or submit. -->
-							{#if allowUnknown}
-								{@html t("unknown_allowed")}
-							{:else}
-								{@html t("unknown_not_allowed")}
+							</div>
+							<!-- {/if} -->
+							<div class="p-2 px-3 flex items-end justify-between">
+								<div class="text-sm opacity-50">
+									<!-- Use arrows to navigate. Spacebar and Enter to select and/or submit. -->
+									{#if allowUnknown}
+										{@html t("unknown_allowed")}
+									{:else}
+										{@html t("unknown_not_allowed")}
+									{/if}
+								</div>
+								<div>
+									<Button
+										class="control"
+										type="button"
+										variant="primary"
+										onclick={async (e) => {
+											e.preventDefault();
+											try_submit(true);
+										}}
+										tabindex={3}
+									>
+										{@html t("submit")}
+									</Button>
+								</div>
+							</div>
+						</div>
+					{/snippet}
+
+					{#snippet inputAfter()}
+						<div class="flex pl-2 items-center justify-center opacity-50">
+							{#if isFetching}
+								<Spinner class="w-4" />
 							{/if}
 						</div>
-						<div>
-							<Button
-								class="control"
+						<div class="flex pl-2 pr-1 items-center justify-center">
+							<button
 								type="button"
-								variant="primary"
-								onclick={async (e) => {
+								class={twMerge(
+									"opacity-75 rounded",
+									"hover:opacity-100 hover:bg-neutral-200 dark:hover:bg-neutral-800",
+									"focus-visible:opacity-100 focus-visible:outline-0",
+									"focus-visible:bg-neutral-200 dark:focus-visible:bg-neutral-800"
+								)}
+								use:tooltip
+								aria-label={t("x_close")}
+								onclick={(e) => {
 									e.preventDefault();
-									try_submit(true);
+									if (innerValue.trim() == "") {
+										return escape();
+									}
+									innerValue = "";
+									input?.focus();
 								}}
-								tabindex={3}
+								tabindex={2}
 							>
-								{@html t("submit")}
-							</Button>
+								<X class="m-2 size-6" />
+							</button>
 						</div>
-					</div>
-				</div>
-			{/snippet}
+					{/snippet}
 
-			{#snippet inputAfter()}
-				<div class="flex pl-2 items-center justify-center opacity-50">
-					{#if isFetching}
-						<Spinner class="w-4" />
-					{/if}
-				</div>
-				<div class="flex pl-2 pr-1 items-center justify-center">
-					<button
-						type="button"
-						class={twMerge(
-							"opacity-50 rounded",
-							"hover:opacity-100 hover:bg-neutral-200 dark:hover:bg-neutral-800",
-							"focus-visible:opacity-100 focus-visible:outline-0",
-							"focus-visible:bg-neutral-200 dark:focus-visible:bg-neutral-800"
-						)}
-						use:tooltip
-						aria-label={t("x_close")}
-						onclick={(e) => {
-							e.preventDefault();
-							if (innerValue.trim() == "") {
-								return escape();
-							}
-							innerValue = "";
-							input?.focus();
-						}}
-						tabindex={2}
-					>
-						<X class="m-2 size-4 " />
-					</button>
-				</div>
-			{/snippet}
-
-			{#snippet inputBefore()}
-				<div class="flex flex-col items-center justify-center pl-3 opacity-50">
-					{@html iconSearch({ size: 14 })}
-				</div>
-			{/snippet}
-		</InputWrap>
-	</Modal>
+					{#snippet inputBefore()}
+						<div class="flex flex-col items-center justify-center pl-3 opacity-75">
+							{@html iconSearch({ size: 19, strokeWidth: 3 })}
+						</div>
+					{/snippet}
+				</InputWrap>
+			</div>
+		</div>
+	</ModalDialog>
 </div>
 
 <style>
