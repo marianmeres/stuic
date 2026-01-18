@@ -56,6 +56,19 @@ const POSITION_MAP: Record<string, string> = {
 };
 
 /**
+ * Find the appropriate container for the tooltip element.
+ * If the anchor is inside an open dialog (modal), append to the dialog
+ * so the tooltip renders in the same top layer as the modal.
+ */
+function getTooltipContainer(anchorEl: HTMLElement): HTMLElement {
+	const dialog = anchorEl.closest("dialog[open]");
+	if (dialog) {
+		return dialog as HTMLElement;
+	}
+	return document.body;
+}
+
+/**
  * Valid positions for tooltip placement relative to the anchor element.
  */
 export type TooltipPosition =
@@ -223,7 +236,9 @@ export function tooltip(anchorEl: HTMLElement, fn?: TooltipConfig) {
 			tooltipEl.setAttribute("role", "tooltip");
 			tooltipEl.style.cssText += `position-anchor: ${anchorName}; transition-duration: ${TRANSITION}ms; position-area: ${POSITION_MAP[position] || "top"};`;
 			tooltipEl.classList.add(...twMerge("stuic-tooltip", _classTooltip).split(/\s/));
-			document.body.appendChild(tooltipEl);
+			// Append to dialog if inside one, otherwise body (for proper top-layer rendering in modals)
+			const container = getTooltipContainer(anchorEl);
+			container.appendChild(tooltipEl);
 			//
 			tooltipEl.addEventListener("mouseenter", schedule_show);
 			tooltipEl.addEventListener("mouseleave", schedule_hide);
@@ -279,11 +294,6 @@ export function tooltip(anchorEl: HTMLElement, fn?: TooltipConfig) {
 					tooltipEl.classList.add("tt-visible");
 					on_show?.();
 				});
-				// waitForTwoRepaints().then(() => {
-				// 	tooltipEl.classList.add("tt-visible");
-				// this approach is nicer, but I have a suspicion of the event handlers not being destroyed properly (maybe just a hot-reload issues...)
-				// 	waitForTransitionEnd(tooltipEl).then(() => on_show?.());
-				// });
 			}
 		}, TIMEOUT);
 	}
@@ -304,11 +314,6 @@ export function tooltip(anchorEl: HTMLElement, fn?: TooltipConfig) {
 				tooltipEl.classList.remove("tt-block");
 				on_hide?.();
 			}, TRANSITION);
-			// this approach is nicer, but I have a suspicion of the event handlers not being destroyed properly (maybe just a hot-reload issues...)
-			// waitForTransitionEnd(tooltipEl).then(() => {
-			// 	tooltipEl.classList.remove("tt-block");
-			// 	on_hide?.();
-			// });
 		}, TIMEOUT);
 	}
 

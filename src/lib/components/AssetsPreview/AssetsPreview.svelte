@@ -559,7 +559,7 @@
 						onclick={zoomOut}
 						disabled={zoomLevelIdx === 0}
 						aria-label={t("zoom_out")}
-						use:tooltip
+						use:tooltip={() => ({ content: t("zoom_out") })}
 					>
 						{@html iconZoomOut({ class: "size-6" })}
 					</button>
@@ -570,7 +570,7 @@
 						onclick={zoomIn}
 						disabled={zoomLevelIdx === ZOOM_LEVELS.length - 1}
 						aria-label={t("zoom_in")}
-						use:tooltip
+						use:tooltip={() => ({ content: t("zoom_in") })}
 					>
 						{@html iconZoomIn({ class: "size-6" })}
 					</button>
