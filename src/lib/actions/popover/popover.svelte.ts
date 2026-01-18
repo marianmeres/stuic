@@ -232,6 +232,19 @@ function getStringContent(content: THC | null | undefined): string {
 }
 
 /**
+ * Find the appropriate container for the popover element.
+ * If the anchor is inside an open dialog (modal), append to the dialog
+ * so the popover renders in the same top layer as the modal.
+ */
+function getPopoverContainer(anchorEl: HTMLElement): HTMLElement {
+	const dialog = anchorEl.closest("dialog[open]");
+	if (dialog) {
+		return dialog as HTMLElement;
+	}
+	return document.body;
+}
+
+/**
  * A Svelte action that displays a popover anchored to an element using CSS Anchor Positioning.
  *
  * The popover appears on click or hover (configurable) and supports multiple positions
@@ -427,7 +440,10 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 		const offsetValue = currentOptions.offset || "0.25rem";
 		const useAnchorPositioning = isSupported && !currentOptions.forceFallback;
 
-		// Create elements
+		// Get appropriate container (dialog if inside one, otherwise body)
+		// This ensures popover renders in same stacking context as modal dialogs
+		const container = getPopoverContainer(anchorEl);
+
 		if (useAnchorPositioning) {
 			// CSS Anchor Positioning mode
 			popoverEl = document.createElement("div");
@@ -443,7 +459,7 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 			popoverEl.classList.add(
 				...twMerge("stuic-popover", _classPopover, currentOptions.class).split(/\s/)
 			);
-			document.body.appendChild(popoverEl);
+			container.appendChild(popoverEl);
 		} else {
 			// Fallback centered modal mode
 			if (currentOptions.showBackdrop !== false) {
@@ -452,7 +468,7 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 					...twMerge("stuic-popover-backdrop", _classBackdrop).split(/\s/)
 				);
 				backdropEl.style.cssText = `transition-duration: ${TRANSITION}ms;`;
-				document.body.appendChild(backdropEl);
+				container.appendChild(backdropEl);
 
 				// Backdrop click closes popover
 				if (currentOptions.closeOnClickOutside !== false) {
@@ -492,7 +508,7 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 			);
 
 			wrapperEl.appendChild(popoverEl);
-			document.body.appendChild(wrapperEl);
+			container.appendChild(wrapperEl);
 
 			// Lock body scroll in fallback (modal) mode
 			BodyScroll.lock();
