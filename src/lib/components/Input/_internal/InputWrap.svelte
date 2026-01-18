@@ -105,6 +105,7 @@
 		inputBox: {
 			size: {
 				sm: "text-sm",
+				lg: "p-1",
 			} as any,
 		},
 	};

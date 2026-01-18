@@ -34,14 +34,15 @@
 </Button>
 
 <!-- <Button onclick={backdrop?.open}>open via instance</Button> -->
+<!-- data-onmousedown={backdrop?.close} -->
 
 <Backdrop
 	bind:this={backdrop}
 	class="justify-center items-center bg-black/25"
 	onEscape={backdrop?.close}
-	onmousedown={backdrop?.close}
 	fadeInDuration={duration}
 	fadeOutDuration={duration}
+	onBackdropClick={backdrop.close}
 	bind:visible
 >
 	<!-- svelte-ignore a11y_no_static_element_interactions -->

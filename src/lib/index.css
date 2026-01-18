@@ -1,4 +1,11 @@
-@import "tailwindcss";
+/*
+	Tailwind import removed here because it causes CSS cascade/layer issues in WebKit browsers
+	(Safari, iOS Chrome) when consumers also import Tailwind. The double import can result in
+	Tailwind's preflight styles (like border-style: solid) not being applied correctly.
+	Consumers of STUIC should import Tailwind at their own app level.
+*/
+/* @import "tailwindcss"; */
+
 @plugin '@tailwindcss/forms';
 
 @custom-variant dark (&:where(.dark, .dark *));

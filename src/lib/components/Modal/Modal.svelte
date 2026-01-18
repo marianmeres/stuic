@@ -29,6 +29,8 @@
 		onEscape?: undefined | (() => void);
 		/** Disable body scroll lock when modal is open */
 		noScrollLock?: boolean;
+		/** Fires when the backdrop is clicked "directly" */
+		onBackdropClick?: undefined | (() => void);
 	}
 </script>
 
@@ -59,6 +61,7 @@
 		focusTrap = true,
 		onEscape,
 		noScrollLock = false,
+		onBackdropClick,
 	}: Props = $props();
 
 	let backdrop: Backdrop = $state()!;
@@ -94,6 +97,7 @@
 	fadeOutDuration={transitionDuration}
 	{onEscape}
 	{noScrollLock}
+	{onBackdropClick}
 >
 	<div
 		bind:this={el}

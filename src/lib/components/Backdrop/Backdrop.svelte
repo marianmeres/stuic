@@ -1,6 +1,11 @@
 <script lang="ts" module>
 	import type { Snippet } from "svelte";
 	import type { FocusTrapOptions } from "../../actions/focus-trap.js";
+	import { BodyScroll, focusTrap as focusTrapAction, twMerge } from "$lib/index.js";
+	import { createClog } from "@marianmeres/clog";
+	import { watch } from "runed";
+	import { onDestroy } from "svelte";
+	import { fade } from "svelte/transition";
 
 	export interface Props extends Record<string, any> {
 		class?: string;
@@ -11,6 +16,7 @@
 		el?: HTMLDivElement;
 		children?: Snippet;
 		onEscape?: () => void;
+		onBackdropClick?: () => void;
 		visible?: boolean;
 		noScrollLock?: boolean;
 	}
@@ -20,13 +26,7 @@
 </script>
 
 <script lang="ts">
-	import { BodyScroll, focusTrap as focusTrapAction, twMerge } from "$lib/index.js";
-	import { createClog } from "@marianmeres/clog";
-	import { watch } from "runed";
-	import { onDestroy } from "svelte";
-	import { fade } from "svelte/transition";
-
-	const clog = createClog("Backdrop").debug;
+	const clog = createClog("Backdrop", { color: "auto" });
 
 	let {
 		class: classProp,
@@ -37,6 +37,7 @@
 		el = $bindable(),
 		children,
 		onEscape,
+		onBackdropClick,
 		visible = $bindable(false),
 		noScrollLock,
 		...rest
@@ -152,6 +153,11 @@
 		in:fade={{ duration: fadeInDuration }}
 		out:fade={{ duration: fadeOutDuration }}
 		use:focusTrapAction={focusTrapOptions}
+		onmousedown={(e) => {
+			if (e.target === el && onBackdropClick) {
+				onBackdropClick();
+			}
+		}}
 		{...rest}
 	>
 		{@render children?.()}

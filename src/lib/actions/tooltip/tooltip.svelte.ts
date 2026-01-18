@@ -97,6 +97,49 @@ export type TooltipConfig = () => {
 	onHide?: CallableFunction;
 };
 
+// Global tooltip configuration - allows disabling all tooltips at runtime
+const globalTooltipConfig = $state({ enabled: true });
+
+// Touch device auto-detection (runs once on first tooltip init)
+let touchDetectionDone = false;
+
+function detectTouchDevice() {
+	if (touchDetectionDone) return;
+	touchDetectionDone = true;
+
+	// Detect touch device and disable tooltips by default
+	const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+	if (isTouchDevice) {
+		globalTooltipConfig.enabled = false;
+	}
+}
+
+/**
+ * Globally enable or disable all tooltips.
+ * Useful for disabling tooltips on touch devices where they interfere with interactions.
+ *
+ * @param value - `true` to enable tooltips, `false` to disable
+ *
+ * @example
+ * ```ts
+ * // Disable tooltips on touch devices
+ * if ('ontouchstart' in window) {
+ *   setTooltipsEnabled(false);
+ * }
+ * ```
+ */
+export function setTooltipsEnabled(value: boolean) {
+	globalTooltipConfig.enabled = value;
+}
+
+/**
+ * Get the current global tooltip enabled state.
+ * @returns `true` if tooltips are globally enabled, `false` otherwise
+ */
+export function getTooltipsEnabled(): boolean {
+	return globalTooltipConfig.enabled;
+}
+
 /**
  * A Svelte action that displays a tooltip anchored to an element using CSS Anchor Positioning.
  *
@@ -136,6 +179,9 @@ export type TooltipConfig = () => {
 export function tooltip(anchorEl: HTMLElement, fn?: TooltipConfig) {
 	// the node has been mounted in the DOM
 	if (!isTooltipSupported()) return;
+
+	// Auto-detect touch device on first tooltip init
+	detectTouchDevice();
 
 	//
 	let tooltipEl: HTMLDivElement;
@@ -284,7 +330,7 @@ export function tooltip(anchorEl: HTMLElement, fn?: TooltipConfig) {
 		on_hide = onHide;
 		content = _content || anchorEl.getAttribute("aria-label");
 		classTooltip = _classTooltip;
-		enabled = _enabled ?? true;
+		enabled = globalTooltipConfig.enabled && (_enabled ?? true);
 		position = _position || "top";
 
 		// this will be effective here only if currently in open state, otherwise noop
