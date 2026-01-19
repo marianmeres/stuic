@@ -37,10 +37,10 @@
 		type: "action";
 		/** Label displayed - supports THC for icons, HTML, etc. */
 		label: THC;
-		/** Shortcut hint displayed on the right (e.g., "Cmd+K") */
-		shortcut?: string;
-		/** Icon displayed before label - supports THC */
-		icon?: THC;
+		/** Content displayed before label (e.g., icon) - supports THC */
+		contentBefore?: THC;
+		/** Content displayed after label (e.g., shortcut hint, badge) - supports THC */
+		contentAfter?: THC;
 		/** Callback when item is selected */
 		onSelect?: () => void | boolean;
 	}
@@ -74,7 +74,8 @@
 		type: "expandable";
 		/** Label for the expandable header */
 		label: THC;
-		icon?: THC;
+		/** Content displayed before label (e.g., icon) - supports THC */
+		contentBefore?: THC;
 		/** Nested items (single level only - no nested expandables) */
 		items: DropdownMenuFlatItem[];
 		/** Whether section starts expanded */
@@ -130,6 +131,10 @@
 		classItemActive?: string;
 		/** Classes for disabled items */
 		classItemDisabled?: string;
+		/** Classes for content before label (iconBefore slot) */
+		classItemBefore?: string;
+		/** Classes for content after label (iconAfter slot) */
+		classItemAfter?: string;
 		/** Classes for dividers */
 		classDivider?: string;
 		/** Classes for header items */
@@ -226,20 +231,6 @@
 		min-w-48
 	`;
 
-	export const DROPDOWN_MENU_ITEM_CLASSES = `
-		w-full
-		flex items-center gap-2
-		px-3 py-1.5
-		min-h-[44px]
-		text-left 
-		rounded-md
-		cursor-pointer
-		touch-action-manipulation
-		hover:bg-neutral-100 dark:hover:bg-neutral-700
-		focus:outline-none
-		focus-visible:bg-neutral-200 dark:focus-visible:bg-neutral-600
-	`;
-
 	export const DROPDOWN_MENU_DIVIDER_CLASSES = `
 		h-px my-1
 		bg-neutral-200 dark:bg-neutral-700
@@ -269,6 +260,7 @@
 	import { slide, fade } from "svelte/transition";
 	import { untrack } from "svelte";
 	import Thc from "../Thc/Thc.svelte";
+	import ListItemButton from "../ListItemButton/ListItemButton.svelte";
 	import "./index.css";
 	import { BodyScroll } from "../../utils/body-scroll-locker.js";
 	import { waitForTwoRepaints } from "../../utils/paint.js";
@@ -289,6 +281,8 @@
 		classItem,
 		classItemActive,
 		classItemDisabled,
+		classItemBefore,
+		classItemAfter,
 		classDivider,
 		classHeader,
 		classExpandable,
@@ -698,40 +692,23 @@
 			{#each items as item}
 				{#if item.type === "action"}
 					{@const isActive = _navItems.active?.id === item.id}
-					<button
+					<ListItemButton
 						id={itemId(item.id)}
 						role="menuitem"
-						class={twMerge(
-							DROPDOWN_MENU_ITEM_CLASSES,
-							classItem,
-							item.class,
-							isActive && "bg-neutral-200 dark:bg-neutral-600",
-							isActive && classItemActive,
-							item.disabled && "opacity-50 cursor-not-allowed pointer-events-none",
-							item.disabled && classItemDisabled
-						)}
+						focused={isActive}
+						iconBefore={item.contentBefore}
+						iconAfter={item.contentAfter}
+						class={twMerge(classItem, item.class)}
+						classFocused={classItemActive}
+						classIconBefore={classItemBefore}
+						classIconAfter={classItemAfter}
 						onclick={() => selectItem(item)}
 						onmouseenter={() => navItems.setActive(item)}
-						aria-disabled={item.disabled || undefined}
+						disabled={item.disabled}
 						tabindex={-1}
-						type="button"
 					>
-						{#if item.icon}
-							<span class="shrink-0">
-								<Thc thc={item.icon} />
-							</span>
-						{/if}
-						<span class="flex-1">
-							<Thc thc={item.label} />
-						</span>
-						{#if item.shortcut}
-							<span
-								class="text-xs text-dropdown-header dark:text-dropdown-header-dark ml-auto"
-							>
-								{item.shortcut}
-							</span>
-						{/if}
-					</button>
+						<Thc thc={item.label} />
+					</ListItemButton>
 				{:else if item.type === "divider"}
 					<div
 						role="separator"
@@ -755,19 +732,16 @@
 						_navItems.active?.id === item.id}
 					<div role="group" aria-labelledby={expandableHeaderId(item.id)}>
 						<!-- Expandable header -->
-						<button
+						<ListItemButton
 							id={expandableHeaderId(item.id)}
 							role="menuitem"
-							class={twMerge(
-								DROPDOWN_MENU_ITEM_CLASSES,
-								"font-medium",
-								classExpandable,
-								item.class,
-								isExpandableActive && "bg-neutral-200 dark:bg-neutral-600",
-								isExpandableActive && classItemActive,
-								item.disabled && "opacity-50 cursor-not-allowed pointer-events-none",
-								item.disabled && classItemDisabled
-							)}
+							focused={isExpandableActive}
+							iconBefore={item.contentBefore}
+							iconAfter={{ html: iconChevronRight({ size: 16 }) }}
+							class={twMerge("font-medium", classExpandable, item.class)}
+							classFocused={classItemActive}
+							classIconBefore={classItemBefore}
+							classIconAfter={twMerge("transition-transform", isExpanded && "rotate-90")}
 							onclick={() => toggleExpanded(item.id)}
 							onmouseenter={() =>
 								navItems.setActive({
@@ -776,27 +750,11 @@
 									expandableItem: item,
 								})}
 							aria-expanded={isExpanded}
-							aria-disabled={item.disabled || undefined}
+							disabled={item.disabled}
 							tabindex={-1}
-							type="button"
 						>
-							{#if item.icon}
-								<span class="shrink-0">
-									<Thc thc={item.icon} />
-								</span>
-							{/if}
-							<span class="flex-1">
-								<Thc thc={item.label} />
-							</span>
-							<span
-								class={twMerge(
-									"transition-transform inline-block",
-									isExpanded && "rotate-90"
-								)}
-							>
-								{@html iconChevronRight({ size: 16 })}
-							</span>
-						</button>
+							<Thc thc={item.label} />
+						</ListItemButton>
 
 						<!-- Expandable content -->
 						{#if isExpanded}
@@ -810,41 +768,23 @@
 								{#each item.items as childItem}
 									{#if childItem.type === "action"}
 										{@const isChildActive = _navItems.active?.id === childItem.id}
-										<button
+										<ListItemButton
 											id={itemId(childItem.id)}
 											role="menuitem"
-											class={twMerge(
-												DROPDOWN_MENU_ITEM_CLASSES,
-												classItem,
-												childItem.class,
-												isChildActive && "bg-neutral-200 dark:bg-neutral-600",
-												isChildActive && classItemActive,
-												childItem.disabled &&
-													"opacity-50 cursor-not-allowed pointer-events-none",
-												childItem.disabled && classItemDisabled
-											)}
+											focused={isChildActive}
+											iconBefore={childItem.contentBefore}
+											iconAfter={childItem.contentAfter}
+											class={twMerge(classItem, childItem.class)}
+											classFocused={classItemActive}
+											classIconBefore={classItemBefore}
+											classIconAfter={classItemAfter}
 											onclick={() => selectItem(childItem)}
 											onmouseenter={() => navItems.setActive(childItem)}
-											aria-disabled={childItem.disabled || undefined}
+											disabled={childItem.disabled}
 											tabindex={-1}
-											type="button"
 										>
-											{#if childItem.icon}
-												<span class="shrink-0">
-													<Thc thc={childItem.icon} />
-												</span>
-											{/if}
-											<span class="flex-1">
-												<Thc thc={childItem.label} />
-											</span>
-											{#if childItem.shortcut}
-												<span
-													class="text-xs text-dropdown-header dark:text-dropdown-header-dark ml-auto"
-												>
-													{childItem.shortcut}
-												</span>
-											{/if}
-										</button>
+											<Thc thc={childItem.label} />
+										</ListItemButton>
 									{:else if childItem.type === "divider"}
 										<div
 											role="separator"

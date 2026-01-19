@@ -22,20 +22,20 @@
 			type: "action",
 			id: "edit",
 			label: "Edit",
-			icon: { html: iconLucidePencil({ size: 16 }) },
+			contentBefore: { html: iconLucidePencil({}) },
 		},
 		{
 			type: "action",
 			id: "copy",
 			label: "Copy",
-			icon: { html: iconLucideCopy({ size: 16 }) },
+			contentBefore: { html: iconLucideCopy({}) },
 		},
 		{ type: "divider" },
 		{
 			type: "action",
 			id: "delete",
 			label: "Delete",
-			icon: { html: iconLucideTrash2({ size: 16 }) },
+			contentBefore: { html: iconLucideTrash2({}) },
 			class: "text-red-600 dark:text-red-400",
 		},
 	];
@@ -47,22 +47,22 @@
 			type: "action",
 			id: "new",
 			label: "New File",
-			shortcut: "Cmd+N",
-			icon: { html: iconLucideFile({ size: 16 }) },
+			contentAfter: "Cmd+N",
+			contentBefore: { html: iconLucideFile({}) },
 		},
 		{
 			type: "action",
 			id: "open",
 			label: "Open",
-			shortcut: "Cmd+O",
-			icon: { html: iconLucideFolder({ size: 16 }) },
+			contentAfter: "Cmd+O",
+			contentBefore: { html: iconLucideFolder({}) },
 		},
 		{
 			type: "action",
 			id: "save",
 			label: "Save",
-			shortcut: "Cmd+S",
-			icon: { html: iconLucideDownload({ size: 16 }) },
+			contentAfter: "Cmd+S",
+			contentBefore: { html: iconLucideDownload({}) },
 		},
 		{ type: "divider" },
 		{ type: "header", label: "Share" },
@@ -70,7 +70,7 @@
 			type: "action",
 			id: "share",
 			label: "Share...",
-			icon: { html: iconLucideShare({ size: 16 }) },
+			contentBefore: { html: iconLucideShare({}) },
 		},
 	];
 
@@ -80,13 +80,13 @@
 			type: "action",
 			id: "profile",
 			label: "Profile",
-			icon: { html: iconLucideUser({ size: 16 }) },
+			contentBefore: { html: iconLucideUser({}) },
 		},
 		{
 			type: "expandable",
 			id: "settings",
 			label: "Settings",
-			icon: { html: iconLucideSettings({ size: 16 }) },
+			contentBefore: { html: iconLucideSettings({}) },
 			items: [
 				{ type: "action", id: "general", label: "General" },
 				{ type: "action", id: "privacy", label: "Privacy" },
@@ -97,7 +97,7 @@
 			type: "expandable",
 			id: "files",
 			label: "Recent Files",
-			icon: { html: iconLucideFolder({ size: 16 }) },
+			contentBefore: { html: iconLucideFolder({}) },
 			defaultExpanded: true,
 			items: [
 				{ type: "action", id: "file1", label: "document.pdf" },
@@ -307,7 +307,7 @@
 						onclick={toggle}
 						{...triggerProps}
 					>
-						{@html iconLucideSettings({ size: 16 })}
+						{@html iconLucideSettings({})}
 						<span>{isOpen ? "Close" : "Open"} Settings</span>
 					</button>
 				{/snippet}
@@ -413,33 +413,6 @@
 		<div class="flex gap-4 flex-wrap">
 			<DropdownMenu items={basicItems} forceFallback onSelect={handleSelect}>
 				Fallback Mode
-			</DropdownMenu>
-
-			<DropdownMenu
-				items={basicItems}
-				forceFallback
-				position="top"
-				onSelect={handleSelect}
-			>
-				Fallback Top
-			</DropdownMenu>
-
-			<DropdownMenu
-				items={basicItems}
-				forceFallback
-				position="right"
-				onSelect={handleSelect}
-			>
-				Fallback Right
-			</DropdownMenu>
-
-			<DropdownMenu
-				items={basicItems}
-				forceFallback
-				position="left"
-				onSelect={handleSelect}
-			>
-				Fallback Left
 			</DropdownMenu>
 		</div>
 	</section>
