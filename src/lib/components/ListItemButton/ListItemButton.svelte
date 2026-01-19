@@ -17,17 +17,17 @@
 		/** Enable touch-friendly sizing (larger tap targets). "auto" detects coarse pointer. */
 		touchFriendly?: boolean | "auto";
 		/** Icon/content displayed before the main content */
-		iconBefore?: THC;
+		contentBefore?: THC;
 		/** Icon/content displayed after the main content */
-		iconAfter?: THC;
+		contentAfter?: THC;
 		/** Render as anchor tag instead of button */
 		href?: string;
 		/** CSS classes for the button element */
 		class?: string;
 		/** CSS classes for the icon before slot */
-		classIconBefore?: string;
+		classContentBefore?: string;
 		/** CSS classes for the icon after slot */
-		classIconAfter?: string;
+		classContentAfter?: string;
 		/** CSS classes applied when active */
 		classActive?: string;
 		/** CSS classes applied when focused */
@@ -101,12 +101,12 @@
 		size = "md",
 		unstyled = false,
 		touchFriendly = false,
-		iconBefore,
-		iconAfter,
+		contentBefore,
+		contentAfter,
 		href,
 		class: classProp,
-		classIconBefore,
-		classIconAfter,
+		classContentBefore,
+		classContentAfter,
 		classActive,
 		classFocused,
 		el = $bindable(),
@@ -144,17 +144,17 @@
 </script>
 
 {#snippet content()}
-	{#if iconBefore}
-		<span class={twMerge("shrink-0", classIconBefore)}>
-			<Thc thc={iconBefore} />
+	{#if contentBefore}
+		<span class={twMerge("shrink-0", classContentBefore)}>
+			<Thc thc={contentBefore} />
 		</span>
 	{/if}
 	<span class="flex-1 min-w-0">
 		{@render children?.()}
 	</span>
-	{#if iconAfter}
-		<span class={twMerge("shrink-0", classIconAfter)}>
-			<Thc thc={iconAfter} />
+	{#if contentAfter}
+		<span class={twMerge("shrink-0", classContentAfter)}>
+			<Thc thc={contentAfter} />
 		</span>
 	{/if}
 {/snippet}

@@ -131,9 +131,9 @@
 		classItemActive?: string;
 		/** Classes for disabled items */
 		classItemDisabled?: string;
-		/** Classes for content before label (iconBefore slot) */
+		/** Classes for content before label (contentBefore slot) */
 		classItemBefore?: string;
-		/** Classes for content after label (iconAfter slot) */
+		/** Classes for content after label (contentAfter slot) */
 		classItemAfter?: string;
 		/** Classes for dividers */
 		classDivider?: string;
@@ -696,12 +696,12 @@
 						id={itemId(item.id)}
 						role="menuitem"
 						focused={isActive}
-						iconBefore={item.contentBefore}
-						iconAfter={item.contentAfter}
+						contentBefore={item.contentBefore}
+						contentAfter={item.contentAfter}
 						class={twMerge(classItem, item.class)}
 						classFocused={classItemActive}
-						classIconBefore={classItemBefore}
-						classIconAfter={classItemAfter}
+						classContentBefore={classItemBefore}
+						classContentAfter={classItemAfter}
 						onclick={() => selectItem(item)}
 						onmouseenter={() => navItems.setActive(item)}
 						disabled={item.disabled}
@@ -736,12 +736,12 @@
 							id={expandableHeaderId(item.id)}
 							role="menuitem"
 							focused={isExpandableActive}
-							iconBefore={item.contentBefore}
-							iconAfter={{ html: iconChevronRight({ size: 16 }) }}
+							contentBefore={item.contentBefore}
+							contentAfter={{ html: iconChevronRight({ size: 16 }) }}
 							class={twMerge("font-medium", classExpandable, item.class)}
 							classFocused={classItemActive}
-							classIconBefore={classItemBefore}
-							classIconAfter={twMerge("transition-transform", isExpanded && "rotate-90")}
+							classContentBefore={classItemBefore}
+							classContentAfter={twMerge("transition-transform", isExpanded && "rotate-90")}
 							onclick={() => toggleExpanded(item.id)}
 							onmouseenter={() =>
 								navItems.setActive({
@@ -772,12 +772,12 @@
 											id={itemId(childItem.id)}
 											role="menuitem"
 											focused={isChildActive}
-											iconBefore={childItem.contentBefore}
-											iconAfter={childItem.contentAfter}
+											contentBefore={childItem.contentBefore}
+											contentAfter={childItem.contentAfter}
 											class={twMerge(classItem, childItem.class)}
 											classFocused={classItemActive}
-											classIconBefore={classItemBefore}
-											classIconAfter={classItemAfter}
+											classContentBefore={classItemBefore}
+											classContentAfter={classItemAfter}
 											onclick={() => selectItem(childItem)}
 											onmouseenter={() => navItems.setActive(childItem)}
 											disabled={childItem.disabled}

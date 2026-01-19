@@ -23,6 +23,7 @@
 	import X from "../X/X.svelte";
 	import InputWrap from "./_internal/InputWrap.svelte";
 	import FieldLikeButton from "./FieldLikeButton.svelte";
+	import ListItemButton from "../ListItemButton/ListItemButton.svelte";
 
 	export interface Option {
 		label: string;
@@ -97,7 +98,7 @@
 			clear_all: "Clear selected",
 			clear: "Clear",
 			search_placeholder: "Type to search...",
-			search_submit_placeholder: "Type to search and/or submit...",
+			search_submit_placeholder: "Type to search and submit...",
 			cardinality_full: "Max selection reached",
 			select_from_list: "Please select from the list only",
 			x_close: "Clear input or close [esc]",
@@ -224,6 +225,13 @@
 
 	function _renderOptionLabel(item: Item): string {
 		return renderOptionLabel?.(item) || `${item[itemIdPropName]}`;
+	}
+
+	function getIconThc(isSelected: boolean): { html: string } {
+		if (isMultiple) {
+			return { html: isSelected ? iconCheckboxCheck() : iconCheckboxEmpty() };
+		}
+		return { html: isSelected ? iconRadioCheck() : iconRadioEmpty() };
 	}
 
 	function sortFn(a: Item, b: Item) {
@@ -423,16 +431,6 @@
 	}
 
 	let groupedOptions = $derived(_normalize_and_group_options(options.items));
-
-	const BTN_CLS = [
-		"no-focus-visible",
-		"text-left rounded-md py-2 px-2.5 flex items-center space-x-2",
-		"w-full",
-		"border border-transparent",
-		"focus:outline-0 focus:border-neutral-400 dark:focus:border-neutral-500",
-		"focus-visible:outline-0 focus-visible:ring-0",
-		"hover:border-neutral-400 dark:hover:border-neutral-500",
-	];
 
 	// add new dance
 	$effect(() => {
@@ -668,18 +666,15 @@
 
 								{#if !isFetching && allowUnknown && innerValue && !have_option_label_like(options.items, innerValue)}
 									<div class="px-1">
-										<button
-											type="button"
-											bind:this={addNewBtn}
+										<ListItemButton
+											bind:el={addNewBtn}
 											onclick={add_new}
-											class={twMerge(
-												BTN_CLS,
-												classOption,
-												isAddNewBtnActive && classOptionActive
-											)}
+											focused={isAddNewBtnActive}
+											class={classOption}
+											classFocused={classOptionActive}
 										>
 											{t("add_new", { value: innerValue })}
-										</button>
+										</ListItemButton>
 									</div>
 								{/if}
 
@@ -687,23 +682,23 @@
 									{#if _optgroup}
 										<div
 											class={twMerge(
-												"text-sm capitalize opacity-50 border-b border-black/10 mb-0.5 p-1 mx-1",
+												"mb-1 p-1 text-xs font-semibold uppercase tracking-wide",
+												"text-neutral-500 dark:text-neutral-400",
 												classOptgroup
 											)}
 										>
 											{_optgroup}
 										</div>
 									{/if}
-									<ul class="space-y-0.5">
+									<ul role="presentation" class="space-y-1">
 										<!-- {#each options.items as item} -->
 										{#each _opts as item (item[itemIdPropName])}
 											{@const active =
 												item[itemIdPropName] === options.active?.[itemIdPropName]}
 											{@const isSelected =
 												selected.items && _selectedColl.exists(item[itemIdPropName])}
-											<li class:active class="px-1">
-												<button
-													type="button"
+											<li class:active role="presentation" class="px-1">
+												<ListItemButton
 													id={btn_id(item[itemIdPropName])}
 													onclick={() => {
 														if (isMultiple) {
@@ -719,40 +714,19 @@
 															submit();
 														}
 													}}
-													class:active
-													class:selected={isSelected}
-													class={twMerge(
-														BTN_CLS,
-														isSelected && "bg-neutral-200 dark:bg-neutral-800",
-														classOption,
-														// active && "border-neutral-400",
-														active && classOptionActive
-													)}
-													tabindex="-1"
+													active={isSelected}
+													focused={active}
+													contentBefore={showIcons ? getIconThc(isSelected) : undefined}
+													classContentBefore={isSelected ? "opacity-100" : "opacity-50"}
+													class={classOption}
+													classActive={classOptionActive}
+													classFocused={classOptionActive}
+													tabindex={-1}
 													role={isMultiple ? "checkbox" : "radio"}
 													aria-checked={isSelected}
 												>
-													{#if showIcons}
-														<span class={isSelected ? "opacity-100" : "opacity-25"}>
-															{#if isMultiple}
-																{#if isSelected}
-																	{@html iconCheckboxCheck()}
-																{:else}
-																	{@html iconCheckboxEmpty()}
-																{/if}
-															{:else if isSelected}
-																{@html iconRadioCheck()}
-															{:else}
-																{@html iconRadioEmpty()}
-															{/if}
-														</span>
-													{/if}
-													<span
-														class={twMerge(
-															"min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap"
-														)}>{_renderOptionLabel(item)}</span
-													>
-												</button>
+													{_renderOptionLabel(item)}
+												</ListItemButton>
 											</li>
 										{/each}
 									</ul>

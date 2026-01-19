@@ -42,18 +42,18 @@
 
 <h2 class="text-lg font-bold mb-4">With Icons</h2>
 <div class="w-72 space-y-1 border rounded-lg p-2">
-	<ListItemButton iconBefore={{ html: iconUser({}) }}>User Profile</ListItemButton>
+	<ListItemButton contentBefore={{ html: iconUser({}) }}>User Profile</ListItemButton>
 	<ListItemButton
-		iconBefore={{ html: iconTrash({}) }}
+		contentBefore={{ html: iconTrash({}) }}
 		class="text-red-600 dark:text-red-400"
 	>
 		Delete Item
 	</ListItemButton>
-	<ListItemButton iconAfter={{ html: iconChevronRight({}) }}>Settings</ListItemButton>
+	<ListItemButton contentAfter={{ html: iconChevronRight({}) }}>Settings</ListItemButton>
 	<ListItemButton
 		active
-		iconBefore={{ html: iconCheck({}) }}
-		iconAfter={{ html: iconChevronRight({}) }}
+		contentBefore={{ html: iconCheck({}) }}
+		contentAfter={{ html: iconChevronRight({}) }}
 	>
 		Selected Option
 	</ListItemButton>
@@ -98,7 +98,7 @@
 <h2 class="text-lg font-bold mb-4">As Link</h2>
 <div class="w-72 space-y-1 border rounded-lg p-2">
 	<ListItemButton href="#link1">Link Item 1</ListItemButton>
-	<ListItemButton href="#link2" iconAfter={{ html: iconChevronRight({ size: 20 }) }}>
+	<ListItemButton href="#link2" contentAfter={{ html: iconChevronRight({ size: 20 }) }}>
 		Link Item 2
 	</ListItemButton>
 </div>

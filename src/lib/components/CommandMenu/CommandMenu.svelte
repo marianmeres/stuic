@@ -340,7 +340,6 @@
 													aria-selected={active}
 													{active}
 													tabindex={-1}
-													size="md"
 													class={classOption}
 													classActive={classOptionActive}
 													onclick={() => {

@@ -22,12 +22,12 @@ A versatile button component for list-like contexts such as dropdown menus, comm
 | `size` | `"sm" \| "md" \| "lg"` | `"md"` | Size preset affecting padding and min-height |
 | `unstyled` | `boolean` | `false` | Skip all default styling, use only custom classes |
 | `touchFriendly` | `boolean \| "auto"` | `false` | Enable touch-friendly sizing. `"auto"` detects coarse pointer. |
-| `iconBefore` | `THC` | - | Icon/content displayed before the main content |
-| `iconAfter` | `THC` | - | Icon/content displayed after the main content |
+| `contentBefore` | `THC` | - | Icon/content displayed before the main content |
+| `contentAfter` | `THC` | - | Icon/content displayed after the main content |
 | `href` | `string` | - | Render as anchor tag instead of button |
 | `class` | `string` | - | CSS classes for the button element |
-| `classIconBefore` | `string` | - | CSS classes for the icon before slot |
-| `classIconAfter` | `string` | - | CSS classes for the icon after slot |
+| `classContentBefore` | `string` | - | CSS classes for the icon before slot |
+| `classContentAfter` | `string` | - | CSS classes for the icon after slot |
 | `classActive` | `string` | - | CSS classes applied when active |
 | `classFocused` | `string` | - | CSS classes applied when focused |
 | `el` | `HTMLButtonElement \| HTMLAnchorElement` | - | Bindable element reference |
@@ -68,17 +68,17 @@ A versatile button component for list-like contexts such as dropdown menus, comm
   import { ListItemButton, iconUser, iconChevronRight } from "stuic";
 </script>
 
-<ListItemButton iconBefore={{ html: iconUser({}) }}>
+<ListItemButton contentBefore={{ html: iconUser({}) }}>
   User Profile
 </ListItemButton>
 
-<ListItemButton iconAfter={{ html: iconChevronRight({}) }}>
+<ListItemButton contentAfter={{ html: iconChevronRight({}) }}>
   Settings
 </ListItemButton>
 
 <ListItemButton
-  iconBefore={{ html: iconUser({}) }}
-  iconAfter={{ html: iconChevronRight({}) }}
+  contentBefore={{ html: iconUser({}) }}
+  contentAfter={{ html: iconChevronRight({}) }}
 >
   Both icons
 </ListItemButton>
