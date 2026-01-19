@@ -9,6 +9,7 @@
 	import { Debounced, watch } from "runed";
 	import { NotificationsStack } from "../Notifications/index.js";
 	import { Spinner } from "../Spinner/index.js";
+	import { ListItemButton } from "../ListItemButton/index.js";
 	import { strHash } from "../../utils/str-hash.js";
 	import { qsa } from "../../utils/qsa.js";
 	import { replaceMap } from "../../utils/index.js";
@@ -61,6 +62,8 @@
 </script>
 
 <script lang="ts">
+	import "./index.css";
+
 	const clog = createClog("CommandMenu");
 
 	let {
@@ -242,7 +245,9 @@
 				autocomplete="off"
 				aria-autocomplete="list"
 				aria-controls={options.size ? listId : undefined}
-				aria-activedescendant={options.active ? btn_id(options.active[itemIdPropName]) : undefined}
+				aria-activedescendant={options.active
+					? btn_id(options.active[itemIdPropName])
+					: undefined}
 				placeholder={searchPlaceholder ?? t("search_placeholder")}
 				classInputBoxWrap={twMerge(
 					// always look like focused
@@ -298,6 +303,7 @@
 					{#if options.size}
 						<div
 							class={twMerge(
+								"stuic-command-menu-options",
 								"options block space-y-1 p-1",
 								"overflow-y-auto overflow-x-hidden mb-1",
 								"border-t border-black/20",
@@ -314,43 +320,34 @@
 								<div class="p-1">
 									{#if _optgroup}
 										<div
-											class="text-sm capitalize opacity-50 border-b border-black/10 mb-1 p-1"
+											class={[
+												"mb-1 p-1 text-xs font-semibold uppercase tracking-wide",
+												"text-neutral-500 dark:text-neutral-400",
+											]}
 										>
 											{_optgroup}
 										</div>
 									{/if}
-									<ul role="presentation">
+									<ul role="presentation" class="space-y-1">
 										{#each _opts as item (item[itemIdPropName])}
 											{@const active =
 												item[itemIdPropName] === options.active?.[itemIdPropName]}
 											<!-- {@const isSelected = false} -->
 											<li class:active role="presentation">
-												<button
-													class:active
-													type="button"
+												<ListItemButton
+													id={btn_id(item[itemIdPropName])}
 													role="option"
 													aria-selected={active}
-													class={twMerge(
-														"no-focus-visible",
-														"text-left rounded-md py-2 px-2.5",
-														"min-w-0 w-full overflow-hidden text-ellipsis whitespace-nowrap",
-														"border border-transparent",
-														"focus:outline-0 focus:border-neutral-400 dark:focus:border-neutral-500",
-														"focus-visible:outline-0 focus-visible:ring-0",
-														"hover:border-neutral-400 dark:hover:border-neutral-500",
-														active && "bg-neutral-200 dark:bg-neutral-800",
-														classOption,
-														active && classOptionActive
-													)}
-													id={btn_id(item[itemIdPropName])}
-													tabindex="-1"
+													{active}
+													tabindex={-1}
+													size="md"
+													class={classOption}
+													classActive={classOptionActive}
 													onclick={() => {
 														_optionsColl.setActive(item);
 														submit();
 													}}
 													onkeydown={(e) => {
-														// need to handle tab here, because the tabindex="-1" is ignored
-														// in the focus-trap selectors... so, on Tab, manually focusin input
 														if (e.key === "Tab") {
 															e.preventDefault();
 															input?.focus();
@@ -358,7 +355,7 @@
 													}}
 												>
 													{_renderOptionLabel(item)}
-												</button>
+												</ListItemButton>
 											</li>
 										{/each}
 									</ul>

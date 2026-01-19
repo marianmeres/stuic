@@ -125,7 +125,7 @@
 	<!-- Example 1: Basic -->
 	<section>
 		<h2 class="text-lg font-semibold mb-2">Basic Input History</h2>
-		<p class="text-sm text-neutral-500 mb-4">
+		<p class=" text-neutral-500 mb-4">
 			Type something and press Enter. Use Up/Down arrows to navigate history.
 		</p>
 
@@ -135,17 +135,17 @@
 				bind:value={value1}
 				onkeydown={handleKeydown1}
 				placeholder="Type and press Enter..."
-				class="flex-1 rounded border border-neutral-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+				class="flex-1 rounded border border-neutral-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
 			/>
 			<button
 				type="submit"
-				class="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+				class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
 			>
 				Add
 			</button>
 		</form>
 
-		<div class="mt-4 text-sm">
+		<div class="mt-4">
 			<div class="flex items-center gap-4">
 				<span class="text-neutral-500">History ({history1.entries.length}):</span>
 				{#if history1.isNavigating}
@@ -178,9 +178,11 @@
 	<!-- Example 2: Search filter -->
 	<section>
 		<h2 class="text-lg font-semibold mb-2">Search Filter Simulation</h2>
-		<p class="text-sm text-neutral-500 mb-4">
+		<p class=" text-neutral-500 mb-4">
 			Simulates filter history like in a CMS. Max 5 entries. Storage key:
-			<code class="rounded bg-neutral-100 px-1">stuic-demo:filter-history:project-123:cms:posts:article</code>
+			<code class="rounded bg-neutral-100 px-1"
+				>stuic-demo:filter-history:project-123:cms:posts:article</code
+			>
 		</p>
 
 		<form onsubmit={handleSubmit2} class="flex gap-2">
@@ -189,17 +191,17 @@
 				bind:value={value2}
 				onkeydown={handleKeydown2}
 				placeholder="status:published author:john..."
-				class="flex-1 rounded border border-neutral-300 px-3 py-2 text-sm font-mono focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+				class="flex-1 rounded border border-neutral-300 px-3 py-2 font-mono focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
 			/>
 			<button
 				type="submit"
-				class="rounded bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700"
+				class="rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700"
 			>
 				Search
 			</button>
 		</form>
 
-		<div class="mt-4 grid grid-cols-2 gap-4 text-sm">
+		<div class="mt-4 grid grid-cols-2 gap-4">
 			<div>
 				<span class="text-neutral-500">History:</span>
 				{#if history2.entries.length}
@@ -239,24 +241,24 @@
 	<!-- Example 3: Different scopes -->
 	<section>
 		<h2 class="text-lg font-semibold mb-2">Scoped Histories</h2>
-		<p class="text-sm text-neutral-500 mb-4">
+		<p class=" text-neutral-500 mb-4">
 			Two inputs with separate histories. Each has its own storage key.
 		</p>
 
 		<div class="grid grid-cols-2 gap-6">
 			<div>
-				<h3 class="text-sm font-medium mb-2 text-purple-700">Scope A</h3>
+				<h3 class=" font-medium mb-2 text-purple-700">Scope A</h3>
 				<form onsubmit={handleSubmitA} class="flex gap-2">
 					<input
 						type="text"
 						bind:value={valueA}
 						onkeydown={handleKeydownA}
 						placeholder="Scope A input..."
-						class="flex-1 rounded border border-purple-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
+						class="flex-1 rounded border border-purple-300 px-3 py-2 focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
 					/>
 					<button
 						type="submit"
-						class="rounded bg-purple-600 px-3 py-2 text-sm text-white hover:bg-purple-700"
+						class="rounded bg-purple-600 px-3 py-2 text-white hover:bg-purple-700"
 					>
 						Add
 					</button>
@@ -276,18 +278,18 @@
 			</div>
 
 			<div>
-				<h3 class="text-sm font-medium mb-2 text-orange-700">Scope B</h3>
+				<h3 class=" font-medium mb-2 text-orange-700">Scope B</h3>
 				<form onsubmit={handleSubmitB} class="flex gap-2">
 					<input
 						type="text"
 						bind:value={valueB}
 						onkeydown={handleKeydownB}
 						placeholder="Scope B input..."
-						class="flex-1 rounded border border-orange-300 px-3 py-2 text-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
+						class="flex-1 rounded border border-orange-300 px-3 py-2 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
 					/>
 					<button
 						type="submit"
-						class="rounded bg-orange-600 px-3 py-2 text-sm text-white hover:bg-orange-700"
+						class="rounded bg-orange-600 px-3 py-2 text-white hover:bg-orange-700"
 					>
 						Add
 					</button>
@@ -313,7 +315,7 @@
 	<!-- Cleanup demo -->
 	<section>
 		<h2 class="text-lg font-semibold mb-2">Cleanup</h2>
-		<p class="text-sm text-neutral-500 mb-4">
+		<p class=" text-neutral-500 mb-4">
 			Clear histories matching a pattern (used on logout).
 		</p>
 
@@ -327,7 +329,7 @@
 					valueA = "";
 					valueB = "";
 				}}
-				class="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
+				class="rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
 			>
 				Clear All Demo Histories
 			</button>
@@ -337,7 +339,7 @@
 					console.log("Registered keys:", InputHistory.getRegisteredKeys());
 					alert("Check console for registered keys");
 				}}
-				class="rounded border border-neutral-300 px-4 py-2 text-sm hover:bg-neutral-50"
+				class="rounded border border-neutral-300 px-4 py-2 hover:bg-neutral-50"
 			>
 				Log Registered Keys
 			</button>
