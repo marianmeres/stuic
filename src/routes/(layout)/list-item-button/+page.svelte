@@ -108,6 +108,9 @@
 <h2 class="text-lg font-bold mb-4">Unstyled</h2>
 <div class="w-72 space-y-1 border rounded-lg p-2">
 	<ListItemButton unstyled class="px-2 py-1 bg-pink-100 dark:bg-pink-900 rounded">
-		Custom styled
+		Custom styled (tw class)
+	</ListItemButton>
+	<ListItemButton class="px-2 py-1 " --color-lib-bg="tomato">
+		Custom styled (css vars)
 	</ListItemButton>
 </div>
