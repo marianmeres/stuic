@@ -551,7 +551,7 @@
 				let extra = '';
 				if (vals.length > limit) {
 					vals = vals.slice(0, limit);
-					extra = `, ... <span class="text-sm opacity-50">(+${(origLength - limit)})</span>`;
+					extra = `, ... <span class="text-sm opacity-75">(+${(origLength - limit)})</span>`;
 				}
 				return vals.filter(v => v != null).map(_renderOptionLabel).join(", ") + extra;
 			} catch (e) {
@@ -641,7 +641,7 @@
 
 								<span class="p-1 m-1 text-sm">&nbsp;</span>
 								<span
-									class="flex-1 block justify-end opacity-50 text-right text-sm p-1 pr-2"
+									class="flex-1 block justify-end opacity-75 text-right text-xs p-1 pr-2"
 								>
 									{selected.items.length}
 									{#if cardinality > 0 && cardinality < Infinity}
@@ -661,7 +661,6 @@
 								tabindex="-1"
 							>
 								{#if isFetching && !options.items.length}
-									<!-- <div class="p-4 opacity-50"> -->
 									<div class="flex opacity-50 text-sm h-full items-center justify-center">
 										<Spinner class="w-4" />
 									</div>
@@ -765,7 +764,7 @@
 							</div>
 							<!-- {/if} -->
 							<div class="p-2 px-3 flex items-end justify-between">
-								<div class="text-sm opacity-50">
+								<div class="text-xs opacity-75">
 									<!-- Use arrows to navigate. Spacebar and Enter to select and/or submit. -->
 									{#if allowUnknown}
 										{@html t("unknown_allowed")}
@@ -811,7 +810,8 @@
 								onclick={(e) => {
 									e.preventDefault();
 									if (innerValue.trim() == "") {
-										return escape();
+										escape();
+										return modalDialog.close();
 									}
 									innerValue = "";
 									input?.focus();
