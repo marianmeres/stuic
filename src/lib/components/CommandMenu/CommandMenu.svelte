@@ -95,6 +95,7 @@
 	let isFetching = $state(false);
 	let optionsBox: HTMLDivElement | undefined = $state();
 	let activeEl: HTMLButtonElement | undefined = $state();
+	let fetchRequestId = 0;
 
 	//
 	// svelte-ignore state_referenced_locally
@@ -119,15 +120,18 @@
 
 	//
 	const debounced = new Debounced(() => q, 150);
-	watch([() => debounced.current], ([currQ], [oldQ]) => {
+	watch([() => debounced.current], ([currQ], [_oldQ]) => {
 		if (!currQ && !showAllOnEmptyQ) {
 			_optionsColl.clear();
 			return;
 		}
 
 		isFetching = true;
+		const currentRequest = ++fetchRequestId;
 		getOptions(`${currQ}`, [])
 			.then((res) => {
+				// Ignore stale responses
+				if (currentRequest !== fetchRequestId) return;
 				_optionsColl.clear().addMany(res);
 			})
 			.catch((e) => {
@@ -159,6 +163,7 @@
 
 	// internal DRY
 	const rand = Math.random().toString(36).slice(2);
+	const listId = `cmd-menu-list-${rand}`;
 	function btn_id(id: string | number, prefix = "btn-") {
 		return prefix + rand + strHash(`${id}`.repeat(3));
 	}
@@ -235,6 +240,9 @@
 				class="search m-2 shadow-xl"
 				classLabelBox="m-0"
 				autocomplete="off"
+				aria-autocomplete="list"
+				aria-controls={options.size ? listId : undefined}
+				aria-activedescendant={options.active ? btn_id(options.active[itemIdPropName]) : undefined}
 				placeholder={searchPlaceholder ?? t("search_placeholder")}
 				classInputBoxWrap={twMerge(
 					// always look like focused
@@ -282,6 +290,11 @@
 					</div>
 				{/snippet}
 				{#snippet inputBelow()}
+					<div class="sr-only" aria-live="polite" aria-atomic="true">
+						{#if options.size}
+							{options.size} results available
+						{/if}
+					</div>
 					{#if options.size}
 						<div
 							class={twMerge(
@@ -292,6 +305,9 @@
 							)}
 							bind:this={optionsBox}
 							tabindex="-1"
+							role="listbox"
+							id={listId}
+							aria-label="Search results"
 						>
 							{#each _normalize_and_group_options(options.items) as [_optgroup, _opts]}
 								<!-- {console.log(11111, _optgroup, _opts)} -->
@@ -303,15 +319,17 @@
 											{_optgroup}
 										</div>
 									{/if}
-									<ul>
-										{#each _opts as item (item.id)}
+									<ul role="presentation">
+										{#each _opts as item (item[itemIdPropName])}
 											{@const active =
 												item[itemIdPropName] === options.active?.[itemIdPropName]}
 											<!-- {@const isSelected = false} -->
-											<li class:active>
+											<li class:active role="presentation">
 												<button
 													class:active
 													type="button"
+													role="option"
+													aria-selected={active}
 													class={twMerge(
 														"no-focus-visible",
 														"text-left rounded-md py-2 px-2.5",
@@ -322,7 +340,6 @@
 														"hover:border-neutral-400 dark:hover:border-neutral-500",
 														active && "bg-neutral-200 dark:bg-neutral-800",
 														classOption,
-														// active && "border-neutral-400",
 														active && classOptionActive
 													)}
 													id={btn_id(item[itemIdPropName])}
@@ -340,8 +357,6 @@
 														}
 													}}
 												>
-													<!-- role="checkbox"
-											aria-checked={active} -->
 													{_renderOptionLabel(item)}
 												</button>
 											</li>
@@ -360,5 +375,16 @@
 <style>
 	.options {
 		scrollbar-width: thin;
+	}
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border: 0;
 	}
 </style>

@@ -3,7 +3,7 @@
 	import { iconSearch, iconCheck, iconCircle, iconSquare } from "$lib/icons/index.js";
 	import { ItemCollection, type Item } from "@marianmeres/item-collection";
 	import { Debounced, watch } from "runed";
-	import { tick, type Snippet } from "svelte";
+	import { onDestroy, tick, type Snippet } from "svelte";
 	import { tooltip } from "../../actions/index.js";
 	import { type ValidateOptions } from "../../actions/validate.svelte.js";
 	import type { TranslateFn } from "../../types.js";
@@ -65,11 +65,8 @@
 		noScrollLock?: boolean;
 		style?: string;
 		t?: TranslateFn;
-		renderValue?: (strigifiedItems: string) => string;
-		getOptions: (
-			q: string,
-			current: Item[]
-		) => Promise<{ coll?: ItemCollection<Item>; found: Item[] }>;
+		renderValue?: (stringifiedItems: string) => string;
+		getOptions: (q: string, current: Item[]) => Promise<{ found: Item[] }>;
 		notifications?: NotificationsStack;
 		cardinality?: number;
 		renderOptionLabel?: (item: Item) => string;
@@ -186,6 +183,10 @@
 	let modalDialog: ModalDialog = $state()!;
 	let innerValue = $state("");
 	let isFetching = $state(false);
+	let isUnmounted = false;
+	onDestroy(() => {
+		isUnmounted = true;
+	});
 	let cardinality = $derived(_cardinality === -1 ? Infinity : _cardinality);
 	let isMultiple = $derived(cardinality > 1);
 	let showIcons = $derived(isMultiple ? showIconsCheckbox : showIconsRadio);
@@ -246,6 +247,11 @@
 	// reconfigure if the prop ever changes during runtime (most likely will NOT)
 	$effect(() => {
 		_selectedColl.configure({ cardinality });
+		// trim excess selections if cardinality was reduced
+		if (_selectedColl.size > cardinality) {
+			const trimmed = _selectedColl.items.slice(0, cardinality);
+			_selectedColl.clear().addMany(trimmed);
+		}
 	});
 
 	// now, create the reactive, subscribed variants
@@ -259,10 +265,6 @@
 		);
 	}
 
-	// $inspect("options", options);
-	// $inspect("selected", selected);
-	// $inspect("lastQuery", lastQuery, innerValue);
-
 	// hidden input which holds the final value (upon which validation happens)
 	let parentHiddenInputEl: HTMLInputElement | undefined = $state();
 
@@ -274,38 +276,21 @@
 	let isAddNewBtnActive = $state(false);
 	let touch = $state(new Date());
 
-	// set value on open
-	// watch(
-	// 	() => modalDialog.visibility().visible,
-	// 	(isVisible, wasVisible) => {
-	// 		// modal was just opened
-	// 		if (isVisible) {
-	// 			_selectedColl.clear().addMany(maybeJsonParse(value));
-	// 			console.log(_selectedColl.dump());
-	// 			// IMPORTANT: focus first selected so it scrolls into view on open
-	// 			if (_selectedColl.size) {
-	// 				console.log(1111);
-	// 				waitForNextRepaint().then(() => {
-	// 					_optionsColl.setActive(_selectedColl.items[0]);
-	// 					waitForNextRepaint().then(() => {
-	// 						scrollIntoViewTrigger = new Date();
-	// 					});
-	// 				});
-	// 			}
-	// 		}
-	// 	}
-	// );
-
 	// suggest options as a typeahead feature
 	const debounced = new Debounced(() => innerValue, 150);
+	let fetchRequestId = 0;
 	watch(
 		[() => modalDialog.visibility().visible, () => debounced.current],
 		([isVisible, currVal]) => {
 			if (!isVisible) return;
 			isFetching = true;
+			const currentRequest = ++fetchRequestId;
 			getOptions(currVal, selected.items)
 				.then((res) => {
-					const { found, coll } = res;
+					// ignore stale responses
+					if (currentRequest !== fetchRequestId) return;
+
+					const { found } = res;
 
 					// continue normally, with (server) provided options...
 					_optionsColl.clear().addMany(found);
@@ -329,7 +314,7 @@
 			// IMPORTANT: focus first selected so it scrolls into view on open
 			if (_selectedColl.size) {
 				waitForNextRepaint().then(() => {
-					_optionsColl.setActive(_selectedColl.items[0]);
+					if (!isUnmounted) _optionsColl.setActive(_selectedColl.items[0]);
 				});
 			}
 		}
@@ -430,6 +415,8 @@
 		});
 		return groupped;
 	}
+
+	let groupedOptions = $derived(_normalize_and_group_options(options.items));
 
 	const BTN_CLS = [
 		"no-focus-visible",
@@ -568,6 +555,7 @@
 		preEscapeClose={escape}
 		classDialog="items-start"
 		class="w-full max-w-2xl bg-transparent pointer-events-none"
+		ariaLabelledby={id}
 		{noScrollLock}
 	>
 		<div class="pt-0 md:pt-[20vh] w-full">
@@ -601,7 +589,8 @@
 							}
 						}}
 						autocomplete="off"
-						name={`rand-${Math.random().toString(36).slice(2)}`}
+						aria-controls={`${id}-options`}
+						name={`field-${id}`}
 						{...rest}
 					/>
 
@@ -653,6 +642,7 @@
 
 							<!-- {#if options.items.length} -->
 							<div
+								id={`${id}-options`}
 								class={[
 									"options overflow-y-auto overflow-x-hidden space-y-1 scrollbar-thin",
 									"h-55 max-h-55",
@@ -687,7 +677,7 @@
 									</div>
 								{/if}
 
-								{#each _normalize_and_group_options(options.items) as [_optgroup, _opts]}
+								{#each groupedOptions as [_optgroup, _opts]}
 									{#if _optgroup}
 										<div
 											class={twMerge(
@@ -733,7 +723,7 @@
 														active && classOptionActive
 													)}
 													tabindex="-1"
-													role="checkbox"
+													role={isMultiple ? "checkbox" : "radio"}
 													aria-checked={isSelected}
 												>
 													{#if showIcons}
