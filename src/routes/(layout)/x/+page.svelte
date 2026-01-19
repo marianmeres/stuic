@@ -3,10 +3,16 @@
 </script>
 
 <div class="flex gap-4">
-	<X strokeWidth={1} />
-	<X strokeWidth={2} />
-	<X />
-	<X strokeWidth={4} />
+	<X strokeWidth={1} />1
+	<X strokeWidth={2} />2
+	<X strokeWidth={3} />3
+	<X strokeWidth={4} />4
+</div>
+
+<hr class="my-6" />
+
+<div class="flex gap-4">
+	<X /> default (2 or 3)
 </div>
 
 <hr class="my-6" />

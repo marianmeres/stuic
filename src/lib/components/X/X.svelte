@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import { DevicePointer, twMerge } from "$lib/index.js";
 	export interface Props {
 		class?: string;
 		strokeWidth?: 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | 3.5 | 4;
@@ -6,9 +7,13 @@
 </script>
 
 <script lang="ts">
-	import { twMerge } from "$lib/index.js";
+	let { class: classProps, strokeWidth }: Props = $props();
 
-	let { class: classProps, strokeWidth = 3 }: Props = $props();
+	const dp = new DevicePointer();
+	const auto = $derived(dp.isCoarse ? 3 : 2);
+
+	// if sw not provided use thicker on mobile
+	const _strokeWidth = $derived(strokeWidth ?? auto);
 
 	// size-6 = 1.5rem = 24px
 </script>
@@ -16,7 +21,7 @@
 <svg
 	fill="none"
 	viewBox="0 0 24 24"
-	stroke-width={strokeWidth}
+	stroke-width={_strokeWidth}
 	stroke="currentColor"
 	class={twMerge("inline size-6", classProps)}
 >
