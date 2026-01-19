@@ -33,6 +33,7 @@
 
 	export interface Props extends Record<string, any> {
 		trigger?: Snippet<[{ value: string; modal: ModalDialog }]>;
+		modal?: ModalDialog;
 		input?: HTMLInputElement;
 		value: string;
 		label?: SnippetWithId | THC;
@@ -123,6 +124,7 @@
 
 	let {
 		trigger,
+		modal = $bindable(),
 		input = $bindable(),
 		value = $bindable(), //
 		label = "",
@@ -181,6 +183,10 @@
 	}: Props = $props();
 
 	let modalDialog: ModalDialog = $state()!;
+	// Sync internal modal state to bindable prop for external access
+	$effect(() => {
+		modal = modalDialog;
+	});
 	let innerValue = $state("");
 	let isFetching = $state(false);
 	let isUnmounted = false;
