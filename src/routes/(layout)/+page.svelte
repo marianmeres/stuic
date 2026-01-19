@@ -25,6 +25,7 @@
 		'input',
 		'input-history',
 		'kbd-shortcut',
+		'list-item-button',
 		'modal-dialog',
 		'modal',
 		'notifications',

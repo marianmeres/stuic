@@ -20,6 +20,7 @@ so, since we need to override, sticking with that */
 	@import "./components/ButtonGroupRadio/index.css";
 	@import "./components/DismissibleMessage/index.css";
 	@import "./components/Input/index.css";
+	@import "./components/ListItemButton/index.css";
 	@import "./components/Notifications/index.css";
 	@import "./components/Progress/index.css";
 	@import "./components/Switch/index.css";
