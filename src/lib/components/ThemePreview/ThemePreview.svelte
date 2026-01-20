@@ -230,6 +230,50 @@
 					</p>
 				</div>
 			</section>
+
+			<!-- TAILWIND UTILITY CLASSES -->
+			<section class="preview-section">
+				{#if showLabels}
+					<h2 class="section-label">Tailwind Utility Classes</h2>
+				{/if}
+
+				<div class="flex flex-col gap-3">
+					<!-- Intent color boxes using inline styles with CSS variables -->
+					<div class="flex flex-wrap gap-2">
+						{#each INTENT_COLORS as intent}
+							<div
+								class="px-3 py-2 rounded text-sm"
+								style="background: var(--stuic-color-{intent}); color: var(--stuic-color-{intent}-foreground);"
+							>
+								{intent}
+							</div>
+						{/each}
+					</div>
+
+					<!-- Role color examples using Tailwind arbitrary value syntax -->
+					<div class="flex flex-wrap gap-2">
+						<div
+							class="px-3 py-2 rounded border border-(--stuic-color-border) bg-(--stuic-color-surface) text-(--stuic-color-surface-foreground)"
+						>
+							surface + border
+						</div>
+						<div class="px-3 py-2 rounded bg-(--stuic-color-muted) text-(--stuic-color-muted-foreground)">
+							muted
+						</div>
+						<div class="px-3 py-2 rounded bg-(--stuic-color-primary) text-(--stuic-color-primary-foreground)">
+							primary
+						</div>
+						<div class="px-3 py-2 rounded bg-(--stuic-color-accent) text-(--stuic-color-accent-foreground)">
+							accent
+						</div>
+					</div>
+
+					<!-- Code hint -->
+					<p class="text-xs text-(--stuic-color-muted-foreground)">
+						Using: <code class="bg-(--stuic-color-muted) px-1 rounded">bg-(--stuic-color-primary)</code> syntax
+					</p>
+				</div>
+			</section>
 		</main>
 	</div>
 

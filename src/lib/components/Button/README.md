@@ -89,7 +89,7 @@ The `children` snippet receives `{ checked }` when `roleSwitch` is enabled.
 <!-- Using unstyled for full control -->
 <Button
   unstyled
-  class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg"
+  class="bg-gradient-to-red from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg"
 >
   Gradient Button
 </Button>
