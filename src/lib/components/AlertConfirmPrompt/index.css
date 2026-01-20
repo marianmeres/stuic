@@ -1,0 +1,62 @@
+/* ============================================================================
+   ALERT CONFIRM PROMPT COMPONENT TOKENS
+   Override globally: :root { --stuic-acp-icon-box-radius: 0; }
+   Override locally:  <AlertConfirmPrompt style="--stuic-acp-icon-box-radius: 4px;">
+   ============================================================================ */
+
+:root {
+	--stuic-acp-icon-box-radius: 9999px;
+	--stuic-acp-spinner-overlay-opacity: 0.75;
+}
+
+/* ============================================================================
+   ICON BOX - colors set by variant
+   ============================================================================ */
+
+.stuic-acp .icon-box {
+	background: var(--_icon-bg);
+	color: var(--_icon-text);
+	border-radius: var(--stuic-acp-icon-box-radius);
+}
+
+/* ============================================================================
+   SPINNER OVERLAY - uses surface color
+   ============================================================================ */
+
+.stuic-acp .spinner-box {
+	background: color-mix(
+		in srgb,
+		var(--stuic-color-surface) calc(var(--stuic-acp-spinner-overlay-opacity) * 100%),
+		transparent
+	);
+}
+
+/* ============================================================================
+   VARIANT COLOR MAPPING
+   Each variant sets internal CSS vars for the icon box.
+   ============================================================================ */
+
+/* Variant: info (default) */
+.stuic-acp[data-variant='info'],
+.stuic-acp:not([data-variant]) {
+	--_icon-bg: color-mix(in srgb, var(--stuic-color-info) 15%, transparent);
+	--_icon-text: var(--stuic-color-info);
+}
+
+/* Variant: success */
+.stuic-acp[data-variant='success'] {
+	--_icon-bg: color-mix(in srgb, var(--stuic-color-success) 15%, transparent);
+	--_icon-text: var(--stuic-color-success);
+}
+
+/* Variant: warn */
+.stuic-acp[data-variant='warn'] {
+	--_icon-bg: color-mix(in srgb, var(--stuic-color-warning) 15%, transparent);
+	--_icon-text: var(--stuic-color-warning);
+}
+
+/* Variant: error */
+.stuic-acp[data-variant='error'] {
+	--_icon-bg: color-mix(in srgb, var(--stuic-color-destructive) 15%, transparent);
+	--_icon-text: var(--stuic-color-destructive);
+}

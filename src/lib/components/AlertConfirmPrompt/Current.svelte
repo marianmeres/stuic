@@ -11,6 +11,7 @@
 		AlertConfirmPromptType,
 		type AlertConfirmPromptStack,
 	} from "./alert-confirm-prompt-stack.svelte.js";
+	import "./index.css";
 
 	const { ALERT, CONFIRM, PROMPT } = AlertConfirmPromptType;
 	const isFn = (v: any) => typeof v === "function";
@@ -119,11 +120,8 @@
 
 	const _classIconBox = `size-12 sm:size-10
 		mt-1 mb-4 sm:my-0 sm:mr-5
-		mx-auto 
-		flex flex-shrink-0 items-center justify-center 
-		rounded-full 
-		bg-neutral-950/10 text-neutral-950/80
-		dark:bg-neutral-50/20 dark:text-neutral-50/80`;
+		mx-auto
+		flex flex-shrink-0 items-center justify-center`;
 
 	const _classContentBox = `mt-3 sm:mt-0 flex-1 h-full flex flex-col`; // overflow-hidden
 
@@ -137,12 +135,12 @@
 
 	const _classButton = "min-w-24 text-center w-full sm:w-auto";
 
-	const _classSpinnerBox = `absolute inset-0 flex items-center justify-center bg-white/75 dark:bg-black/75`;
+	const _classSpinnerBox = `absolute inset-0 flex items-center justify-center`;
 
 	let hasCustom = $derived(current.labelCustom && typeof current.onCustom === "function");
 </script>
 
-<div class={twMerge("stuic-acp", _class, classProp)}>
+<div class={twMerge("stuic-acp", _class, classProp)} data-variant={current.variant}>
 	<div class={twMerge("wrap", _classWrap, classWrap)}>
 		{#if iconHtml}
 			<div
