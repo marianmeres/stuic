@@ -15,7 +15,7 @@
 /* Import global design tokens before component styles */
 @import "./themes/neutral.css";
 /* @import "./themes/gray.css"; */
-@import "./themes/rainbow.css";
+/* @import "./themes/rainbow.css"; */
 /* @import "./themes/indigo-amber.css"; */
 /* @import "./themes/teal-rose.css"; */
 /* @import "./themes/violet-lime.css"; */
@@ -23,7 +23,7 @@
 /* @import "./themes/emerald-pink.css"; */
 /* @import "./themes/sky-amber.css"; */
 /* @import "./themes/fuchsia-emerald.css"; */
-/* @import "./themes/slate-cyan.css"; */
+@import "./themes/slate-cyan.css";
 /* @import "./themes/purple-yellow.css"; */
 /* @import "./themes/cyan-red.css"; */
 

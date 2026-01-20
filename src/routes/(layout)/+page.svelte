@@ -40,6 +40,7 @@
 		// 'table', 
 		'tabbed-menu',
         'thc', 
+        'theme-preview', 
         'tooltip',
         'tw-check',
 		// 'viewport',
