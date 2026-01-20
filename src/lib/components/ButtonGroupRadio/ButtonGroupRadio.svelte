@@ -144,6 +144,7 @@
 	>
 		{#each coll.items as item, i}
 			<Button
+				unstyled
 				tabindex={$coll.activeIndex === i ? tabindex : -1}
 				class={twMerge(
 					"border-none shadow-none",
@@ -152,7 +153,6 @@
 					$coll.activeIndex === i && [CLS_BUTTON_ACTIVE, classButtonActive].join(" ")
 				)}
 				{disabled}
-				{size}
 				type="button"
 				role="radio"
 				aria-checked={$coll.activeIndex === i}

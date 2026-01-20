@@ -147,11 +147,39 @@ export function generateCssTokens(
 
 /** Convert tokens object to CSS :root declaration */
 export function toCssString(tokens: GeneratedTokens, selector = ":root"): string {
-	const vars = Object.entries(tokens)
-		.map(([key, value]) => `  --${key}: ${value};`)
-		.join("\n");
+	// Find max key length for padding
+	const maxLen = Math.max(...Object.keys(tokens).map((k) => `--${k}`.length));
 
-	return `${selector} {\n${vars}\n}`;
+	// Helper to extract base color name from token key
+	const getBaseColor = (key: string): string => {
+		// e.g., "stuic-color-primary-foreground-hover" → "primary"
+		const match = key.match(/^stuic-color-([^-]+)/);
+		return match ? match[1] : key;
+	};
+
+	// Group tokens by base color name (preserving order)
+	const groups = new Map<string, [string, string][]>();
+	for (const [key, value] of Object.entries(tokens)) {
+		const base = getBaseColor(key);
+		if (!groups.has(base)) {
+			groups.set(base, []);
+		}
+		groups.get(base)!.push([key, value]);
+	}
+
+	// Format a token with padding (include colon in key)
+	const formatVar = ([key, value]: [string, string]): string => {
+		const cssKey = `--${key}:`;
+		return `\t${cssKey.padEnd(maxLen + 1)} ${value};`;
+	};
+
+	// Build output with empty lines between each color group
+	const parts: string[] = [];
+	for (const entries of groups.values()) {
+		parts.push(entries.map(formatVar).join("\n"));
+	}
+
+	return `${selector} {\n${parts.join("\n\n")}\n}\n`;
 }
 
 /** Create dark mode override tokens */

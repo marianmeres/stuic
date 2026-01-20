@@ -24,43 +24,6 @@ npm install @marianmeres/stuic
 </Modal>
 ```
 
-## Theming
-
-STUIC uses a layered CSS custom property system for theming. See the main README.md for full documentation.
-
-### Quick Reference
-
-**Global theming** - Override in your app CSS:
-```css
-:root {
-	--stuic-accent: #6366f1;
-}
-```
-
-**Per-component** - Override specific components:
-```css
-:root {
-	--stuic-switch-accent: #10b981;
-}
-```
-
-**Instance override** - Use class props or inline styles:
-```svelte
-<Button class="bg-purple-500 hover:bg-purple-600">Custom</Button>
-```
-
-### Key Global Tokens
-
-| Token | Description |
-|-------|-------------|
-| `--stuic-accent` | Primary accent color |
-| `--stuic-surface` | Base background |
-| `--stuic-surface-interactive` | Button/list item background |
-| `--stuic-text` | Primary text color |
-| `--stuic-border` | Default border color |
-
-See `theme.css` for all available tokens.
-
 ## Components
 
 ### Layout & Overlays

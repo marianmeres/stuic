@@ -1,1 +1,6 @@
-export { default as Button, type Props as ButtonProps } from "./Button.svelte";
+export {
+	default as Button,
+	type Props as ButtonProps,
+	type ButtonVariant,
+	type ButtonSize,
+} from "./Button.svelte";

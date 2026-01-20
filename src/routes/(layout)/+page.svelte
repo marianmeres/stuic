@@ -10,7 +10,6 @@
 		// 'avatar', 
 		'backdrop', 
         'button', 
-        'button2', 
         'button-group-radio', 
 		// 'carousel', 
 		'collapsible', 

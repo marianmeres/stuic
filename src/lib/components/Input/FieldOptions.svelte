@@ -746,7 +746,7 @@
 									<Button
 										class="control"
 										type="button"
-										variant="primary"
+										intent="primary"
 										onclick={async (e) => {
 											e.preventDefault();
 											try_submit(true);

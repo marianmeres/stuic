@@ -9,7 +9,11 @@
 	}
 }
 
-/* example showing that variants need to be explicitly customized */
-.stuic-button.primary {
-	@apply bg-red-400 border-red-500 text-white dark:bg-yellow-400 dark:text-black;
+/*
+Example: Button intent color customization via CSS variables
+:root {
+	--stuic-color-primary: var(--color-red-500);
+	--stuic-color-primary-hover: var(--color-red-600);
+	--stuic-color-primary-foreground: var(--color-white);
 }
+*/

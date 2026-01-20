@@ -1,124 +1,58 @@
 <script lang="ts" module>
+	import type { HTMLButtonAttributes, HTMLAnchorAttributes } from "svelte/elements";
 	import type { Snippet } from "svelte";
-	import type { HTMLButtonAttributes } from "svelte/elements";
+	import type { IntentColorKey } from "../../utils/design-tokens.js";
+
+	export type ButtonVariant = "solid" | "outline" | "ghost" | "soft" | "link";
+	export type ButtonSize = "sm" | "md" | "lg" | "xl";
 
 	export interface Props extends Omit<HTMLButtonAttributes, "children"> {
-		/** Style variant (primary = accent colors, secondary = neutral) */
-		variant?: "primary" | "secondary" | string;
-		size?: "sm" | "md" | "lg" | string;
-		/** Reduce text contrast for less emphasis */
+		/** Color intent (semantic meaning) */
+		intent?: IntentColorKey;
+		/** Visual variant (how colors are applied) */
+		variant?: ButtonVariant | string;
+		/** Size preset */
+		size?: ButtonSize | string;
+		/** Reduce emphasis */
 		muted?: boolean;
-		noshadow?: boolean;
-		noborder?: boolean;
+		/** 3D push effect */
+		raised?: boolean;
 		/** Skip all default styling, use only custom classes */
 		unstyled?: boolean;
-		/** Transparent bg, styled on hover */
-		inverse?: boolean;
+		/** Additional CSS classes */
 		class?: string;
 		/** Render as anchor tag instead of button */
 		href?: string;
+		/** Content snippet */
 		children?: Snippet<[{ checked?: boolean }]>;
-		/** Enable switch/toggle behavior (uses aria-checked) */
-		roleSwitch?: boolean;
+		/** Toggle state for switch behavior */
 		checked?: boolean;
-		el?: Element;
-		/*  */
-		tooltip?: TooltipConfig;
+		/** Enable switch/toggle behavior */
+		roleSwitch?: boolean;
+		/** Bindable element reference */
+		el?: HTMLElement;
 	}
-
-	export interface ButtonPresetClasses {
-		size: Record<string, string>;
-		variant: Record<string, string>;
-		muted: string;
-		shadow: string;
-		inverse: string;
-	}
-
-	export const BUTTON_STUIC_BASE_CLASSES = `
-		bg-(--stuic-button-bg) text-(--stuic-button-text)
-		text-base text-center
-		leading-none
-		border-1
-		border-(--stuic-button-border)
-		rounded-lg
-		inline-flex items-center justify-center gap-x-2
-		px-4 py-3
-		select-none
-		min-h-[44px] min-w-[44px]
-
-		hover:brightness-105
-		active:brightness-95
-		disabled:hover:brightness-100 disabled:opacity-50
-
-		focus:brightness-105
-		focus:border-(--stuic-button-border-focus)
-
-		        focus:outline-4         focus:outline-black/10         focus:dark:outline-white/20
-		focus-visible:outline-4 focus-visible:outline-black/10 focus-visible:dark:outline-white/20
-	`;
-
-	export const BUTTON_STUIC_PRESET_CLASSES: ButtonPresetClasses = {
-		size: {
-			sm: `text-sm rounded-md px-3 py-2 min-h-none min-w-none`,
-			lg: `text-lg rounded-xl`,
-		},
-		variant: {
-			primary: `
-				font-medium
-				bg-(--stuic-button-primary-bg) text-(--stuic-button-primary-text) border-(--stuic-button-primary-border)
-				hover:bg-(--stuic-button-primary-bg-hover)
-				hover:brightness-100
-			`,
-			secondary: `
-				bg-neutral-100 dark:bg-neutral-600
-				text-black/60 dark:text-white/80
-				shadow-[1px_1px_0_0_rgba(0_0_0_/_.2)]
-				active:shadow-none active:translate-[1px]
-				focus:shadow-black/30
-			`,
-		},
-		muted: `text-black/70 dark:text-white/70`,
-		shadow: `
-			shadow-[1px_1px_0_0_rgba(0_0_0_/_.4)]
-			active:shadow-none active:translate-[1px]
-			disabled:shadow-none disabled:active:shadow-none disabled:active:translate-none
-		`,
-		inverse: `
-			bg-transparent dark:bg-transparent
-			hover:bg-(--stuic-button-bg)
-			hover:brightness-100
-		`,
-	};
 </script>
 
 <script lang="ts">
-	import { twMerge } from "../../utils/tw-merge.js";
-	//
 	import "./index.css";
-	import { tooltip, type TooltipConfig } from "../../actions/index.js";
+	import { twMerge } from "../../utils/tw-merge.js";
 
 	let {
-		variant,
-		size,
 		class: classProp,
-		muted,
-		noshadow,
-		noborder,
-		inverse,
-		unstyled,
+		intent,
+		size = "md",
+		variant = "solid",
 		href,
 		children,
-		//
-		roleSwitch = false,
 		checked = $bindable(false),
+		roleSwitch = false,
 		el = $bindable(),
-		//
-		tooltip: tooltipConfig = () => ({ enabled: false }),
-		//
+		muted = false,
+		raised = false,
+		unstyled = false,
 		...rest
 	}: Props = $props();
-
-	// let button: HTMLButtonElement | undefined = $state();
 
 	$effect(() => {
 		const toggle = () => (checked = !checked);
@@ -128,49 +62,35 @@
 		return () => el?.removeEventListener("click", toggle);
 	});
 
-	const _base = BUTTON_STUIC_BASE_CLASSES;
-	const _preset: any = BUTTON_STUIC_PRESET_CLASSES;
-
-	// see button.css
-	let _class = $derived(
-		[
-			// "namespace" (so we can target it in css files when customizing)
-			"stuic-button",
-			// pass all styling props as classnames as well
-			variant,
-			size,
-			muted && "muted",
-			noshadow && "no-shadow",
-			noborder && "border-none",
-			inverse && "inverse",
-			// now, attach the default tw classes (unless not explicitly forbidden)
-			!unstyled && _base,
-			!unstyled && size && _preset.size[size],
-			!unstyled && variant && _preset.variant[variant],
-			!unstyled && muted && _preset.muted,
-			!unstyled && !noshadow && _preset.shadow,
-			!unstyled && inverse && _preset.inverse,
-		]
-			.filter(Boolean)
-			.join(" ")
-	);
+	// Build class string - add base class for CSS targeting unless unstyled
+	let _class = $derived(unstyled ? classProp : twMerge("stuic-button", classProp));
 </script>
 
 {#if href}
 	<a
 		{href}
 		bind:this={el}
-		class={twMerge(_class, classProp)}
-		use:tooltip={tooltipConfig}
-		{...rest as any}
+		class={_class}
+		data-intent={!unstyled ? intent : undefined}
+		data-variant={!unstyled ? variant : undefined}
+		data-size={!unstyled ? size : undefined}
+		data-muted={!unstyled && muted ? "true" : undefined}
+		data-raised={!unstyled && raised ? "true" : undefined}
+		data-checked={roleSwitch && checked ? "true" : undefined}
+		{...rest as HTMLAnchorAttributes}
 	>
-		{@render children?.({})}
+		{@render children?.({ checked })}
 	</a>
 {:else}
 	<button
 		bind:this={el}
-		class={twMerge(_class, classProp)}
-		use:tooltip={tooltipConfig}
+		class={_class}
+		data-intent={!unstyled ? intent : undefined}
+		data-variant={!unstyled ? variant : undefined}
+		data-size={!unstyled ? size : undefined}
+		data-muted={!unstyled && muted ? "true" : undefined}
+		data-raised={!unstyled && raised ? "true" : undefined}
+		data-checked={roleSwitch && checked ? "true" : undefined}
 		{...rest}
 	>
 		{@render children?.({ checked })}
