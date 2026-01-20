@@ -1,0 +1,94 @@
+/* ============================================================================
+   ASSETS PREVIEW COMPONENT TOKENS
+   Override globally: :root { --stuic-assets-preview-control-bg: var(--stuic-color-muted); }
+   Override locally:  <AssetsPreview style="--stuic-assets-preview-control-bg: red;">
+   ============================================================================ */
+
+:root {
+	/* Control buttons (zoom, download, close, prev/next) */
+	--stuic-assets-preview-control-bg: var(--stuic-color-surface);
+	--stuic-assets-preview-control-bg-hover: var(--stuic-color-surface-hover);
+	--stuic-assets-preview-control-radius: var(--radius-md);
+
+	/* Labels (filename, tooltip) */
+	--stuic-assets-preview-label-bg: var(--stuic-color-surface);
+	--stuic-assets-preview-label-text: var(--stuic-color-surface-foreground);
+	--stuic-assets-preview-label-radius: var(--radius-sm);
+
+	/* Dot indicators */
+	--stuic-assets-preview-dot-size: 0.75rem;
+	--stuic-assets-preview-dot-bg: color-mix(
+		in srgb,
+		var(--stuic-color-surface) 50%,
+		transparent
+	);
+	--stuic-assets-preview-dot-bg-active: var(--stuic-color-surface);
+	--stuic-assets-preview-dot-bg-hover: var(--stuic-color-surface-hover);
+	--stuic-assets-preview-dot-border: var(--stuic-color-border);
+
+	/* Transition */
+	--stuic-assets-preview-transition: 150ms;
+}
+
+/* ============================================================================
+   CONTROL BUTTONS (top bar: zoom, download, close)
+   ============================================================================ */
+
+.stuic-assets-preview-control {
+	background: var(--stuic-assets-preview-control-bg);
+	border-radius: var(--stuic-assets-preview-control-radius);
+	transition: background var(--stuic-assets-preview-transition);
+}
+
+.stuic-assets-preview-control:hover:not(:disabled) {
+	background: var(--stuic-assets-preview-control-bg-hover);
+}
+
+.stuic-assets-preview-control:disabled {
+	opacity: 0.5;
+}
+
+/* ============================================================================
+   NAV BUTTONS (prev/next - round variant)
+   ============================================================================ */
+
+.stuic-assets-preview-control-nav {
+	background: var(--stuic-assets-preview-control-bg);
+	border-radius: 9999px;
+	transition: background var(--stuic-assets-preview-transition);
+}
+
+.stuic-assets-preview-control-nav:hover {
+	background: var(--stuic-assets-preview-control-bg-hover);
+}
+
+/* ============================================================================
+   LABELS (filename display, tooltip)
+   ============================================================================ */
+
+.stuic-assets-preview-label {
+	background: var(--stuic-assets-preview-label-bg);
+	color: var(--stuic-assets-preview-label-text);
+	border-radius: var(--stuic-assets-preview-label-radius);
+}
+
+/* ============================================================================
+   DOT INDICATORS (pagination dots)
+   ============================================================================ */
+
+.stuic-assets-preview-dot {
+	width: var(--stuic-assets-preview-dot-size);
+	height: var(--stuic-assets-preview-dot-size);
+	border-radius: 9999px;
+	background: var(--stuic-assets-preview-dot-bg);
+	border: 1px solid var(--stuic-assets-preview-dot-border);
+	transition: background var(--stuic-assets-preview-transition);
+}
+
+.stuic-assets-preview-dot:hover {
+	background: var(--stuic-assets-preview-dot-bg-hover);
+}
+
+.stuic-assets-preview-dot.active {
+	background: var(--stuic-assets-preview-dot-bg-active);
+}

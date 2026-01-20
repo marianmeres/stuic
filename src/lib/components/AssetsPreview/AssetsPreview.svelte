@@ -171,6 +171,7 @@
 </script>
 
 <script lang="ts">
+	import "./index.css";
 	const clog = createClog("AssetsPreview", { color: "auto" });
 
 	let {
@@ -219,7 +220,7 @@
 	let imgEl: HTMLImageElement | null = null;
 	let containerEl: HTMLDivElement | null = $state(null);
 
-	const TOP_BUTTON_CLS = "rounded bg-white hover:bg-neutral-200 p-1";
+	const TOP_BUTTON_CLS = "stuic-assets-preview-control p-1";
 
 	$effect(() => {
 		const visible = modal?.visibility().visible;
@@ -513,7 +514,9 @@
 							class: "mx-auto",
 						})}
 					</div>
-					<div class="opacity-50 mt-4">{t("unable_to_preview")}</div>
+					<div class="text-(--stuic-color-muted-foreground) mt-4">
+						{t("unable_to_preview")}
+					</div>
 				</div>
 			{/if}
 
@@ -526,7 +529,7 @@
 						onclick={preview_previous}
 						type="button"
 					>
-						<span class="bg-white rounded-full p-3 block">
+						<span class="stuic-assets-preview-control-nav p-3 block">
 							{@html iconPrevious()}
 						</span>
 					</button>
@@ -536,7 +539,7 @@
 						onclick={preview_next}
 						type="button"
 					>
-						<span class="bg-white rounded-full p-3 block">
+						<span class="stuic-assets-preview-control-nav p-3 block">
 							{@html iconNext()}
 						</span>
 					</button>
@@ -545,71 +548,71 @@
 
 			<div class="absolute top-4 left-4 right-4 flex items-center justify-between gap-3">
 				{#if !noName && previewAsset?.name}
-					<span class="truncate bg-white px-1 rounded">
+					<span class="stuic-assets-preview-label truncate px-1">
 						{previewAsset?.name}
 					</span>
 				{:else}
 					<span></span>
 				{/if}
 				<div class="flex items-center space-x-3 shrink-0">
-				{#if previewAsset.isImage}
-					<button
-						class={twMerge(TOP_BUTTON_CLS, classControls)}
-						type="button"
-						onclick={zoomOut}
-						disabled={zoomLevelIdx === 0}
-						aria-label={t("zoom_out")}
-						use:tooltip={() => ({ content: t("zoom_out") })}
-					>
-						{@html iconZoomOut({ class: "size-6" })}
-					</button>
+					{#if previewAsset.isImage}
+						<button
+							class={twMerge(TOP_BUTTON_CLS, classControls)}
+							type="button"
+							onclick={zoomOut}
+							disabled={zoomLevelIdx === 0}
+							aria-label={t("zoom_out")}
+							use:tooltip={() => ({ content: t("zoom_out") })}
+						>
+							{@html iconZoomOut({ class: "size-6" })}
+						</button>
+
+						<button
+							class={twMerge(TOP_BUTTON_CLS, classControls)}
+							type="button"
+							onclick={zoomIn}
+							disabled={zoomLevelIdx === ZOOM_LEVELS.length - 1}
+							aria-label={t("zoom_in")}
+							use:tooltip={() => ({ content: t("zoom_in") })}
+						>
+							{@html iconZoomIn({ class: "size-6" })}
+						</button>
+					{/if}
+
+					{#if typeof onDelete === "function"}
+						<button
+							class={twMerge(TOP_BUTTON_CLS, classControls)}
+							type="button"
+							onclick={() => onDelete(previewAsset, previewIdx, { close })}
+							aria-label={t("delete")}
+							use:tooltip
+						>
+							{@html iconDelete({ class: "size-6" })}
+						</button>
+					{/if}
 
 					<button
 						class={twMerge(TOP_BUTTON_CLS, classControls)}
 						type="button"
-						onclick={zoomIn}
-						disabled={zoomLevelIdx === ZOOM_LEVELS.length - 1}
-						aria-label={t("zoom_in")}
-						use:tooltip={() => ({ content: t("zoom_in") })}
-					>
-						{@html iconZoomIn({ class: "size-6" })}
-					</button>
-				{/if}
-
-				{#if typeof onDelete === "function"}
-					<button
-						class={twMerge(TOP_BUTTON_CLS, classControls)}
-						type="button"
-						onclick={() => onDelete(previewAsset, previewIdx, { close })}
-						aria-label={t("delete")}
+						onclick={(e) => {
+							e.preventDefault();
+							forceDownload(String(previewAsset.url.original), previewAsset?.name || "");
+						}}
+						aria-label={t("download")}
 						use:tooltip
 					>
-						{@html iconDelete({ class: "size-6" })}
+						{@html iconDownload({ class: "size-6" })}
 					</button>
-				{/if}
 
-				<button
-					class={twMerge(TOP_BUTTON_CLS, classControls)}
-					type="button"
-					onclick={(e) => {
-						e.preventDefault();
-						forceDownload(String(previewAsset.url.original), previewAsset?.name || "");
-					}}
-					aria-label={t("download")}
-					use:tooltip
-				>
-					{@html iconDownload({ class: "size-6" })}
-				</button>
-
-				<button
-					class={twMerge(TOP_BUTTON_CLS, classControls)}
-					onclick={modal?.close}
-					aria-label={t("close")}
-					type="button"
-					use:tooltip
-				>
-					<X />
-				</button>
+					<button
+						class={twMerge(TOP_BUTTON_CLS, classControls)}
+						onclick={modal?.close}
+						aria-label={t("close")}
+						type="button"
+						use:tooltip
+					>
+						<X />
+					</button>
 				</div>
 			</div>
 
@@ -619,7 +622,7 @@
 						class="absolute bottom-10 left-0 right-0 text-center"
 						transition:fade={{ duration: 100 }}
 					>
-						<span class="bg-white p-1 rounded opacity/75">
+						<span class="stuic-assets-preview-label p-1">
 							{dotTooltip}
 						</span>
 					</div>
@@ -630,8 +633,8 @@
 						<button
 							type="button"
 							class={twMerge(
-								"size-3 rounded-full transition-colors border border-black/50",
-								i === previewIdx ? "bg-white" : "bg-white/50 hover:bg-neutral-200"
+								"stuic-assets-preview-dot",
+								i === previewIdx ? "active" : ""
 							)}
 							onclick={() => {
 								previewIdx = i;

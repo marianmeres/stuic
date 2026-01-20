@@ -1,8 +1,8 @@
 /* Tooltip component tokens */
 /* Note: style props will not work as with regular components, because tooltips are created outside of the anchor DOM tree */
 :root {
-	--stuic-tooltip-bg: var(--stuic-surface-overlay);
-	--stuic-tooltip-text: var(--stuic-text-inverse);
+	--stuic-tooltip-bg: var(--color-black);
+	--stuic-tooltip-text: var(--color-white);
 }
 
 .stuic-tooltip {
