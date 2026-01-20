@@ -45,23 +45,23 @@
 		w-full
 		flex items-center gap-2
 		text-left
-		rounded-[var(--lib-radius)]
+		rounded-(--stuic-list-item-button-radius)
 		cursor-pointer
 		touch-action-manipulation
 
-		bg-lib-bg dark:bg-lib-bg-dark
-		text-lib-text dark:text-lib-text-dark
+		bg-(--stuic-list-item-button-bg)
+		text-(--stuic-list-item-button-text)
 
-		border border-lib-border dark:border-lib-border-dark
+		border border-(--stuic-list-item-button-border)
 
-		hover:bg-lib-hover-bg dark:hover:bg-lib-hover-bg-dark
-		hover:text-lib-hover-text dark:hover:text-lib-hover-text-dark
-		hover:border-lib-hover-border dark:hover:border-lib-hover-border-dark
+		hover:bg-(--stuic-list-item-button-bg-hover)
+		hover:text-(--stuic-list-item-button-text-hover)
+		hover:border-(--stuic-list-item-button-border-hover)
 
 		focus:outline-none
-		focus-visible:bg-lib-focus-bg dark:focus-visible:bg-lib-focus-bg-dark
-		focus-visible:text-lib-focus-text dark:focus-visible:text-lib-focus-text-dark
-		focus-visible:border-lib-focus-border dark:focus-visible:border-lib-focus-border-dark
+		focus-visible:bg-(--stuic-list-item-button-bg-focus)
+		focus-visible:text-(--stuic-list-item-button-text-focus)
+		focus-visible:border-(--stuic-list-item-button-border-focus)
 
 		disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none
 	`;
@@ -76,15 +76,15 @@
 	};
 
 	export const LIST_ITEM_BUTTON_ACTIVE_CLASSES = `
-		bg-lib-active-bg dark:bg-lib-active-bg-dark
-		text-lib-active-text dark:text-lib-active-text-dark
-		border-lib-active-border dark:border-lib-active-border-dark
+		bg-(--stuic-list-item-button-bg-active)
+		text-(--stuic-list-item-button-text-active)
+		border-(--stuic-list-item-button-border-active)
 	`;
 
 	export const LIST_ITEM_BUTTON_FOCUSED_CLASSES = `
-		bg-lib-focus-bg dark:bg-lib-focus-bg-dark
-		text-lib-focus-text dark:text-lib-focus-text-dark
-		border-lib-focus-border dark:border-lib-focus-border-dark
+		bg-(--stuic-list-item-button-bg-focus)
+		text-(--stuic-list-item-button-text-focus)
+		border-(--stuic-list-item-button-border-focus)
 	`;
 </script>
 

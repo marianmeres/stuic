@@ -95,22 +95,21 @@
         ${rounded}
 		w-full
         py-1.5 px-1.5 inline-block space-x-1
-        bg-button-group-bg text-button-group-text
-        dark:bg-button-group-bg-dark dark:text-button-group-text-dark
+        bg-(--stuic-button-group-bg) text-(--stuic-button-group-text)
         border-1
-        border-button-group-border dark:border-button-group-border-dark
+        border-(--stuic-button-group-border)
 		flex justify-between
-        
-        focus-within:border-button-group-accent  focus-within:dark:border-button-group-accent-dark
-        focus-within:ring-button-group-accent/20 focus-within:dark:ring-button-group-accent-dark/20
+
+        focus-within:border-(--stuic-button-group-accent)
+        focus-within:ring-(--stuic-button-group-accent)/20
         focus-within:ring-4
     `;
 
 	const CLS_BUTTON = `
         ${rounded}
 		w-full inline-block
-	    bg-transparent text-button-group-text dark:text-button-group-text-dark
-        hover:bg-transparent hover:text-button-group-text hover:dark:text-button-group-text-dark
+	    bg-transparent text-(--stuic-button-group-text)
+        hover:bg-transparent hover:text-(--stuic-button-group-text)
         outline-none focus:outline-none
     `;
 
@@ -118,10 +117,10 @@
 	// this will be styled with classButtonActive
 	const CLS_BUTTON_ACTIVE = `
         shadow-none
-        bg-button-group-bg-active dark:bg-button-group-bg-active-dark
-        text-button-group-text-active dark:text-button-group-text-active-dark
-        hover:bg-button-group-bg-active hover:dark:bg-button-group-bg-active
-        hover:text-button-group-text-active hover:dark:text-button-group-text-active-dark
+        bg-(--stuic-button-group-bg-active)
+        text-(--stuic-button-group-text-active)
+        hover:bg-(--stuic-button-group-bg-active)
+        hover:text-(--stuic-button-group-text-active)
     `;
 	// shadow-[0px_0px_1px_1px_rgba(0_0_0_/_.6)]
 

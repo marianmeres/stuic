@@ -1,5 +1,5 @@
-/* prettier-ignore */
-@theme inline {
-	--color-progress-bg: var(--color-progress-bg, var(--color-neutral-200));
-	--color-progress-accent: var(--color-progress-accent, var(--color-neutral-600));
+/* Progress component tokens */
+:root {
+	--stuic-progress-bg: var(--stuic-surface-interactive);
+	--stuic-progress-accent: var(--stuic-accent);
 }

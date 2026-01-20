@@ -1,0 +1,467 @@
+/*
+GENERAL STUIC CSS VARS THEME
+(will be moved to index.css or theme.css later)
+*/
+/* prettier-ignore */
+:root {
+	--stuic-color-primary: var(--color-blue-600);
+	--stuic-color-primary-hover: var(--color-blue-700);
+	--stuic-color-primary-active: var(--color-blue-800);
+	--stuic-color-primary-foreground: var(--color-white);
+	--stuic-color-primary-foreground-hover: var(--color-white);
+	--stuic-color-primary-foreground-active: var(--color-white);
+	/*  */
+	--stuic-color-accent: var(--color-violet-500);
+	--stuic-color-accent-hover: var(--color-violet-600);
+	--stuic-color-accent-active: var(--color-violet-700);
+	--stuic-color-accent-foreground: var(--color-white);
+	--stuic-color-accent-foreground-hover: var(--color-white);
+	--stuic-color-accent-foreground-active: var(--color-white);
+	/*  */
+	--stuic-color-destructive: var(--color-red-600);
+	--stuic-color-destructive-hover: var(--color-red-700);
+	--stuic-color-destructive-active: var(--color-red-800);
+	--stuic-color-destructive-foreground: var(--color-white);
+	--stuic-color-destructive-foreground-hover: var(--color-white);
+	--stuic-color-destructive-foreground-active: var(--color-white);
+	/*  */
+	--stuic-color-warning: var(--color-amber-500);
+	--stuic-color-warning-hover: var(--color-amber-600);
+	--stuic-color-warning-active: var(--color-amber-700);
+	--stuic-color-warning-foreground: var(--color-black);
+	--stuic-color-warning-foreground-hover: var(--color-black);
+	--stuic-color-warning-foreground-active: var(--color-black);
+	/*  */
+	--stuic-color-success: var(--color-green-600);
+	--stuic-color-success-hover: var(--color-green-700);
+	--stuic-color-success-active: var(--color-green-800);
+	--stuic-color-success-foreground: var(--color-white);
+	--stuic-color-success-foreground-hover: var(--color-white);
+	--stuic-color-success-foreground-active: var(--color-white);
+	/*  */
+	--stuic-color-info:                         var(--color-sky-500);
+	--stuic-color-info-hover:                   var(--color-sky-600);
+	--stuic-color-info-active:                  var(--color-sky-700);
+	--stuic-color-info-foreground:              var(--color-white);
+	--stuic-color-info-foreground-hover:        var(--color-white);
+	--stuic-color-info-foreground-active:       var(--color-white);
+	/*  */
+	--stuic-color-background:                   var(--color-white);
+	--stuic-color-background-hover:             var(--color-white);
+	--stuic-color-background-active:            var(--color-white);
+	--stuic-color-background-foreground:        var(--color-slate-900);
+	--stuic-color-background-foreground-hover:  var(--color-slate-900);
+	--stuic-color-background-foreground-active: var(--color-slate-900);
+	/*  */
+	--stuic-color-surface:                      var(--color-slate-50);
+	--stuic-color-surface-hover:                var(--color-slate-100);
+	--stuic-color-surface-active:               var(--color-slate-200);
+	--stuic-color-surface-foreground:           var(--color-slate-900);
+	--stuic-color-surface-foreground-hover:     var(--color-slate-900);
+	--stuic-color-surface-foreground-active:    var(--color-slate-900);
+	/*  */
+	--stuic-color-muted:                        var(--color-slate-100);
+	--stuic-color-muted-hover:                  var(--color-slate-200);
+	--stuic-color-muted-active:                 var(--color-slate-300);
+	--stuic-color-muted-foreground:             var(--color-slate-500);
+	--stuic-color-muted-foreground-hover:       var(--color-slate-500);
+	--stuic-color-muted-foreground-active:      var(--color-slate-500);
+	/*  */
+	--stuic-color-foreground:                   var(--color-slate-900);
+	--stuic-color-foreground-hover:             var(--color-slate-900);
+	--stuic-color-foreground-active:            var(--color-slate-900);
+	/*  */
+	--stuic-color-border:                       var(--color-slate-200);
+	--stuic-color-border-hover:                 var(--color-slate-300);
+	--stuic-color-border-active:                var(--color-slate-400);
+	/*  */
+	--stuic-color-input:                        var(--color-white);
+	--stuic-color-input-hover:                  var(--color-slate-50);
+	--stuic-color-input-active:                 var(--color-white);
+	/*  */
+	/* --stuic-color-ring:                         var(--color-blue-600); */
+	--stuic-color-ring:                         color-mix(in srgb, var(--color-pink-600) 20%, transparent);
+	--stuic-color-ring-hover:                   var(--color-blue-600);
+	--stuic-color-ring-active:                  var(--color-blue-600);
+}
+
+/* ============================================================================
+   BUTTON2 COMPONENT TOKENS
+   Override globally: :root { --stuic-button2-radius: 0; }
+   Override locally:  <Button2 style="--stuic-button2-radius: 9999px;">
+   ============================================================================ */
+
+/* prettier-ignore */
+:root {
+	/* Component-level customization tokens */
+	--stuic-button2-radius: var(--radius-md);
+	--stuic-button2-font-family: var(--font-sans);
+	--stuic-button2-font-weight: var(--font-weight-medium);
+	--stuic-button2-transition: 100ms;
+
+	/* Focus ring */
+	--stuic-button2-ring-width: 3px;
+	--stuic-button2-ring-offset: 0px;
+	--stuic-button2-ring-color: var(--stuic-color-ring);
+
+	/* Size: sm (min 44px touch target) */
+	--stuic-button2-padding-x-sm: 0.75rem;
+	--stuic-button2-padding-y-sm: 0.5rem;
+	--stuic-button2-font-size-sm: 0.875rem;
+	--stuic-button2-min-height-sm: 2.75rem;  /* 44px - Apple HIG minimum */
+
+	/* Size: md (min 44px touch target) */
+	--stuic-button2-padding-x-md: 1rem;
+	--stuic-button2-padding-y-md: 0.625rem;
+	--stuic-button2-font-size-md: 1rem;
+	--stuic-button2-min-height-md: 2.75rem;  /* 44px */
+
+	/* Size: lg */
+	--stuic-button2-padding-x-lg: 1.25rem;
+	--stuic-button2-padding-y-lg: 0.625rem;
+	--stuic-button2-font-size-lg: 1.125rem;
+	--stuic-button2-min-height-lg: 3rem;
+
+	/* Size: xl */
+	--stuic-button2-padding-x-xl: 1.5rem;
+	--stuic-button2-padding-y-xl: 0.75rem;
+	--stuic-button2-font-size-xl: 1.25rem;
+	--stuic-button2-min-height-xl: 3.5rem;
+
+	/* Raised (3D push) effect */
+	--stuic-button2-raised-offset: 2px;
+	--stuic-button2-raised-color: rgb(0 0 0 / 0.8);
+}
+
+/* ============================================================================
+   BASE STYLES
+   ============================================================================ */
+
+.stuic-button2 {
+	/* Layout */
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+
+	/* Typography */
+	font-family: var(--stuic-button2-font-family);
+	font-weight: var(--stuic-button2-font-weight);
+	line-height: 1;
+	text-align: center;
+	text-decoration: none;
+	white-space: nowrap;
+
+	/* Box model */
+	border-width: 1px;
+	border-style: solid;
+	border-radius: var(--stuic-button2-radius);
+
+	/* Interaction */
+	cursor: pointer;
+	user-select: none;
+	-webkit-tap-highlight-color: transparent; /* Remove iOS tap highlight */
+	touch-action: manipulation; /* Disable double-tap zoom for faster response */
+	transition:
+		background var(--stuic-button2-transition),
+		color var(--stuic-button2-transition),
+		border-color var(--stuic-button2-transition),
+		opacity var(--stuic-button2-transition);
+
+	/* Colors - use internal vars set by intent/variant */
+	background: var(--_bg);
+	color: var(--_text);
+	border-color: var(--_border);
+}
+
+/* Focus styles */
+.stuic-button2:focus-visible {
+	outline: var(--stuic-button2-ring-width) solid
+		var(--_ring, var(--stuic-button2-ring-color));
+	outline-offset: var(--stuic-button2-ring-offset);
+}
+
+/* Hover state */
+.stuic-button2:hover:not(:disabled) {
+	background: var(--_bg-hover);
+	color: var(--_text-hover);
+	border-color: var(--_border-hover);
+}
+
+/* Active state */
+.stuic-button2:active:not(:disabled) {
+	background: var(--_bg-active);
+	color: var(--_text-active);
+	border-color: var(--_border-active);
+}
+
+/* Disabled state */
+.stuic-button2:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+/* ============================================================================
+   SIZE VARIANTS
+   ============================================================================ */
+
+.stuic-button2[data-size="sm"] {
+	padding: var(--stuic-button2-padding-y-sm) var(--stuic-button2-padding-x-sm);
+	font-size: var(--stuic-button2-font-size-sm);
+	min-height: var(--stuic-button2-min-height-sm);
+}
+
+.stuic-button2[data-size="md"] {
+	padding: var(--stuic-button2-padding-y-md) var(--stuic-button2-padding-x-md);
+	font-size: var(--stuic-button2-font-size-md);
+	min-height: var(--stuic-button2-min-height-md);
+}
+
+.stuic-button2[data-size="lg"] {
+	padding: var(--stuic-button2-padding-y-lg) var(--stuic-button2-padding-x-lg);
+	font-size: var(--stuic-button2-font-size-lg);
+	min-height: var(--stuic-button2-min-height-lg);
+}
+
+.stuic-button2[data-size="xl"] {
+	padding: var(--stuic-button2-padding-y-xl) var(--stuic-button2-padding-x-xl);
+	font-size: var(--stuic-button2-font-size-xl);
+	min-height: var(--stuic-button2-min-height-xl);
+}
+
+/* ============================================================================
+   INTENT COLOR MAPPING
+   Each intent sets the color palette via internal CSS vars.
+   ============================================================================ */
+
+/* Default (no intent): neutral gray (no blue undertone) */
+.stuic-button2:not([data-intent]) {
+	--_color: var(--color-neutral-200);
+	--_color-hover: var(--color-neutral-300);
+	--_color-active: var(--color-neutral-400);
+	--_fg: var(--color-neutral-800);
+	--_fg-hover: var(--color-neutral-800);
+	--_fg-active: var(--color-neutral-800);
+}
+
+.stuic-button2[data-intent="primary"] {
+	--_color: var(--stuic-color-primary);
+	--_color-hover: var(--stuic-color-primary-hover);
+	--_color-active: var(--stuic-color-primary-active);
+	--_fg: var(--stuic-color-primary-foreground);
+	--_fg-hover: var(--stuic-color-primary-foreground-hover);
+	--_fg-active: var(--stuic-color-primary-foreground-active);
+}
+
+.stuic-button2[data-intent="accent"] {
+	--_color: var(--stuic-color-accent);
+	--_color-hover: var(--stuic-color-accent-hover);
+	--_color-active: var(--stuic-color-accent-active);
+	--_fg: var(--stuic-color-accent-foreground);
+	--_fg-hover: var(--stuic-color-accent-foreground-hover);
+	--_fg-active: var(--stuic-color-accent-foreground-active);
+}
+
+.stuic-button2[data-intent="destructive"] {
+	--_color: var(--stuic-color-destructive);
+	--_color-hover: var(--stuic-color-destructive-hover);
+	--_color-active: var(--stuic-color-destructive-active);
+	--_fg: var(--stuic-color-destructive-foreground);
+	--_fg-hover: var(--stuic-color-destructive-foreground-hover);
+	--_fg-active: var(--stuic-color-destructive-foreground-active);
+}
+
+.stuic-button2[data-intent="warning"] {
+	--_color: var(--stuic-color-warning);
+	--_color-hover: var(--stuic-color-warning-hover);
+	--_color-active: var(--stuic-color-warning-active);
+	--_fg: var(--stuic-color-warning-foreground);
+	--_fg-hover: var(--stuic-color-warning-foreground-hover);
+	--_fg-active: var(--stuic-color-warning-foreground-active);
+}
+
+.stuic-button2[data-intent="success"] {
+	--_color: var(--stuic-color-success);
+	--_color-hover: var(--stuic-color-success-hover);
+	--_color-active: var(--stuic-color-success-active);
+	--_fg: var(--stuic-color-success-foreground);
+	--_fg-hover: var(--stuic-color-success-foreground-hover);
+	--_fg-active: var(--stuic-color-success-foreground-active);
+}
+
+.stuic-button2[data-intent="info"] {
+	--_color: var(--stuic-color-info);
+	--_color-hover: var(--stuic-color-info-hover);
+	--_color-active: var(--stuic-color-info-active);
+	--_fg: var(--stuic-color-info-foreground);
+	--_fg-hover: var(--stuic-color-info-foreground-hover);
+	--_fg-active: var(--stuic-color-info-foreground-active);
+}
+
+/* ============================================================================
+   VARIANT STYLES
+   Each variant determines HOW the color palette is applied.
+   ============================================================================ */
+
+/* Solid (default): filled background with contrasting text */
+.stuic-button2[data-variant="solid"],
+.stuic-button2:not([data-variant]) {
+	--_bg: var(--_color);
+	--_bg-hover: var(--_color-hover);
+	--_bg-active: var(--_color-active);
+	--_text: var(--_fg);
+	--_text-hover: var(--_fg-hover);
+	--_text-active: var(--_fg-active);
+	--_border: var(--_color);
+	--_border-hover: var(--_color-hover);
+	--_border-active: var(--_color-active);
+}
+
+/* Outline: transparent background with colored border and text */
+.stuic-button2[data-variant="outline"] {
+	--_bg: transparent;
+	--_bg-hover: color-mix(in srgb, var(--_color) 10%, transparent);
+	--_bg-active: color-mix(in srgb, var(--_color) 20%, transparent);
+	--_text: var(--_color);
+	--_text-hover: var(--_color-hover);
+	--_text-active: var(--_color-active);
+	--_border: var(--_color);
+	--_border-hover: var(--_color-hover);
+	--_border-active: var(--_color-active);
+}
+
+/* Ghost: transparent background, colored text, subtle hover state */
+.stuic-button2[data-variant="ghost"] {
+	--_bg: transparent;
+	--_bg-hover: color-mix(in srgb, var(--_color) 10%, transparent);
+	--_bg-active: color-mix(in srgb, var(--_color) 20%, transparent);
+	--_text: var(--_color);
+	--_text-hover: var(--_color-hover);
+	--_text-active: var(--_color-active);
+	--_border: transparent;
+	--_border-hover: transparent;
+	--_border-active: transparent;
+}
+
+/* Soft: muted/translucent background tint with colored text */
+.stuic-button2[data-variant="soft"] {
+	--_bg: color-mix(in srgb, var(--_color) 15%, transparent);
+	--_bg-hover: color-mix(in srgb, var(--_color) 25%, transparent);
+	--_bg-active: color-mix(in srgb, var(--_color) 35%, transparent);
+	--_text: var(--_color);
+	--_text-hover: var(--_color-hover);
+	--_text-active: var(--_color-active);
+	--_border: transparent;
+	--_border-hover: transparent;
+	--_border-active: transparent;
+}
+
+/* Link: appears as inline text link, minimal styling */
+.stuic-button2[data-variant="link"] {
+	--_bg: transparent;
+	--_bg-hover: transparent;
+	--_bg-active: transparent;
+	--_text: var(--_color);
+	--_text-hover: var(--_color-hover);
+	--_text-active: var(--_color-active);
+	--_border: transparent;
+	--_border-hover: transparent;
+	--_border-active: transparent;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+	min-height: auto;
+	padding: 0;
+	position: relative;
+}
+
+.stuic-button2[data-variant="link"]::before {
+	content: "";
+	position: absolute;
+	inset: -12px -8px; /* expands tap area */
+}
+
+/* ============================================================================
+   DEFAULT INTENT OVERRIDES
+   The default intent uses light surface colors - we need visible borders
+   for solid and visible text/borders for other variants.
+   ============================================================================ */
+
+/* Default solid: add visible border */
+.stuic-button2:not([data-intent])[data-variant="solid"],
+.stuic-button2:not([data-intent]):not([data-variant]) {
+	--_border: var(--color-neutral-400);
+	--_border-hover: var(--color-neutral-500);
+	--_border-active: var(--color-neutral-500);
+}
+
+.stuic-button2:not([data-intent])[data-variant="outline"] {
+	--_text: var(--color-neutral-800);
+	--_text-hover: var(--color-neutral-900);
+	--_text-active: var(--color-neutral-900);
+	--_border: var(--color-neutral-300);
+	--_border-hover: var(--color-neutral-400);
+	--_border-active: var(--color-neutral-500);
+	--_bg-hover: var(--color-neutral-100);
+	--_bg-active: var(--color-neutral-200);
+}
+
+.stuic-button2:not([data-intent])[data-variant="ghost"] {
+	--_text: var(--color-neutral-800);
+	--_text-hover: var(--color-neutral-900);
+	--_text-active: var(--color-neutral-900);
+	--_bg-hover: var(--color-neutral-100);
+	--_bg-active: var(--color-neutral-200);
+}
+
+.stuic-button2:not([data-intent])[data-variant="soft"] {
+	--_text: var(--color-neutral-800);
+	--_text-hover: var(--color-neutral-900);
+	--_text-active: var(--color-neutral-900);
+	--_bg: var(--color-neutral-100);
+	--_bg-hover: var(--color-neutral-200);
+	--_bg-active: var(--color-neutral-300);
+}
+
+.stuic-button2:not([data-intent])[data-variant="link"] {
+	--_text: var(--color-neutral-700);
+	--_text-hover: var(--color-neutral-900);
+	--_text-active: var(--color-neutral-900);
+}
+
+/* ============================================================================
+   MUTED MODIFIER
+   ============================================================================ */
+
+.stuic-button2[data-muted="true"] {
+	opacity: 0.7;
+}
+
+.stuic-button2[data-muted="true"]:hover:not(:disabled) {
+	opacity: 0.85;
+}
+
+/* ============================================================================
+   RAISED (3D PUSH) EFFECT
+   Override globally: :root { --stuic-button2-raised-offset: 4px; }
+   Override locally:  <Button2 raised style="--stuic-button2-raised-offset: 5px;">
+   ============================================================================ */
+
+.stuic-button2[data-raised] {
+	box-shadow: var(--stuic-button2-raised-offset) var(--stuic-button2-raised-offset) 0 0
+		var(--stuic-button2-raised-color);
+	transition:
+		background var(--stuic-button2-transition),
+		color var(--stuic-button2-transition),
+		border-color var(--stuic-button2-transition),
+		opacity var(--stuic-button2-transition),
+		box-shadow var(--stuic-button2-transition),
+		transform var(--stuic-button2-transition);
+}
+
+.stuic-button2[data-raised]:active:not(:disabled) {
+	box-shadow: none;
+	transform: translate(
+		var(--stuic-button2-raised-offset),
+		var(--stuic-button2-raised-offset)
+	);
+}

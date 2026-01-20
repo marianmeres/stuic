@@ -107,6 +107,21 @@ A toggle switch component with size variants, keyboard support, and optional asy
 <Switch checked={false} disabled />
 ```
 
+## CSS Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-switch-accent` | `--stuic-accent` | Active (checked) color |
+
+### Example Override
+
+```css
+:root {
+  /* Green switches globally */
+  --stuic-switch-accent: var(--color-green-500);
+}
+```
+
 ## Keyboard Support
 
 - **Space**: Toggle switch

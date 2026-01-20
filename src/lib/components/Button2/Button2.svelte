@@ -1,0 +1,85 @@
+<script lang="ts" module>
+	import type { HTMLButtonAttributes, HTMLAnchorAttributes } from "svelte/elements";
+	import type { Snippet } from "svelte";
+	import type { IntentColorKey } from "../../utils/design-tokens.js";
+
+	export type ButtonVariant = "solid" | "outline" | "ghost" | "soft" | "link";
+	export type ButtonSize = "sm" | "md" | "lg" | "xl";
+
+	export interface Props extends Omit<HTMLButtonAttributes, "children"> {
+		/** Color intent (semantic meaning) */
+		intent?: IntentColorKey;
+		/** Visual variant (how colors are applied) */
+		variant?: ButtonVariant | string;
+		/** Size preset */
+		size?: ButtonSize | string;
+		/** Reduce emphasis */
+		muted?: boolean;
+		/** 3D push effect */
+		raised?: boolean;
+		/** Skip all default styling, use only custom classes */
+		unstyled?: boolean;
+		/** Additional CSS classes */
+		class?: string;
+		/** Render as anchor tag instead of button */
+		href?: string;
+		/** Content snippet */
+		children?: Snippet<[{ checked?: boolean }]>;
+		/** Toggle state for switch behavior */
+		checked?: boolean;
+		/** Bindable element reference */
+		el?: HTMLElement;
+	}
+</script>
+
+<script lang="ts">
+	import "./index.css";
+	import { twMerge } from "../../utils/tw-merge.js";
+
+	let {
+		class: classProp,
+		intent,
+		size = "md",
+		variant = "solid",
+		href,
+		children,
+		checked = $bindable(false),
+		el = $bindable(),
+		muted = false,
+		raised = false,
+		unstyled = false,
+		...rest
+	}: Props = $props();
+
+	// Build class string - add base class for CSS targeting unless unstyled
+	let _class = $derived(unstyled ? classProp : twMerge("stuic-button2", classProp));
+</script>
+
+{#if href}
+	<a
+		{href}
+		bind:this={el}
+		class={_class}
+		data-intent={!unstyled ? intent : undefined}
+		data-variant={!unstyled ? variant : undefined}
+		data-size={!unstyled ? size : undefined}
+		data-muted={!unstyled && muted ? "true" : undefined}
+		data-raised={!unstyled && raised ? "true" : undefined}
+		{...rest as HTMLAnchorAttributes}
+	>
+		{@render children?.({})}
+	</a>
+{:else}
+	<button
+		bind:this={el}
+		class={_class}
+		data-intent={!unstyled ? intent : undefined}
+		data-variant={!unstyled ? variant : undefined}
+		data-size={!unstyled ? size : undefined}
+		data-muted={!unstyled && muted ? "true" : undefined}
+		data-raised={!unstyled && raised ? "true" : undefined}
+		{...rest}
+	>
+		{@render children?.({ checked })}
+	</button>
+{/if}

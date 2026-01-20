@@ -1,20 +1,7 @@
-/* 
-    When defining theme variables that reference other variables, use the inline option.
-
-    Using the inline option, the utility class will use the theme variable value instead 
-    of referencing the actual theme variable.
-
-    Without using inline, your utility classes might resolve to unexpected values because 
-    of how variables are resolved in CSS.
-*/
-
-/* prettier-ignore */
-@theme inline {
-	--color-notif-bg: var(--color-notif-bg, var(--color-neutral-700));
-    --color-notif-text: var(--color-notif-text, var(--color-neutral-50));
-    --color-notif-border: var(--color-notif-border, var(--color-neutral-900));
-
-    --color-notif-bg-dark: var(--color-notif-bg-dark, var(--color-neutral-950));
-    --color-notif-text-dark: var(--color-notif-text-dark, var(--color-neutral-200));
-    --color-notif-border-dark: var(--color-notif-border-dark, var(--color-neutral-500)); 
+/* Notification component tokens */
+/* Note: notifications use inverted (overlay) colors by default */
+:root {
+	--stuic-notification-bg: var(--stuic-surface-overlay);
+	--stuic-notification-text: var(--stuic-text-inverse);
+	--stuic-notification-border: var(--stuic-border-strong);
 }

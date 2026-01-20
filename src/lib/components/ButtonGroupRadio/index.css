@@ -1,20 +1,9 @@
-/* prettier-ignore */
-@theme inline {
-	--color-button-group-bg: var(--color-button-group-bg, var(--color-white));
-	--color-button-group-bg-dark: var(--color-button-group-bg-dark, var(--color-neutral-600));
-
-	--color-button-group-text: var(--color-button-group-text, var(--color-black));
-	--color-button-group-text-dark: var(--color-button-group-text-dark, var(--color-neutral-300));
-
-	--color-button-group-border: var(--color-button-group-border, var(--color-neutral-300));
-	--color-button-group-border-dark: var(--color-button-group-border-dark, var(--color-neutral-800));
-
-    --color-button-group-accent: var(--color-button-group-accent, var(--color-red-600));
-	--color-button-group-accent-dark: var(--color-button-group-accent-dark, var(--color-red-400));
-
-	--color-button-group-bg-active: var(--color-button-group-bg-active, var(--color-neutral-500));
-	--color-button-group-bg-active-dark: var(--color-button-group-bg-active-dark, var(--color-neutral-500));
-
-    --color-button-group-text-active: var(--color-button-group-text-active, var(--color-white));
-    --color-button-group-text-active-dark: var(--color-button-group-text-active-dark, var(--color-white));
+/* ButtonGroupRadio component tokens */
+:root {
+	--stuic-button-group-bg: var(--stuic-surface);
+	--stuic-button-group-text: var(--stuic-text);
+	--stuic-button-group-border: var(--stuic-border);
+	--stuic-button-group-accent: var(--stuic-accent);
+	--stuic-button-group-bg-active: var(--stuic-surface-interactive-hover);
+	--stuic-button-group-text-active: var(--stuic-text-inverse);
 }

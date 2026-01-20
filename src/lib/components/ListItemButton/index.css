@@ -1,58 +1,28 @@
-/* Border radius (0.375rem = rounded-md) */
+/* ListItemButton component tokens */
 :root {
-	--lib-radius: var(--radius-md);
-}
-
-/* prettier-ignore */
-@theme inline {
-
-	/* "lib" -> list item button */
-
-	/* Private defaults (for human readability) */
-	--_lib-bg: var(--color-neutral-200);
-	--_lib-bg-hi: var(--color-neutral-500);
-	--_lib-bg-dark: var(--color-neutral-600);
-	--_lib-bg-hi-dark: var(--color-neutral-200);
-
-	--_lib-text: var(--color-black);
-	--_lib-text-hi: var(--color-white);
-	--_lib-text-dark: var(--color-neutral-100);
-	--_lib-text-hi-dark: var(--color-neutral-900);
-	
-	--_lib-border: transparent;
-	--_lib-border-hi: transparent;
-	--_lib-border-dark: transparent;
-	--_lib-border-hi-dark: transparent;
+	/* Radius */
+	--stuic-list-item-button-radius: var(--stuic-radius);
 
 	/* Base state */
-	--color-lib-bg:          var(--color-lib-bg,          var(--_lib-bg));
-	--color-lib-bg-dark:     var(--color-lib-bg-dark,     var(--_lib-bg-dark));
-	--color-lib-text:        var(--color-lib-text,        var(--_lib-text));
-	--color-lib-text-dark:   var(--color-lib-text-dark,   var(--_lib-text-dark));
-	--color-lib-border:      var(--color-lib-border,      var(--_lib-border));
-	--color-lib-border-dark: var(--color-lib-border-dark, var(--_lib-border-dark));
+	--stuic-list-item-button-bg: var(--stuic-surface-interactive);
+	--stuic-list-item-button-text: var(--stuic-text);
+	--stuic-list-item-button-border: transparent;
 
 	/* Hover state */
-	--color-lib-hover-bg:          var(--color-lib-hover-bg,          var(--_lib-bg-hi));
-	--color-lib-hover-bg-dark:     var(--color-lib-hover-bg-dark,     var(--_lib-bg-hi-dark));
-	--color-lib-hover-text:        var(--color-lib-hover-text,        var(--_lib-text-hi));
-	--color-lib-hover-text-dark:   var(--color-lib-hover-text-dark,   var(--_lib-text-hi-dark));
-	--color-lib-hover-border:      var(--color-lib-hover-border,      var(--_lib-border-hi));
-	--color-lib-hover-border-dark: var(--color-lib-hover-border-dark, var(--_lib-border-hi-dark));
+	--stuic-list-item-button-bg-hover: var(--stuic-surface-interactive-hover);
+	--stuic-list-item-button-text-hover: var(--stuic-text-inverse);
+	--stuic-list-item-button-border-hover: transparent;
 
 	/* Active/Selected state */
-	--color-lib-active-bg:          var(--color-lib-active-bg,          var(--_lib-bg-hi));
-	--color-lib-active-bg-dark:     var(--color-lib-active-bg-dark,     var(--_lib-bg-hi-dark));
-	--color-lib-active-text:        var(--color-lib-active-text,        var(--_lib-text-hi));
-	--color-lib-active-text-dark:   var(--color-lib-active-text-dark,   var(--_lib-text-hi-dark));
-	--color-lib-active-border:      var(--color-lib-active-border,      var(--_lib-border-hi));
-	--color-lib-active-border-dark: var(--color-lib-active-border-dark, var(--_lib-border-hi-dark));
+	--stuic-list-item-button-bg-active: var(--stuic-surface-interactive-active);
+	--stuic-list-item-button-text-active: var(--stuic-text-inverse);
+	--stuic-list-item-button-border-active: transparent;
 
 	/* Focus-visible state (keyboard focus) */
-	--color-lib-focus-bg:          var(--color-lib-focus-bg,          var(--_lib-bg-hi));
-	--color-lib-focus-bg-dark:     var(--color-lib-focus-bg-dark,     var(--_lib-bg-hi-dark));
-	--color-lib-focus-text:        var(--color-lib-focus-text,        var(--_lib-text-hi));
-	--color-lib-focus-text-dark:   var(--color-lib-focus-text-dark,   var(--_lib-text-hi-dark));
-	--color-lib-focus-border:      var(--color-lib-focus-border,      var(--_lib-border-hi));
-	--color-lib-focus-border-dark: var(--color-lib-focus-border-dark, var(--_lib-border-hi-dark));
+	--stuic-list-item-button-bg-focus: var(--stuic-surface-interactive-hover);
+	--stuic-list-item-button-text-focus: var(--stuic-text-inverse);
+	--stuic-list-item-button-border-focus: transparent;
+
+	/* Backwards compatibility alias */
+	--lib-radius: var(--stuic-list-item-button-radius);
 }

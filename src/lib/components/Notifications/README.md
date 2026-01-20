@@ -131,6 +131,23 @@ A toast notification system with auto-disposal, deduplication, progress indicato
 </script>
 ```
 
+## CSS Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-notification-bg` | `--stuic-surface-overlay` | Background color |
+| `--stuic-notification-text` | `--stuic-text-inverse` | Text color |
+| `--stuic-notification-border` | `--stuic-border-strong` | Border color |
+
+### Example Override
+
+```css
+:root {
+  --stuic-notification-bg: var(--color-slate-900);
+  --stuic-notification-text: var(--color-slate-100);
+}
+```
+
 ## Cleanup
 
 ```svelte

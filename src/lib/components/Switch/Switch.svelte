@@ -107,11 +107,10 @@
 
 		bg-neutral-400 dark:bg-neutral-400
 
-		data-[checked=true]:bg-switch-accent
-		dark:data-[checked=true]:bg-switch-accent-dark
+		data-[checked=true]:bg-(--stuic-switch-accent)
 
 		focus:outline-0
-		focus:ring-switch-accent/20 focus:dark:ring-switch-accent-dark/20
+		focus:ring-(--stuic-switch-accent)/20
 		focus:ring-4`,
 		size,
 		_preset.size[size],

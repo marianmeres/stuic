@@ -175,17 +175,17 @@
 				_classCommon,
 				`rounded-md border border-neutral-300 dark:border-neutral-600
 				bg-neutral-100 dark:bg-neutral-700
-				focus-within:border-input-accent focus-within:dark:border-input-accent-dark
-				focus-within:ring-input-accent/20 focus-within:dark:ring-input-accent-dark/20
+				focus-within:border-(--stuic-input-accent)
+				focus-within:ring-(--stuic-input-accent)/20
 				focus-within:ring-4`,
 				disabled && "cursor-not-allowed opacity-50",
 				_preset.inputBox.size[size],
 				invalid
 					? twMerge(
 							classInputBoxWrap,
-							`border-input-accent-invalid dark:border-input-accent-invalid-dark
-							focus-within:border-input-accent-invalid focus-within:dark:border-input-accent-invalid-dark
-							focus-within:ring-input-accent-invalid/20 focus-within:dark:ring-input-accent-invalid-dark/20`,
+							`border-(--stuic-input-accent-error)
+							focus-within:border-(--stuic-input-accent-error)
+							focus-within:ring-(--stuic-input-accent-error)/20`,
 							classInputBoxWrapInvalid
 						)
 					: classInputBoxWrap

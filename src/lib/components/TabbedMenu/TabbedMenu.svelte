@@ -69,9 +69,9 @@
 		px-4 py-2
 		rounded-t-md
 		border border-b-0
-		border-tabbed-menu-border dark:border-tabbed-menu-border-dark
-		bg-tabbed-menu-tab-bg dark:bg-tabbed-menu-tab-bg-dark
-		text-tabbed-menu-tab-text dark:text-tabbed-menu-tab-text-dark
+		border-(--stuic-tabbed-menu-border)
+		bg-(--stuic-tabbed-menu-tab-bg)
+		text-(--stuic-tabbed-menu-tab-text)
 		cursor-pointer
 		transition-colors duration-150
 		hover:brightness-105
@@ -82,8 +82,8 @@
 	// focus-visible:outline-2 focus-visible:outline-offset-2
 
 	const CLS_BUTTON_ACTIVE = `
-		bg-tabbed-menu-tab-active-bg dark:bg-tabbed-menu-tab-active-bg-dark
-		text-tabbed-menu-tab-active-text dark:text-tabbed-menu-tab-active-text-dark
+		bg-(--stuic-tabbed-menu-tab-bg-active)
+		text-(--stuic-tabbed-menu-tab-text-active)
 		font-medium
 	`;
 

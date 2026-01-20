@@ -81,3 +81,21 @@ The `children` snippet receives `{ checked }` when `roleSwitch` is enabled.
   Fully Custom
 </Button>
 ```
+
+## CSS Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-button-bg` | `--stuic-surface-interactive` | Background color |
+| `--stuic-button-text` | `--stuic-text` | Text color |
+| `--stuic-button-border` | `--stuic-border-strong` | Border color |
+| `--stuic-button-border-focus` | `--stuic-border-focus` | Focus ring color |
+
+### Example Override
+
+```css
+:root {
+  --stuic-button-bg: var(--color-slate-200);
+  --stuic-button-border: var(--color-slate-400);
+}
+```

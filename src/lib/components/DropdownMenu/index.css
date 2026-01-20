@@ -5,10 +5,8 @@
 
 /* Override ListItemButton defaults for dropdown context */
 .stuic-dropdown-menu-dropdown .stuic-list-item-button {
-	--color-lib-bg: transparent;
-	--color-lib-bg-dark: transparent;
-	--color-lib-border: transparent;
-	--color-lib-border-dark: transparent;
+	--stuic-list-item-button-bg: transparent;
+	--stuic-list-item-button-border: transparent;
 }
 
 @position-try --pop-top {

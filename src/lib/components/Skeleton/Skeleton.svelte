@@ -62,9 +62,10 @@
 
 	const baseClass = $derived(
 		twMerge(
-			"block bg-neutral-200 dark:bg-neutral-700",
+			"block",
 			effectiveAnimation === "shimmer" && "stuic-skeleton-shimmer",
 			effectiveAnimation === "pulse" && "stuic-skeleton-pulse",
+			effectiveAnimation === "none" && "bg-[var(--stuic-skeleton-bg)]",
 			variant === "circle" && "stuic-skeleton-circle",
 			rounded === true && variant !== "circle" && "rounded",
 			classProp
@@ -73,7 +74,7 @@
 
 	const baseStyle = $derived.by(() => {
 		const styles: string[] = [];
-		if (duration) styles.push(`--skeleton-duration: ${duration}`);
+		if (duration) styles.push(`--stuic-skeleton-duration: ${duration}`);
 		if (variant === "circle" && size) {
 			styles.push(`width: ${size}`, `height: ${size}`);
 		} else {

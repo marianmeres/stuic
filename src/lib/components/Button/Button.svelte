@@ -35,12 +35,11 @@
 	}
 
 	export const BUTTON_STUIC_BASE_CLASSES = `
-		bg-button-bg text-button-text
-		dark:bg-button-bg-dark dark:text-button-text-dark
+		bg-(--stuic-button-bg) text-(--stuic-button-text)
 		text-base text-center
 		leading-none
 		border-1
-		border-button-border dark:border-button-border-dark
+		border-(--stuic-button-border)
 		rounded-lg
 		inline-flex items-center justify-center gap-x-2
 		px-4 py-3
@@ -52,7 +51,7 @@
 		disabled:hover:brightness-100 disabled:opacity-50
 
 		focus:brightness-105
-		focus:border-button-border-focus focus:dark:border-button-border-focus-dark
+		focus:border-(--stuic-button-border-focus)
 
 		        focus:outline-4         focus:outline-black/10         focus:dark:outline-white/20
 		focus-visible:outline-4 focus-visible:outline-black/10 focus-visible:dark:outline-white/20
@@ -64,7 +63,12 @@
 			lg: `text-lg rounded-xl`,
 		},
 		variant: {
-			primary: `font-medium`,
+			primary: `
+				font-medium
+				bg-(--stuic-button-primary-bg) text-(--stuic-button-primary-text) border-(--stuic-button-primary-border)
+				hover:bg-(--stuic-button-primary-bg-hover)
+				hover:brightness-100
+			`,
 			secondary: `
 				bg-neutral-100 dark:bg-neutral-600
 				text-black/60 dark:text-white/80
@@ -81,7 +85,7 @@
 		`,
 		inverse: `
 			bg-transparent dark:bg-transparent
-			hover:bg-button-bg hover:dark:bg-button-bg-dark
+			hover:bg-(--stuic-button-bg)
 			hover:brightness-100
 		`,
 	};

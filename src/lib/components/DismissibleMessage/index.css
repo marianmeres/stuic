@@ -1,11 +1,6 @@
-/* prettier-ignore */
-@theme inline {
-	--color-dismiss-bg: var(--color-dismiss-bg, var(--color-neutral-200));
-	--color-dismiss-bg-dark: var(--color-dismiss-bg-dark, var(--color-neutral-700));
-
-	--color-dismiss-text: var(--color-dismiss-text, var(--color-neutral-700));
-	--color-dismiss-text-dark: var(--color-dismiss-text-dark, var(--color-neutral-200));
-
-	--color-dismiss-border: var(--color-dismiss-border, var(--color-neutral-500));
-	--color-dismiss-border-dark: var(--color-dismiss-border-dark, var(--color-neutral-500));
+/* DismissibleMessage component tokens */
+:root {
+	--stuic-dismissible-message-bg: var(--stuic-surface-interactive);
+	--stuic-dismissible-message-text: var(--stuic-text-muted);
+	--stuic-dismissible-message-border: var(--stuic-border-strong);
 }

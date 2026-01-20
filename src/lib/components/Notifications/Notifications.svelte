@@ -144,9 +144,8 @@
         w-full sm:w-sm max-w-full sm:max-w-sm
         rounded-lg
         shadow-lg
-        border border-notif-border dark:border-notif-border-dark
-        bg-notif-bg text-notif-text
-        dark:bg-notif-bg-dark dark:text-notif-text-dark`;
+        border border-(--stuic-notification-border)
+        bg-(--stuic-notification-bg) text-(--stuic-notification-text)`;
 
 	const _classNotifCount = `
         absolute -top-2 -right-2
@@ -191,13 +190,9 @@
 				warn: themeWarn,
 			}[type] || "info";
 		return [
-			`--color-notif-bg: var(--color-bg-${type}, var(--color-${theme}-700));`,
-			`--color-notif-text: var(--color-text-${type}, var(--color-${theme}-50));`,
-			`--color-notif-border: var(--color-border-${type}, var(--color-${theme}-800));`,
-			//
-			`--color-notif-bg-dark: var(--color-bg-dark-${type}, var(--color-${theme}-800));`,
-			`--color-notif-text-dark: var(--color-text-dark-${type}, var(--color-${theme}-200));`,
-			`--color-notif-border-dark: var(--color-border-dark-${type}, var(--color-${theme}-700));`,
+			`--stuic-notification-bg: var(--color-${theme}-700);`,
+			`--stuic-notification-text: var(--color-${theme}-50);`,
+			`--stuic-notification-border: var(--color-${theme}-800);`,
 		].join("");
 	};
 

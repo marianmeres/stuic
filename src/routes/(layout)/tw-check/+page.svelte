@@ -13,8 +13,8 @@
 <TwCheck class="bg-green-600">green</TwCheck>
 
 <!-- 3. manual css var prop -->
-<TwCheck --color-twcheck-bg="var(--color-blue-600)">blue</TwCheck>
-<TwCheck --color-twcheck-bg={cssVarViolet}>violet</TwCheck>
+<TwCheck --stuic-twcheck-bg="var(--color-blue-600)">blue</TwCheck>
+<TwCheck --stuic-twcheck-bg={cssVarViolet}>violet</TwCheck>
 
 <!-- 4. theme -->
 <TwCheck theme="amber">amber</TwCheck>

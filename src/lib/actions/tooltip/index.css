@@ -1,11 +1,8 @@
-/* prettier-ignore */
-@theme inline {
-    /* style props will not work as with regular components, because tooltips are created outside of the anchor dom tree */
-    --color-tooltip-bg: var(--color-tooltip-bg, var(--color-neutral-800));
-    --color-tooltip-bg-dark: var(--color-tooltip-bg-dark, var(--color-neutral-300));
-    --color-tooltip-text: var(--color-tooltip-text, var(--color-white));
-    --color-tooltip-text-dark: var(--color-tooltip-text-dark, var(--color-black));
-
+/* Tooltip component tokens */
+/* Note: style props will not work as with regular components, because tooltips are created outside of the anchor DOM tree */
+:root {
+	--stuic-tooltip-bg: var(--stuic-surface-overlay);
+	--stuic-tooltip-text: var(--stuic-text-inverse);
 }
 
 .stuic-tooltip {

@@ -1,5 +1,4 @@
-/* prettier-ignore */
-@theme inline {
-	--color-switch-accent: var(--color-switch-accent, var(--color-red-600));
-	--color-switch-accent-dark: var(--color-switch-accent-dark, var(--color-red-400));
+/* Switch component tokens */
+:root {
+	--stuic-switch-accent: var(--stuic-accent);
 }

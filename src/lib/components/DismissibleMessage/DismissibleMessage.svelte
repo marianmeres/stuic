@@ -43,22 +43,17 @@
 	<div
 		class={twMerge(
 			"stuic-dismissible-message",
-			`mb-4 rounded flex text-sm 
-            bg-dismiss-bg dark:bg-dismiss-bg-dark 
-            border-dismiss-border dark:border-dismiss-border-dark 
-            text-dismiss-text dark:text-dismiss-text-dark`,
+			`mb-4 rounded flex text-sm
+            bg-(--stuic-dismissible-message-bg)
+            border-(--stuic-dismissible-message-border)
+            text-(--stuic-dismissible-message-text)`,
 			classProps
 		)}
 		style={theme
 			? `
-                    --color-dismiss-bg: var(--color-${theme}-100);
-                    --color-dismiss-bg-dark: var(--color-${theme}-700);
-
-                    --color-dismiss-text: var(--color-${theme}-800);
-                    --color-dismiss-text-dark: var(--color-${theme}-50);
-
-                    --color-dismiss-border: var(--color-${theme}-500);
-                    --color-dismiss-border-dark: var(--color-${theme}-500);
+                    --stuic-dismissible-message-bg: var(--color-${theme}-100);
+                    --stuic-dismissible-message-text: var(--color-${theme}-800);
+                    --stuic-dismissible-message-border: var(--color-${theme}-500);
                 `
 			: ``}
 		transition:slide={{ duration }}

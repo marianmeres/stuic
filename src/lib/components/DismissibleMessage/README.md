@@ -89,3 +89,20 @@ A dismissible alert/message component with color themes and slide transition.
   />
 {/if}
 ```
+
+## CSS Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-dismissible-message-bg` | `--stuic-surface-interactive` | Background color |
+| `--stuic-dismissible-message-text` | `--stuic-text-muted` | Text color |
+| `--stuic-dismissible-message-border` | `--stuic-border-strong` | Border color |
+
+### Example Override
+
+```css
+:root {
+  --stuic-dismissible-message-bg: var(--color-blue-50);
+  --stuic-dismissible-message-border: var(--color-blue-200);
+}
+```

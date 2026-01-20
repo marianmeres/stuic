@@ -100,71 +100,84 @@ A versatile button component for list-like contexts such as dropdown menus, comm
 
 ## CSS Variables
 
-All colors support customization via CSS variables. Define them on a parent element to override defaults.
+All colors support customization via CSS variables. Define them on a parent element or in `:root` to override defaults.
 
 ### Border Radius
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `--lib-radius` | `var(--radius-md)` | Border radius |
+| `--stuic-list-item-button-radius` | `--stuic-radius` | Border radius |
 
 ### Base State
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `--color-lib-bg` | `neutral-200` | Background color |
-| `--color-lib-bg-dark` | `neutral-600` | Background color (dark mode) |
-| `--color-lib-text` | `black` | Text color |
-| `--color-lib-text-dark` | `neutral-100` | Text color (dark mode) |
-| `--color-lib-border` | `transparent` | Border color |
-| `--color-lib-border-dark` | `transparent` | Border color (dark mode) |
+| `--stuic-list-item-button-bg` | `--stuic-surface-interactive` | Background color |
+| `--stuic-list-item-button-text` | `--stuic-text` | Text color |
+| `--stuic-list-item-button-border` | `transparent` | Border color |
 
 ### Hover State
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `--color-lib-hover-bg` | `neutral-500` | Hover background |
-| `--color-lib-hover-bg-dark` | `neutral-200` | Hover background (dark mode) |
-| `--color-lib-hover-text` | `white` | Hover text color |
-| `--color-lib-hover-text-dark` | `neutral-900` | Hover text color (dark mode) |
-| `--color-lib-hover-border` | `transparent` | Hover border color |
-| `--color-lib-hover-border-dark` | `transparent` | Hover border color (dark mode) |
+| `--stuic-list-item-button-bg-hover` | `--stuic-surface-interactive-hover` | Hover background |
+| `--stuic-list-item-button-text-hover` | `--stuic-text-inverse` | Hover text color |
+| `--stuic-list-item-button-border-hover` | `transparent` | Hover border color |
 
 ### Active State
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `--color-lib-active-bg` | `neutral-500` | Active background |
-| `--color-lib-active-bg-dark` | `neutral-200` | Active background (dark mode) |
-| `--color-lib-active-text` | `white` | Active text color |
-| `--color-lib-active-text-dark` | `neutral-900` | Active text color (dark mode) |
-| `--color-lib-active-border` | `transparent` | Active border color |
-| `--color-lib-active-border-dark` | `transparent` | Active border color (dark mode) |
+| `--stuic-list-item-button-bg-active` | `--stuic-surface-interactive-hover` | Active background |
+| `--stuic-list-item-button-text-active` | `--stuic-text-inverse` | Active text color |
+| `--stuic-list-item-button-border-active` | `transparent` | Active border color |
 
 ### Focus State
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `--color-lib-focus-bg` | `neutral-500` | Focus background |
-| `--color-lib-focus-bg-dark` | `neutral-200` | Focus background (dark mode) |
-| `--color-lib-focus-text` | `white` | Focus text color |
-| `--color-lib-focus-text-dark` | `neutral-900` | Focus text color (dark mode) |
-| `--color-lib-focus-border` | `transparent` | Focus border color |
-| `--color-lib-focus-border-dark` | `transparent` | Focus border color (dark mode) |
+| `--stuic-list-item-button-bg-focus` | `--stuic-surface-interactive-hover` | Focus background |
+| `--stuic-list-item-button-text-focus` | `--stuic-text-inverse` | Focus text color |
+| `--stuic-list-item-button-border-focus` | `transparent` | Focus border color |
 
 ### Custom Theme Example
 
 ```svelte
 <div style="
-  --color-lib-hover-bg: var(--color-blue-500);
-  --color-lib-hover-bg-dark: var(--color-blue-600);
-  --color-lib-active-bg: var(--color-blue-600);
-  --color-lib-active-bg-dark: var(--color-blue-500);
+  --stuic-list-item-button-bg-hover: var(--color-blue-500);
+  --stuic-list-item-button-bg-active: var(--color-blue-600);
 ">
   <ListItemButton>Blue theme</ListItemButton>
   <ListItemButton active>Active blue</ListItemButton>
 </div>
 ```
+
+### Global Theme Override
+
+```css
+/* In your app.css */
+:root {
+  --stuic-list-item-button-bg-hover: var(--color-indigo-500);
+  --stuic-list-item-button-text-hover: white;
+}
+```
+
+## Legacy Variable Names (Backwards Compatibility)
+
+The following legacy variable names are still supported as aliases:
+
+| Legacy Name | New Name |
+|-------------|----------|
+| `--color-lib-bg` | `--stuic-list-item-button-bg` |
+| `--color-lib-text` | `--stuic-list-item-button-text` |
+| `--color-lib-border` | `--stuic-list-item-button-border` |
+| `--color-lib-hover-bg` | `--stuic-list-item-button-bg-hover` |
+| `--color-lib-hover-text` | `--stuic-list-item-button-text-hover` |
+| `--color-lib-active-bg` | `--stuic-list-item-button-bg-active` |
+| `--color-lib-focus-bg` | `--stuic-list-item-button-bg-focus` |
+| etc. | etc. |
+
+**Note:** Legacy names are deprecated and will be removed in a future version. Please migrate to the new `--stuic-list-item-button-*` naming convention.
 
 ## Exported Constants
 

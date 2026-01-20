@@ -131,16 +131,15 @@
 				`size-5 rounded
 				bg-neutral-100
 				border-neutral-300
-				text-input-accent dark:text-input-accent-dark
+				text-(--stuic-input-accent)
 				cursor-pointer
 
-				checked:border-input-accent checked:bg-input-accent 
-				checked:dark:border-input-accent-dark checked:dark:bg-input-accent-dark
+				checked:border-(--stuic-input-accent) checked:bg-(--stuic-input-accent)
 
-				focus:border-input-accent
+				focus:border-(--stuic-input-accent)
 				focus:ring-4
 				focus:ring-offset-0
-				focus:ring-input-accent/20 focus:dark:ring-input-accent-dark/20
+				focus:ring-(--stuic-input-accent)/20
 
 				disabled:cursor-not-allowed`,
 				classInput

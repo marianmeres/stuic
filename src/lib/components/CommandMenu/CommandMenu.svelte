@@ -251,8 +251,8 @@
 				placeholder={searchPlaceholder ?? t("search_placeholder")}
 				classInputBoxWrap={twMerge(
 					// always look like focused
-					`border-primary border-input-accent dark:border-input-accent-dark`,
-					`ring-input-accent/20 dark:ring-input-accent-dark/20 ring-4`
+					`border-primary border-(--stuic-input-accent)`,
+					`ring-(--stuic-input-accent)/20 ring-4`
 				)}
 				onkeydown={(e) => {
 					if (e.key === "Enter") {

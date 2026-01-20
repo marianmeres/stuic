@@ -1,12 +1,9 @@
-/* prettier-ignore */
-@theme inline {
-	/* style props will not work as with regular components, because popovers are created outside of the anchor dom tree */
-	--color-popover-bg: var(--color-popover-bg, var(--color-white));
-	--color-popover-bg-dark: var(--color-popover-bg-dark, var(--color-neutral-800));
-	--color-popover-text: var(--color-popover-text, var(--color-neutral-900));
-	--color-popover-text-dark: var(--color-popover-text-dark, var(--color-neutral-100));
-	--color-popover-border: var(--color-popover-border, var(--color-neutral-200));
-	--color-popover-border-dark: var(--color-popover-border-dark, var(--color-neutral-700));
+/* Popover component tokens */
+/* Note: style props will not work as with regular components, because popovers are created outside of the anchor DOM tree */
+:root {
+	--stuic-popover-bg: var(--stuic-surface-elevated);
+	--stuic-popover-text: var(--stuic-text);
+	--stuic-popover-border: var(--stuic-border-subtle);
 }
 
 /* Base popover styles */

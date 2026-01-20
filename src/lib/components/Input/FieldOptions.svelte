@@ -569,8 +569,8 @@
 					class={twMerge("m-2 mb-12 shadow-xl", classModalField)}
 					classInputBoxWrap={twMerge(
 						// always look like focused
-						`border border-input-accent dark:border-input-accent-dark`,
-						`ring-input-accent/20 dark:ring-input-accent-dark/20 ring-4`
+						`border border-(--stuic-input-accent)`,
+						`ring-(--stuic-input-accent)/20 ring-4`
 					)}
 					{id}
 					{required}

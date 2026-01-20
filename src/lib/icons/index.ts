@@ -43,3 +43,4 @@ export { iconLucideSquare as iconSquare } from "@marianmeres/icons-fns/lucide/ic
 export { iconLucideMenu as iconMenu } from "@marianmeres/icons-fns/lucide/iconLucideMenu.js";
 export { iconLucideUser as iconUser } from "@marianmeres/icons-fns/lucide/iconLucideUser.js";
 export { iconLucideEllipsisVertical as iconEllipsisVertical } from "@marianmeres/icons-fns/lucide/iconLucideEllipsisVertical.js";
+export { iconLucideSettings as iconSettings } from "@marianmeres/icons-fns/lucide/iconLucideSettings.js";

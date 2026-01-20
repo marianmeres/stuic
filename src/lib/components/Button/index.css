@@ -1,14 +1,21 @@
+/*
+ * Button component tokens
+ *
+ * Override inline: <Button --stuic-button-bg="var(--color-green-600)">
+ * Override globally: :root { --stuic-button-bg: #custom; }
+ */
+
 /* prettier-ignore */
-@theme inline {
-	--color-button-bg: var(--color-button-bg, var(--color-neutral-200));
-	--color-button-bg-dark: var(--color-button-bg-dark, var(--color-neutral-500));
+:root {
+	/* Default (neutral) variant */
+	--stuic-button-bg: var(--stuic-surface-interactive);
+	--stuic-button-text: var(--stuic-text);
+	--stuic-button-border: var(--stuic-border-strong);
+	--stuic-button-border-focus: var(--stuic-border-focus);
 
-	--color-button-text: var(--color-button-text, var(--color-black));
-	--color-button-text-dark: var(--color-button-text-dark, var(--color-white));
-
-	--color-button-border: var(--color-button-border, var(--color-neutral-400));
-	--color-button-border-dark: var(--color-button-border-dark, var(--color-neutral-600));
-
-	--color-button-border-focus: var(--color-button-border-focus, var(--color-neutral-500));
-	--color-button-border-focus-dark: var(--color-button-border-focus-dark, var(--color-neutral-500));
+	/* Primary (accent) variant */
+	--stuic-button-primary-bg: var(--stuic-accent);
+	--stuic-button-primary-bg-hover: var(--stuic-accent-hover);
+	--stuic-button-primary-text: var(--stuic-text-on-accent);
+	--stuic-button-primary-border: var(--stuic-accent);
 }

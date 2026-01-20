@@ -128,9 +128,9 @@ const POSITION_MAP: Record<string, string> = {
 };
 
 const _classPopover = `
-	bg-popover-bg dark:bg-popover-bg-dark text-popover-text dark:text-popover-text-dark
+	bg-(--stuic-popover-bg) text-(--stuic-popover-text)
 	shadow-lg rounded-md
-	border border-popover-border dark:border-popover-border-dark
+	border border-(--stuic-popover-border)
 	z-50
 `;
 
