@@ -15,6 +15,10 @@
 	import slateCyanCss from "$lib/themes/slate-cyan.css?raw";
 	import purpleYellowCss from "$lib/themes/purple-yellow.css?raw";
 	import cyanRedCss from "$lib/themes/cyan-red.css?raw";
+	import roseTealCss from "$lib/themes/rose-teal.css?raw";
+	import redCyanCss from "$lib/themes/red-cyan.css?raw";
+	import cyanSlateCss from "$lib/themes/cyan-slate.css?raw";
+	import pinkEmeraldCss from "$lib/themes/pink-emerald.css?raw";
 
 	const themes: Record<string, string> = {
 		neutral: neutralCss,
@@ -22,14 +26,18 @@
 		rainbow: rainbowCss,
 		"indigo-amber": indigoAmberCss,
 		"teal-rose": tealRoseCss,
+		"rose-teal": roseTealCss,
 		"violet-lime": violetLimeCss,
 		"blue-orange": blueOrangeCss,
 		"emerald-pink": emeraldPinkCss,
+		"pink-emerald": pinkEmeraldCss,
 		"sky-amber": skyAmberCss,
 		"fuchsia-emerald": fuchsiaEmeraldCss,
 		"slate-cyan": slateCyanCss,
+		"cyan-slate": cyanSlateCss,
 		"purple-yellow": purpleYellowCss,
 		"cyan-red": cyanRedCss,
+		"red-cyan": redCyanCss,
 	};
 
 	const themeNames = Object.keys(themes);
@@ -98,8 +106,8 @@
 	</div>
 
 	<p class="text-sm text-neutral-600 dark:text-neutral-400">
-		Select a theme from the dropdown and toggle between light/dark modes to preview all design
-		tokens in action.
+		Select a theme from the dropdown and toggle between light/dark modes to preview all
+		design tokens in action.
 	</p>
 
 	<ThemePreview />
@@ -110,7 +118,8 @@
 		<div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-7 gap-2">
 			{#each themeNames as theme}
 				<button
-					class="px-2 py-1.5 text-xs rounded border transition-colors {selectedTheme === theme
+					class="px-2 py-1.5 text-xs rounded border transition-colors {selectedTheme ===
+					theme
 						? 'border-blue-500 bg-blue-50 dark:bg-blue-950 font-medium'
 						: 'border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800'}"
 					onclick={() => (selectedTheme = theme)}

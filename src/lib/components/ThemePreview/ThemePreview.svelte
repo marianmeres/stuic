@@ -40,6 +40,7 @@
 <script lang="ts">
 	import "./index.css";
 	import { twMerge } from "../../utils/tw-merge.js";
+	import Button from "../Button/Button.svelte";
 
 	let {
 		showLabels = true,
@@ -111,25 +112,26 @@
 
 							{#if showAllVariants}
 								{#each BUTTON_VARIANTS as variant}
-									<button
-										class="stuic-theme-preview-button"
-										data-intent={intent}
-										data-variant={variant}
-									>
+									<Button {intent} {variant}>
 										{variant}
-									</button>
+									</Button>
 								{/each}
 							{:else}
-								<button
-									class="stuic-theme-preview-button"
-									data-intent={intent}
-									data-variant="solid"
-								>
+								<Button {intent}>
 									{intent}
-								</button>
+								</Button>
 							{/if}
 						</div>
 					{/each}
+				</div>
+			</section>
+
+			<section class="preview-section">
+				{#if showLabels}
+					<h2 class="section-label">Default Button</h2>
+				{/if}
+				<div>
+					<Button>I am a default button</Button>
 				</div>
 			</section>
 
