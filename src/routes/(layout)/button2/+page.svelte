@@ -11,6 +11,8 @@
 		iconSettings,
 	} from "$lib/index.js";
 
+	let checked = $state(true);
+
 	const intents: (IntentColorKey | undefined)[] = [
 		undefined,
 		"primary",
@@ -190,5 +192,18 @@
 				>{@html iconDownload()}</Button2
 			>
 		</div>
+	</div>
+</div>
+
+<hr class="my-8" />
+
+<h2 class="text-xl font-semibold mb-4">Role Switch (Toggle)</h2>
+
+<div class="space-y-4">
+	<Button2 roleSwitch bind:checked>
+		Switch: {checked ? "on" : "off"}
+	</Button2>
+	<div class="text-sm text-neutral-500">
+		checked: {checked}
 	</div>
 </div>

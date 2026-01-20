@@ -80,7 +80,7 @@ GENERAL STUIC CSS VARS THEME
 	--stuic-color-input-active:                  var(--color-white);
 	/*  */
 	/* --stuic-color-ring:                         var(--color-blue-600); */
-	--stuic-color-ring:                          color-mix(in srgb, var(--color-pink-600) 20%, transparent);
+	--stuic-color-ring:                          color-mix(in srgb, var(--color-blue-600) 20%, transparent);
 	--stuic-color-ring-hover:                    var(--color-blue-600);
 	--stuic-color-ring-active:                   var(--color-blue-600);
 }

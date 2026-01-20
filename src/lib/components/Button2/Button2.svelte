@@ -27,6 +27,8 @@
 		children?: Snippet<[{ checked?: boolean }]>;
 		/** Toggle state for switch behavior */
 		checked?: boolean;
+		/** Enable switch/toggle behavior */
+		roleSwitch?: boolean;
 		/** Bindable element reference */
 		el?: HTMLElement;
 	}
@@ -44,12 +46,21 @@
 		href,
 		children,
 		checked = $bindable(false),
+		roleSwitch = false,
 		el = $bindable(),
 		muted = false,
 		raised = false,
 		unstyled = false,
 		...rest
 	}: Props = $props();
+
+	$effect(() => {
+		const toggle = () => (checked = !checked);
+		if (!href && roleSwitch && el) {
+			el?.addEventListener("click", toggle);
+		}
+		return () => el?.removeEventListener("click", toggle);
+	});
 
 	// Build class string - add base class for CSS targeting unless unstyled
 	let _class = $derived(unstyled ? classProp : twMerge("stuic-button2", classProp));
@@ -65,9 +76,10 @@
 		data-size={!unstyled ? size : undefined}
 		data-muted={!unstyled && muted ? "true" : undefined}
 		data-raised={!unstyled && raised ? "true" : undefined}
+		data-checked={roleSwitch && checked ? "true" : undefined}
 		{...rest as HTMLAnchorAttributes}
 	>
-		{@render children?.({})}
+		{@render children?.({ checked })}
 	</a>
 {:else}
 	<button
@@ -78,6 +90,7 @@
 		data-size={!unstyled ? size : undefined}
 		data-muted={!unstyled && muted ? "true" : undefined}
 		data-raised={!unstyled && raised ? "true" : undefined}
+		data-checked={roleSwitch && checked ? "true" : undefined}
 		{...rest}
 	>
 		{@render children?.({ checked })}
