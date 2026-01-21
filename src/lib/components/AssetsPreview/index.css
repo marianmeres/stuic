@@ -6,9 +6,6 @@
 
 :root {
 	/* Control buttons (zoom, download, close, prev/next) */
-	--stuic-assets-preview-control-bg: var(--stuic-color-surface);
-	--stuic-assets-preview-control-bg-hover: var(--stuic-color-surface-hover);
-	--stuic-assets-preview-control-radius: 9999px;
 
 	/* Labels (filename, tooltip) */
 	--stuic-assets-preview-label-bg: var(--stuic-color-surface);
@@ -28,38 +25,6 @@
 
 	/* Transition */
 	--stuic-assets-preview-transition: 150ms;
-}
-
-/* ============================================================================
-   CONTROL BUTTONS (top bar: zoom, download, close)
-   ============================================================================ */
-
-.stuic-assets-preview-control {
-	background: var(--stuic-assets-preview-control-bg);
-	border-radius: var(--stuic-assets-preview-control-radius);
-	transition: background var(--stuic-assets-preview-transition);
-}
-
-.stuic-assets-preview-control:hover:not(:disabled) {
-	background: var(--stuic-assets-preview-control-bg-hover);
-}
-
-.stuic-assets-preview-control:disabled {
-	opacity: 0.5;
-}
-
-/* ============================================================================
-   NAV BUTTONS (prev/next - round variant)
-   ============================================================================ */
-
-.stuic-assets-preview-control-nav {
-	background: var(--stuic-assets-preview-control-bg);
-	border-radius: 9999px;
-	transition: background var(--stuic-assets-preview-transition);
-}
-
-.stuic-assets-preview-control-nav:hover {
-	background: var(--stuic-assets-preview-control-bg-hover);
 }
 
 /* ============================================================================

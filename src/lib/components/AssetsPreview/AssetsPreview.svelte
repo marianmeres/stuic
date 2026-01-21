@@ -221,8 +221,13 @@
 	let imgEl: HTMLImageElement | null = null;
 	let containerEl: HTMLDivElement | null = $state(null);
 
-	const TOP_BUTTON_CLS =
-		"stuic-assets-preview-control pointer-events-auto p-0! aspect-square";
+	const BUTTON_CLS = "stuic-assets-preview-control pointer-events-auto p-0!";
+
+	const BUTTON_PROPS = {
+		aspect1: true,
+		variant: "soft",
+		roundedFull: true,
+	};
 
 	$effect(() => {
 		const visible = modal?.visibility().visible;
@@ -529,9 +534,10 @@
 				>
 					<!-- class={twMerge("p-4 aspect-square pointer-events-auto", classControls)} -->
 					<Button
-						class={twMerge(TOP_BUTTON_CLS, "ml-4", classControls)}
+						class={twMerge(BUTTON_CLS, "ml-4", classControls)}
 						onclick={preview_previous}
 						type="button"
+						{...BUTTON_PROPS}
 					>
 						<!-- <span class="stuic-assets-preview-control-nav p-3 block"> -->
 						{@html iconPrevious({ size: ICON_SIZE })}
@@ -540,9 +546,10 @@
 
 					<!-- class={twMerge("p-4 aspect-square pointer-events-auto", classControls)} -->
 					<Button
-						class={twMerge(TOP_BUTTON_CLS, "mr-4", classControls)}
+						class={twMerge(BUTTON_CLS, "mr-4", classControls)}
 						onclick={preview_next}
 						type="button"
+						{...BUTTON_PROPS}
 					>
 						<!-- <span class="stuic-assets-preview-control-nav p-3 block"> -->
 						{@html iconNext({ size: ICON_SIZE })}
@@ -562,23 +569,25 @@
 				<div class="flex items-center space-x-3 shrink-0">
 					{#if previewAsset.isImage}
 						<Button
-							class={twMerge(TOP_BUTTON_CLS, classControls)}
+							class={twMerge(BUTTON_CLS, classControls)}
 							type="button"
 							onclick={zoomOut}
 							disabled={zoomLevelIdx === 0}
 							aria-label={t("zoom_out")}
 							tooltip={t("zoom_out")}
+							{...BUTTON_PROPS}
 						>
 							{@html iconZoomOut({ size: ICON_SIZE })}
 						</Button>
 
 						<Button
-							class={twMerge(TOP_BUTTON_CLS, classControls)}
+							class={twMerge(BUTTON_CLS, classControls)}
 							type="button"
 							onclick={zoomIn}
 							disabled={zoomLevelIdx === ZOOM_LEVELS.length - 1}
 							aria-label={t("zoom_in")}
 							tooltip={t("zoom_in")}
+							{...BUTTON_PROPS}
 						>
 							{@html iconZoomIn({ size: ICON_SIZE })}
 						</Button>
@@ -586,18 +595,19 @@
 
 					{#if typeof onDelete === "function"}
 						<Button
-							class={twMerge(TOP_BUTTON_CLS, classControls)}
+							class={twMerge(BUTTON_CLS, classControls)}
 							type="button"
 							onclick={() => onDelete(previewAsset, previewIdx, { close })}
 							aria-label={t("delete")}
 							tooltip={t("delete")}
+							{...BUTTON_PROPS}
 						>
 							{@html iconDelete({ size: ICON_SIZE })}
 						</Button>
 					{/if}
 
 					<Button
-						class={twMerge(TOP_BUTTON_CLS, classControls)}
+						class={twMerge(BUTTON_CLS, classControls)}
 						type="button"
 						onclick={(e) => {
 							e.preventDefault();
@@ -605,19 +615,20 @@
 						}}
 						aria-label={t("download")}
 						tooltip={t("download")}
+						{...BUTTON_PROPS}
 					>
 						{@html iconDownload({ size: ICON_SIZE })}
 					</Button>
 
 					<Button
-						class={twMerge(TOP_BUTTON_CLS, classControls)}
+						class={twMerge(BUTTON_CLS, classControls)}
 						onclick={modal?.close}
 						aria-label={t("close")}
 						type="button"
 						tooltip={t("close")}
-					>
-						<X />
-					</Button>
+						{...BUTTON_PROPS}
+						x
+					/>
 				</div>
 			</div>
 
