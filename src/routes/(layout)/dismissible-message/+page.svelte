@@ -8,7 +8,7 @@
 </script>
 
 <div>
-	<DismissibleMessage {message} {theme} class="border-1" />
+	<DismissibleMessage {message} {theme} />
 	<!-- --color-dismiss-bg="var(--color-red-500)" -->
 
 	<FieldSelect

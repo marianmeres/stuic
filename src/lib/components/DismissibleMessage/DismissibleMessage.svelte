@@ -17,10 +17,10 @@
 
 <script lang="ts">
 	import { slide } from "svelte/transition";
-	import Thc, { isTHCNotEmpty } from "../Thc/Thc.svelte";
-	import X from "../X/X.svelte";
 	import { twMerge } from "../../utils/tw-merge.js";
+	import Thc, { isTHCNotEmpty } from "../Thc/Thc.svelte";
 
+	import Button from "../Button/Button.svelte";
 	import "./index.css";
 
 	let {
@@ -43,10 +43,10 @@
 	<div
 		class={twMerge(
 			"stuic-dismissible-message",
-			`mb-4 rounded flex text-sm
-            bg-(--stuic-dismissible-message-bg)
-            border-(--stuic-dismissible-message-border)
-            text-(--stuic-dismissible-message-text)`,
+			"mb-4 rounded flex",
+			"bg-(--stuic-dismissible-message-bg)",
+			"border-(--stuic-dismissible-message-border)",
+			"text-(--stuic-dismissible-message-text)",
 			classProps
 		)}
 		style={theme
@@ -63,25 +63,16 @@
 		</div>
 
 		{#if typeof onDismiss === "function"}
-			<button
-				onclick={() => onDismiss()}
-				class={twMerge(
-					"dismiss",
-					`hover:bg-neutral-950/5 dark:hover:bg-neutral-950/20
-                    focus-visible:bg-neutral-950/5 focus-visible:hover:bg-neutral-950/20 focus-visible:ring-0
-                    rounded rounded-l-none
-                    px-3
-                    flex items-center justify-center
-                    group`,
-					classDismiss
-				)}
-				type="button"
-			>
-				<X
-					class={twMerge("x", "opacity-75 group-hover:opacity-100", classX)}
-					strokeWidth={1.5}
+			<div class="p-3 flex flex-col items-center justify-center">
+				<Button
+					x
+					variant="ghost"
+					roundedFull
+					type="button"
+					onclick={() => onDismiss()}
+					style="color: var(--color-{theme}-800)"
 				/>
-			</button>
+			</div>
 		{/if}
 	</div>
 {/if}

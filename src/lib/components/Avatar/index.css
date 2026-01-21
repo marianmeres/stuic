@@ -20,23 +20,23 @@
 	--stuic-avatar-ring-color: var(--stuic-color-ring);
 
 	/* Size: sm */
-	--stuic-avatar-size-sm: 2rem;
+	--stuic-avatar-size-sm: calc(var(--spacing) * 8);
 	--stuic-avatar-font-size-sm: var(--text-xs);
 
 	/* Size: md */
-	--stuic-avatar-size-md: 2.5rem;
+	--stuic-avatar-size-md: calc(var(--spacing) * 10);
 	--stuic-avatar-font-size-md: var(--text-base);
 
 	/* Size: lg */
-	--stuic-avatar-size-lg: 3rem;
+	--stuic-avatar-size-lg: calc(var(--spacing) * 12);
 	--stuic-avatar-font-size-lg: var(--text-lg);
 
 	/* Size: xl */
-	--stuic-avatar-size-xl: 3.5rem;
+	--stuic-avatar-size-xl: calc(var(--spacing) * 14);
 	--stuic-avatar-font-size-xl: var(--text-xl);
 
 	/* Size: 2xl */
-	--stuic-avatar-size-2xl: 4rem;
+	--stuic-avatar-size-2xl: calc(var(--spacing) * 16);
 	--stuic-avatar-font-size-2xl: var(--text-2xl);
 }
 

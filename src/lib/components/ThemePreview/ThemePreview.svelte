@@ -134,10 +134,15 @@
 
 			<section class="preview-section">
 				{#if showLabels}
-					<h2 class="section-label">Default Button</h2>
+					<h2 class="section-label">Default Button (no explicit intent)</h2>
 				{/if}
-				<div>
-					<Button>I am a default button</Button>
+				<div class="flex gap-6 flex-wrap">
+					{#each BUTTON_VARIANTS as variant}
+						<div class="flex gap-2">
+							<Button {variant}>{variant}</Button>
+							<Button x {variant} roundedFull />
+						</div>
+					{/each}
 				</div>
 			</section>
 

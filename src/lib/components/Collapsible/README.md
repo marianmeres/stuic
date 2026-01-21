@@ -14,8 +14,9 @@ A component that truncates content to a specified number of lines with an expand
 | `class`              | `string`        | -             | Container element class                          |
 | `classContent`       | `string`        | -             | Content wrapper class                            |
 | `classToggle`        | `string`        | -             | Toggle button class                              |
-| `toggleOpacity`      | `string`        | `"opacity-70"`| Opacity class for toggle button                  |
+| `style`              | `string`        | -             | Inline styles (for CSS variable overrides)       |
 | `el`                 | `HTMLDivElement`| -             | Bind reference to container element              |
+| `t`                  | `TranslateFn`   | -             | Optional translate function                      |
 
 ## Usage
 
@@ -74,8 +75,39 @@ A component that truncates content to a specified number of lines with an expand
   class="bg-gray-100 p-4 rounded"
   classContent="text-sm text-gray-600"
   classToggle="text-blue-500 font-bold"
-  toggleOpacity="opacity-100"
 >
   Styled collapsible content.
 </Collapsible>
+```
+
+### CSS Variable Overrides
+
+```svelte
+<!-- Local override via inline style -->
+<Collapsible style="--stuic-collapsible-toggle-opacity: 1;">
+  Always fully visible toggle button.
+</Collapsible>
+```
+
+## CSS Variables
+
+Override to customize appearance:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-collapsible-toggle-opacity` | `0.7` | Toggle button opacity |
+| `--stuic-collapsible-toggle-opacity-hover` | `1` | Hover opacity |
+| `--stuic-collapsible-toggle-padding-x` | `calc(var(--spacing) * 2)` | Horizontal padding |
+| `--stuic-collapsible-toggle-padding-y` | `0.25rem` | Vertical padding |
+| `--stuic-collapsible-transition` | `150ms` | Transition duration |
+| `--stuic-collapsible-ring-width` | `2px` | Focus ring width |
+| `--stuic-collapsible-ring-color` | `--stuic-color-ring` | Focus ring color |
+
+### Global Override
+
+```css
+:root {
+  --stuic-collapsible-toggle-opacity: 0.5;
+  --stuic-collapsible-toggle-opacity-hover: 0.8;
+}
 ```
