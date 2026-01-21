@@ -58,6 +58,14 @@
 	--stuic-checkbox-border: var(--stuic-color-border);
 	--stuic-checkbox-checked-bg: var(--stuic-input-accent);
 	--stuic-checkbox-checked-border: var(--stuic-input-accent);
+
+	/* FieldOptions specific */
+	--stuic-field-options-divider: var(--stuic-color-border);
+	--stuic-field-options-control-text: var(--stuic-color-muted-foreground);
+	--stuic-field-options-control-text-hover: var(--stuic-color-foreground);
+	--stuic-field-options-control-ring: var(--stuic-color-ring);
+	--stuic-field-options-muted-text: var(--stuic-color-muted-foreground);
+	--stuic-field-options-optgroup-text: var(--stuic-color-muted-foreground);
 }
 
 /* ============================================================================
@@ -65,7 +73,8 @@
    Replaces @tailwindcss/forms plugin for input elements
    ============================================================================ */
 
-.stuic-input input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+.stuic-input
+	input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
 .stuic-input textarea,
 .stuic-input select {
 	/* Reset browser defaults */
@@ -115,7 +124,8 @@
    Applied via data-size attribute on .stuic-input
    ============================================================================ */
 
-.stuic-input[data-size="sm"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+.stuic-input[data-size="sm"]
+	input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
 .stuic-input[data-size="sm"] textarea,
 .stuic-input[data-size="sm"] select {
 	padding: var(--stuic-input-padding-y-sm) var(--stuic-input-padding-x-sm);
@@ -123,10 +133,12 @@
 	min-height: var(--stuic-input-min-height-sm);
 }
 
-.stuic-input[data-size="md"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+.stuic-input[data-size="md"]
+	input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
 .stuic-input[data-size="md"] textarea,
 .stuic-input[data-size="md"] select,
-.stuic-input:not([data-size]) input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+.stuic-input:not([data-size])
+	input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
 .stuic-input:not([data-size]) textarea,
 .stuic-input:not([data-size]) select {
 	padding: var(--stuic-input-padding-y-md) var(--stuic-input-padding-x-md);
@@ -134,7 +146,8 @@
 	min-height: var(--stuic-input-min-height-md);
 }
 
-.stuic-input[data-size="lg"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+.stuic-input[data-size="lg"]
+	input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
 .stuic-input[data-size="lg"] textarea,
 .stuic-input[data-size="lg"] select {
 	padding: var(--stuic-input-padding-y-lg) var(--stuic-input-padding-x-lg);
@@ -274,7 +287,10 @@
 .stuic-input input[type="range"] {
 	width: 100%;
 	padding: var(--stuic-input-padding-y-md) var(--stuic-input-padding-x-md);
-	margin: calc((var(--stuic-input-range-thumb-size) - var(--stuic-input-range-track-height)) / 2) 0;
+	margin: calc(
+			(var(--stuic-input-range-thumb-size) - var(--stuic-input-range-track-height)) / 2
+		)
+		0;
 	background-color: transparent;
 	appearance: none;
 	cursor: pointer;
@@ -298,7 +314,9 @@
 .stuic-input input[type="range"]::-webkit-slider-thumb {
 	width: var(--stuic-input-range-thumb-size);
 	height: var(--stuic-input-range-thumb-size);
-	margin-top: calc(-1 * (var(--stuic-input-range-thumb-size) - var(--stuic-input-range-track-height)) / 2);
+	margin-top: calc(
+		-1 * (var(--stuic-input-range-thumb-size) - var(--stuic-input-range-track-height)) / 2
+	);
 	background-color: var(--stuic-input-accent);
 	border: 0;
 	border-radius: 50%;
@@ -447,4 +465,55 @@
 .stuic-radios input[type="radio"]:disabled {
 	cursor: not-allowed;
 	opacity: 0.5;
+}
+
+/* ============================================================================
+   FIELD OPTIONS COMPONENT STYLES
+   ============================================================================ */
+
+/* Control buttons (Select All, Clear) */
+.stuic-field-options-control {
+	color: var(--stuic-field-options-control-text);
+	transition: color 150ms;
+}
+
+.stuic-field-options-control:hover:not(:disabled),
+.stuic-field-options-control:focus-visible {
+	color: var(--stuic-field-options-control-text-hover);
+}
+
+.stuic-field-options-control:focus-visible {
+	outline: 2px solid var(--stuic-field-options-control-ring);
+	outline-offset: 1px;
+}
+
+.stuic-field-options-control:disabled,
+.stuic-field-options-control[data-disabled] {
+	opacity: 0.5;
+}
+
+/* Muted/secondary text */
+.stuic-field-options-muted {
+	color: var(--stuic-field-options-muted-text);
+}
+
+/* Placeholder/loading states */
+.stuic-field-options-placeholder {
+	color: var(--stuic-field-options-muted-text);
+}
+
+/* Optgroup labels */
+.stuic-field-options-optgroup {
+	color: var(--stuic-field-options-optgroup-text);
+}
+
+/* Icon states - inherit color from parent ListItemButton */
+.stuic-field-options-icon {
+	color: inherit;
+	opacity: 0.5;
+	transition: opacity 150ms;
+}
+
+.stuic-field-options-icon--selected {
+	opacity: 1;
 }

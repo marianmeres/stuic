@@ -228,10 +228,13 @@
 	}
 
 	function getIconThc(isSelected: boolean): { html: string } {
+		const size = 19;
 		if (isMultiple) {
-			return { html: isSelected ? iconCheckboxCheck() : iconCheckboxEmpty() };
+			return {
+				html: isSelected ? iconCheckboxCheck({ size }) : iconCheckboxEmpty({ size }),
+			};
 		}
-		return { html: isSelected ? iconRadioCheck() : iconRadioEmpty() };
+		return { html: isSelected ? iconRadioCheck({ size }) : iconRadioEmpty({ size }) };
 	}
 
 	function sortFn(a: Item, b: Item) {
@@ -542,7 +545,7 @@
 				let extra = '';
 				if (vals.length > limit) {
 					vals = vals.slice(0, limit);
-					extra = `, ... <span class="text-sm opacity-75">(+${(origLength - limit)})</span>`;
+					extra = `, ... <span class="text-sm stuic-field-options-muted">(+${(origLength - limit)})</span>`;
 				}
 				return vals.filter(v => v != null).map(_renderOptionLabel).join(", ") + extra;
 			} catch (e) {
@@ -599,16 +602,16 @@
 					/>
 
 					{#snippet inputBelow()}
-						<div class="h-full border-t p-2 border-black/20">
+						<div
+							class="h-full border-t p-2"
+							style="border-color: var(--stuic-field-options-divider);"
+						>
 							<div class="text-sm -mt-1 flex items-center">
 								{#if isMultiple}
 									<button
 										type="button"
 										onclick={() => _selectedColl.addMany(options.items)}
-										class={twMerge(
-											"control flex items-center p-1 m-1 text-sm opacity-75 underline rounded",
-											"hover:opacity-100 focus-visible:outline-neutral-400 focus-visible:opacity-100"
-										)}
+										class="control flex items-center p-1 m-1 text-sm underline rounded stuic-field-options-control"
 										tabindex={4}
 										disabled={!options.size}
 									>
@@ -621,11 +624,8 @@
 										_selectedColl.clear();
 										input?.focus();
 									}}
-									class={twMerge(
-										"control flex items-center p-1 m-1 text-sm opacity-75 underline rounded",
-										"hover:opacity-100 focus-visible:outline-neutral-400 focus-visible:opacity-100"
-									)}
-									class:opacity-20={!selected.items.length}
+									class="control flex items-center p-1 m-1 text-sm underline rounded stuic-field-options-control"
+									data-disabled={!selected.items.length || undefined}
 									tabindex={5}
 									disabled={!selected.items.length}
 								>
@@ -634,7 +634,7 @@
 
 								<span class="p-1 m-1 text-sm">&nbsp;</span>
 								<span
-									class="flex-1 block justify-end opacity-75 text-right text-xs p-1 pr-2"
+									class="flex-1 block justify-end text-right text-xs p-1 pr-2 stuic-field-options-muted"
 								>
 									{selected.items.length}
 									{#if cardinality > 0 && cardinality < Infinity}
@@ -655,11 +655,15 @@
 								tabindex="-1"
 							>
 								{#if isFetching && !options.items.length}
-									<div class="flex opacity-50 text-sm h-full items-center justify-center">
+									<div
+										class="flex text-sm h-full items-center justify-center stuic-field-options-placeholder"
+									>
 										<Spinner class="w-4" />
 									</div>
 								{:else if !options.items.length && !allowUnknown}
-									<div class="flex opacity-50 text-sm h-full items-center justify-center">
+									<div
+										class="flex text-sm h-full items-center justify-center stuic-field-options-placeholder"
+									>
 										{@html t("no_results")}
 									</div>
 								{/if}
@@ -682,8 +686,7 @@
 									{#if _optgroup}
 										<div
 											class={twMerge(
-												"mb-1 p-1 text-xs font-semibold uppercase tracking-wide",
-												"text-neutral-500 dark:text-neutral-400",
+												"mb-1 p-1 text-xs font-semibold uppercase tracking-wide stuic-field-options-optgroup",
 												classOptgroup
 											)}
 										>
@@ -717,7 +720,9 @@
 													active={isSelected}
 													focused={active}
 													contentBefore={showIcons ? getIconThc(isSelected) : undefined}
-													classContentBefore={isSelected ? "opacity-100" : "opacity-50"}
+													classContentBefore={isSelected
+														? "stuic-field-options-icon stuic-field-options-icon--selected"
+														: "stuic-field-options-icon"}
 													class={classOption}
 													classActive={classOptionActive}
 													classFocused={classOptionActive}
@@ -734,7 +739,7 @@
 							</div>
 							<!-- {/if} -->
 							<div class="p-2 px-3 flex items-end justify-between">
-								<div class="text-xs opacity-75">
+								<div class="text-xs stuic-field-options-muted">
 									<!-- Use arrows to navigate. Spacebar and Enter to select and/or submit. -->
 									{#if allowUnknown}
 										{@html t("unknown_allowed")}
@@ -761,7 +766,9 @@
 					{/snippet}
 
 					{#snippet inputAfter()}
-						<div class="flex pl-2 items-center justify-center opacity-50">
+						<div
+							class="flex pl-2 items-center justify-center stuic-field-options-placeholder"
+						>
 							{#if isFetching}
 								<Spinner class="w-4" />
 							{/if}
@@ -788,7 +795,9 @@
 					{/snippet}
 
 					{#snippet inputBefore()}
-						<div class="flex flex-col items-center justify-center pl-3 opacity-75">
+						<div
+							class="flex flex-col items-center justify-center pl-3 stuic-field-options-muted"
+						>
 							{@html iconSearch({ size: 19, strokeWidth: 3 })}
 						</div>
 					{/snippet}

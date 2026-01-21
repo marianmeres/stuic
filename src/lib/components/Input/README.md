@@ -332,3 +332,97 @@ Components use data attributes for CSS styling:
 | `classInputBoxWrapInvalid` | Input wrapper when invalid |
 | `classDescBox` | Description container |
 | `classBelowBox` | Below slot container |
+
+---
+
+## FieldOptions
+
+A modal-based multi-select/single-select component with search functionality, typeahead support, and option grouping.
+
+### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | `"[]"` | JSON array of selected items (bindable) |
+| `name` | `string` | - | Form field name |
+| `getOptions` | `(q: string, current: Item[]) => Promise<{found: Item[]}>` | - | Async function to fetch options |
+| `cardinality` | `number` | `Infinity` | Max selections (-1 for unlimited) |
+| `allowUnknown` | `boolean` | `false` | Allow typing custom values |
+| `renderOptionLabel` | `(item: Item) => string` | - | Custom option label renderer |
+| `renderOptionGroup` | `(s: string) => string` | - | Custom optgroup label renderer |
+| `renderValue` | `(stringifiedItems: string) => string` | - | Custom value display renderer |
+| `showIconsCheckbox` | `boolean` | `true` | Show checkbox icons in multi-select |
+| `showIconsRadio` | `boolean` | `false` | Show radio icons in single-select |
+| `searchPlaceholder` | `string` | - | Custom search placeholder |
+| `itemIdPropName` | `string` | `"id"` | Property name for item ID |
+| `notifications` | `NotificationsStack` | - | Notification handler for errors |
+
+### Class Props
+
+| Prop | Target |
+|------|--------|
+| `classOption` | Option item (ListItemButton) |
+| `classOptionActive` | Active/selected option |
+| `classOptgroup` | Option group label |
+| `classModalField` | Modal field wrapper |
+
+### CSS Variables
+
+#### Component Tokens
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-field-options-divider` | `--stuic-color-border` | Divider/separator color |
+| `--stuic-field-options-control-text` | `--stuic-color-muted-foreground` | Control button text color |
+| `--stuic-field-options-control-text-hover` | `--stuic-color-foreground` | Control button hover text color |
+| `--stuic-field-options-control-ring` | `--stuic-color-ring` | Control button focus ring |
+| `--stuic-field-options-muted-text` | `--stuic-color-muted-foreground` | Muted/secondary text color |
+| `--stuic-field-options-optgroup-text` | `--stuic-color-muted-foreground` | Option group label color |
+
+### Usage
+
+```svelte
+<script lang="ts">
+  import { FieldOptions } from 'stuic';
+
+  let value = $state('[]');
+
+  async function getOptions(query: string, current: any[]) {
+    const response = await fetch(`/api/search?q=${query}`);
+    const data = await response.json();
+    return { found: data.items };
+  }
+</script>
+
+<FieldOptions
+  label="Select Tags"
+  name="tags"
+  bind:value
+  {getOptions}
+  cardinality={5}
+  allowUnknown
+/>
+```
+
+### Customization Examples
+
+```css
+/* Make optgroup labels more prominent */
+:root {
+  --stuic-field-options-optgroup-text: var(--stuic-color-primary);
+}
+
+/* Custom control button colors */
+:root {
+  --stuic-field-options-control-text: var(--stuic-color-primary);
+  --stuic-field-options-control-text-hover: var(--stuic-color-primary-hover);
+}
+```
+
+```svelte
+<!-- Local customization -->
+<FieldOptions
+  style="--stuic-field-options-divider: var(--color-red-500);"
+  ...
+/>
+```
