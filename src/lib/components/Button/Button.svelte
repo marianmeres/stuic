@@ -19,6 +19,10 @@
 		raised?: boolean;
 		/** Skip all default styling, use only custom classes */
 		unstyled?: boolean;
+		/** Render as rounded-full */
+		roundedFull?: boolean;
+		/** Render as aspect ratio 1 */
+		aspect1?: boolean;
 		/** Additional CSS classes */
 		class?: string;
 		/** Render as anchor tag instead of button */
@@ -33,6 +37,8 @@
 		el?: HTMLElement;
 		/** Optional tooltip configuration or direct content */
 		tooltip?: string | TooltipConfig;
+		/** Is this button a "X" button (this is a pragmatic convenience) */
+		x?: boolean | XProps;
 	}
 </script>
 
@@ -40,6 +46,7 @@
 	import "./index.css";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import { tooltip, type TooltipConfig } from "../../actions/tooltip/tooltip.svelte.js";
+	import { X, type XProps } from "../X/index.js";
 
 	let {
 		class: classProp,
@@ -54,7 +61,10 @@
 		muted = false,
 		raised = false,
 		unstyled = false,
+		roundedFull = false,
+		aspect1 = false,
 		tooltip: _tooltip,
+		x,
 		...rest
 	}: Props = $props();
 
@@ -75,6 +85,15 @@
 		}
 		return _tooltip ? _tooltip : () => ({ enabled: false });
 	});
+
+	let _xProps: undefined | XProps = $derived.by(() => {
+		if (x) {
+			return typeof x === "boolean" ? {} : x;
+		}
+	});
+
+	// "x" implicitly set aspect1
+	let _isAspect1 = $derived(aspect1 || _xProps);
 </script>
 
 {#if href}
@@ -88,10 +107,16 @@
 		data-muted={!unstyled && muted ? "true" : undefined}
 		data-raised={!unstyled && raised ? "true" : undefined}
 		data-checked={roleSwitch && checked ? "true" : undefined}
+		data-rounded-full={!unstyled && roundedFull ? "true" : undefined}
+		data-aspect1={!unstyled && _isAspect1 ? "true" : undefined}
 		use:tooltip={_tooltipConfig}
 		{...rest as HTMLAnchorAttributes}
 	>
-		{@render children?.({ checked })}
+		{#if _xProps}
+			<X {..._xProps} />
+		{:else}
+			{@render children?.({ checked })}
+		{/if}
 	</a>
 {:else}
 	<button
@@ -103,9 +128,15 @@
 		data-muted={!unstyled && muted ? "true" : undefined}
 		data-raised={!unstyled && raised ? "true" : undefined}
 		data-checked={roleSwitch && checked ? "true" : undefined}
+		data-rounded-full={!unstyled && roundedFull ? "true" : undefined}
+		data-aspect1={!unstyled && _isAspect1 ? "true" : undefined}
 		use:tooltip={_tooltipConfig}
 		{...rest}
 	>
-		{@render children?.({ checked })}
+		{#if _xProps}
+			<X {..._xProps} />
+		{:else}
+			{@render children?.({ checked })}
+		{/if}
 	</button>
 {/if}

@@ -48,8 +48,8 @@
 
 	<Button x roundedFull size="sm" />
 	<Button x roundedFull variant="ghost" intent="primary" />
-	<Button x variant="outline" intent="accent" size="sm" class="border-red-500!" />
-	<Button x roundedFull size="lg" />
+	<Button x variant="outline" intent="accent" size="sm" class="p-0! border-red-500!" />
+	<Button x roundedFull size="lg" variant="ghost" />
 	<Button roundedFull aspect1 size="sm">long content</Button>
 </div>
 
