@@ -44,6 +44,13 @@
 	import { twMerge } from "../../utils/tw-merge.js";
 	import Button from "../Button/Button.svelte";
 	import { AlertConfirmPromptStack } from "../AlertConfirmPrompt/index.js";
+	import {
+		type DismissibleMessageIntent,
+		DismissibleMessage,
+	} from "../DismissibleMessage/index.js";
+	import { createClog } from "@marianmeres/clog";
+
+	const clog = createClog("ThemePreview", { color: "auto" });
 
 	let {
 		showLabels = true,
@@ -61,7 +68,11 @@
 
 	let spacing = $derived(compact ? "gap-2 p-2" : "gap-4 p-4");
 
-	const buttonOnclick = () => acp?.alert();
+	const alert = () => acp?.alert();
+
+	//
+	let dismissibleMessage = $state<string | null>();
+	let dismissibleIntent = $state<DismissibleMessageIntent | undefined>();
 </script>
 
 <div bind:this={el} class={twMerge("stuic-theme-preview", spacing, classProp)} {...rest}>
@@ -103,6 +114,14 @@
 
 		<!-- MAIN CONTENT -->
 		<main class="stuic-theme-preview-main">
+			<DismissibleMessage
+				message={dismissibleMessage}
+				intent={dismissibleIntent}
+				onDismiss={() => {
+					dismissibleIntent = undefined;
+					dismissibleMessage = null;
+				}}
+			/>
 			<!-- INTENT BUTTONS -->
 			<section class="preview-section">
 				{#if showLabels}
@@ -118,12 +137,23 @@
 
 							{#if showAllVariants}
 								{#each BUTTON_VARIANTS as variant}
-									<Button {intent} {variant} onclick={buttonOnclick}>
+									<Button
+										{intent}
+										{variant}
+										onclick={() => {
+											if (!["primary", "accent"].includes(intent)) {
+												dismissibleIntent = intent as DismissibleMessageIntent;
+												dismissibleMessage = intent;
+											} else {
+												alert();
+											}
+										}}
+									>
 										{variant}
 									</Button>
 								{/each}
 							{:else}
-								<Button {intent} onclick={buttonOnclick}>
+								<Button {intent} onclick={alert}>
 									{intent}
 								</Button>
 							{/if}

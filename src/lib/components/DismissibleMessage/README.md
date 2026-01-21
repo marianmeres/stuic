@@ -1,20 +1,18 @@
 # DismissibleMessage
 
-A dismissible alert/message component with color themes and slide transition.
+A dismissible alert/message component with semantic intents and slide transition.
 
 ## Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `message` | `THC \| Error` | - | Message content (string, HTML, or Error object) |
-| `theme` | `TW_COLORS` | - | Tailwind color theme (e.g., `"red"`, `"green"`, `"blue"`) |
+| `intent` | `"destructive" \| "warning" \| "success" \| "info"` | - | Semantic color intent |
 | `forceAsHtml` | `boolean` | `true` | Render message as HTML |
 | `duration` | `number` | `150` | Slide transition duration (ms) |
 | `onDismiss` | `(() => void) \| null \| false` | - | Dismiss callback (set to `false` to hide X button) |
 | `class` | `string` | - | CSS for container |
 | `classContent` | `string` | - | CSS for content area |
-| `classDismiss` | `string` | - | CSS for dismiss button |
-| `classX` | `string` | - | CSS for X icon |
 
 ## Usage
 
@@ -22,7 +20,7 @@ A dismissible alert/message component with color themes and slide transition.
 
 ```svelte
 <script lang="ts">
-  import { DismissibleMessage } from 'stuic';
+  import { DismissibleMessage } from '@marianmeres/stuic';
 
   let message = $state('This is an important notice.');
 </script>
@@ -33,26 +31,40 @@ A dismissible alert/message component with color themes and slide transition.
 />
 ```
 
-### With Theme Colors
+### With Semantic Intents
 
 ```svelte
 <script lang="ts">
-  import { DismissibleMessage } from 'stuic';
+  import { DismissibleMessage } from '@marianmeres/stuic';
 
   let error = $state('Something went wrong!');
   let success = $state('Operation completed successfully.');
 </script>
 
+<!-- Error/destructive message -->
 <DismissibleMessage
   message={error}
-  theme="red"
+  intent="destructive"
   onDismiss={() => error = ''}
 />
 
+<!-- Success message -->
 <DismissibleMessage
   message={success}
-  theme="green"
+  intent="success"
   onDismiss={() => success = ''}
+/>
+
+<!-- Warning message -->
+<DismissibleMessage
+  message="Please review your changes"
+  intent="warning"
+/>
+
+<!-- Info message -->
+<DismissibleMessage
+  message="New features are available"
+  intent="info"
 />
 ```
 
@@ -61,7 +73,7 @@ A dismissible alert/message component with color themes and slide transition.
 ```svelte
 <DismissibleMessage
   message="This message cannot be dismissed."
-  theme="blue"
+  intent="info"
   onDismiss={false}
 />
 ```
@@ -84,7 +96,7 @@ A dismissible alert/message component with color themes and slide transition.
 {#if error}
   <DismissibleMessage
     message={error}
-    theme="red"
+    intent="destructive"
     onDismiss={() => error = null}
   />
 {/if}
@@ -92,17 +104,70 @@ A dismissible alert/message component with color themes and slide transition.
 
 ## CSS Variables
 
+### Component Tokens
+
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `--stuic-dismissible-message-bg` | `--stuic-surface-interactive` | Background color |
-| `--stuic-dismissible-message-text` | `--stuic-text-muted` | Text color |
-| `--stuic-dismissible-message-border` | `--stuic-border-strong` | Border color |
+| `--stuic-dismissible-message-radius` | `var(--radius-md)` | Border radius |
+| `--stuic-dismissible-message-padding-x` | `calc(var(--spacing) * 4)` | Horizontal padding |
+| `--stuic-dismissible-message-padding-y` | `calc(var(--spacing) * 3)` | Vertical padding |
+| `--stuic-dismissible-message-border-width` | `1px` | Border width |
+| `--stuic-dismissible-message-transition` | `150ms` | Color transition duration |
 
-### Example Override
+### Customization Examples
 
 ```css
+/* Global override */
 :root {
-  --stuic-dismissible-message-bg: var(--color-blue-50);
-  --stuic-dismissible-message-border: var(--color-blue-200);
+  --stuic-dismissible-message-radius: var(--radius-lg);
+  --stuic-dismissible-message-padding-x: calc(var(--spacing) * 6);
 }
 ```
+
+```svelte
+<!-- Inline override -->
+<DismissibleMessage
+  message="Custom styled message"
+  style="--stuic-dismissible-message-radius: 9999px;"
+/>
+```
+
+### Intent Colors
+
+Intent colors are derived from the global STUIC design tokens:
+
+| Intent | Token Used |
+|--------|------------|
+| `destructive` | `--stuic-color-destructive` |
+| `warning` | `--stuic-color-warning` |
+| `success` | `--stuic-color-success` |
+| `info` | `--stuic-color-info` |
+
+Customize these in your theme file to change all components at once.
+
+## Data Attributes
+
+The component uses data attributes for CSS targeting:
+
+- `data-intent` - The intent value (when set)
+
+```css
+/* Custom styling for specific intent */
+.stuic-dismissible-message[data-intent="destructive"] {
+  font-weight: bold;
+}
+```
+
+## Migration from v2
+
+The `theme` prop has been replaced with `intent`:
+
+| Old (v2) | New (v3) |
+|----------|----------|
+| `theme="red"` | `intent="destructive"` |
+| `theme="orange"` | `intent="warning"` |
+| `theme="green"` | `intent="success"` |
+| `theme="blue"` | `intent="info"` |
+| No theme | No intent (default) |
+
+The `classDismiss` and `classX` props have been removed.
