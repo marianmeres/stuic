@@ -108,6 +108,41 @@ A modal component using the native HTML `<dialog>` element with `showModal()`. P
 </script>
 ```
 
+## CSS Variables
+
+### Component Tokens
+
+Override to customize appearance:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-modal-dialog-radius` | `--radius-lg` | Border radius of content box |
+| `--stuic-modal-dialog-transition` | `150ms` | Animation/transition duration |
+| `--stuic-modal-dialog-backdrop` | `rgb(0 0 0 / 0.4)` | Backdrop overlay color |
+| `--stuic-modal-dialog-bg` | `--stuic-color-surface` | Content box background |
+| `--stuic-modal-dialog-text` | `--stuic-color-surface-foreground` | Content box text color |
+| `--stuic-modal-dialog-shadow` | `--shadow-xl` | Content box shadow |
+
+### Customization Examples
+
+```css
+/* Global override - all dialogs */
+:root {
+  --stuic-modal-dialog-radius: 0;
+  --stuic-modal-dialog-backdrop: rgb(0 0 0 / 0.7);
+}
+```
+
+```svelte
+<!-- Local override - single dialog -->
+<ModalDialog
+  bind:this={dialog}
+  style="--stuic-modal-dialog-radius: 9999px;"
+>
+  Content with pill-shaped radius
+</ModalDialog>
+```
+
 ## Relationship to Modal
 
 `Modal` is a higher-level component built on top of `ModalDialog`.

@@ -137,7 +137,7 @@
 			"fixed inset-4 m-auto size-auto",
 			"flex justify-center items-center",
 			"focus:outline-none focus-visible:outline-none",
-			"bg-transparent backdrop:bg-black/40",
+			"bg-transparent",
 			classDialog
 		)}
 		onclick={(e) => {
@@ -181,11 +181,7 @@
 			onpointerdown={stopPropagation()}
 			onclick={stopPropagation()}
 			data-type={type}
-			class={twMerge(
-				`box relative size-full overflow-auto
-				text-black dark:text-white bg-white dark:bg-neutral-800`,
-				classProp
-			)}
+			class={twMerge("box relative size-full overflow-auto", classProp)}
 		>
 			{@render children?.()}
 		</div>
