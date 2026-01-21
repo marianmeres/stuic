@@ -62,6 +62,7 @@
 </script>
 
 <script lang="ts">
+	import Button from "../Button/Button.svelte";
 	import "./index.css";
 
 	const clog = createClog("CommandMenu");
@@ -273,13 +274,11 @@
 						{/if}
 					</div>
 					<div class="flex items-center justify-center">
-						<button
+						<Button
+							x
+							variant="soft"
+							roundedFull
 							type="button"
-							class={twMerge(
-								"stuic-command-menu-close-button",
-								"m-1 opacity-75",
-								"hover:opacity-100 focus-visible:opacity-100"
-							)}
 							onclick={(e) => {
 								e.preventDefault();
 								if (!`${q || ""}`.trim()) {
@@ -288,9 +287,7 @@
 								q = "";
 								input?.focus();
 							}}
-						>
-							<X class="m-2 size-6" />
-						</button>
+						/>
 					</div>
 				{/snippet}
 				{#snippet inputBelow()}
