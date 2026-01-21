@@ -39,6 +39,10 @@
 		tooltip?: string | TooltipConfig;
 		/** Is this button a "X" button (this is a pragmatic convenience) */
 		x?: boolean | XProps;
+		/** Optional out-of-the-box spinner support  */
+		spinner?: boolean | THC;
+		/** Show only spinner when spinner? */
+		spinnerOnly?: boolean;
 	}
 </script>
 
@@ -47,7 +51,8 @@
 	import { twMerge } from "../../utils/tw-merge.js";
 	import { tooltip, type TooltipConfig } from "../../actions/tooltip/tooltip.svelte.js";
 	import { X, type XProps } from "../X/index.js";
-
+	import Thc, { type THC } from "../Thc/Thc.svelte";
+	import Spinner from "../Spinner/Spinner.svelte";
 	let {
 		class: classProp,
 		intent,
@@ -65,6 +70,8 @@
 		aspect1 = false,
 		tooltip: _tooltip,
 		x,
+		spinner,
+		spinnerOnly,
 		...rest
 	}: Props = $props();
 
@@ -115,7 +122,16 @@
 		{#if _xProps}
 			<X {..._xProps} />
 		{:else}
-			{@render children?.({ checked })}
+			{#if spinner}
+				{#if typeof spinner === "boolean"}
+					<Spinner />
+				{:else}
+					<Thc thc={spinner} />
+				{/if}
+			{/if}
+			{#if !spinner || (spinner && !spinnerOnly)}
+				{@render children?.({ checked })}
+			{/if}
 		{/if}
 	</a>
 {:else}
@@ -136,7 +152,16 @@
 		{#if _xProps}
 			<X {..._xProps} />
 		{:else}
-			{@render children?.({ checked })}
+			{#if spinner}
+				{#if typeof spinner === "boolean"}
+					<Spinner />
+				{:else}
+					<Thc thc={spinner} />
+				{/if}
+			{/if}
+			{#if !spinner || (spinner && !spinnerOnly)}
+				{@render children?.({ checked })}
+			{/if}
 		{/if}
 	</button>
 {/if}

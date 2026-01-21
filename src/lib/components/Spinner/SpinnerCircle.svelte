@@ -27,7 +27,7 @@
 </script>
 
 <span
-	class={twMerge("stuic-spinner-basic inline-block size-5", _thickness, classProp)}
+	class={twMerge("stuic-spinner-basic inline-block size-4", _thickness, classProp)}
 	style="animation-duration: {duration}ms; animation-direction: {direction === 'ccw'
 		? 'reverse'
 		: 'normal'};"

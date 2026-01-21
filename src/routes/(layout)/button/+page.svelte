@@ -9,9 +9,18 @@
 		iconCheck,
 		iconTrash,
 		iconSettings,
+		Spinner,
+		SpinnerCircle,
+		SpinnerUnicode,
 	} from "$lib/index.js";
 
 	let checked = $state(true);
+	let isLoading = $state(false);
+
+	function simulateLoading() {
+		isLoading = true;
+		setTimeout(() => (isLoading = false), 2000);
+	}
 
 	const intents: (IntentColorKey | undefined)[] = [
 		undefined,
@@ -216,5 +225,34 @@
 	</Button>
 	<div class="text-sm text-neutral-500">
 		checked: {checked}
+	</div>
+</div>
+
+<hr class="my-8" />
+
+<h2 class="text-xl font-semibold mb-4">Spinner</h2>
+
+<div class="space-y-4">
+	<div>
+		<p class="text-sm text-neutral-500 mb-2">Default spinner (SpinnerCircle):</p>
+		<div class="flex flex-wrap gap-3">
+			<Button
+				intent="primary"
+				spinner={isLoading}
+				onclick={simulateLoading}
+				class="min-w-40"
+			>
+				{isLoading ? "Saving..." : "Save"}
+			</Button>
+			<Button
+				intent="accent"
+				variant="outline"
+				spinner={isLoading}
+				onclick={simulateLoading}
+				spinnerOnly
+			>
+				{isLoading ? "Loading..." : "Load"}
+			</Button>
+		</div>
 	</div>
 </div>

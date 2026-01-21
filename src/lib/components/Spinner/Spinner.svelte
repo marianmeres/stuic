@@ -30,7 +30,7 @@
 	};
 	const heightMap: Record<NonNullable<Props["height"]>, number> = {
 		short: 5,
-		normal: 7,
+		normal: 6,
 		tall: 10,
 	};
 
@@ -42,7 +42,7 @@
 </script>
 
 <div
-	class={twMerge("spinner opacity-50", classProp)}
+	class={twMerge("spinner opacity-80", classProp)}
 	style:--size="{size}px"
 	style:--duration="{duration}ms"
 >
