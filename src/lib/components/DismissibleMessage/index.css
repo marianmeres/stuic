@@ -39,6 +39,22 @@
 		var(--stuic-dismissible-message-padding-x);
 }
 
+/* Icon container (left side) */
+.stuic-dismissible-message > .icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	padding-left: var(--stuic-dismissible-message-padding-x);
+	color: var(--_text);
+	opacity: 0.85;
+}
+
+.stuic-dismissible-message > .icon svg {
+	width: 1.5rem;
+	height: 1.5rem;
+}
+
 /* Dismiss button container */
 .stuic-dismissible-message > .dismiss {
 	display: flex;

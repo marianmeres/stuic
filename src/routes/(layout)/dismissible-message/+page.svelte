@@ -1,20 +1,25 @@
 <script lang="ts">
-	import { Button, DismissibleMessage, FieldSelect } from "$lib/index.js";
+	import { Button, DismissibleMessage, FieldCheckbox, FieldSelect } from "$lib/index.js";
 	import type { MessageIntent } from "$lib/components/DismissibleMessage/DismissibleMessage.svelte";
 	import { dummySentence } from "../../_utils/dummy-text.js";
 
 	let message = $state("");
 	let _intent = $state<string>("");
-	let intent = $derived<MessageIntent | undefined>((_intent as MessageIntent) || undefined);
+	let intent = $derived<MessageIntent | undefined>(
+		(_intent as MessageIntent) || undefined
+	);
+
+	let withIcon = $state(false);
 </script>
 
 <div class="space-y-6">
-	<DismissibleMessage {message} {intent} />
+	<DismissibleMessage {message} {intent} {withIcon} />
 
-	<div class="flex gap-2 items-center flex-wrap">
+	<div class="flex gap-4 items-center flex-wrap">
+		<FieldCheckbox bind:checked={withIcon} label="with icon" class="mb-0!" />
 		<FieldSelect
 			bind:value={_intent}
-			class="inline-block"
+			class="inline-block! mb-0!"
 			renderSize="sm"
 			options={[
 				{ value: "", label: "No intent (default)" },
@@ -31,30 +36,30 @@
 	<div class="mt-8 space-y-2">
 		<h3 class="font-semibold mb-4">Intent Examples (non-dismissible)</h3>
 
-		<DismissibleMessage message="Default message with no intent" onDismiss={false} />
+		<DismissibleMessage message="Default message with no intent" {withIcon} />
 
 		<DismissibleMessage
 			intent="info"
 			message="Info: This is an informational message"
-			onDismiss={false}
+			{withIcon}
 		/>
 
 		<DismissibleMessage
 			intent="success"
 			message="Success: Operation completed successfully"
-			onDismiss={false}
+			{withIcon}
 		/>
 
 		<DismissibleMessage
 			intent="warning"
 			message="Warning: Please review before continuing"
-			onDismiss={false}
+			{withIcon}
 		/>
 
 		<DismissibleMessage
 			intent="destructive"
 			message="Error: Something went wrong"
-			onDismiss={false}
+			{withIcon}
 		/>
 	</div>
 </div>

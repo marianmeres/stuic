@@ -133,6 +133,10 @@
 	min-height: var(--stuic-input-min-height-sm);
 }
 
+.stuic-input[data-size="sm"] select {
+	padding-right: 2.5rem;
+}
+
 .stuic-input[data-size="md"]
 	input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
 .stuic-input[data-size="md"] textarea,
@@ -146,6 +150,11 @@
 	min-height: var(--stuic-input-min-height-md);
 }
 
+.stuic-input[data-size="md"] select,
+.stuic-input:not([data-size]) select {
+	padding-right: 2.5rem;
+}
+
 .stuic-input[data-size="lg"]
 	input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
 .stuic-input[data-size="lg"] textarea,
@@ -153,6 +162,10 @@
 	padding: var(--stuic-input-padding-y-lg) var(--stuic-input-padding-x-lg);
 	font-size: var(--stuic-input-font-size-lg);
 	min-height: var(--stuic-input-min-height-lg);
+}
+
+.stuic-input[data-size="lg"] select {
+	padding-right: 2.5rem;
 }
 
 /* Label sizing */
@@ -232,7 +245,6 @@
    ============================================================================ */
 
 .stuic-input select {
-	padding-right: 2.5rem;
 	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
 	background-position: right 0.5rem center;
 	background-repeat: no-repeat;

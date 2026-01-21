@@ -1,5 +1,4 @@
 <script lang="ts" module>
-	import type { TW_COLORS } from "../../types.js";
 	import type { NotificationsStack } from "./notifications-stack.svelte.js";
 	import { notificationsDefaultIcons } from "./notifications-icons.js";
 
@@ -15,39 +14,34 @@
 		posXMobile?: NOTIFICATIONS_POSX;
 		posY?: NOTIFICATIONS_POSY;
 		posYMobile?: NOTIFICATIONS_POSY;
-		themeInfo?: TW_COLORS;
-		themeError?: TW_COLORS;
-		themeWarn?: TW_COLORS;
-		themeSuccess?: TW_COLORS;
-		noTheme?: boolean;
 		noIcons?: boolean;
-		classWrapY?: string;
-		classWrapX?: string;
-		class?: string;
-		classNotifCount?: string;
-		classNotifIcon?: string;
-		classNotifContent?: string;
-		classNotifButton?: string;
-		classNotifButtonX?: string;
-		buttonXStrokeWidth?: 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | 3.5 | 4;
-		classProgress?: string;
-		classProgressBar?: string;
+		noProgress?: boolean;
+		noXButton?: boolean;
 		forceAsHtml?: boolean;
 		ariaCloseLabel?: string;
 		duration?: number;
-		noProgress?: boolean;
-		noXButton?: boolean;
 		iconFns?: Partial<Record<keyof typeof notificationsDefaultIcons, CallableFunction>>;
+		// Class overrides
+		class?: string;
+		classWrapY?: string;
+		classWrapX?: string;
+		classNotifCount?: string;
+		classNotifIcon?: string;
+		classNotifContent?: string;
+		classProgress?: string;
+		classProgressBar?: string;
+		el?: HTMLDivElement;
 	}
 </script>
 
 <script lang="ts">
 	import { fade } from "svelte/transition";
 	import { twMerge } from "../../utils/tw-merge.js";
+	import Button from "../Button/Button.svelte";
 	import Thc from "../Thc/Thc.svelte";
 	import X from "../X/X.svelte";
 	import "./index.css";
-	import type { Notification, NotificationType } from "./notifications-stack.svelte.js";
+	import type { Notification } from "./notifications-stack.svelte.js";
 	import Progress from "../Progress/Progress.svelte";
 
 	const DEFAULT: {
@@ -81,33 +75,23 @@
 		posY = DEFAULT.posY,
 		posYMobile = DEFAULT.posYMobile,
 		//
-		themeInfo = "neutral",
-		themeError = "red",
-		themeWarn = "yellow",
-		themeSuccess = "green",
-		// use truthy `noTheme` if manual css-only var customization is needed
-		noTheme,
 		noIcons,
-		//
-		classWrapY,
-		classWrapX,
-		class: classNotifBox,
-		classNotifCount,
-		classNotifIcon,
-		classNotifContent,
-		classNotifButton,
-		classNotifButtonX,
-		buttonXStrokeWidth = 3,
-		//
-		classProgress,
-		classProgressBar,
-		//
+		noProgress,
+		noXButton,
 		forceAsHtml,
 		ariaCloseLabel = "Close",
 		duration = 200,
-		noProgress,
-		noXButton,
 		iconFns = {},
+		//
+		class: classNotifBox,
+		classWrapY,
+		classWrapX,
+		classNotifCount,
+		classNotifIcon,
+		classNotifContent,
+		classProgress,
+		classProgressBar,
+		el = $bindable(),
 	}: Props = $props();
 
 	let popoverEl: HTMLDivElement | null = $state(null);
@@ -126,74 +110,6 @@
 		if (n.iconFn === false) return "";
 		if (typeof n.iconFn === "function") return n.iconFn();
 		return (_iconFns?.[n.type] as any)?.();
-	};
-
-	const _classWrapX = `
-        fixed z-50 flex flex-row inset-0
-        pointer-events-none bg-transparent`;
-
-	const _classWrapY = `
-        p-4 space-y-4
-        flex flex-col inset-0
-        w-full sm:w-auto
-        pointer-events-none bg-transparent`;
-
-	const _classNotifBox = `
-        relative flex
-        pointer-events-auto
-        w-full sm:w-sm max-w-full sm:max-w-sm
-        rounded-lg
-        shadow-lg
-        border border-(--stuic-notification-border)
-        bg-(--stuic-notification-bg) text-(--stuic-notification-text)`;
-
-	const _classNotifCount = `
-        absolute -top-2 -right-2
-        w-auto h-auto
-        flex items-center justify-center
-        px-2 py-1 rounded-full
-        leading-none text-xs
-        bg-neutral-950 text-neutral-50`;
-
-	const _classNotifIcon = `
-        flex items-center justify-center
-        pt-4 pr-0 pb-4 pl-4
-        text-neutral-200`;
-
-	const _classNotifContent = `
-        flex-1
-        flex flex-col justify-center
-        tracking-tight
-        pl-4 pr-1 py-3`;
-
-	const _classNotifButton = `
-        flex flex-col items-center justify-center
-        leading-none
-        px-3
-        hover:bg-neutral-950/10
-        focus-visible:bg-neutral-950/10 focus-visible:outline-none focus-visible:ring-0
-        group
-        rounded-tr-md rounded-br-md`;
-
-	const _classNotifButtonX = `opacity-75 group-hover:opacity-100`;
-
-	const _classProgress = `absolute inset-0 size-full bg-transparent rounded-tl-md rounded-bl-md`;
-	const _classProgressBar = `bg-white/10 dark:bg-white/10 size-full rounded-tl-md rounded-bl-md`;
-
-	const _buildTheme = (type: NotificationType) => {
-		if (noTheme) return "";
-		let theme =
-			{
-				info: themeInfo,
-				error: themeError,
-				success: themeSuccess,
-				warn: themeWarn,
-			}[type] || "info";
-		return [
-			`--stuic-notification-bg: var(--color-${theme}-700);`,
-			`--stuic-notification-text: var(--color-${theme}-50);`,
-			`--stuic-notification-border: var(--color-${theme}-800);`,
-		].join("");
 	};
 
 	// Manage popover visibility based on notifications
@@ -222,39 +138,48 @@
 >
 	<div
 		class={twMerge(
-			"stuic-notifs wrap-x",
-			_classWrapX,
+			"stuic-notifs fixed z-50 flex flex-row inset-0 pointer-events-none bg-transparent",
 			XMAP[x],
 			XMAP_M[xMobile],
 			classWrapX
 		)}
 	>
-		<div class={twMerge("wrap-y", _classWrapY, YMAP_M[yMobile], YMAP[y], classWrapY)}>
+		<div
+			class={twMerge(
+				"flex flex-col inset-0 w-full sm:w-auto pointer-events-none bg-transparent",
+				"p-4",
+				YMAP_M[yMobile],
+				YMAP[y],
+				classWrapY
+			)}
+			style="gap: var(--stuic-notification-gap);"
+		>
 			{#each notifications.stack as n (n.id)}
 				{@const iconHtml = maybeIcon(n)}
 				{@const showXButton = !noXButton || n.ttl > 1000}
 				<div
-					class={twMerge("box", _classNotifBox, classNotifBox)}
+					bind:this={el}
+					class={twMerge("stuic-notification", classNotifBox)}
+					data-type={n.type}
 					transition:fade|global={{ duration }}
 					role="alert"
-					style={_buildTheme(n.type)}
 				>
 					{#if n.ttl && !noProgress}
 						<Progress
 							progress={100 - n._ttlProgress * 100}
-							class={twMerge(_classProgress, classProgress)}
-							classBar={twMerge(_classProgressBar, classProgressBar)}
+							class={twMerge("progress", classProgress)}
+							classBar={twMerge("progress-bar", classProgressBar)}
 							styleBar="transition-duration: {notifications.options.disposeInterval}ms;"
 						/>
 					{/if}
 
 					{#if n.count > 1}
-						<div class={twMerge("count", _classNotifCount, classNotifCount)}>
+						<div class={twMerge("count", classNotifCount)}>
 							{n.count}
 						</div>
 					{/if}
 					{#if !noIcons && iconHtml}
-						<div class={twMerge("icon", _classNotifIcon, classNotifIcon)}>
+						<div class={twMerge("icon hidden! sm:block!", classNotifIcon)}>
 							{@html iconHtml}
 						</div>
 					{/if}
@@ -262,9 +187,8 @@
 					<div
 						class={twMerge(
 							"content",
-							_classNotifContent,
-							classNotifContent,
-							!showXButton && "pr-4"
+							!showXButton && "no-close-button",
+							classNotifContent
 						)}
 					>
 						<Thc
@@ -276,9 +200,9 @@
 					</div>
 
 					{#if showXButton}
-						<button
-							type="button"
-							class={twMerge("button", _classNotifButton, classNotifButton)}
+						<Button
+							unstyled
+							class="close-button"
 							aria-label={ariaCloseLabel}
 							onclick={(e) => {
 								e.preventDefault();
@@ -287,11 +211,8 @@
 								notifications.removeById(n.id);
 							}}
 						>
-							<X
-								class={twMerge("x", _classNotifButtonX, classNotifButtonX)}
-								strokeWidth={buttonXStrokeWidth}
-							/>
-						</button>
+							<X />
+						</Button>
 					{/if}
 				</div>
 			{/each}

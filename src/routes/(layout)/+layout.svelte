@@ -5,11 +5,22 @@
 	import { ColorScheme, ColorSchemeLocal, Breakpoint, ucfirst } from "$lib/index.js";
 	import { base } from "$app/paths";
 	import { themes, themeNames } from "./theme-preview/themes-list.js";
+	import { browser } from "$app/environment";
+
+	const THEME_STORAGE_KEY = "stuic-selected-theme";
 
 	let theme = $state(ColorScheme.getLocalValue(ColorScheme.LIGHT));
 
-	let selectedTheme = $state("neutral");
+	let selectedTheme = $state(
+		browser ? localStorage.getItem(THEME_STORAGE_KEY) || "neutral" : "neutral"
+	);
 	let themeCss = $derived(themes[selectedTheme]);
+
+	$effect(() => {
+		if (browser) {
+			localStorage.setItem(THEME_STORAGE_KEY, selectedTheme);
+		}
+	});
 
 	const toggleTheme = () => {
 		ColorScheme.toggle();
