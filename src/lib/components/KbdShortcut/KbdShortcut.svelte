@@ -40,18 +40,16 @@
 	import { isMac } from "../../utils/is-mac.js";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import { ucfirst } from "../../utils/ucfirst.js";
+	import "./index.css";
 
 	let { class: classProp, metas, keys, forcedOs }: Props = $props();
 
 	function wrap(s: string, mac: boolean) {
-		const cls = ["pr-0.5 font-mono tracking-tight"];
 		const sym = mac ? macSymbol[s as KnownMeta] : otherSymbol[s as KnownMeta];
 		if (sym) {
-			s = sym;
-			cls.push("font-sans pr-0");
+			return `<span class="stuic-kbd-symbol">${sym}</span>`;
 		}
-		const _class = twMerge(...cls);
-		return `<span class="${_class}">${ucfirst(s)}</span>`;
+		return `<span class="stuic-kbd-key">${ucfirst(s)}</span>`;
 	}
 
 	async function get_meta_key() {
@@ -73,13 +71,8 @@
 	}
 </script>
 
-<kbd
-	class={twMerge(
-		"text-sm leading-0 space-x-0.5 rounded px-1 py-0 outline outline-neutral-400",
-		classProp
-	)}
->
+<kbd class={twMerge("stuic-kbd", classProp)}>
 	{#await get_meta_key() then metaKey}
-		<span class="font-sans">{@html metaKey}</span><span>{keys}</span>
+		{@html metaKey}<span class="stuic-kbd-key">{keys}</span>
 	{/await}
 </kbd>
