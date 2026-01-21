@@ -15,9 +15,9 @@
 	let { class: classProp, children, theme }: Props = $props();
 
 	const _default = `
-		stuic-twcheck bg-twcheck-bg 
-		inline-block px-2 
-		text-yellow-300 sm:text-white 
+		stuic-twcheck bg-(--stuic-twcheck-bg)
+		inline-block px-2
+		text-yellow-300 sm:text-white
 		text-base sm:text-2xl
 		sm:border-2 border-teal-400
 	`;
@@ -25,7 +25,7 @@
 	const _buildTheme = (theme?: string) => {
 		// simulating missing css var
 		return theme
-			? `--color-twcheck-bg: var(--color-foo-bar-baz, var(--color-${theme}-600));`
+			? `--stuic-twcheck-bg: var(--color-foo-bar-baz, var(--color-${theme}-600));`
 			: "";
 	};
 </script>

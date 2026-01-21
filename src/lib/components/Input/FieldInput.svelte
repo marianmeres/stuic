@@ -126,7 +126,7 @@
 		bind:this={input}
 		{type}
 		{id}
-		class={twMerge("form-input", renderSize, classInput)}
+		class={twMerge(classInput)}
 		use:trim={() => ({
 			enabled: useTrim,
 			setValue: (v: string) => useTrim && (value = v),

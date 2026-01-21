@@ -1,120 +1,79 @@
 <script lang="ts" module>
+	import type { HTMLButtonAttributes, HTMLAnchorAttributes } from "svelte/elements";
 	import type { Snippet } from "svelte";
-	import type { HTMLButtonAttributes } from "svelte/elements";
+	import type { IntentColorKey } from "../../utils/design-tokens.js";
+
+	export type ButtonVariant = "solid" | "outline" | "ghost" | "soft" | "link";
+	export type ButtonSize = "sm" | "md" | "lg" | "xl";
 
 	export interface Props extends Omit<HTMLButtonAttributes, "children"> {
-		/** Style variant (primary = accent colors, secondary = neutral) */
-		variant?: "primary" | "secondary" | string;
-		size?: "sm" | "md" | "lg" | string;
-		/** Reduce text contrast for less emphasis */
+		/** Color intent (semantic meaning) */
+		intent?: IntentColorKey;
+		/** Visual variant (how colors are applied) */
+		variant?: ButtonVariant | string;
+		/** Size preset */
+		size?: ButtonSize | string;
+		/** Reduce emphasis */
 		muted?: boolean;
-		noshadow?: boolean;
-		noborder?: boolean;
+		/** 3D push effect */
+		raised?: boolean;
 		/** Skip all default styling, use only custom classes */
 		unstyled?: boolean;
-		/** Transparent bg, styled on hover */
-		inverse?: boolean;
+		/** Render as rounded-full */
+		roundedFull?: boolean;
+		/** Render as aspect ratio 1 */
+		aspect1?: boolean;
+		/** Additional CSS classes */
 		class?: string;
 		/** Render as anchor tag instead of button */
 		href?: string;
+		/** Content snippet */
 		children?: Snippet<[{ checked?: boolean }]>;
-		/** Enable switch/toggle behavior (uses aria-checked) */
-		roleSwitch?: boolean;
+		/** Toggle state for switch behavior */
 		checked?: boolean;
-		el?: Element;
-		/*  */
-		tooltip?: TooltipConfig;
+		/** Enable switch/toggle behavior */
+		roleSwitch?: boolean;
+		/** Bindable element reference */
+		el?: HTMLElement;
+		/** Optional tooltip configuration or direct content */
+		tooltip?: string | TooltipConfig;
+		/** Is this button a "X" button (this is a pragmatic convenience) */
+		x?: boolean | XProps;
+		/** Optional out-of-the-box spinner support  */
+		spinner?: boolean | THC;
+		/** Show only spinner when spinner? */
+		spinnerOnly?: boolean;
 	}
-
-	export interface ButtonPresetClasses {
-		size: Record<string, string>;
-		variant: Record<string, string>;
-		muted: string;
-		shadow: string;
-		inverse: string;
-	}
-
-	export const BUTTON_STUIC_BASE_CLASSES = `
-		bg-button-bg text-button-text
-		dark:bg-button-bg-dark dark:text-button-text-dark
-		text-base text-center
-		leading-none
-		border-1
-		border-button-border dark:border-button-border-dark
-		rounded-lg
-		inline-flex items-center justify-center gap-x-2
-		px-4 py-3
-		select-none
-		min-h-[44px] min-w-[44px]
-
-		hover:brightness-105
-		active:brightness-95
-		disabled:hover:brightness-100 disabled:opacity-50
-
-		focus:brightness-105
-		focus:border-button-border-focus focus:dark:border-button-border-focus-dark
-
-		        focus:outline-4         focus:outline-black/10         focus:dark:outline-white/20
-		focus-visible:outline-4 focus-visible:outline-black/10 focus-visible:dark:outline-white/20
-	`;
-
-	export const BUTTON_STUIC_PRESET_CLASSES: ButtonPresetClasses = {
-		size: {
-			sm: `text-sm rounded-md px-3 py-2 min-h-none min-w-none`,
-			lg: `text-lg rounded-xl`,
-		},
-		variant: {
-			primary: `font-medium`,
-			secondary: `
-				bg-neutral-100 dark:bg-neutral-600
-				text-black/60 dark:text-white/80
-				shadow-[1px_1px_0_0_rgba(0_0_0_/_.2)]
-				active:shadow-none active:translate-[1px]
-				focus:shadow-black/30
-			`,
-		},
-		muted: `text-black/70 dark:text-white/70`,
-		shadow: `
-			shadow-[1px_1px_0_0_rgba(0_0_0_/_.4)]
-			active:shadow-none active:translate-[1px]
-			disabled:shadow-none disabled:active:shadow-none disabled:active:translate-none
-		`,
-		inverse: `
-			bg-transparent dark:bg-transparent
-			hover:bg-button-bg hover:dark:bg-button-bg-dark
-			hover:brightness-100
-		`,
-	};
 </script>
 
 <script lang="ts">
-	import { twMerge } from "../../utils/tw-merge.js";
-	//
 	import "./index.css";
-	import { tooltip, type TooltipConfig } from "../../actions/index.js";
-
+	import { twMerge } from "../../utils/tw-merge.js";
+	import { tooltip, type TooltipConfig } from "../../actions/tooltip/tooltip.svelte.js";
+	import { X, type XProps } from "../X/index.js";
+	import Thc, { type THC } from "../Thc/Thc.svelte";
+	import Spinner from "../Spinner/Spinner.svelte";
 	let {
-		variant,
-		size,
 		class: classProp,
-		muted,
-		noshadow,
-		noborder,
-		inverse,
-		unstyled,
+		intent,
+		size = "md",
+		variant = "solid",
 		href,
 		children,
-		//
-		roleSwitch = false,
 		checked = $bindable(false),
+		roleSwitch = false,
 		el = $bindable(),
-		//
-		tooltip: tooltipConfig = () => ({ enabled: false }),
-		//
+		muted = false,
+		raised = false,
+		unstyled = false,
+		roundedFull = false,
+		aspect1 = false,
+		tooltip: _tooltip,
+		x,
+		spinner,
+		spinnerOnly,
 		...rest
 	}: Props = $props();
-
-	// let button: HTMLButtonElement | undefined = $state();
 
 	$effect(() => {
 		const toggle = () => (checked = !checked);
@@ -124,51 +83,85 @@
 		return () => el?.removeEventListener("click", toggle);
 	});
 
-	const _base = BUTTON_STUIC_BASE_CLASSES;
-	const _preset: any = BUTTON_STUIC_PRESET_CLASSES;
+	// Build class string - add base class for CSS targeting unless unstyled
+	let _class = $derived(unstyled ? classProp : twMerge("stuic-button", classProp));
 
-	// see button.css
-	let _class = $derived(
-		[
-			// "namespace" (so we can target it in css files when customizing)
-			"stuic-button",
-			// pass all styling props as classnames as well
-			variant,
-			size,
-			muted && "muted",
-			noshadow && "no-shadow",
-			noborder && "border-none",
-			inverse && "inverse",
-			// now, attach the default tw classes (unless not explicitly forbidden)
-			!unstyled && _base,
-			!unstyled && size && _preset.size[size],
-			!unstyled && variant && _preset.variant[variant],
-			!unstyled && muted && _preset.muted,
-			!unstyled && !noshadow && _preset.shadow,
-			!unstyled && inverse && _preset.inverse,
-		]
-			.filter(Boolean)
-			.join(" ")
-	);
+	let _tooltipConfig: TooltipConfig = $derived.by(() => {
+		if (typeof _tooltip === "string") {
+			return () => ({ enabled: true, content: _tooltip });
+		}
+		return _tooltip ? _tooltip : () => ({ enabled: false });
+	});
+
+	let _xProps: undefined | XProps = $derived.by(() => {
+		if (x) {
+			return typeof x === "boolean" ? {} : x;
+		}
+	});
+
+	// "x" implicitly set aspect1
+	let _isAspect1 = $derived(aspect1 || _xProps);
 </script>
 
 {#if href}
 	<a
 		{href}
 		bind:this={el}
-		class={twMerge(_class, classProp)}
-		use:tooltip={tooltipConfig}
-		{...rest as any}
+		class={_class}
+		data-intent={!unstyled ? intent : undefined}
+		data-variant={!unstyled ? variant : undefined}
+		data-size={!unstyled ? size : undefined}
+		data-muted={!unstyled && muted ? "true" : undefined}
+		data-raised={!unstyled && raised ? "true" : undefined}
+		data-checked={roleSwitch && checked ? "true" : undefined}
+		data-rounded-full={!unstyled && roundedFull ? "true" : undefined}
+		data-aspect1={!unstyled && _isAspect1 ? "true" : undefined}
+		use:tooltip={_tooltipConfig}
+		{...rest as HTMLAnchorAttributes}
 	>
-		{@render children?.({})}
+		{#if _xProps}
+			<X {..._xProps} />
+		{:else}
+			{#if spinner}
+				{#if typeof spinner === "boolean"}
+					<Spinner />
+				{:else}
+					<Thc thc={spinner} />
+				{/if}
+			{/if}
+			{#if !spinner || (spinner && !spinnerOnly)}
+				{@render children?.({ checked })}
+			{/if}
+		{/if}
 	</a>
 {:else}
 	<button
 		bind:this={el}
-		class={twMerge(_class, classProp)}
-		use:tooltip={tooltipConfig}
+		class={_class}
+		data-intent={!unstyled ? intent : undefined}
+		data-variant={!unstyled ? variant : undefined}
+		data-size={!unstyled ? size : undefined}
+		data-muted={!unstyled && muted ? "true" : undefined}
+		data-raised={!unstyled && raised ? "true" : undefined}
+		data-checked={roleSwitch && checked ? "true" : undefined}
+		data-rounded-full={!unstyled && roundedFull ? "true" : undefined}
+		data-aspect1={!unstyled && _isAspect1 ? "true" : undefined}
+		use:tooltip={_tooltipConfig}
 		{...rest}
 	>
-		{@render children?.({ checked })}
+		{#if _xProps}
+			<X {..._xProps} />
+		{:else}
+			{#if spinner}
+				{#if typeof spinner === "boolean"}
+					<Spinner />
+				{:else}
+					<Thc thc={spinner} />
+				{/if}
+			{/if}
+			{#if !spinner || (spinner && !spinnerOnly)}
+				{@render children?.({ checked })}
+			{/if}
+		{/if}
 	</button>
 {/if}

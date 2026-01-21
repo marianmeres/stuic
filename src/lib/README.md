@@ -53,6 +53,7 @@ npm install @marianmeres/stuic
 - **Button** - Styled button with variants (primary, secondary, ghost)
 - **ButtonGroupRadio** - Radio-style button group
 - **Switch** - Toggle switch component
+- **ListItemButton** - Versatile button for list contexts (dropdowns, menus)
 - **X** - Close/dismiss button icon
 
 ### Feedback & Notifications
@@ -62,10 +63,13 @@ npm install @marianmeres/stuic
 - **DismissibleMessage** - Closable message banner
 - **Progress** - Progress bar indicator
 - **Spinner** - Loading spinner animation
+- **Skeleton** - Loading placeholder with shimmer animation
 
-### Navigation & Interaction
+### Navigation & Menus
 
 - **CommandMenu** - Keyboard-driven command palette
+- **DropdownMenu** - Anchored dropdown menu with keyboard navigation
+- **TabbedMenu** - Tab-based navigation component
 - **TypeaheadInput** - Autocomplete text input
 - **KbdShortcut** - Keyboard shortcut display
 
@@ -76,17 +80,22 @@ npm install @marianmeres/stuic
 - **SlidingPanels** - Animated panel transitions
 - **HoverExpandableWidth** - Expand content on hover
 - **AnimatedElipsis** - Animated loading dots
+- **Collapsible** - Expandable/collapsible content sections
+- **AssetsPreview** - Preview uploaded files/images
+- **Circle** - Circular container/badge component
 
 ## Actions (use:action)
 
 ```svelte
 <input use:autogrow use:validate={{ required: true }} />
+<button use:tooltip aria-label="Tooltip text">Hover me</button>
 ```
 
 - **autogrow** - Auto-expand textarea height
 - **validate** - Form validation with custom validators
 - **focusTrap** - Trap focus within element
-- **tooltip** - Tooltip from aria-label
+- **tooltip** - Tooltip from aria-label (CSS anchor positioning)
+- **popover** - Anchored popover (CSS anchor positioning)
 - **fileDropzone** - Drag-and-drop file upload
 - **highlightDragover** - Visual feedback for drag operations
 
@@ -104,30 +113,44 @@ import { debounce, throttle, twMerge, localStorageState } from "@marianmeres/stu
 - **getId** - Generate unique IDs
 - **EventEmitter** - Typed event emitter
 
-## Theming
-
-Components use CSS custom properties for theming. Override in your CSS:
-
-```css
-:root {
-	--color-button-bg: theme("colors.blue.500");
-	--color-button-text: white;
-	--color-input-accent: theme("colors.blue.500");
-	/* ... */
-}
-```
-
-See `src/lib/theme.css` for all available custom properties.
-
 ## TypeScript
 
 All components export their Props types:
 
 ```ts
-import type { ButtonProps, ModalProps } from "@marianmeres/stuic";
+import type { ButtonProps, ModalProps, ListItemButtonProps } from "@marianmeres/stuic";
 
 const buttonConfig: Partial<ButtonProps> = {
 	variant: "primary",
 	size: "lg",
 };
 ```
+
+## Component Token Reference
+
+Each component with customizable styling defines CSS custom properties:
+
+| Component | Prefix | Key Properties |
+|-----------|--------|----------------|
+| Button | `--stuic-button-*` | `bg`, `text`, `border`, `border-focus` |
+| Switch | `--stuic-switch-*` | `accent` |
+| Input | `--stuic-input-*` | `accent`, `accent-error` |
+| Progress | `--stuic-progress-*` | `bg`, `accent` |
+| Skeleton | `--stuic-skeleton-*` | `bg`, `bg-highlight`, `duration` |
+| ListItemButton | `--stuic-list-item-button-*` | `bg`, `text`, `border`, plus `-hover`, `-active`, `-focus` states |
+| ButtonGroupRadio | `--stuic-button-group-*` | `bg`, `text`, `border`, `accent`, `bg-active`, `text-active` |
+| TabbedMenu | `--stuic-tabbed-menu-*` | `tab-bg`, `tab-text`, `tab-bg-active`, `tab-text-active`, `border` |
+| DismissibleMessage | `--stuic-dismissible-message-*` | `bg`, `text`, `border` |
+| Notifications | `--stuic-notification-*` | `bg`, `text`, `border` |
+| Tooltip | `--stuic-tooltip-*` | `bg`, `text` |
+| Popover | `--stuic-popover-*` | `bg`, `text`, `border` |
+
+### CSS Variable Naming Convention
+
+**Pattern:** `--stuic-{component}-{element?}-{property}-{state?}`
+
+- Full component names (no abbreviations)
+- State at end: `--stuic-button-bg-hover`
+- No `-dark` suffix (use `.dark {}` selector)
+
+See `AGENTS.md` for complete development guidelines.

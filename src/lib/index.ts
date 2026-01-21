@@ -51,6 +51,7 @@ export * from "./components/Spinner/index.js";
 export * from "./components/Switch/index.js";
 export * from "./components/TabbedMenu/index.js";
 export * from "./components/Thc/index.js";
+export * from "./components/ThemePreview/index.js";
 export * from "./components/TwCheck/index.js";
 export * from "./components/TypeaheadInput/index.js";
 export * from "./components/X/index.js";

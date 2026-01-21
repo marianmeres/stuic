@@ -1,0 +1,128 @@
+/* ============================================================================
+   AVATAR COMPONENT TOKENS
+   Override globally: :root { --stuic-avatar-radius: 0.5rem; }
+   Override locally:  <Avatar style="--stuic-avatar-radius: 0;">
+   ============================================================================ */
+
+:root {
+	/* Component-level customization tokens */
+	--stuic-avatar-radius: 9999px;
+	--stuic-avatar-font-weight: var(--font-weight-medium);
+	--stuic-avatar-transition: 150ms;
+
+	/* Default colors (uses muted role colors) */
+	--stuic-avatar-bg: var(--stuic-color-muted);
+	--stuic-avatar-fg: var(--stuic-color-muted-foreground);
+
+	/* Focus ring (for interactive/button mode) */
+	--stuic-avatar-ring-width: 3px;
+	--stuic-avatar-ring-offset: 0px;
+	--stuic-avatar-ring-color: var(--stuic-color-ring);
+
+	/* Size: sm */
+	--stuic-avatar-size-sm: calc(var(--spacing) * 8);
+	--stuic-avatar-font-size-sm: var(--text-xs);
+
+	/* Size: md */
+	--stuic-avatar-size-md: calc(var(--spacing) * 10);
+	--stuic-avatar-font-size-md: var(--text-base);
+
+	/* Size: lg */
+	--stuic-avatar-size-lg: calc(var(--spacing) * 12);
+	--stuic-avatar-font-size-lg: var(--text-lg);
+
+	/* Size: xl */
+	--stuic-avatar-size-xl: calc(var(--spacing) * 14);
+	--stuic-avatar-font-size-xl: var(--text-xl);
+
+	/* Size: 2xl */
+	--stuic-avatar-size-2xl: calc(var(--spacing) * 16);
+	--stuic-avatar-font-size-2xl: var(--text-2xl);
+}
+
+/* ============================================================================
+   BASE STYLES
+   ============================================================================ */
+
+.stuic-avatar {
+	/* Layout */
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	overflow: hidden;
+
+	/* Typography */
+	font-weight: var(--stuic-avatar-font-weight);
+
+	/* Box model */
+	border-radius: var(--stuic-avatar-radius);
+
+	/* Colors (can be overridden by autoColor inline styles) */
+	background: var(--stuic-avatar-bg);
+	color: var(--stuic-avatar-fg);
+
+	/* Transition for interactive mode */
+	transition:
+		background var(--stuic-avatar-transition),
+		color var(--stuic-avatar-transition),
+		opacity var(--stuic-avatar-transition);
+}
+
+/* ============================================================================
+   SIZE VARIANTS
+   ============================================================================ */
+
+.stuic-avatar[data-size="sm"] {
+	width: var(--stuic-avatar-size-sm);
+	height: var(--stuic-avatar-size-sm);
+	font-size: var(--stuic-avatar-font-size-sm);
+}
+
+.stuic-avatar[data-size="md"] {
+	width: var(--stuic-avatar-size-md);
+	height: var(--stuic-avatar-size-md);
+	font-size: var(--stuic-avatar-font-size-md);
+}
+
+.stuic-avatar[data-size="lg"] {
+	width: var(--stuic-avatar-size-lg);
+	height: var(--stuic-avatar-size-lg);
+	font-size: var(--stuic-avatar-font-size-lg);
+}
+
+.stuic-avatar[data-size="xl"] {
+	width: var(--stuic-avatar-size-xl);
+	height: var(--stuic-avatar-size-xl);
+	font-size: var(--stuic-avatar-font-size-xl);
+}
+
+.stuic-avatar[data-size="2xl"] {
+	width: var(--stuic-avatar-size-2xl);
+	height: var(--stuic-avatar-size-2xl);
+	font-size: var(--stuic-avatar-font-size-2xl);
+}
+
+/* ============================================================================
+   INTERACTIVE MODE (button)
+   ============================================================================ */
+
+.stuic-avatar[data-interactive] {
+	cursor: pointer;
+	user-select: none;
+	-webkit-tap-highlight-color: transparent;
+}
+
+.stuic-avatar[data-interactive]:hover {
+	opacity: 0.85;
+}
+
+.stuic-avatar[data-interactive]:active {
+	opacity: 0.75;
+}
+
+/* Focus styles */
+.stuic-avatar[data-interactive]:focus-visible {
+	outline: var(--stuic-avatar-ring-width) solid var(--stuic-avatar-ring-color);
+	outline-offset: var(--stuic-avatar-ring-offset);
+}

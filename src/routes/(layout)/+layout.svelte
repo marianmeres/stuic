@@ -4,8 +4,23 @@
 	import { page } from "$app/state";
 	import { ColorScheme, ColorSchemeLocal, Breakpoint, ucfirst } from "$lib/index.js";
 	import { base } from "$app/paths";
+	import { themes, themeNames } from "./theme-preview/themes-list.js";
+	import { browser } from "$app/environment";
+
+	const THEME_STORAGE_KEY = "stuic-selected-theme";
 
 	let theme = $state(ColorScheme.getLocalValue(ColorScheme.LIGHT));
+
+	let selectedTheme = $state(
+		browser ? localStorage.getItem(THEME_STORAGE_KEY) || "neutral" : "neutral"
+	);
+	let themeCss = $derived(themes[selectedTheme]);
+
+	$effect(() => {
+		if (browser) {
+			localStorage.setItem(THEME_STORAGE_KEY, selectedTheme);
+		}
+	});
 
 	const toggleTheme = () => {
 		ColorScheme.toggle();
@@ -23,6 +38,10 @@
 			.filter((v) => !v.startsWith("("))
 	);
 </script>
+
+<svelte:head>
+	{@html `<style id="dynamic-theme">${themeCss}</style>`}
+</svelte:head>
 
 <ColorSchemeLocal />
 
@@ -46,6 +65,15 @@
 			<span class="mr-4 opacity-50">
 				{breakpoint.current}
 			</span>
+
+			<select
+				bind:value={selectedTheme}
+				class="mr-2 px-2 py-1 rounded border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900"
+			>
+				{#each themeNames as t}
+					<option value={t}>{t}</option>
+				{/each}
+			</select>
 
 			<button onclick={toggleTheme}>
 				{theme === ColorScheme.LIGHT ? ColorScheme.DARK : ColorScheme.LIGHT}

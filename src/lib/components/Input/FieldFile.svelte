@@ -126,12 +126,7 @@
 			bind:this={input}
 			{id}
 			class={twMerge(
-				"form-input",
-				"block border-0 w-full",
-				"file:rounded file:border-0 file:mr-4 file:bg-neutral-200",
-				"file:px-2  file:cursor-pointer",
-				"focus-visible:ring-0 focus:ring-0 focus:leading-0",
-				renderSize,
+				"block w-full",
 				classInput
 			)}
 			use:highlightDragover={() => ({ classes: ["outline-dashed"] })}

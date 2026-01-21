@@ -30,8 +30,8 @@
 	class="md:border"
 	classInner=""
 	classMain="p-4"
-	classHeader="p-4 bg-neutral-200 dark:bg-black border-b flex items-center"
-	classFooter="p-4 bg-neutral-100 dark:bg-black border-t flex items-center"
+	classHeader="p-4 bg-neutral-300 dark:bg-black border-b flex items-center"
+	classFooter="p-4 bg-neutral-300 dark:bg-black border-t flex items-center"
 >
 	<!-- noScrollLock -->
 	{#snippet header()}

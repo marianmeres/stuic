@@ -69,3 +69,18 @@ A progress indicator available as either a horizontal bar or circular display.
   classBar="transition-all duration-300"
 />
 ```
+
+## CSS Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-progress-bg` | `--stuic-surface-interactive` | Track background |
+| `--stuic-progress-accent` | `--stuic-accent` | Progress bar fill color |
+
+### Example Override
+
+```css
+:root {
+  --stuic-progress-accent: var(--color-green-500);
+}
+```

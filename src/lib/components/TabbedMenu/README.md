@@ -51,29 +51,34 @@ interface TabbedMenuItem {
 
 ## CSS Variables
 
+Customize the component's appearance using CSS custom properties:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-tabbed-menu-tab-bg` | `--stuic-surface-sunken` | Tab background |
+| `--stuic-tabbed-menu-tab-text` | `--stuic-text-muted` | Tab text color |
+| `--stuic-tabbed-menu-tab-bg-active` | `--stuic-surface` | Active tab background |
+| `--stuic-tabbed-menu-tab-text-active` | `--stuic-text` | Active tab text color |
+| `--stuic-tabbed-menu-border` | `--stuic-border` | Border color |
+
+### Example Override
+
 ```css
-/* Tab button */
---color-tabbed-menu-tab-bg
---color-tabbed-menu-tab-bg-dark
---color-tabbed-menu-tab-text
---color-tabbed-menu-tab-text-dark
-
-/* Active tab */
---color-tabbed-menu-tab-active-bg
---color-tabbed-menu-tab-active-bg-dark
---color-tabbed-menu-tab-active-text
---color-tabbed-menu-tab-active-text-dark
-
-/* Border */
---color-tabbed-menu-border
---color-tabbed-menu-border-dark
-
-/* Sizing */
---tabbed-menu-border-radius: 0.5rem
---tabbed-menu-padding-x: 1rem
---tabbed-menu-padding-y: 0.5rem
---tabbed-menu-gap: 0.25rem
+:root {
+  --stuic-tabbed-menu-tab-bg-active: var(--color-indigo-100);
+  --stuic-tabbed-menu-tab-text-active: var(--color-indigo-900);
+}
 ```
+
+### Legacy Variables (Backwards Compatibility)
+
+The following legacy variable names still work as aliases:
+
+| Legacy Name | New Name |
+|-------------|----------|
+| `--color-tabbed-menu-tab-bg` | `--stuic-tabbed-menu-tab-bg` |
+| `--color-tabbed-menu-tab-active-bg` | `--stuic-tabbed-menu-tab-bg-active` |
+| `--color-tabbed-menu-border` | `--stuic-tabbed-menu-border` |
 
 ## Keyboard Navigation
 

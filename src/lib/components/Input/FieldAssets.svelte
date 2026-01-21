@@ -37,6 +37,7 @@
 	import SpinnerCircleOscillate from "../Spinner/SpinnerCircleOscillate.svelte";
 	import { isTHCNotEmpty, type THC } from "../Thc/Thc.svelte";
 	import InputWrap from "./_internal/InputWrap.svelte";
+	import Button from "../Button/Button.svelte";
 
 	const clog = createClog("FieldAssets");
 
@@ -324,7 +325,6 @@
 			clog.warn(`${e}`);
 		}
 	});
-
 </script>
 
 {#snippet default_render()}
@@ -386,17 +386,20 @@
 					</button>
 				</div>
 			{/each}
-			<button
+			<Button
 				type="button"
 				onclick={(e) => {
 					e.preventDefault();
 					e.stopPropagation();
 					inputEl.click();
 				}}
-				class={[objectSize, " grid place-content-center group", classControls]}
+				class={["m-4", classControls].join(" ")}
+				roundedFull
+				aspect1
+				variant="ghost"
 			>
-				{@html iconAdd({ size: 32, class: "opacity-75 group-hover:opacity-100" })}
-			</button>
+				{@html iconAdd({ size: 24 })}
+			</Button>
 		</div>
 	{/if}
 {/snippet}

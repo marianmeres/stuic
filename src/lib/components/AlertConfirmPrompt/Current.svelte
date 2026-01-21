@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { tick } from "svelte";
+	import type { IntentColorKey } from "../../utils/design-tokens.js";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import Button from "../Button/Button.svelte";
 	import FieldInput from "../Input/FieldInput.svelte";
@@ -11,6 +11,7 @@
 		AlertConfirmPromptType,
 		type AlertConfirmPromptStack,
 	} from "./alert-confirm-prompt-stack.svelte.js";
+	import "./index.css";
 
 	const { ALERT, CONFIRM, PROMPT } = AlertConfirmPromptType;
 	const isFn = (v: any) => typeof v === "function";
@@ -37,9 +38,9 @@
 		classButtonCancel?: string;
 		classButtonCustom?: string;
 		classButtonPrimary?: string;
-		variantButtonCancel?: string;
-		variantButtonCustom?: string;
-		variantButtonPrimary?: string;
+		intentButtonCancel?: IntentColorKey;
+		intentButtonCustom?: IntentColorKey;
+		intentButtonPrimary?: IntentColorKey;
 		classSpinnerBox?: string;
 		defaultIcons?: Partial<
 			Record<"info" | "success" | "warn" | "error" | "spinner", () => string | undefined>
@@ -66,9 +67,9 @@
 		classButtonCancel,
 		classButtonCustom,
 		classButtonPrimary,
-		variantButtonCancel,
-		variantButtonCustom,
-		variantButtonPrimary = "primary",
+		intentButtonCancel,
+		intentButtonCustom,
+		intentButtonPrimary = "primary",
 		classSpinnerBox,
 		defaultIcons = acpDefaultIcons,
 	}: Props = $props();
@@ -119,11 +120,8 @@
 
 	const _classIconBox = `size-12 sm:size-10
 		mt-1 mb-4 sm:my-0 sm:mr-5
-		mx-auto 
-		flex flex-shrink-0 items-center justify-center 
-		rounded-full 
-		bg-neutral-950/10 text-neutral-950/80
-		dark:bg-neutral-50/20 dark:text-neutral-50/80`;
+		mx-auto
+		flex flex-shrink-0 items-center justify-center`;
 
 	const _classContentBox = `mt-3 sm:mt-0 flex-1 h-full flex flex-col`; // overflow-hidden
 
@@ -137,12 +135,12 @@
 
 	const _classButton = "min-w-24 text-center w-full sm:w-auto";
 
-	const _classSpinnerBox = `absolute inset-0 flex items-center justify-center bg-white/75 dark:bg-black/75`;
+	const _classSpinnerBox = `absolute inset-0 flex items-center justify-center`;
 
 	let hasCustom = $derived(current.labelCustom && typeof current.onCustom === "function");
 </script>
 
-<div class={twMerge("stuic-acp", _class, classProp)}>
+<div class={twMerge("stuic-acp", _class, classProp)} data-variant={current.variant}>
 	<div class={twMerge("wrap", _classWrap, classWrap)}>
 		{#if iconHtml}
 			<div
@@ -215,7 +213,7 @@
 			<li class={twMerge(_classMenuLi, classMenuLi, hasCustom && classMenuLiCustom)}>
 				<CmpButtonCancel
 					class={twMerge("cancel", _classButton, classButton, classButtonCancel)}
-					variant={variantButtonCancel}
+					intent={intentButtonCancel}
 					disabled={isPending}
 					onclick={createOnClick("cancel", current.onCancel)}
 				>
@@ -227,7 +225,7 @@
 			<li class={twMerge(_classMenuLi, classMenuLi, classMenuLiCustom)}>
 				<CmpButtonCustom
 					class={twMerge("custom", _classButton, classButton, classButtonCustom)}
-					variant={variantButtonCustom}
+					intent={intentButtonCustom}
 					disabled={isPending}
 					onclick={createOnClick("custom", current.onCustom!)}
 				>
@@ -238,7 +236,7 @@
 		<li class={twMerge(_classMenuLi, classMenuLi, hasCustom && classMenuLiCustom)}>
 			<CmpButtonOk
 				class={twMerge("ok", _classButton, classButton, classButtonPrimary)}
-				variant={variantButtonPrimary}
+				intent={intentButtonPrimary}
 				disabled={isPending}
 				onclick={createOnClick("ok", current.onOk)}
 				bind:el={okButtonEl}

@@ -1,0 +1,38 @@
+/* ============================================================================
+   COLLAPSIBLE COMPONENT TOKENS
+   Override globally: :root { --stuic-collapsible-toggle-opacity: 0.5; }
+   Override locally:  <Collapsible style="--stuic-collapsible-toggle-opacity: 1;">
+   ============================================================================ */
+
+:root {
+	/* Toggle button styling */
+	--stuic-collapsible-toggle-opacity: 0.7;
+	--stuic-collapsible-toggle-opacity-hover: 1;
+	--stuic-collapsible-toggle-padding-x: calc(var(--spacing) * 2);
+	--stuic-collapsible-toggle-padding-y: calc(var(--spacing) * 1);
+	--stuic-collapsible-transition: 150ms;
+
+	/* Focus ring (uses theme token) */
+	--stuic-collapsible-ring-width: 2px;
+	--stuic-collapsible-ring-color: var(--stuic-color-ring);
+}
+
+/* ============================================================================
+   TOGGLE BUTTON STYLES
+   ============================================================================ */
+
+.stuic-collapsible-toggle {
+	opacity: var(--stuic-collapsible-toggle-opacity);
+	padding: var(--stuic-collapsible-toggle-padding-y)
+		var(--stuic-collapsible-toggle-padding-x);
+	transition: opacity var(--stuic-collapsible-transition);
+}
+
+.stuic-collapsible-toggle:hover {
+	opacity: var(--stuic-collapsible-toggle-opacity-hover);
+}
+
+.stuic-collapsible-toggle:focus-visible {
+	outline: var(--stuic-collapsible-ring-width) solid var(--stuic-collapsible-ring-color);
+	outline-offset: 2px;
+}

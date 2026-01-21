@@ -59,7 +59,7 @@
 			<Collapsible
 				classContent="text-sm italic"
 				classToggle="text-blue-500 font-bold"
-				toggleOpacity="opacity-100"
+				style="--stuic-collapsible-toggle-opacity: 1;"
 			>
 				{dummySentence(5)}
 			</Collapsible>

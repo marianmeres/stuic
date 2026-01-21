@@ -1,136 +1,531 @@
-/* prettier-ignore */
-@theme inline {
-	--color-input-accent: var(--color-input-accent, var(--color-sky-600));
-	--color-input-accent-dark: var(--color-input-accent-dark, var(--color-sky-400));
+/* ============================================================================
+   INPUT COMPONENT TOKENS
+   Override globally: :root { --stuic-input-radius: 0; }
+   Override locally:  <FieldInput style="--stuic-input-radius: 9999px;">
+   ============================================================================ */
 
-	--color-input-accent-invalid: var(--color-input-accent-invalid, var(--color-red-600));
-	--color-input-accent-invalid-dark: var(--color-input-accent-invalid-dark, var(--color-red-400));
+/* prettier-ignore */
+:root {
+	/* Core customization */
+	--stuic-input-radius: var(--radius-md);
+	--stuic-input-font-family: var(--font-sans);
+	--stuic-input-transition: 150ms;
+
+	/* Focus ring */
+	--stuic-input-ring-width: 4px;
+	--stuic-input-ring-color: var(--stuic-color-ring);
+
+	/* Accent colors (existing, preserved for BC) */
+	--stuic-input-accent: var(--stuic-color-primary);
+	--stuic-input-accent-error: var(--stuic-color-destructive);
+
+	/* Color tokens - reference theme vars */
+	--stuic-input-bg: var(--stuic-color-input);
+	--stuic-input-border: var(--stuic-color-border);
+	--stuic-input-border-focus: var(--stuic-input-accent);
+	--stuic-input-text: var(--stuic-color-foreground);
+	--stuic-input-placeholder: var(--stuic-color-muted-foreground);
+
+	/* Size: sm */
+	--stuic-input-padding-x-sm: calc(var(--spacing) * 2.5);
+	--stuic-input-padding-y-sm: calc(var(--spacing) * 2);
+	--stuic-input-font-size-sm: var(--text-sm);
+	--stuic-input-min-height-sm: 2.5rem;
+
+	/* Size: md (default) */
+	--stuic-input-padding-x-md: calc(var(--spacing) * 3);
+	--stuic-input-padding-y-md: calc(var(--spacing) * 2.5);
+	--stuic-input-font-size-md: var(--text-base);
+	--stuic-input-min-height-md: 2.75rem;
+
+	/* Size: lg */
+	--stuic-input-padding-x-lg: calc(var(--spacing) * 4);
+	--stuic-input-padding-y-lg: calc(var(--spacing) * 3);
+	--stuic-input-font-size-lg: var(--text-lg);
+	--stuic-input-min-height-lg: 3rem;
+
+	/* Range input */
+	--stuic-input-range-thumb-size: 18px;
+	--stuic-input-range-track-height: 4px;
+	--stuic-input-range-track-radius: 18px;
+	--stuic-input-range-track-bg: var(--stuic-color-muted);
+
+	/* Checkbox/Radio specific */
+	--stuic-checkbox-size: 1.25rem;
+	--stuic-checkbox-radius: var(--radius-sm);
+	--stuic-radio-size: 1rem;
+	--stuic-checkbox-bg: var(--stuic-color-muted);
+	--stuic-checkbox-border: var(--stuic-color-border);
+	--stuic-checkbox-checked-bg: var(--stuic-input-accent);
+	--stuic-checkbox-checked-border: var(--stuic-input-accent);
+
+	/* FieldOptions specific */
+	--stuic-field-options-divider: var(--stuic-color-border);
+	--stuic-field-options-control-text: var(--stuic-color-muted-foreground);
+	--stuic-field-options-control-text-hover: var(--stuic-color-foreground);
+	--stuic-field-options-control-ring: var(--stuic-color-ring);
+	--stuic-field-options-muted-text: var(--stuic-color-muted-foreground);
+	--stuic-field-options-optgroup-text: var(--stuic-color-muted-foreground);
 }
 
-.stuic-input {
-	.form-input {
-		@apply rounded-md border-0 w-full flex-1
-			py-2.5 px-3
-			text-base placeholder:text-base
-			bg-transparent
-			tracking-tight
-			focus:outline-none focus:ring-0
-			focus-visible:outline-none focus-visible:ring-0
-			placeholder:tracking-tight
-			placeholder:text-neutral-950/35 dark:placeholder:text-neutral-50/35
-			text-neutral-950 dark:text-neutral-50;
-		&.sm {
-			/* @apply text-sm placeholder:text-sm; */
-		}
-		&.lg {
-			@apply text-lg placeholder:text-lg;
-		}
+/* ============================================================================
+   BASE INPUT ELEMENT STYLES
+   Replaces @tailwindcss/forms plugin for input elements
+   ============================================================================ */
+
+.stuic-input
+	input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+.stuic-input textarea,
+.stuic-input select {
+	/* Reset browser defaults */
+	appearance: none;
+	-webkit-appearance: none;
+
+	/* Layout */
+	display: block;
+	width: 100%;
+	flex: 1;
+
+	/* Box model - remove internal styling, let wrapper handle border/bg */
+	border: 0;
+	background: transparent;
+	border-radius: 0;
+
+	/* Typography */
+	font-family: var(--stuic-input-font-family);
+	color: var(--stuic-input-text);
+	letter-spacing: -0.025em;
+
+	/* Focus - remove browser defaults, wrapper handles focus ring */
+	&:focus {
+		outline: none;
+		box-shadow: none;
 	}
 
-	select.form-input {
-		@apply pr-8;
+	&:focus-visible {
+		outline: none;
 	}
 
-	textarea {
-		scrollbar-width: thin;
+	/* Disabled state */
+	&:disabled {
+		cursor: not-allowed;
 	}
 
-	/* https://danielstern.ca/range.css/ */
-	input[type="range"] {
-		--thumb-width: 18px;
-		--thumb-height: 18px;
-		--thumb-border-radius: 100%;
-		--track-border-radius: 18px;
-		--track-height: 4px;
-		--track-bg: #808080;
-
-		width: 100%;
-		/* margin: 7px 0; */
-		margin: calc((var(--thumb-height) - var(--track-height)) / 2) 0;
-		background-color: transparent;
-		appearance: none;
-
-		&:focus {
-			@apply ring-0 outline-0 border-0;
-		}
-		&::-webkit-slider-runnable-track {
-			/* background: var(--track-bg); */
-			border: 0;
-			border-radius: var(--track-border-radius);
-			width: 100%;
-			height: var(--track-height);
-			cursor: pointer;
-			@apply bg-neutral-300 dark:bg-neutral-600;
-		}
-		&::-webkit-slider-thumb {
-			/* margin-top: -7px; */
-			margin-top: calc(-1 * (var(--thumb-height) - var(--track-height)) / 2);
-			width: var(--thumb-width);
-			height: var(--thumb-height);
-			border: 0;
-			border-radius: var(--thumb-border-radius);
-			cursor: pointer;
-			-webkit-appearance: none;
-			@apply bg-input-accent dark:bg-input-accent-dark;
-		}
-		&:focus::-webkit-slider-runnable-track {
-			/* background: var(--track-bg); */
-			@apply bg-neutral-300 dark:bg-neutral-600;
-		}
-		&::-moz-range-track {
-			/* background: var(--track-bg); */
-			border: 0;
-			border-radius: var(--track-border-radius);
-			width: 100%;
-			height: var(--track-height);
-			cursor: pointer;
-			@apply bg-neutral-300 dark:bg-neutral-600;
-		}
-		&::-moz-range-thumb {
-			width: var(--thumb-width);
-			height: var(--thumb-height);
-			border: 0;
-			border-radius: var(--thumb-border-radius);
-			cursor: pointer;
-			@apply bg-input-accent dark:bg-input-accent-dark;
-		}
-		&::-ms-track {
-			background: transparent;
-			border-color: transparent;
-			border-width: calc((var(--thumb-height) - var(--track-height)) / 2) 0;
-			color: transparent;
-			width: 100%;
-			height: var(--track-height);
-			cursor: pointer;
-		}
-		&::-ms-fill-lower {
-			/* background: var(--track-bg); */
-			border: 0;
-			border-radius: var(--thumb-border-radius);
-			@apply bg-neutral-300 dark:bg-neutral-600;
-		}
-		&::-ms-fill-upper {
-			/* background: var(--track-bg); */
-			border: 0;
-			border-radius: var(--thumb-border-radius);
-			@apply bg-neutral-300 dark:bg-neutral-600;
-		}
-		&::-ms-thumb {
-			width: var(--thumb-width);
-			height: var(--thumb-height);
-			border: 0;
-			border-radius: var(--thumb-border-radius);
-			cursor: pointer;
-			margin-top: 0px;
-			@apply bg-input-accent dark:bg-input-accent-dark;
-		}
-		&:focus::-ms-fill-lower {
-			/* background: var(--track-bg); */
-			@apply bg-neutral-300 dark:bg-neutral-600;
-		}
-		&:focus::-ms-fill-upper {
-			/* background: var(--track-bg); */
-			@apply bg-neutral-300 dark:bg-neutral-600;
-		}
+	/* Placeholder */
+	&::placeholder {
+		color: var(--stuic-input-placeholder);
+		opacity: 0.5;
+		letter-spacing: -0.025em;
 	}
+}
+
+/* ============================================================================
+   SIZE VARIANTS
+   Applied via data-size attribute on .stuic-input
+   ============================================================================ */
+
+.stuic-input[data-size="sm"]
+	input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+.stuic-input[data-size="sm"] textarea,
+.stuic-input[data-size="sm"] select {
+	padding: var(--stuic-input-padding-y-sm) var(--stuic-input-padding-x-sm);
+	font-size: var(--stuic-input-font-size-sm);
+	min-height: var(--stuic-input-min-height-sm);
+}
+
+.stuic-input[data-size="sm"] select {
+	padding-right: 2.5rem;
+}
+
+.stuic-input[data-size="md"]
+	input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+.stuic-input[data-size="md"] textarea,
+.stuic-input[data-size="md"] select,
+.stuic-input:not([data-size])
+	input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+.stuic-input:not([data-size]) textarea,
+.stuic-input:not([data-size]) select {
+	padding: var(--stuic-input-padding-y-md) var(--stuic-input-padding-x-md);
+	font-size: var(--stuic-input-font-size-md);
+	min-height: var(--stuic-input-min-height-md);
+}
+
+.stuic-input[data-size="md"] select,
+.stuic-input:not([data-size]) select {
+	padding-right: 2.5rem;
+}
+
+.stuic-input[data-size="lg"]
+	input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+.stuic-input[data-size="lg"] textarea,
+.stuic-input[data-size="lg"] select {
+	padding: var(--stuic-input-padding-y-lg) var(--stuic-input-padding-x-lg);
+	font-size: var(--stuic-input-font-size-lg);
+	min-height: var(--stuic-input-min-height-lg);
+}
+
+.stuic-input[data-size="lg"] select {
+	padding-right: 2.5rem;
+}
+
+/* Label sizing */
+.stuic-input[data-size="sm"] .label-box label {
+	font-size: var(--stuic-input-font-size-sm);
+}
+
+.stuic-input[data-size="lg"] .label-box label {
+	font-weight: 600;
+}
+
+/* ============================================================================
+   INPUT WRAPPER STYLES
+   The visual container that provides border, background, and focus ring
+   ============================================================================ */
+
+.stuic-input .input-wrap {
+	background: var(--stuic-input-bg);
+	border: 1px solid var(--stuic-input-border);
+	border-radius: var(--stuic-input-radius);
+	transition:
+		border-color var(--stuic-input-transition),
+		box-shadow var(--stuic-input-transition);
+}
+
+.stuic-input .input-wrap:focus-within {
+	border-color: var(--stuic-input-border-focus);
+	box-shadow: 0 0 0 var(--stuic-input-ring-width) var(--stuic-input-ring-color);
+}
+
+/* Invalid state */
+.stuic-input.invalid .input-wrap,
+.stuic-input .input-wrap.invalid {
+	border-color: var(--stuic-input-accent-error);
+}
+
+.stuic-input.invalid .input-wrap:focus-within,
+.stuic-input .input-wrap.invalid:focus-within {
+	border-color: var(--stuic-input-accent-error);
+	box-shadow: 0 0 0 var(--stuic-input-ring-width)
+		color-mix(in srgb, var(--stuic-input-accent-error) 20%, transparent);
+}
+
+/* Disabled state */
+.stuic-input.disabled .input-wrap,
+.stuic-input .input-wrap.disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+/* Transparent wrapper utility - for components like Switch that don't need wrapper styling */
+.stuic-input .input-wrap.input-wrap-transparent,
+.stuic-input.invalid .input-wrap.input-wrap-transparent,
+.stuic-input .input-wrap.input-wrap-transparent:focus-within,
+.stuic-input.invalid .input-wrap.input-wrap-transparent:focus-within {
+	background: transparent;
+	border: none;
+	box-shadow: none;
+}
+
+/* Size-specific input-wrap padding */
+.stuic-input[data-size="lg"] .input-wrap {
+	padding: calc(var(--spacing) * 1);
+}
+
+/* ============================================================================
+   VALIDATION MESSAGE
+   ============================================================================ */
+
+.stuic-input .validation-box {
+	color: var(--stuic-input-accent-error);
+}
+
+/* ============================================================================
+   SELECT SPECIFIC
+   Custom dropdown arrow since we removed @tailwindcss/forms
+   ============================================================================ */
+
+.stuic-input select {
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+	background-position: right 0.5rem center;
+	background-repeat: no-repeat;
+	background-size: 1.5em 1.5em;
+	cursor: pointer;
+}
+
+/* ============================================================================
+   TEXTAREA SPECIFIC
+   ============================================================================ */
+
+.stuic-input textarea {
+	scrollbar-width: thin;
+	resize: vertical;
+}
+
+/* ============================================================================
+   FILE INPUT
+   ============================================================================ */
+
+.stuic-input input[type="file"] {
+	padding: 0;
+	cursor: pointer;
+}
+
+/* Remove padding from file input wrapper */
+.stuic-input:has(input[type="file"]) .input-wrap {
+	padding: 0;
+}
+
+.stuic-input input[type="file"]::file-selector-button {
+	padding: var(--stuic-input-padding-y-md) var(--stuic-input-padding-x-md);
+	margin-right: 1rem;
+	background: var(--stuic-color-muted);
+	color: var(--stuic-color-foreground);
+	border: 0;
+	border-radius: var(--stuic-input-radius);
+	cursor: pointer;
+	font-family: var(--stuic-input-font-family);
+	transition: background var(--stuic-input-transition);
+}
+
+.stuic-input input[type="file"]::file-selector-button:hover {
+	background: var(--stuic-color-muted-hover);
+}
+
+/* ============================================================================
+   RANGE INPUT
+   Custom styling since we removed @tailwindcss/forms
+   ============================================================================ */
+
+.stuic-input input[type="range"] {
+	width: 100%;
+	padding: var(--stuic-input-padding-y-md) var(--stuic-input-padding-x-md);
+	margin: calc(
+			(var(--stuic-input-range-thumb-size) - var(--stuic-input-range-track-height)) / 2
+		)
+		0;
+	background-color: transparent;
+	appearance: none;
+	cursor: pointer;
+}
+
+.stuic-input input[type="range"]:focus {
+	outline: none;
+}
+
+/* Webkit Track */
+.stuic-input input[type="range"]::-webkit-slider-runnable-track {
+	width: 100%;
+	height: var(--stuic-input-range-track-height);
+	background: var(--stuic-input-range-track-bg);
+	border: 0;
+	border-radius: var(--stuic-input-range-track-radius);
+	cursor: pointer;
+}
+
+/* Webkit Thumb */
+.stuic-input input[type="range"]::-webkit-slider-thumb {
+	width: var(--stuic-input-range-thumb-size);
+	height: var(--stuic-input-range-thumb-size);
+	margin-top: calc(
+		-1 * (var(--stuic-input-range-thumb-size) - var(--stuic-input-range-track-height)) / 2
+	);
+	background-color: var(--stuic-input-accent);
+	border: 0;
+	border-radius: 50%;
+	cursor: pointer;
+	-webkit-appearance: none;
+}
+
+/* Firefox Track */
+.stuic-input input[type="range"]::-moz-range-track {
+	width: 100%;
+	height: var(--stuic-input-range-track-height);
+	background: var(--stuic-input-range-track-bg);
+	border: 0;
+	border-radius: var(--stuic-input-range-track-radius);
+	cursor: pointer;
+}
+
+/* Firefox Thumb */
+.stuic-input input[type="range"]::-moz-range-thumb {
+	width: var(--stuic-input-range-thumb-size);
+	height: var(--stuic-input-range-thumb-size);
+	background-color: var(--stuic-input-accent);
+	border: 0;
+	border-radius: 50%;
+	cursor: pointer;
+}
+
+/* MS Edge Track (legacy) */
+.stuic-input input[type="range"]::-ms-track {
+	width: 100%;
+	height: var(--stuic-input-range-track-height);
+	background: transparent;
+	border-color: transparent;
+	color: transparent;
+	cursor: pointer;
+}
+
+.stuic-input input[type="range"]::-ms-fill-lower,
+.stuic-input input[type="range"]::-ms-fill-upper {
+	background: var(--stuic-input-range-track-bg);
+	border: 0;
+	border-radius: var(--stuic-input-range-track-radius);
+}
+
+.stuic-input input[type="range"]::-ms-thumb {
+	width: var(--stuic-input-range-thumb-size);
+	height: var(--stuic-input-range-thumb-size);
+	background-color: var(--stuic-input-accent);
+	border: 0;
+	border-radius: 50%;
+	cursor: pointer;
+	margin-top: 0;
+}
+
+/* ============================================================================
+   CHECKBOX STYLES
+   ============================================================================ */
+
+.stuic-checkbox input[type="checkbox"] {
+	appearance: none;
+	-webkit-appearance: none;
+	width: var(--stuic-checkbox-size);
+	height: var(--stuic-checkbox-size);
+	border-radius: var(--stuic-checkbox-radius);
+	background: var(--stuic-checkbox-bg);
+	border: 1px solid var(--stuic-checkbox-border);
+	cursor: pointer;
+	transition:
+		background var(--stuic-input-transition),
+		border-color var(--stuic-input-transition),
+		box-shadow var(--stuic-input-transition);
+}
+
+.stuic-checkbox input[type="checkbox"]:checked {
+	background: var(--stuic-checkbox-checked-bg);
+	border-color: var(--stuic-checkbox-checked-border);
+	background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+	background-size: 100% 100%;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.stuic-checkbox input[type="checkbox"]:focus {
+	outline: none;
+	border-color: var(--stuic-input-border-focus);
+	box-shadow: 0 0 0 var(--stuic-input-ring-width) var(--stuic-input-ring-color);
+}
+
+.stuic-checkbox input[type="checkbox"]:disabled {
+	cursor: not-allowed;
+	opacity: 0.5;
+}
+
+.stuic-checkbox .validation-box {
+	color: var(--stuic-input-accent-error);
+}
+
+/* ============================================================================
+   RADIO STYLES
+   ============================================================================ */
+
+.stuic-radios .radios-box {
+	background: var(--stuic-input-bg);
+	border: 1px solid var(--stuic-input-border);
+	border-radius: var(--stuic-input-radius);
+}
+
+.stuic-radios.invalid .radios-box {
+	border-color: var(--stuic-input-accent-error);
+}
+
+.stuic-radios .validation-box {
+	color: var(--stuic-input-accent-error);
+}
+
+.stuic-radios input[type="radio"] {
+	appearance: none;
+	-webkit-appearance: none;
+	width: var(--stuic-radio-size);
+	height: var(--stuic-radio-size);
+	border-radius: 50%;
+	background: var(--stuic-checkbox-bg);
+	border: 1px solid var(--stuic-checkbox-border);
+	cursor: pointer;
+	transition:
+		background var(--stuic-input-transition),
+		border-color var(--stuic-input-transition),
+		box-shadow var(--stuic-input-transition);
+}
+
+.stuic-radios input[type="radio"]:checked {
+	background: var(--stuic-checkbox-checked-bg);
+	border-color: var(--stuic-checkbox-checked-border);
+	background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");
+	background-size: 100% 100%;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.stuic-radios input[type="radio"]:focus {
+	outline: none;
+	border-color: var(--stuic-input-border-focus);
+	box-shadow: 0 0 0 var(--stuic-input-ring-width) var(--stuic-input-ring-color);
+}
+
+.stuic-radios input[type="radio"]:disabled {
+	cursor: not-allowed;
+	opacity: 0.5;
+}
+
+/* ============================================================================
+   FIELD OPTIONS COMPONENT STYLES
+   ============================================================================ */
+
+/* Control buttons (Select All, Clear) */
+.stuic-field-options-control {
+	color: var(--stuic-field-options-control-text);
+	transition: color 150ms;
+}
+
+.stuic-field-options-control:hover:not(:disabled),
+.stuic-field-options-control:focus-visible {
+	color: var(--stuic-field-options-control-text-hover);
+}
+
+.stuic-field-options-control:focus-visible {
+	outline: 2px solid var(--stuic-field-options-control-ring);
+	outline-offset: 1px;
+}
+
+.stuic-field-options-control:disabled,
+.stuic-field-options-control[data-disabled] {
+	opacity: 0.5;
+}
+
+/* Muted/secondary text */
+.stuic-field-options-muted {
+	color: var(--stuic-field-options-muted-text);
+}
+
+/* Placeholder/loading states */
+.stuic-field-options-placeholder {
+	color: var(--stuic-field-options-muted-text);
+}
+
+/* Optgroup labels */
+.stuic-field-options-optgroup {
+	color: var(--stuic-field-options-optgroup-text);
+}
+
+/* Icon states - inherit color from parent ListItemButton */
+.stuic-field-options-icon {
+	color: inherit;
+	opacity: 0.5;
+	transition: opacity 150ms;
+}
+
+.stuic-field-options-icon--selected {
+	opacity: 1;
 }

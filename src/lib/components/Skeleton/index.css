@@ -1,12 +1,8 @@
-/* Define CSS custom properties for use in gradients */
-:root {
-	--skeleton-base: #e5e5e5;
-	--skeleton-highlight: #f5f5f5;
-}
-
-.dark {
-	--skeleton-base: #404040;
-	--skeleton-highlight: #525252;
+/* prettier-ignore */
+@theme inline {
+	/* Skeleton component tokens */
+	--stuic-skeleton-bg: var(--stuic-skeleton-bg, var(--stuic-surface-interactive));
+	--stuic-skeleton-bg-highlight: var(--stuic-skeleton-bg-highlight, var(--stuic-surface-interactive-hover));
 }
 
 .stuic-skeleton-circle {
@@ -31,12 +27,12 @@
 .stuic-skeleton-shimmer {
 	background: linear-gradient(
 		90deg,
-		var(--skeleton-base) 25%,
-		var(--skeleton-highlight) 50%,
-		var(--skeleton-base) 75%
+		var(--stuic-skeleton-bg) 25%,
+		var(--stuic-skeleton-bg-highlight) 50%,
+		var(--stuic-skeleton-bg) 75%
 	);
 	background-size: 200% 100%;
-	animation: skeleton-shimmer var(--skeleton-duration, 1.5s) ease-in-out infinite;
+	animation: skeleton-shimmer var(--stuic-skeleton-duration, 1.5s) ease-in-out infinite;
 }
 
 /* Pulse animation */
@@ -50,7 +46,8 @@
 }
 
 .stuic-skeleton-pulse {
-	animation: skeleton-pulse var(--skeleton-duration, 1.5s) ease-in-out infinite;
+	background-color: var(--stuic-skeleton-bg);
+	animation: skeleton-pulse var(--stuic-skeleton-duration, 1.5s) ease-in-out infinite;
 }
 
 /* Reduced motion */

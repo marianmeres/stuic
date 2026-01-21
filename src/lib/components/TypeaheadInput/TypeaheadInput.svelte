@@ -156,7 +156,7 @@
 	//
 	let _fixedInputClasses = $derived(
 		twMerge(
-			"form-input z-10 relative",
+			"z-10 relative",
 			classInput,
 			"text-black",
 			"border-0 p-0 bg-transparent block w-full",

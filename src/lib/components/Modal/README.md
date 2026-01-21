@@ -118,6 +118,35 @@ By default, Modal is:
 - **Mobile**: Full screen with 1rem margins from viewport edges
 - **Desktop (md+)**: Centered, max-width 768px, auto height with max 80vh
 
+## CSS Variables
+
+Override to customize appearance:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-modal-bg` | `--stuic-color-surface` | Modal background color |
+| `--stuic-modal-text` | `--stuic-color-surface-foreground` | Modal text color |
+| `--stuic-modal-radius` | `--radius-md` | Border radius (desktop only) |
+
+### Customization Examples
+
+```css
+/* Global override */
+:root {
+  --stuic-modal-bg: var(--stuic-color-background);
+  --stuic-modal-radius: var(--radius-lg);
+}
+```
+
+```svelte
+<!-- Local override -->
+<Modal style="--stuic-modal-bg: var(--stuic-color-muted);">
+  Content with muted background
+</Modal>
+```
+
+Note: Modal inherits backdrop styling from ModalDialog. See ModalDialog documentation for backdrop customization (`--stuic-modal-dialog-backdrop`).
+
 ## Relationship to ModalDialog
 
 Modal is a higher-level component built on `ModalDialog`. It provides:

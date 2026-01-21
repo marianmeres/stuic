@@ -39,6 +39,7 @@
 </script>
 
 <script lang="ts">
+	import "./index.css";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import { generateAvatarColors } from "../../utils/avatar-colors.js";
 	import { iconUser as defaultIconUser } from "../../icons/index.js";
@@ -60,13 +61,18 @@
 		el = $bindable(),
 	}: Props = $props();
 
-	const SIZE_PRESETS: Record<string, { container: string; icon: number }> = {
-		sm: { container: "size-8 text-xs", icon: 16 },
-		md: { container: "size-10 text-base", icon: 20 },
-		lg: { container: "size-12 text-lg", icon: 28 },
-		xl: { container: "size-14 text-xl", icon: 32 },
-		"2xl": { container: "size-16 text-2xl", icon: 36 },
+	// Icon sizes for preset sizes (visual sizes are handled by CSS)
+	const ICON_SIZES: Record<string, number> = {
+		sm: 16,
+		md: 20,
+		lg: 28,
+		xl: 32,
+		"2xl": 36,
 	};
+
+	// Check if size is a known preset
+	const isPresetSize = (s: string): s is "sm" | "md" | "lg" | "xl" | "2xl" =>
+		s in ICON_SIZES;
 
 	// Extract initials from input string (email, name, or raw initials)
 	function extractInitials(input: string, length: number): string {
@@ -145,8 +151,7 @@
 
 	// Get icon size based on preset or custom size
 	let iconSize = $derived.by(() => {
-		const preset = SIZE_PRESETS[size];
-		if (preset) return preset.icon;
+		if (isPresetSize(size)) return ICON_SIZES[size];
 
 		// For custom sizes, try to parse size-N pattern
 		const match = size?.match(/size-(\d+)/);
@@ -162,25 +167,21 @@
 		autoColor ? generateAvatarColors(hashSource || initialsProp || "") : null
 	);
 
-	let sizeClass = $derived(SIZE_PRESETS[size]?.container || size);
-
 	let style = $derived(
 		autoColor && colors
 			? `background-color: ${colors.bg}; color: ${colors.text};`
 			: undefined
 	);
 
+	// Build class string - base class for CSS targeting, allow user overrides via classProp
 	let baseClass = $derived(
 		twMerge(
 			"stuic-avatar",
-			"inline-flex items-center justify-center",
-			"rounded-full font-medium shrink-0 overflow-hidden",
-			!autoColor &&
-				"bg-neutral-200 text-neutral-700 dark:bg-neutral-700 dark:text-neutral-200",
-			sizeClass,
+			// Custom size classes when not using preset (preset sizes handled by data-size in CSS)
+			!isPresetSize(size) && size,
+			// User-provided Tailwind overrides for colors (only when not using autoColor)
 			!autoColor && bg,
 			!autoColor && textColor,
-			onclick && "select-none cursor-pointer",
 			classProp
 		)
 	);
@@ -191,7 +192,15 @@
 </script>
 
 {#if onclick}
-	<button bind:this={el} type="button" class={baseClass} {style} {onclick}>
+	<button
+		bind:this={el}
+		type="button"
+		class={baseClass}
+		{style}
+		{onclick}
+		data-size={isPresetSize(size) ? size : undefined}
+		data-interactive="true"
+	>
 		{#if renderMode === "photo"}
 			<img {src} {alt} class="size-full object-cover" onerror={handleImageError} />
 		{:else if renderMode === "initials"}
@@ -201,7 +210,12 @@
 		{/if}
 	</button>
 {:else}
-	<div bind:this={el} class={baseClass} {style}>
+	<div
+		bind:this={el}
+		class={baseClass}
+		{style}
+		data-size={isPresetSize(size) ? size : undefined}
+	>
 		{#if renderMode === "photo"}
 			<img {src} {alt} class="size-full object-cover" onerror={handleImageError} />
 		{:else if renderMode === "initials"}

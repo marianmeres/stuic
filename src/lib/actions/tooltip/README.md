@@ -127,6 +127,24 @@ if (isTooltipSupported()) {
 - ARIA attributes are automatically managed (`aria-describedby`, `aria-expanded`)
 - Maximum width is 16rem (256px) by default
 
+## CSS Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-tooltip-bg` | `--stuic-surface-overlay` | Tooltip background |
+| `--stuic-tooltip-text` | `--stuic-text-inverse` | Tooltip text color |
+
+### Example Override
+
+```css
+:root {
+  --stuic-tooltip-bg: var(--color-indigo-900);
+  --stuic-tooltip-text: var(--color-indigo-100);
+}
+```
+
+**Note:** Tooltip CSS variables may not work with inline style props because tooltips are created outside the anchor's DOM tree. Set them in your global CSS.
+
 ## Browser Support
 
 Check [Can I Use - CSS Anchor Positioning](https://caniuse.com/css-anchor-positioning) for current browser support. As of 2025, supported in Chrome 125+ and Edge 125+.

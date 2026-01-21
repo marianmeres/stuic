@@ -62,6 +62,7 @@
 </script>
 
 <script lang="ts">
+	import Button from "../Button/Button.svelte";
 	import "./index.css";
 
 	const clog = createClog("CommandMenu");
@@ -251,8 +252,8 @@
 				placeholder={searchPlaceholder ?? t("search_placeholder")}
 				classInputBoxWrap={twMerge(
 					// always look like focused
-					`border-primary border-input-accent dark:border-input-accent-dark`,
-					`ring-input-accent/20 dark:ring-input-accent-dark/20 ring-4`
+					`border-primary border-(--stuic-input-accent)`,
+					`ring-(--stuic-input-accent)/20 ring-4`
 				)}
 				onkeydown={(e) => {
 					if (e.key === "Enter") {
@@ -262,25 +263,22 @@
 				}}
 			>
 				{#snippet inputBefore()}
-					<div class="flex flex-col items-center justify-center pl-3 opacity-75">
+					<div class="flex flex-col items-center justify-center pl-3 stuic-command-menu-muted">
 						{@html iconSearch({ size: 19, strokeWidth: 3 })}
 					</div>
 				{/snippet}
 				{#snippet inputAfter()}
-					<div class="flex pl-2 items-center justify-center opacity-50">
+					<div class="flex pl-2 items-center justify-center stuic-command-menu-placeholder">
 						{#if isFetching}
 							<Spinner class="w-4" />
 						{/if}
 					</div>
 					<div class="flex items-center justify-center">
-						<button
+						<Button
+							x
+							variant="ghost"
+							roundedFull
 							type="button"
-							class={twMerge(
-								"rounded m-1 opacity-75",
-								"hover:opacity-100 hover:bg-neutral-200 dark:hover:bg-neutral-800",
-								"focus-visible:opacity-100 focus-visible:outline-0",
-								"focus-visible:bg-neutral-200 dark:focus-visible:bg-neutral-800"
-							)}
 							onclick={(e) => {
 								e.preventDefault();
 								if (!`${q || ""}`.trim()) {
@@ -289,9 +287,7 @@
 								q = "";
 								input?.focus();
 							}}
-						>
-							<X class="m-2 size-6" />
-						</button>
+						/>
 					</div>
 				{/snippet}
 				{#snippet inputBelow()}
@@ -304,10 +300,9 @@
 						<div
 							class={twMerge(
 								"stuic-command-menu-options",
-								"options block space-y-1 p-1",
+								"block space-y-1 p-1",
 								"overflow-y-auto overflow-x-hidden mb-1",
-								"border-t border-black/20",
-								"max-h-60"
+								"border-t"
 							)}
 							bind:this={optionsBox}
 							tabindex="-1"
@@ -320,10 +315,7 @@
 								<div class="p-1">
 									{#if _optgroup}
 										<div
-											class={[
-												"mb-1 p-1 text-xs font-semibold uppercase tracking-wide",
-												"text-neutral-500 dark:text-neutral-400",
-											]}
+											class="stuic-command-menu-group-header mb-1 p-1 font-semibold uppercase tracking-wide"
 										>
 											{_optgroup}
 										</div>
@@ -369,9 +361,6 @@
 </ModalDialog>
 
 <style>
-	.options {
-		scrollbar-width: thin;
-	}
 	.sr-only {
 		position: absolute;
 		width: 1px;

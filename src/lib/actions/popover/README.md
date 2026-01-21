@@ -137,6 +137,25 @@ if (isPopoverSupported()) {
 }
 ```
 
+## CSS Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-popover-bg` | `--stuic-surface-elevated` | Popover background |
+| `--stuic-popover-text` | `--stuic-text` | Popover text color |
+| `--stuic-popover-border` | `--stuic-border-subtle` | Popover border color |
+
+### Example Override
+
+```css
+:root {
+  --stuic-popover-bg: var(--color-slate-50);
+  --stuic-popover-border: var(--color-slate-300);
+}
+```
+
+**Note:** Popover CSS variables may not work with inline style props because popovers are created outside the anchor's DOM tree. Set them in your global CSS.
+
 ## Notes
 
 - Uses CSS Anchor Positioning API when available

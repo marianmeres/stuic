@@ -33,7 +33,7 @@ export function isTooltipSupported() {
 }
 
 const _classTooltip = `
-    bg-tooltip-bg dark:bg-tooltip-bg-dark text-tooltip-text dark:text-tooltip-text-dark
+    bg-(--stuic-tooltip-bg) text-(--stuic-tooltip-text)
     text-sm tracking-tight rounded my-1
     px-2.5 py-1.5
     max-w-64

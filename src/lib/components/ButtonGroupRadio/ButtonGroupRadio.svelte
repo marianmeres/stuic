@@ -88,42 +88,11 @@
 		});
 	});
 
-	const rounded = "rounded-md";
-	//
-	const CLS = `
-		stuic-button-group
-        ${rounded}
-		w-full
-        py-1.5 px-1.5 inline-block space-x-1
-        bg-button-group-bg text-button-group-text
-        dark:bg-button-group-bg-dark dark:text-button-group-text-dark
-        border-1
-        border-button-group-border dark:border-button-group-border-dark
-		flex justify-between
-        
-        focus-within:border-button-group-accent  focus-within:dark:border-button-group-accent-dark
-        focus-within:ring-button-group-accent/20 focus-within:dark:ring-button-group-accent-dark/20
-        focus-within:ring-4
-    `;
+	// Base class - structural styling handled by CSS
+	const CLS = `stuic-button-group`;
 
-	const CLS_BUTTON = `
-        ${rounded}
-		w-full inline-block
-	    bg-transparent text-button-group-text dark:text-button-group-text-dark
-        hover:bg-transparent hover:text-button-group-text hover:dark:text-button-group-text-dark
-        outline-none focus:outline-none
-    `;
-
-	// we need some active indication by default... use just something subtle here, in the wild
-	// this will be styled with classButtonActive
-	const CLS_BUTTON_ACTIVE = `
-        shadow-none
-        bg-button-group-bg-active dark:bg-button-group-bg-active-dark
-        text-button-group-text-active dark:text-button-group-text-active-dark
-        hover:bg-button-group-bg-active hover:dark:bg-button-group-bg-active
-        hover:text-button-group-text-active hover:dark:text-button-group-text-active-dark
-    `;
-	// shadow-[0px_0px_1px_1px_rgba(0_0_0_/_.6)]
+	// Button class - styling handled by CSS via aria-checked attribute
+	const CLS_BUTTON = `stuic-button-group-button`;
 
 	let els = $state<Record<number, HTMLButtonElement>>({});
 
@@ -138,6 +107,7 @@
 {#if coll.size}
 	<div
 		class={twMerge(CLS, classProp)}
+		data-size={size}
 		{style}
 		role="radiogroup"
 		aria-labelledby={$coll?.active?.id || ""}
@@ -145,15 +115,14 @@
 	>
 		{#each coll.items as item, i}
 			<Button
+				unstyled
 				tabindex={$coll.activeIndex === i ? tabindex : -1}
 				class={twMerge(
-					"border-none shadow-none",
 					CLS_BUTTON,
 					classButton,
-					$coll.activeIndex === i && [CLS_BUTTON_ACTIVE, classButtonActive].join(" ")
+					$coll.activeIndex === i && classButtonActive
 				)}
 				{disabled}
-				{size}
 				type="button"
 				role="radio"
 				aria-checked={$coll.activeIndex === i}

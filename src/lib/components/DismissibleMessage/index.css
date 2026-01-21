@@ -1,11 +1,125 @@
-/* prettier-ignore */
-@theme inline {
-	--color-dismiss-bg: var(--color-dismiss-bg, var(--color-neutral-200));
-	--color-dismiss-bg-dark: var(--color-dismiss-bg-dark, var(--color-neutral-700));
+/* =============================================================================
+   DISMISSIBLE MESSAGE COMPONENT TOKENS
+   Override globally: :root { --stuic-dismissible-message-radius: 0; }
+   Override locally:  style="--stuic-dismissible-message-radius: 9999px;"
+   ============================================================================= */
 
-	--color-dismiss-text: var(--color-dismiss-text, var(--color-neutral-700));
-	--color-dismiss-text-dark: var(--color-dismiss-text-dark, var(--color-neutral-200));
+:root {
+	--stuic-dismissible-message-radius: var(--radius-md);
+	--stuic-dismissible-message-padding-x: calc(var(--spacing) * 4);
+	--stuic-dismissible-message-padding-y: calc(var(--spacing) * 3);
+	--stuic-dismissible-message-border-width: 1px;
+	--stuic-dismissible-message-transition: 150ms;
+}
 
-	--color-dismiss-border: var(--color-dismiss-border, var(--color-neutral-500));
-	--color-dismiss-border-dark: var(--color-dismiss-border-dark, var(--color-neutral-500));
+/* =============================================================================
+   BASE STYLES
+   ============================================================================= */
+
+.stuic-dismissible-message {
+	display: flex;
+	align-items: center;
+	border-width: var(--stuic-dismissible-message-border-width);
+	border-style: solid;
+	border-radius: var(--stuic-dismissible-message-radius);
+	transition:
+		background var(--stuic-dismissible-message-transition),
+		border-color var(--stuic-dismissible-message-transition);
+
+	/* Colors via internal vars set by intent */
+	background: var(--_bg);
+	color: var(--_text);
+	border-color: var(--_border);
+}
+
+/* Content area */
+.stuic-dismissible-message > .content {
+	flex: 1;
+	padding: var(--stuic-dismissible-message-padding-y)
+		var(--stuic-dismissible-message-padding-x);
+}
+
+/* Icon container (left side) */
+.stuic-dismissible-message > .icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	padding-left: var(--stuic-dismissible-message-padding-x);
+	color: var(--_text);
+	opacity: 0.85;
+}
+
+.stuic-dismissible-message > .icon svg {
+	width: 1.5rem;
+	height: 1.5rem;
+}
+
+/* Dismiss button container */
+.stuic-dismissible-message > .dismiss {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: calc(var(--stuic-dismissible-message-padding-y) * 0.75);
+}
+
+/* Dismiss button inherits message text color */
+.stuic-dismissible-message > .dismiss .stuic-button {
+	color: var(--_text);
+}
+
+/* =============================================================================
+   DEFAULT (NO INTENT): NEUTRAL MUTED APPEARANCE
+   ============================================================================= */
+
+.stuic-dismissible-message:not([data-intent]) {
+	--_bg: var(--stuic-color-muted);
+	--_text: var(--stuic-color-muted-foreground);
+	--_border: var(--stuic-color-border);
+}
+
+/* =============================================================================
+   INTENT COLOR MAPPING (SOFT STYLE)
+   Each intent uses a soft/tinted appearance appropriate for messages.
+   ============================================================================= */
+
+/* Destructive: error messages */
+.stuic-dismissible-message[data-intent="destructive"] {
+	--_bg: color-mix(in srgb, var(--stuic-color-destructive) 10%, transparent);
+	--_text: var(--stuic-color-destructive);
+	--_border: color-mix(in srgb, var(--stuic-color-destructive) 30%, transparent);
+}
+
+/* Warning: caution messages */
+.stuic-dismissible-message[data-intent="warning"] {
+	--_bg: color-mix(in srgb, var(--stuic-color-warning) 10%, transparent);
+	--_text: var(--stuic-color-warning);
+	--_border: color-mix(in srgb, var(--stuic-color-warning) 30%, transparent);
+}
+
+/* Success: confirmation messages */
+.stuic-dismissible-message[data-intent="success"] {
+	--_bg: color-mix(in srgb, var(--stuic-color-success) 10%, transparent);
+	--_text: var(--stuic-color-success);
+	--_border: color-mix(in srgb, var(--stuic-color-success) 30%, transparent);
+}
+
+/* Info: informational messages */
+.stuic-dismissible-message[data-intent="info"] {
+	--_bg: color-mix(in srgb, var(--stuic-color-info) 10%, transparent);
+	--_text: var(--stuic-color-info);
+	--_border: color-mix(in srgb, var(--stuic-color-info) 30%, transparent);
+}
+
+/* =============================================================================
+   DARK MODE ADJUSTMENTS
+   Increase color intensity for better visibility in dark mode.
+   ============================================================================= */
+
+.dark .stuic-dismissible-message[data-intent="destructive"],
+.dark .stuic-dismissible-message[data-intent="warning"],
+.dark .stuic-dismissible-message[data-intent="success"],
+.dark .stuic-dismissible-message[data-intent="info"] {
+	--_bg: color-mix(in srgb, var(--_text) 20%, transparent);
+	--_border: color-mix(in srgb, var(--_text) 40%, transparent);
 }

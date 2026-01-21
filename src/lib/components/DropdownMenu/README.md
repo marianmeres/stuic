@@ -313,3 +313,135 @@ interface DropdownMenuExpandableItem {
 - **Reduced Motion**: Respects user's reduced motion preference
 - **Click Outside**: Automatically closes when clicking outside
 - **Focus Management**: Returns focus to trigger on close
+
+## CSS Variables
+
+Override these tokens globally in `:root` or locally via inline `style`:
+
+### Structure Tokens
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-dropdown-menu-radius` | `--radius-md` | Border radius for trigger and dropdown |
+| `--stuic-dropdown-menu-padding` | `--spacing * 1` | Inner padding of dropdown container |
+| `--stuic-dropdown-menu-gap` | `--spacing * 0.5` | Gap between trigger content |
+| `--stuic-dropdown-menu-min-width` | `12rem` | Minimum width of dropdown |
+| `--stuic-dropdown-menu-transition` | `150ms` | Transition duration |
+
+### Container Colors
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-dropdown-menu-bg` | `--stuic-color-surface` | Dropdown background color |
+| `--stuic-dropdown-menu-text` | `--stuic-color-surface-foreground` | Dropdown text color |
+| `--stuic-dropdown-menu-border` | `--stuic-color-border` | Dropdown border color |
+| `--stuic-dropdown-menu-shadow` | subtle shadow | Dropdown shadow |
+
+### Trigger Button
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-dropdown-menu-trigger-bg` | `--stuic-color-surface` | Trigger background |
+| `--stuic-dropdown-menu-trigger-bg-hover` | `--stuic-color-surface-hover` | Trigger hover background |
+| `--stuic-dropdown-menu-trigger-bg-active` | `--stuic-color-surface-active` | Trigger active background |
+| `--stuic-dropdown-menu-trigger-text` | `--stuic-color-surface-foreground` | Trigger text color |
+| `--stuic-dropdown-menu-trigger-text-hover` | `--stuic-color-surface-foreground-hover` | Trigger hover text color |
+| `--stuic-dropdown-menu-trigger-text-active` | `--stuic-color-surface-foreground-active` | Trigger active text color |
+| `--stuic-dropdown-menu-trigger-border` | `--stuic-color-border` | Trigger border color |
+| `--stuic-dropdown-menu-trigger-border-hover` | `--stuic-color-border-hover` | Trigger hover border |
+| `--stuic-dropdown-menu-trigger-border-active` | `--stuic-color-border-active` | Trigger active border |
+| `--stuic-dropdown-menu-trigger-padding-x` | `--spacing * 3` | Trigger horizontal padding |
+| `--stuic-dropdown-menu-trigger-padding-y` | `--spacing * 2` | Trigger vertical padding |
+
+### Focus Ring
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-dropdown-menu-ring-width` | `3px` | Focus ring width |
+| `--stuic-dropdown-menu-ring-offset` | `0px` | Focus ring offset |
+| `--stuic-dropdown-menu-ring-color` | `--stuic-color-ring` | Focus ring color |
+
+### Divider
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-dropdown-menu-divider-bg` | `--stuic-color-border` | Divider color |
+| `--stuic-dropdown-menu-divider-height` | `1px` | Divider height |
+| `--stuic-dropdown-menu-divider-margin-y` | `--spacing * 1` | Divider vertical margin |
+
+### Header (Section Label)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-dropdown-menu-header-text` | `--stuic-color-muted-foreground` | Header text color |
+| `--stuic-dropdown-menu-header-font-size` | `--text-xs` | Header font size |
+| `--stuic-dropdown-menu-header-font-weight` | `--font-weight-semibold` | Header font weight |
+| `--stuic-dropdown-menu-header-padding-x` | `--spacing * 2` | Header horizontal padding |
+| `--stuic-dropdown-menu-header-padding-y` | `--spacing * 1.5` | Header vertical padding |
+| `--stuic-dropdown-menu-header-letter-spacing` | `0.05em` | Header letter spacing |
+| `--stuic-dropdown-menu-header-text-transform` | `uppercase` | Header text transform |
+
+### Backdrop (Fallback Mode)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-dropdown-menu-backdrop-bg` | `rgb(0 0 0 / 0.25)` | Backdrop color |
+| `--stuic-dropdown-menu-backdrop-z-index` | `40` | Backdrop z-index |
+
+### Close Button (Fallback Mode)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-dropdown-menu-close-bg` | `--stuic-color-foreground` | Close button background |
+| `--stuic-dropdown-menu-close-text` | `--stuic-color-background` | Close button text color |
+| `--stuic-dropdown-menu-close-opacity` | `0.6` | Close button opacity |
+| `--stuic-dropdown-menu-close-opacity-hover` | `1` | Close button hover opacity |
+
+### Expandable Section
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-dropdown-menu-expandable-indent` | `--spacing * 4` | Expandable content indent |
+
+## Customization Examples
+
+### Global Override
+
+```css
+/* Custom theme: pill-shaped dropdowns with more padding */
+:root {
+  --stuic-dropdown-menu-radius: 9999px;
+  --stuic-dropdown-menu-padding: 1rem;
+  --stuic-dropdown-menu-trigger-bg: var(--color-blue-500);
+  --stuic-dropdown-menu-trigger-text: white;
+}
+```
+
+### Local Override
+
+```svelte
+<DropdownMenu
+  style="--stuic-dropdown-menu-radius: 0; --stuic-dropdown-menu-shadow: none;"
+  items={items}
+>
+  Sharp Corners, No Shadow
+</DropdownMenu>
+```
+
+### Using Class Props
+
+Class props override default styling with Tailwind classes:
+
+```svelte
+<!-- Blue-themed dropdown -->
+<DropdownMenu
+  items={items}
+  classTrigger="bg-blue-500 text-white hover:bg-blue-600 border-blue-600"
+  classDropdown="bg-blue-50 dark:bg-blue-950 border-blue-200"
+  classItem="hover:bg-blue-100 dark:hover:bg-blue-900"
+>
+  Blue Theme
+</DropdownMenu>
+```
+
+Class props always win over CSS variables due to Tailwind's specificity.

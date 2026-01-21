@@ -1,92 +1,95 @@
 <script lang="ts" module>
-	import type { TW_COLORS } from "../../types.js";
 	import type { THC } from "../Thc/Thc.svelte";
+
+	export type MessageIntent = "destructive" | "warning" | "success" | "info";
 
 	export interface Props {
 		class?: string;
 		classContent?: string;
-		classDismiss?: string;
-		classX?: string;
-		message: THC | Error;
-		theme?: TW_COLORS;
+		classIcon?: string;
+		message: THC | Error | undefined | null;
+		intent?: MessageIntent;
 		forceAsHtml?: boolean;
 		duration?: number;
 		onDismiss?: (() => void) | null | false;
+		withIcon?: boolean;
+		iconFn?: (() => string) | false;
 	}
 </script>
 
 <script lang="ts">
 	import { slide } from "svelte/transition";
-	import Thc, { isTHCNotEmpty } from "../Thc/Thc.svelte";
-	import X from "../X/X.svelte";
 	import { twMerge } from "../../utils/tw-merge.js";
+	import Thc, { isTHCNotEmpty } from "../Thc/Thc.svelte";
+	import Button from "../Button/Button.svelte";
+	import {
+		iconAlertWarning,
+		iconAlertSuccess,
+		iconAlertInfo,
+		iconAlertError,
+	} from "$lib/icons/index.js";
 
 	import "./index.css";
+
+	const INTENT_ICONS: Record<MessageIntent, () => string> = {
+		destructive: () => iconAlertError({ size: 29 }),
+		warning: () => iconAlertWarning({ size: 29 }),
+		success: () => iconAlertSuccess({ size: 29 }),
+		info: () => iconAlertInfo({ size: 29 }),
+	};
 
 	let {
 		class: classProps,
 		classContent,
-		classDismiss,
-		classX,
+		classIcon,
 		message,
-		theme,
+		intent,
 		forceAsHtml = true,
 		duration = 150,
 		onDismiss = () => (message = ""),
+		withIcon,
+		iconFn,
 	}: Props = $props();
 
-	let _message = $derived(`${message}`);
+	let _message = $derived(message ? String(message) : "");
 	let _show = $derived(isTHCNotEmpty(_message));
+
+	let _iconHtml = $derived.by(() => {
+		if (iconFn === false) return "";
+		if (typeof iconFn === "function") return iconFn();
+		if (withIcon && intent) return INTENT_ICONS[intent]?.();
+		return "";
+	});
 </script>
 
 {#if _show}
 	<div
-		class={twMerge(
-			"stuic-dismissible-message",
-			`mb-4 rounded flex text-sm 
-            bg-dismiss-bg dark:bg-dismiss-bg-dark 
-            border-dismiss-border dark:border-dismiss-border-dark 
-            text-dismiss-text dark:text-dismiss-text-dark`,
-			classProps
-		)}
-		style={theme
-			? `
-                    --color-dismiss-bg: var(--color-${theme}-100);
-                    --color-dismiss-bg-dark: var(--color-${theme}-700);
-
-                    --color-dismiss-text: var(--color-${theme}-800);
-                    --color-dismiss-text-dark: var(--color-${theme}-50);
-
-                    --color-dismiss-border: var(--color-${theme}-500);
-                    --color-dismiss-border-dark: var(--color-${theme}-500);
-                `
-			: ``}
+		class={twMerge("stuic-dismissible-message", "mb-4", classProps)}
+		data-intent={intent}
 		transition:slide={{ duration }}
 	>
-		<div class={twMerge("content", "flex-1 px-4 py-3", classContent)}>
+		{#if _iconHtml}
+			<div class={twMerge("icon", classIcon)}>
+				{@html _iconHtml}
+			</div>
+		{/if}
+
+		<div class={twMerge("content", classContent)}>
 			<Thc thc={_message} {forceAsHtml} />
 		</div>
 
 		{#if typeof onDismiss === "function"}
-			<button
-				onclick={() => onDismiss()}
-				class={twMerge(
-					"dismiss",
-					`hover:bg-neutral-950/5 dark:hover:bg-neutral-950/20
-                    focus-visible:bg-neutral-950/5 focus-visible:hover:bg-neutral-950/20 focus-visible:ring-0
-                    rounded rounded-l-none
-                    px-3
-                    flex items-center justify-center
-                    group`,
-					classDismiss
-				)}
-				type="button"
-			>
-				<X
-					class={twMerge("x", "opacity-75 group-hover:opacity-100", classX)}
-					strokeWidth={1.5}
+			<div class="dismiss">
+				<Button
+					x
+					class="text-inherit!"
+					variant="ghost"
+					roundedFull
+					size="sm"
+					type="button"
+					onclick={() => onDismiss()}
 				/>
-			</button>
+			</div>
 		{/if}
 	</div>
 {/if}

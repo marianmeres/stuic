@@ -1,3 +1,4 @@
-@theme inline {
-	--color-twcheck-bg: var(--color-twcheck-bg, var(--color-red-600));
+/* TwCheck component tokens */
+:root {
+	--stuic-twcheck-bg: var(--stuic-color-primary);
 }

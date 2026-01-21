@@ -63,30 +63,23 @@
 	let validation = $state<ValidationResult | undefined>();
 	let invalid = $derived(validation && !validation?.valid);
 
-	//
-	let _classCommon = $derived(
-		[invalid && "invalid", disabled && "disabled", required && "required", renderSize]
-			.filter(Boolean)
-			.join(" ")
-	);
 	// $inspect(value);
 </script>
 
 {#if _options.length}
-	<div class={twMerge("stuic-radios", _classCommon)} {style}>
+	<div
+		class={twMerge("stuic-radios", invalid && "invalid", disabled && "disabled")}
+		data-size={renderSize}
+		{style}
+	>
 		<div
 			class={twMerge(
 				"radios-box",
-				_classCommon,
-				"gap-y-2 grid rounded-md p-2 mb-8",
-				"border border-neutral-300 dark:border-neutral-600",
-				"bg-neutral-100 dark:bg-neutral-700",
-				invalid && "border-input-accent-invalid dark:border-input-accent-invalid-dark",
+				"gap-y-2 grid p-2 mb-8",
 				classProp
 			)}
 		>
 			{#each _options as o, i}
-				<!-- value={o.value || o.label} -->
 				<FieldRadioInternal
 					{name}
 					bind:group={value}
@@ -114,9 +107,7 @@
 				transition:slide={{ duration: 150 }}
 				class={twMerge(
 					"validation-box",
-					_classCommon,
-					`mt-1 px-2 text-sm text-input-accent dark:text-input-accent-dark 
-					tracking-tight`,
+					"mt-1 px-2 text-sm tracking-tight",
 					classValidationBox
 				)}
 			>

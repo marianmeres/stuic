@@ -1,20 +1,158 @@
-/* prettier-ignore */
-@theme inline {
-	--color-button-group-bg: var(--color-button-group-bg, var(--color-white));
-	--color-button-group-bg-dark: var(--color-button-group-bg-dark, var(--color-neutral-600));
+/* ============================================================================
+   BUTTON GROUP RADIO COMPONENT TOKENS
+   Override globally: :root { --stuic-button-group-radius: 0; }
+   Override locally:  <ButtonGroupRadio style="--stuic-button-group-radius: 9999px;">
+   ============================================================================ */
 
-	--color-button-group-text: var(--color-button-group-text, var(--color-black));
-	--color-button-group-text-dark: var(--color-button-group-text-dark, var(--color-neutral-300));
+:root {
+	/* Structure - reference Tailwind vars where applicable */
+	--stuic-button-group-radius: var(--radius-md);
+	--stuic-button-group-padding: 0.375rem;
+	--stuic-button-group-gap: 0.25rem;
+	--stuic-button-group-border-width: 1px;
+	--stuic-button-group-transition: 150ms;
 
-	--color-button-group-border: var(--color-button-group-border, var(--color-neutral-300));
-	--color-button-group-border-dark: var(--color-button-group-border-dark, var(--color-neutral-800));
+	/* Button sizing - 44px is Apple HIG minimum touch target */
+	--stuic-button-group-button-padding-x: 0.75rem;
+	--stuic-button-group-button-padding-y: 0.5rem;
+	--stuic-button-group-button-min-height: 2.75rem; /* 44px */
 
-    --color-button-group-accent: var(--color-button-group-accent, var(--color-red-600));
-	--color-button-group-accent-dark: var(--color-button-group-accent-dark, var(--color-red-400));
+	/* Focus ring */
+	--stuic-button-group-ring-width: 3px;
+	--stuic-button-group-ring-color: var(--stuic-color-ring);
 
-	--color-button-group-bg-active: var(--color-button-group-bg-active, var(--color-neutral-500));
-	--color-button-group-bg-active-dark: var(--color-button-group-bg-active-dark, var(--color-neutral-500));
+	/* Container colors - theme vars */
+	--stuic-button-group-bg: var(--stuic-color-surface);
+	--stuic-button-group-text: var(--stuic-color-foreground);
+	--stuic-button-group-border: var(--stuic-color-border);
 
-    --color-button-group-text-active: var(--color-button-group-text-active, var(--color-white));
-    --color-button-group-text-active-dark: var(--color-button-group-text-active-dark, var(--color-white));
+	/* Button colors (inactive) */
+	--stuic-button-group-button-bg: transparent;
+	--stuic-button-group-button-text: var(--stuic-color-foreground);
+	--stuic-button-group-button-bg-hover: var(--stuic-color-muted);
+	--stuic-button-group-button-text-hover: var(--stuic-color-foreground);
+
+	/* Button colors (active) */
+	--stuic-button-group-button-bg-active: var(--stuic-color-primary);
+	--stuic-button-group-button-text-active: var(--stuic-color-primary-foreground);
+	--stuic-button-group-button-bg-active-hover: var(--stuic-color-primary-hover);
+	--stuic-button-group-button-text-active-hover: var(--stuic-color-primary-foreground-hover);
+}
+
+/* ============================================================================
+   BASE STYLES
+   ============================================================================ */
+
+.stuic-button-group {
+	/* Layout */
+	display: inline-flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--stuic-button-group-gap);
+	width: 100%;
+
+	/* Box model */
+	padding: var(--stuic-button-group-padding);
+	border-width: var(--stuic-button-group-border-width);
+	border-style: solid;
+	border-radius: var(--stuic-button-group-radius);
+
+	/* Colors */
+	background: var(--stuic-button-group-bg);
+	color: var(--stuic-button-group-text);
+	border-color: var(--stuic-button-group-border);
+}
+
+/* Focus-within state */
+.stuic-button-group:focus-within {
+	outline: var(--stuic-button-group-ring-width) solid var(--stuic-button-group-ring-color);
+	outline-offset: 0;
+}
+
+/* ============================================================================
+   SIZE VARIANTS
+   ============================================================================ */
+
+.stuic-button-group[data-size="sm"] {
+	--stuic-button-group-padding: 0.25rem;
+	--stuic-button-group-gap: 0.125rem;
+	--stuic-button-group-button-padding-x: 0.5rem;
+	--stuic-button-group-button-padding-y: 0.375rem;
+	--stuic-button-group-button-min-height: 2.25rem; /* 36px - still touch-friendly */
+}
+
+.stuic-button-group[data-size="lg"] {
+	--stuic-button-group-padding: 0.5rem;
+	--stuic-button-group-gap: 0.375rem;
+	--stuic-button-group-button-padding-x: 1rem;
+	--stuic-button-group-button-padding-y: 0.625rem;
+	--stuic-button-group-button-min-height: 3rem; /* 48px */
+}
+
+/* ============================================================================
+   BUTTON STYLES
+   ============================================================================ */
+
+.stuic-button-group-button {
+	/* Layout */
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex: 1;
+
+	/* Box model - mobile-friendly touch targets */
+	padding: var(--stuic-button-group-button-padding-y) var(--stuic-button-group-button-padding-x);
+	min-height: var(--stuic-button-group-button-min-height);
+	border: none;
+	border-radius: var(--stuic-button-group-radius);
+
+	/* Typography */
+	white-space: nowrap;
+	line-height: 1;
+	text-align: center;
+
+	/* Colors */
+	background: var(--stuic-button-group-button-bg);
+	color: var(--stuic-button-group-button-text);
+
+	/* Interaction - mobile-friendly */
+	cursor: pointer;
+	user-select: none;
+	-webkit-tap-highlight-color: transparent;
+	touch-action: manipulation;
+
+	/* Transition */
+	transition:
+		background var(--stuic-button-group-transition),
+		color var(--stuic-button-group-transition);
+
+	/* Focus */
+	outline: none;
+}
+
+.stuic-button-group-button:hover:not(:disabled):not([aria-checked="true"]) {
+	background: var(--stuic-button-group-button-bg-hover);
+	color: var(--stuic-button-group-button-text-hover);
+}
+
+.stuic-button-group-button:focus-visible {
+	outline: none; /* Focus handled by container */
+}
+
+/* Active/selected button */
+.stuic-button-group-button[aria-checked="true"] {
+	background: var(--stuic-button-group-button-bg-active);
+	color: var(--stuic-button-group-button-text-active);
+	box-shadow: none;
+}
+
+.stuic-button-group-button[aria-checked="true"]:hover:not(:disabled) {
+	background: var(--stuic-button-group-button-bg-active-hover);
+	color: var(--stuic-button-group-button-text-active-hover);
+}
+
+/* Disabled state */
+.stuic-button-group-button:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
 }

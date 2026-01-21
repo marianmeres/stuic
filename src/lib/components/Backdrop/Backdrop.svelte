@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import type { Snippet } from "svelte";
 	import type { FocusTrapOptions } from "../../actions/focus-trap.js";
-	import { BodyScroll, focusTrap as focusTrapAction, twMerge } from "$lib/index.js";
+	import { BodyScroll, focusTrap as focusTrapAction } from "$lib/index.js";
 	import { createClog } from "@marianmeres/clog";
 	import { watch } from "runed";
 	import { onDestroy } from "svelte";
@@ -26,6 +26,9 @@
 </script>
 
 <script lang="ts">
+	import "./index.css";
+	import { twMerge } from "../../utils/tw-merge.js";
+
 	const clog = createClog("Backdrop", { color: "auto" });
 
 	let {
@@ -142,6 +145,9 @@
 		}
 		return opts;
 	});
+
+	// Build class string - add base class for CSS targeting, allow user overrides
+	let _class = $derived(twMerge("stuic-backdrop", classProp));
 </script>
 
 {#if visible}
@@ -149,7 +155,7 @@
 		bind:this={el}
 		role="presentation"
 		tabindex="-1"
-		class={twMerge("fixed inset-0 flex z-10 h-dvh", classProp)}
+		class={_class}
 		in:fade={{ duration: fadeInDuration }}
 		out:fade={{ duration: fadeOutDuration }}
 		use:focusTrapAction={focusTrapOptions}

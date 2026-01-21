@@ -6,27 +6,42 @@
 */
 /* @import "tailwindcss"; */
 
-@plugin '@tailwindcss/forms';
+/* @plugin '@tailwindcss/forms'; */
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 @source "./";
 
-/* "components" looks like a better fit here, but forms plugin uses "utilities"
-so, since we need to override, sticking with that */
-@layer utilities {
-	@import "./actions/tooltip/index.css";
-	@import "./components/Button/index.css";
-	@import "./components/ButtonGroupRadio/index.css";
-	@import "./components/DismissibleMessage/index.css";
-	@import "./components/Input/index.css";
-	@import "./components/ListItemButton/index.css";
-	@import "./components/Notifications/index.css";
-	@import "./components/Progress/index.css";
-	@import "./components/Switch/index.css";
-	@import "./components/TabbedMenu/index.css";
-	@import "./components/TwCheck/index.css";
-}
+/* Import global design tokens before component styles */
+/* @import "./themes/neutral.css"; */
+/* @import "./themes/gray.css"; */
+@import "./themes/rainbow.css";
+/* @import "./themes/indigo-amber.css"; */
+/* @import "./themes/teal-rose.css"; */
+/* @import "./themes/violet-lime.css"; */
+/* @import "./themes/blue-orange.css"; */
+/* @import "./themes/emerald-pink.css"; */
+/* @import "./themes/sky-amber.css"; */
+/* @import "./themes/fuchsia-emerald.css"; */
+/* @import "./themes/slate-cyan.css"; */
+/* @import "./themes/purple-yellow.css"; */
+/* @import "./themes/cyan-red.css"; */
+/* @import "./themes/red-cyan.css"; */
+
+/* Component styles - each file has its own @layer components wrapper */
+@import "./components/Input/index.css";
+@import "./components/ModalDialog/index.css";
+/* @import "./actions/tooltip/index.css"; */
+/* @import "./components/Button/index.css"; */
+/* @import "./components/ButtonGroupRadio/index.css"; */
+/* @import "./components/Collapsible/index.css"; */
+/* @import "./components/DismissibleMessage/index.css"; */
+/* @import "./components/ListItemButton/index.css"; */
+/* @import "./components/Notifications/index.css"; */
+/* @import "./components/Progress/index.css"; */
+/* @import "./components/Switch/index.css"; */
+/* @import "./components/TabbedMenu/index.css"; */
+/* @import "./components/TwCheck/index.css"; */
 
 @layer base {
 	button:not(:disabled),

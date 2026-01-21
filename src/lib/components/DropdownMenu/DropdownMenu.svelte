@@ -205,49 +205,17 @@
 		);
 	}
 
-	export const DROPDOWN_MENU_BASE_CLASSES = `stuic-dropdown-menu relative inline-block`;
+	export const DROPDOWN_MENU_BASE_CLASSES = `stuic-dropdown-menu`;
 
-	export const DROPDOWN_MENU_TRIGGER_CLASSES = `
-		inline-flex items-center justify-center gap-2
-		px-3 py-2
-		rounded-md border
-		bg-white dark:bg-neutral-800
-		text-neutral-900 dark:text-neutral-100
-		border-neutral-200 dark:border-neutral-700
-		hover:brightness-95 dark:hover:brightness-110
-		cursor-pointer
-		`;
-	// focus-visible:outline-2 focus-visible:outline-offset-2
+	export const DROPDOWN_MENU_TRIGGER_CLASSES = `stuic-dropdown-menu-trigger`;
 
-	export const DROPDOWN_MENU_DROPDOWN_CLASSES = `
-		stuic-dropdown-menu-dropdown
-		bg-white dark:bg-neutral-800
-		text-neutral-900 dark:text-neutral-100
-		border border-neutral-200 dark:border-neutral-700
-		rounded-md shadow-sm
-		p-1
-		overflow-y-auto
-		z-50
-		min-w-48
-	`;
+	export const DROPDOWN_MENU_DROPDOWN_CLASSES = `stuic-dropdown-menu-dropdown`;
 
-	export const DROPDOWN_MENU_DIVIDER_CLASSES = `
-		h-px my-1
-		bg-neutral-200 dark:bg-neutral-700
-	`;
+	export const DROPDOWN_MENU_DIVIDER_CLASSES = `stuic-dropdown-menu-divider`;
 
-	export const DROPDOWN_MENU_HEADER_CLASSES = `
-		px-2 py-1.5
-		text-xs font-semibold uppercase tracking-wide
-		text-neutral-500 dark:text-neutral-400
-		select-none
-	`;
+	export const DROPDOWN_MENU_HEADER_CLASSES = `stuic-dropdown-menu-header`;
 
-	export const DROPDOWN_MENU_BACKDROP_CLASSES = `
-		stuic-dropdown-menu-backdrop
-		fixed inset-0 bg-black/25
-		z-40
-	`;
+	export const DROPDOWN_MENU_BACKDROP_CLASSES = `stuic-dropdown-menu-backdrop`;
 </script>
 
 <script lang="ts">
@@ -659,15 +627,11 @@
 		>
 			<!-- Close button (fallback mode only) -->
 			{#if !isSupported}
-				<div class="sticky top-0 right-0 z-10 flex just pointer-events-none">
+				<div class="sticky top-0 right-0 z-10 flex pointer-events-none">
 					<button
 						type="button"
 						aria-label="Close"
-						class={[
-							"bg-black text-white rounded-md cursor-pointer opacity-60",
-							"absolute right-0 top-0 p-2",
-							"leading-none hover:opacity-100 pointer-events-auto",
-						]}
+						class="stuic-dropdown-menu-close absolute right-0 top-0 pointer-events-auto"
 						onclick={() => {
 							isOpen = false;
 							triggerEl?.focus();
@@ -760,7 +724,7 @@
 						{#if isExpanded}
 							<div
 								class={twMerge(
-									"stuic-dropdown-menu-expandable-content pl-4",
+									"stuic-dropdown-menu-expandable-content",
 									classExpandableContent
 								)}
 								transition:slide={{ duration: transitionDuration }}

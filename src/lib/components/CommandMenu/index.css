@@ -1,3 +1,46 @@
-/* Override ListItemButton defaults for CommandMenu context */
-.stuic-command-menu-options .stuic-list-item-button {
+/* =============================================================================
+   COMMAND MENU COMPONENT TOKENS
+   Override globally: :root { --stuic-command-menu-divider-color: red; }
+   Override locally:  <div style="--stuic-command-menu-divider-color: blue;">
+   ============================================================================= */
+
+:root {
+	/* Structure */
+	--stuic-command-menu-transition: 150ms;
+	--stuic-command-menu-options-max-height: 15rem;
+
+	/* Colors */
+	--stuic-command-menu-divider-color: var(--stuic-color-border);
+	--stuic-command-menu-group-header-color: var(--stuic-color-muted-foreground);
+	--stuic-command-menu-group-header-font-size: var(--text-xs);
+
+	/* Muted/placeholder states (align with FieldOptions) */
+	--stuic-command-menu-muted-text: var(--stuic-color-muted-foreground);
+}
+
+/* =============================================================================
+   BASE STYLES
+   ============================================================================= */
+
+/* Options container */
+.stuic-command-menu-options {
+	scrollbar-width: thin;
+	max-height: var(--stuic-command-menu-options-max-height);
+	border-top-color: var(--stuic-command-menu-divider-color);
+}
+
+/* Option group header */
+.stuic-command-menu-group-header {
+	color: var(--stuic-command-menu-group-header-color);
+	font-size: var(--stuic-command-menu-group-header-font-size);
+}
+
+/* Muted elements (search icon) */
+.stuic-command-menu-muted {
+	color: var(--stuic-command-menu-muted-text);
+}
+
+/* Placeholder/loading states (spinner) */
+.stuic-command-menu-placeholder {
+	color: var(--stuic-command-menu-muted-text);
 }

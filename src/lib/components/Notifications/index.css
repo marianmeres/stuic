@@ -1,20 +1,217 @@
-/* 
-    When defining theme variables that reference other variables, use the inline option.
+/* ============================================================================
+   NOTIFICATION COMPONENT TOKENS
+   Override globally: :root { --stuic-notification-radius: 0; }
+   Override locally:  <Notifications style="--stuic-notification-radius: 9999px;">
+   ============================================================================ */
 
-    Using the inline option, the utility class will use the theme variable value instead 
-    of referencing the actual theme variable.
+:root {
+	/* Layout */
+	--stuic-notification-max-width: var(--container-sm); /* 24rem */
+	--stuic-notification-radius: var(--radius-lg); /* 0.5rem */
+	--stuic-notification-padding-x: calc(var(--spacing) * 4); /* 1rem */
+	--stuic-notification-padding-y: calc(var(--spacing) * 3); /* 0.75rem */
+	--stuic-notification-gap: calc(
+		var(--spacing) * 4
+	); /* 1rem - gap between notifications */
 
-    Without using inline, your utility classes might resolve to unexpected values because 
-    of how variables are resolved in CSS.
-*/
+	/* Typography */
+	--stuic-notification-font-size: var(--text-base);
 
-/* prettier-ignore */
-@theme inline {
-	--color-notif-bg: var(--color-notif-bg, var(--color-neutral-700));
-    --color-notif-text: var(--color-notif-text, var(--color-neutral-50));
-    --color-notif-border: var(--color-notif-border, var(--color-neutral-900));
+	/* Animation */
+	--stuic-notification-transition: 200ms;
 
-    --color-notif-bg-dark: var(--color-notif-bg-dark, var(--color-neutral-950));
-    --color-notif-text-dark: var(--color-notif-text-dark, var(--color-neutral-200));
-    --color-notif-border-dark: var(--color-notif-border-dark, var(--color-neutral-500)); 
+	/* Shadow */
+	--stuic-notification-shadow: var(--shadow-lg);
+
+	/* Icon */
+	--stuic-notification-icon-size: calc(var(--spacing) * 6); /* 1.5rem */
+
+	/* Counter badge */
+	--stuic-notification-badge-font-size: var(--text-xs);
+	--stuic-notification-badge-padding-x: calc(var(--spacing) * 2);
+	--stuic-notification-badge-padding-y: calc(var(--spacing) * 1);
+	--stuic-notification-badge-radius: 9999px;
+	--stuic-notification-badge-bg: var(--color-neutral-950);
+	--stuic-notification-badge-text: var(--color-neutral-50);
+
+	/* Progress bar */
+	--stuic-notification-progress-opacity: 0.1;
+}
+
+/* ============================================================================
+   TYPE-BASED COLOR MAPPING
+   Each type sets the color palette via internal CSS vars.
+   ============================================================================ */
+
+/* Default / info */
+.stuic-notification {
+	--_bg: var(--stuic-color-info);
+	--_text: var(--stuic-color-info-foreground);
+	--_border: var(--stuic-color-info-hover);
+}
+
+.stuic-notification[data-type="success"] {
+	--_bg: var(--stuic-color-success);
+	--_text: var(--stuic-color-success-foreground);
+	--_border: var(--stuic-color-success-hover);
+}
+
+.stuic-notification[data-type="warn"] {
+	--_bg: var(--stuic-color-warning);
+	--_text: var(--stuic-color-warning-foreground);
+	--_border: var(--stuic-color-warning-hover);
+}
+
+.stuic-notification[data-type="error"] {
+	--_bg: var(--stuic-color-destructive);
+	--_text: var(--stuic-color-destructive-foreground);
+	--_border: var(--stuic-color-destructive-hover);
+}
+
+/* ============================================================================
+   BASE STYLES
+   ============================================================================ */
+
+.stuic-notification {
+	/* Layout */
+	position: relative;
+	display: flex;
+	align-items: center;
+	width: 100%;
+	max-width: 100%;
+
+	/* Box model */
+	border-width: 1px;
+	border-style: solid;
+	border-radius: var(--stuic-notification-radius);
+
+	/* Shadow */
+	box-shadow: var(--stuic-notification-shadow);
+
+	/* Colors - use internal vars set by type */
+	background: var(--_bg);
+	color: var(--_text);
+	border-color: var(--_border);
+
+	/* Interaction */
+	pointer-events: auto;
+}
+
+@media (min-width: 40rem) {
+	.stuic-notification {
+		width: var(--stuic-notification-max-width);
+	}
+}
+
+/* ============================================================================
+   ICON
+   ============================================================================ */
+
+.stuic-notification .icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: var(--stuic-notification-padding-y);
+	padding-bottom: var(--stuic-notification-padding-y);
+	padding-left: var(--stuic-notification-padding-x);
+	padding-right: 0;
+	color: var(--_text);
+	opacity: 0.85;
+}
+
+.stuic-notification .icon svg {
+	width: var(--stuic-notification-icon-size);
+	height: var(--stuic-notification-icon-size);
+}
+
+/* ============================================================================
+   CONTENT
+   ============================================================================ */
+
+.stuic-notification .content {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	padding: var(--stuic-notification-padding-y) calc(var(--spacing) * 1)
+		var(--stuic-notification-padding-y) var(--stuic-notification-padding-x);
+	font-size: var(--stuic-notification-font-size);
+	letter-spacing: var(--tracking-tight);
+}
+
+.stuic-notification .content.no-close-button {
+	padding-right: var(--stuic-notification-padding-x);
+}
+
+/* ============================================================================
+   CLOSE BUTTON
+   ============================================================================ */
+
+.stuic-notification .close-button {
+	align-self: stretch;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 0 calc(var(--spacing) * 3);
+	border-top-right-radius: var(--stuic-notification-radius);
+	border-bottom-right-radius: var(--stuic-notification-radius);
+	color: var(--_text);
+	opacity: 0.75;
+	transition: opacity var(--stuic-notification-transition);
+}
+
+.stuic-notification .close-button:hover {
+	opacity: 1;
+	background: rgb(0 0 0 / 0.1);
+}
+
+.stuic-notification .close-button:focus-visible {
+	opacity: 1;
+	outline: none;
+	background: rgb(0 0 0 / 0.1);
+}
+
+/* ============================================================================
+   COUNTER BADGE
+   ============================================================================ */
+
+.stuic-notification .count {
+	position: absolute;
+	top: calc(var(--spacing) * -2);
+	right: calc(var(--spacing) * -2);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: var(--stuic-notification-badge-padding-y)
+		var(--stuic-notification-badge-padding-x);
+	border-radius: var(--stuic-notification-badge-radius);
+	font-size: var(--stuic-notification-badge-font-size);
+	line-height: 1;
+	background: var(--stuic-notification-badge-bg);
+	color: var(--stuic-notification-badge-text);
+}
+
+/* ============================================================================
+   PROGRESS BAR
+   ============================================================================ */
+
+.stuic-notification .progress {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	background: transparent;
+	border-top-left-radius: var(--stuic-notification-radius);
+	border-bottom-left-radius: var(--stuic-notification-radius);
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.stuic-notification .progress-bar {
+	width: 100%;
+	height: 100%;
+	background: rgb(255 255 255 / var(--stuic-notification-progress-opacity));
+	border-top-left-radius: var(--stuic-notification-radius);
+	border-bottom-left-radius: var(--stuic-notification-radius);
 }

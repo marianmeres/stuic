@@ -23,8 +23,8 @@
 		classContent?: string;
 		/** Toggle button class */
 		classToggle?: string;
-		/** Opacity class for toggle button (default: "opacity-70") */
-		toggleOpacity?: string;
+		/** Inline styles (for CSS variable overrides) */
+		style?: string;
 		/** Bind reference to container element */
 		el?: HTMLDivElement;
 		/** Optional translate function */
@@ -39,8 +39,8 @@
 		i18nSpanWrap: boolean = true
 	) {
 		const m: Record<string, string> = {
-			more: "Show more...",
-			less: "Show less...",
+			more: "More...",
+			less: "Less...",
 		};
 		let out = m[k] ?? fallback ?? k;
 
@@ -58,7 +58,7 @@
 		class: classProp,
 		classContent,
 		classToggle,
-		toggleOpacity = "opacity-75",
+		style,
 		el = $bindable(),
 		t = t_default,
 	}: Props = $props();
@@ -86,6 +86,7 @@
 	bind:this={el}
 	bind:clientWidth={containerWidth}
 	class={twMerge("stuic-collapsible", classProp)}
+	{style}
 >
 	<div class="flex items-end">
 		<div
@@ -98,8 +99,7 @@
 			<button
 				type="button"
 				class={twMerge(
-					toggleOpacity,
-					"hover:opacity-100 cursor-pointer px-2 py-1 -my-1 -mr-2",
+					"stuic-collapsible-toggle cursor-pointer -my-1 -mr-2",
 					classToggle
 				)}
 				onclick={() => (expanded = !expanded)}
