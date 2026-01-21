@@ -27,6 +27,7 @@
 <script lang="ts">
 	import ModalDialog from "../ModalDialog/ModalDialog.svelte";
 	import { twMerge } from "../../utils/tw-merge.js";
+	import "./index.css";
 
 	let {
 		visible = $bindable(false),
@@ -103,9 +104,8 @@
 	>
 		<div
 			class={twMerge(
-				"bg-white dark:bg-neutral-800",
+				"stuic-modal",
 				"flex flex-col overflow-hidden",
-				"rounded-none md:rounded-md",
 				"w-full flex-1",
 				classProp
 			)}
@@ -126,9 +126,3 @@
 		</div>
 	</div>
 </ModalDialog>
-
-<style>
-	.main {
-		scrollbar-width: thin;
-	}
-</style>

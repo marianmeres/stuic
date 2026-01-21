@@ -1,0 +1,36 @@
+/* ============================================================================
+   MODAL COMPONENT TOKENS
+   Override globally: :root { --stuic-modal-radius: 0; }
+   Override locally:  <Modal style="--stuic-modal-radius: var(--radius-lg);">
+   ============================================================================ */
+
+:root {
+	/* Background & text - reference theme tokens */
+	--stuic-modal-bg: var(--stuic-color-surface);
+	--stuic-modal-text: var(--stuic-color-surface-foreground);
+
+	/* Border radius (desktop only - mobile is fullscreen) */
+	--stuic-modal-radius: var(--radius-md);
+}
+
+/* ============================================================================
+   BASE STYLES
+   ============================================================================ */
+
+.stuic-modal {
+	background: var(--stuic-modal-bg);
+	color: var(--stuic-modal-text);
+	border-radius: 0; /* Mobile: fullscreen, no radius */
+}
+
+@media (min-width: 48rem) {
+	/* md breakpoint */
+	.stuic-modal {
+		border-radius: var(--stuic-modal-radius);
+	}
+}
+
+/* Thin scrollbar for main content area */
+.stuic-modal .main {
+	scrollbar-width: thin;
+}

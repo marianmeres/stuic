@@ -38,3 +38,20 @@
 	border-radius: var(--stuic-modal-dialog-radius);
 	box-shadow: var(--stuic-modal-dialog-shadow);
 }
+
+/* ============================================================================
+   ANIMATIONS
+   ============================================================================ */
+
+.stuic-modal-dialog[open]::backdrop {
+	animation: stuic-modal-dialog-fadeIn var(--stuic-modal-dialog-transition) ease-out;
+}
+
+@keyframes stuic-modal-dialog-fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
