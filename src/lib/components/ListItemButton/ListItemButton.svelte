@@ -10,7 +10,7 @@
 		active?: boolean;
 		/** Whether this item is currently focused via keyboard navigation */
 		focused?: boolean;
-		/** Size preset affecting padding and min-height (sm, md, lg) */
+		/** Size preset affecting padding and min-height (sm, md, lg) or custom Tailwind classes */
 		size?: "sm" | "md" | "lg" | string;
 		/** Skip all default styling, use only custom classes */
 		unstyled?: boolean;
@@ -35,57 +35,6 @@
 		/** Bindable element reference */
 		el?: HTMLButtonElement | HTMLAnchorElement;
 	}
-
-	export interface ListItemButtonPresetClasses {
-		size: Record<string, string>;
-		touchFriendly: string;
-	}
-
-	export const LIST_ITEM_BUTTON_STUIC_BASE_CLASSES = `
-		w-full
-		flex items-center gap-2
-		text-left
-		rounded-(--stuic-list-item-button-radius)
-		cursor-pointer
-		touch-action-manipulation
-
-		bg-(--stuic-list-item-button-bg)
-		text-(--stuic-list-item-button-text)
-
-		border border-(--stuic-list-item-button-border)
-
-		hover:bg-(--stuic-list-item-button-bg-hover)
-		hover:text-(--stuic-list-item-button-text-hover)
-		hover:border-(--stuic-list-item-button-border-hover)
-
-		focus:outline-none
-		focus-visible:bg-(--stuic-list-item-button-bg-focus)
-		focus-visible:text-(--stuic-list-item-button-text-focus)
-		focus-visible:border-(--stuic-list-item-button-border-focus)
-
-		disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none
-	`;
-
-	export const LIST_ITEM_BUTTON_STUIC_PRESET_CLASSES: ListItemButtonPresetClasses = {
-		size: {
-			sm: `px-2 py-1.5 text-sm min-h-[36px]`,
-			md: `px-2.5 py-2 text-base min-h-[40px]`,
-			lg: `px-3 py-2.5 text-base min-h-[44px]`,
-		},
-		touchFriendly: `min-h-[44px] py-2.5`,
-	};
-
-	export const LIST_ITEM_BUTTON_ACTIVE_CLASSES = `
-		bg-(--stuic-list-item-button-bg-active)
-		text-(--stuic-list-item-button-text-active)
-		border-(--stuic-list-item-button-border-active)
-	`;
-
-	export const LIST_ITEM_BUTTON_FOCUSED_CLASSES = `
-		bg-(--stuic-list-item-button-bg-focus)
-		text-(--stuic-list-item-button-text-focus)
-		border-(--stuic-list-item-button-border-focus)
-	`;
 </script>
 
 <script lang="ts">
@@ -115,31 +64,28 @@
 
 	const devicePointer = new DevicePointer();
 
-	const _base = LIST_ITEM_BUTTON_STUIC_BASE_CLASSES;
-	const _preset = LIST_ITEM_BUTTON_STUIC_PRESET_CLASSES;
+	// Check if size is a known preset
+	const isPresetSize = (s: string): s is "sm" | "md" | "lg" =>
+		["sm", "md", "lg"].includes(s);
 
-	let _touchClasses = $derived.by(() => {
-		if (touchFriendly === true) return _preset.touchFriendly;
-		if (touchFriendly === "auto" && devicePointer.isCoarse) return _preset.touchFriendly;
-		return "";
+	// Compute whether touch-friendly should be active
+	let isTouchFriendly = $derived.by(() => {
+		if (touchFriendly === true) return true;
+		if (touchFriendly === "auto" && devicePointer.isCoarse) return true;
+		return false;
 	});
 
+	// Build class string - styling is handled by CSS + data attributes
 	let _class = $derived(
-		[
-			"stuic-list-item-button",
-			size,
-			active && "active",
-			focused && "focused",
-			!unstyled && _base,
-			!unstyled && size && _preset.size[size],
-			!unstyled && _touchClasses,
-			!unstyled && active && LIST_ITEM_BUTTON_ACTIVE_CLASSES,
-			!unstyled && focused && !active && LIST_ITEM_BUTTON_FOCUSED_CLASSES,
+		twMerge(
+			!unstyled && "stuic-list-item-button",
+			// Custom size classes when not using preset
+			!unstyled && !isPresetSize(size) && size,
+			// User-provided state classes
 			active && classActive,
 			focused && !active && classFocused,
-		]
-			.filter(Boolean)
-			.join(" ")
+			classProp
+		)
 	);
 </script>
 
@@ -160,11 +106,29 @@
 {/snippet}
 
 {#if href}
-	<a {href} bind:this={el} class={twMerge(_class, classProp)} {...rest as any}>
+	<a
+		{href}
+		bind:this={el}
+		class={_class}
+		data-size={!unstyled && isPresetSize(size) ? size : undefined}
+		data-active={!unstyled && active ? "" : undefined}
+		data-focused={!unstyled && focused ? "" : undefined}
+		data-touch-friendly={!unstyled && isTouchFriendly ? "" : undefined}
+		{...rest as any}
+	>
 		{@render content()}
 	</a>
 {:else}
-	<button bind:this={el} class={twMerge(_class, classProp)} type="button" {...rest}>
+	<button
+		bind:this={el}
+		class={_class}
+		type="button"
+		data-size={!unstyled && isPresetSize(size) ? size : undefined}
+		data-active={!unstyled && active ? "" : undefined}
+		data-focused={!unstyled && focused ? "" : undefined}
+		data-touch-friendly={!unstyled && isTouchFriendly ? "" : undefined}
+		{...rest}
+	>
 		{@render content()}
 	</button>
 {/if}

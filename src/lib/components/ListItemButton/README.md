@@ -19,7 +19,7 @@ A versatile button component for list-like contexts such as dropdown menus, comm
 | `children` | `Snippet` | - | Content displayed in the button |
 | `active` | `boolean` | `false` | Whether this item is currently active/selected |
 | `focused` | `boolean` | `false` | Whether this item is focused via keyboard navigation |
-| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Size preset affecting padding and min-height |
+| `size` | `"sm" \| "md" \| "lg" \| string` | `"md"` | Size preset or custom Tailwind classes |
 | `unstyled` | `boolean` | `false` | Skip all default styling, use only custom classes |
 | `touchFriendly` | `boolean \| "auto"` | `false` | Enable touch-friendly sizing. `"auto"` detects coarse pointer. |
 | `contentBefore` | `THC` | - | Icon/content displayed before the main content |
@@ -100,44 +100,88 @@ A versatile button component for list-like contexts such as dropdown menus, comm
 
 ## CSS Variables
 
-All colors support customization via CSS variables. Define them on a parent element or in `:root` to override defaults.
+All styling can be customized via CSS variables. Define them on a parent element or in `:root` to override defaults.
 
-### Border Radius
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--stuic-list-item-button-radius` | `--stuic-radius` | Border radius |
-
-### Base State
+### Structure Tokens
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `--stuic-list-item-button-bg` | `--stuic-surface-interactive` | Background color |
-| `--stuic-list-item-button-text` | `--stuic-text` | Text color |
+| `--stuic-list-item-button-radius` | `var(--radius-md)` | Border radius |
+| `--stuic-list-item-button-transition` | `150ms` | Transition duration |
+| `--stuic-list-item-button-gap` | `0.5rem` | Gap between icon and content |
+
+### Focus Ring Tokens
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-list-item-button-ring-width` | `3px` | Focus ring width |
+| `--stuic-list-item-button-ring-offset` | `0px` | Focus ring offset |
+| `--stuic-list-item-button-ring-color` | `var(--stuic-color-ring)` | Focus ring color |
+
+### Size Tokens: Small (`size="sm"`)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-list-item-button-padding-x-sm` | `0.5rem` | Horizontal padding |
+| `--stuic-list-item-button-padding-y-sm` | `0.375rem` | Vertical padding |
+| `--stuic-list-item-button-font-size-sm` | `var(--text-sm)` | Font size |
+| `--stuic-list-item-button-min-height-sm` | `2.25rem` | Minimum height (36px) |
+
+### Size Tokens: Medium (`size="md"`)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-list-item-button-padding-x-md` | `0.625rem` | Horizontal padding |
+| `--stuic-list-item-button-padding-y-md` | `0.5rem` | Vertical padding |
+| `--stuic-list-item-button-font-size-md` | `var(--text-base)` | Font size |
+| `--stuic-list-item-button-min-height-md` | `2.5rem` | Minimum height (40px) |
+
+### Size Tokens: Large (`size="lg"`)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-list-item-button-padding-x-lg` | `0.75rem` | Horizontal padding |
+| `--stuic-list-item-button-padding-y-lg` | `0.625rem` | Vertical padding |
+| `--stuic-list-item-button-font-size-lg` | `var(--text-base)` | Font size |
+| `--stuic-list-item-button-min-height-lg` | `2.75rem` | Minimum height (44px) |
+
+### Touch-Friendly Tokens
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-list-item-button-min-height-touch` | `2.75rem` | Touch-friendly min height (44px) |
+| `--stuic-list-item-button-padding-y-touch` | `0.625rem` | Touch-friendly vertical padding |
+
+### Color Tokens: Base State
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-list-item-button-bg` | `var(--stuic-color-muted)` | Background color |
+| `--stuic-list-item-button-text` | `var(--stuic-color-foreground)` | Text color |
 | `--stuic-list-item-button-border` | `transparent` | Border color |
 
-### Hover State
+### Color Tokens: Hover State
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `--stuic-list-item-button-bg-hover` | `--stuic-surface-interactive-hover` | Hover background |
-| `--stuic-list-item-button-text-hover` | `--stuic-text-inverse` | Hover text color |
+| `--stuic-list-item-button-bg-hover` | `var(--stuic-color-primary)` | Hover background |
+| `--stuic-list-item-button-text-hover` | `var(--stuic-color-primary-foreground)` | Hover text color |
 | `--stuic-list-item-button-border-hover` | `transparent` | Hover border color |
 
-### Active State
+### Color Tokens: Active State (selected)
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `--stuic-list-item-button-bg-active` | `--stuic-surface-interactive-hover` | Active background |
-| `--stuic-list-item-button-text-active` | `--stuic-text-inverse` | Active text color |
+| `--stuic-list-item-button-bg-active` | `var(--stuic-color-primary)` | Active background |
+| `--stuic-list-item-button-text-active` | `var(--stuic-color-primary-foreground)` | Active text color |
 | `--stuic-list-item-button-border-active` | `transparent` | Active border color |
 
-### Focus State
+### Color Tokens: Focus State (keyboard navigation)
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `--stuic-list-item-button-bg-focus` | `--stuic-surface-interactive-hover` | Focus background |
-| `--stuic-list-item-button-text-focus` | `--stuic-text-inverse` | Focus text color |
+| `--stuic-list-item-button-bg-focus` | `var(--stuic-color-primary)` | Focus background |
+| `--stuic-list-item-button-text-focus` | `var(--stuic-color-primary-foreground)` | Focus text color |
 | `--stuic-list-item-button-border-focus` | `transparent` | Focus border color |
 
 ### Custom Theme Example
@@ -157,37 +201,35 @@ All colors support customization via CSS variables. Define them on a parent elem
 ```css
 /* In your app.css */
 :root {
+  --stuic-list-item-button-radius: 0;
   --stuic-list-item-button-bg-hover: var(--color-indigo-500);
   --stuic-list-item-button-text-hover: white;
 }
 ```
 
-## Legacy Variable Names (Backwards Compatibility)
+## Data Attributes
 
-The following legacy variable names are still supported as aliases:
+The component uses data attributes for styling states. These are automatically applied based on props:
 
-| Legacy Name | New Name |
-|-------------|----------|
-| `--color-lib-bg` | `--stuic-list-item-button-bg` |
-| `--color-lib-text` | `--stuic-list-item-button-text` |
-| `--color-lib-border` | `--stuic-list-item-button-border` |
-| `--color-lib-hover-bg` | `--stuic-list-item-button-bg-hover` |
-| `--color-lib-hover-text` | `--stuic-list-item-button-text-hover` |
-| `--color-lib-active-bg` | `--stuic-list-item-button-bg-active` |
-| `--color-lib-focus-bg` | `--stuic-list-item-button-bg-focus` |
-| etc. | etc. |
+| Attribute | Applied When | CSS Selector |
+|-----------|--------------|--------------|
+| `data-size="sm\|md\|lg"` | When `size` is a preset value | `.stuic-list-item-button[data-size="md"]` |
+| `data-active` | When `active={true}` | `.stuic-list-item-button[data-active]` |
+| `data-focused` | When `focused={true}` | `.stuic-list-item-button[data-focused]` |
+| `data-touch-friendly` | When `touchFriendly={true}` or auto-detected | `.stuic-list-item-button[data-touch-friendly]` |
 
-**Note:** Legacy names are deprecated and will be removed in a future version. Please migrate to the new `--stuic-list-item-button-*` naming convention.
+### Custom Styling via Data Attributes
 
-## Exported Constants
+```css
+/* Example: Custom active state styling */
+.stuic-list-item-button[data-active] {
+  background: var(--color-green-500);
+  color: white;
+}
 
-The component exports several class constants for advanced customization:
-
-```typescript
-import {
-  LIST_ITEM_BUTTON_STUIC_BASE_CLASSES,
-  LIST_ITEM_BUTTON_STUIC_PRESET_CLASSES,
-  LIST_ITEM_BUTTON_ACTIVE_CLASSES,
-  LIST_ITEM_BUTTON_FOCUSED_CLASSES,
-} from "stuic";
+/* Example: Different padding for all sizes */
+.stuic-list-item-button[data-size] {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
 ```
