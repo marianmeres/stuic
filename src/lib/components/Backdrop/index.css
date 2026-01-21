@@ -1,0 +1,29 @@
+/* ============================================================================
+   BACKDROP COMPONENT TOKENS
+   Override globally: :root { --stuic-backdrop-bg: rgb(0 0 0 / 0.3); }
+   Override locally:  <Backdrop style="--stuic-backdrop-bg: rgb(0 0 0 / 0.8);">
+   ============================================================================ */
+
+:root {
+	/* Component-level customization tokens */
+	--stuic-backdrop-bg: rgb(0 0 0 / 0.5);
+	--stuic-backdrop-z-index: 10;
+}
+
+/* ============================================================================
+   BASE STYLES
+   ============================================================================ */
+
+.stuic-backdrop {
+	/* Layout */
+	position: fixed;
+	inset: 0;
+	display: flex;
+	height: 100dvh;
+
+	/* Stacking */
+	z-index: var(--stuic-backdrop-z-index);
+
+	/* Colors */
+	background: var(--stuic-backdrop-bg);
+}
