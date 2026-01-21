@@ -1,3 +1,55 @@
+/* =============================================================================
+   COMMAND MENU COMPONENT TOKENS
+   Override globally: :root { --stuic-command-menu-divider-color: red; }
+   Override locally:  <div style="--stuic-command-menu-divider-color: blue;">
+   ============================================================================= */
+
+:root {
+	/* Structure */
+	--stuic-command-menu-close-button-radius: var(--radius-md);
+	--stuic-command-menu-transition: 150ms;
+	--stuic-command-menu-options-max-height: 15rem;
+
+	/* Colors */
+	--stuic-command-menu-divider-color: var(--stuic-color-border);
+	--stuic-command-menu-close-button-bg: transparent;
+	--stuic-command-menu-close-button-bg-hover: var(--stuic-color-muted);
+	--stuic-command-menu-group-header-color: var(--stuic-color-muted-foreground);
+	--stuic-command-menu-group-header-font-size: var(--text-xs);
+}
+
+/* =============================================================================
+   BASE STYLES
+   ============================================================================= */
+
+/* Options container */
+.stuic-command-menu-options {
+	scrollbar-width: thin;
+	max-height: var(--stuic-command-menu-options-max-height);
+	border-top-color: var(--stuic-command-menu-divider-color);
+}
+
+/* Close button */
+.stuic-command-menu-close-button {
+	border-radius: var(--stuic-command-menu-close-button-radius);
+	background: var(--stuic-command-menu-close-button-bg);
+	transition:
+		background var(--stuic-command-menu-transition),
+		opacity var(--stuic-command-menu-transition);
+}
+
+.stuic-command-menu-close-button:hover,
+.stuic-command-menu-close-button:focus-visible {
+	background: var(--stuic-command-menu-close-button-bg-hover);
+	outline: none;
+}
+
+/* Option group header */
+.stuic-command-menu-group-header {
+	color: var(--stuic-command-menu-group-header-color);
+	font-size: var(--stuic-command-menu-group-header-font-size);
+}
+
 /* Override ListItemButton defaults for CommandMenu context */
 .stuic-command-menu-options .stuic-list-item-button {
 }

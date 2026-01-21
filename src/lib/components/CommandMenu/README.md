@@ -93,6 +93,49 @@ The command menu uses `ModalDialog` internally with top-aligned positioning:
 - **Mobile**: Input at top of screen with 1rem margins from edges
 - **Desktop (md+)**: Input positioned at ~20% from top, max-width 768px, centered horizontally
 
+## CSS Variables
+
+All styling can be customized via CSS variables. Define them on a parent element or in `:root` to override defaults.
+
+### Structure Tokens
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-command-menu-close-button-radius` | `var(--radius-md)` | Close button border radius |
+| `--stuic-command-menu-transition` | `150ms` | Transition duration for hover/focus states |
+| `--stuic-command-menu-options-max-height` | `15rem` | Maximum height of options container |
+
+### Color Tokens
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-command-menu-divider-color` | `var(--stuic-color-border)` | Border color between input and options |
+| `--stuic-command-menu-close-button-bg` | `transparent` | Close button background |
+| `--stuic-command-menu-close-button-bg-hover` | `var(--stuic-color-muted)` | Close button hover/focus background |
+| `--stuic-command-menu-group-header-color` | `var(--stuic-color-muted-foreground)` | Option group header text color |
+| `--stuic-command-menu-group-header-font-size` | `var(--text-xs)` | Option group header font size |
+
+### Custom Theme Example
+
+```svelte
+<div style="
+  --stuic-command-menu-divider-color: var(--color-blue-200);
+  --stuic-command-menu-close-button-bg-hover: var(--color-blue-100);
+">
+  <CommandMenu ... />
+</div>
+```
+
+### Global Theme Override
+
+```css
+/* In your app.css */
+:root {
+  --stuic-command-menu-options-max-height: 20rem;
+  --stuic-command-menu-group-header-color: var(--color-indigo-500);
+}
+```
+
 ## Keyboard Navigation
 
 - **Arrow Up/Down**: Navigate options

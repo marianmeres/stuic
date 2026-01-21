@@ -438,3 +438,41 @@
 		var(--stuic-button-raised-offset)
 	);
 }
+
+/* ============================================================================
+   ROUNDED FULL
+   ============================================================================ */
+.stuic-button[data-rounded-full] {
+	--stuic-button-radius: 9999px;
+}
+
+/* ============================================================================
+   SQUARED (1:1 aspect ratio)
+   ============================================================================ */
+.stuic-button[data-aspect1] {
+	aspect-ratio: 1;
+}
+
+.stuic-button[data-aspect1][data-size="sm"] {
+	min-width: var(--stuic-button-min-height-sm);
+	min-height: var(--stuic-button-min-height-sm);
+	padding: var(--stuic-button-padding-y-sm);
+}
+
+.stuic-button[data-aspect1][data-size="md"] {
+	min-width: var(--stuic-button-min-height-md);
+	min-height: var(--stuic-button-min-height-md);
+	padding: var(--stuic-button-padding-y-md);
+}
+
+.stuic-button[data-aspect1][data-size="lg"] {
+	min-width: var(--stuic-button-min-height-lg);
+	min-height: var(--stuic-button-min-height-lg);
+	padding: var(--stuic-button-padding-y-lg);
+}
+
+.stuic-button[data-aspect1][data-size="xl"] {
+	min-width: var(--stuic-button-min-height-xl);
+	min-height: var(--stuic-button-min-height-xl);
+	padding: var(--stuic-button-padding-y-xl);
+}

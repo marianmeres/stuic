@@ -276,10 +276,9 @@
 						<button
 							type="button"
 							class={twMerge(
-								"rounded m-1 opacity-75",
-								"hover:opacity-100 hover:bg-neutral-200 dark:hover:bg-neutral-800",
-								"focus-visible:opacity-100 focus-visible:outline-0",
-								"focus-visible:bg-neutral-200 dark:focus-visible:bg-neutral-800"
+								"stuic-command-menu-close-button",
+								"m-1 opacity-75",
+								"hover:opacity-100 focus-visible:opacity-100"
 							)}
 							onclick={(e) => {
 								e.preventDefault();
@@ -304,10 +303,9 @@
 						<div
 							class={twMerge(
 								"stuic-command-menu-options",
-								"options block space-y-1 p-1",
+								"block space-y-1 p-1",
 								"overflow-y-auto overflow-x-hidden mb-1",
-								"border-t border-black/20",
-								"max-h-60"
+								"border-t"
 							)}
 							bind:this={optionsBox}
 							tabindex="-1"
@@ -320,10 +318,7 @@
 								<div class="p-1">
 									{#if _optgroup}
 										<div
-											class={[
-												"mb-1 p-1 text-xs font-semibold uppercase tracking-wide",
-												"text-neutral-500 dark:text-neutral-400",
-											]}
+											class="stuic-command-menu-group-header mb-1 p-1 font-semibold uppercase tracking-wide"
 										>
 											{_optgroup}
 										</div>
@@ -369,9 +364,6 @@
 </ModalDialog>
 
 <style>
-	.options {
-		scrollbar-width: thin;
-	}
 	.sr-only {
 		position: absolute;
 		width: 1px;
