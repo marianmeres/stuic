@@ -35,7 +35,8 @@
 		"build:theme:rose-teal": "pnpm run build:theme --infile=src/lib/themes/rose-teal.ts --outfile=src/lib/themes/rose-teal.css",
 		"build:theme:red-cyan": "pnpm run build:theme --infile=src/lib/themes/red-cyan.ts --outfile=src/lib/themes/red-cyan.css",
 		"build:theme:cyan-slate": "pnpm run build:theme --infile=src/lib/themes/cyan-slate.ts --outfile=src/lib/themes/cyan-slate.css",
-		"build:theme:pink-emerald": "pnpm run build:theme --infile=src/lib/themes/pink-emerald.ts --outfile=src/lib/themes/pink-emerald.css"
+		"build:theme:pink-emerald": "pnpm run build:theme --infile=src/lib/themes/pink-emerald.ts --outfile=src/lib/themes/pink-emerald.css",
+		"build:theme:red-blue": "pnpm run build:theme --infile=src/lib/themes/red-blue.ts --outfile=src/lib/themes/red-blue.css"
 	},
 	"files": [
 		"dist",

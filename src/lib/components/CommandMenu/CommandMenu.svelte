@@ -263,12 +263,12 @@
 				}}
 			>
 				{#snippet inputBefore()}
-					<div class="flex flex-col items-center justify-center pl-3 opacity-75">
+					<div class="flex flex-col items-center justify-center pl-3 stuic-command-menu-muted">
 						{@html iconSearch({ size: 19, strokeWidth: 3 })}
 					</div>
 				{/snippet}
 				{#snippet inputAfter()}
-					<div class="flex pl-2 items-center justify-center opacity-50">
+					<div class="flex pl-2 items-center justify-center stuic-command-menu-placeholder">
 						{#if isFetching}
 							<Spinner class="w-4" />
 						{/if}

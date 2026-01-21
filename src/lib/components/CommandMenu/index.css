@@ -13,6 +13,9 @@
 	--stuic-command-menu-divider-color: var(--stuic-color-border);
 	--stuic-command-menu-group-header-color: var(--stuic-color-muted-foreground);
 	--stuic-command-menu-group-header-font-size: var(--text-xs);
+
+	/* Muted/placeholder states (align with FieldOptions) */
+	--stuic-command-menu-muted-text: var(--stuic-color-muted-foreground);
 }
 
 /* =============================================================================
@@ -32,6 +35,12 @@
 	font-size: var(--stuic-command-menu-group-header-font-size);
 }
 
-/* Override ListItemButton defaults for CommandMenu context */
-.stuic-command-menu-options .stuic-list-item-button {
+/* Muted elements (search icon) */
+.stuic-command-menu-muted {
+	color: var(--stuic-command-menu-muted-text);
+}
+
+/* Placeholder/loading states (spinner) */
+.stuic-command-menu-placeholder {
+	color: var(--stuic-command-menu-muted-text);
 }
