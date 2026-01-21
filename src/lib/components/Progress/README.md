@@ -8,9 +8,10 @@ A progress indicator available as either a horizontal bar or circular display.
 |------|------|---------|-------------|
 | `type` | `"bar" \| "circle"` | `"bar"` | Display type |
 | `progress` | `number` | `0` | Progress value (0-100) |
-| `class` | `string` | - | CSS for container |
-| `classBar` | `string` | - | CSS for progress bar fill (bar type only) |
-| `styleBar` | `string` | - | Inline styles for bar fill |
+| `class` | `string` | - | CSS classes for container |
+| `style` | `string` | - | Inline styles for container (use for CSS variable overrides) |
+| `classBar` | `string` | - | CSS classes for bar fill (bar type only) |
+| `styleBar` | `string` | - | Inline styles for bar fill (bar type only) |
 
 ## Usage
 
@@ -18,7 +19,7 @@ A progress indicator available as either a horizontal bar or circular display.
 
 ```svelte
 <script lang="ts">
-  import { Progress } from 'stuic';
+  import { Progress } from '@marianmeres/stuic';
 
   let progress = $state(0);
 </script>
@@ -29,7 +30,7 @@ A progress indicator available as either a horizontal bar or circular display.
 ### Circle Progress
 
 ```svelte
-<Progress type="circle" progress={75} class="size-16" />
+<Progress type="circle" progress={75} />
 ```
 
 ### Animated Progress
@@ -51,36 +52,106 @@ A progress indicator available as either a horizontal bar or circular display.
 <button onclick={start}>Start</button>
 ```
 
-### Custom Styling
+### Custom Sizing
 
 ```svelte
+<!-- Taller bar -->
 <Progress
   progress={60}
-  class="h-2 bg-gray-200 rounded-full"
-  classBar="bg-blue-500 rounded-full"
+  style="--stuic-progress-height: 1rem;"
+/>
+
+<!-- Larger circle -->
+<Progress
+  type="circle"
+  progress={75}
+  style="--stuic-progress-circle-size: 6rem;"
 />
 ```
 
-### With Transition
+### Custom Colors
+
+```svelte
+<!-- Override accent color inline -->
+<Progress
+  progress={80}
+  style="--stuic-progress-accent: var(--stuic-color-success);"
+/>
+
+<!-- Using Tailwind classes -->
+<Progress
+  progress={60}
+  classBar="bg-green-500"
+/>
+```
+
+### With Border Radius
 
 ```svelte
 <Progress
-  progress={value}
-  classBar="transition-all duration-300"
+  progress={50}
+  style="--stuic-progress-radius: var(--radius-full);"
 />
 ```
 
 ## CSS Variables
 
+### Component Tokens
+
+Override globally in `:root` or locally via `style` prop:
+
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `--stuic-progress-bg` | `--stuic-surface-interactive` | Track background |
-| `--stuic-progress-accent` | `--stuic-accent` | Progress bar fill color |
+| `--stuic-progress-bg` | `--stuic-color-muted` | Track background color |
+| `--stuic-progress-accent` | `--stuic-color-primary` | Progress fill color |
+| `--stuic-progress-height` | `calc(var(--spacing) * 2)` | Bar height (0.5rem) |
+| `--stuic-progress-radius` | `--radius-sm` | Border radius |
+| `--stuic-progress-transition` | `100ms` | Animation duration |
+| `--stuic-progress-circle-size` | `calc(var(--spacing) * 16)` | Circle dimensions (4rem) |
+| `--stuic-progress-circle-stroke-width` | `10` | Circle stroke width (viewBox units) |
 
-### Example Override
+### Example Overrides
 
 ```css
+/* Global override */
 :root {
-  --stuic-progress-accent: var(--color-green-500);
+  --stuic-progress-accent: var(--stuic-color-accent);
+  --stuic-progress-height: calc(var(--spacing) * 3);
+  --stuic-progress-radius: var(--radius-full);
 }
+```
+
+```svelte
+<!-- Local override -->
+<Progress
+  progress={75}
+  style="--stuic-progress-accent: var(--stuic-color-success); --stuic-progress-height: 1rem;"
+/>
+```
+
+## Theming
+
+The component uses theme color tokens:
+- `--stuic-color-muted` for the track background
+- `--stuic-color-primary` for the progress fill
+
+These automatically adapt to light/dark mode when using a properly configured theme.
+
+To show different states (success, warning, error), override the accent color:
+
+```svelte
+<Progress
+  progress={100}
+  style="--stuic-progress-accent: var(--stuic-color-success);"
+/>
+
+<Progress
+  progress={90}
+  style="--stuic-progress-accent: var(--stuic-color-warning);"
+/>
+
+<Progress
+  progress={50}
+  style="--stuic-progress-accent: var(--stuic-color-destructive);"
+/>
 ```

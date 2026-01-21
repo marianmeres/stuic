@@ -3,6 +3,7 @@
 		type?: "bar" | "circle";
 		progress?: number;
 		class?: string;
+		style?: string;
 		classBar?: string;
 		styleBar?: string;
 	}
@@ -16,13 +17,14 @@
 		type = "bar",
 		progress = 0,
 		class: classProp,
+		style: styleProp,
 		classBar,
 		styleBar,
 	}: Props = $props();
 </script>
 
 {#if type === "bar"}
-	<Bar {progress} class={classProp} {classBar} {styleBar} />
+	<Bar {progress} class={classProp} style={styleProp} {classBar} {styleBar} />
 {:else if type === "circle"}
-	<Circle {progress} class={classProp} />
+	<Circle {progress} class={classProp} style={styleProp} />
 {/if}

@@ -1,5 +1,49 @@
-/* Progress component tokens */
+/* ============================================================================
+   PROGRESS COMPONENT TOKENS
+   Override globally: :root { --stuic-progress-height: 1rem; }
+   Override locally:  <Progress style="--stuic-progress-accent: green;" />
+   ============================================================================ */
+
 :root {
+	/* Colors */
 	--stuic-progress-bg: var(--stuic-color-muted);
 	--stuic-progress-accent: var(--stuic-color-primary);
+
+	/* Bar dimensions */
+	--stuic-progress-height: calc(var(--spacing) * 2); /* 0.5rem */
+	--stuic-progress-radius: var(--radius-sm);
+	--stuic-progress-transition: 100ms;
+
+	/* Circle dimensions */
+	--stuic-progress-circle-size: calc(var(--spacing) * 16); /* 4rem */
+	--stuic-progress-circle-stroke-width: 10; /* in viewBox units (100x100) */
+}
+
+/* ============================================================================
+   BAR STYLES
+   ============================================================================ */
+
+.stuic-progress-bar {
+	width: 100%;
+	height: var(--stuic-progress-height);
+	background: var(--stuic-progress-bg);
+	border-radius: var(--stuic-progress-radius);
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.stuic-progress-bar > .bar {
+	height: 100%;
+	background: var(--stuic-progress-accent);
+	border-radius: inherit;
+	transition: width var(--stuic-progress-transition) linear;
+}
+
+/* ============================================================================
+   CIRCLE STYLES
+   ============================================================================ */
+
+.stuic-progress-circle {
+	width: var(--stuic-progress-circle-size);
+	height: var(--stuic-progress-circle-size);
 }

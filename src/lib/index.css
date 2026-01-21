@@ -13,9 +13,9 @@
 @source "./";
 
 /* Import global design tokens before component styles */
-/* @import "./themes/neutral.css"; */
+@import "./themes/neutral.css";
 /* @import "./themes/gray.css"; */
-@import "./themes/rainbow.css";
+/* @import "./themes/rainbow.css"; */
 /* @import "./themes/indigo-amber.css"; */
 /* @import "./themes/teal-rose.css"; */
 /* @import "./themes/violet-lime.css"; */
