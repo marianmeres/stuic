@@ -49,7 +49,7 @@
 </script>
 
 <div class="p-4">
-	<ul class="list-disc ml-4 space-y-1">
+	<ul class="list-disc ml-4 space-y-3">
 		{#each links as link}
 			<li><a href={link} class="underline">{link}</a></li>
 		{/each}

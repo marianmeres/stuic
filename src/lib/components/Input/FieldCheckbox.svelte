@@ -70,23 +70,7 @@
 
 	// $inspect(33333, invalid, validation);
 
-	//
-	let _classCommon = $derived(
-		[invalid && "invalid", disabled && "disabled", required && "required", renderSize]
-			.filter(Boolean)
-			.join(" ")
-	);
 
-	const _preset = {
-		labelBox: {
-			label: {
-				size: {
-					sm: "text-sm mt-0.5",
-					lg: "font-bold",
-				} as any,
-			},
-		},
-	};
 </script>
 
 {#snippet snippetOrThc({ id, value }: { id: string; value?: SnippetWithId | THC })}
@@ -99,17 +83,18 @@
 
 <label
 	class={twMerge(
-		`stuic-checkbox`,
-		_classCommon,
+		"stuic-checkbox",
 		"flex items-start mb-4 text-base",
+		invalid && "invalid",
+		disabled && "disabled",
 		classProp
 	)}
+	data-size={renderSize}
 	{style}
 >
 	<div
 		class={twMerge(
 			"input-box",
-			_classCommon,
 			"flex h-6 items-center ml-1",
 			classInputBox
 		)}
@@ -126,39 +111,20 @@
 				...(typeof validate === "boolean" ? {} : validate),
 				setValidationResult,
 			})}
-			class={twMerge(
-				_classCommon,
-				`size-5 rounded
-				bg-neutral-100
-				border-neutral-300
-				text-(--stuic-input-accent)
-				cursor-pointer
-
-				checked:border-(--stuic-input-accent) checked:bg-(--stuic-input-accent)
-
-				focus:border-(--stuic-input-accent)
-				focus:ring-4
-				focus:ring-offset-0
-				focus:ring-(--stuic-input-accent)/20
-
-				disabled:cursor-not-allowed`,
-				classInput
-			)}
+			class={twMerge(classInput)}
 			{required}
 			{disabled}
 			{...rest}
 		/>
 	</div>
-	<div class={twMerge("label-box", _classCommon, "ml-3 w-full", classLabelBox)}>
+	<div class={twMerge("label-box", "ml-3 w-full", classLabelBox)}>
 		{#if label}
 			<div
 				class={twMerge(
 					"label",
-					_classCommon,
 					"block w-full cursor-pointer",
 					disabled && "cursor-not-allowed",
 					required && "after:content-['*'] after:opacity-40 after:pl-1",
-					_preset.labelBox.label.size[renderSize],
 					classLabel
 				)}
 			>
@@ -174,8 +140,7 @@
 				transition:slide={{ duration: 150 }}
 				class={twMerge(
 					"validation-box",
-					_classCommon,
-					"text-sm text-input-accent-invalid dark:text-input-accent-invalid-dark tracking-tight",
+					"text-sm tracking-tight",
 					classValidationBox
 				)}
 			>
@@ -186,7 +151,6 @@
 			<Collapsible
 				class={twMerge(
 					"desc-box",
-					_classCommon,
 					"text-sm opacity-50 cursor-pointer font-normal",
 					disabled && "cursor-not-allowed",
 					classDescBox

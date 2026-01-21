@@ -87,28 +87,8 @@
 		}
 	});
 
-	let _classCommon = $derived(
-		[invalid && "invalid", disabled && "disabled", required && "required", size]
-			.filter(Boolean)
-			.join(" ")
-	);
-
 	let hasLabel = $derived(isTHCNotEmpty(label) || typeof label === "function");
 
-	const _preset = {
-		label: {
-			size: {
-				sm: "text-sm",
-				lg: "font-semibold",
-			} as any,
-		},
-		inputBox: {
-			size: {
-				sm: "text-sm",
-				lg: "p-1",
-			} as any,
-		},
-	};
 </script>
 
 {#snippet snippetOrThc({ id, value }: { id: string; value?: SnippetWithId | THC })}
@@ -122,20 +102,21 @@
 <div
 	class={twMerge(
 		"stuic-input",
-		_classCommon,
 		"mb-8",
+		invalid && "invalid",
+		disabled && "disabled",
 		hasLabel && labelLeft && "flex",
 		hasLabel && labelLeft && labelLeftWidth === "normal" && "width-normal",
 		hasLabel && labelLeft && labelLeftWidth === "wide" && "width-wide",
 		classProp
 	)}
+	data-size={size}
 	bind:clientWidth={width}
 	{style}
 >
 	<div
 		class={twMerge(
 			"label-box",
-			_classCommon,
 			"flex flex-1",
 			labelLeft ? "left items-start mt-2" : "items-end",
 			classLabelBox
@@ -145,11 +126,8 @@
 			<label
 				for={id}
 				class={twMerge(
-					"block",
-					_classCommon,
-					"flex-1 px-2 mb-1 text-base",
+					"block flex-1 px-2 mb-1 text-base",
 					required && "after:content-['*'] after:opacity-40 after:pl-1",
-					_preset.label.size[size],
 					classLabel
 				)}
 			>
@@ -163,7 +141,6 @@
 	<div
 		class={twMerge(
 			"input-box",
-			_classCommon,
 			hasLabel && labelLeft && labelLeftWidth === "normal" && "flex-3",
 			hasLabel && labelLeft && labelLeftWidth === "wide" && "flex-2",
 			classInputBox
@@ -172,23 +149,8 @@
 		<div
 			class={twMerge(
 				"input-wrap",
-				_classCommon,
-				`rounded-md border border-neutral-300 dark:border-neutral-600
-				bg-neutral-100 dark:bg-neutral-700
-				focus-within:border-(--stuic-input-accent)
-				focus-within:ring-(--stuic-input-accent)/20
-				focus-within:ring-4`,
-				disabled && "cursor-not-allowed opacity-50",
-				_preset.inputBox.size[size],
-				invalid
-					? twMerge(
-							classInputBoxWrap,
-							`border-(--stuic-input-accent-error)
-							focus-within:border-(--stuic-input-accent-error)
-							focus-within:ring-(--stuic-input-accent-error)/20`,
-							classInputBoxWrapInvalid
-						)
-					: classInputBoxWrap
+				classInputBoxWrap,
+				invalid && classInputBoxWrapInvalid
 			)}
 		>
 			<div class="flex">
@@ -204,8 +166,7 @@
 				transition:slide={{ duration: 150 }}
 				class={twMerge(
 					"validation-box",
-					_classCommon,
-					"my-1 text-sm px-2 text-input-accent-invalid dark:text-input-accent-invalid-dark",
+					"my-1 text-sm px-2",
 					classValidationBox
 				)}
 			>
@@ -217,7 +178,6 @@
 			<div
 				class={twMerge(
 					"desc-box",
-					_classCommon,
 					"mx-2 mt-1 text-sm opacity-50",
 					classDescBox
 				)}
@@ -236,7 +196,7 @@
 		{/if}
 
 		{#if below}
-			<div class={twMerge("below-box", _classCommon, "mx-2 my-1", classBelowBox)}>
+			<div class={twMerge("below-box", "mx-2 my-1", classBelowBox)}>
 				{@render snippetOrThc({ id, value: below })}
 			</div>
 		{/if}

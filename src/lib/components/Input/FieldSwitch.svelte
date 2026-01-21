@@ -111,14 +111,10 @@
 	{classLabel}
 	{classLabelBox}
 	{classInputBox}
-	classInputBoxWrap={twMerge(
-		"border-0 focus-within:border-0 focus-within:dark:border-0 focus-within:ring-0",
-		"bg-transparent dark:bg-transparent",
-		classInputBoxWrap
-	)}
 	{classDescBox}
 	{classBelowBox}
 	{validation}
+	classInputBoxWrap={twMerge("input-wrap-transparent", classInputBoxWrap)}
 	{style}
 >
 	<Switch bind:checked {name} {required} {disabled} {validate} {setValidationResult} />

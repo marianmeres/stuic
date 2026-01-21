@@ -232,3 +232,103 @@ Validation is handled by the `validate` action. Pass `validate={true}` for defau
   }}
 />
 ```
+
+## CSS Variables
+
+### Component Tokens
+
+Override globally in `:root` or locally via `style` prop:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-input-radius` | `--radius-md` | Border radius |
+| `--stuic-input-font-family` | `--font-sans` | Font family |
+| `--stuic-input-transition` | `150ms` | Transition duration |
+| `--stuic-input-ring-width` | `4px` | Focus ring width |
+| `--stuic-input-ring-color` | `--stuic-color-ring` | Focus ring color |
+| `--stuic-input-accent` | `--stuic-color-primary` | Accent color |
+| `--stuic-input-accent-error` | `--stuic-color-destructive` | Error/validation color |
+
+### Color Tokens
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-input-bg` | `--stuic-color-input` | Background color |
+| `--stuic-input-border` | `--stuic-color-border` | Border color |
+| `--stuic-input-border-focus` | `--stuic-input-accent` | Border color on focus |
+| `--stuic-input-text` | `--stuic-color-foreground` | Text color |
+| `--stuic-input-placeholder` | `--stuic-color-muted-foreground` | Placeholder color |
+
+### Size Tokens
+
+Each size (sm, md, lg) has corresponding tokens:
+
+| Variable | sm | md | lg |
+|----------|----|----|-----|
+| `--stuic-input-padding-x-{size}` | `calc(--spacing * 2.5)` | `calc(--spacing * 3)` | `calc(--spacing * 4)` |
+| `--stuic-input-padding-y-{size}` | `calc(--spacing * 2)` | `calc(--spacing * 2.5)` | `calc(--spacing * 3)` |
+| `--stuic-input-font-size-{size}` | `--text-sm` | `--text-base` | `--text-lg` |
+| `--stuic-input-min-height-{size}` | `2.5rem` | `2.75rem` | `3rem` |
+
+### Checkbox/Radio Tokens
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-checkbox-size` | `1.25rem` | Checkbox size |
+| `--stuic-checkbox-radius` | `--radius-sm` | Checkbox border radius |
+| `--stuic-radio-size` | `1rem` | Radio button size |
+| `--stuic-checkbox-bg` | `--stuic-color-muted` | Unchecked background |
+| `--stuic-checkbox-border` | `--stuic-color-border` | Unchecked border |
+| `--stuic-checkbox-checked-bg` | `--stuic-input-accent` | Checked background |
+| `--stuic-checkbox-checked-border` | `--stuic-input-accent` | Checked border |
+
+### Range Input Tokens
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--stuic-input-range-thumb-size` | `18px` | Slider thumb size |
+| `--stuic-input-range-track-height` | `4px` | Track height |
+| `--stuic-input-range-track-radius` | `18px` | Track border radius |
+| `--stuic-input-range-track-bg` | `--stuic-color-muted` | Track background |
+
+### Customization Examples
+
+```css
+/* Global: Make all inputs have pill shape */
+:root {
+  --stuic-input-radius: 9999px;
+}
+
+/* Global: Custom accent color */
+:root {
+  --stuic-input-accent: var(--color-violet-600);
+}
+```
+
+```svelte
+<!-- Local: Custom radius for one input -->
+<FieldInput
+  label="Search"
+  style="--stuic-input-radius: 9999px;"
+/>
+```
+
+## Data Attributes
+
+Components use data attributes for CSS styling:
+
+- `data-size` - The size value ("sm", "md", "lg")
+
+## Class Props
+
+| Prop | Target |
+|------|--------|
+| `class` | Root container |
+| `classInput` | Input element |
+| `classLabel` | Label element |
+| `classLabelBox` | Label container |
+| `classInputBox` | Input container (outer) |
+| `classInputBoxWrap` | Input wrapper (inner, has border) |
+| `classInputBoxWrapInvalid` | Input wrapper when invalid |
+| `classDescBox` | Description container |
+| `classBelowBox` | Below slot container |

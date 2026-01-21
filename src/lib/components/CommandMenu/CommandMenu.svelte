@@ -276,7 +276,7 @@
 					<div class="flex items-center justify-center">
 						<Button
 							x
-							variant="soft"
+							variant="ghost"
 							roundedFull
 							type="button"
 							onclick={(e) => {

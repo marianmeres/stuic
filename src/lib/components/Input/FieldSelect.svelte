@@ -137,7 +137,7 @@
 		bind:value
 		bind:this={input}
 		{id}
-		class={twMerge("form-input", renderSize, classInput)}
+		class={twMerge(classInput)}
 		use:validateAction={() => ({
 			enabled: !!validate,
 			...(typeof validate === "boolean" ? {} : validate),

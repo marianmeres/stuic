@@ -69,21 +69,7 @@
 	let id = getId();
 	let idDesc = getId();
 
-	//
-	let _classCommon = $derived(
-		[invalid && "invalid", disabled && "disabled", renderSize].filter(Boolean).join(" ")
-	);
 
-	const _preset = {
-		labelBox: {
-			label: {
-				size: {
-					sm: "text-sm mt-0.5",
-					lg: "font-semibold",
-				} as any,
-			},
-		},
-	};
 </script>
 
 {#snippet snippetOrThc({ id, value }: { id: string; value?: SnippetWithId | THC })}
@@ -97,7 +83,6 @@
 <label
 	class={twMerge(
 		"radio-box",
-		_classCommon,
 		"flex items-start cursor-pointer pr-1",
 		disabled && "cursor-not-allowed",
 		classRadioBox
@@ -106,7 +91,6 @@
 	<div
 		class={twMerge(
 			"input-box",
-			_classCommon,
 			"flex h-6 items-center ml-1",
 			classInputBox
 		)}
@@ -118,25 +102,7 @@
 			bind:group
 			{value}
 			{name}
-			class={twMerge(
-				_classCommon,
-				`size-4 rounded-full
-				bg-neutral-100
-				border-neutral-300
-				text-(--stuic-input-accent)
-				cursor-pointer
-
-				checked:border-(--stuic-input-accent) checked:bg-(--stuic-input-accent)
-
-				focus:border-(--stuic-input-accent)
-				focus:ring-4
-				focus:ring-offset-0
-				focus:ring-(--stuic-input-accent)/20
-
-				disabled:cursor-not-allowed`,
-				disabled && "cursor-not-allowed",
-				classInput
-			)}
+			class={twMerge(classInput)}
 			aria-describedby={description ? idDesc : undefined}
 			use:validateAction={() => ({
 				enabled: !!validate,
@@ -148,14 +114,12 @@
 			{...rest}
 		/>
 	</div>
-	<div class={twMerge("label-box", _classCommon, "ml-3 w-full", classLabelBox)}>
+	<div class={twMerge("label-box", "ml-3 w-full", classLabelBox)}>
 		{#if label}
 			<div
 				class={twMerge(
 					"label",
-					_classCommon,
 					"block w-full cursor-pointer",
-					renderSize && _preset.labelBox.label.size[renderSize],
 					required && "after:content-['*'] after:opacity-40 after:pl-1",
 					classLabel
 				)}
@@ -172,7 +136,6 @@
 				id={idDesc}
 				class={twMerge(
 					"desc-box",
-					_classCommon,
 					"text-sm opacity-50 cursor-pointer font-normal",
 					disabled && "cursor-not-allowed",
 					classDescBox

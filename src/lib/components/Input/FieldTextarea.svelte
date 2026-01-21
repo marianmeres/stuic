@@ -125,7 +125,7 @@
 		bind:value
 		bind:this={input}
 		{id}
-		class={twMerge("form-input min-h-16", renderSize, classInput)}
+		class={twMerge("min-h-16", classInput)}
 		use:trim={() => ({
 			enabled: useTrim,
 			setValue: (v: string) => (value = v),

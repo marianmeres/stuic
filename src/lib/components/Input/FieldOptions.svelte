@@ -580,7 +580,7 @@
 						bind:this={input}
 						{type}
 						{id}
-						class={twMerge("form-input", renderSize, classInput)}
+						class={twMerge(renderSize, classInput)}
 						tabindex={1}
 						{required}
 						{disabled}
@@ -767,16 +767,12 @@
 							{/if}
 						</div>
 						<div class="flex pl-2 pr-1 items-center justify-center">
-							<button
+							<Button
+								x
+								variant="ghost"
+								roundedFull
 								type="button"
-								class={twMerge(
-									"opacity-75 rounded",
-									"hover:opacity-100 hover:bg-neutral-200 dark:hover:bg-neutral-800",
-									"focus-visible:opacity-100 focus-visible:outline-0",
-									"focus-visible:bg-neutral-200 dark:focus-visible:bg-neutral-800"
-								)}
-								use:tooltip
-								aria-label={t("x_close")}
+								tooltip={t("x_close")}
 								onclick={(e) => {
 									e.preventDefault();
 									if (innerValue.trim() == "") {
@@ -787,9 +783,7 @@
 									input?.focus();
 								}}
 								tabindex={2}
-							>
-								<X class="m-2 size-6" />
-							</button>
+							/>
 						</div>
 					{/snippet}
 
