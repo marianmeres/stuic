@@ -39,8 +39,8 @@
 		i18nSpanWrap: boolean = true
 	) {
 		const m: Record<string, string> = {
-			more: "Show more...",
-			less: "Show less...",
+			more: "More...",
+			less: "Less...",
 		};
 		let out = m[k] ?? fallback ?? k;
 

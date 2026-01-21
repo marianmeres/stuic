@@ -88,41 +88,11 @@
 		});
 	});
 
-	const rounded = "rounded-md";
-	//
-	const CLS = `
-		stuic-button-group
-        ${rounded}
-		w-full
-        py-1.5 px-1.5 inline-block space-x-1
-        bg-(--stuic-button-group-bg) text-(--stuic-button-group-text)
-        border-1
-        border-(--stuic-button-group-border)
-		flex justify-between
-		`;
+	// Base class - structural styling handled by CSS
+	const CLS = `stuic-button-group`;
 
-	// focus-within:border-(--stuic-button-group-accent)
-	// focus-within:ring-(--stuic-button-group-accent)/20
-	// focus-within:ring-4
-
-	const CLS_BUTTON = `
-        ${rounded}
-		w-full inline-block
-	    bg-transparent text-(--stuic-button-group-text)
-        hover:bg-transparent hover:text-(--stuic-button-group-text)
-        outline-none focus:outline-none
-    `;
-
-	// we need some active indication by default... use just something subtle here, in the wild
-	// this will be styled with classButtonActive
-	const CLS_BUTTON_ACTIVE = `
-        shadow-none
-        bg-(--stuic-button-group-bg-active)
-        text-(--stuic-button-group-text-active)
-        hover:bg-(--stuic-button-group-bg-active)
-        hover:text-(--stuic-button-group-text-active)
-    `;
-	// shadow-[0px_0px_1px_1px_rgba(0_0_0_/_.6)]
+	// Button class - styling handled by CSS via aria-checked attribute
+	const CLS_BUTTON = `stuic-button-group-button`;
 
 	let els = $state<Record<number, HTMLButtonElement>>({});
 
@@ -137,6 +107,7 @@
 {#if coll.size}
 	<div
 		class={twMerge(CLS, classProp)}
+		data-size={size}
 		{style}
 		role="radiogroup"
 		aria-labelledby={$coll?.active?.id || ""}
@@ -147,10 +118,9 @@
 				unstyled
 				tabindex={$coll.activeIndex === i ? tabindex : -1}
 				class={twMerge(
-					"border-none shadow-none",
 					CLS_BUTTON,
 					classButton,
-					$coll.activeIndex === i && [CLS_BUTTON_ACTIVE, classButtonActive].join(" ")
+					$coll.activeIndex === i && classButtonActive
 				)}
 				{disabled}
 				type="button"
