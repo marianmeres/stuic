@@ -1,8 +1,8 @@
 /* TabbedMenu component tokens */
 :root {
-	--stuic-tabbed-menu-tab-bg: var(--stuic-surface-sunken);
-	--stuic-tabbed-menu-tab-text: var(--stuic-text-muted);
-	--stuic-tabbed-menu-tab-bg-active: var(--stuic-surface);
-	--stuic-tabbed-menu-tab-text-active: var(--stuic-text);
-	--stuic-tabbed-menu-border: var(--stuic-border);
+	--stuic-tabbed-menu-tab-bg: var(--stuic-color-muted);
+	--stuic-tabbed-menu-tab-text: var(--stuic-color-muted-foreground);
+	--stuic-tabbed-menu-tab-bg-active: var(--stuic-color-surface);
+	--stuic-tabbed-menu-tab-text-active: var(--stuic-color-foreground);
+	--stuic-tabbed-menu-border: var(--stuic-color-border);
 }

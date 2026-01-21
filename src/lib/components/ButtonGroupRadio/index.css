@@ -1,9 +1,9 @@
 /* ButtonGroupRadio component tokens */
 :root {
-	--stuic-button-group-bg: var(--stuic-surface);
-	--stuic-button-group-text: var(--stuic-text);
-	--stuic-button-group-border: var(--stuic-border);
-	--stuic-button-group-accent: var(--stuic-accent);
-	--stuic-button-group-bg-active: var(--stuic-surface-interactive-hover);
-	--stuic-button-group-text-active: var(--stuic-text-inverse);
+	--stuic-button-group-bg: var(--stuic-color-surface);
+	--stuic-button-group-text: var(--stuic-color-foreground);
+	--stuic-button-group-border: var(--stuic-color-border);
+	--stuic-button-group-accent: var(--stuic-color-primary);
+	--stuic-button-group-bg-active: var(--stuic-color-primary);
+	--stuic-button-group-text-active: var(--stuic-color-primary-foreground);
 }

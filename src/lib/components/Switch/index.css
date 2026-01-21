@@ -1,4 +1,4 @@
 /* Switch component tokens */
 :root {
-	--stuic-switch-accent: var(--stuic-accent);
+	--stuic-switch-accent: var(--stuic-color-primary);
 }

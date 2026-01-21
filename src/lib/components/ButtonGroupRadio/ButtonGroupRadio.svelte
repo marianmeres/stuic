@@ -99,11 +99,11 @@
         border-1
         border-(--stuic-button-group-border)
 		flex justify-between
+		`;
 
-        focus-within:border-(--stuic-button-group-accent)
-        focus-within:ring-(--stuic-button-group-accent)/20
-        focus-within:ring-4
-    `;
+	// focus-within:border-(--stuic-button-group-accent)
+	// focus-within:ring-(--stuic-button-group-accent)/20
+	// focus-within:ring-4
 
 	const CLS_BUTTON = `
         ${rounded}

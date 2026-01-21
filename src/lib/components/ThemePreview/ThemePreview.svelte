@@ -21,6 +21,8 @@
 		sidebar?: Snippet;
 		/** Optional footer snippet */
 		footer?: Snippet;
+		/** Optional AlertConfirmPromptStack*/
+		acp?: AlertConfirmPromptStack;
 	}
 
 	/** Intent colors to demonstrate */
@@ -41,6 +43,7 @@
 	import "./index.css";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import Button from "../Button/Button.svelte";
+	import { AlertConfirmPromptStack } from "../AlertConfirmPrompt/index.js";
 
 	let {
 		showLabels = true,
@@ -52,10 +55,13 @@
 		header,
 		sidebar,
 		footer,
+		acp,
 		...rest
 	}: Props = $props();
 
 	let spacing = $derived(compact ? "gap-2 p-2" : "gap-4 p-4");
+
+	const buttonOnclick = () => acp?.alert();
 </script>
 
 <div bind:this={el} class={twMerge("stuic-theme-preview", spacing, classProp)} {...rest}>
@@ -112,12 +118,12 @@
 
 							{#if showAllVariants}
 								{#each BUTTON_VARIANTS as variant}
-									<Button {intent} {variant}>
+									<Button {intent} {variant} onclick={buttonOnclick}>
 										{variant}
 									</Button>
 								{/each}
 							{:else}
-								<Button {intent}>
+								<Button {intent} onclick={buttonOnclick}>
 									{intent}
 								</Button>
 							{/if}
@@ -257,20 +263,28 @@
 						>
 							surface + border
 						</div>
-						<div class="px-3 py-2 rounded bg-(--stuic-color-muted) text-(--stuic-color-muted-foreground)">
+						<div
+							class="px-3 py-2 rounded bg-(--stuic-color-muted) text-(--stuic-color-muted-foreground)"
+						>
 							muted
 						</div>
-						<div class="px-3 py-2 rounded bg-(--stuic-color-primary) text-(--stuic-color-primary-foreground)">
+						<div
+							class="px-3 py-2 rounded bg-(--stuic-color-primary) text-(--stuic-color-primary-foreground)"
+						>
 							primary
 						</div>
-						<div class="px-3 py-2 rounded bg-(--stuic-color-accent) text-(--stuic-color-accent-foreground)">
+						<div
+							class="px-3 py-2 rounded bg-(--stuic-color-accent) text-(--stuic-color-accent-foreground)"
+						>
 							accent
 						</div>
 					</div>
 
 					<!-- Code hint -->
 					<p class="text-xs text-(--stuic-color-muted-foreground)">
-						Using: <code class="bg-(--stuic-color-muted) px-1 rounded">bg-(--stuic-color-primary)</code> syntax
+						Using: <code class="bg-(--stuic-color-muted) px-1 rounded"
+							>bg-(--stuic-color-primary)</code
+						> syntax
 					</p>
 				</div>
 			</section>

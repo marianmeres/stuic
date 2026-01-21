@@ -10,7 +10,7 @@
 	--stuic-button-radius: var(--radius-md);
 	--stuic-button-font-family: var(--font-sans);
 	--stuic-button-font-weight: var(--font-weight-medium);
-	--stuic-button-transition: 100ms;
+	--stuic-button-transition: 150ms;
 
 	/* Focus ring */
 	--stuic-button-ring-width: 3px;

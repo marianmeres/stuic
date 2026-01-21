@@ -1,6 +1,6 @@
 /* DismissibleMessage component tokens */
 :root {
-	--stuic-dismissible-message-bg: var(--stuic-surface-interactive);
-	--stuic-dismissible-message-text: var(--stuic-text-muted);
-	--stuic-dismissible-message-border: var(--stuic-border-strong);
+	--stuic-dismissible-message-bg: var(--stuic-color-muted);
+	--stuic-dismissible-message-text: var(--stuic-color-muted-foreground);
+	--stuic-dismissible-message-border: var(--stuic-color-border-hover);
 }

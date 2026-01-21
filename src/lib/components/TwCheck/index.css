@@ -1,4 +1,4 @@
 /* TwCheck component tokens */
 :root {
-	--stuic-twcheck-bg: var(--stuic-accent);
+	--stuic-twcheck-bg: var(--stuic-color-primary);
 }

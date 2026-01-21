@@ -21,9 +21,9 @@
 		classButtonCancel?: string;
 		classButtonCustom?: string;
 		classButtonPrimary?: string;
-		variantButtonCancel?: string;
-		variantButtonCustom?: string;
-		variantButtonPrimary?: string;
+		intentButtonCancel?: string;
+		intentButtonCustom?: string;
+		intentButtonPrimary?: string;
 		classSpinnerBox?: string;
 		defaultIcons?: Partial<
 			Record<"info" | "success" | "warn" | "error" | "spinner", () => string | undefined>
@@ -34,7 +34,6 @@
 <script lang="ts">
 	import { twMerge } from "../../utils/tw-merge.js";
 	import ModalDialog from "../ModalDialog/ModalDialog.svelte";
-	import { isTHCNotEmpty } from "../Thc/Thc.svelte";
 	import { AlertConfirmPromptType } from "./alert-confirm-prompt-stack.svelte.js";
 	import Current from "./Current.svelte";
 
@@ -63,9 +62,9 @@
 		classButtonCancel,
 		classButtonCustom,
 		classButtonPrimary,
-		variantButtonCancel,
-		variantButtonCustom,
-		variantButtonPrimary,
+		intentButtonCancel,
+		intentButtonCustom,
+		intentButtonPrimary,
 	}: Props = $props();
 
 	let modal = $state<ModalDialog>();
@@ -124,9 +123,9 @@
 			{classButtonCancel}
 			{classButtonCustom}
 			{classButtonPrimary}
-			{variantButtonCancel}
-			{variantButtonCustom}
-			{variantButtonPrimary}
+			{intentButtonCancel}
+			{intentButtonCustom}
+			{intentButtonPrimary}
 		/>
 	</ModalDialog>
 {/if}

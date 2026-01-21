@@ -31,12 +31,15 @@
 		roleSwitch?: boolean;
 		/** Bindable element reference */
 		el?: HTMLElement;
+		/** Optional tooltip configuration or direct content */
+		tooltip?: string | TooltipConfig;
 	}
 </script>
 
 <script lang="ts">
 	import "./index.css";
 	import { twMerge } from "../../utils/tw-merge.js";
+	import { tooltip, type TooltipConfig } from "../../actions/tooltip/tooltip.svelte.js";
 
 	let {
 		class: classProp,
@@ -51,6 +54,7 @@
 		muted = false,
 		raised = false,
 		unstyled = false,
+		tooltip: _tooltip,
 		...rest
 	}: Props = $props();
 
@@ -64,6 +68,13 @@
 
 	// Build class string - add base class for CSS targeting unless unstyled
 	let _class = $derived(unstyled ? classProp : twMerge("stuic-button", classProp));
+
+	let _tooltipConfig: TooltipConfig = $derived.by(() => {
+		if (typeof _tooltip === "string") {
+			return () => ({ enabled: true, content: _tooltip });
+		}
+		return _tooltip ? _tooltip : () => ({ enabled: false });
+	});
 </script>
 
 {#if href}
@@ -77,6 +88,7 @@
 		data-muted={!unstyled && muted ? "true" : undefined}
 		data-raised={!unstyled && raised ? "true" : undefined}
 		data-checked={roleSwitch && checked ? "true" : undefined}
+		use:tooltip={_tooltipConfig}
 		{...rest as HTMLAnchorAttributes}
 	>
 		{@render children?.({ checked })}
@@ -91,6 +103,7 @@
 		data-muted={!unstyled && muted ? "true" : undefined}
 		data-raised={!unstyled && raised ? "true" : undefined}
 		data-checked={roleSwitch && checked ? "true" : undefined}
+		use:tooltip={_tooltipConfig}
 		{...rest}
 	>
 		{@render children?.({ checked })}

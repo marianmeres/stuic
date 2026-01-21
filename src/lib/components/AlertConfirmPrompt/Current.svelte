@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { tick } from "svelte";
+	import type { IntentColorKey } from "../../utils/design-tokens.js";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import Button from "../Button/Button.svelte";
 	import FieldInput from "../Input/FieldInput.svelte";
@@ -38,9 +38,9 @@
 		classButtonCancel?: string;
 		classButtonCustom?: string;
 		classButtonPrimary?: string;
-		intentButtonCancel?: string;
-		intentButtonCustom?: string;
-		intentButtonPrimary?: string;
+		intentButtonCancel?: IntentColorKey;
+		intentButtonCustom?: IntentColorKey;
+		intentButtonPrimary?: IntentColorKey;
 		classSpinnerBox?: string;
 		defaultIcons?: Partial<
 			Record<"info" | "success" | "warn" | "error" | "spinner", () => string | undefined>

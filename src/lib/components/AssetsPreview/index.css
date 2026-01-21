@@ -8,7 +8,7 @@
 	/* Control buttons (zoom, download, close, prev/next) */
 	--stuic-assets-preview-control-bg: var(--stuic-color-surface);
 	--stuic-assets-preview-control-bg-hover: var(--stuic-color-surface-hover);
-	--stuic-assets-preview-control-radius: var(--radius-md);
+	--stuic-assets-preview-control-radius: 9999px;
 
 	/* Labels (filename, tooltip) */
 	--stuic-assets-preview-label-bg: var(--stuic-color-surface);

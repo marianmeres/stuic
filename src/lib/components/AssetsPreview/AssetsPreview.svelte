@@ -172,6 +172,7 @@
 
 <script lang="ts">
 	import "./index.css";
+	import Button from "../Button/Button.svelte";
 	const clog = createClog("AssetsPreview", { color: "auto" });
 
 	let {
@@ -220,7 +221,8 @@
 	let imgEl: HTMLImageElement | null = null;
 	let containerEl: HTMLDivElement | null = $state(null);
 
-	const TOP_BUTTON_CLS = "stuic-assets-preview-control p-1";
+	const TOP_BUTTON_CLS =
+		"stuic-assets-preview-control pointer-events-auto p-0! aspect-square";
 
 	$effect(() => {
 		const visible = modal?.visibility().visible;
@@ -458,6 +460,7 @@
 		previewIdx = idx % assets.length;
 	}
 
+	const ICON_SIZE = 24;
 	// $inspect(assets).with(clog);
 </script>
 
@@ -524,25 +527,27 @@
 				<div
 					class="absolute inset-0 flex items-center justify-between pointer-events-none"
 				>
-					<button
-						class={twMerge("p-4 pointer-events-auto", classControls)}
+					<!-- class={twMerge("p-4 aspect-square pointer-events-auto", classControls)} -->
+					<Button
+						class={twMerge(TOP_BUTTON_CLS, "ml-4", classControls)}
 						onclick={preview_previous}
 						type="button"
 					>
-						<span class="stuic-assets-preview-control-nav p-3 block">
-							{@html iconPrevious()}
-						</span>
-					</button>
+						<!-- <span class="stuic-assets-preview-control-nav p-3 block"> -->
+						{@html iconPrevious({ size: ICON_SIZE })}
+						<!-- </span> -->
+					</Button>
 
-					<button
-						class={twMerge("p-4 pointer-events-auto", classControls)}
+					<!-- class={twMerge("p-4 aspect-square pointer-events-auto", classControls)} -->
+					<Button
+						class={twMerge(TOP_BUTTON_CLS, "mr-4", classControls)}
 						onclick={preview_next}
 						type="button"
 					>
-						<span class="stuic-assets-preview-control-nav p-3 block">
-							{@html iconNext()}
-						</span>
-					</button>
+						<!-- <span class="stuic-assets-preview-control-nav p-3 block"> -->
+						{@html iconNext({ size: ICON_SIZE })}
+						<!-- </span> -->
+					</Button>
 				</div>
 			{/if}
 
@@ -556,42 +561,42 @@
 				{/if}
 				<div class="flex items-center space-x-3 shrink-0">
 					{#if previewAsset.isImage}
-						<button
+						<Button
 							class={twMerge(TOP_BUTTON_CLS, classControls)}
 							type="button"
 							onclick={zoomOut}
 							disabled={zoomLevelIdx === 0}
 							aria-label={t("zoom_out")}
-							use:tooltip={() => ({ content: t("zoom_out") })}
+							tooltip={t("zoom_out")}
 						>
-							{@html iconZoomOut({ class: "size-6" })}
-						</button>
+							{@html iconZoomOut({ size: ICON_SIZE })}
+						</Button>
 
-						<button
+						<Button
 							class={twMerge(TOP_BUTTON_CLS, classControls)}
 							type="button"
 							onclick={zoomIn}
 							disabled={zoomLevelIdx === ZOOM_LEVELS.length - 1}
 							aria-label={t("zoom_in")}
-							use:tooltip={() => ({ content: t("zoom_in") })}
+							tooltip={t("zoom_in")}
 						>
-							{@html iconZoomIn({ class: "size-6" })}
-						</button>
+							{@html iconZoomIn({ size: ICON_SIZE })}
+						</Button>
 					{/if}
 
 					{#if typeof onDelete === "function"}
-						<button
+						<Button
 							class={twMerge(TOP_BUTTON_CLS, classControls)}
 							type="button"
 							onclick={() => onDelete(previewAsset, previewIdx, { close })}
 							aria-label={t("delete")}
-							use:tooltip
+							tooltip={t("delete")}
 						>
-							{@html iconDelete({ class: "size-6" })}
-						</button>
+							{@html iconDelete({ size: ICON_SIZE })}
+						</Button>
 					{/if}
 
-					<button
+					<Button
 						class={twMerge(TOP_BUTTON_CLS, classControls)}
 						type="button"
 						onclick={(e) => {
@@ -599,20 +604,20 @@
 							forceDownload(String(previewAsset.url.original), previewAsset?.name || "");
 						}}
 						aria-label={t("download")}
-						use:tooltip
+						tooltip={t("download")}
 					>
-						{@html iconDownload({ class: "size-6" })}
-					</button>
+						{@html iconDownload({ size: ICON_SIZE })}
+					</Button>
 
-					<button
+					<Button
 						class={twMerge(TOP_BUTTON_CLS, classControls)}
 						onclick={modal?.close}
 						aria-label={t("close")}
 						type="button"
-						use:tooltip
+						tooltip={t("close")}
 					>
 						<X />
-					</button>
+					</Button>
 				</div>
 			</div>
 

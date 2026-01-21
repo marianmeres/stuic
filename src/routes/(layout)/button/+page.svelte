@@ -163,8 +163,7 @@
 			<Button intent="primary" size="lg" class="aspect-square px-0!"
 				>{@html iconPlus()}</Button
 			>
-			<Button variant="outline" class="aspect-square px-0!"
-				>{@html iconSettings()}</Button
+			<Button variant="outline" class="aspect-square px-0!">{@html iconSettings()}</Button
 			>
 			<Button variant="ghost" class="aspect-square px-0!">{@html iconTrash()}</Button>
 			<Button intent="destructive" variant="soft" class="aspect-square px-0!"

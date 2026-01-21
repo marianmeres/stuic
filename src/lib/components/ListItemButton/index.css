@@ -1,28 +1,22 @@
 /* ListItemButton component tokens */
 :root {
-	/* Radius */
-	--stuic-list-item-button-radius: var(--stuic-radius);
-
 	/* Base state */
-	--stuic-list-item-button-bg: var(--stuic-surface-interactive);
-	--stuic-list-item-button-text: var(--stuic-text);
+	--stuic-list-item-button-bg: var(--stuic-color-muted);
+	--stuic-list-item-button-text: var(--stuic-color-foreground);
 	--stuic-list-item-button-border: transparent;
 
 	/* Hover state */
-	--stuic-list-item-button-bg-hover: var(--stuic-surface-interactive-hover);
-	--stuic-list-item-button-text-hover: var(--stuic-text-inverse);
+	--stuic-list-item-button-bg-hover: var(--stuic-color-primary);
+	--stuic-list-item-button-text-hover: var(--stuic-color-primary-foreground);
 	--stuic-list-item-button-border-hover: transparent;
 
 	/* Active/Selected state */
-	--stuic-list-item-button-bg-active: var(--stuic-surface-interactive-active);
-	--stuic-list-item-button-text-active: var(--stuic-text-inverse);
+	--stuic-list-item-button-bg-active: var(--stuic-color-primary);
+	--stuic-list-item-button-text-active: var(--stuic-color-primary-foreground);
 	--stuic-list-item-button-border-active: transparent;
 
 	/* Focus-visible state (keyboard focus) */
-	--stuic-list-item-button-bg-focus: var(--stuic-surface-interactive-hover);
-	--stuic-list-item-button-text-focus: var(--stuic-text-inverse);
+	--stuic-list-item-button-bg-focus: var(--stuic-color-primary);
+	--stuic-list-item-button-text-focus: var(--stuic-color-primary-foreground);
 	--stuic-list-item-button-border-focus: transparent;
-
-	/* Backwards compatibility alias */
-	--lib-radius: var(--stuic-list-item-button-radius);
 }

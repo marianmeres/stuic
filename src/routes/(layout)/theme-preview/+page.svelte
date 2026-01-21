@@ -1,5 +1,10 @@
 <script lang="ts">
-	import { ThemePreview, ColorScheme } from "$lib/index.js";
+	import {
+		ThemePreview,
+		ColorScheme,
+		AlertConfirmPrompt,
+		AlertConfirmPromptStack,
+	} from "$lib/index.js";
 
 	// Import all theme CSS files as raw strings
 	import neutralCss from "$lib/themes/neutral.css?raw";
@@ -60,6 +65,8 @@
 		const idx = themeNames.indexOf(selectedTheme);
 		selectedTheme = themeNames[(idx - 1 + themeNames.length) % themeNames.length];
 	}
+
+	const acp = new AlertConfirmPromptStack();
 </script>
 
 <svelte:head>
@@ -110,7 +117,7 @@
 		design tokens in action.
 	</p>
 
-	<ThemePreview />
+	<ThemePreview {acp} />
 
 	<!-- Quick theme grid for fast switching -->
 	<div class="mt-8">
@@ -130,3 +137,5 @@
 		</div>
 	</div>
 </div>
+
+<AlertConfirmPrompt {acp} />

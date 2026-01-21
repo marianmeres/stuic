@@ -1,9 +1,9 @@
 /* Popover component tokens */
 /* Note: style props will not work as with regular components, because popovers are created outside of the anchor DOM tree */
 :root {
-	--stuic-popover-bg: var(--stuic-surface-elevated);
-	--stuic-popover-text: var(--stuic-text);
-	--stuic-popover-border: var(--stuic-border-subtle);
+	--stuic-popover-bg: var(--stuic-color-surface);
+	--stuic-popover-text: var(--stuic-color-foreground);
+	--stuic-popover-border: var(--stuic-color-border);
 }
 
 /* Base popover styles */

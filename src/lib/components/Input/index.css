@@ -1,7 +1,7 @@
 /* Input component tokens */
 :root {
-	--stuic-input-accent: var(--stuic-accent);
-	--stuic-input-accent-error: var(--stuic-accent-destructive);
+	--stuic-input-accent: var(--stuic-color-primary);
+	--stuic-input-accent-error: var(--stuic-color-destructive);
 }
 
 .stuic-input {

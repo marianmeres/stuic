@@ -1,5 +1,5 @@
 /* Progress component tokens */
 :root {
-	--stuic-progress-bg: var(--stuic-surface-interactive);
-	--stuic-progress-accent: var(--stuic-accent);
+	--stuic-progress-bg: var(--stuic-color-muted);
+	--stuic-progress-accent: var(--stuic-color-primary);
 }

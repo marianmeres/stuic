@@ -1,7 +1,7 @@
 /* Notification component tokens */
 /* Note: notifications use inverted (overlay) colors by default */
 :root {
-	--stuic-notification-bg: var(--stuic-surface-overlay);
-	--stuic-notification-text: var(--stuic-text-inverse);
-	--stuic-notification-border: var(--stuic-border-strong);
+	--stuic-notification-bg: var(--stuic-color-primary);
+	--stuic-notification-text: var(--stuic-color-primary-foreground);
+	--stuic-notification-border: var(--stuic-color-border-hover);
 }
