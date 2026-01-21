@@ -9,7 +9,7 @@
 	export interface Props extends Omit<HTMLLabelAttributes, "children" | "onchange"> {
 		button?: HTMLButtonElement;
 		checked?: boolean;
-		size?: "xs" | "sm" | "md" | "lg" | "xl" | string;
+		size?: "sm" | "md" | "lg" | "xl" | string;
 		/** Form field name for the hidden checkbox */
 		name?: string;
 		class?: string;
@@ -42,7 +42,7 @@
 
 	let {
 		button = $bindable(),
-		size = "md",
+		size = "lg",
 		name,
 		class: classProp,
 		dotClass,
@@ -62,7 +62,6 @@
 
 	const _preset: any = {
 		size: {
-			xs: `h-4 w-7`,
 			sm: `h-5 w-9`,
 			md: `h-6 w-11`,
 			lg: `h-7 w-13`,
@@ -70,7 +69,6 @@
 		},
 		dot: {
 			size: {
-				xs: `size-2 data-[checked=true]:translate-x-4`,
 				sm: `size-3 data-[checked=true]:translate-x-5`,
 				md: `size-4 data-[checked=true]:translate-x-6`,
 				lg: `size-5 data-[checked=true]:translate-x-7`,
