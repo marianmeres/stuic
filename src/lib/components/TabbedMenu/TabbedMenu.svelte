@@ -33,7 +33,6 @@
 </script>
 
 <script lang="ts">
-	import "./index.css";
 
 	//
 	let {

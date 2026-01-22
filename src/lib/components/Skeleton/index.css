@@ -1,59 +1,89 @@
+/* ============================================================================
+   SKELETON COMPONENT TOKENS
+   Override globally: :root { --stuic-skeleton-radius: 0; }
+   Override locally:  <Skeleton style="--stuic-skeleton-duration: 2s;">
+   ============================================================================ */
+
 /* prettier-ignore */
-@theme inline {
-	/* Skeleton component tokens */
-	--stuic-skeleton-bg: var(--stuic-skeleton-bg, var(--stuic-surface-interactive));
-	--stuic-skeleton-bg-highlight: var(--stuic-skeleton-bg-highlight, var(--stuic-surface-interactive-hover));
+:root {
+	/* Colors */
+	--stuic-skeleton-bg: var(--stuic-color-muted);
+	--stuic-skeleton-bg-highlight: var(--stuic-color-muted-hover);
+
+	/* Dimensions */
+	--stuic-skeleton-height: 1rem;
+	--stuic-skeleton-gap: 0.5rem;
+	--stuic-skeleton-radius: var(--radius-sm);
+
+	/* Animation */
+	--stuic-skeleton-duration: 1.5s;
+	--stuic-skeleton-timing: ease-in-out;
+	--stuic-skeleton-pulse-opacity: 0.4;
 }
 
-.stuic-skeleton-circle {
-	border-radius: 50%;
-}
-
-.stuic-skeleton-text-container {
-	display: flex;
-	flex-direction: column;
-}
-
-/* Shimmer animation */
-@keyframes skeleton-shimmer {
-	0% {
-		background-position: -200% 0;
+@layer components {
+	.stuic-skeleton-circle {
+		border-radius: 50%;
 	}
-	100% {
-		background-position: 200% 0;
+
+	.stuic-skeleton-rounded {
+		border-radius: var(--stuic-skeleton-radius);
 	}
-}
 
-.stuic-skeleton-shimmer {
-	background: linear-gradient(
-		90deg,
-		var(--stuic-skeleton-bg) 25%,
-		var(--stuic-skeleton-bg-highlight) 50%,
-		var(--stuic-skeleton-bg) 75%
-	);
-	background-size: 200% 100%;
-	animation: skeleton-shimmer var(--stuic-skeleton-duration, 1.5s) ease-in-out infinite;
-}
-
-/* Pulse animation */
-@keyframes skeleton-pulse {
-	0%, 100% {
-		opacity: 1;
+	.stuic-skeleton-text-container {
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-skeleton-gap);
 	}
-	50% {
-		opacity: 0.4;
+
+	.stuic-skeleton-text-container > * {
+		height: var(--stuic-skeleton-height);
 	}
-}
 
-.stuic-skeleton-pulse {
-	background-color: var(--stuic-skeleton-bg);
-	animation: skeleton-pulse var(--stuic-skeleton-duration, 1.5s) ease-in-out infinite;
-}
+	/* Shimmer animation */
+	@keyframes skeleton-shimmer {
+		0% {
+			background-position: -200% 0;
+		}
+		100% {
+			background-position: 200% 0;
+		}
+	}
 
-/* Reduced motion */
-@media (prefers-reduced-motion: reduce) {
-	.stuic-skeleton-shimmer,
+	.stuic-skeleton-shimmer {
+		background: linear-gradient(
+			90deg,
+			var(--stuic-skeleton-bg) 25%,
+			var(--stuic-skeleton-bg-highlight) 50%,
+			var(--stuic-skeleton-bg) 75%
+		);
+		background-size: 200% 100%;
+		animation: skeleton-shimmer var(--stuic-skeleton-duration)
+			var(--stuic-skeleton-timing) infinite;
+	}
+
+	/* Pulse animation */
+	@keyframes skeleton-pulse {
+		0%,
+		100% {
+			opacity: 1;
+		}
+		50% {
+			opacity: var(--stuic-skeleton-pulse-opacity);
+		}
+	}
+
 	.stuic-skeleton-pulse {
-		animation: none;
+		background-color: var(--stuic-skeleton-bg);
+		animation: skeleton-pulse var(--stuic-skeleton-duration) var(--stuic-skeleton-timing)
+			infinite;
+	}
+
+	/* Reduced motion */
+	@media (prefers-reduced-motion: reduce) {
+		.stuic-skeleton-shimmer,
+		.stuic-skeleton-pulse {
+			animation: none;
+		}
 	}
 }

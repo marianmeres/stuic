@@ -36,123 +36,129 @@
 	--stuic-button-group-button-bg-active: var(--stuic-color-primary);
 	--stuic-button-group-button-text-active: var(--stuic-color-primary-foreground);
 	--stuic-button-group-button-bg-active-hover: var(--stuic-color-primary-hover);
-	--stuic-button-group-button-text-active-hover: var(--stuic-color-primary-foreground-hover);
+	--stuic-button-group-button-text-active-hover: var(
+		--stuic-color-primary-foreground-hover
+	);
 }
 
-/* ============================================================================
-   BASE STYLES
-   ============================================================================ */
+@layer components {
+	/* ============================================================================
+	   BASE STYLES
+	   ============================================================================ */
 
-.stuic-button-group {
-	/* Layout */
-	display: inline-flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: var(--stuic-button-group-gap);
-	width: 100%;
+	.stuic-button-group {
+		/* Layout */
+		display: inline-flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--stuic-button-group-gap);
+		width: 100%;
 
-	/* Box model */
-	padding: var(--stuic-button-group-padding);
-	border-width: var(--stuic-button-group-border-width);
-	border-style: solid;
-	border-radius: var(--stuic-button-group-radius);
+		/* Box model */
+		padding: var(--stuic-button-group-padding);
+		border-width: var(--stuic-button-group-border-width);
+		border-style: solid;
+		border-radius: var(--stuic-button-group-radius);
 
-	/* Colors */
-	background: var(--stuic-button-group-bg);
-	color: var(--stuic-button-group-text);
-	border-color: var(--stuic-button-group-border);
-}
+		/* Colors */
+		background: var(--stuic-button-group-bg);
+		color: var(--stuic-button-group-text);
+		border-color: var(--stuic-button-group-border);
+	}
 
-/* Focus-within state */
-.stuic-button-group:focus-within {
-	outline: var(--stuic-button-group-ring-width) solid var(--stuic-button-group-ring-color);
-	outline-offset: 0;
-}
+	/* Focus-within state */
+	.stuic-button-group:focus-within {
+		outline: var(--stuic-button-group-ring-width) solid
+			var(--stuic-button-group-ring-color);
+		outline-offset: 0;
+	}
 
-/* ============================================================================
-   SIZE VARIANTS
-   ============================================================================ */
+	/* ============================================================================
+	   SIZE VARIANTS
+	   ============================================================================ */
 
-.stuic-button-group[data-size="sm"] {
-	--stuic-button-group-padding: 0.25rem;
-	--stuic-button-group-gap: 0.125rem;
-	--stuic-button-group-button-padding-x: 0.5rem;
-	--stuic-button-group-button-padding-y: 0.375rem;
-	--stuic-button-group-button-min-height: 2.25rem; /* 36px - still touch-friendly */
-}
+	.stuic-button-group[data-size="sm"] {
+		--stuic-button-group-padding: 0.25rem;
+		--stuic-button-group-gap: 0.125rem;
+		--stuic-button-group-button-padding-x: 0.5rem;
+		--stuic-button-group-button-padding-y: 0.375rem;
+		--stuic-button-group-button-min-height: 2.25rem; /* 36px - still touch-friendly */
+	}
 
-.stuic-button-group[data-size="lg"] {
-	--stuic-button-group-padding: 0.5rem;
-	--stuic-button-group-gap: 0.375rem;
-	--stuic-button-group-button-padding-x: 1rem;
-	--stuic-button-group-button-padding-y: 0.625rem;
-	--stuic-button-group-button-min-height: 3rem; /* 48px */
-}
+	.stuic-button-group[data-size="lg"] {
+		--stuic-button-group-padding: 0.5rem;
+		--stuic-button-group-gap: 0.375rem;
+		--stuic-button-group-button-padding-x: 1rem;
+		--stuic-button-group-button-padding-y: 0.625rem;
+		--stuic-button-group-button-min-height: 3rem; /* 48px */
+	}
 
-/* ============================================================================
-   BUTTON STYLES
-   ============================================================================ */
+	/* ============================================================================
+	   BUTTON STYLES
+	   ============================================================================ */
 
-.stuic-button-group-button {
-	/* Layout */
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	flex: 1;
+	.stuic-button-group-button {
+		/* Layout */
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex: 1;
 
-	/* Box model - mobile-friendly touch targets */
-	padding: var(--stuic-button-group-button-padding-y) var(--stuic-button-group-button-padding-x);
-	min-height: var(--stuic-button-group-button-min-height);
-	border: none;
-	border-radius: var(--stuic-button-group-radius);
+		/* Box model - mobile-friendly touch targets */
+		padding: var(--stuic-button-group-button-padding-y)
+			var(--stuic-button-group-button-padding-x);
+		min-height: var(--stuic-button-group-button-min-height);
+		border: none;
+		border-radius: var(--stuic-button-group-radius);
 
-	/* Typography */
-	white-space: nowrap;
-	line-height: 1;
-	text-align: center;
+		/* Typography */
+		white-space: nowrap;
+		line-height: 1;
+		text-align: center;
 
-	/* Colors */
-	background: var(--stuic-button-group-button-bg);
-	color: var(--stuic-button-group-button-text);
+		/* Colors */
+		background: var(--stuic-button-group-button-bg);
+		color: var(--stuic-button-group-button-text);
 
-	/* Interaction - mobile-friendly */
-	cursor: pointer;
-	user-select: none;
-	-webkit-tap-highlight-color: transparent;
-	touch-action: manipulation;
+		/* Interaction - mobile-friendly */
+		cursor: pointer;
+		user-select: none;
+		-webkit-tap-highlight-color: transparent;
+		touch-action: manipulation;
 
-	/* Transition */
-	transition:
-		background var(--stuic-button-group-transition),
-		color var(--stuic-button-group-transition);
+		/* Transition */
+		transition:
+			background var(--stuic-button-group-transition),
+			color var(--stuic-button-group-transition);
 
-	/* Focus */
-	outline: none;
-}
+		/* Focus */
+		outline: none;
+	}
 
-.stuic-button-group-button:hover:not(:disabled):not([aria-checked="true"]) {
-	background: var(--stuic-button-group-button-bg-hover);
-	color: var(--stuic-button-group-button-text-hover);
-}
+	.stuic-button-group-button:hover:not(:disabled):not([aria-checked="true"]) {
+		background: var(--stuic-button-group-button-bg-hover);
+		color: var(--stuic-button-group-button-text-hover);
+	}
 
-.stuic-button-group-button:focus-visible {
-	outline: none; /* Focus handled by container */
-}
+	.stuic-button-group-button:focus-visible {
+		outline: none; /* Focus handled by container */
+	}
 
-/* Active/selected button */
-.stuic-button-group-button[aria-checked="true"] {
-	background: var(--stuic-button-group-button-bg-active);
-	color: var(--stuic-button-group-button-text-active);
-	box-shadow: none;
-}
+	/* Active/selected button */
+	.stuic-button-group-button[aria-checked="true"] {
+		background: var(--stuic-button-group-button-bg-active);
+		color: var(--stuic-button-group-button-text-active);
+		box-shadow: none;
+	}
 
-.stuic-button-group-button[aria-checked="true"]:hover:not(:disabled) {
-	background: var(--stuic-button-group-button-bg-active-hover);
-	color: var(--stuic-button-group-button-text-active-hover);
-}
+	.stuic-button-group-button[aria-checked="true"]:hover:not(:disabled) {
+		background: var(--stuic-button-group-button-bg-active-hover);
+		color: var(--stuic-button-group-button-text-active-hover);
+	}
 
-/* Disabled state */
-.stuic-button-group-button:disabled {
-	opacity: 0.5;
-	cursor: not-allowed;
+	/* Disabled state */
+	.stuic-button-group-button:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
 }

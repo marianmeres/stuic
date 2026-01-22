@@ -1,80 +1,192 @@
 # Spinner
 
-A customizable loading spinner with rotating segments. Pure CSS animation with configurable appearance.
+A family of loading spinner components with different visual styles. All spinners inherit color from `currentColor`, making them easy to style with Tailwind text color classes.
 
-## Props
+## Components
+
+| Component | Description |
+|-----------|-------------|
+| `Spinner` | Radial bar spinner with fading segments |
+| `SpinnerCircle` | Simple circular border spinner |
+| `SpinnerCircleOscillate` | Circle with oscillating progress animation |
+| `SpinnerUnicode` | Unicode character-based spinner (17+ variants) |
+
+---
+
+## Spinner
+
+Rotating segments that fade in sequence. Pure CSS animation.
+
+### Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `duration` | `number` | `750` | One full rotation duration (ms) |
-| `count` | `number` | `8` | Number of segments/hands (3-12) |
-| `thickness` | `"thin" \| "normal" \| "thick"` | `"thick"` | Segment width |
+| `count` | `number` | `8` | Number of segments (3-12 recommended) |
+| `thickness` | `"thin" \| "normal" \| "thick"` | `"normal"` | Segment width |
 | `height` | `"short" \| "normal" \| "tall"` | `"normal"` | Segment length |
-| `direction` | `"cw" \| "ccw"` | `"cw"` | Rotation direction (clockwise/counter-clockwise) |
-| `class` | `string` | - | CSS classes for sizing |
+| `direction` | `"cw" \| "ccw"` | `"cw"` | Rotation direction |
+| `duration` | `number` | `750` | Animation duration (ms) |
+| `rounded` | `number` | `2` | Border radius of segments (px) |
+| `class` | `string` | - | Additional CSS classes |
 
-## Usage
-
-### Basic Spinner
+### Usage
 
 ```svelte
-<script lang="ts">
-  import { Spinner } from 'stuic';
-</script>
-
 <Spinner />
+<Spinner thickness="thin" count={12} />
+<Spinner class="text-blue-500" direction="ccw" />
 ```
 
-### Different Sizes
+---
+
+## SpinnerCircle
+
+Simple circular spinner using CSS border animation.
+
+### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `thickness` | `"thin" \| "normal" \| "thick"` | `"normal"` | Border thickness |
+| `direction` | `"cw" \| "ccw"` | `"cw"` | Rotation direction |
+| `duration` | `number` | `750` | Animation duration (ms) |
+| `class` | `string` | - | Additional CSS classes |
+
+### Usage
 
 ```svelte
-<Spinner class="w-4" />
-<Spinner class="w-6" />
-<Spinner class="w-8" />
-<Spinner class="w-12" />
+<SpinnerCircle />
+<SpinnerCircle thickness="thick" class="size-8" />
+<SpinnerCircle class="text-red-500 size-6" direction="ccw" />
 ```
 
-### Customized Appearance
+---
+
+## SpinnerCircleOscillate
+
+Circle progress indicator with oscillating completeness animation.
+
+### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `bgStrokeColor` | `string` | CSS variable | Background stroke color |
+| `strokeWidth` | `number` | - | Stroke width |
+| `noOscillate` | `boolean` | `false` | Disable oscillation (static 66%) |
+| `rotateDuration` | `string` | CSS variable | Rotation duration (e.g., ".75s") |
+| `class` | `string` | - | Additional CSS classes |
+
+### Usage
 
 ```svelte
-<!-- More segments, thinner -->
-<Spinner count={12} thickness="thin" />
-
-<!-- Fewer segments, thicker, taller -->
-<Spinner count={4} thickness="thick" height="tall" />
+<SpinnerCircleOscillate />
+<SpinnerCircleOscillate class="text-blue-500 size-8" />
+<SpinnerCircleOscillate noOscillate bgStrokeColor="" />
 ```
 
-### Slower/Faster Animation
+---
+
+## SpinnerUnicode
+
+Text-based spinner cycling through Unicode characters.
+
+### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `SpinnerUnicodeVariant` | `"braille_bar_dot"` | Built-in animation variant |
+| `speed` | `number` | `100` | Frame duration (ms) |
+| `reversed` | `boolean` | `false` | Reverse animation direction |
+| `frames` | `string[]` | - | Custom frame array |
+| `class` | `string` | - | Additional CSS classes |
+
+### Built-in Variants
+
+`braille_bar`, `braille_bar_dot`, `braille_dot_circle`, `braille_dot_bounce`, `half_circle`, `quarter_circle`, `ascii`, `bar_v`, `bar_h`, `shade`, `arrows`, `arrows2`, `asterix`, `asterix2`, `asterix3`, `asterix4`, `asterix5`
+
+### Usage
 
 ```svelte
-<Spinner duration={500} />  <!-- Faster -->
-<Spinner duration={1500} /> <!-- Slower -->
+<SpinnerUnicode />
+<SpinnerUnicode variant="ascii" />
+<SpinnerUnicode variant="arrows" class="text-green-500" />
+
+<!-- Custom frames -->
+<SpinnerUnicode frames={spinnerCreateBackAndForthCharFrames(5, "■", "□")} />
 ```
 
-### Counter-Clockwise
+---
+
+## CSS Customization
+
+All spinners support customization via CSS variables.
+
+### Available Variables
+
+```css
+:root {
+  /* Spinner (radial bars) */
+  --stuic-spinner-opacity: 0.8;
+  --stuic-spinner-fade-end-opacity: 0.12;
+  --stuic-spinner-duration: 750ms;
+
+  /* SpinnerCircle */
+  --stuic-spinner-circle-thickness-thin: 1px;
+  --stuic-spinner-circle-thickness-normal: 2px;
+  --stuic-spinner-circle-thickness-thick: 4px;
+  --stuic-spinner-circle-duration: 750ms;
+
+  /* SpinnerCircleOscillate */
+  --stuic-spinner-circle-oscillate-bg-stroke: var(--stuic-color-border, rgba(0 0 0 / 0.1));
+  --stuic-spinner-circle-oscillate-duration: 0.75s;
+
+  /* SpinnerUnicode */
+  --stuic-spinner-unicode-font-size: var(--text-xl);
+}
+```
+
+### Global Override
+
+```css
+:root {
+  --stuic-spinner-opacity: 1;
+  --stuic-spinner-circle-thickness-normal: 3px;
+}
+```
+
+### Local Override
 
 ```svelte
-<Spinner direction="ccw" />
+<Spinner style="--stuic-spinner-opacity: 0.5;" />
+<SpinnerCircle style="--stuic-spinner-circle-duration: 500ms;" />
 ```
 
-### With Custom Color
+---
+
+## Color Customization
+
+All spinners use `currentColor`, so apply Tailwind text color classes:
 
 ```svelte
-<Spinner class="w-8 text-blue-500" />
-<Spinner class="w-8 text-green-500" />
+<Spinner class="text-blue-500" />
+<SpinnerCircle class="text-red-600" />
+<SpinnerUnicode class="text-green-500" />
 ```
 
-### Loading Button
+---
+
+## Loading Button Example
 
 ```svelte
 <script lang="ts">
+  import { Button, SpinnerCircle } from 'stuic';
   let loading = $state(false);
 </script>
 
-<button disabled={loading}>
+<Button disabled={loading}>
   {#if loading}
-    <Spinner class="w-4 mr-2" />
+    <SpinnerCircle class="size-4" />
   {/if}
   Submit
-</button>
+</Button>
 ```

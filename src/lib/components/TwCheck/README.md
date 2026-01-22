@@ -1,13 +1,26 @@
 # TwCheck
 
-A development utility component to verify that Tailwind CSS is properly loaded and working. Displays differently styled content at different breakpoints.
+A development utility component to verify that Tailwind CSS is properly loaded and working. Displays different styles at different breakpoints.
 
 ## Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `theme` | `string` | - | Tailwind color theme for background |
+| `theme` | `string` | - | Tailwind color palette name (e.g., "blue", "amber") |
 | `class` | `string` | - | Additional CSS classes |
+
+## Component Tokens
+
+Override to customize appearance:
+
+```css
+:root {
+    --stuic-twcheck-bg: var(--stuic-color-primary);
+    --stuic-twcheck-text: var(--stuic-color-primary-foreground);
+    --stuic-twcheck-border-color: var(--stuic-color-accent);
+    --stuic-twcheck-padding-x: calc(var(--spacing) * 2);
+}
+```
 
 ## Usage
 
@@ -15,29 +28,35 @@ A development utility component to verify that Tailwind CSS is properly loaded a
 
 ```svelte
 <script lang="ts">
-  import { TwCheck } from 'stuic';
+  import { TwCheck } from '@marianmeres/stuic';
 </script>
 
-<TwCheck>
-  TW Check
-</TwCheck>
+<TwCheck>TW Check</TwCheck>
 ```
 
-### With Theme
+### Customization Strategies
 
 ```svelte
-<TwCheck theme="blue">
-  Tailwind is working!
-</TwCheck>
+<!-- 1. Default styles (uses theme tokens) -->
+<TwCheck>default</TwCheck>
+
+<!-- 2. Tailwind class override -->
+<TwCheck class="bg-green-600 text-white">green</TwCheck>
+
+<!-- 3. CSS variable override -->
+<TwCheck --stuic-twcheck-bg="var(--color-blue-600)">blue</TwCheck>
+
+<!-- 4. Theme prop shorthand -->
+<TwCheck theme="amber">amber</TwCheck>
 ```
 
 ## Visual Indicators
 
 When Tailwind CSS is properly loaded:
-- **Mobile**: Yellow text, no border
-- **Desktop (sm+)**: White text, teal border, larger font
+- **Mobile**: Smaller text (text-base), no border
+- **Desktop (sm+)**: Larger text (text-2xl), visible border
 
-If the component appears unstyled (plain text), Tailwind CSS is not loading correctly.
+If the component appears unstyled (no size change, no border at wider viewports), Tailwind CSS is not loading correctly.
 
 ## Development Use
 

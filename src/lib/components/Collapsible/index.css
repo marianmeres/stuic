@@ -17,22 +17,24 @@
 	--stuic-collapsible-ring-color: var(--stuic-color-ring);
 }
 
-/* ============================================================================
-   TOGGLE BUTTON STYLES
-   ============================================================================ */
+@layer components {
+	/* ============================================================================
+	   TOGGLE BUTTON STYLES
+	   ============================================================================ */
 
-.stuic-collapsible-toggle {
-	opacity: var(--stuic-collapsible-toggle-opacity);
-	padding: var(--stuic-collapsible-toggle-padding-y)
-		var(--stuic-collapsible-toggle-padding-x);
-	transition: opacity var(--stuic-collapsible-transition);
-}
+	.stuic-collapsible-toggle {
+		opacity: var(--stuic-collapsible-toggle-opacity);
+		padding: var(--stuic-collapsible-toggle-padding-y)
+			var(--stuic-collapsible-toggle-padding-x);
+		transition: opacity var(--stuic-collapsible-transition);
+	}
 
-.stuic-collapsible-toggle:hover {
-	opacity: var(--stuic-collapsible-toggle-opacity-hover);
-}
+	.stuic-collapsible-toggle:hover {
+		opacity: var(--stuic-collapsible-toggle-opacity-hover);
+	}
 
-.stuic-collapsible-toggle:focus-visible {
-	outline: var(--stuic-collapsible-ring-width) solid var(--stuic-collapsible-ring-color);
-	outline-offset: 2px;
+	.stuic-collapsible-toggle:focus-visible {
+		outline: var(--stuic-collapsible-ring-width) solid var(--stuic-collapsible-ring-color);
+		outline-offset: 2px;
+	}
 }

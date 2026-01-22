@@ -39,7 +39,6 @@
 	import { twMerge } from "../../utils/tw-merge.js";
 	import Button from "../Button/Button.svelte";
 	//
-	import "./index.css";
 	import { tooltip, type TooltipConfig } from "../../actions/index.js";
 
 	let {

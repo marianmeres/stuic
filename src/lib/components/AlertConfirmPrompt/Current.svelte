@@ -11,7 +11,6 @@
 		AlertConfirmPromptType,
 		type AlertConfirmPromptStack,
 	} from "./alert-confirm-prompt-stack.svelte.js";
-	import "./index.css";
 
 	const { ALERT, CONFIRM, PROMPT } = AlertConfirmPromptType;
 	const isFn = (v: any) => typeof v === "function";

@@ -20,38 +20,40 @@
 	--stuic-modal-dialog-shadow: var(--shadow-xl);
 }
 
-/* ============================================================================
-   BACKDROP STYLES
-   ============================================================================ */
+@layer components {
+	/* ============================================================================
+	   BACKDROP STYLES
+	   ============================================================================ */
 
-.stuic-modal-dialog::backdrop {
-	background: var(--stuic-modal-dialog-backdrop);
-}
-
-/* ============================================================================
-   CONTENT BOX STYLES
-   ============================================================================ */
-
-.stuic-modal-dialog .box {
-	background: var(--stuic-modal-dialog-bg);
-	color: var(--stuic-modal-dialog-text);
-	border-radius: var(--stuic-modal-dialog-radius);
-	box-shadow: var(--stuic-modal-dialog-shadow);
-}
-
-/* ============================================================================
-   ANIMATIONS
-   ============================================================================ */
-
-.stuic-modal-dialog[open]::backdrop {
-	animation: stuic-modal-dialog-fadeIn var(--stuic-modal-dialog-transition) ease-out;
-}
-
-@keyframes stuic-modal-dialog-fadeIn {
-	from {
-		opacity: 0;
+	.stuic-modal-dialog::backdrop {
+		background: var(--stuic-modal-dialog-backdrop);
 	}
-	to {
-		opacity: 1;
+
+	/* ============================================================================
+	   CONTENT BOX STYLES
+	   ============================================================================ */
+
+	.stuic-modal-dialog .box {
+		background: var(--stuic-modal-dialog-bg);
+		color: var(--stuic-modal-dialog-text);
+		border-radius: var(--stuic-modal-dialog-radius);
+		box-shadow: var(--stuic-modal-dialog-shadow);
+	}
+
+	/* ============================================================================
+	   ANIMATIONS
+	   ============================================================================ */
+
+	.stuic-modal-dialog[open]::backdrop {
+		animation: stuic-modal-dialog-fadeIn var(--stuic-modal-dialog-transition) ease-out;
+	}
+
+	@keyframes stuic-modal-dialog-fadeIn {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
 	}
 }

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { svgCircle } from "../../../utils/svg-circle.js";
 	import { twMerge } from "../../../utils/tw-merge.js";
-	import "../index.css";
 
 	interface Props {
 		progress: number;

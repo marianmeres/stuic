@@ -1,20 +1,20 @@
 <script lang="ts">
 	import { TwCheck } from "$lib/index.js";
-
-	const cssVarViolet = "var(--color-violet-600)";
 </script>
 
 <h1 class="mb-4">Customization using different strategies</h1>
 
-<!-- 1. default styles -->
-<TwCheck>red</TwCheck>
+<!-- 1. default styles (uses theme tokens) -->
+<TwCheck>default (theme primary)</TwCheck>
 
-<!-- 2. manual tw class: !important is needed... not nice, but acceptable -->
-<TwCheck class="bg-green-600">green</TwCheck>
+<!-- 2. manual tw class override -->
+<TwCheck class="bg-green-600">green (defined as tailwind class)</TwCheck>
 
 <!-- 3. manual css var prop -->
-<TwCheck --stuic-twcheck-bg="var(--color-blue-600)">blue</TwCheck>
-<TwCheck --stuic-twcheck-bg={cssVarViolet}>violet</TwCheck>
+<TwCheck --stuic-twcheck-bg="var(--color-blue-600)" --stuic-twcheck-text="white">
+	blue (css vars as )
+</TwCheck>
 
-<!-- 4. theme -->
-<TwCheck theme="amber">amber</TwCheck>
+<!-- 4. theme prop -->
+<TwCheck theme="amber">amber (theme)</TwCheck>
+<TwCheck theme="rose">rose (theme)</TwCheck>

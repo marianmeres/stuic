@@ -1,0 +1,104 @@
+:root {
+	/* Spinner (radial bars) */
+	--stuic-spinner-opacity: 0.8;
+	--stuic-spinner-fade-end-opacity: 0.12;
+	--stuic-spinner-duration: 750ms;
+
+	/* SpinnerCircle */
+	--stuic-spinner-circle-thickness-thin: 1px;
+	--stuic-spinner-circle-thickness-normal: 2px;
+	--stuic-spinner-circle-thickness-thick: 4px;
+	--stuic-spinner-circle-duration: 750ms;
+
+	/* SpinnerCircleOscillate */
+	--stuic-spinner-circle-oscillate-bg-stroke: var(
+		--stuic-color-border,
+		rgba(0 0 0 / 0.1)
+	);
+	--stuic-spinner-circle-oscillate-duration: 0.75s;
+
+	/* SpinnerUnicode */
+	--stuic-spinner-unicode-font-size: var(--text-xl);
+}
+
+@layer components {
+	/* ========================================================================
+	   Spinner (radial bars)
+	   ======================================================================== */
+
+	.stuic-spinner {
+		position: relative;
+		opacity: var(--stuic-spinner-opacity);
+	}
+
+	.stuic-spinner-bar {
+		position: absolute;
+		left: 50%;
+		top: 0;
+		background: currentColor;
+		animation: stuic-spinner-fade var(--stuic-spinner-duration) linear infinite;
+	}
+
+	@keyframes stuic-spinner-fade {
+		from {
+			opacity: 1;
+		}
+		to {
+			opacity: var(--stuic-spinner-fade-end-opacity);
+		}
+	}
+
+	/* ========================================================================
+	   SpinnerCircle
+	   ======================================================================== */
+
+	.stuic-spinner-circle {
+		display: inline-block;
+		box-sizing: border-box;
+		border-radius: 50%;
+		border-style: solid;
+		border-color: currentColor;
+		border-top-color: transparent;
+		animation: stuic-spinner-circle-spin linear infinite;
+		animation-duration: var(--stuic-spinner-circle-duration);
+	}
+
+	.stuic-spinner-circle[data-thickness="thin"] {
+		border-width: var(--stuic-spinner-circle-thickness-thin);
+	}
+
+	.stuic-spinner-circle[data-thickness="normal"] {
+		border-width: var(--stuic-spinner-circle-thickness-normal);
+	}
+
+	.stuic-spinner-circle[data-thickness="thick"] {
+		border-width: var(--stuic-spinner-circle-thickness-thick);
+	}
+
+	@keyframes stuic-spinner-circle-spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	/* ========================================================================
+	   SpinnerCircleOscillate
+	   ======================================================================== */
+
+	.stuic-spinner-circle-oscillate {
+		animation: stuic-spinner-circle-spin linear infinite;
+		animation-duration: var(--stuic-spinner-circle-oscillate-duration);
+	}
+
+	/* ========================================================================
+	   SpinnerUnicode
+	   ======================================================================== */
+
+	.stuic-spinner-unicode {
+		display: inline-block;
+		font-family: var(--font-mono);
+		line-height: 1;
+		color: currentColor;
+		font-size: var(--stuic-spinner-unicode-font-size);
+	}
+}

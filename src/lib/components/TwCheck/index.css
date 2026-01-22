@@ -1,4 +1,18 @@
 /* TwCheck component tokens */
 :root {
 	--stuic-twcheck-bg: var(--stuic-color-primary);
+	--stuic-twcheck-text: var(--stuic-color-primary-foreground);
+	--stuic-twcheck-border-color: var(--stuic-color-accent);
+	--stuic-twcheck-padding-x: calc(var(--spacing) * 2);
+}
+
+/* @layer components ensures Tailwind utilities (@layer utilities) win in the cascade */
+@layer components {
+	.stuic-twcheck {
+		background: var(--stuic-twcheck-bg);
+		color: var(--stuic-twcheck-text);
+		border-color: var(--stuic-twcheck-border-color);
+		padding-left: var(--stuic-twcheck-padding-x);
+		padding-right: var(--stuic-twcheck-padding-x);
+	}
 }

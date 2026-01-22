@@ -19,31 +19,33 @@
 	--stuic-progress-circle-stroke-width: 10; /* in viewBox units (100x100) */
 }
 
-/* ============================================================================
-   BAR STYLES
-   ============================================================================ */
+@layer components {
+	/* ============================================================================
+	   BAR STYLES
+	   ============================================================================ */
 
-.stuic-progress-bar {
-	width: 100%;
-	height: var(--stuic-progress-height);
-	background: var(--stuic-progress-bg);
-	border-radius: var(--stuic-progress-radius);
-	overflow: hidden;
-	pointer-events: none;
-}
+	.stuic-progress-bar {
+		width: 100%;
+		height: var(--stuic-progress-height);
+		background: var(--stuic-progress-bg);
+		border-radius: var(--stuic-progress-radius);
+		overflow: hidden;
+		pointer-events: none;
+	}
 
-.stuic-progress-bar > .bar {
-	height: 100%;
-	background: var(--stuic-progress-accent);
-	border-radius: inherit;
-	transition: width var(--stuic-progress-transition) linear;
-}
+	.stuic-progress-bar > .bar {
+		height: 100%;
+		background: var(--stuic-progress-accent);
+		border-radius: inherit;
+		transition: width var(--stuic-progress-transition) linear;
+	}
 
-/* ============================================================================
-   CIRCLE STYLES
-   ============================================================================ */
+	/* ============================================================================
+	   CIRCLE STYLES
+	   ============================================================================ */
 
-.stuic-progress-circle {
-	width: var(--stuic-progress-circle-size);
-	height: var(--stuic-progress-circle-size);
+	.stuic-progress-circle {
+		width: var(--stuic-progress-circle-size);
+		height: var(--stuic-progress-circle-size);
+	}
 }

@@ -41,7 +41,6 @@
 	import { twMerge } from "../../utils/tw-merge.js";
 	import { DevicePointer } from "../../utils/device-pointer.svelte.js";
 	import Thc from "../Thc/Thc.svelte";
-	import "./index.css";
 
 	let {
 		children,

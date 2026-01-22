@@ -17,11 +17,16 @@
 
 	let {
 		class: classProp = "",
-		bgStrokeColor = "rgba(0 0 0 / .1)",
+		bgStrokeColor,
 		strokeWidth,
 		noOscillate,
-		rotateDuration = ".75s",
+		rotateDuration,
 	}: Props = $props();
+
+	// Use CSS variable as default when bgStrokeColor is not provided
+	const _bgStrokeColor = $derived(
+		bgStrokeColor ?? "var(--stuic-spinner-circle-oscillate-bg-stroke)"
+	);
 
 	/**
 	 * NOTE: we happen to have 4 distinct values here which effect the overall look and feel...
@@ -40,8 +45,8 @@
 <Circle
 	animateCompletenessMs={0}
 	{completeness}
-	class={twMerge("stuic-spinner-circle animate-spin", classProp)}
-	{bgStrokeColor}
+	class={twMerge("stuic-spinner-circle-oscillate", classProp)}
+	bgStrokeColor={_bgStrokeColor}
 	{strokeWidth}
-	style="animation-duration: {rotateDuration}"
+	style={rotateDuration ? `--stuic-spinner-circle-oscillate-duration: ${rotateDuration}` : undefined}
 />

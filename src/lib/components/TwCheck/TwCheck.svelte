@@ -9,24 +9,26 @@
 </script>
 
 <script lang="ts">
-	import "./index.css";
-	import { twMerge } from "tailwind-merge";
+	import { twMerge } from "../../utils/index.js";
 
 	let { class: classProp, children, theme }: Props = $props();
 
+	// Responsive classes demonstrate Tailwind is working:
+	// - Font size changes: text-base -> sm:text-2xl
+	// Note: border styles are in component CSS to avoid Vite HMR timing issues
 	const _default = `
-		stuic-twcheck bg-(--stuic-twcheck-bg)
-		inline-block px-2
-		text-yellow-300 sm:text-white
+		stuic-twcheck
+		inline-block
 		text-base sm:text-2xl
 		sm:border-2 border-teal-400
 	`;
 
 	const _buildTheme = (theme?: string) => {
-		// simulating missing css var
-		return theme
-			? `--stuic-twcheck-bg: var(--color-foo-bar-baz, var(--color-${theme}-600));`
-			: "";
+		if (!theme) return "";
+		return [
+			`--stuic-twcheck-bg: var(--color-${theme}-600)`,
+			`--stuic-twcheck-text: var(--color-${theme}-100, var(--color-white))`,
+		].join(";");
 	};
 </script>
 

@@ -35,7 +35,6 @@
 </script>
 
 <script lang="ts">
-	import "./index.css";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import { prefersReducedMotion } from "../../utils/prefers-reduced-motion.svelte.js";
 
@@ -45,10 +44,10 @@
 		height,
 		size,
 		lines = 1,
-		gap = "0.5rem",
+		gap,
 		lastLineWidth = "75%",
 		animation = "shimmer",
-		duration = "1.5s",
+		duration,
 		rounded = true,
 		ariaLabel,
 		el = $bindable(),
@@ -67,7 +66,7 @@
 			effectiveAnimation === "pulse" && "stuic-skeleton-pulse",
 			effectiveAnimation === "none" && "bg-[var(--stuic-skeleton-bg)]",
 			variant === "circle" && "stuic-skeleton-circle",
-			rounded === true && variant !== "circle" && "rounded",
+			rounded === true && variant !== "circle" && "stuic-skeleton-rounded",
 			classProp
 		)
 	);
@@ -102,9 +101,9 @@
 			{@const isLast = i === lines - 1}
 			<div
 				class={baseClass}
-				style="{baseStyle}; width: {isLast
-					? lastLineWidth
-					: width || '100%'}; height: {height || '1rem'}"
+				style="{baseStyle}; width: {isLast ? lastLineWidth : width || '100%'}{height
+					? `; height: ${height}`
+					: ''}"
 			></div>
 		{/each}
 		{#if ariaLabel}

@@ -63,7 +63,6 @@
 
 <script lang="ts">
 	import Button from "../Button/Button.svelte";
-	import "./index.css";
 
 	const clog = createClog("CommandMenu");
 

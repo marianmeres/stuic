@@ -40,7 +40,6 @@
 	import Button from "../Button/Button.svelte";
 	import Thc from "../Thc/Thc.svelte";
 	import X from "../X/X.svelte";
-	import "./index.css";
 	import type { Notification } from "./notifications-stack.svelte.js";
 	import Progress from "../Progress/Progress.svelte";
 

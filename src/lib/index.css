@@ -1,46 +1,53 @@
-/*
-	Tailwind import removed here because it causes CSS cascade/layer issues in WebKit browsers
-	(Safari, iOS Chrome) when consumers also import Tailwind. The double import can result in
-	Tailwind's preflight styles (like border-style: solid) not being applied correctly.
-	Consumers of STUIC should import Tailwind at their own app level.
-*/
-/* @import "tailwindcss"; */
-
-/* @plugin '@tailwindcss/forms'; */
-
-@custom-variant dark (&:where(.dark, .dark *));
-
 @source "./";
 
-/* Import global design tokens before component styles */
+/*  */
 @import "./themes/neutral.css";
-/* @import "./themes/gray.css"; */
-/* @import "./themes/rainbow.css"; */
-/* @import "./themes/indigo-amber.css"; */
-/* @import "./themes/teal-rose.css"; */
-/* @import "./themes/violet-lime.css"; */
-/* @import "./themes/blue-orange.css"; */
-/* @import "./themes/emerald-pink.css"; */
-/* @import "./themes/sky-amber.css"; */
-/* @import "./themes/fuchsia-emerald.css"; */
-/* @import "./themes/slate-cyan.css"; */
-/* @import "./themes/purple-yellow.css"; */
-/* @import "./themes/cyan-red.css"; */
-/* @import "./themes/red-cyan.css"; */
 
-/* Component styles - each file has its own @layer components wrapper */
-/* @import "./actions/tooltip/index.css"; */
-/* @import "./components/Button/index.css"; */
-/* @import "./components/ButtonGroupRadio/index.css"; */
-/* @import "./components/Collapsible/index.css"; */
-/* @import "./components/DismissibleMessage/index.css"; */
-/* @import "./components/ListItemButton/index.css"; */
-/* @import "./components/Notifications/index.css"; */
-/* @import "./components/Progress/index.css"; */
-/* @import "./components/Switch/index.css"; */
-/* @import "./components/TabbedMenu/index.css"; */
-/* @import "./components/TwCheck/index.css"; */
+/*****************************************************************************************
 
+# Component CSS - centralized to avoid race conditions with barrel exports 
+
+Barrel exports + CSS side effects = race conditions
+
+When you use barrel exports (export * from) in a library entry point, importing 
+anything from that barrel causes all modules to be evaluated. If those modules have 
+CSS side effects (like import "./index.css" in Svelte components), all CSS files load 
+simultaneously in unpredictable order.
+
+The fix: Centralize CSS imports in a single entry point (like lib/index.css) that 
+loads at app startup, rather than letting each component import its own CSS. This 
+ensures CSS loads in a deterministic order before any components render.
+
+In practice:
+    - ✅ Component CSS in centralized lib/index.css
+    - ❌ import "./index.css" inside each component
+
+*****************************************************************************************/
+@import "./components/AlertConfirmPrompt/index.css";
+@import "./components/AssetsPreview/index.css";
+@import "./components/Avatar/index.css";
+@import "./components/Backdrop/index.css";
+@import "./components/Button/index.css";
+@import "./components/ButtonGroupRadio/index.css";
+@import "./components/Collapsible/index.css";
+@import "./components/CommandMenu/index.css";
+@import "./components/DismissibleMessage/index.css";
+@import "./components/DropdownMenu/index.css";
+@import "./components/Input/index.css";
+@import "./components/KbdShortcut/index.css";
+@import "./components/ListItemButton/index.css";
+@import "./components/Modal/index.css";
+@import "./components/ModalDialog/index.css";
+@import "./components/Notifications/index.css";
+@import "./components/Progress/index.css";
+@import "./components/Skeleton/index.css";
+@import "./components/Spinner/index.css";
+@import "./components/Switch/index.css";
+@import "./components/TabbedMenu/index.css";
+@import "./components/ThemePreview/index.css";
+@import "./components/TwCheck/index.css";
+
+/* Base styles for STUIC components */
 @layer base {
 	button:not(:disabled),
 	[role="button"]:not(:disabled) {
@@ -51,7 +58,6 @@
 	[role="button"]:disabled,
 	input:disabled {
 		cursor: not-allowed !important;
-		/* opacity: 0.5 !important; moved to Button itself, so it can be overridden */
 	}
 }
 

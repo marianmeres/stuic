@@ -23,7 +23,6 @@
 	import { tick } from "svelte";
 	import { twMerge } from "../../utils/tw-merge.js";
 
-	import "./index.css";
 
 	let {
 		button = $bindable(),

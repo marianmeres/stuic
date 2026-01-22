@@ -145,6 +145,31 @@ export function generateCssTokens(
 // CSS Output Helpers
 // ============================================================================
 
+// Generic fallback for any Tailwind color variable
+// This is a safety net for Vite HMR timing - rarely visible in practice
+const GENERIC_COLOR_FALLBACK = "#737373"; // neutral-500 (mid-gray)
+
+/**
+ * Add generic fallback to var(--color-X) references
+ * Input:  "var(--color-neutral-800)"
+ * Output: "var(--color-neutral-800, #737373)"
+ *
+ * Works for ANY Tailwind color (neutral, blue, red, etc.)
+ */
+function addColorFallback(value: string): string {
+	// Match var(--color-X) pattern (but not if it already has a fallback)
+	const match = value.match(/^var\(--color-([^,)]+)\)$/);
+	if (match) {
+		const colorName = match[1];
+		// Special cases for obvious colors
+		if (colorName === "white") return `var(--color-white, #ffffff)`;
+		if (colorName === "black") return `var(--color-black, #000000)`;
+		// Generic fallback for all other colors
+		return `var(--color-${colorName}, ${GENERIC_COLOR_FALLBACK})`;
+	}
+	return value;
+}
+
 /** Convert tokens object to CSS :root declaration */
 export function toCssString(tokens: GeneratedTokens, selector = ":root"): string {
 	// Find max key length for padding
@@ -170,7 +195,8 @@ export function toCssString(tokens: GeneratedTokens, selector = ":root"): string
 	// Format a token with padding (include colon in key)
 	const formatVar = ([key, value]: [string, string]): string => {
 		const cssKey = `--${key}:`;
-		return `\t${cssKey.padEnd(maxLen + 1)} ${value};`;
+		const valueWithFallback = addColorFallback(value);
+		return `\t${cssKey.padEnd(maxLen + 1)} ${valueWithFallback};`;
 	};
 
 	// Build output with empty lines between each color group

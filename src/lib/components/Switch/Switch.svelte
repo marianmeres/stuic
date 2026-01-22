@@ -38,7 +38,6 @@
 	import { twMerge } from "../../utils/tw-merge.js";
 	import { validate as validateAction } from "../../actions/validate.svelte.js";
 
-	import "./index.css";
 
 	let {
 		button = $bindable(),

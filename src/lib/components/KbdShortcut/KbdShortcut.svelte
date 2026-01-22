@@ -40,7 +40,6 @@
 	import { isMac } from "../../utils/is-mac.js";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import { ucfirst } from "../../utils/ucfirst.js";
-	import "./index.css";
 
 	let { class: classProp, metas, keys, forcedOs }: Props = $props();
 

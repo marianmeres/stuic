@@ -8,12 +8,3 @@
 		@apply text-neutral-950 dark:text-neutral-50 bg-neutral-50 dark:bg-neutral-800;
 	}
 }
-
-/*
-Example: Button intent color customization via CSS variables
-:root {
-	--stuic-color-primary: var(--color-red-500);
-	--stuic-color-primary-hover: var(--color-red-600);
-	--stuic-color-primary-foreground: var(--color-white);
-}
-*/

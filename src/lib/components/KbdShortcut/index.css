@@ -20,34 +20,36 @@
 	--stuic-kbd-border-color: var(--stuic-color-border);
 }
 
-/* ============================================================================
-   BASE STYLES
-   ============================================================================ */
+@layer components {
+	/* ============================================================================
+	   BASE STYLES
+	   ============================================================================ */
 
-.stuic-kbd {
-	/* Layout */
-	display: inline-flex;
-	align-items: center;
-	gap: var(--stuic-kbd-gap);
+	.stuic-kbd {
+		/* Layout */
+		display: inline-flex;
+		align-items: center;
+		gap: var(--stuic-kbd-gap);
 
-	/* Typography */
-	font-family: var(--stuic-kbd-font-family);
-	font-size: var(--stuic-kbd-font-size);
-	line-height: 1;
+		/* Typography */
+		font-family: var(--stuic-kbd-font-family);
+		font-size: var(--stuic-kbd-font-size);
+		line-height: 1;
 
-	/* Box model */
-	padding: var(--stuic-kbd-padding-y) var(--stuic-kbd-padding-x);
-	border-radius: var(--stuic-kbd-radius);
-	border: var(--stuic-kbd-border-width) solid var(--stuic-kbd-border-color);
-}
+		/* Box model */
+		padding: var(--stuic-kbd-padding-y) var(--stuic-kbd-padding-x);
+		border-radius: var(--stuic-kbd-radius);
+		border: var(--stuic-kbd-border-width) solid var(--stuic-kbd-border-color);
+	}
 
-/* Symbol styling (⌘, ⇧, ⌥, ⌃, ⊞) */
-.stuic-kbd-symbol {
-	font-family: var(--font-sans);
-}
+	/* Symbol styling (⌘, ⇧, ⌥, ⌃, ⊞) */
+	.stuic-kbd-symbol {
+		font-family: var(--font-sans);
+	}
 
-/* Text key styling (Ctrl, Alt, etc.) */
-.stuic-kbd-key {
-	font-family: var(--font-mono);
-	letter-spacing: var(--tracking-tight);
+	/* Text key styling (Ctrl, Alt, etc.) */
+	.stuic-kbd-key {
+		font-family: var(--font-mono);
+		letter-spacing: var(--tracking-tight);
+	}
 }

@@ -40,7 +40,6 @@
 </script>
 
 <script lang="ts">
-	import "./index.css";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import Button from "../Button/Button.svelte";
 	import { AlertConfirmPromptStack } from "../AlertConfirmPrompt/index.js";

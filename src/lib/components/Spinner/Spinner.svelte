@@ -1,6 +1,7 @@
 <script lang="ts" module>
 	export interface Props {
 		class?: string;
+		style?: string;
 		count?: number;
 		thickness?: "thin" | "normal" | "thick";
 		height?: "short" | "normal" | "tall";
@@ -15,6 +16,7 @@
 
 	let {
 		class: classProp,
+		style: styleProp,
 		count = 8,
 		thickness = "normal",
 		height = "normal",
@@ -42,15 +44,14 @@
 </script>
 
 <div
-	class={twMerge("spinner opacity-80", classProp)}
-	style:--size="{size}px"
-	style:--duration="{duration}ms"
+	class={twMerge("stuic-spinner", classProp)}
+	style="{styleProp ?? ''}; width: {size}px; height: {size}px; --stuic-spinner-duration: {duration}ms;"
 >
 	{#each Array(count) as _, i}
 		{@const angle = (360 / count) * i}
 		{@const delay = direction === "ccw" ? i / count : (count - i) / count}
 		<span
-			class="bar"
+			class="stuic-spinner-bar"
 			style:width="{barWidth}px"
 			style:height="{barHeight}px"
 			style:border-radius="{rounded}px"
@@ -60,28 +61,3 @@
 		></span>
 	{/each}
 </div>
-
-<style>
-	.spinner {
-		position: relative;
-		width: var(--size);
-		height: var(--size);
-	}
-
-	.bar {
-		position: absolute;
-		left: 50%;
-		top: 0px;
-		background: currentColor;
-		animation: fade var(--duration) linear infinite;
-	}
-
-	@keyframes fade {
-		from {
-			opacity: 1;
-		}
-		to {
-			opacity: 0.12;
-		}
-	}
-</style>

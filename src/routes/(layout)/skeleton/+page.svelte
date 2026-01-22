@@ -133,3 +133,34 @@
 		</div>
 	{/each}
 </div>
+
+<hr class="my-6" />
+
+<h3 class="font-semibold mb-2">CSS Variable Customization</h3>
+<div class="space-y-4 mb-8">
+	<div>
+		<p class="text-sm text-neutral-500 mb-2">Custom colors (inline):</p>
+		<Skeleton
+			width="100%"
+			height="2rem"
+			style="--stuic-skeleton-bg: oklch(0.85 0.05 250); --stuic-skeleton-bg-highlight: oklch(0.95 0.03 250);"
+		/>
+	</div>
+	<div>
+		<p class="text-sm text-neutral-500 mb-2">Custom pulse opacity (0.2):</p>
+		<Skeleton
+			animation="pulse"
+			width="100%"
+			height="2rem"
+			style="--stuic-skeleton-pulse-opacity: 0.2;"
+		/>
+	</div>
+	<div>
+		<p class="text-sm text-neutral-500 mb-2">Custom timing (linear):</p>
+		<Skeleton
+			width="100%"
+			height="2rem"
+			style="--stuic-skeleton-timing: linear;"
+		/>
+	</div>
+</div>

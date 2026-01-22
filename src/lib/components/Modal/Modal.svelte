@@ -27,7 +27,6 @@
 <script lang="ts">
 	import ModalDialog from "../ModalDialog/ModalDialog.svelte";
 	import { twMerge } from "../../utils/tw-merge.js";
-	import "./index.css";
 
 	let {
 		visible = $bindable(false),

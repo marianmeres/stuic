@@ -29,7 +29,6 @@
 		iconAlertError,
 	} from "$lib/icons/index.js";
 
-	import "./index.css";
 
 	const INTENT_ICONS: Record<MessageIntent, () => string> = {
 		destructive: () => iconAlertError({ size: 29 }),

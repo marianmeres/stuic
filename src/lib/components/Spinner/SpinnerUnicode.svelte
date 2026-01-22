@@ -20,6 +20,7 @@
 
 	export interface Props {
 		class?: string;
+		style?: string;
 		speed?: number;
 		variant?: SpinnerUnicodeVariant;
 		reversed?: boolean;
@@ -68,6 +69,7 @@
 
 	let {
 		class: _class = "",
+		style: _style,
 		speed = 100,
 		variant = "braille_bar_dot",
 		reversed = false,
@@ -152,6 +154,6 @@
 	});
 </script>
 
-<span class={twMerge(`inline-block font-mono leading-none text-current text-xl`, _class)}>
+<span class={twMerge("stuic-spinner-unicode", _class)} style={_style}>
 	{_frames[currentFrame]}
 </span>

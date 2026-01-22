@@ -39,7 +39,6 @@
 </script>
 
 <script lang="ts">
-	import "./index.css";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import { generateAvatarColors } from "../../utils/avatar-colors.js";
 	import { iconUser as defaultIconUser } from "../../icons/index.js";

@@ -26,7 +26,6 @@
 </script>
 
 <script lang="ts">
-	import "./index.css";
 	import { twMerge } from "../../utils/tw-merge.js";
 
 	const clog = createClog("Backdrop", { color: "auto" });

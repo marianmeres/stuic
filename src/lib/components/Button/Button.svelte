@@ -47,7 +47,6 @@
 </script>
 
 <script lang="ts">
-	import "./index.css";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import { tooltip, type TooltipConfig } from "../../actions/tooltip/tooltip.svelte.js";
 	import { X, type XProps } from "../X/index.js";

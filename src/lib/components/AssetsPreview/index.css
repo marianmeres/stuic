@@ -27,33 +27,35 @@
 	--stuic-assets-preview-transition: 150ms;
 }
 
-/* ============================================================================
-   LABELS (filename display, tooltip)
-   ============================================================================ */
+@layer components {
+	/* ============================================================================
+	   LABELS (filename display, tooltip)
+	   ============================================================================ */
 
-.stuic-assets-preview-label {
-	background: var(--stuic-assets-preview-label-bg);
-	color: var(--stuic-assets-preview-label-text);
-	border-radius: var(--stuic-assets-preview-label-radius);
-}
+	.stuic-assets-preview-label {
+		background: var(--stuic-assets-preview-label-bg);
+		color: var(--stuic-assets-preview-label-text);
+		border-radius: var(--stuic-assets-preview-label-radius);
+	}
 
-/* ============================================================================
-   DOT INDICATORS (pagination dots)
-   ============================================================================ */
+	/* ============================================================================
+	   DOT INDICATORS (pagination dots)
+	   ============================================================================ */
 
-.stuic-assets-preview-dot {
-	width: var(--stuic-assets-preview-dot-size);
-	height: var(--stuic-assets-preview-dot-size);
-	border-radius: 9999px;
-	background: var(--stuic-assets-preview-dot-bg);
-	border: 1px solid var(--stuic-assets-preview-dot-border);
-	transition: background var(--stuic-assets-preview-transition);
-}
+	.stuic-assets-preview-dot {
+		width: var(--stuic-assets-preview-dot-size);
+		height: var(--stuic-assets-preview-dot-size);
+		border-radius: 9999px;
+		background: var(--stuic-assets-preview-dot-bg);
+		border: 1px solid var(--stuic-assets-preview-dot-border);
+		transition: background var(--stuic-assets-preview-transition);
+	}
 
-.stuic-assets-preview-dot:hover {
-	background: var(--stuic-assets-preview-dot-bg-hover);
-}
+	.stuic-assets-preview-dot:hover {
+		background: var(--stuic-assets-preview-dot-bg-hover);
+	}
 
-.stuic-assets-preview-dot.active {
-	background: var(--stuic-assets-preview-dot-bg-active);
+	.stuic-assets-preview-dot.active {
+		background: var(--stuic-assets-preview-dot-bg-active);
+	}
 }

@@ -229,7 +229,6 @@
 	import { untrack } from "svelte";
 	import Thc from "../Thc/Thc.svelte";
 	import ListItemButton from "../ListItemButton/ListItemButton.svelte";
-	import "./index.css";
 	import { BodyScroll } from "../../utils/body-scroll-locker.js";
 	import { waitForTwoRepaints } from "../../utils/paint.js";
 

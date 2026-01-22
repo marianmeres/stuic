@@ -66,202 +66,204 @@
 	--stuic-dropdown-menu-expandable-indent: calc(var(--spacing) * 4);
 }
 
-/* =============================================================================
-   BASE STYLES
-   ============================================================================= */
+@layer components {
+	/* =============================================================================
+	   BASE STYLES
+	   ============================================================================= */
 
-.stuic-dropdown-menu {
-	position: relative;
-	display: inline-block;
-}
+	.stuic-dropdown-menu {
+		position: relative;
+		display: inline-block;
+	}
 
-/* =============================================================================
-   TRIGGER BUTTON
-   ============================================================================= */
+	/* =============================================================================
+	   TRIGGER BUTTON
+	   ============================================================================= */
 
-.stuic-dropdown-menu-trigger {
-	/* Layout */
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	gap: var(--stuic-dropdown-menu-gap);
+	.stuic-dropdown-menu-trigger {
+		/* Layout */
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--stuic-dropdown-menu-gap);
 
-	/* Sizing */
-	padding: var(--stuic-dropdown-menu-trigger-padding-y)
-		var(--stuic-dropdown-menu-trigger-padding-x);
+		/* Sizing */
+		padding: var(--stuic-dropdown-menu-trigger-padding-y)
+			var(--stuic-dropdown-menu-trigger-padding-x);
 
-	/* Box model */
-	border-width: 1px;
-	border-style: solid;
-	border-radius: var(--stuic-dropdown-menu-radius);
+		/* Box model */
+		border-width: 1px;
+		border-style: solid;
+		border-radius: var(--stuic-dropdown-menu-radius);
 
-	/* Colors */
-	background: var(--stuic-dropdown-menu-trigger-bg);
-	color: var(--stuic-dropdown-menu-trigger-text);
-	border-color: var(--stuic-dropdown-menu-trigger-border);
+		/* Colors */
+		background: var(--stuic-dropdown-menu-trigger-bg);
+		color: var(--stuic-dropdown-menu-trigger-text);
+		border-color: var(--stuic-dropdown-menu-trigger-border);
 
-	/* Interaction */
-	cursor: pointer;
-	user-select: none;
-	-webkit-tap-highlight-color: transparent;
-	touch-action: manipulation;
-	transition:
-		background var(--stuic-dropdown-menu-transition),
-		color var(--stuic-dropdown-menu-transition),
-		border-color var(--stuic-dropdown-menu-transition);
-}
+		/* Interaction */
+		cursor: pointer;
+		user-select: none;
+		-webkit-tap-highlight-color: transparent;
+		touch-action: manipulation;
+		transition:
+			background var(--stuic-dropdown-menu-transition),
+			color var(--stuic-dropdown-menu-transition),
+			border-color var(--stuic-dropdown-menu-transition);
+	}
 
-.stuic-dropdown-menu-trigger:hover:not(:disabled) {
-	background: var(--stuic-dropdown-menu-trigger-bg-hover);
-	color: var(--stuic-dropdown-menu-trigger-text-hover);
-	border-color: var(--stuic-dropdown-menu-trigger-border-hover);
-}
+	.stuic-dropdown-menu-trigger:hover:not(:disabled) {
+		background: var(--stuic-dropdown-menu-trigger-bg-hover);
+		color: var(--stuic-dropdown-menu-trigger-text-hover);
+		border-color: var(--stuic-dropdown-menu-trigger-border-hover);
+	}
 
-.stuic-dropdown-menu-trigger:active:not(:disabled) {
-	background: var(--stuic-dropdown-menu-trigger-bg-active);
-	color: var(--stuic-dropdown-menu-trigger-text-active);
-	border-color: var(--stuic-dropdown-menu-trigger-border-active);
-}
+	.stuic-dropdown-menu-trigger:active:not(:disabled) {
+		background: var(--stuic-dropdown-menu-trigger-bg-active);
+		color: var(--stuic-dropdown-menu-trigger-text-active);
+		border-color: var(--stuic-dropdown-menu-trigger-border-active);
+	}
 
-.stuic-dropdown-menu-trigger:focus-visible {
-	outline: var(--stuic-dropdown-menu-ring-width) solid
-		var(--stuic-dropdown-menu-ring-color);
-	outline-offset: var(--stuic-dropdown-menu-ring-offset);
-}
+	.stuic-dropdown-menu-trigger:focus-visible {
+		outline: var(--stuic-dropdown-menu-ring-width) solid
+			var(--stuic-dropdown-menu-ring-color);
+		outline-offset: var(--stuic-dropdown-menu-ring-offset);
+	}
 
-/* =============================================================================
-   DROPDOWN CONTAINER
-   ============================================================================= */
+	/* =============================================================================
+	   DROPDOWN CONTAINER
+	   ============================================================================= */
 
-.stuic-dropdown-menu-dropdown {
-	/* Colors */
-	background: var(--stuic-dropdown-menu-bg);
-	color: var(--stuic-dropdown-menu-text);
-	border: 1px solid var(--stuic-dropdown-menu-border);
-	box-shadow: var(--stuic-dropdown-menu-shadow);
-
-	/* Box model */
-	border-radius: var(--stuic-dropdown-menu-radius);
-	padding: var(--stuic-dropdown-menu-padding);
-
-	/* Layout */
-	min-width: var(--stuic-dropdown-menu-min-width);
-	overflow-y: auto;
-	scrollbar-width: thin;
-
-	/* Stacking */
-	z-index: 50;
-}
-
-/* =============================================================================
-   DIVIDER
-   ============================================================================= */
-
-.stuic-dropdown-menu-divider {
-	height: var(--stuic-dropdown-menu-divider-height);
-	margin: var(--stuic-dropdown-menu-divider-margin-y) 0;
-	background: var(--stuic-dropdown-menu-divider-bg);
-}
-
-/* =============================================================================
-   HEADER (Section Label)
-   ============================================================================= */
-
-.stuic-dropdown-menu-header {
-	padding: var(--stuic-dropdown-menu-header-padding-y)
-		var(--stuic-dropdown-menu-header-padding-x);
-	font-size: var(--stuic-dropdown-menu-header-font-size);
-	font-weight: var(--stuic-dropdown-menu-header-font-weight);
-	letter-spacing: var(--stuic-dropdown-menu-header-letter-spacing);
-	text-transform: var(--stuic-dropdown-menu-header-text-transform);
-	color: var(--stuic-dropdown-menu-header-text);
-	user-select: none;
-}
-
-/* =============================================================================
-   BACKDROP (Fallback Mode)
-   ============================================================================= */
-
-.stuic-dropdown-menu-backdrop {
-	position: fixed;
-	inset: 0;
-	background: var(--stuic-dropdown-menu-backdrop-bg);
-	z-index: var(--stuic-dropdown-menu-backdrop-z-index);
-	transition-property: opacity;
-}
-
-/* =============================================================================
-   CLOSE BUTTON (Fallback Mode)
-   ============================================================================= */
-
-.stuic-dropdown-menu-close {
-	background: var(--stuic-dropdown-menu-close-bg);
-	color: var(--stuic-dropdown-menu-close-text);
-	opacity: var(--stuic-dropdown-menu-close-opacity);
-	border-radius: var(--stuic-dropdown-menu-radius);
-	padding: calc(var(--spacing) * 2);
-	cursor: pointer;
-	line-height: 1;
-	transition: opacity var(--stuic-dropdown-menu-transition);
-}
-
-.stuic-dropdown-menu-close:hover {
-	opacity: var(--stuic-dropdown-menu-close-opacity-hover);
-}
-
-/* =============================================================================
-   EXPANDABLE SECTION
-   ============================================================================= */
-
-.stuic-dropdown-menu-expandable-content {
-	padding-left: var(--stuic-dropdown-menu-expandable-indent);
-	overflow: hidden;
-}
-
-/* =============================================================================
-   LIST ITEM BUTTON OVERRIDES FOR DROPDOWN CONTEXT
-   Reset default ListItemButton background to transparent within dropdown.
-   ============================================================================= */
-
-.stuic-dropdown-menu-dropdown .stuic-list-item-button {
-	--stuic-list-item-button-bg: transparent;
-	--stuic-list-item-button-border: transparent;
-}
-
-/* =============================================================================
-   CSS ANCHOR POSITIONING (when supported)
-   ============================================================================= */
-
-@position-try --pop-top {
-	position-area: top;
-}
-@position-try --pop-top-span-right {
-	position-area: top span-right;
-}
-@position-try --pop-top-span-left {
-	position-area: top span-left;
-}
-@position-try --pop-bottom {
-	position-area: bottom;
-}
-@position-try --pop-bottom-span-right {
-	position-area: bottom span-right;
-}
-@position-try --pop-bottom-span-left {
-	position-area: bottom span-left;
-}
-@position-try --pop-left {
-	position-area: left;
-}
-@position-try --pop-right {
-	position-area: right;
-}
-
-@supports (anchor-name: --anchor) {
 	.stuic-dropdown-menu-dropdown {
-		position-try-fallbacks:
-			flip-inline, --pop-bottom-span-right, --pop-bottom-span-left, --pop-bottom,
-			flip-block, --pop-top-span-right, --pop-top-span-left, --pop-top, --pop-left,
-			--pop-right;
+		/* Colors */
+		background: var(--stuic-dropdown-menu-bg);
+		color: var(--stuic-dropdown-menu-text);
+		border: 1px solid var(--stuic-dropdown-menu-border);
+		box-shadow: var(--stuic-dropdown-menu-shadow);
+
+		/* Box model */
+		border-radius: var(--stuic-dropdown-menu-radius);
+		padding: var(--stuic-dropdown-menu-padding);
+
+		/* Layout */
+		min-width: var(--stuic-dropdown-menu-min-width);
+		overflow-y: auto;
+		scrollbar-width: thin;
+
+		/* Stacking */
+		z-index: 50;
+	}
+
+	/* =============================================================================
+	   DIVIDER
+	   ============================================================================= */
+
+	.stuic-dropdown-menu-divider {
+		height: var(--stuic-dropdown-menu-divider-height);
+		margin: var(--stuic-dropdown-menu-divider-margin-y) 0;
+		background: var(--stuic-dropdown-menu-divider-bg);
+	}
+
+	/* =============================================================================
+	   HEADER (Section Label)
+	   ============================================================================= */
+
+	.stuic-dropdown-menu-header {
+		padding: var(--stuic-dropdown-menu-header-padding-y)
+			var(--stuic-dropdown-menu-header-padding-x);
+		font-size: var(--stuic-dropdown-menu-header-font-size);
+		font-weight: var(--stuic-dropdown-menu-header-font-weight);
+		letter-spacing: var(--stuic-dropdown-menu-header-letter-spacing);
+		text-transform: var(--stuic-dropdown-menu-header-text-transform);
+		color: var(--stuic-dropdown-menu-header-text);
+		user-select: none;
+	}
+
+	/* =============================================================================
+	   BACKDROP (Fallback Mode)
+	   ============================================================================= */
+
+	.stuic-dropdown-menu-backdrop {
+		position: fixed;
+		inset: 0;
+		background: var(--stuic-dropdown-menu-backdrop-bg);
+		z-index: var(--stuic-dropdown-menu-backdrop-z-index);
+		transition-property: opacity;
+	}
+
+	/* =============================================================================
+	   CLOSE BUTTON (Fallback Mode)
+	   ============================================================================= */
+
+	.stuic-dropdown-menu-close {
+		background: var(--stuic-dropdown-menu-close-bg);
+		color: var(--stuic-dropdown-menu-close-text);
+		opacity: var(--stuic-dropdown-menu-close-opacity);
+		border-radius: var(--stuic-dropdown-menu-radius);
+		padding: calc(var(--spacing) * 2);
+		cursor: pointer;
+		line-height: 1;
+		transition: opacity var(--stuic-dropdown-menu-transition);
+	}
+
+	.stuic-dropdown-menu-close:hover {
+		opacity: var(--stuic-dropdown-menu-close-opacity-hover);
+	}
+
+	/* =============================================================================
+	   EXPANDABLE SECTION
+	   ============================================================================= */
+
+	.stuic-dropdown-menu-expandable-content {
+		padding-left: var(--stuic-dropdown-menu-expandable-indent);
+		overflow: hidden;
+	}
+
+	/* =============================================================================
+	   LIST ITEM BUTTON OVERRIDES FOR DROPDOWN CONTEXT
+	   Reset default ListItemButton background to transparent within dropdown.
+	   ============================================================================= */
+
+	.stuic-dropdown-menu-dropdown .stuic-list-item-button {
+		--stuic-list-item-button-bg: transparent;
+		--stuic-list-item-button-border: transparent;
+	}
+
+	/* =============================================================================
+	   CSS ANCHOR POSITIONING (when supported)
+	   ============================================================================= */
+
+	@position-try --pop-top {
+		position-area: top;
+	}
+	@position-try --pop-top-span-right {
+		position-area: top span-right;
+	}
+	@position-try --pop-top-span-left {
+		position-area: top span-left;
+	}
+	@position-try --pop-bottom {
+		position-area: bottom;
+	}
+	@position-try --pop-bottom-span-right {
+		position-area: bottom span-right;
+	}
+	@position-try --pop-bottom-span-left {
+		position-area: bottom span-left;
+	}
+	@position-try --pop-left {
+		position-area: left;
+	}
+	@position-try --pop-right {
+		position-area: right;
+	}
+
+	@supports (anchor-name: --anchor) {
+		.stuic-dropdown-menu-dropdown {
+			position-try-fallbacks:
+				flip-inline, --pop-bottom-span-right, --pop-bottom-span-left, --pop-bottom,
+				flip-block, --pop-top-span-right, --pop-top-span-left, --pop-top, --pop-left,
+				--pop-right;
+		}
 	}
 }

@@ -179,3 +179,34 @@
 	speed={130}
 	frames={spinnerCreateBackAndForthCharFrames(5, "_", "-")}
 />
+
+<hr class="my-6" />
+
+<!-- CSS Variable Customization Examples -->
+<h3 class="font-semibold mb-4">CSS Variable Customization</h3>
+<div class="space-y-6">
+	<!-- Custom opacity and fade -->
+	<div class="flex items-center space-x-6">
+		<Spinner style="--stuic-spinner-opacity: 1; --stuic-spinner-fade-end-opacity: 0.3;" />
+		<span class="text-sm text-neutral-500">Full opacity, softer fade</span>
+	</div>
+
+	<!-- Custom thickness via CSS variable -->
+	<div class="flex items-center space-x-6">
+		<SpinnerCircle style="--stuic-spinner-circle-thickness-normal: 4px;" class="size-8" />
+		<span class="text-sm text-neutral-500">Custom border thickness</span>
+	</div>
+
+	<!-- Custom duration -->
+	<div class="flex items-center space-x-6">
+		<SpinnerCircle style="--stuic-spinner-circle-duration: 400ms;" class="text-purple-500" />
+		<SpinnerCircle style="--stuic-spinner-circle-duration: 1500ms;" class="text-orange-500" />
+		<span class="text-sm text-neutral-500">Fast and slow via CSS variable</span>
+	</div>
+
+	<!-- Custom unicode font size -->
+	<div class="flex items-center space-x-6">
+		<SpinnerUnicode style="--stuic-spinner-unicode-font-size: 2rem;" variant="braille_bar" />
+		<span class="text-sm text-neutral-500">Larger unicode spinner</span>
+	</div>
+</div>

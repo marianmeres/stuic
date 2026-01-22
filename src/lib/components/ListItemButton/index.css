@@ -58,120 +58,122 @@
 	--stuic-list-item-button-border-focus: transparent;
 }
 
-/* =============================================================================
-   BASE STYLES
-   ============================================================================= */
+@layer components {
+	/* =============================================================================
+	   BASE STYLES
+	   ============================================================================= */
 
-.stuic-list-item-button {
-	/* Layout */
-	display: flex;
-	align-items: center;
-	gap: var(--stuic-list-item-button-gap);
-	width: 100%;
+	.stuic-list-item-button {
+		/* Layout */
+		display: flex;
+		align-items: center;
+		gap: var(--stuic-list-item-button-gap);
+		width: 100%;
 
-	/* Typography */
-	text-align: left;
-	text-decoration: none;
+		/* Typography */
+		text-align: left;
+		text-decoration: none;
 
-	/* Box model */
-	border-width: 1px;
-	border-style: solid;
-	border-radius: var(--stuic-list-item-button-radius);
+		/* Box model */
+		border-width: 1px;
+		border-style: solid;
+		border-radius: var(--stuic-list-item-button-radius);
 
-	/* Colors */
-	background: var(--stuic-list-item-button-bg);
-	color: var(--stuic-list-item-button-text);
-	border-color: var(--stuic-list-item-button-border);
+		/* Colors */
+		background: var(--stuic-list-item-button-bg);
+		color: var(--stuic-list-item-button-text);
+		border-color: var(--stuic-list-item-button-border);
 
-	/* Interaction */
-	cursor: pointer;
-	user-select: none;
-	-webkit-tap-highlight-color: transparent;
-	touch-action: manipulation;
-	transition:
-		background var(--stuic-list-item-button-transition),
-		color var(--stuic-list-item-button-transition),
-		border-color var(--stuic-list-item-button-transition);
-}
+		/* Interaction */
+		cursor: pointer;
+		user-select: none;
+		-webkit-tap-highlight-color: transparent;
+		touch-action: manipulation;
+		transition:
+			background var(--stuic-list-item-button-transition),
+			color var(--stuic-list-item-button-transition),
+			border-color var(--stuic-list-item-button-transition);
+	}
 
-/* =============================================================================
-   STATE STYLES
-   ============================================================================= */
+	/* =============================================================================
+	   STATE STYLES
+	   ============================================================================= */
 
-/* Hover state */
-.stuic-list-item-button:hover:not(:disabled):not([data-active]) {
-	background: var(--stuic-list-item-button-bg-hover);
-	color: var(--stuic-list-item-button-text-hover);
-	border-color: var(--stuic-list-item-button-border-hover);
-}
+	/* Hover state */
+	.stuic-list-item-button:hover:not(:disabled):not([data-active]) {
+		background: var(--stuic-list-item-button-bg-hover);
+		color: var(--stuic-list-item-button-text-hover);
+		border-color: var(--stuic-list-item-button-border-hover);
+	}
 
-/* Focus styles */
-.stuic-list-item-button:focus {
-	outline: none;
-}
+	/* Focus styles */
+	.stuic-list-item-button:focus {
+		outline: none;
+	}
 
-.stuic-list-item-button:focus-visible:not([data-active]) {
-	background: var(--stuic-list-item-button-bg-focus);
-	color: var(--stuic-list-item-button-text-focus);
-	border-color: var(--stuic-list-item-button-border-focus);
-	outline: var(--stuic-list-item-button-ring-width) solid
-		var(--stuic-list-item-button-ring-color);
-	outline-offset: var(--stuic-list-item-button-ring-offset);
-}
+	.stuic-list-item-button:focus-visible:not([data-active]) {
+		background: var(--stuic-list-item-button-bg-focus);
+		color: var(--stuic-list-item-button-text-focus);
+		border-color: var(--stuic-list-item-button-border-focus);
+		outline: var(--stuic-list-item-button-ring-width) solid
+			var(--stuic-list-item-button-ring-color);
+		outline-offset: var(--stuic-list-item-button-ring-offset);
+	}
 
-/* Active/Selected state (via data attribute) */
-.stuic-list-item-button[data-active] {
-	background: var(--stuic-list-item-button-bg-active);
-	color: var(--stuic-list-item-button-text-active);
-	border-color: var(--stuic-list-item-button-border-active);
-}
+	/* Active/Selected state (via data attribute) */
+	.stuic-list-item-button[data-active] {
+		background: var(--stuic-list-item-button-bg-active);
+		color: var(--stuic-list-item-button-text-active);
+		border-color: var(--stuic-list-item-button-border-active);
+	}
 
-/* Focused state (keyboard navigation highlight, distinct from focus-visible) */
-.stuic-list-item-button[data-focused]:not([data-active]) {
-	background: var(--stuic-list-item-button-bg-focus);
-	color: var(--stuic-list-item-button-text-focus);
-	border-color: var(--stuic-list-item-button-border-focus);
-}
+	/* Focused state (keyboard navigation highlight, distinct from focus-visible) */
+	.stuic-list-item-button[data-focused]:not([data-active]) {
+		background: var(--stuic-list-item-button-bg-focus);
+		color: var(--stuic-list-item-button-text-focus);
+		border-color: var(--stuic-list-item-button-border-focus);
+	}
 
-/* Disabled state */
-.stuic-list-item-button:disabled {
-	opacity: 0.5;
-	cursor: not-allowed;
-	pointer-events: none;
-}
+	/* Disabled state */
+	.stuic-list-item-button:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+		pointer-events: none;
+	}
 
-/* =============================================================================
-   SIZE VARIANTS
-   ============================================================================= */
+	/* =============================================================================
+	   SIZE VARIANTS
+	   ============================================================================= */
 
-.stuic-list-item-button[data-size="sm"] {
-	padding: var(--stuic-list-item-button-padding-y-sm)
-		var(--stuic-list-item-button-padding-x-sm);
-	font-size: var(--stuic-list-item-button-font-size-sm);
-	min-height: var(--stuic-list-item-button-min-height-sm);
-}
+	.stuic-list-item-button[data-size="sm"] {
+		padding: var(--stuic-list-item-button-padding-y-sm)
+			var(--stuic-list-item-button-padding-x-sm);
+		font-size: var(--stuic-list-item-button-font-size-sm);
+		min-height: var(--stuic-list-item-button-min-height-sm);
+	}
 
-.stuic-list-item-button[data-size="md"] {
-	padding: var(--stuic-list-item-button-padding-y-md)
-		var(--stuic-list-item-button-padding-x-md);
-	font-size: var(--stuic-list-item-button-font-size-md);
-	min-height: var(--stuic-list-item-button-min-height-md);
-}
+	.stuic-list-item-button[data-size="md"] {
+		padding: var(--stuic-list-item-button-padding-y-md)
+			var(--stuic-list-item-button-padding-x-md);
+		font-size: var(--stuic-list-item-button-font-size-md);
+		min-height: var(--stuic-list-item-button-min-height-md);
+	}
 
-.stuic-list-item-button[data-size="lg"] {
-	padding: var(--stuic-list-item-button-padding-y-lg)
-		var(--stuic-list-item-button-padding-x-lg);
-	font-size: var(--stuic-list-item-button-font-size-lg);
-	min-height: var(--stuic-list-item-button-min-height-lg);
-}
+	.stuic-list-item-button[data-size="lg"] {
+		padding: var(--stuic-list-item-button-padding-y-lg)
+			var(--stuic-list-item-button-padding-x-lg);
+		font-size: var(--stuic-list-item-button-font-size-lg);
+		min-height: var(--stuic-list-item-button-min-height-lg);
+	}
 
-/* =============================================================================
-   TOUCH-FRIENDLY MODIFIER
-   Ensures minimum 44px touch target per Apple HIG guidelines
-   ============================================================================= */
+	/* =============================================================================
+	   TOUCH-FRIENDLY MODIFIER
+	   Ensures minimum 44px touch target per Apple HIG guidelines
+	   ============================================================================= */
 
-.stuic-list-item-button[data-touch-friendly] {
-	min-height: var(--stuic-list-item-button-min-height-touch);
-	padding-top: var(--stuic-list-item-button-padding-y-touch);
-	padding-bottom: var(--stuic-list-item-button-padding-y-touch);
+	.stuic-list-item-button[data-touch-friendly] {
+		min-height: var(--stuic-list-item-button-min-height-touch);
+		padding-top: var(--stuic-list-item-button-padding-y-touch);
+		padding-bottom: var(--stuic-list-item-button-padding-y-touch);
+	}
 }

@@ -18,29 +18,31 @@
 	--stuic-command-menu-muted-text: var(--stuic-color-muted-foreground);
 }
 
-/* =============================================================================
-   BASE STYLES
-   ============================================================================= */
+@layer components {
+	/* =============================================================================
+	   BASE STYLES
+	   ============================================================================= */
 
-/* Options container */
-.stuic-command-menu-options {
-	scrollbar-width: thin;
-	max-height: var(--stuic-command-menu-options-max-height);
-	border-top-color: var(--stuic-command-menu-divider-color);
-}
+	/* Options container */
+	.stuic-command-menu-options {
+		scrollbar-width: thin;
+		max-height: var(--stuic-command-menu-options-max-height);
+		border-top-color: var(--stuic-command-menu-divider-color);
+	}
 
-/* Option group header */
-.stuic-command-menu-group-header {
-	color: var(--stuic-command-menu-group-header-color);
-	font-size: var(--stuic-command-menu-group-header-font-size);
-}
+	/* Option group header */
+	.stuic-command-menu-group-header {
+		color: var(--stuic-command-menu-group-header-color);
+		font-size: var(--stuic-command-menu-group-header-font-size);
+	}
 
-/* Muted elements (search icon) */
-.stuic-command-menu-muted {
-	color: var(--stuic-command-menu-muted-text);
-}
+	/* Muted elements (search icon) */
+	.stuic-command-menu-muted {
+		color: var(--stuic-command-menu-muted-text);
+	}
 
-/* Placeholder/loading states (spinner) */
-.stuic-command-menu-placeholder {
-	color: var(--stuic-command-menu-muted-text);
+	/* Placeholder/loading states (spinner) */
+	.stuic-command-menu-placeholder {
+		color: var(--stuic-command-menu-muted-text);
+	}
 }

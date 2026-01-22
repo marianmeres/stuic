@@ -49,7 +49,6 @@
 	<header class={["p-4 flex items-center bg-neutral-200 dark:bg-neutral-950"]}>
 		<div class="flex-1">
 			<a class="underline" href="/">UI home</a>
-			<!-- quick-n-dirty -->
 			<span class="space-x-1">
 				{#each segments || [] as seg, i}
 					{@const href = [base, seg].join("/")}

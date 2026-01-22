@@ -171,7 +171,6 @@
 </script>
 
 <script lang="ts">
-	import "./index.css";
 	import Button from "../Button/Button.svelte";
 	const clog = createClog("AssetsPreview", { color: "auto" });
 

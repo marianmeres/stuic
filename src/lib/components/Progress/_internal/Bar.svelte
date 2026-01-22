@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { twMerge } from "../../../utils/tw-merge.js";
-	import "../index.css";
 
 	interface Props {
 		progress: number;
