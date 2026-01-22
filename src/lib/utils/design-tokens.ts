@@ -178,7 +178,8 @@ export function toCssString(tokens: GeneratedTokens, selector = ":root"): string
 	// Helper to extract base color name from token key
 	const getBaseColor = (key: string): string => {
 		// e.g., "stuic-color-primary-foreground-hover" → "primary"
-		const match = key.match(/^stuic-color-([^-]+)/);
+		// e.g., "stuic-color-surface-1-foreground" → "surface-1"
+		const match = key.match(/^stuic-color-([a-z]+-?\d*)/);
 		return match ? match[1] : key;
 	};
 

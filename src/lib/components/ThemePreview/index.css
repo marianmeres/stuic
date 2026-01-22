@@ -256,6 +256,14 @@
 	background: var(--stuic-color-surface);
 }
 
+.stuic-theme-preview .color-swatch.surface-1 {
+	background: var(--stuic-color-surface-1);
+}
+
+.stuic-theme-preview .color-swatch.surface-2 {
+	background: var(--stuic-color-surface-2);
+}
+
 .stuic-theme-preview .color-swatch.muted-bg {
 	background: var(--stuic-color-muted);
 }
@@ -267,6 +275,14 @@
 
 .stuic-theme-preview .surface-foreground-text {
 	color: var(--stuic-color-surface-foreground);
+}
+
+.stuic-theme-preview .surface-1-foreground-text {
+	color: var(--stuic-color-surface-1-foreground);
+}
+
+.stuic-theme-preview .surface-2-foreground-text {
+	color: var(--stuic-color-surface-2-foreground);
 }
 
 .stuic-theme-preview .muted-foreground-text {

@@ -34,10 +34,14 @@ Role colors define **position** in the visual hierarchy. They answer: "Where doe
 | `background` | Base page layer (e.g. `<body>`) |
 | `foreground` | Default text/content color |
 | `surface` | Raised containers (cards, modals, panels, sidebars) |
+| `surface-1` | Darker surface level (inset areas, nested cards) |
+| `surface-2` | Darkest surface level (deeply nested elements) |
 | `border` | Default border color |
 | `input` | Form field backgrounds |
 | `ring` | Focus indicator color |
 | `muted` | De-emphasized text and subtle backgrounds |
+
+> **Numeric surface convention:** Higher numbers indicate deeper layering in light mode and higher elevation in dark mode.
 
 ### 3. Foreground Pairing Convention
 
@@ -51,6 +55,7 @@ Every color token that serves as a background should have a `-foreground` counte
 Examples:
 - `primary` / `primary-foreground`
 - `surface` / `surface-foreground`
+- `surface-1` / `surface-1-foreground`
 - `destructive` / `destructive-foreground`
 
 ---
