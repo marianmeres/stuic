@@ -1,4 +1,5 @@
 <script lang="ts">
+	import FieldInput from "$lib/components/Input/FieldInput.svelte";
 	import TypeaheadInput from "$lib/components/TypeaheadInput/TypeaheadInput.svelte";
 	import { createClog } from "@marianmeres/clog";
 	import { ItemCollection, type Item } from "@marianmeres/item-collection";
@@ -9,6 +10,10 @@
 	let value = $state<any>();
 	let submitted = $state<any>();
 	const itemIdPropName = "id";
+
+	// For FieldInput example
+	let fieldInputValue = $state("");
+	let fieldInputSubmitted = $state<string>();
 
 	function renderOptionLabel(item: Item) {
 		return `${item[itemIdPropName]}`;
@@ -35,6 +40,9 @@
 	const selection = new ItemCollection<Item>([]);
 	let selected = $derived($selection);
 
+	// Reset function provided by TypeaheadInput
+	let resetGhost = $state<(() => void) | undefined>();
+
 	$inspect($selection);
 </script>
 
@@ -55,11 +63,13 @@
 		<TypeaheadInput
 			placeholder="Type here..."
 			bind:value
+			bind:resetGhost
 			{getOptions}
 			{renderOptionLabel}
 			onSubmit={(v) => {
 				submitted = v;
 				value = "";
+				resetGhost?.();
 				if (submitted) selection.add({ [itemIdPropName]: v });
 			}}
 			onDeleteRequest={() => {
@@ -73,3 +83,25 @@
 last submitted: {submitted}
 <br />
 current value: {value}
+
+<hr class="my-8" />
+
+<h3 class="font-semibold mb-4">FieldInput with useTypeahead</h3>
+
+<FieldInput
+	label="City"
+	bind:value={fieldInputValue}
+	placeholder="Start typing a city name..."
+	useTypeahead={{
+		getOptions,
+		renderOptionLabel,
+		onSubmit: (v: string) => {
+			fieldInputSubmitted = v;
+		},
+	}}
+/>
+
+<br />
+last submitted: {fieldInputSubmitted}
+<br />
+current value: {fieldInputValue}

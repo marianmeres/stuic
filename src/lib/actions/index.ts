@@ -8,4 +8,5 @@ export * from "./popover/popover.svelte.js";
 export * from "./resizable-width.svelte.js";
 export * from "./tooltip/tooltip.svelte.js";
 export * from "./trim.svelte.js";
+export * from "./typeahead.svelte.js";
 export * from "./validate.svelte.js";

@@ -1,6 +1,7 @@
 <script lang="ts" module>
 	import type { Snippet } from "svelte";
 	import type { HTMLInputAttributes } from "svelte/elements";
+	import type { TypeaheadOptions } from "../../actions/typeahead.svelte.js";
 	import type { ValidateOptions } from "../../actions/validate.svelte.js";
 	import type { THC } from "../Thc/Thc.svelte";
 
@@ -17,6 +18,7 @@
 		tabindex?: number;
 		renderSize?: "sm" | "md" | "lg" | string;
 		useTrim?: boolean;
+		useTypeahead?: boolean | Omit<TypeaheadOptions, "enabled">;
 		required?: boolean;
 		disabled?: boolean;
 		validate?: boolean | Omit<ValidateOptions, "setValidationResult">;
@@ -42,6 +44,7 @@
 
 <script lang="ts">
 	import { trim } from "../../actions/trim.svelte.js";
+	import { typeahead } from "../../actions/typeahead.svelte.js";
 	import {
 		validate as validateAction,
 		type ValidationResult,
@@ -61,6 +64,7 @@
 		class: classProp,
 		renderSize = "md",
 		useTrim = true,
+		useTypeahead,
 		//
 		required = false,
 		disabled = false,
@@ -130,6 +134,10 @@
 		use:trim={() => ({
 			enabled: useTrim,
 			setValue: (v: string) => useTrim && (value = v),
+		})}
+		use:typeahead={() => ({
+			enabled: !!useTypeahead,
+			...(typeof useTypeahead === "boolean" ? {} : useTypeahead),
 		})}
 		use:validateAction={() => ({
 			enabled: !!validate,
