@@ -53,44 +53,6 @@
 		...rest
 	}: Props = $props();
 
-	const CLS = `
-		stuic-tabbed-menu
-		flex flex-row
-		gap-1
-		list-none m-0 p-0
-	`;
-
-	const CLS_ITEM = `
-        min-w-0 flex-1 max-w-40
-    `;
-
-	const CLS_BUTTON = `
-		px-4 py-2
-		rounded-t-md
-		border border-b-0
-		border-(--stuic-tabbed-menu-border)
-		bg-(--stuic-tabbed-menu-tab-bg)
-		text-(--stuic-tabbed-menu-tab-text)
-		cursor-pointer
-		transition-colors duration-150
-		hover:brightness-105
-        truncate w-full
-        block
-        text-center
-	`;
-	// focus-visible:outline-2 focus-visible:outline-offset-2
-
-	const CLS_BUTTON_ACTIVE = `
-		bg-(--stuic-tabbed-menu-tab-bg-active)
-		text-(--stuic-tabbed-menu-tab-text-active)
-		font-medium
-	`;
-
-	const CLS_BUTTON_DISABLED = `
-		opacity-50 cursor-not-allowed
-		pointer-events-none
-	`;
-
 	let buttonEls = $state<Record<string | number, HTMLButtonElement | HTMLAnchorElement>>(
 		{}
 	);
@@ -134,16 +96,14 @@
 		}
 	}
 
-	function getButtonClass(item: TabbedMenuItem): string {
+	function getTabClass(item: TabbedMenuItem): string {
 		const isActive = value === item.id;
 		const isDisabled = item.disabled || disabled;
 
 		return twMerge(
-			!unstyled && CLS_BUTTON,
+			!unstyled && "stuic-tabbed-menu-tab",
 			classButton,
-			isActive && !unstyled && CLS_BUTTON_ACTIVE,
 			isActive && classButtonActive,
-			isDisabled && !unstyled && CLS_BUTTON_DISABLED,
 			isDisabled && classButtonDisabled,
 			item.class
 		);
@@ -153,7 +113,7 @@
 {#if items.length}
 	<ul
 		bind:this={el}
-		class={twMerge(!unstyled && CLS, classProp)}
+		class={twMerge(!unstyled && "stuic-tabbed-menu", classProp)}
 		role="tablist"
 		{...rest}
 	>
@@ -163,11 +123,11 @@
 				["aria-selected"]: value === item.id,
 				["aria-disabled"]: item.disabled || disabled || undefined,
 				tabindex: value === item.id ? 0 : -1,
-				class: getButtonClass(item),
+				class: getTabClass(item),
 				onclick: () => selectItem(item),
 				onkeydown: (e: KeyboardEvent) => handleKeydown(e, item),
 			}}
-			<li class={twMerge(CLS_ITEM, classItem)} role="presentation">
+			<li class={twMerge(!unstyled && "stuic-tabbed-menu-item", classItem)} role="presentation">
 				{#if item.href}
 					<a href={item.href} {...props} bind:this={buttonEls[item.id]}>
 						<Thc thc={item.label} />

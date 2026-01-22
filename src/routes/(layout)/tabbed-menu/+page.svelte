@@ -7,9 +7,9 @@
 	let value3 = $state<string | number>("a");
 
 	const basicItems = [
-		{ id: "tab1", label: "First Tab And Some Longer Content" },
-		{ id: "tab2", label: "Second Tab Also Some Quite Long Content" },
-		{ id: "tab3", label: "Third Tab Ang Here Some Fairly Long Content Too" },
+		{ id: "tab1", label: "First Tab" },
+		{ id: "tab2", label: "Second Tab" },
+		{ id: "tab3", label: "Third Tab" },
 	];
 
 	const shortItems = [
@@ -41,70 +41,62 @@
 <div class="p-4 space-y-12">
 	<section>
 		<h2 class="text-lg font-semibold mb-4">Basic Usage</h2>
-		<TabbedMenu
-			items={basicItems}
-			bind:value={value1}
-			class=""
-			classItem=""
-			classButton=""
-			classButtonActive="text-white bg-red-600"
-		/>
-		<div class="p-4 bg-white border-0 border-t-3 border-red-600 dark:border-neutral-600">
+		<TabbedMenu items={basicItems} bind:value={value1} />
+		<div
+			class="p-4 border border-(--stuic-color-primary) border-t-0 bg-(--stuic-color-surface)"
+		>
 			Content for: <strong>{value1}</strong>
 		</div>
 	</section>
 
 	<section>
-		<h2 class="text-lg font-semibold mb-4">Pill like</h2>
+		<h2 class="text-lg font-semibold mb-4">With Disabled Tab</h2>
+		<TabbedMenu items={itemsWithDisabled} bind:value={value2} />
+		<p class="mt-2 text-sm opacity-70">Selected: {value2}</p>
+	</section>
+
+	<section>
+		<h2 class="text-lg font-semibold mb-4">Pill Style</h2>
 		<TabbedMenu
 			items={shortItems}
 			bind:value={valueShort}
-			class="border rounded-full p-1 bg-blue-100"
+			class="inline-flex rounded-full p-1 bg-(--stuic-color-muted) w-full"
 			classItem="max-w-none"
-			classButton="border-0 rounded-full bg-white/25"
-			classButtonActive="text-white bg-red-600"
+			classButton="border-0 rounded-full bg-transparent"
+			classButtonActive="bg-(--stuic-color-primary) text-(--stuic-color-primary-foreground)"
 		/>
 	</section>
 
 	<section>
-		<h2 class="text-lg font-semibold mb-4">With Disabled Tab</h2>
-		<TabbedMenu items={itemsWithDisabled} bind:value={value2} />
-		<div class="mt-4 text-sm opacity-70">Selected: {value2}</div>
+		<h2 class="text-lg font-semibold mb-4">Custom Colors via CSS Variables</h2>
+		<TabbedMenu
+			items={basicItems}
+			value="tab2"
+			style="
+				--stuic-tabbed-menu-tab-bg-active: var(--color-blue-600);
+				--stuic-tabbed-menu-tab-text-active: var(--color-white);
+				--stuic-tabbed-menu-radius: var(--radius-lg);
+			"
+		/>
 	</section>
 
 	<section>
-		<h2 class="text-lg font-semibold mb-4">With Item onSelect Callback (confirm)</h2>
+		<h2 class="text-lg font-semibold mb-4">Custom Active Style via Class</h2>
+		<TabbedMenu
+			items={basicItems}
+			value="tab1"
+			classButtonActive="bg-green-600 text-white"
+		/>
+	</section>
+
+	<section>
+		<h2 class="text-lg font-semibold mb-4">With Item onSelect Callback</h2>
 		<TabbedMenu
 			items={itemsWithCallback}
 			bind:value={value3}
 			onSelect={(item) => console.log("Selected:", item)}
-			classItem=""
-			classButton=""
 		/>
-		<div class="mt-4 text-sm opacity-70">Selected: {value3}</div>
-	</section>
-
-	<section>
-		<h2 class="text-lg font-semibold mb-4">Custom Styling via CSS Variables</h2>
-		<TabbedMenu
-			items={basicItems}
-			value="tab2"
-			--color-tabbed-menu-tab-active-bg="var(--color-blue-600)"
-			--color-tabbed-menu-tab-active-text="var(--color-white)"
-			--color-tabbed-menu-tab-active-bg-dark="var(--color-blue-500)"
-			--tabbed-menu-border-radius="1rem"
-			--tabbed-menu-padding-x="1.5rem"
-		/>
-	</section>
-
-	<section>
-		<h2 class="text-lg font-semibold mb-4">Custom Class Styling</h2>
-		<TabbedMenu
-			items={basicItems}
-			value="tab1"
-			classButton="bg-neutral-200 dark:bg-neutral-700"
-			classButtonActive="bg-green-600 text-white dark:bg-green-500"
-		/>
+		<p class="mt-2 text-sm opacity-70">Selected: {value3}</p>
 	</section>
 
 	<section>

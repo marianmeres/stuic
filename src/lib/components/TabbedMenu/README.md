@@ -46,39 +46,50 @@ interface TabbedMenuItem {
 	class?: string;
 	data?: Record<string, any>;
 	onSelect?: () => void | boolean; // Return false to prevent selection
+	href?: string; // Render as anchor instead of button
 }
 ```
 
 ## CSS Variables
 
-Customize the component's appearance using CSS custom properties:
+### Component Tokens
+
+Override to customize appearance:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `--stuic-tabbed-menu-tab-bg` | `--stuic-surface-sunken` | Tab background |
-| `--stuic-tabbed-menu-tab-text` | `--stuic-text-muted` | Tab text color |
-| `--stuic-tabbed-menu-tab-bg-active` | `--stuic-surface` | Active tab background |
-| `--stuic-tabbed-menu-tab-text-active` | `--stuic-text` | Active tab text color |
-| `--stuic-tabbed-menu-border` | `--stuic-border` | Border color |
+| `--stuic-tabbed-menu-tab-bg` | `--stuic-color-muted` | Tab background |
+| `--stuic-tabbed-menu-tab-text` | `--stuic-color-muted-foreground` | Tab text color |
+| `--stuic-tabbed-menu-tab-bg-active` | `--stuic-color-surface` | Active tab background |
+| `--stuic-tabbed-menu-tab-text-active` | `--stuic-color-foreground` | Active tab text color |
+| `--stuic-tabbed-menu-border` | `--stuic-color-border` | Border color |
+| `--stuic-tabbed-menu-border-active` | `--stuic-color-primary` | Active tab border color |
+| `--stuic-tabbed-menu-gap` | `calc(var(--spacing) * 1)` | Gap between tabs |
+| `--stuic-tabbed-menu-radius` | `var(--radius-md)` | Tab border radius (top corners) |
+| `--stuic-tabbed-menu-padding-x` | `calc(var(--spacing) * 4)` | Horizontal padding |
+| `--stuic-tabbed-menu-padding-y` | `calc(var(--spacing) * 2)` | Vertical padding |
+| `--stuic-tabbed-menu-transition` | `150ms` | Transition duration |
+| `--stuic-tabbed-menu-font-weight-active` | `var(--font-weight-medium)` | Active tab font weight |
+| `--stuic-tabbed-menu-item-max-width` | `10rem` | Max width per tab item |
 
-### Example Override
+### Example Overrides
 
 ```css
+/* Global override */
 :root {
   --stuic-tabbed-menu-tab-bg-active: var(--color-indigo-100);
   --stuic-tabbed-menu-tab-text-active: var(--color-indigo-900);
+  --stuic-tabbed-menu-radius: var(--radius-lg);
 }
 ```
 
-### Legacy Variables (Backwards Compatibility)
-
-The following legacy variable names still work as aliases:
-
-| Legacy Name | New Name |
-|-------------|----------|
-| `--color-tabbed-menu-tab-bg` | `--stuic-tabbed-menu-tab-bg` |
-| `--color-tabbed-menu-tab-active-bg` | `--stuic-tabbed-menu-tab-bg-active` |
-| `--color-tabbed-menu-border` | `--stuic-tabbed-menu-border` |
+```svelte
+<!-- Local override -->
+<TabbedMenu
+  {items}
+  style="--stuic-tabbed-menu-radius: 9999px; --stuic-tabbed-menu-padding-x: 2rem;"
+/>
+```
 
 ## Keyboard Navigation
 

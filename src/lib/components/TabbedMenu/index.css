@@ -1,8 +1,90 @@
-/* TabbedMenu component tokens */
+/* ============================================================================
+   TABBED MENU COMPONENT TOKENS
+   Override globally: :root { --stuic-tabbed-menu-radius: 0; }
+   Override locally:  <TabbedMenu style="--stuic-tabbed-menu-radius: 9999px;">
+   ============================================================================ */
+
 :root {
+	/* Color tokens */
 	--stuic-tabbed-menu-tab-bg: var(--stuic-color-muted);
 	--stuic-tabbed-menu-tab-text: var(--stuic-color-muted-foreground);
-	--stuic-tabbed-menu-tab-bg-active: var(--stuic-color-surface);
-	--stuic-tabbed-menu-tab-text-active: var(--stuic-color-foreground);
+	--stuic-tabbed-menu-tab-bg-active: var(--stuic-color-primary);
+	--stuic-tabbed-menu-tab-text-active: var(--stuic-color-primary-foreground);
 	--stuic-tabbed-menu-border: var(--stuic-color-border);
+	--stuic-tabbed-menu-border-active: var(--stuic-color-primary);
+
+	/* Layout tokens */
+	--stuic-tabbed-menu-gap: calc(var(--spacing) * 1);
+	--stuic-tabbed-menu-radius: var(--radius-md);
+	--stuic-tabbed-menu-padding-x: calc(var(--spacing) * 4);
+	--stuic-tabbed-menu-padding-y: calc(var(--spacing) * 2);
+	--stuic-tabbed-menu-transition: 150ms;
+	--stuic-tabbed-menu-font-weight-active: var(--font-weight-medium);
+	--stuic-tabbed-menu-item-max-width: 10rem;
+}
+
+@layer components {
+	/* ============================================================================
+	   BASE STYLES
+	   ============================================================================ */
+
+	.stuic-tabbed-menu {
+		display: flex;
+		flex-direction: row;
+		gap: var(--stuic-tabbed-menu-gap);
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.stuic-tabbed-menu-item {
+		min-width: 0;
+		flex: 1;
+		max-width: var(--stuic-tabbed-menu-item-max-width);
+	}
+
+	.stuic-tabbed-menu-tab {
+		display: block;
+		width: 100%;
+		padding: var(--stuic-tabbed-menu-padding-y) var(--stuic-tabbed-menu-padding-x);
+		border-radius: var(--stuic-tabbed-menu-radius) var(--stuic-tabbed-menu-radius) 0 0;
+		border: 1px solid var(--stuic-tabbed-menu-border);
+		border-bottom: 0;
+		background: var(--stuic-tabbed-menu-tab-bg);
+		color: var(--stuic-tabbed-menu-tab-text);
+		cursor: pointer;
+		transition:
+			background var(--stuic-tabbed-menu-transition),
+			color var(--stuic-tabbed-menu-transition),
+			filter var(--stuic-tabbed-menu-transition);
+		text-align: center;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.stuic-tabbed-menu-tab:hover:not([aria-disabled="true"]) {
+		filter: brightness(1.05);
+	}
+
+	/* Active tab state */
+	.stuic-tabbed-menu-tab[aria-selected="true"] {
+		background: var(--stuic-tabbed-menu-tab-bg-active);
+		color: var(--stuic-tabbed-menu-tab-text-active);
+		font-weight: var(--stuic-tabbed-menu-font-weight-active);
+		border-color: var(--stuic-tabbed-menu-border-active);
+	}
+
+	/* Disabled tab state */
+	.stuic-tabbed-menu-tab[aria-disabled="true"] {
+		opacity: 0.5;
+		cursor: not-allowed;
+		pointer-events: none;
+	}
+
+	/* Focus styles */
+	.stuic-tabbed-menu-tab:focus-visible {
+		outline: 2px solid var(--stuic-color-ring);
+		outline-offset: 2px;
+	}
 }
