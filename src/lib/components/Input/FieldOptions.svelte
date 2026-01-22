@@ -561,7 +561,7 @@
 		bind:this={modalDialog}
 		preEscapeClose={escape}
 		classDialog="items-start"
-		class="w-full max-w-2xl bg-transparent pointer-events-none"
+		class={twMerge("w-full max-w-2xl bg-transparent! shadow-none! pointer-events-none")}
 		ariaLabelledby={id}
 		{noScrollLock}
 	>

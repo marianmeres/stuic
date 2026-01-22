@@ -224,7 +224,7 @@
 <ModalDialog
 	bind:this={modalDialog}
 	classDialog="items-start"
-	class="w-full max-w-3xl bg-transparent pointer-events-none"
+	class="w-full max-w-3xl bg-transparent! shadow-none! pointer-events-none"
 	{noScrollLock}
 >
 	<div class="pt-0 md:pt-[20vh] w-full">
@@ -263,12 +263,16 @@
 				}}
 			>
 				{#snippet inputBefore()}
-					<div class="flex flex-col items-center justify-center pl-3 stuic-command-menu-muted">
+					<div
+						class="flex flex-col items-center justify-center pl-3 stuic-command-menu-muted"
+					>
 						{@html iconSearch({ size: 19, strokeWidth: 3 })}
 					</div>
 				{/snippet}
 				{#snippet inputAfter()}
-					<div class="flex pl-2 items-center justify-center stuic-command-menu-placeholder">
+					<div
+						class="flex pl-2 items-center justify-center stuic-command-menu-placeholder"
+					>
 						{#if isFetching}
 							<Spinner class="w-4" />
 						{/if}

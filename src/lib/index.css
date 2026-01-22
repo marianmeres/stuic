@@ -29,8 +29,6 @@
 /* @import "./themes/red-cyan.css"; */
 
 /* Component styles - each file has its own @layer components wrapper */
-@import "./components/Input/index.css";
-@import "./components/ModalDialog/index.css";
 /* @import "./actions/tooltip/index.css"; */
 /* @import "./components/Button/index.css"; */
 /* @import "./components/ButtonGroupRadio/index.css"; */
