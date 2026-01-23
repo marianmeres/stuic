@@ -28,9 +28,9 @@
 
 	--stuic-color-warning-hover:                 var(--color-amber-600, #737373);
 	--stuic-color-warning-active:                var(--color-amber-700, #737373);
-	--stuic-color-warning-foreground:            var(--color-black, #000000);
-	--stuic-color-warning-foreground-hover:      var(--color-black, #000000);
-	--stuic-color-warning-foreground-active:     var(--color-black, #000000);
+	--stuic-color-warning-foreground:            var(--color-white, #ffffff);
+	--stuic-color-warning-foreground-hover:      var(--color-white, #ffffff);
+	--stuic-color-warning-foreground-active:     var(--color-white, #ffffff);
 
 	--stuic-color-success:                       var(--color-green-600, #737373);
 

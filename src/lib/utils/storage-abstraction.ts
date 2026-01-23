@@ -143,7 +143,7 @@ export class StorageAbstraction {
 
 function storage_value<T>(type: "local" | "session" | "memory", key: string, initial: T) {
 	const s = new StorageAbstraction(type);
-	if (!s.has(key)) s.set(key, initial);
+	if (!s.has(key) && initial !== undefined) s.set(key, initial);
 
 	return {
 		get(): T {

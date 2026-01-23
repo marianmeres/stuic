@@ -35,7 +35,7 @@
 	--stuic-notification-badge-text: var(--color-neutral-50);
 
 	/* Progress bar */
-	--stuic-notification-progress-opacity: 0.1;
+	/* --stuic-notification-progress-opacity: 0.1; */
 }
 
 @layer components {
@@ -200,11 +200,9 @@
 	.stuic-notification .progress {
 		position: absolute;
 		inset: 0;
-		width: 100%;
-		height: 100%;
 		background: transparent;
-		border-top-left-radius: var(--stuic-notification-radius);
 		border-bottom-left-radius: var(--stuic-notification-radius);
+		border-bottom-right-radius: var(--stuic-notification-radius);
 		overflow: hidden;
 		pointer-events: none;
 	}
@@ -212,8 +210,8 @@
 	.stuic-notification .progress-bar {
 		width: 100%;
 		height: 100%;
-		background: rgb(255 255 255 / var(--stuic-notification-progress-opacity));
-		border-top-left-radius: var(--stuic-notification-radius);
+		/* background: rgb(255 255 255 / 0.5); */
 		border-bottom-left-radius: var(--stuic-notification-radius);
+		border-bottom-right-radius: var(--stuic-notification-radius);
 	}
 }

@@ -166,8 +166,8 @@
 					{#if n.ttl && !noProgress}
 						<Progress
 							progress={100 - n._ttlProgress * 100}
-							class={twMerge("progress", classProgress)}
-							classBar={twMerge("progress-bar", classProgressBar)}
+							class={twMerge("progress h-full", classProgress)}
+							classBar={twMerge("progress-bar bg-black/5", classProgressBar)}
 							styleBar="transition-duration: {notifications.options.disposeInterval}ms;"
 						/>
 					{/if}

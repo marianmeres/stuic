@@ -23,6 +23,8 @@
 		footer?: Snippet;
 		/** Optional AlertConfirmPromptStack*/
 		acp?: AlertConfirmPromptStack;
+		/** Optional NotificationsStack*/
+		notifications?: NotificationsStack;
 	}
 
 	/** Intent colors to demonstrate */
@@ -49,6 +51,7 @@
 	} from "../DismissibleMessage/index.js";
 	import { createClog } from "@marianmeres/clog";
 	import Nav, { type NavGroup } from "../Nav/Nav.svelte";
+	import type { NotificationsStack } from "../Notifications/notifications-stack.svelte.js";
 
 	const clog = createClog("ThemePreview", { color: "auto" });
 
@@ -63,12 +66,23 @@
 		sidebar,
 		footer,
 		acp,
+		notifications,
 		...rest
 	}: Props = $props();
 
 	let spacing = $derived(compact ? "gap-2 p-2" : "gap-4 p-4");
 
-	const alert = () => acp?.alert();
+	const alert = (intent?: string) => {
+		acp?.alert(intent);
+		notif(intent);
+	};
+
+	const notif = (intent?: string) => {
+		if (intent && notifications) {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			(notifications as any)[intent]?.(intent);
+		}
+	};
 
 	// Navigation groups for sidebar
 	let activeNavId = $state("dashboard");
@@ -153,8 +167,9 @@
 											if (!["primary", "accent"].includes(intent)) {
 												dismissibleIntent = intent as DismissibleMessageIntent;
 												dismissibleMessage = intent;
+												notif(intent);
 											} else {
-												alert();
+												alert(intent);
 											}
 										}}
 									>
@@ -162,7 +177,7 @@
 									</Button>
 								{/each}
 							{:else}
-								<Button {intent} onclick={alert}>
+								<Button {intent} onclick={() => alert(intent)}>
 									{intent}
 								</Button>
 							{/if}

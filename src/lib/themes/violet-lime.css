@@ -12,9 +12,9 @@
 
 	--stuic-color-accent-hover:                  var(--color-lime-600, #737373);
 	--stuic-color-accent-active:                 var(--color-lime-700, #737373);
-	--stuic-color-accent-foreground:             var(--color-black, #000000);
-	--stuic-color-accent-foreground-hover:       var(--color-black, #000000);
-	--stuic-color-accent-foreground-active:      var(--color-black, #000000);
+	--stuic-color-accent-foreground:             var(--color-white, #ffffff);
+	--stuic-color-accent-foreground-hover:       var(--color-white, #ffffff);
+	--stuic-color-accent-foreground-active:      var(--color-white, #ffffff);
 
 	--stuic-color-destructive:                   var(--color-rose-600, #737373);
 
@@ -28,17 +28,17 @@
 
 	--stuic-color-warning-hover:                 var(--color-lime-600, #737373);
 	--stuic-color-warning-active:                var(--color-lime-700, #737373);
-	--stuic-color-warning-foreground:            var(--color-black, #000000);
-	--stuic-color-warning-foreground-hover:      var(--color-black, #000000);
-	--stuic-color-warning-foreground-active:     var(--color-black, #000000);
+	--stuic-color-warning-foreground:            var(--color-white, #ffffff);
+	--stuic-color-warning-foreground-hover:      var(--color-white, #ffffff);
+	--stuic-color-warning-foreground-active:     var(--color-white, #ffffff);
 
 	--stuic-color-success:                       var(--color-lime-600, #737373);
 
 	--stuic-color-success-hover:                 var(--color-lime-700, #737373);
 	--stuic-color-success-active:                var(--color-lime-800, #737373);
-	--stuic-color-success-foreground:            var(--color-black, #000000);
-	--stuic-color-success-foreground-hover:      var(--color-black, #000000);
-	--stuic-color-success-foreground-active:     var(--color-black, #000000);
+	--stuic-color-success-foreground:            var(--color-white, #ffffff);
+	--stuic-color-success-foreground-hover:      var(--color-white, #ffffff);
+	--stuic-color-success-foreground-active:     var(--color-white, #ffffff);
 
 	--stuic-color-info:                          var(--color-violet-500, #737373);
 

@@ -11,7 +11,7 @@ const light: TokenSchema = {
 			},
 			accent: {
 				DEFAULT: "var(--color-lime-500)",
-				foreground: "var(--color-black)",
+				foreground: "var(--color-white)",
 				hover: "var(--color-lime-600)",
 				active: "var(--color-lime-700)",
 			},
@@ -23,13 +23,13 @@ const light: TokenSchema = {
 			},
 			warning: {
 				DEFAULT: "var(--color-lime-500)",
-				foreground: "var(--color-black)",
+				foreground: "var(--color-white)",
 				hover: "var(--color-lime-600)",
 				active: "var(--color-lime-700)",
 			},
 			success: {
 				DEFAULT: "var(--color-lime-600)",
-				foreground: "var(--color-black)",
+				foreground: "var(--color-white)",
 				hover: "var(--color-lime-700)",
 				active: "var(--color-lime-800)",
 			},

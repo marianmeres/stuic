@@ -322,8 +322,18 @@ export class NotificationsStack {
 		return this.#add({ ...(n || {}), type: "warn", content });
 	};
 
+	/** "warn" alias */
+	warning = (content: THC, n?: Partial<NotificationInput>) => {
+		return this.#add({ ...(n || {}), type: "warn", content });
+	};
+
 	/** Main api. */
 	error = (content: THC, n?: Partial<NotificationInput>) => {
+		return this.#add({ ...(n || {}), type: "error", content });
+	};
+
+	/** "error" alias */
+	destructive = (content: THC, n?: Partial<NotificationInput>) => {
 		return this.#add({ ...(n || {}), type: "error", content });
 	};
 }

@@ -23,7 +23,7 @@ const light: TokenSchema = {
 			},
 			warning: {
 				DEFAULT: "var(--color-amber-500)",
-				foreground: "var(--color-black)",
+				foreground: "var(--color-white)",
 				hover: "var(--color-amber-600)",
 				active: "var(--color-amber-700)",
 			},

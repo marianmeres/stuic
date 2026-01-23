@@ -4,6 +4,8 @@
 		ColorScheme,
 		AlertConfirmPrompt,
 		AlertConfirmPromptStack,
+		Notifications,
+		NotificationsStack,
 	} from "$lib/index.js";
 
 	import { themes, themeNames } from "./themes-list.js";
@@ -11,6 +13,10 @@
 	let selectedTheme = $state("neutral");
 	let themeCss = $derived(themes[selectedTheme]);
 	let colorScheme = $state(ColorScheme.getLocalValue());
+
+	const notifications = new NotificationsStack([], {
+		disposeInterval: 1_000,
+	});
 
 	function toggleColorScheme() {
 		ColorScheme.toggle();
@@ -78,7 +84,7 @@
 		design tokens in action.
 	</p>
 
-	<ThemePreview {acp} />
+	<ThemePreview {acp} {notifications} />
 
 	<!-- Quick theme grid for fast switching -->
 	<div class="mt-8">
@@ -100,3 +106,5 @@
 </div>
 
 <AlertConfirmPrompt {acp} />
+
+<Notifications {notifications} />

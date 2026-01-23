@@ -86,29 +86,33 @@
 
 	/* Destructive: error messages */
 	.stuic-dismissible-message[data-intent="destructive"] {
-		--_bg: color-mix(in srgb, var(--stuic-color-destructive) 10%, transparent);
-		--_text: var(--stuic-color-destructive);
+		--_bg: color-mix(in srgb, var(--stuic-color-destructive) 15%, transparent);
+		/* --_text: var(--stuic-color-destructive); */
+		--_text: color-mix(in srgb, var(--stuic-color-destructive), black 15%);
 		--_border: color-mix(in srgb, var(--stuic-color-destructive) 30%, transparent);
 	}
 
 	/* Warning: caution messages */
 	.stuic-dismissible-message[data-intent="warning"] {
-		--_bg: color-mix(in srgb, var(--stuic-color-warning) 10%, transparent);
-		--_text: var(--stuic-color-warning);
+		--_bg: color-mix(in srgb, var(--stuic-color-warning) 15%, transparent);
+		/* --_text: var(--stuic-color-warning); */
+		--_text: color-mix(in srgb, var(--stuic-color-warning), black 15%);
 		--_border: color-mix(in srgb, var(--stuic-color-warning) 30%, transparent);
 	}
 
 	/* Success: confirmation messages */
 	.stuic-dismissible-message[data-intent="success"] {
-		--_bg: color-mix(in srgb, var(--stuic-color-success) 10%, transparent);
-		--_text: var(--stuic-color-success);
+		--_bg: color-mix(in srgb, var(--stuic-color-success) 15%, transparent);
+		/* --_text: var(--stuic-color-success); */
+		--_text: color-mix(in srgb, var(--stuic-color-success), black 15%);
 		--_border: color-mix(in srgb, var(--stuic-color-success) 30%, transparent);
 	}
 
 	/* Info: informational messages */
 	.stuic-dismissible-message[data-intent="info"] {
-		--_bg: color-mix(in srgb, var(--stuic-color-info) 10%, transparent);
-		--_text: var(--stuic-color-info);
+		--_bg: color-mix(in srgb, var(--stuic-color-info) 15%, transparent);
+		/* --_text: var(--stuic-color-info); */
+		--_text: color-mix(in srgb, var(--stuic-color-info), black 15%);
 		--_border: color-mix(in srgb, var(--stuic-color-info) 30%, transparent);
 	}
 

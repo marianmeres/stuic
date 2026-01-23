@@ -50,9 +50,14 @@
 </script>
 
 <div class="p-4">
-	<ul class="list-disc ml-4 space-y-3">
+	<ul class="space-y-2">
 		{#each links as link}
-			<li><a href={link} class="underline">{link}</a></li>
+			<li>
+				<a
+					href={link}
+					class="block p-2 px-4 rounded-lg bg-neutral-200 hover:bg-neutral-300">{link}</a
+				>
+			</li>
 		{/each}
 	</ul>
 </div>
