@@ -4,7 +4,7 @@
 		style?: string;
 		count?: number;
 		thickness?: "thin" | "normal" | "thick";
-		height?: "short" | "normal" | "tall";
+		size?: "sm" | "md" | "lg";
 		direction?: "cw" | "ccw";
 		rounded?: number;
 		duration?: number;
@@ -19,7 +19,7 @@
 		style: styleProp,
 		count = 8,
 		thickness = "normal",
-		height = "normal",
+		size = "md",
 		direction = "cw",
 		rounded = 2,
 		duration = 750,
@@ -30,22 +30,22 @@
 		normal: 2,
 		thick: 4,
 	};
-	const heightMap: Record<NonNullable<Props["height"]>, number> = {
-		short: 5,
-		normal: 6,
-		tall: 10,
+	const sizeMap: Record<NonNullable<Props["size"]>, number> = {
+		sm: 5,
+		md: 6,
+		lg: 10,
 	};
 
-	const barLength = $derived(heightMap[height]);
+	const barLength = $derived(sizeMap[size]);
 	const barWidth = $derived(thicknessMap[thickness]);
-	const size = $derived(barLength * 3);
-	const center = $derived(size / 2);
+	const containerSize = $derived(barLength * 3);
+	const center = $derived(containerSize / 2);
 	const barHeight = $derived(barLength - 1);
 </script>
 
 <div
 	class={twMerge("stuic-spinner", classProp)}
-	style="{styleProp ?? ''}; width: {size}px; height: {size}px; --stuic-spinner-duration: {duration}ms;"
+	style="{styleProp ?? ''}; width: {containerSize}px; height: {containerSize}px; --stuic-spinner-duration: {duration}ms;"
 >
 	{#each Array(count) as _, i}
 		{@const angle = (360 / count) * i}

@@ -246,7 +246,7 @@
 	</menu>
 	{#if isPending}
 		<div class={twMerge("spinner-box", _classSpinnerBox, classSpinnerBox)}>
-			<Spinner class="w-8" />
+			<Spinner />
 		</div>
 	{/if}
 </div>

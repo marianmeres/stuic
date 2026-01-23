@@ -6,7 +6,7 @@
 
 :root {
 	--stuic-acp-icon-box-radius: 9999px;
-	--stuic-acp-spinner-overlay-opacity: 0.75;
+	--stuic-acp-spinner-overlay-opacity: 0.8;
 }
 
 @layer components {
@@ -37,23 +37,25 @@
 	   Each variant sets internal CSS vars for the icon box.
 	   ============================================================================ */
 
+	/* NOTE: using primary in all except error */
+
 	/* Variant: info (default) */
 	.stuic-acp[data-variant="info"],
 	.stuic-acp:not([data-variant]) {
-		--_icon-bg: color-mix(in srgb, var(--stuic-color-info) 15%, transparent);
-		--_icon-text: var(--stuic-color-info);
+		--_icon-bg: color-mix(in srgb, var(--stuic-color-primary) 15%, transparent);
+		--_icon-text: var(--stuic-color-primary);
 	}
 
 	/* Variant: success */
 	.stuic-acp[data-variant="success"] {
-		--_icon-bg: color-mix(in srgb, var(--stuic-color-success) 15%, transparent);
-		--_icon-text: var(--stuic-color-success);
+		--_icon-bg: color-mix(in srgb, var(--stuic-color-primary) 15%, transparent);
+		--_icon-text: var(--stuic-color-primary);
 	}
 
 	/* Variant: warn */
 	.stuic-acp[data-variant="warn"] {
-		--_icon-bg: color-mix(in srgb, var(--stuic-color-warning) 15%, transparent);
-		--_icon-text: var(--stuic-color-warning);
+		--_icon-bg: color-mix(in srgb, var(--stuic-color-primary) 15%, transparent);
+		--_icon-text: var(--stuic-color-primary);
 	}
 
 	/* Variant: error */
