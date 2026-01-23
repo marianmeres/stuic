@@ -113,6 +113,12 @@
 
 		/** Element reference */
 		el?: HTMLElement;
+
+		/** Enable localStorage persistence for expand/collapse state (default: true) */
+		persistState?: boolean;
+
+		/** Storage key prefix for localStorage (default: 'stuic-nav') */
+		storageKeyPrefix?: string;
 	}
 
 	export const NAV_BASE_CLASSES = "stuic-nav";
@@ -125,6 +131,7 @@
 <script lang="ts">
 	import { twMerge } from "../../utils/tw-merge.js";
 	import { tr } from "../../utils/tr.js";
+	import { localStorageValue } from "../../utils/storage-abstraction.js";
 	import { getId } from "../../utils/get-id.js";
 	import { prefersReducedMotion } from "../../utils/prefers-reduced-motion.svelte.js";
 	import { DevicePointer } from "../../utils/device-pointer.svelte.js";
@@ -160,6 +167,8 @@
 		classChevron,
 		unstyled = false,
 		el = $bindable(),
+		persistState = true,
+		storageKeyPrefix = 'stuic-nav',
 		...rest
 	}: Props = $props();
 
@@ -180,6 +189,35 @@
 	// Icon size based on touch mode
 	const iconSize = $derived(isTouchFriendly ? 22 : 18);
 
+	// Storage helper functions for persistence
+	function getGroupStorageKey(groupId: string): string {
+		return `${storageKeyPrefix}-group-${groupId}`;
+	}
+
+	function getItemStorageKey(itemId: string): string {
+		return `${storageKeyPrefix}-item-${itemId}`;
+	}
+
+	function loadGroupState(groupId: string): boolean | undefined {
+		if (!persistState) return undefined;
+		return localStorageValue<boolean | undefined>(getGroupStorageKey(groupId), undefined).get();
+	}
+
+	function saveGroupState(groupId: string, expanded: boolean): void {
+		if (!persistState) return;
+		localStorageValue(getGroupStorageKey(groupId), expanded).set(expanded);
+	}
+
+	function loadItemState(itemId: string): boolean | undefined {
+		if (!persistState) return undefined;
+		return localStorageValue<boolean | undefined>(getItemStorageKey(itemId), undefined).get();
+	}
+
+	function saveItemState(itemId: string, expanded: boolean): void {
+		if (!persistState) return;
+		localStorageValue(getItemStorageKey(itemId), expanded).set(expanded);
+	}
+
 	// Track expanded state for each group
 	let groupExpandedStates = $state<boolean[]>([]);
 
@@ -189,7 +227,15 @@
 		untrack(() => {
 			// Only initialize if length changed or states array is empty
 			if (groupExpandedStates.length !== currentGroups.length) {
-				groupExpandedStates = currentGroups.map((g) => !g.defaultCollapsed);
+				groupExpandedStates = currentGroups.map((g) => {
+					// If group has an id, try to load from localStorage
+					if (g.id) {
+						const stored = loadGroupState(g.id);
+						if (stored !== undefined) return stored;
+					}
+					// Fall back to defaultCollapsed
+					return !g.defaultCollapsed;
+				});
 			}
 		});
 	});
@@ -202,6 +248,13 @@
 	// Toggle group expand/collapse
 	function toggleGroup(index: number) {
 		groupExpandedStates[index] = !groupExpandedStates[index];
+
+		// Persist state if group has an id
+		const group = groups[index];
+		if (group?.id) {
+			saveGroupState(group.id, groupExpandedStates[index]);
+		}
+
 		onGroupToggle?.(index, groupExpandedStates[index]);
 	}
 
@@ -217,6 +270,46 @@
 
 	// Track expanded state for individual items with children
 	let itemExpandedStates = $state<Set<string>>(new Set());
+	let itemStatesInitialized = false;
+
+	// Collect all items with children recursively
+	function collectItemsWithChildren(items: NavItem[]): NavItem[] {
+		const result: NavItem[] = [];
+		for (const item of items) {
+			if (item.children?.length) {
+				result.push(item);
+				result.push(...collectItemsWithChildren(item.children));
+			}
+		}
+		return result;
+	}
+
+	// Initialize item expanded states from localStorage
+	$effect(() => {
+		const currentGroups = groups;
+		untrack(() => {
+			if (itemStatesInitialized) return;
+			itemStatesInitialized = true;
+
+			if (!persistState) return;
+
+			const expandedItems = new Set<string>();
+			for (const group of currentGroups) {
+				if (group.items) {
+					const itemsWithChildren = collectItemsWithChildren(group.items);
+					for (const item of itemsWithChildren) {
+						const stored = loadItemState(item.id);
+						if (stored === true) {
+							expandedItems.add(item.id);
+						}
+					}
+				}
+			}
+			if (expandedItems.size > 0) {
+				itemExpandedStates = expandedItems;
+			}
+		});
+	});
 
 	// Check if an item is expanded
 	function isItemExpanded(itemId: string): boolean {
@@ -263,14 +356,17 @@
 		if (itemExpandedStates.has(itemId)) {
 			// Collapse: also collapse all descendants
 			itemExpandedStates.delete(itemId);
+			saveItemState(itemId, false);
 			const item = findItemInGroups(itemId);
 			if (item) {
 				for (const id of getDescendantIds(item)) {
 					itemExpandedStates.delete(id);
+					saveItemState(id, false);
 				}
 			}
 		} else {
 			itemExpandedStates.add(itemId);
+			saveItemState(itemId, true);
 		}
 		itemExpandedStates = new Set(itemExpandedStates);
 	}
