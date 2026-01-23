@@ -48,6 +48,7 @@
 		DismissibleMessage,
 	} from "../DismissibleMessage/index.js";
 	import { createClog } from "@marianmeres/clog";
+	import Nav, { type NavGroup } from "../Nav/Nav.svelte";
 
 	const clog = createClog("ThemePreview", { color: "auto" });
 
@@ -68,6 +69,21 @@
 	let spacing = $derived(compact ? "gap-2 p-2" : "gap-4 p-4");
 
 	const alert = () => acp?.alert();
+
+	// Navigation groups for sidebar
+	let activeNavId = $state("dashboard");
+	const navGroups: NavGroup[] = [
+		{
+			title: "Navigation",
+			id: "navigation",
+			items: [
+				{ id: "dashboard", label: "Dashboard" },
+				{ id: "settings", label: "Settings" },
+				{ id: "profile", label: "Profile" },
+				{ id: "archived", label: "Archived", disabled: true },
+			],
+		},
+	];
 
 	//
 	let dismissibleMessage = $state<string | null>();
@@ -94,17 +110,11 @@
 			{#if sidebar}
 				{@render sidebar()}
 			{:else}
-				<nav class="sidebar-nav">
-					{#if showLabels}
-						<span class="section-label">Navigation</span>
-					{/if}
-					<ul class="nav-list">
-						<li class="nav-item active">Dashboard</li>
-						<li class="nav-item">Settings</li>
-						<li class="nav-item">Profile</li>
-						<li class="nav-item muted">Archived</li>
-					</ul>
-				</nav>
+				<Nav
+					groups={navGroups}
+					activeId={activeNavId}
+					onSelect={(item) => (activeNavId = item.id)}
+				/>
 				<div class="sidebar-footer">
 					<span class="muted-text">v1.0.0</span>
 				</div>
