@@ -85,11 +85,11 @@
 		<Spinner thickness="thick" />
 	</div>
 
-	<!-- Height variations -->
+	<!-- Size variations -->
 	<div class="flex items-center space-x-6">
-		<Spinner height="short" />
-		<Spinner height="normal" />
-		<Spinner height="tall" thickness="thick" rounded={1} />
+		<Spinner size="sm" />
+		<Spinner size="md" />
+		<Spinner size="lg" thickness="thick" rounded={1} />
 	</div>
 
 	<!-- Color and direction -->

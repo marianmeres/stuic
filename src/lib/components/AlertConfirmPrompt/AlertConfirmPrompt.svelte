@@ -1,5 +1,6 @@
 <script lang="ts" module>
 	import type { AlertConfirmPromptStack } from "./alert-confirm-prompt-stack.svelte.js";
+	import type { IntentColorKey } from "../../utils/design-tokens.js";
 
 	export interface Props {
 		acp?: AlertConfirmPromptStack;
@@ -21,9 +22,9 @@
 		classButtonCancel?: string;
 		classButtonCustom?: string;
 		classButtonPrimary?: string;
-		intentButtonCancel?: string;
-		intentButtonCustom?: string;
-		intentButtonPrimary?: string;
+		intentButtonCancel?: IntentColorKey;
+		intentButtonCustom?: IntentColorKey;
+		intentButtonPrimary?: IntentColorKey;
 		classSpinnerBox?: string;
 		defaultIcons?: Partial<
 			Record<"info" | "success" | "warn" | "error" | "spinner", () => string | undefined>
