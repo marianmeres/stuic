@@ -152,6 +152,14 @@
 		background: var(--stuic-nav-item-bg-hover);
 	}
 
+	.stuic-nav-group-title:focus {
+		outline: none;
+	}
+
+	.stuic-nav-group-title:focus-visible {
+		background: var(--stuic-nav-item-bg-hover);
+	}
+
 	/* Touch-friendly title */
 	.stuic-nav-group-title[data-touch-friendly] {
 		height: var(--stuic-nav-group-title-height-touch);

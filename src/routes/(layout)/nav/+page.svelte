@@ -383,7 +383,7 @@
 			>
 				<Nav
 					title="Collapsible"
-					groups={[homeGroup, contentGroup, helpGroup]}
+					groups={[homeGroup, contentGroup, productsGroup, deepNestedGroup, helpGroup]}
 					{activeId}
 					{isCollapsed}
 					{isExpanding}
