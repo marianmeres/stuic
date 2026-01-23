@@ -43,6 +43,7 @@
 
 	/* Collapsed mode */
 	--stuic-nav-item-size-collapsed: 2.125rem;
+	--stuic-nav-item-size-collapsed-touch: 2.75rem; /* 44px */
 
 	/* Icon */
 	--stuic-nav-icon-opacity: 0.75;
@@ -292,6 +293,12 @@
 		width: var(--stuic-nav-item-size-collapsed);
 		height: var(--stuic-nav-item-size-collapsed);
 		padding: 0.375rem;
+	}
+
+	/* Collapsed + touch-friendly: minimum 44x44 */
+	.stuic-nav-item[data-collapsed][data-touch-friendly] {
+		width: var(--stuic-nav-item-size-collapsed-touch);
+		height: var(--stuic-nav-item-size-collapsed-touch);
 	}
 
 	/* Expanding transition state - shift content left */

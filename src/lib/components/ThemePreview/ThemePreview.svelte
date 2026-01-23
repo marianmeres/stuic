@@ -44,6 +44,7 @@
 <script lang="ts">
 	import { twMerge } from "../../utils/tw-merge.js";
 	import Button from "../Button/Button.svelte";
+	import Switch from "../Switch/Switch.svelte";
 	import { AlertConfirmPromptStack } from "../AlertConfirmPrompt/index.js";
 	import {
 		type DismissibleMessageIntent,
@@ -52,6 +53,8 @@
 	import { createClog } from "@marianmeres/clog";
 	import Nav, { type NavGroup } from "../Nav/Nav.svelte";
 	import type { NotificationsStack } from "../Notifications/notifications-stack.svelte.js";
+	import FieldInput from "../Input/FieldInput.svelte";
+	import FieldCheckbox from "../Input/FieldCheckbox.svelte";
 
 	const clog = createClog("ThemePreview", { color: "auto" });
 
@@ -254,21 +257,37 @@
 						<h2 class="section-label">Inputs</h2>
 					{/if}
 
-					<div class="input-examples">
-						<div class="input-wrapper">
-							<input type="text" class="preview-input" placeholder="Text input..." />
-						</div>
-						<div class="input-wrapper">
-							<input
+					<div class="input-examples flex items-center">
+						<!-- <div class="input-wrapper"> -->
+						<!-- <input type="text" class="preview-input" placeholder="Text input..." /> -->
+						<FieldInput class="m-0" />
+						<!-- </div> -->
+						<!-- <div class="input-wrapper"> -->
+						<FieldCheckbox label="Hey ho" class="m-0" />
+						<!-- <input
 								type="text"
 								class="preview-input focus"
 								value="Focused state"
 								readonly
-							/>
-						</div>
+							/> -->
+						<!-- </div> -->
 					</div>
 				</section>
 			{/if}
+
+			<!-- SWITCHES -->
+			<section class="preview-section">
+				{#if showLabels}
+					<h2 class="section-label">Switches</h2>
+				{/if}
+
+				<div class="flex flex-wrap items-center gap-4">
+					<Switch checked />
+					{#each INTENT_COLORS as intent}
+						<Switch {intent} checked />
+					{/each}
+				</div>
+			</section>
 
 			<!-- HIGHLIGHT BOXES -->
 			<section class="preview-section">

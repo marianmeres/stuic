@@ -21,6 +21,10 @@
 	let isCollapsed = $state(false);
 	let isExpanding = $state(false);
 
+	// Touch-friendly collapsed state demo
+	let touchIsCollapsed = $state(false);
+	let touchIsExpanding = $state(false);
+
 	// Basic navigation group
 	const contentGroup: NavGroup = {
 		title: "Content",
@@ -456,13 +460,35 @@
 			Larger touch targets for mobile devices.
 		</p>
 
-		<div class="w-64 bg-neutral-100 dark:bg-neutral-800 rounded-lg p-2">
-			<Nav
-				groups={[contentGroup]}
-				{activeId}
-				touchFriendly={true}
-				onSelect={handleSelect}
-			/>
+		<div class="flex gap-4 items-start">
+			<button
+				class="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
+				onclick={() => {
+					if (!touchIsCollapsed) {
+						touchIsCollapsed = true;
+					} else {
+						touchIsExpanding = true;
+						touchIsCollapsed = false;
+						setTimeout(() => (touchIsExpanding = false), 200);
+					}
+				}}
+			>
+				{touchIsCollapsed ? "Expand" : "Collapse"}
+			</button>
+
+			<div
+				class="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-2 transition-all duration-200"
+				style:width={touchIsCollapsed ? "4rem" : "16rem"}
+			>
+				<Nav
+					groups={[contentGroup]}
+					{activeId}
+					touchFriendly={true}
+					isCollapsed={touchIsCollapsed}
+					isExpanding={touchIsExpanding}
+					onSelect={handleSelect}
+				/>
+			</div>
 		</div>
 	</section>
 

@@ -1,4 +1,122 @@
-/* Switch component tokens */
+/* ============================================================================
+   SWITCH COMPONENT TOKENS
+   Override globally: :root { --stuic-switch-track-checked: var(--color-green-500); }
+   Override locally:  <Switch style="--stuic-switch-track-checked: var(--color-green-500);">
+   ============================================================================ */
+
 :root {
-	--stuic-switch-accent: var(--stuic-color-primary);
+	/* Track (background) */
+	--stuic-switch-track: var(
+		--stuic-color-border
+	); /* intentionally border, to make it more contrast */
+	--stuic-switch-track-checked: var(--stuic-color-primary);
+
+	/* Dot (knob) */
+	--stuic-switch-dot: var(--color-white);
+	--stuic-switch-dot-foreground: var(--stuic-color-foreground);
+
+	/* Focus ring */
+	--stuic-switch-ring-width: 4px;
+	--stuic-switch-ring-color: var(--stuic-color-ring);
+
+	/* Transition */
+	--stuic-switch-transition: 100ms;
+}
+
+@layer components {
+	/* ============================================================================
+	   BASE STYLES
+	   ============================================================================ */
+
+	.stuic-switch {
+		/* Use internal vars that can be set by intent */
+		--_track: var(--stuic-switch-track);
+		--_track-checked: var(--stuic-switch-track-checked);
+		--_dot: var(--stuic-switch-dot);
+		--_dot-fg: var(--stuic-switch-dot-foreground);
+
+		position: relative;
+		display: inline-flex;
+		flex-shrink: 0;
+		align-items: center;
+		border-radius: 9999px;
+		cursor: pointer;
+
+		background: var(--_track);
+		transition:
+			background var(--stuic-switch-transition),
+			box-shadow var(--stuic-switch-transition);
+	}
+
+	/* Checked state */
+	.stuic-switch[data-checked="true"] {
+		background: var(--_track-checked);
+	}
+
+	/* Hover */
+	.stuic-switch:hover:not([data-disabled="true"]) {
+		/* filter: brightness(1.05); */
+		filter: brightness(0.95);
+	}
+
+	/* Active */
+	.stuic-switch:active:not([data-disabled="true"]) {
+		/* filter: brightness(0.95); */
+	}
+
+	/* Focus */
+	.stuic-switch:focus {
+		outline: none;
+		box-shadow: 0 0 0 var(--stuic-switch-ring-width)
+			color-mix(in srgb, var(--stuic-switch-ring-color) 30%, transparent);
+	}
+
+	/* Disabled */
+	.stuic-switch[data-disabled="true"] {
+		cursor: not-allowed;
+		opacity: 0.8;
+	}
+
+	/* ============================================================================
+	   DOT (KNOB) STYLES
+	   ============================================================================ */
+
+	.stuic-switch > .dot {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 9999px;
+		background: var(--_dot);
+		color: var(--_dot-fg);
+		box-shadow: var(--shadow-sm);
+		transition: transform var(--stuic-switch-transition);
+	}
+
+	/* ============================================================================
+	   INTENT COLOR MAPPING
+	   ============================================================================ */
+
+	.stuic-switch[data-intent="primary"] {
+		--_track-checked: var(--stuic-color-primary);
+	}
+
+	.stuic-switch[data-intent="accent"] {
+		--_track-checked: var(--stuic-color-accent);
+	}
+
+	.stuic-switch[data-intent="success"] {
+		--_track-checked: var(--stuic-color-success);
+	}
+
+	.stuic-switch[data-intent="warning"] {
+		--_track-checked: var(--stuic-color-warning);
+	}
+
+	.stuic-switch[data-intent="destructive"] {
+		--_track-checked: var(--stuic-color-destructive);
+	}
+
+	.stuic-switch[data-intent="info"] {
+		--_track-checked: var(--stuic-color-info);
+	}
 }

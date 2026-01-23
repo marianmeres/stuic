@@ -235,7 +235,7 @@
 .stuic-theme-preview .color-swatch {
 	padding: 1rem;
 	border-radius: var(--stuic-theme-preview-radius);
-	border: 1px solid var(--stuic-color-border);
+	/* border: 1px solid var(--stuic-color-border); */
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;

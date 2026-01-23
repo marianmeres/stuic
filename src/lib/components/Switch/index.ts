@@ -1,5 +1,5 @@
-export { default as Switch, type Props as SwitchProps } from "./Switch.svelte";
 export {
-	default as SwitchButton,
-	type Props as SwitchButtonProps,
-} from "./SwitchButton.svelte";
+	default as Switch,
+	type Props as SwitchProps,
+	type SwitchIntent,
+} from "./Switch.svelte";

@@ -85,7 +85,7 @@
 			/>
 		</div>
 		{#if !noSpinner && isFetching}
-			<Spinner class="size-5 opacity-50" />
+			<Spinner class="size-5" />
 		{/if}
 	</div>
 </div>

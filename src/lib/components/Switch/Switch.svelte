@@ -6,10 +6,20 @@
 		ValidationResult,
 	} from "../../actions/validate.svelte.js";
 
+	export type SwitchIntent =
+		| "primary"
+		| "accent"
+		| "success"
+		| "warning"
+		| "destructive"
+		| "info";
+
 	export interface Props extends Omit<HTMLLabelAttributes, "children" | "onchange"> {
 		button?: HTMLButtonElement;
 		checked?: boolean;
-		size?: "sm" | "md" | "lg" | "xl" | string;
+		size?: "sm" | "md" | "lg" | string;
+		/** Semantic color intent */
+		intent?: SwitchIntent;
 		/** Form field name for the hidden checkbox */
 		name?: string;
 		class?: string;
@@ -38,10 +48,10 @@
 	import { twMerge } from "../../utils/tw-merge.js";
 	import { validate as validateAction } from "../../actions/validate.svelte.js";
 
-
 	let {
 		button = $bindable(),
-		size = "lg",
+		size = "md",
+		intent,
 		name,
 		class: classProp,
 		dotClass,
@@ -61,17 +71,17 @@
 
 	const _preset: any = {
 		size: {
-			sm: `h-5 w-9`,
-			md: `h-6 w-11`,
-			lg: `h-7 w-13`,
-			xl: `h-8 w-15`,
+			xs: `h-5 w-9`,
+			sm: `h-6 w-11`,
+			md: `h-7 w-13`,
+			lg: `h-8 w-15`,
 		},
 		dot: {
 			size: {
-				sm: `size-3 data-[checked=true]:translate-x-5`,
-				md: `size-4 data-[checked=true]:translate-x-6`,
-				lg: `size-5 data-[checked=true]:translate-x-7`,
-				xl: `size-6 data-[checked=true]:translate-x-8`,
+				xs: `size-3 data-[checked=true]:translate-x-5`,
+				sm: `size-4 data-[checked=true]:translate-x-6`,
+				md: `size-5 data-[checked=true]:translate-x-7`,
+				lg: `size-6 data-[checked=true]:translate-x-8`,
 			},
 		},
 	};
@@ -91,30 +101,10 @@
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions  -->
 <label
 	bind:this={wrap}
-	class={twMerge(
-		"stuic-switch",
-		`m-2 
-		relative inline-flex shrink-0 items-center
-		rounded-full cursor-pointer
-
-		transition-colors duration-100
-
-		hover:brightness-105 active:brightness-95
-		data-[disabled=true]:cursor-not-allowed! data-[disabled=true]:opacity-50! data-[disabled=true]:hover:brightness-100
-
-		bg-neutral-400 dark:bg-neutral-400
-
-		data-[checked=true]:bg-(--stuic-switch-accent)
-
-		focus:outline-0
-		focus:ring-(--stuic-switch-accent)/20
-		focus:ring-4`,
-		size,
-		_preset.size[size],
-		classProp
-	)}
+	class={twMerge("stuic-switch m-2", _preset.size[size], classProp)}
 	data-checked={checked}
 	data-disabled={disabled}
+	data-intent={intent}
 	tabindex={disabled ? -1 : tabindex}
 	onkeydown={(e: KeyboardEvent) => {
 		if (!disabled && !e.metaKey && ["Space", "Enter"].includes(e.code)) {
@@ -138,18 +128,7 @@
 	{...rest as Record<string, unknown>}
 >
 	<span
-		class={twMerge(
-			"dot",
-			`flex items-center justify-center
-			translate-x-1 rounded-full  
-			transition-all duration-100
-			shadow
-			bg-neutral-50 dark:bg-neutral-50
-			text-neutral-950 dark:text-neutral-950`,
-			size,
-			_preset.dot.size[size],
-			dotClass
-		)}
+		class={twMerge("dot translate-x-1", _preset.dot.size[size], dotClass)}
 		data-checked={checked}
 	>
 		{#if checked}
