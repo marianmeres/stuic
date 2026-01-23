@@ -1,0 +1,303 @@
+/* =============================================================================
+   NAV COMPONENT TOKENS
+   Override globally: :root { --stuic-nav-radius: 0; }
+   Override locally:  <Nav style="--stuic-nav-radius: 9999px;">
+   ============================================================================= */
+
+:root {
+	/* Structure tokens */
+	--stuic-nav-radius: var(--radius-md);
+	--stuic-nav-transition: 150ms;
+	--stuic-nav-gap: 0.5rem;
+
+	/* Children indent */
+	--stuic-nav-children-indent: 1rem;
+	--stuic-nav-children-gap: 0.25rem;
+
+	/* Section title (static header above group) */
+	--stuic-nav-section-title-padding-x: 0.5rem;
+	--stuic-nav-section-title-padding-y: 0.25rem;
+	--stuic-nav-section-title-font-size: var(--text-xs);
+	--stuic-nav-section-title-font-weight: 600;
+	--stuic-nav-section-title-opacity: 0.5;
+	--stuic-nav-section-title-letter-spacing: 0.05em;
+
+	/* Title/header (collapsible group header) */
+	--stuic-nav-group-title-padding-x: 0.5rem;
+	--stuic-nav-group-title-padding-y: 0.5rem;
+	--stuic-nav-group-title-font-size: var(--text-sm);
+	--stuic-nav-group-title-font-weight: 700;
+	--stuic-nav-group-title-opacity: 0.75;
+	--stuic-nav-group-title-height: 2.125rem; /* 34px */
+
+	/* Item sizing */
+	--stuic-nav-item-padding-x: 0.5rem;
+	--stuic-nav-item-padding-y: 0.5rem;
+	--stuic-nav-item-height: 2.125rem; /* 34px */
+	--stuic-nav-item-font-size: var(--text-sm);
+
+	/* Touch-friendly modifier */
+	--stuic-nav-item-height-touch: 2.75rem; /* 44px */
+	--stuic-nav-item-padding-y-touch: 0.75rem;
+	--stuic-nav-group-title-height-touch: 2.75rem;
+
+	/* Collapsed mode */
+	--stuic-nav-item-size-collapsed: 2.125rem;
+
+	/* Icon */
+	--stuic-nav-icon-opacity: 0.75;
+
+	/* Chevron */
+	--stuic-nav-chevron-opacity: 0.5;
+
+	/* Color tokens: Base state */
+	--stuic-nav-item-bg: transparent;
+	--stuic-nav-item-text: inherit;
+
+	/* Color tokens: Hover state */
+	--stuic-nav-item-bg-hover: rgb(0 0 0 / 0.1);
+	--stuic-nav-item-text-hover: inherit;
+
+	/* Color tokens: Active state */
+	--stuic-nav-item-bg-active: var(--stuic-color-primary);
+	--stuic-nav-item-text-active: var(--stuic-color-primary-foreground);
+
+	/* Color tokens: Focused state (keyboard navigation) */
+	--stuic-nav-item-bg-focus: var(--stuic-color-primary);
+	--stuic-nav-item-text-focus: var(--stuic-color-primary-foreground);
+}
+
+@layer components {
+	/* =============================================================================
+	   BASE CONTAINER
+	   ============================================================================= */
+
+	.stuic-nav {
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-nav-children-gap);
+	}
+
+	/* Center items horizontally when collapsed */
+	.stuic-nav[data-collapsed] {
+		align-items: center;
+	}
+
+	/* =============================================================================
+	   SECTION TITLE (static header above group)
+	   ============================================================================= */
+
+	.stuic-nav-section-title {
+		/* Layout */
+		display: block;
+		width: 100%;
+
+		/* Padding */
+		padding: var(--stuic-nav-section-title-padding-y)
+			var(--stuic-nav-section-title-padding-x);
+
+		/* Typography */
+		font-size: var(--stuic-nav-section-title-font-size);
+		font-weight: var(--stuic-nav-section-title-font-weight);
+		letter-spacing: var(--stuic-nav-section-title-letter-spacing);
+		line-height: 1;
+
+		/* Visual */
+		opacity: var(--stuic-nav-section-title-opacity);
+
+		/* Non-interactive */
+		user-select: none;
+	}
+
+	/* Collapsed mode: hide title but preserve space */
+	.stuic-nav-section-title[data-collapsed] {
+		visibility: hidden;
+	}
+
+	/* =============================================================================
+	   GROUP TITLE/HEADER (collapsible)
+	   ============================================================================= */
+
+	.stuic-nav-group-title {
+		/* Layout */
+		display: flex;
+		align-items: center;
+		gap: var(--stuic-nav-gap);
+		width: 100%;
+		height: var(--stuic-nav-group-title-height);
+
+		/* Padding */
+		padding: var(--stuic-nav-group-title-padding-y)
+			var(--stuic-nav-group-title-padding-x);
+
+		/* Typography */
+		font-size: var(--stuic-nav-group-title-font-size);
+		font-weight: var(--stuic-nav-group-title-font-weight);
+		text-align: left;
+		line-height: 1;
+
+		/* Visual */
+		opacity: var(--stuic-nav-group-title-opacity);
+		border-radius: var(--stuic-nav-radius);
+		background: transparent;
+		border: none;
+
+		/* Interaction */
+		cursor: pointer;
+		user-select: none;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	.stuic-nav-group-title:hover {
+		background: var(--stuic-nav-item-bg-hover);
+	}
+
+	/* Touch-friendly title */
+	.stuic-nav-group-title[data-touch-friendly] {
+		height: var(--stuic-nav-group-title-height-touch);
+		padding-top: var(--stuic-nav-item-padding-y-touch);
+		padding-bottom: var(--stuic-nav-item-padding-y-touch);
+	}
+
+	/* =============================================================================
+	   CHILDREN CONTAINER
+	   ============================================================================= */
+
+	.stuic-nav-children {
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-nav-children-gap);
+		padding-left: var(--stuic-nav-children-indent);
+		list-style: none;
+		margin: 0;
+	}
+
+	/* No indent in collapsed mode */
+	.stuic-nav[data-collapsed] .stuic-nav-children {
+		padding-left: 0;
+	}
+
+	/* =============================================================================
+	   ITEM STYLES
+	   ============================================================================= */
+
+	.stuic-nav-item {
+		/* Layout */
+		display: flex;
+		align-items: center;
+		gap: var(--stuic-nav-gap);
+		width: 100%;
+		height: var(--stuic-nav-item-height);
+
+		/* Padding */
+		padding: var(--stuic-nav-item-padding-y)
+			var(--stuic-nav-item-padding-x);
+
+		/* Typography */
+		font-size: var(--stuic-nav-item-font-size);
+		text-align: left;
+		text-decoration: none;
+		line-height: 1;
+
+		/* Visual */
+		border-radius: var(--stuic-nav-radius);
+		background: var(--stuic-nav-item-bg);
+		color: var(--stuic-nav-item-text);
+		border: none;
+
+		/* Interaction */
+		cursor: pointer;
+		user-select: none;
+		-webkit-tap-highlight-color: transparent;
+		transition:
+			background var(--stuic-nav-transition),
+			color var(--stuic-nav-transition);
+	}
+
+	/* Icon opacity */
+	.stuic-nav-item > span:first-child {
+		opacity: var(--stuic-nav-icon-opacity);
+	}
+
+	/* =============================================================================
+	   ITEM STATE STYLES
+	   ============================================================================= */
+
+	/* Hover state */
+	.stuic-nav-item:hover:not(:disabled):not([data-active]) {
+		background: var(--stuic-nav-item-bg-hover);
+		color: var(--stuic-nav-item-text-hover);
+	}
+
+	/* Focus styles */
+	.stuic-nav-item:focus {
+		outline: none;
+	}
+
+	.stuic-nav-item:focus-visible:not([data-active]) {
+		background: var(--stuic-nav-item-bg-focus);
+		color: var(--stuic-nav-item-text-focus);
+	}
+
+	/* Active/Selected state */
+	.stuic-nav-item[data-active] {
+		background: var(--stuic-nav-item-bg-active);
+		color: var(--stuic-nav-item-text-active);
+	}
+
+	/* Active state: make icon full opacity */
+	.stuic-nav-item[data-active] > span:first-child {
+		opacity: 1;
+	}
+
+	/* Focused state (keyboard navigation) */
+	.stuic-nav-item[data-focused]:not([data-active]) {
+		background: var(--stuic-nav-item-bg-focus);
+		color: var(--stuic-nav-item-text-focus);
+	}
+
+	/* Disabled state */
+	.stuic-nav-item:disabled,
+	.stuic-nav-item[data-disabled] {
+		opacity: 0.5;
+		cursor: not-allowed;
+		pointer-events: none;
+	}
+
+	/* =============================================================================
+	   TOUCH-FRIENDLY MODIFIER
+	   ============================================================================= */
+
+	.stuic-nav-item[data-touch-friendly] {
+		height: var(--stuic-nav-item-height-touch);
+		padding-top: var(--stuic-nav-item-padding-y-touch);
+		padding-bottom: var(--stuic-nav-item-padding-y-touch);
+	}
+
+	/* =============================================================================
+	   COLLAPSED MODE
+	   ============================================================================= */
+
+	.stuic-nav-item[data-collapsed] {
+		/* Center content */
+		justify-content: center;
+		width: var(--stuic-nav-item-size-collapsed);
+		height: var(--stuic-nav-item-size-collapsed);
+		padding: 0.375rem;
+	}
+
+	/* Expanding transition state - shift content left */
+	.stuic-nav-item[data-expanding] {
+		padding-left: var(--stuic-nav-item-padding-x);
+		justify-content: flex-start;
+	}
+
+	/* =============================================================================
+	   CHEVRON STYLES
+	   ============================================================================= */
+
+	.stuic-nav-group-title > span:first-child,
+	.stuic-nav-item[data-collapsed] > span:first-child {
+		opacity: var(--stuic-nav-chevron-opacity);
+	}
+}

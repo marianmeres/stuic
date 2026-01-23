@@ -28,6 +28,7 @@
 		'list-item-button',
 		'modal-dialog',
 		'modal',
+		'nav',
 		'notifications',
 		// 'on-outside',
 		'popover', 

@@ -38,6 +38,7 @@ In practice:
 @import "./components/ListItemButton/index.css";
 @import "./components/Modal/index.css";
 @import "./components/ModalDialog/index.css";
+@import "./components/Nav/index.css";
 @import "./components/Notifications/index.css";
 @import "./components/Progress/index.css";
 @import "./components/Skeleton/index.css";
