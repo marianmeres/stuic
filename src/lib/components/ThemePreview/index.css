@@ -402,17 +402,17 @@
 	opacity: 0.9;
 }
 
-/* Using soft variant pattern for content boxes */
+/* Using surface-intent tokens for content boxes */
 .stuic-theme-preview .highlight-box.primary {
-	background: color-mix(in srgb, var(--stuic-color-primary) 15%, transparent);
-	color: var(--stuic-color-primary);
-	border: 1px solid color-mix(in srgb, var(--stuic-color-primary) 30%, transparent);
+	background: var(--stuic-color-surface-primary);
+	color: var(--stuic-color-surface-primary-foreground);
+	border: 1px solid var(--stuic-color-surface-primary-border);
 }
 
 .stuic-theme-preview .highlight-box.accent {
-	background: color-mix(in srgb, var(--stuic-color-accent) 15%, transparent);
-	color: var(--stuic-color-accent);
-	border: 1px solid color-mix(in srgb, var(--stuic-color-accent) 30%, transparent);
+	background: var(--stuic-color-surface-accent);
+	color: var(--stuic-color-surface-accent-foreground);
+	border: 1px solid var(--stuic-color-surface-accent-border);
 }
 
 /* ============================================================================

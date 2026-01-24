@@ -119,13 +119,29 @@ function generateSingleColorTokens(
 
 export function generateCssTokens(
 	schema: TokenSchema,
-	prefix: string = "stuic-"
+	prefix: string = "stuic-",
+	mode: "light" | "dark" = "light"
 ): GeneratedTokens {
 	const tokens: GeneratedTokens = {};
 
 	// Intent colors
 	for (const [key, pair] of Object.entries(schema.colors.intent)) {
 		generatePairedColorTokens(tokens, key, pair, prefix);
+	}
+
+	// Surface-intent tokens (auto-derived from intent colors)
+	// These provide subtle tinted backgrounds for callouts, alerts, highlighted content, etc.
+	const contrastMix = mode === "light" ? "black" : "white";
+	for (const key of Object.keys(schema.colors.intent)) {
+		// Background: 15% tint
+		tokens[`${prefix}color-surface-${key}`] =
+			`color-mix(in srgb, var(--${prefix}color-${key}) 15%, var(--stuic-color-background))`;
+		// Foreground: darken in light mode, lighten in dark mode for contrast
+		tokens[`${prefix}color-surface-${key}-foreground`] =
+			`color-mix(in srgb, var(--${prefix}color-${key}), ${contrastMix} 10%)`;
+		// Border: 30% tint
+		tokens[`${prefix}color-surface-${key}-border`] =
+			`color-mix(in srgb, var(--${prefix}color-${key}) 30%, var(--stuic-color-background))`;
 	}
 
 	// Role colors (paired)

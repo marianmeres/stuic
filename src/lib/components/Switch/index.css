@@ -68,7 +68,7 @@
 	.stuic-switch:focus {
 		outline: none;
 		box-shadow: 0 0 0 var(--stuic-switch-ring-width)
-			color-mix(in srgb, var(--stuic-switch-ring-color) 30%, transparent);
+			color-mix(in srgb, var(--stuic-switch-ring-color) 30%, var(--stuic-color-background));
 	}
 
 	/* Disabled */

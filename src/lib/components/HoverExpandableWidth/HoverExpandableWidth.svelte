@@ -9,6 +9,7 @@
 		targetWidth?: number;
 		delayIn?: number;
 		delayOut?: number;
+		zIndex?: number;
 		children: Snippet<
 			[
 				{
@@ -38,6 +39,7 @@
 		targetWidth = 256,
 		delayIn = 500,
 		delayOut = 300,
+		zIndex = 10,
 		class: classProp,
 		children,
 		...rest
@@ -95,7 +97,7 @@
 		el.style.width = "auto";
 		el.style.height = "auto";
 
-		el.style.zIndex = "1";
+		el.style.zIndex = `${zIndex}`;
 
 		// kind of ugly - need to set props in multiple steps...
 		(async () => {

@@ -217,7 +217,7 @@
 	.stuic-input .input-wrap.invalid:focus-within {
 		border-color: var(--stuic-input-accent-error);
 		box-shadow: 0 0 0 var(--stuic-input-ring-width)
-			color-mix(in srgb, var(--stuic-input-accent-error) 20%, transparent);
+			color-mix(in srgb, var(--stuic-input-accent-error) 20%, var(--stuic-color-background));
 	}
 
 	/* Disabled state */

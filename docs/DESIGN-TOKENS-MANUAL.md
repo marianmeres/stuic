@@ -2,10 +2,9 @@
 
 Design tokens are the atomic values that define a design system's visual language. They provide a shared vocabulary between design and implementation, enabling consistency and themability.
 
-## Important related files
+## Related files
 
-- [design-tokens.ts](../src/lib/utils/design-tokens.ts)
-
+- [design tokens (theme) generator helper](../src/lib/utils/design-tokens.ts)
 
 ---
 
@@ -15,31 +14,31 @@ Design tokens are the atomic values that define a design system's visual languag
 
 Intent colors communicate **purpose** and **meaning**. They answer: "What does this element signify?"
 
-| Token | Purpose |
-|-------|---------|
-| `primary` | Main actions and key interactive elements ("do this") |
-| `secondary` | Alternative or less prominent actions |
-| `accent` | Highlights and points of interest ("notice this") |
-| `destructive` | Dangerous or irreversible actions |
-| `warning` | Caution states requiring attention |
-| `success` | Positive outcomes or confirmations |
-| `info` | Neutral informational messages |
+| Token         | Purpose                                               |
+| ------------- | ----------------------------------------------------- |
+| `primary`     | Main actions and key interactive elements ("do this") |
+| `secondary`   | Alternative or less prominent actions                 |
+| `accent`      | Highlights and points of interest ("notice this")     |
+| `destructive` | Dangerous or irreversible actions                     |
+| `warning`     | Caution states requiring attention                    |
+| `success`     | Positive outcomes or confirmations                    |
+| `info`        | Neutral informational messages                        |
 
 ### 2. Role Colors
 
 Role colors define **position** in the visual hierarchy. They answer: "Where does this sit in the UI?"
 
-| Token | Purpose |
-|-------|---------|
-| `background` | Base page layer (e.g. `<body>`) |
-| `foreground` | Default text/content color |
-| `surface` | Raised containers (cards, modals, panels, sidebars) |
-| `surface-1` | Darker surface level (inset areas, nested cards) |
-| `surface-2` | Darkest surface level (deeply nested elements) |
-| `border` | Default border color |
-| `input` | Form field backgrounds |
-| `ring` | Focus indicator color |
-| `muted` | De-emphasized text and subtle backgrounds |
+| Token        | Purpose                                             |
+| ------------ | --------------------------------------------------- |
+| `background` | Base page layer (e.g. `<body>`)                     |
+| `foreground` | Default text/content color                          |
+| `surface`    | Raised containers (cards, modals, panels, sidebars) |
+| `surface-1`  | Darker surface level (inset areas, nested cards)    |
+| `surface-2`  | Darkest surface level (deeply nested elements)      |
+| `border`     | Default border color                                |
+| `input`      | Form field backgrounds                              |
+| `ring`       | Focus indicator color                               |
+| `muted`      | De-emphasized text and subtle backgrounds           |
 
 > **Numeric surface convention:** Higher numbers indicate deeper layering in light mode and higher elevation in dark mode.
 
@@ -53,6 +52,7 @@ Every color token that serves as a background should have a `-foreground` counte
 ```
 
 Examples:
+
 - `primary` / `primary-foreground`
 - `surface` / `surface-foreground`
 - `surface-1` / `surface-1-foreground`
@@ -62,7 +62,7 @@ Examples:
 
 ## Scales
 
-Scales define **ranges of values** for non-color properties. 
+Scales define **ranges of values** for non-color properties.
 
 Usage of standard Tailwind classes in encouraged.
 
@@ -79,11 +79,11 @@ Usage of standard Tailwind classes in encouraged.
 
 Components typically vary across these dimensions:
 
-| Dimension | Common Values | Controls |
-|-----------|---------------|----------|
-| `variant` | `solid`, `outline`, `ghost`, `link`, `soft` | Visual treatment |
-| `intent` | `primary`, `secondary`, `destructive`, etc. | Color/meaning |
-| `size` | `sm`, `md`, `lg` | Dimensions and typography |
+| Dimension | Common Values                               | Controls                  |
+| --------- | ------------------------------------------- | ------------------------- |
+| `variant` | `solid`, `outline`, `ghost`, `link`, `soft` | Visual treatment          |
+| `intent`  | `primary`, `secondary`, `destructive`, etc. | Color/meaning             |
+| `size`    | `sm`, `md`, `lg`                            | Dimensions and typography |
 
 ### Variant Definitions
 

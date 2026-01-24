@@ -234,8 +234,8 @@
 	/* Outline: transparent background with colored border and text */
 	.stuic-button[data-variant="outline"] {
 		--_bg: transparent;
-		--_bg-hover: color-mix(in srgb, var(--_color) 10%, transparent);
-		--_bg-active: color-mix(in srgb, var(--_color) 20%, transparent);
+		--_bg-hover: color-mix(in srgb, var(--_color) 10%, var(--stuic-color-background));
+		--_bg-active: color-mix(in srgb, var(--_color) 20%, var(--stuic-color-background));
 		--_text: var(--_color);
 		--_text-hover: var(--_color-hover);
 		--_text-active: var(--_color-active);
@@ -247,8 +247,8 @@
 	/* Ghost: transparent background, colored text, subtle hover state */
 	.stuic-button[data-variant="ghost"] {
 		--_bg: transparent;
-		--_bg-hover: color-mix(in srgb, var(--_color) 10%, transparent);
-		--_bg-active: color-mix(in srgb, var(--_color) 20%, transparent);
+		--_bg-hover: color-mix(in srgb, var(--_color) 10%, var(--stuic-color-background));
+		--_bg-active: color-mix(in srgb, var(--_color) 20%, var(--stuic-color-background));
 		--_text: var(--_color);
 		--_text-hover: var(--_color-hover);
 		--_text-active: var(--_color-active);
@@ -259,9 +259,9 @@
 
 	/* Soft: muted/translucent background tint with colored text */
 	.stuic-button[data-variant="soft"] {
-		--_bg: color-mix(in srgb, var(--_color) 15%, transparent);
-		--_bg-hover: color-mix(in srgb, var(--_color) 25%, transparent);
-		--_bg-active: color-mix(in srgb, var(--_color) 35%, transparent);
+		--_bg: color-mix(in srgb, var(--_color) 15%, var(--stuic-color-background));
+		--_bg-hover: color-mix(in srgb, var(--_color) 25%, var(--stuic-color-background));
+		--_bg-active: color-mix(in srgb, var(--_color) 35%, var(--stuic-color-background));
 		--_text: var(--_color);
 		--_text-hover: var(--_color-hover);
 		--_text-active: var(--_color-active);

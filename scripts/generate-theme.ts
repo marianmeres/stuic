@@ -74,12 +74,12 @@ function isValidThemeModule(
 function generateThemeCss(schema: ThemeSchema): string {
 	let css =
 		"/* prettier-ignore */\n" +
-		toCssString(generateCssTokens(schema.light)) +
+		toCssString(generateCssTokens(schema.light, "stuic-", "light")) +
 		"\n";
 	if (schema.dark) {
 		css +=
 			"/* prettier-ignore */\n" +
-			toCssString(generateCssTokens(schema.dark), ":root.dark");
+			toCssString(generateCssTokens(schema.dark, "stuic-", "dark"), ":root.dark");
 	}
 	return css;
 }

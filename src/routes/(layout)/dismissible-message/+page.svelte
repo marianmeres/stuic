@@ -33,8 +33,9 @@
 		<Button onclick={() => (message = dummySentence(5))}>Show message</Button>
 	</div>
 
-	<div class="mt-8 space-y-2">
+	<div class="mt-8 space-y-2 bg-linear-to-r from-cyan-500 to-blue-500 p-4">
 		<h3 class="font-semibold mb-4">Intent Examples (non-dismissible)</h3>
+		<p>Intentional bg color so the dismissible message boxes bg is unaffected</p>
 
 		<DismissibleMessage message="Default message with no intent" {withIcon} />
 

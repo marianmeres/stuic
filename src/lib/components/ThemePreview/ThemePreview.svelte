@@ -203,6 +203,23 @@
 				</div>
 			</section>
 
+			<!-- HIGHLIGHT BOXES -->
+			<section class="preview-section">
+				{#if showLabels}
+					<h2 class="section-label">Highlighted Content</h2>
+				{/if}
+
+				<div class="highlight-box primary">
+					<strong>Primary Highlight</strong>
+					<p>This box uses primary intent colors for important content.</p>
+				</div>
+
+				<div class="highlight-box accent">
+					<strong>Accent Highlight</strong>
+					<p>This box uses accent colors to draw attention.</p>
+				</div>
+			</section>
+
 			<!-- ROLE COLORS -->
 			<section class="preview-section">
 				{#if showLabels}
@@ -286,23 +303,6 @@
 					{#each INTENT_COLORS as intent}
 						<Switch {intent} checked />
 					{/each}
-				</div>
-			</section>
-
-			<!-- HIGHLIGHT BOXES -->
-			<section class="preview-section">
-				{#if showLabels}
-					<h2 class="section-label">Highlighted Content</h2>
-				{/if}
-
-				<div class="highlight-box primary">
-					<strong>Primary Highlight</strong>
-					<p>This box uses primary intent colors for important content.</p>
-				</div>
-
-				<div class="highlight-box accent">
-					<strong>Accent Highlight</strong>
-					<p>This box uses accent colors to draw attention.</p>
 				</div>
 			</section>
 

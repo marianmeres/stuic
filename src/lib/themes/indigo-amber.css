@@ -1,217 +1,253 @@
 /* prettier-ignore */
 :root {
-	--stuic-color-primary:                       var(--color-indigo-600, #737373);
+	--stuic-color-primary:                        var(--color-indigo-600, #737373);
 
-	--stuic-color-primary-hover:                 var(--color-indigo-700, #737373);
-	--stuic-color-primary-active:                var(--color-indigo-800, #737373);
-	--stuic-color-primary-foreground:            var(--color-white, #ffffff);
-	--stuic-color-primary-foreground-hover:      var(--color-white, #ffffff);
-	--stuic-color-primary-foreground-active:     var(--color-white, #ffffff);
+	--stuic-color-primary-hover:                  var(--color-indigo-700, #737373);
+	--stuic-color-primary-active:                 var(--color-indigo-800, #737373);
+	--stuic-color-primary-foreground:             var(--color-white, #ffffff);
+	--stuic-color-primary-foreground-hover:       var(--color-white, #ffffff);
+	--stuic-color-primary-foreground-active:      var(--color-white, #ffffff);
 
-	--stuic-color-accent:                        var(--color-amber-500, #737373);
+	--stuic-color-accent:                         var(--color-amber-500, #737373);
 
-	--stuic-color-accent-hover:                  var(--color-amber-600, #737373);
-	--stuic-color-accent-active:                 var(--color-amber-700, #737373);
-	--stuic-color-accent-foreground:             var(--color-white, #ffffff);
-	--stuic-color-accent-foreground-hover:       var(--color-white, #ffffff);
-	--stuic-color-accent-foreground-active:      var(--color-white, #ffffff);
+	--stuic-color-accent-hover:                   var(--color-amber-600, #737373);
+	--stuic-color-accent-active:                  var(--color-amber-700, #737373);
+	--stuic-color-accent-foreground:              var(--color-white, #ffffff);
+	--stuic-color-accent-foreground-hover:        var(--color-white, #ffffff);
+	--stuic-color-accent-foreground-active:       var(--color-white, #ffffff);
 
-	--stuic-color-destructive:                   var(--color-rose-600, #737373);
+	--stuic-color-destructive:                    var(--color-rose-600, #737373);
 
-	--stuic-color-destructive-hover:             var(--color-rose-700, #737373);
-	--stuic-color-destructive-active:            var(--color-rose-800, #737373);
-	--stuic-color-destructive-foreground:        var(--color-white, #ffffff);
-	--stuic-color-destructive-foreground-hover:  var(--color-white, #ffffff);
-	--stuic-color-destructive-foreground-active: var(--color-white, #ffffff);
+	--stuic-color-destructive-hover:              var(--color-rose-700, #737373);
+	--stuic-color-destructive-active:             var(--color-rose-800, #737373);
+	--stuic-color-destructive-foreground:         var(--color-white, #ffffff);
+	--stuic-color-destructive-foreground-hover:   var(--color-white, #ffffff);
+	--stuic-color-destructive-foreground-active:  var(--color-white, #ffffff);
 
-	--stuic-color-warning:                       var(--color-amber-500, #737373);
+	--stuic-color-warning:                        var(--color-amber-500, #737373);
 
-	--stuic-color-warning-hover:                 var(--color-amber-600, #737373);
-	--stuic-color-warning-active:                var(--color-amber-700, #737373);
-	--stuic-color-warning-foreground:            var(--color-white, #ffffff);
-	--stuic-color-warning-foreground-hover:      var(--color-white, #ffffff);
-	--stuic-color-warning-foreground-active:     var(--color-white, #ffffff);
+	--stuic-color-warning-hover:                  var(--color-amber-600, #737373);
+	--stuic-color-warning-active:                 var(--color-amber-700, #737373);
+	--stuic-color-warning-foreground:             var(--color-white, #ffffff);
+	--stuic-color-warning-foreground-hover:       var(--color-white, #ffffff);
+	--stuic-color-warning-foreground-active:      var(--color-white, #ffffff);
 
-	--stuic-color-success:                       var(--color-teal-600, #737373);
+	--stuic-color-success:                        var(--color-teal-600, #737373);
 
-	--stuic-color-success-hover:                 var(--color-teal-700, #737373);
-	--stuic-color-success-active:                var(--color-teal-800, #737373);
-	--stuic-color-success-foreground:            var(--color-white, #ffffff);
-	--stuic-color-success-foreground-hover:      var(--color-white, #ffffff);
-	--stuic-color-success-foreground-active:     var(--color-white, #ffffff);
+	--stuic-color-success-hover:                  var(--color-teal-700, #737373);
+	--stuic-color-success-active:                 var(--color-teal-800, #737373);
+	--stuic-color-success-foreground:             var(--color-white, #ffffff);
+	--stuic-color-success-foreground-hover:       var(--color-white, #ffffff);
+	--stuic-color-success-foreground-active:      var(--color-white, #ffffff);
 
-	--stuic-color-info:                          var(--color-indigo-500, #737373);
+	--stuic-color-info:                           var(--color-indigo-500, #737373);
 
-	--stuic-color-info-hover:                    var(--color-indigo-600, #737373);
-	--stuic-color-info-active:                   var(--color-indigo-700, #737373);
-	--stuic-color-info-foreground:               var(--color-white, #ffffff);
-	--stuic-color-info-foreground-hover:         var(--color-white, #ffffff);
-	--stuic-color-info-foreground-active:        var(--color-white, #ffffff);
+	--stuic-color-info-hover:                     var(--color-indigo-600, #737373);
+	--stuic-color-info-active:                    var(--color-indigo-700, #737373);
+	--stuic-color-info-foreground:                var(--color-white, #ffffff);
+	--stuic-color-info-foreground-hover:          var(--color-white, #ffffff);
+	--stuic-color-info-foreground-active:         var(--color-white, #ffffff);
 
-	--stuic-color-background:                    var(--color-white, #ffffff);
+	--stuic-color-surface-primary:                color-mix(in srgb, var(--stuic-color-primary) 15%, var(--stuic-color-background));
+	--stuic-color-surface-primary-foreground:     color-mix(in srgb, var(--stuic-color-primary), black 10%);
+	--stuic-color-surface-primary-border:         color-mix(in srgb, var(--stuic-color-primary) 30%, var(--stuic-color-background));
+	--stuic-color-surface-accent:                 color-mix(in srgb, var(--stuic-color-accent) 15%, var(--stuic-color-background));
+	--stuic-color-surface-accent-foreground:      color-mix(in srgb, var(--stuic-color-accent), black 10%);
+	--stuic-color-surface-accent-border:          color-mix(in srgb, var(--stuic-color-accent) 30%, var(--stuic-color-background));
+	--stuic-color-surface-destructive:            color-mix(in srgb, var(--stuic-color-destructive) 15%, var(--stuic-color-background));
+	--stuic-color-surface-destructive-foreground: color-mix(in srgb, var(--stuic-color-destructive), black 10%);
+	--stuic-color-surface-destructive-border:     color-mix(in srgb, var(--stuic-color-destructive) 30%, var(--stuic-color-background));
+	--stuic-color-surface-warning:                color-mix(in srgb, var(--stuic-color-warning) 15%, var(--stuic-color-background));
+	--stuic-color-surface-warning-foreground:     color-mix(in srgb, var(--stuic-color-warning), black 10%);
+	--stuic-color-surface-warning-border:         color-mix(in srgb, var(--stuic-color-warning) 30%, var(--stuic-color-background));
+	--stuic-color-surface-success:                color-mix(in srgb, var(--stuic-color-success) 15%, var(--stuic-color-background));
+	--stuic-color-surface-success-foreground:     color-mix(in srgb, var(--stuic-color-success), black 10%);
+	--stuic-color-surface-success-border:         color-mix(in srgb, var(--stuic-color-success) 30%, var(--stuic-color-background));
+	--stuic-color-surface-info:                   color-mix(in srgb, var(--stuic-color-info) 15%, var(--stuic-color-background));
+	--stuic-color-surface-info-foreground:        color-mix(in srgb, var(--stuic-color-info), black 10%);
+	--stuic-color-surface-info-border:            color-mix(in srgb, var(--stuic-color-info) 30%, var(--stuic-color-background));
+	--stuic-color-surface-hover:                  var(--color-neutral-100, #737373);
+	--stuic-color-surface-active:                 var(--color-neutral-200, #737373);
+	--stuic-color-surface-foreground:             var(--color-neutral-900, #737373);
+	--stuic-color-surface-foreground-hover:       var(--color-neutral-900, #737373);
+	--stuic-color-surface-foreground-active:      var(--color-neutral-900, #737373);
 
-	--stuic-color-background-hover:              var(--color-white, #ffffff);
-	--stuic-color-background-active:             var(--color-white, #ffffff);
-	--stuic-color-background-foreground:         var(--color-neutral-900, #737373);
-	--stuic-color-background-foreground-hover:   var(--color-neutral-900, #737373);
-	--stuic-color-background-foreground-active:  var(--color-neutral-900, #737373);
+	--stuic-color-background:                     var(--color-white, #ffffff);
 
-	--stuic-color-surface:                       var(--color-neutral-50, #737373);
+	--stuic-color-background-hover:               var(--color-white, #ffffff);
+	--stuic-color-background-active:              var(--color-white, #ffffff);
+	--stuic-color-background-foreground:          var(--color-neutral-900, #737373);
+	--stuic-color-background-foreground-hover:    var(--color-neutral-900, #737373);
+	--stuic-color-background-foreground-active:   var(--color-neutral-900, #737373);
 
-	--stuic-color-surface-hover:                 var(--color-neutral-100, #737373);
-	--stuic-color-surface-active:                var(--color-neutral-200, #737373);
-	--stuic-color-surface-foreground:            var(--color-neutral-900, #737373);
-	--stuic-color-surface-foreground-hover:      var(--color-neutral-900, #737373);
-	--stuic-color-surface-foreground-active:     var(--color-neutral-900, #737373);
+	--stuic-color-surface:                        var(--color-neutral-50, #737373);
 
-	--stuic-color-surface-1:                     var(--color-neutral-100, #737373);
-	--stuic-color-surface-1-hover:               var(--color-neutral-200, #737373);
-	--stuic-color-surface-1-active:              var(--color-neutral-300, #737373);
-	--stuic-color-surface-1-foreground:          var(--color-neutral-900, #737373);
-	--stuic-color-surface-1-foreground-hover:    var(--color-neutral-900, #737373);
-	--stuic-color-surface-1-foreground-active:   var(--color-neutral-900, #737373);
+	--stuic-color-surface-1:                      var(--color-neutral-100, #737373);
+	--stuic-color-surface-1-hover:                var(--color-neutral-200, #737373);
+	--stuic-color-surface-1-active:               var(--color-neutral-300, #737373);
+	--stuic-color-surface-1-foreground:           var(--color-neutral-900, #737373);
+	--stuic-color-surface-1-foreground-hover:     var(--color-neutral-900, #737373);
+	--stuic-color-surface-1-foreground-active:    var(--color-neutral-900, #737373);
 
-	--stuic-color-surface-2:                     var(--color-neutral-200, #737373);
-	--stuic-color-surface-2-hover:               var(--color-neutral-300, #737373);
-	--stuic-color-surface-2-active:              var(--color-neutral-400, #737373);
-	--stuic-color-surface-2-foreground:          var(--color-neutral-900, #737373);
-	--stuic-color-surface-2-foreground-hover:    var(--color-neutral-900, #737373);
-	--stuic-color-surface-2-foreground-active:   var(--color-neutral-900, #737373);
+	--stuic-color-surface-2:                      var(--color-neutral-200, #737373);
+	--stuic-color-surface-2-hover:                var(--color-neutral-300, #737373);
+	--stuic-color-surface-2-active:               var(--color-neutral-400, #737373);
+	--stuic-color-surface-2-foreground:           var(--color-neutral-900, #737373);
+	--stuic-color-surface-2-foreground-hover:     var(--color-neutral-900, #737373);
+	--stuic-color-surface-2-foreground-active:    var(--color-neutral-900, #737373);
 
-	--stuic-color-muted:                         var(--color-neutral-100, #737373);
+	--stuic-color-muted:                          var(--color-neutral-100, #737373);
 
-	--stuic-color-muted-hover:                   var(--color-neutral-200, #737373);
-	--stuic-color-muted-active:                  var(--color-neutral-300, #737373);
-	--stuic-color-muted-foreground:              var(--color-neutral-500, #737373);
-	--stuic-color-muted-foreground-hover:        var(--color-neutral-500, #737373);
-	--stuic-color-muted-foreground-active:       var(--color-neutral-500, #737373);
+	--stuic-color-muted-hover:                    var(--color-neutral-200, #737373);
+	--stuic-color-muted-active:                   var(--color-neutral-300, #737373);
+	--stuic-color-muted-foreground:               var(--color-neutral-500, #737373);
+	--stuic-color-muted-foreground-hover:         var(--color-neutral-500, #737373);
+	--stuic-color-muted-foreground-active:        var(--color-neutral-500, #737373);
 
-	--stuic-color-foreground:                    var(--color-neutral-900, #737373);
+	--stuic-color-foreground:                     var(--color-neutral-900, #737373);
 
-	--stuic-color-foreground-hover:              var(--color-neutral-900, #737373);
-	--stuic-color-foreground-active:             var(--color-neutral-900, #737373);
+	--stuic-color-foreground-hover:               var(--color-neutral-900, #737373);
+	--stuic-color-foreground-active:              var(--color-neutral-900, #737373);
 
-	--stuic-color-border:                        var(--color-neutral-200, #737373);
+	--stuic-color-border:                         var(--color-neutral-200, #737373);
 
-	--stuic-color-border-hover:                  var(--color-neutral-300, #737373);
-	--stuic-color-border-active:                 var(--color-neutral-400, #737373);
+	--stuic-color-border-hover:                   var(--color-neutral-300, #737373);
+	--stuic-color-border-active:                  var(--color-neutral-400, #737373);
 
-	--stuic-color-input:                         var(--color-white, #ffffff);
+	--stuic-color-input:                          var(--color-white, #ffffff);
 
-	--stuic-color-input-hover:                   var(--color-neutral-50, #737373);
-	--stuic-color-input-active:                  var(--color-white, #ffffff);
+	--stuic-color-input-hover:                    var(--color-neutral-50, #737373);
+	--stuic-color-input-active:                   var(--color-white, #ffffff);
 
-	--stuic-color-ring:                          color-mix(in srgb, var(--color-indigo-600) 20%, transparent);
+	--stuic-color-ring:                           color-mix(in srgb, var(--color-indigo-600) 20%, transparent);
 
-	--stuic-color-ring-hover:                    color-mix(in srgb, var(--color-indigo-600) 20%, transparent);
-	--stuic-color-ring-active:                   color-mix(in srgb, var(--color-indigo-600) 20%, transparent);
+	--stuic-color-ring-hover:                     color-mix(in srgb, var(--color-indigo-600) 20%, transparent);
+	--stuic-color-ring-active:                    color-mix(in srgb, var(--color-indigo-600) 20%, transparent);
 }
 
 /* prettier-ignore */
 :root.dark {
-	--stuic-color-primary:                       var(--color-indigo-500, #737373);
+	--stuic-color-primary:                        var(--color-indigo-500, #737373);
 
-	--stuic-color-primary-hover:                 var(--color-indigo-400, #737373);
-	--stuic-color-primary-active:                var(--color-indigo-300, #737373);
-	--stuic-color-primary-foreground:            var(--color-white, #ffffff);
-	--stuic-color-primary-foreground-hover:      var(--color-white, #ffffff);
-	--stuic-color-primary-foreground-active:     var(--color-white, #ffffff);
+	--stuic-color-primary-hover:                  var(--color-indigo-400, #737373);
+	--stuic-color-primary-active:                 var(--color-indigo-300, #737373);
+	--stuic-color-primary-foreground:             var(--color-white, #ffffff);
+	--stuic-color-primary-foreground-hover:       var(--color-white, #ffffff);
+	--stuic-color-primary-foreground-active:      var(--color-white, #ffffff);
 
-	--stuic-color-accent:                        var(--color-amber-400, #737373);
+	--stuic-color-accent:                         var(--color-amber-400, #737373);
 
-	--stuic-color-accent-hover:                  var(--color-amber-300, #737373);
-	--stuic-color-accent-active:                 var(--color-amber-200, #737373);
-	--stuic-color-accent-foreground:             var(--color-black, #000000);
-	--stuic-color-accent-foreground-hover:       var(--color-black, #000000);
-	--stuic-color-accent-foreground-active:      var(--color-black, #000000);
+	--stuic-color-accent-hover:                   var(--color-amber-300, #737373);
+	--stuic-color-accent-active:                  var(--color-amber-200, #737373);
+	--stuic-color-accent-foreground:              var(--color-black, #000000);
+	--stuic-color-accent-foreground-hover:        var(--color-black, #000000);
+	--stuic-color-accent-foreground-active:       var(--color-black, #000000);
 
-	--stuic-color-destructive:                   var(--color-rose-500, #737373);
+	--stuic-color-destructive:                    var(--color-rose-500, #737373);
 
-	--stuic-color-destructive-hover:             var(--color-rose-400, #737373);
-	--stuic-color-destructive-active:            var(--color-rose-300, #737373);
-	--stuic-color-destructive-foreground:        var(--color-white, #ffffff);
-	--stuic-color-destructive-foreground-hover:  var(--color-white, #ffffff);
-	--stuic-color-destructive-foreground-active: var(--color-white, #ffffff);
+	--stuic-color-destructive-hover:              var(--color-rose-400, #737373);
+	--stuic-color-destructive-active:             var(--color-rose-300, #737373);
+	--stuic-color-destructive-foreground:         var(--color-white, #ffffff);
+	--stuic-color-destructive-foreground-hover:   var(--color-white, #ffffff);
+	--stuic-color-destructive-foreground-active:  var(--color-white, #ffffff);
 
-	--stuic-color-warning:                       var(--color-amber-400, #737373);
+	--stuic-color-warning:                        var(--color-amber-400, #737373);
 
-	--stuic-color-warning-hover:                 var(--color-amber-300, #737373);
-	--stuic-color-warning-active:                var(--color-amber-200, #737373);
-	--stuic-color-warning-foreground:            var(--color-black, #000000);
-	--stuic-color-warning-foreground-hover:      var(--color-black, #000000);
-	--stuic-color-warning-foreground-active:     var(--color-black, #000000);
+	--stuic-color-warning-hover:                  var(--color-amber-300, #737373);
+	--stuic-color-warning-active:                 var(--color-amber-200, #737373);
+	--stuic-color-warning-foreground:             var(--color-black, #000000);
+	--stuic-color-warning-foreground-hover:       var(--color-black, #000000);
+	--stuic-color-warning-foreground-active:      var(--color-black, #000000);
 
-	--stuic-color-success:                       var(--color-teal-500, #737373);
+	--stuic-color-success:                        var(--color-teal-500, #737373);
 
-	--stuic-color-success-hover:                 var(--color-teal-400, #737373);
-	--stuic-color-success-active:                var(--color-teal-300, #737373);
-	--stuic-color-success-foreground:            var(--color-white, #ffffff);
-	--stuic-color-success-foreground-hover:      var(--color-white, #ffffff);
-	--stuic-color-success-foreground-active:     var(--color-white, #ffffff);
+	--stuic-color-success-hover:                  var(--color-teal-400, #737373);
+	--stuic-color-success-active:                 var(--color-teal-300, #737373);
+	--stuic-color-success-foreground:             var(--color-white, #ffffff);
+	--stuic-color-success-foreground-hover:       var(--color-white, #ffffff);
+	--stuic-color-success-foreground-active:      var(--color-white, #ffffff);
 
-	--stuic-color-info:                          var(--color-indigo-400, #737373);
+	--stuic-color-info:                           var(--color-indigo-400, #737373);
 
-	--stuic-color-info-hover:                    var(--color-indigo-300, #737373);
-	--stuic-color-info-active:                   var(--color-indigo-200, #737373);
-	--stuic-color-info-foreground:               var(--color-white, #ffffff);
-	--stuic-color-info-foreground-hover:         var(--color-white, #ffffff);
-	--stuic-color-info-foreground-active:        var(--color-white, #ffffff);
+	--stuic-color-info-hover:                     var(--color-indigo-300, #737373);
+	--stuic-color-info-active:                    var(--color-indigo-200, #737373);
+	--stuic-color-info-foreground:                var(--color-white, #ffffff);
+	--stuic-color-info-foreground-hover:          var(--color-white, #ffffff);
+	--stuic-color-info-foreground-active:         var(--color-white, #ffffff);
 
-	--stuic-color-background:                    var(--color-neutral-900, #737373);
+	--stuic-color-surface-primary:                color-mix(in srgb, var(--stuic-color-primary) 15%, var(--stuic-color-background));
+	--stuic-color-surface-primary-foreground:     color-mix(in srgb, var(--stuic-color-primary), white 10%);
+	--stuic-color-surface-primary-border:         color-mix(in srgb, var(--stuic-color-primary) 30%, var(--stuic-color-background));
+	--stuic-color-surface-accent:                 color-mix(in srgb, var(--stuic-color-accent) 15%, var(--stuic-color-background));
+	--stuic-color-surface-accent-foreground:      color-mix(in srgb, var(--stuic-color-accent), white 10%);
+	--stuic-color-surface-accent-border:          color-mix(in srgb, var(--stuic-color-accent) 30%, var(--stuic-color-background));
+	--stuic-color-surface-destructive:            color-mix(in srgb, var(--stuic-color-destructive) 15%, var(--stuic-color-background));
+	--stuic-color-surface-destructive-foreground: color-mix(in srgb, var(--stuic-color-destructive), white 10%);
+	--stuic-color-surface-destructive-border:     color-mix(in srgb, var(--stuic-color-destructive) 30%, var(--stuic-color-background));
+	--stuic-color-surface-warning:                color-mix(in srgb, var(--stuic-color-warning) 15%, var(--stuic-color-background));
+	--stuic-color-surface-warning-foreground:     color-mix(in srgb, var(--stuic-color-warning), white 10%);
+	--stuic-color-surface-warning-border:         color-mix(in srgb, var(--stuic-color-warning) 30%, var(--stuic-color-background));
+	--stuic-color-surface-success:                color-mix(in srgb, var(--stuic-color-success) 15%, var(--stuic-color-background));
+	--stuic-color-surface-success-foreground:     color-mix(in srgb, var(--stuic-color-success), white 10%);
+	--stuic-color-surface-success-border:         color-mix(in srgb, var(--stuic-color-success) 30%, var(--stuic-color-background));
+	--stuic-color-surface-info:                   color-mix(in srgb, var(--stuic-color-info) 15%, var(--stuic-color-background));
+	--stuic-color-surface-info-foreground:        color-mix(in srgb, var(--stuic-color-info), white 10%);
+	--stuic-color-surface-info-border:            color-mix(in srgb, var(--stuic-color-info) 30%, var(--stuic-color-background));
+	--stuic-color-surface-hover:                  var(--color-neutral-700, #737373);
+	--stuic-color-surface-active:                 var(--color-neutral-600, #737373);
+	--stuic-color-surface-foreground:             var(--color-neutral-100, #737373);
+	--stuic-color-surface-foreground-hover:       var(--color-neutral-100, #737373);
+	--stuic-color-surface-foreground-active:      var(--color-neutral-100, #737373);
 
-	--stuic-color-background-hover:              var(--color-neutral-900, #737373);
-	--stuic-color-background-active:             var(--color-neutral-900, #737373);
-	--stuic-color-background-foreground:         var(--color-neutral-50, #737373);
-	--stuic-color-background-foreground-hover:   var(--color-neutral-50, #737373);
-	--stuic-color-background-foreground-active:  var(--color-neutral-50, #737373);
+	--stuic-color-background:                     var(--color-neutral-900, #737373);
 
-	--stuic-color-surface:                       var(--color-neutral-800, #737373);
+	--stuic-color-background-hover:               var(--color-neutral-900, #737373);
+	--stuic-color-background-active:              var(--color-neutral-900, #737373);
+	--stuic-color-background-foreground:          var(--color-neutral-50, #737373);
+	--stuic-color-background-foreground-hover:    var(--color-neutral-50, #737373);
+	--stuic-color-background-foreground-active:   var(--color-neutral-50, #737373);
 
-	--stuic-color-surface-hover:                 var(--color-neutral-700, #737373);
-	--stuic-color-surface-active:                var(--color-neutral-600, #737373);
-	--stuic-color-surface-foreground:            var(--color-neutral-100, #737373);
-	--stuic-color-surface-foreground-hover:      var(--color-neutral-100, #737373);
-	--stuic-color-surface-foreground-active:     var(--color-neutral-100, #737373);
+	--stuic-color-surface:                        var(--color-neutral-800, #737373);
 
-	--stuic-color-surface-1:                     var(--color-neutral-700, #737373);
-	--stuic-color-surface-1-hover:               var(--color-neutral-600, #737373);
-	--stuic-color-surface-1-active:              var(--color-neutral-500, #737373);
-	--stuic-color-surface-1-foreground:          var(--color-neutral-100, #737373);
-	--stuic-color-surface-1-foreground-hover:    var(--color-neutral-100, #737373);
-	--stuic-color-surface-1-foreground-active:   var(--color-neutral-100, #737373);
+	--stuic-color-surface-1:                      var(--color-neutral-700, #737373);
+	--stuic-color-surface-1-hover:                var(--color-neutral-600, #737373);
+	--stuic-color-surface-1-active:               var(--color-neutral-500, #737373);
+	--stuic-color-surface-1-foreground:           var(--color-neutral-100, #737373);
+	--stuic-color-surface-1-foreground-hover:     var(--color-neutral-100, #737373);
+	--stuic-color-surface-1-foreground-active:    var(--color-neutral-100, #737373);
 
-	--stuic-color-surface-2:                     var(--color-neutral-600, #737373);
-	--stuic-color-surface-2-hover:               var(--color-neutral-500, #737373);
-	--stuic-color-surface-2-active:              var(--color-neutral-400, #737373);
-	--stuic-color-surface-2-foreground:          var(--color-neutral-100, #737373);
-	--stuic-color-surface-2-foreground-hover:    var(--color-neutral-100, #737373);
-	--stuic-color-surface-2-foreground-active:   var(--color-neutral-100, #737373);
+	--stuic-color-surface-2:                      var(--color-neutral-600, #737373);
+	--stuic-color-surface-2-hover:                var(--color-neutral-500, #737373);
+	--stuic-color-surface-2-active:               var(--color-neutral-400, #737373);
+	--stuic-color-surface-2-foreground:           var(--color-neutral-100, #737373);
+	--stuic-color-surface-2-foreground-hover:     var(--color-neutral-100, #737373);
+	--stuic-color-surface-2-foreground-active:    var(--color-neutral-100, #737373);
 
-	--stuic-color-muted:                         var(--color-neutral-700, #737373);
+	--stuic-color-muted:                          var(--color-neutral-700, #737373);
 
-	--stuic-color-muted-hover:                   var(--color-neutral-600, #737373);
-	--stuic-color-muted-active:                  var(--color-neutral-500, #737373);
-	--stuic-color-muted-foreground:              var(--color-neutral-400, #737373);
-	--stuic-color-muted-foreground-hover:        var(--color-neutral-400, #737373);
-	--stuic-color-muted-foreground-active:       var(--color-neutral-400, #737373);
+	--stuic-color-muted-hover:                    var(--color-neutral-600, #737373);
+	--stuic-color-muted-active:                   var(--color-neutral-500, #737373);
+	--stuic-color-muted-foreground:               var(--color-neutral-400, #737373);
+	--stuic-color-muted-foreground-hover:         var(--color-neutral-400, #737373);
+	--stuic-color-muted-foreground-active:        var(--color-neutral-400, #737373);
 
-	--stuic-color-foreground:                    var(--color-neutral-50, #737373);
+	--stuic-color-foreground:                     var(--color-neutral-50, #737373);
 
-	--stuic-color-foreground-hover:              var(--color-neutral-50, #737373);
-	--stuic-color-foreground-active:             var(--color-neutral-50, #737373);
+	--stuic-color-foreground-hover:               var(--color-neutral-50, #737373);
+	--stuic-color-foreground-active:              var(--color-neutral-50, #737373);
 
-	--stuic-color-border:                        var(--color-neutral-700, #737373);
+	--stuic-color-border:                         var(--color-neutral-700, #737373);
 
-	--stuic-color-border-hover:                  var(--color-neutral-600, #737373);
-	--stuic-color-border-active:                 var(--color-neutral-500, #737373);
+	--stuic-color-border-hover:                   var(--color-neutral-600, #737373);
+	--stuic-color-border-active:                  var(--color-neutral-500, #737373);
 
-	--stuic-color-input:                         var(--color-neutral-800, #737373);
+	--stuic-color-input:                          var(--color-neutral-800, #737373);
 
-	--stuic-color-input-hover:                   var(--color-neutral-700, #737373);
-	--stuic-color-input-active:                  var(--color-neutral-800, #737373);
+	--stuic-color-input-hover:                    var(--color-neutral-700, #737373);
+	--stuic-color-input-active:                   var(--color-neutral-800, #737373);
 
-	--stuic-color-ring:                          color-mix(in srgb, var(--color-indigo-400) 25%, transparent);
+	--stuic-color-ring:                           color-mix(in srgb, var(--color-indigo-400) 25%, transparent);
 
-	--stuic-color-ring-hover:                    color-mix(in srgb, var(--color-indigo-400) 25%, transparent);
-	--stuic-color-ring-active:                   color-mix(in srgb, var(--color-indigo-400) 25%, transparent);
+	--stuic-color-ring-hover:                     color-mix(in srgb, var(--color-indigo-400) 25%, transparent);
+	--stuic-color-ring-active:                    color-mix(in srgb, var(--color-indigo-400) 25%, transparent);
 }
