@@ -185,6 +185,28 @@
 	<hr class="my-4" />
 
 	<section class="space-y-4">
+		<h2 class="text-xl font-semibold">Full Width / Block</h2>
+		<p class="text-sm text-neutral-600 dark:text-neutral-400">
+			Trigger button as full-width block element with dropdown matching the trigger width.
+		</p>
+
+		<div class="w-full">
+			<DropdownMenu
+				items={basicItems}
+				onSelect={handleSelect}
+				position="bottom"
+				class="w-full block"
+				classTrigger="w-full"
+				classDropdown="dropdown-match-trigger-width"
+			>
+				Full Width Menu
+			</DropdownMenu>
+		</div>
+	</section>
+
+	<hr class="my-4" />
+
+	<section class="space-y-4">
 		<h2 class="text-xl font-semibold">Menu with Headers & Shortcuts</h2>
 		<p class="text-sm text-neutral-600 dark:text-neutral-400">
 			Grouped items with section headers and keyboard shortcut hints.
@@ -286,6 +308,30 @@
 
 			<DropdownMenu items={longList} maxHeight="150px" onSelect={handleSelect}>
 				Max Height 150px
+			</DropdownMenu>
+		</div>
+	</section>
+
+	<hr class="my-4" />
+
+	<section class="space-y-4">
+		<h2 class="text-xl font-semibold">Searchable Menu</h2>
+		<p class="text-sm text-neutral-600 dark:text-neutral-400">
+			Enable search to filter items as you type. Works with action items and expandable
+			sections.
+		</p>
+
+		<div class="flex gap-4 flex-wrap items-start">
+			<DropdownMenu items={longList} search onSelect={handleSelect}>
+				Searchable (20 items)
+			</DropdownMenu>
+
+			<DropdownMenu
+				items={expandableItems}
+				search={{ placeholder: "Filter options...", strategy: "prefix" }}
+				onSelect={handleSelect}
+			>
+				Searchable with Expandables
 			</DropdownMenu>
 		</div>
 	</section>
@@ -417,3 +463,9 @@
 		</div>
 	</section>
 </div>
+
+<style>
+	:global(.dropdown-match-trigger-width) {
+		min-width: anchor-size(width) !important;
+	}
+</style>

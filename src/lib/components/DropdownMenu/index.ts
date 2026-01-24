@@ -9,6 +9,7 @@ export {
 	type DropdownMenuExpandableItem,
 	type DropdownMenuFlatItem,
 	type DropdownMenuPosition,
+	type DropdownMenuSearchConfig,
 	type NavigableItem,
 	type NavigableExpandable,
 	DROPDOWN_MENU_BASE_CLASSES,

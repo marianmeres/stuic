@@ -100,6 +100,20 @@
 	}
 	export type NavigableItem = DropdownMenuActionItem | NavigableExpandable;
 
+	/** Search configuration options */
+	export interface DropdownMenuSearchConfig {
+		/** Placeholder text for search input */
+		placeholder?: string;
+		/** Search strategy */
+		strategy?: "prefix" | "exact" | "fuzzy";
+		/** Custom function to extract searchable text from an item */
+		getContent?: (item: DropdownMenuActionItem | DropdownMenuExpandableItem) => string;
+		/** Auto-focus search input when menu opens */
+		autoFocus?: boolean;
+		/** Message shown when no results found */
+		noResultsMessage?: string;
+	}
+
 	export interface Props extends Omit<HTMLButtonAttributes, "children"> {
 		/** Menu items to display */
 		items: DropdownMenuItem[];
@@ -119,6 +133,8 @@
 		closeOnEscape?: boolean;
 		/** Force fallback positioning mode (for testing) */
 		forceFallback?: boolean;
+		/** Enable search/filter functionality (true for defaults, or config object) */
+		search?: boolean | DropdownMenuSearchConfig;
 		/** Classes for the wrapper element */
 		class?: string;
 		/** Classes for the trigger button */
@@ -145,6 +161,10 @@
 		classExpandableContent?: string;
 		/** Classes for backdrop (fallback mode only) */
 		classBackdrop?: string;
+		/** Classes for search input container */
+		classSearchContainer?: string;
+		/** Classes for search input */
+		classSearchInput?: string;
 		/** Show backdrop in fallback mode (default: true) */
 		showBackdrop?: boolean;
 		/** Custom trigger snippet - receives isOpen state, toggle function, and ARIA props for full control */
@@ -223,7 +243,7 @@
 	import { getId } from "../../utils/get-id.js";
 	import { prefersReducedMotion } from "../../utils/prefers-reduced-motion.svelte.js";
 	import { ItemCollection } from "@marianmeres/item-collection";
-	import { iconChevronDown, iconChevronRight } from "$lib/icons/index.js";
+	import { iconChevronDown, iconChevronRight, iconSearch, iconX } from "$lib/icons/index.js";
 	import { onClickOutside } from "runed";
 	import { slide, fade } from "svelte/transition";
 	import { untrack } from "svelte";
@@ -242,6 +262,7 @@
 		closeOnClickOutside = true,
 		closeOnEscape = true,
 		forceFallback = false,
+		search,
 		class: classProp,
 		classTrigger,
 		classDropdown,
@@ -255,6 +276,8 @@
 		classExpandable,
 		classExpandableContent,
 		classBackdrop,
+		classSearchContainer,
+		classSearchInput,
 		showBackdrop = true,
 		trigger,
 		children,
@@ -288,6 +311,81 @@
 	// Track expanded sections (independent toggle - multiple can be open)
 	let expandedSections = $state<Set<string | number>>(new Set());
 
+	// Search state
+	let searchQuery = $state("");
+	let searchInputEl: HTMLInputElement | undefined = $state();
+
+	// Default content extractor for search
+	function defaultGetContent(
+		item: DropdownMenuActionItem | DropdownMenuExpandableItem
+	): string {
+		if (typeof item.label === "string") return item.label;
+		if (item.label && typeof item.label === "object" && "text" in item.label) {
+			return (item.label as { text?: string }).text || "";
+		}
+		return String(item.id);
+	}
+
+	// Normalize search config
+	let searchConfig = $derived.by(() => {
+		if (!search) return null;
+		const defaults = {
+			placeholder: "Search...",
+			strategy: "prefix" as const,
+			getContent: defaultGetContent,
+			autoFocus: true,
+			noResultsMessage: "No results found",
+		};
+		return search === true ? defaults : { ...defaults, ...search };
+	});
+
+	// Extract all searchable items (action + expandable + nested actions)
+	let allSearchableItems = $derived.by(() => {
+		const result: (DropdownMenuActionItem | DropdownMenuExpandableItem)[] = [];
+		for (const item of items) {
+			if (item.type === "action") result.push(item);
+			if (item.type === "expandable") {
+				result.push(item);
+				for (const child of item.items) {
+					if (child.type === "action") result.push(child);
+				}
+			}
+		}
+		return result;
+	});
+
+	// Searchable collection (recreate when items or config changes)
+	let searchableCollection = $derived.by(() => {
+		if (!searchConfig) return null;
+		return new ItemCollection(allSearchableItems, {
+			idPropName: "id",
+			searchable: { getContent: searchConfig.getContent },
+		});
+	});
+
+	// Filtered items based on search
+	let filteredItems = $derived.by(() => {
+		if (!searchConfig || !searchQuery.trim() || !searchableCollection) {
+			return items;
+		}
+		const results = searchableCollection.search(searchQuery, searchConfig.strategy);
+		const matchedIds = new Set(results.map((r) => r.id));
+
+		return items.filter((item) => {
+			if (item.type === "divider" || item.type === "header" || item.type === "custom") {
+				return false; // Hide during search
+			}
+			if (item.type === "action") return matchedIds.has(item.id);
+			if (item.type === "expandable") {
+				return (
+					matchedIds.has(item.id) ||
+					item.items.some((c) => c.type === "action" && matchedIds.has(c.id))
+				);
+			}
+			return false;
+		});
+	});
+
 	// Initialize expanded sections from defaultExpanded
 	$effect(() => {
 		const initial = new Set<string | number>();
@@ -306,10 +404,20 @@
 	});
 	let _navItems = $derived($navItems);
 
-	// Flatten navigable items (respects expanded state)
+	// Flatten navigable items (respects expanded state and search filter)
 	let navigableItems = $derived.by(() => {
+		const sourceItems = searchConfig && searchQuery.trim() ? filteredItems : items;
 		const flat: NavigableItem[] = [];
-		for (const item of items) {
+
+		// When searching, get matched IDs to filter expandable children
+		const matchedIds =
+			searchConfig && searchQuery.trim() && searchableCollection
+				? new Set(
+						searchableCollection.search(searchQuery, searchConfig.strategy).map((r) => r.id)
+					)
+				: null;
+
+		for (const item of sourceItems) {
 			if (item.type === "action" && !item.disabled) {
 				flat.push(item);
 			} else if (item.type === "expandable" && !item.disabled) {
@@ -319,7 +427,14 @@
 				if (expandedSections.has(item.id)) {
 					for (const child of item.items) {
 						if (child.type === "action" && !child.disabled) {
-							flat.push(child);
+							// During search, only include matched children
+							if (matchedIds) {
+								if (matchedIds.has(child.id)) {
+									flat.push(child);
+								}
+							} else {
+								flat.push(child);
+							}
 						}
 					}
 				}
@@ -346,6 +461,45 @@
 	$effect(() => {
 		if (!isOpen) {
 			navItems.unsetActive();
+		}
+	});
+
+	// Auto-focus search input when menu opens
+	$effect(() => {
+		if (isOpen && searchConfig?.autoFocus && searchInputEl) {
+			requestAnimationFrame(() => searchInputEl?.focus());
+		}
+	});
+
+	// Reset search when menu closes
+	$effect(() => {
+		if (!isOpen) {
+			searchQuery = "";
+		}
+	});
+
+	// Auto-expand sections with matching children during search
+	$effect(() => {
+		if (!searchConfig || !searchQuery.trim() || !searchableCollection) return;
+		const matchedIds = new Set(
+			searchableCollection.search(searchQuery, searchConfig.strategy).map((r) => r.id)
+		);
+		// Use untrack to avoid infinite loop (read without creating dependency)
+		const currentExpanded = untrack(() => expandedSections);
+		const newExpanded = new Set(currentExpanded);
+		let hasChanges = false;
+		for (const item of items) {
+			if (item.type === "expandable") {
+				if (item.items.some((c) => c.type === "action" && matchedIds.has(c.id))) {
+					if (!newExpanded.has(item.id)) {
+						newExpanded.add(item.id);
+						hasChanges = true;
+					}
+				}
+			}
+		}
+		if (hasChanges) {
+			expandedSections = newExpanded;
 		}
 	});
 
@@ -474,6 +628,27 @@
 		}
 	}
 
+	// Handle keyboard events in search input
+	function handleSearchKeydown(e: KeyboardEvent) {
+		if (e.key === "Escape" && searchQuery) {
+			e.preventDefault();
+			e.stopPropagation();
+			searchQuery = "";
+			return;
+		}
+		if (e.key === "ArrowDown") {
+			e.preventDefault();
+			navItems.setActiveFirst();
+		}
+		if (e.key === "Enter" && filteredItems.length > 0) {
+			e.preventDefault();
+			const first = filteredItems.find(
+				(i): i is DropdownMenuActionItem => i.type === "action" && !i.disabled
+			);
+			if (first) selectItem(first);
+		}
+	}
+
 	// Computed transition duration
 	let transitionDuration = $derived(reducedMotion.current ? 0 : 100);
 
@@ -520,6 +695,8 @@
 			e.preventDefault();
 			navItems.setActiveLast();
 		} else if (["Enter", " "].includes(e.key)) {
+			// Don't intercept space when typing in search input
+			if (e.key === " " && e.target === searchInputEl) return;
 			e.preventDefault();
 			const active = _navItems.active;
 			if (active) {
@@ -652,29 +829,65 @@
 					</button>
 				</div>
 			{/if}
-			{#each items as item}
-				{#if item.type === "action"}
-					{@const isActive = _navItems.active?.id === item.id}
-					<ListItemButton
-						id={itemId(item.id)}
-						role="menuitem"
-						focused={isActive}
-						contentBefore={item.contentBefore}
-						contentAfter={item.contentAfter}
-						class={twMerge(classItem, item.class)}
-						classFocused={classItemActive}
-						classContentBefore={classItemBefore}
-						classContentAfter={classItemAfter}
-						onclick={() => selectItem(item)}
-						onmouseenter={() => navItems.setActive(item)}
-						disabled={item.disabled}
-						tabindex={-1}
-					>
-						<Thc thc={item.label} />
-					</ListItemButton>
-				{:else if item.type === "divider"}
-					<div
-						role="separator"
+			<!-- Search input -->
+			{#if searchConfig}
+				<div class={twMerge("stuic-dropdown-menu-search", classSearchContainer)}>
+					<span class="stuic-dropdown-menu-search-icon">
+						{@html iconSearch({ size: 16 })}
+					</span>
+					<input
+						bind:this={searchInputEl}
+						bind:value={searchQuery}
+						type="text"
+						placeholder={searchConfig.placeholder}
+						class={twMerge("stuic-dropdown-menu-search-input", classSearchInput)}
+						autocomplete="off"
+						onfocus={() => navItems.unsetActive()}
+						onkeydown={handleSearchKeydown}
+						aria-label="Search menu items"
+					/>
+					{#if searchQuery}
+						<button
+							type="button"
+							class="stuic-dropdown-menu-search-clear"
+							onclick={() => {
+								searchQuery = "";
+								searchInputEl?.focus();
+							}}
+							aria-label="Clear search"
+						>
+							{@html iconX({ size: 14 })}
+						</button>
+					{/if}
+				</div>
+			{/if}
+			<!-- Menu items -->
+			{#if searchConfig && searchQuery && filteredItems.length === 0}
+				<div class="stuic-dropdown-menu-no-results">{searchConfig.noResultsMessage}</div>
+			{:else}
+				{#each filteredItems as item}
+					{#if item.type === "action"}
+						{@const isActive = _navItems.active?.id === item.id}
+						<ListItemButton
+							id={itemId(item.id)}
+							role="menuitem"
+							focused={isActive}
+							contentBefore={item.contentBefore}
+							contentAfter={item.contentAfter}
+							class={twMerge(classItem, item.class)}
+							classFocused={classItemActive}
+							classContentBefore={classItemBefore}
+							classContentAfter={classItemAfter}
+							onclick={() => selectItem(item)}
+							onmouseenter={() => navItems.setActive(item)}
+							disabled={item.disabled}
+							tabindex={-1}
+						>
+							<Thc thc={item.label} />
+						</ListItemButton>
+					{:else if item.type === "divider"}
+						<div
+							role="separator"
 						class={twMerge(DROPDOWN_MENU_DIVIDER_CLASSES, classDivider, item.class)}
 					></div>
 				{:else if item.type === "header"}
@@ -778,7 +991,8 @@
 						{/if}
 					</div>
 				{/if}
-			{/each}
+				{/each}
+			{/if}
 		</div>
 	{/if}
 </div>

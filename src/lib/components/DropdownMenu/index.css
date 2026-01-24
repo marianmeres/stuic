@@ -64,6 +64,11 @@
 
 	/* Expandable section indent */
 	--stuic-dropdown-menu-expandable-indent: calc(var(--spacing) * 4);
+
+	/* Search */
+	--stuic-dropdown-menu-search-bg: var(--stuic-color-surface);
+	--stuic-dropdown-menu-search-border: var(--stuic-color-border);
+	--stuic-dropdown-menu-search-text: var(--stuic-color-muted-foreground);
 }
 
 @layer components {
@@ -265,5 +270,64 @@
 				flip-block, --pop-top-span-right, --pop-top-span-left, --pop-top, --pop-left,
 				--pop-right;
 		}
+	}
+
+	/* =============================================================================
+	   SEARCH INPUT
+	   ============================================================================= */
+
+	.stuic-dropdown-menu-search {
+		position: sticky;
+		top: 0;
+		z-index: 10;
+		display: flex;
+		align-items: center;
+		gap: calc(var(--spacing) * 1);
+		padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2);
+		background: var(--stuic-dropdown-menu-search-bg);
+		border-bottom: 1px solid var(--stuic-dropdown-menu-search-border);
+		margin: calc(var(--stuic-dropdown-menu-padding) * -1);
+		margin-bottom: var(--stuic-dropdown-menu-padding);
+	}
+
+	.stuic-dropdown-menu-search-icon {
+		color: var(--stuic-dropdown-menu-search-text);
+		flex-shrink: 0;
+		display: flex;
+	}
+
+	.stuic-dropdown-menu-search-input {
+		flex: 1;
+		min-width: 0;
+		background: transparent;
+		border: none;
+		outline: none;
+		color: var(--stuic-dropdown-menu-text);
+		font-size: inherit;
+	}
+
+	.stuic-dropdown-menu-search-input::placeholder {
+		color: var(--stuic-dropdown-menu-search-text);
+	}
+
+	.stuic-dropdown-menu-search-clear {
+		background: transparent;
+		border: none;
+		color: var(--stuic-dropdown-menu-search-text);
+		cursor: pointer;
+		padding: calc(var(--spacing) * 0.5);
+		display: flex;
+		border-radius: var(--stuic-dropdown-menu-radius);
+		transition: color var(--stuic-dropdown-menu-transition);
+	}
+
+	.stuic-dropdown-menu-search-clear:hover {
+		color: var(--stuic-dropdown-menu-text);
+	}
+
+	.stuic-dropdown-menu-no-results {
+		padding: calc(var(--spacing) * 4);
+		text-align: center;
+		color: var(--stuic-dropdown-menu-search-text);
 	}
 }
