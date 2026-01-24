@@ -85,24 +85,6 @@
 	</p>
 
 	<ThemePreview {acp} {notifications} />
-
-	<!-- Quick theme grid for fast switching -->
-	<div class="mt-8">
-		<h2 class="text-lg font-semibold mb-3">Quick Theme Switch</h2>
-		<div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-7 gap-2">
-			{#each themeNames as theme}
-				<button
-					class="px-2 py-1.5 text-xs rounded border transition-colors {selectedTheme ===
-					theme
-						? 'border-blue-500 bg-blue-50 dark:bg-blue-950 font-medium'
-						: 'border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800'}"
-					onclick={() => (selectedTheme = theme)}
-				>
-					{theme}
-				</button>
-			{/each}
-		</div>
-	</div>
 </div>
 
 <AlertConfirmPrompt {acp} />

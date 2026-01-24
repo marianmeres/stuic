@@ -25,10 +25,10 @@
 	--stuic-theme-preview-transition:      150ms;
 
 	/* Section-specific tokens that consume theme colors */
-	--stuic-theme-preview-header-bg:       var(--stuic-color-surface);
-	--stuic-theme-preview-header-text:     var(--stuic-color-surface-foreground);
-	--stuic-theme-preview-sidebar-bg:      var(--stuic-color-muted);
-	--stuic-theme-preview-sidebar-text:    var(--stuic-color-muted-foreground);
+	--stuic-theme-preview-header-bg:       var(--stuic-color-surface-2);
+	--stuic-theme-preview-header-text:     var(--stuic-color-surface-2-foreground);
+	--stuic-theme-preview-sidebar-bg:      var(--stuic-color-surface-1);
+	--stuic-theme-preview-sidebar-text:    var(--stuic-color-surface-1-foreground);
 	--stuic-theme-preview-sidebar-width:   200px;
 	--stuic-theme-preview-main-bg:         var(--stuic-color-background);
 	--stuic-theme-preview-main-text:       var(--stuic-color-foreground);
@@ -80,7 +80,6 @@
 .stuic-theme-preview-header .header-subtitle {
 	font-size: 0.875rem;
 	margin: 0;
-	color: var(--stuic-color-muted-foreground);
 }
 
 /* ============================================================================
