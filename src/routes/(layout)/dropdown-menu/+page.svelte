@@ -192,9 +192,10 @@
 
 		<div class="w-full">
 			<DropdownMenu
-				items={basicItems}
+				items={longList}
 				onSelect={handleSelect}
-				position="bottom"
+				position="top"
+				search
 				class="w-full block"
 				classTrigger="w-full"
 				classDropdown="dropdown-match-trigger-width"
@@ -332,6 +333,10 @@
 				onSelect={handleSelect}
 			>
 				Searchable with Expandables
+			</DropdownMenu>
+
+			<DropdownMenu items={longList} search forceFallback onSelect={handleSelect}>
+				Searchable (Fallback Mode)
 			</DropdownMenu>
 		</div>
 	</section>

@@ -386,6 +386,16 @@
 		});
 	});
 
+	// Matched IDs for use in template filtering during search
+	let searchMatchedIds = $derived.by(() => {
+		if (!searchConfig || !searchQuery.trim() || !searchableCollection) {
+			return null;
+		}
+		return new Set(
+			searchableCollection.search(searchQuery, searchConfig.strategy).map((r) => r.id)
+		);
+	});
+
 	// Initialize expanded sections from defaultExpanded
 	$effect(() => {
 		const initial = new Set<string | number>();
@@ -638,6 +648,7 @@
 		}
 		if (e.key === "ArrowDown") {
 			e.preventDefault();
+			e.stopPropagation();
 			navItems.setActiveFirst();
 		}
 		if (e.key === "Enter" && filteredItems.length > 0) {
@@ -655,22 +666,29 @@
 	// Position styles for CSS Anchor Positioning
 	let dropdownStyle = $derived.by(() => {
 		if (isSupported) {
+			// Use fixed height when search is enabled AND position is a "top" variant
+			// to prevent jarring resize during filtering (dropdown grows upward)
+			const isTopPosition = position.startsWith("top");
+			const heightStyle =
+				searchConfig && isTopPosition ? `height: ${maxHeight};` : `max-height: ${maxHeight};`;
 			return `
 				position: fixed;
 				position-anchor: ${anchorName};
 				position-area: ${POSITION_MAP[position] || "bottom"};
 				margin: ${offset};
-				max-height: ${maxHeight};
+				${heightStyle}
 			`;
 		} else {
 			// Fallback: centered modal overlay
+			// Use fixed height when search is enabled to prevent jarring resize during filtering
+			const heightStyle = searchConfig ? `height: ${maxHeight};` : `max-height: ${maxHeight};`;
 			return `
 				position: fixed;
 				top: 50%;
 				left: 50%;
 				transform: translate(-50%, -50%);
 				max-width: 90vw;
-				max-height: ${maxHeight};
+				${heightStyle}
 				z-index: 50;
 			`;
 		}
@@ -684,7 +702,13 @@
 		if (["ArrowDown", "ArrowUp"].includes(e.key)) {
 			e.preventDefault();
 			if (e.key === "ArrowUp") {
-				e.metaKey ? navItems.setActiveFirst() : navItems.setActivePrevious();
+				// Check if at first item and search is active - return to search input
+				if (searchConfig && _navItems.active?.id === navigableItems[0]?.id) {
+					navItems.unsetActive();
+					searchInputEl?.focus();
+				} else {
+					e.metaKey ? navItems.setActiveFirst() : navItems.setActivePrevious();
+				}
 			} else {
 				e.metaKey ? navItems.setActiveLast() : navItems.setActiveNext();
 			}
@@ -943,48 +967,54 @@
 							>
 								{#each item.items as childItem}
 									{#if childItem.type === "action"}
-										{@const isChildActive = _navItems.active?.id === childItem.id}
-										<ListItemButton
-											id={itemId(childItem.id)}
-											role="menuitem"
-											focused={isChildActive}
-											contentBefore={childItem.contentBefore}
-											contentAfter={childItem.contentAfter}
-											class={twMerge(classItem, childItem.class)}
-											classFocused={classItemActive}
-											classContentBefore={classItemBefore}
-											classContentAfter={classItemAfter}
-											onclick={() => selectItem(childItem)}
-											onmouseenter={() => navItems.setActive(childItem)}
-											disabled={childItem.disabled}
-											tabindex={-1}
-										>
-											<Thc thc={childItem.label} />
-										</ListItemButton>
-									{:else if childItem.type === "divider"}
-										<div
-											role="separator"
-											class={twMerge(
-												DROPDOWN_MENU_DIVIDER_CLASSES,
-												classDivider,
-												childItem.class
-											)}
-										></div>
-									{:else if childItem.type === "header"}
-										<div
-											role="presentation"
-											class={twMerge(
-												DROPDOWN_MENU_HEADER_CLASSES,
-												classHeader,
-												childItem.class
-											)}
-										>
-											<Thc thc={childItem.label} />
-										</div>
-									{:else if childItem.type === "custom"}
-										<div role="presentation" class={childItem.class}>
-											<Thc thc={childItem.content} />
-										</div>
+										<!-- During search, only show matched action items -->
+										{#if !searchMatchedIds || searchMatchedIds.has(childItem.id)}
+											{@const isChildActive = _navItems.active?.id === childItem.id}
+											<ListItemButton
+												id={itemId(childItem.id)}
+												role="menuitem"
+												focused={isChildActive}
+												contentBefore={childItem.contentBefore}
+												contentAfter={childItem.contentAfter}
+												class={twMerge(classItem, childItem.class)}
+												classFocused={classItemActive}
+												classContentBefore={classItemBefore}
+												classContentAfter={classItemAfter}
+												onclick={() => selectItem(childItem)}
+												onmouseenter={() => navItems.setActive(childItem)}
+												disabled={childItem.disabled}
+												tabindex={-1}
+											>
+												<Thc thc={childItem.label} />
+											</ListItemButton>
+										{/if}
+									{:else if !searchMatchedIds}
+										<!-- Only show non-action items (divider, header, custom) when NOT searching -->
+										{#if childItem.type === "divider"}
+											<div
+												role="separator"
+												class={twMerge(
+													DROPDOWN_MENU_DIVIDER_CLASSES,
+													classDivider,
+													childItem.class
+												)}
+											></div>
+										{:else if childItem.type === "header"}
+											<div
+												role="presentation"
+												class={twMerge(
+													DROPDOWN_MENU_HEADER_CLASSES,
+													classHeader,
+													childItem.class
+												)}
+											>
+												<Thc thc={childItem.label} />
+											</div>
+										{:else if childItem.type === "custom"}
+											<div role="presentation" class={childItem.class}>
+												<Thc thc={childItem.content} />
+											</div>
+										{/if}
 									{/if}
 								{/each}
 							</div>
