@@ -52,9 +52,13 @@
 	let isShrinking = $state(false);
 	let isExpanding = $state(false);
 	let inTransition = $derived(isExpanding || isShrinking);
-	let _timer: any;
+	let _timer: ReturnType<typeof setTimeout> | null = null;
 	let box = $state<DOMRect>();
 	let duration = $derived(prefersReduced.current ? 0 : _duration);
+
+	$effect(() => {
+		return () => clear();
+	});
 
 	function clear() {
 		clearTimeout(_timer);
@@ -71,6 +75,7 @@
 
 	function expand() {
 		if (!enabled) return;
+		if (!el) return;
 		if (isExpanding || isShrinking || isExpanded) return;
 
 		// asap
@@ -80,9 +85,9 @@
 		box = el.getBoundingClientRect();
 		const pos = {
 			top: box.top,
-			bottom: innerHeight.current! - box.bottom,
+			bottom: (innerHeight.current ?? 0) - box.bottom,
 			left: box.left,
-			right: innerWidth.current! - box.right,
+			right: (innerWidth.current ?? 0) - box.right,
 		};
 
 		// <offset-x>, <offset-y>, <blur-radius>, <spread-radius>
@@ -102,22 +107,28 @@
 		// kind of ugly - need to set props in multiple steps...
 		(async () => {
 			await waitForNextRepaint();
+			if (!el) return;
 			el.style.position = `fixed`;
 
 			await waitForNextRepaint();
+			if (!el) return;
 			el.style.width = `${box!.width}px`;
 
 			await waitForNextRepaint();
+			if (!el) return;
 			el.style.transitionProperty = "all";
 			el.style.width = `${targetWidth}px`;
 
 			await waitForTransitionEnd(el);
+			if (!el) return;
 			isExpanding = false;
 		})();
 	}
 
 	function shrink() {
 		if (!enabled) return;
+		if (!el) return;
+		if (!box) return;
 		if (isExpanding || isShrinking || !isExpanded) return;
 
 		// asap
@@ -129,6 +140,7 @@
 
 		(async () => {
 			await waitForTransitionEnd(el);
+			if (!el) return;
 			isShrinking = false;
 
 			// now reset all back to defaults

@@ -38,8 +38,8 @@
 		items?: NavItem[];
 		/** Group icon (optional) */
 		icon?: THC;
-		/** Whether the group starts collapsed */
-		defaultCollapsed?: boolean;
+		/** Whether the group starts expanded (default: false, groups are collapsed by default) */
+		defaultExpanded?: boolean;
 		/** Navigation URL for groups without items */
 		href?: string;
 		/** Click handler for groups without items */
@@ -218,44 +218,76 @@
 		localStorageValue(getItemStorageKey(itemId), expanded).set(expanded);
 	}
 
-	// Track expanded state for each group
-	let groupExpandedStates = $state<boolean[]>([]);
+	// Check if an item matches active state (used during initialization)
+	function checkItemActive(item: NavItem): boolean {
+		if (isActive) return isActive(item);
+		if (activeId) return item.id === activeId;
+		return false;
+	}
 
-	// Initialize expanded states based on groups
-	$effect(() => {
-		const currentGroups = groups;
-		untrack(() => {
-			// Only initialize if length changed or states array is empty
-			if (groupExpandedStates.length !== currentGroups.length) {
-				groupExpandedStates = currentGroups.map((g) => {
-					// If group has an id, try to load from localStorage
-					if (g.id) {
-						const stored = loadGroupState(g.id);
-						if (stored !== undefined) return stored;
-					}
-					// Fall back to defaultCollapsed
-					return !g.defaultCollapsed;
-				});
+	// Check if any item in a list (or their descendants) is active
+	function hasActiveDescendant(items: NavItem[]): boolean {
+		for (const item of items) {
+			if (checkItemActive(item)) return true;
+			if (item.children && hasActiveDescendant(item.children)) return true;
+		}
+		return false;
+	}
+
+	// Check if a group has any active child at any depth
+	function groupHasActiveChild(group: NavGroup): boolean {
+		if (!group.items) return false;
+		return hasActiveDescendant(group.items);
+	}
+
+	// Compute initial group expanded states synchronously
+	function computeGroupStates(): boolean[] {
+		return groups.map((g) => {
+			// First priority: localStorage (if persistence enabled)
+			if (persistState && g.id) {
+				const stored = loadGroupState(g.id);
+				if (stored != null) return stored;  // Check for both null and undefined
 			}
+			// Second priority: auto-expand if group has an active child
+			if (groupHasActiveChild(g)) {
+				return true;
+			}
+			// Third priority: use defaultExpanded prop
+			if (g.defaultExpanded !== undefined) {
+				return g.defaultExpanded;
+			}
+			// Default: collapsed
+			return false;
 		});
+	}
+
+	// Initialize state synchronously from props (not via effect)
+	let groupExpandedStates = $state<boolean[]>(computeGroupStates());
+
+	// Re-sync if groups array length changes
+	$effect.pre(() => {
+		if (groupExpandedStates.length !== groups.length) {
+			groupExpandedStates = computeGroupStates();
+		}
 	});
 
 	// Check if group is expanded
 	function isGroupExpanded(index: number): boolean {
-		return groupExpandedStates[index] ?? true;
+		return groupExpandedStates[index] ?? false;
 	}
 
 	// Toggle group expand/collapse
 	function toggleGroup(index: number) {
-		groupExpandedStates[index] = !groupExpandedStates[index];
+		const newState = !groupExpandedStates[index];
+		groupExpandedStates[index] = newState;
 
 		// Persist state if group has an id
 		const group = groups[index];
 		if (group?.id) {
-			saveGroupState(group.id, groupExpandedStates[index]);
+			saveGroupState(group.id, newState);
 		}
 
-		onGroupToggle?.(index, groupExpandedStates[index]);
+		onGroupToggle?.(index, newState);
 	}
 
 	// Check if a group has items (and thus should be expandable)
@@ -267,10 +299,6 @@
 	function itemHasChildren(item: NavItem): boolean {
 		return (item.children?.length ?? 0) > 0;
 	}
-
-	// Track expanded state for individual items with children
-	let itemExpandedStates = $state<Set<string>>(new Set());
-	let itemStatesInitialized = false;
 
 	// Collect all items with children recursively
 	function collectItemsWithChildren(items: NavItem[]): NavItem[] {
@@ -284,32 +312,33 @@
 		return result;
 	}
 
-	// Initialize item expanded states from localStorage
-	$effect(() => {
-		const currentGroups = groups;
-		untrack(() => {
-			if (itemStatesInitialized) return;
-			itemStatesInitialized = true;
-
-			if (!persistState) return;
-
-			const expandedItems = new Set<string>();
-			for (const group of currentGroups) {
-				if (group.items) {
-					const itemsWithChildren = collectItemsWithChildren(group.items);
-					for (const item of itemsWithChildren) {
+	// Compute initial item expanded states synchronously
+	function computeItemStates(): Set<string> {
+		const expandedItems = new Set<string>();
+		for (const group of groups) {
+			if (group.items) {
+				const itemsWithChildren = collectItemsWithChildren(group.items);
+				for (const item of itemsWithChildren) {
+					// First priority: localStorage (if persistence enabled)
+					if (persistState) {
 						const stored = loadItemState(item.id);
-						if (stored === true) {
-							expandedItems.add(item.id);
+						if (stored != null) {
+							if (stored) expandedItems.add(item.id);
+							continue; // localStorage takes precedence
 						}
+					}
+					// Second priority: auto-expand if item has an active descendant
+					if (item.children && hasActiveDescendant(item.children)) {
+						expandedItems.add(item.id);
 					}
 				}
 			}
-			if (expandedItems.size > 0) {
-				itemExpandedStates = expandedItems;
-			}
-		});
-	});
+		}
+		return expandedItems;
+	}
+
+	// Track expanded state for individual items with children (initialized synchronously)
+	let itemExpandedStates = $state<Set<string>>(computeItemStates());
 
 	// Check if an item is expanded
 	function isItemExpanded(itemId: string): boolean {

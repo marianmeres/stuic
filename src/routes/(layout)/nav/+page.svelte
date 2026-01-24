@@ -15,7 +15,7 @@
 	import { iconLucideCircleHelp } from "@marianmeres/icons-fns/lucide/iconLucideCircleHelp.js";
 
 	let lastAction = $state<string | null>(null);
-	let activeId = $state<string>("pages");
+	let activeId = $state<string>("products-inventory");
 
 	// Sidebar collapsed state demo
 	let isCollapsed = $state(false);
@@ -28,6 +28,7 @@
 	// Basic navigation group
 	const contentGroup: NavGroup = {
 		title: "Content",
+		// defaultExpanded: true,
 		items: [
 			{
 				id: "pages",
@@ -53,6 +54,7 @@
 	// Group with nested children (flat after level 1)
 	const productsGroup: NavGroup = {
 		title: "E-commerce",
+		// defaultExpanded: true,
 		items: [
 			{
 				id: "products",
@@ -87,6 +89,7 @@
 	// Group with onClick handlers
 	const actionsGroup: NavGroup = {
 		title: "Quick Actions",
+		// defaultExpanded: true,
 		items: [
 			{
 				id: "dashboard",
@@ -118,6 +121,7 @@
 	// Group with disabled items
 	const adminGroup: NavGroup = {
 		title: "Administration",
+		// defaultExpanded: true,
 		items: [
 			{
 				id: "users",
@@ -144,6 +148,7 @@
 	// Group with localized labels
 	const localizedGroup: NavGroup = {
 		title: { en: "Localized", sk: "Lokalizované", de: "Lokalisiert" },
+		// defaultExpanded: true,
 		items: [
 			{
 				id: "loc-home",
@@ -165,6 +170,7 @@
 	// Deep nested example (all render flat after level 1)
 	const deepNestedGroup: NavGroup = {
 		title: "Deep Nesting Demo",
+		// defaultExpanded: true,
 		items: [
 			{
 				id: "level1",
@@ -187,13 +193,13 @@
 		],
 	};
 
-	// Collapsed by default
-	const collapsedGroup: NavGroup = {
-		title: "Collapsed by Default",
-		defaultCollapsed: true,
+	// Expanded by default (demonstrating defaultExpanded: true)
+	const expandedGroup: NavGroup = {
+		title: "Expanded by Default",
+		defaultExpanded: true,
 		items: [
-			{ id: "hidden1", label: "Hidden Item 1", href: "#/hidden1" },
-			{ id: "hidden2", label: "Hidden Item 2", href: "#/hidden2" },
+			{ id: "visible1", label: "Visible Item 1", href: "#/visible1" },
+			{ id: "visible2", label: "Visible Item 2", href: "#/visible2" },
 		],
 	};
 
@@ -442,13 +448,13 @@
 	<hr class="my-4" />
 
 	<section class="space-y-4">
-		<h2 class="text-xl font-semibold">Collapsed by Default</h2>
+		<h2 class="text-xl font-semibold">Expanded by Default</h2>
 		<p class="text-sm text-neutral-600 dark:text-neutral-400">
-			Groups can start collapsed using defaultCollapsed.
+			Groups are collapsed by default. Use defaultExpanded: true to start expanded.
 		</p>
 
 		<div class="w-64 bg-neutral-100 dark:bg-neutral-800 rounded-lg p-2">
-			<Nav groups={[collapsedGroup]} {activeId} onSelect={handleSelect} />
+			<Nav groups={[expandedGroup]} {activeId} onSelect={handleSelect} />
 		</div>
 	</section>
 
