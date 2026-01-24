@@ -19,7 +19,7 @@
 		"rp": "pnpm run build && ./release.sh patch",
 		"rpm": "pnpm run build && ./release.sh minor",
 		"build:theme": "tsx scripts/generate-theme.ts",
-		"build:theme:all": "pnpm run build:theme --indir=src/lib/themes --outdir=src/lib/themes"
+		"build:theme:all": "pnpm run build:theme --indir=src/lib/themes --outdir=src/lib/themes/css"
 	},
 	"files": [
 		"dist",

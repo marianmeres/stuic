@@ -1,24 +1,24 @@
 // Import all theme CSS files as raw strings
-import blueOrangeCss from "$lib/themes/blue-orange.css?raw";
-import cyanRedCss from "$lib/themes/cyan-red.css?raw";
-import cyanSlateCss from "$lib/themes/cyan-slate.css?raw";
-import emeraldPinkCss from "$lib/themes/emerald-pink.css?raw";
-import fuchsiaEmeraldCss from "$lib/themes/fuchsia-emerald.css?raw";
-import grayCss from "$lib/themes/gray.css?raw";
-import indigoAmberCss from "$lib/themes/indigo-amber.css?raw";
-import neutralCss from "$lib/themes/neutral.css?raw";
-import pinkEmeraldCss from "$lib/themes/pink-emerald.css?raw";
-import pinkTealCss from "$lib/themes/pink-teal.css?raw";
-import purpleYellowCss from "$lib/themes/purple-yellow.css?raw";
-import rainbowCss from "$lib/themes/rainbow.css?raw";
-import redBlueCss from "$lib/themes/red-blue.css?raw";
-import redCyanCss from "$lib/themes/red-cyan.css?raw";
-import redSkyCss from "$lib/themes/red-sky.css?raw";
-import roseTealCss from "$lib/themes/rose-teal.css?raw";
-import skyAmberCss from "$lib/themes/sky-amber.css?raw";
-import slateCyanCss from "$lib/themes/slate-cyan.css?raw";
-import tealRoseCss from "$lib/themes/teal-rose.css?raw";
-import violetLimeCss from "$lib/themes/violet-lime.css?raw";
+import blueOrangeCss from "$lib/themes/css/blue-orange.css?raw";
+import cyanRedCss from "$lib/themes/css/cyan-red.css?raw";
+import cyanSlateCss from "$lib/themes/css/cyan-slate.css?raw";
+import emeraldPinkCss from "$lib/themes/css/emerald-pink.css?raw";
+import fuchsiaEmeraldCss from "$lib/themes/css/fuchsia-emerald.css?raw";
+import grayCss from "$lib/themes/css/gray.css?raw";
+import indigoAmberCss from "$lib/themes/css/indigo-amber.css?raw";
+import neutralCss from "$lib/themes/css/neutral.css?raw";
+import pinkEmeraldCss from "$lib/themes/css/pink-emerald.css?raw";
+import pinkTealCss from "$lib/themes/css/pink-teal.css?raw";
+import purpleYellowCss from "$lib/themes/css/purple-yellow.css?raw";
+import rainbowCss from "$lib/themes/css/rainbow.css?raw";
+import redBlueCss from "$lib/themes/css/red-blue.css?raw";
+import redCyanCss from "$lib/themes/css/red-cyan.css?raw";
+import redSkyCss from "$lib/themes/css/red-sky.css?raw";
+import roseTealCss from "$lib/themes/css/rose-teal.css?raw";
+import skyAmberCss from "$lib/themes/css/sky-amber.css?raw";
+import slateCyanCss from "$lib/themes/css/slate-cyan.css?raw";
+import tealRoseCss from "$lib/themes/css/teal-rose.css?raw";
+import violetLimeCss from "$lib/themes/css/violet-lime.css?raw";
 
 const themes: Record<string, string> = {
 	neutral: neutralCss,

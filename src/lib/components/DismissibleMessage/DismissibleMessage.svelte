@@ -80,7 +80,7 @@
 			<div class="dismiss">
 				<Button
 					x
-					class="text-inherit!"
+					class="text-inherit"
 					variant="ghost"
 					roundedFull
 					size="sm"
