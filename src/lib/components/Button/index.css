@@ -443,6 +443,7 @@
 	   ============================================================================ */
 	.stuic-button[data-aspect1] {
 		aspect-ratio: 1;
+		justify-items: center;
 	}
 
 	.stuic-button[data-aspect1][data-size="sm"] {

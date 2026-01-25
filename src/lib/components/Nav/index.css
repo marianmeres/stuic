@@ -25,7 +25,7 @@
 	/* Title/header (collapsible group header) */
 	--stuic-nav-group-title-padding-x: 0.5rem;
 	--stuic-nav-group-title-padding-y: 0.5rem;
-	--stuic-nav-group-title-font-size: var(--text-sm);
+	--stuic-nav-group-title-font-size: var(--text-base);
 	--stuic-nav-group-title-font-weight: 700;
 	--stuic-nav-group-title-opacity: 0.75;
 	--stuic-nav-group-title-height: 2.125rem; /* 34px */
@@ -34,7 +34,7 @@
 	--stuic-nav-item-padding-x: 0.5rem;
 	--stuic-nav-item-padding-y: 0.5rem;
 	--stuic-nav-item-height: 2.125rem; /* 34px */
-	--stuic-nav-item-font-size: var(--text-sm);
+	--stuic-nav-item-font-size: var(--text-base);
 
 	/* Touch-friendly modifier */
 	--stuic-nav-item-height-touch: 2.75rem; /* 44px */
@@ -128,8 +128,7 @@
 		height: var(--stuic-nav-group-title-height);
 
 		/* Padding */
-		padding: var(--stuic-nav-group-title-padding-y)
-			var(--stuic-nav-group-title-padding-x);
+		padding: var(--stuic-nav-group-title-padding-y) var(--stuic-nav-group-title-padding-x);
 
 		/* Typography */
 		font-size: var(--stuic-nav-group-title-font-size);
@@ -199,8 +198,7 @@
 		height: var(--stuic-nav-item-height);
 
 		/* Padding */
-		padding: var(--stuic-nav-item-padding-y)
-			var(--stuic-nav-item-padding-x);
+		padding: var(--stuic-nav-item-padding-y) var(--stuic-nav-item-padding-x);
 
 		/* Typography */
 		font-size: var(--stuic-nav-item-font-size);

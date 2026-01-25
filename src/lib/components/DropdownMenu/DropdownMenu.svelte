@@ -42,7 +42,7 @@
 		/** Content displayed after label (e.g., shortcut hint, badge) - supports THC */
 		contentAfter?: THC;
 		/** Callback when item is selected */
-		onSelect?: () => void | boolean;
+		onSelect?: () => void | boolean | Promise<void | boolean>;
 	}
 
 	/** Visual divider/separator */
@@ -189,7 +189,7 @@
 		/** Called when menu closes */
 		onClose?: () => void;
 		/** Called when any action item is selected (fallback if item has no onSelect) */
-		onSelect?: (item: DropdownMenuActionItem) => void | boolean;
+		onSelect?: (item: DropdownMenuActionItem) => void | boolean | Promise<void | boolean>;
 		/** Reference to trigger element */
 		triggerEl?: HTMLButtonElement;
 		/** Reference to dropdown element */
@@ -243,7 +243,12 @@
 	import { getId } from "../../utils/get-id.js";
 	import { prefersReducedMotion } from "../../utils/prefers-reduced-motion.svelte.js";
 	import { ItemCollection } from "@marianmeres/item-collection";
-	import { iconChevronDown, iconChevronRight, iconSearch, iconX } from "$lib/icons/index.js";
+	import {
+		iconChevronDown,
+		iconChevronRight,
+		iconSearch,
+		iconX,
+	} from "$lib/icons/index.js";
 	import { onClickOutside } from "runed";
 	import { slide, fade } from "svelte/transition";
 	import { untrack } from "svelte";
@@ -423,7 +428,9 @@
 		const matchedIds =
 			searchConfig && searchQuery.trim() && searchableCollection
 				? new Set(
-						searchableCollection.search(searchQuery, searchConfig.strategy).map((r) => r.id)
+						searchableCollection
+							.search(searchQuery, searchConfig.strategy)
+							.map((r) => r.id)
 					)
 				: null;
 
@@ -670,7 +677,9 @@
 			// to prevent jarring resize during filtering (dropdown grows upward)
 			const isTopPosition = position.startsWith("top");
 			const heightStyle =
-				searchConfig && isTopPosition ? `height: ${maxHeight};` : `max-height: ${maxHeight};`;
+				searchConfig && isTopPosition
+					? `height: ${maxHeight};`
+					: `max-height: ${maxHeight};`;
 			return `
 				position: fixed;
 				position-anchor: ${anchorName};
@@ -681,7 +690,9 @@
 		} else {
 			// Fallback: centered modal overlay
 			// Use fixed height when search is enabled to prevent jarring resize during filtering
-			const heightStyle = searchConfig ? `height: ${maxHeight};` : `max-height: ${maxHeight};`;
+			const heightStyle = searchConfig
+				? `height: ${maxHeight};`
+				: `max-height: ${maxHeight};`;
 			return `
 				position: fixed;
 				top: 50%;
@@ -912,115 +923,118 @@
 					{:else if item.type === "divider"}
 						<div
 							role="separator"
-						class={twMerge(DROPDOWN_MENU_DIVIDER_CLASSES, classDivider, item.class)}
-					></div>
-				{:else if item.type === "header"}
-					<div
-						role="presentation"
-						class={twMerge(DROPDOWN_MENU_HEADER_CLASSES, classHeader, item.class)}
-					>
-						<Thc thc={item.label} />
-					</div>
-				{:else if item.type === "custom"}
-					<div role="presentation" class={item.class}>
-						<Thc thc={item.content} />
-					</div>
-				{:else if item.type === "expandable"}
-					{@const isExpanded = expandedSections.has(item.id)}
-					{@const isExpandableActive =
-						_navItems.active?.type === "expandable-header" &&
-						_navItems.active?.id === item.id}
-					<div role="group" aria-labelledby={expandableHeaderId(item.id)}>
-						<!-- Expandable header -->
-						<ListItemButton
-							id={expandableHeaderId(item.id)}
-							role="menuitem"
-							focused={isExpandableActive}
-							contentBefore={item.contentBefore}
-							contentAfter={{ html: iconChevronRight({ size: 16 }) }}
-							class={twMerge("font-medium", classExpandable, item.class)}
-							classFocused={classItemActive}
-							classContentBefore={classItemBefore}
-							classContentAfter={twMerge("transition-transform", isExpanded && "rotate-90")}
-							onclick={() => toggleExpanded(item.id)}
-							onmouseenter={() =>
-								navItems.setActive({
-									type: "expandable-header",
-									id: item.id,
-									expandableItem: item,
-								})}
-							aria-expanded={isExpanded}
-							disabled={item.disabled}
-							tabindex={-1}
+							class={twMerge(DROPDOWN_MENU_DIVIDER_CLASSES, classDivider, item.class)}
+						></div>
+					{:else if item.type === "header"}
+						<div
+							role="presentation"
+							class={twMerge(DROPDOWN_MENU_HEADER_CLASSES, classHeader, item.class)}
 						>
 							<Thc thc={item.label} />
-						</ListItemButton>
-
-						<!-- Expandable content -->
-						{#if isExpanded}
-							<div
-								class={twMerge(
-									"stuic-dropdown-menu-expandable-content",
-									classExpandableContent
+						</div>
+					{:else if item.type === "custom"}
+						<div role="presentation" class={item.class}>
+							<Thc thc={item.content} />
+						</div>
+					{:else if item.type === "expandable"}
+						{@const isExpanded = expandedSections.has(item.id)}
+						{@const isExpandableActive =
+							_navItems.active?.type === "expandable-header" &&
+							_navItems.active?.id === item.id}
+						<div role="group" aria-labelledby={expandableHeaderId(item.id)}>
+							<!-- Expandable header -->
+							<ListItemButton
+								id={expandableHeaderId(item.id)}
+								role="menuitem"
+								focused={isExpandableActive}
+								contentBefore={item.contentBefore}
+								contentAfter={{ html: iconChevronRight({ size: 16 }) }}
+								class={twMerge("font-medium", classExpandable, item.class)}
+								classFocused={classItemActive}
+								classContentBefore={classItemBefore}
+								classContentAfter={twMerge(
+									"transition-transform",
+									isExpanded && "rotate-90"
 								)}
-								transition:slide={{ duration: transitionDuration }}
+								onclick={() => toggleExpanded(item.id)}
+								onmouseenter={() =>
+									navItems.setActive({
+										type: "expandable-header",
+										id: item.id,
+										expandableItem: item,
+									})}
+								aria-expanded={isExpanded}
+								disabled={item.disabled}
+								tabindex={-1}
 							>
-								{#each item.items as childItem}
-									{#if childItem.type === "action"}
-										<!-- During search, only show matched action items -->
-										{#if !searchMatchedIds || searchMatchedIds.has(childItem.id)}
-											{@const isChildActive = _navItems.active?.id === childItem.id}
-											<ListItemButton
-												id={itemId(childItem.id)}
-												role="menuitem"
-												focused={isChildActive}
-												contentBefore={childItem.contentBefore}
-												contentAfter={childItem.contentAfter}
-												class={twMerge(classItem, childItem.class)}
-												classFocused={classItemActive}
-												classContentBefore={classItemBefore}
-												classContentAfter={classItemAfter}
-												onclick={() => selectItem(childItem)}
-												onmouseenter={() => navItems.setActive(childItem)}
-												disabled={childItem.disabled}
-												tabindex={-1}
-											>
-												<Thc thc={childItem.label} />
-											</ListItemButton>
+								<Thc thc={item.label} />
+							</ListItemButton>
+
+							<!-- Expandable content -->
+							{#if isExpanded}
+								<div
+									class={twMerge(
+										"stuic-dropdown-menu-expandable-content",
+										classExpandableContent
+									)}
+									transition:slide={{ duration: transitionDuration }}
+								>
+									{#each item.items as childItem}
+										{#if childItem.type === "action"}
+											<!-- During search, only show matched action items -->
+											{#if !searchMatchedIds || searchMatchedIds.has(childItem.id)}
+												{@const isChildActive = _navItems.active?.id === childItem.id}
+												<ListItemButton
+													id={itemId(childItem.id)}
+													role="menuitem"
+													focused={isChildActive}
+													contentBefore={childItem.contentBefore}
+													contentAfter={childItem.contentAfter}
+													class={twMerge(classItem, childItem.class)}
+													classFocused={classItemActive}
+													classContentBefore={classItemBefore}
+													classContentAfter={classItemAfter}
+													onclick={() => selectItem(childItem)}
+													onmouseenter={() => navItems.setActive(childItem)}
+													disabled={childItem.disabled}
+													tabindex={-1}
+												>
+													<Thc thc={childItem.label} />
+												</ListItemButton>
+											{/if}
+										{:else if !searchMatchedIds}
+											<!-- Only show non-action items (divider, header, custom) when NOT searching -->
+											{#if childItem.type === "divider"}
+												<div
+													role="separator"
+													class={twMerge(
+														DROPDOWN_MENU_DIVIDER_CLASSES,
+														classDivider,
+														childItem.class
+													)}
+												></div>
+											{:else if childItem.type === "header"}
+												<div
+													role="presentation"
+													class={twMerge(
+														DROPDOWN_MENU_HEADER_CLASSES,
+														classHeader,
+														childItem.class
+													)}
+												>
+													<Thc thc={childItem.label} />
+												</div>
+											{:else if childItem.type === "custom"}
+												<div role="presentation" class={childItem.class}>
+													<Thc thc={childItem.content} />
+												</div>
+											{/if}
 										{/if}
-									{:else if !searchMatchedIds}
-										<!-- Only show non-action items (divider, header, custom) when NOT searching -->
-										{#if childItem.type === "divider"}
-											<div
-												role="separator"
-												class={twMerge(
-													DROPDOWN_MENU_DIVIDER_CLASSES,
-													classDivider,
-													childItem.class
-												)}
-											></div>
-										{:else if childItem.type === "header"}
-											<div
-												role="presentation"
-												class={twMerge(
-													DROPDOWN_MENU_HEADER_CLASSES,
-													classHeader,
-													childItem.class
-												)}
-											>
-												<Thc thc={childItem.label} />
-											</div>
-										{:else if childItem.type === "custom"}
-											<div role="presentation" class={childItem.class}>
-												<Thc thc={childItem.content} />
-											</div>
-										{/if}
-									{/if}
-								{/each}
-							</div>
-						{/if}
-					</div>
-				{/if}
+									{/each}
+								</div>
+							{/if}
+						</div>
+					{/if}
 				{/each}
 			{/if}
 		</div>
