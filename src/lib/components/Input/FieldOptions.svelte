@@ -738,7 +738,7 @@
 								{/each}
 							</div>
 							<!-- {/if} -->
-							<div class="p-2 px-3 flex items-end justify-between">
+							<div class="pt-3 pl-1 flex items-end justify-between">
 								<div class="text-xs stuic-field-options-muted">
 									<!-- Use arrows to navigate. Spacebar and Enter to select and/or submit. -->
 									{#if allowUnknown}

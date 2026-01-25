@@ -6,8 +6,8 @@
 
 :root {
 	/* Background & text - reference theme tokens */
-	--stuic-modal-bg: var(--stuic-color-surface);
-	--stuic-modal-text: var(--stuic-color-surface-foreground);
+	--stuic-modal-bg: var(--stuic-color-background);
+	--stuic-modal-text: var(--stuic-color-foreground);
 
 	/* Border radius (desktop only - mobile is fullscreen) */
 	--stuic-modal-radius: var(--radius-md);

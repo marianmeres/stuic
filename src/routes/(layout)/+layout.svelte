@@ -12,7 +12,7 @@
 	let theme = $state(ColorScheme.getLocalValue(ColorScheme.LIGHT));
 
 	let selectedTheme = $state(
-		browser ? localStorage.getItem(THEME_STORAGE_KEY) || "neutral" : "neutral"
+		browser ? localStorage.getItem(THEME_STORAGE_KEY) || "stone" : "stone"
 	);
 	let themeCss = $derived(themes[selectedTheme]);
 
@@ -46,7 +46,7 @@
 <ColorSchemeLocal />
 
 <div class="flex flex-col min-h-screen">
-	<header class={["p-4 flex items-center bg-neutral-200 dark:bg-neutral-950"]}>
+	<header class={["p-4 flex items-center bg-stone-200 dark:bg-stone-950"]}>
 		<div class="flex-1">
 			<a class="underline" href="/">UI home</a>
 			<span class="space-x-1">

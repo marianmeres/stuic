@@ -6,8 +6,8 @@
 
 :root {
 	/* Color tokens */
-	--stuic-tabbed-menu-tab-bg: var(--stuic-color-muted);
-	--stuic-tabbed-menu-tab-text: var(--stuic-color-muted-foreground);
+	--stuic-tabbed-menu-tab-bg: var(--stuic-color-surface);
+	--stuic-tabbed-menu-tab-text: var(--stuic-color-surface-foreground);
 	--stuic-tabbed-menu-tab-bg-active: var(--stuic-color-primary);
 	--stuic-tabbed-menu-tab-text-active: var(--stuic-color-primary-foreground);
 	--stuic-tabbed-menu-border: var(--stuic-color-border);

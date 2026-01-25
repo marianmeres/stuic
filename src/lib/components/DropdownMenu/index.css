@@ -13,8 +13,8 @@
 	--stuic-dropdown-menu-transition: 150ms;
 
 	/* Dropdown container colors */
-	--stuic-dropdown-menu-bg: var(--stuic-color-surface);
-	--stuic-dropdown-menu-text: var(--stuic-color-surface-foreground);
+	--stuic-dropdown-menu-bg: var(--stuic-color-background);
+	--stuic-dropdown-menu-text: var(--stuic-color-foreground);
 	--stuic-dropdown-menu-border: var(--stuic-color-border);
 	--stuic-dropdown-menu-shadow: var(--shadow-lg);
 
@@ -66,7 +66,7 @@
 	--stuic-dropdown-menu-expandable-indent: calc(var(--spacing) * 4);
 
 	/* Search */
-	--stuic-dropdown-menu-search-bg: var(--stuic-color-surface);
+	--stuic-dropdown-menu-search-bg: var(--stuic-color-background);
 	--stuic-dropdown-menu-search-border: var(--stuic-color-border);
 	--stuic-dropdown-menu-search-text: var(--stuic-color-muted-foreground);
 }

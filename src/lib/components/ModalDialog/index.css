@@ -13,8 +13,8 @@
 	--stuic-modal-dialog-backdrop: rgb(0 0 0 / 0.4);
 
 	/* Content box - reference theme tokens */
-	--stuic-modal-dialog-bg: var(--stuic-color-surface);
-	--stuic-modal-dialog-text: var(--stuic-color-surface-foreground);
+	--stuic-modal-dialog-bg: var(--stuic-color-background);
+	--stuic-modal-dialog-text: var(--stuic-color-foreground);
 
 	/* Optional shadow for elevation */
 	--stuic-modal-dialog-shadow: var(--shadow-xl);

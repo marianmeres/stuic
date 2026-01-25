@@ -60,7 +60,7 @@
 		<TabbedMenu
 			items={shortItems}
 			bind:value={valueShort}
-			class="inline-flex rounded-full p-1 bg-(--stuic-color-muted) w-full"
+			class="inline-flex rounded-full p-1 bg-(--stuic-color-surface) w-full"
 			classItem="max-w-none"
 			classButton="border-0 rounded-full bg-transparent"
 			classButtonActive="bg-(--stuic-color-primary) text-(--stuic-color-primary-foreground)"
