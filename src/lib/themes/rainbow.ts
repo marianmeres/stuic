@@ -49,22 +49,16 @@ const light: TokenSchema = {
 					// No hover/active for background (rarely needed)
 				},
 				surface: {
-					DEFAULT: "var(--color-slate-50)",
-					foreground: "var(--color-slate-900)",
-					hover: "var(--color-slate-100)",
-					active: "var(--color-slate-200)",
-				},
-				"surface-1": {
-					DEFAULT: "var(--color-slate-100)",
-					foreground: "var(--color-slate-900)",
-					hover: "var(--color-slate-200)",
-					active: "var(--color-slate-300)",
-				},
-				"surface-2": {
 					DEFAULT: "var(--color-slate-200)",
 					foreground: "var(--color-slate-900)",
 					hover: "var(--color-slate-300)",
 					active: "var(--color-slate-400)",
+				},
+				"surface-1": {
+					DEFAULT: "var(--color-slate-300)",
+					foreground: "var(--color-slate-900)",
+					hover: "var(--color-slate-400)",
+					active: "var(--color-slate-500)",
 				},
 				muted: {
 					DEFAULT: "var(--color-slate-100)",
@@ -79,9 +73,9 @@ const light: TokenSchema = {
 
 				// Object with explicit hover/active
 				border: {
-					DEFAULT: "var(--color-slate-200)",
-					hover: "var(--color-slate-300)",
-					active: "var(--color-slate-400)",
+					DEFAULT: "var(--color-slate-300)",
+					hover: "var(--color-slate-400)",
+					active: "var(--color-slate-500)",
 				},
 				input: {
 					DEFAULT: "var(--color-white)",
@@ -151,12 +145,6 @@ const dark: TokenSchema = {
 					foreground: "var(--color-slate-100)",
 					hover: "var(--color-slate-600)",
 					active: "var(--color-slate-500)",
-				},
-				"surface-2": {
-					DEFAULT: "var(--color-slate-600)",
-					foreground: "var(--color-slate-100)",
-					hover: "var(--color-slate-500)",
-					active: "var(--color-slate-400)",
 				},
 				muted: {
 					DEFAULT: "var(--color-slate-700)",

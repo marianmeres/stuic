@@ -242,11 +242,6 @@
 						<span class="surface-1-foreground-text">surface-1-foreground</span>
 					</div>
 
-					<div class="color-swatch surface-2">
-						<span class="swatch-label">surface-2</span>
-						<span class="surface-2-foreground-text">surface-2-foreground</span>
-					</div>
-
 					<div class="color-swatch muted-bg">
 						<span class="swatch-label">muted</span>
 						<span class="muted-foreground-text">muted-foreground</span>

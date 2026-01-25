@@ -58,12 +58,6 @@ const light: TokenSchema = {
 					hover: "var(--color-zinc-400)",
 					active: "var(--color-zinc-500)",
 				},
-				"surface-2": {
-					DEFAULT: "var(--color-zinc-400)",
-					foreground: "var(--color-zinc-900)",
-					hover: "var(--color-zinc-500)",
-					active: "var(--color-zinc-600)",
-				},
 				muted: {
 					DEFAULT: "var(--color-zinc-300)",
 					foreground: "var(--color-zinc-500)",
@@ -74,9 +68,9 @@ const light: TokenSchema = {
 			single: {
 				foreground: "var(--color-zinc-900)",
 				border: {
-					DEFAULT: "var(--color-zinc-400)",
-					hover: "var(--color-zinc-500)",
-					active: "var(--color-zinc-600)",
+					DEFAULT: "var(--color-zinc-300)",
+					hover: "var(--color-zinc-400)",
+					active: "var(--color-zinc-500)",
 				},
 				input: {
 					DEFAULT: "var(--color-white)",
@@ -145,12 +139,6 @@ const dark: TokenSchema = {
 					foreground: "var(--color-zinc-100)",
 					hover: "var(--color-zinc-700)",
 					active: "var(--color-zinc-600)",
-				},
-				"surface-2": {
-					DEFAULT: "var(--color-zinc-700)",
-					foreground: "var(--color-zinc-100)",
-					hover: "var(--color-zinc-600)",
-					active: "var(--color-zinc-500)",
 				},
 				muted: {
 					DEFAULT: "var(--color-zinc-800)",

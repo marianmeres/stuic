@@ -6,7 +6,7 @@ import emeraldPinkCss from "$lib/themes/css/emerald-pink.css?raw";
 import fuchsiaEmeraldCss from "$lib/themes/css/fuchsia-emerald.css?raw";
 import grayCss from "$lib/themes/css/gray.css?raw";
 import indigoAmberCss from "$lib/themes/css/indigo-amber.css?raw";
-import neutralCss from "$lib/themes/css/neutral.css?raw";
+import stoneCss from "$lib/themes/css/stone.css?raw";
 import pinkEmeraldCss from "$lib/themes/css/pink-emerald.css?raw";
 import pinkTealCss from "$lib/themes/css/pink-teal.css?raw";
 import purpleYellowCss from "$lib/themes/css/purple-yellow.css?raw";
@@ -28,7 +28,7 @@ import stoneOrangeEarthCss from "$lib/themes/css/stone-orange-earth.css?raw";
 import violetRoseDuskCss from "$lib/themes/css/violet-rose-dusk.css?raw";
 
 const themes: Record<string, string> = {
-	neutral: neutralCss,
+	stone: stoneCss,
 	gray: grayCss,
 	rainbow: rainbowCss,
 	"blue-orange": blueOrangeCss,

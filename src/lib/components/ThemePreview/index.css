@@ -25,8 +25,8 @@
 	--stuic-theme-preview-transition:      150ms;
 
 	/* Section-specific tokens that consume theme colors */
-	--stuic-theme-preview-header-bg:       var(--stuic-color-surface-2);
-	--stuic-theme-preview-header-text:     var(--stuic-color-surface-2-foreground);
+	--stuic-theme-preview-header-bg:       var(--stuic-color-surface-1);
+	--stuic-theme-preview-header-text:     var(--stuic-color-surface-1-foreground);
 	--stuic-theme-preview-sidebar-bg:      var(--stuic-color-surface-1);
 	--stuic-theme-preview-sidebar-text:    var(--stuic-color-surface-1-foreground);
 	--stuic-theme-preview-sidebar-width:   200px;
@@ -259,10 +259,6 @@
 	background: var(--stuic-color-surface-1);
 }
 
-.stuic-theme-preview .color-swatch.surface-2 {
-	background: var(--stuic-color-surface-2);
-}
-
 .stuic-theme-preview .color-swatch.muted-bg {
 	background: var(--stuic-color-muted);
 }
@@ -278,10 +274,6 @@
 
 .stuic-theme-preview .surface-1-foreground-text {
 	color: var(--stuic-color-surface-1-foreground);
-}
-
-.stuic-theme-preview .surface-2-foreground-text {
-	color: var(--stuic-color-surface-2-foreground);
 }
 
 .stuic-theme-preview .muted-foreground-text {

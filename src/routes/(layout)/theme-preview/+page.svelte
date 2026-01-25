@@ -10,7 +10,7 @@
 
 	import { themes, themeNames } from "./themes-list.js";
 
-	let selectedTheme = $state("neutral");
+	let selectedTheme = $state("stone");
 	let themeCss = $derived(themes[selectedTheme]);
 	let colorScheme = $state(ColorScheme.getLocalValue());
 

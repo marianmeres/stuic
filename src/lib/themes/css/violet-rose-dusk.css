@@ -66,8 +66,8 @@
 	--stuic-color-surface-info:                   color-mix(in srgb, var(--stuic-color-info) 15%, var(--stuic-color-background));
 	--stuic-color-surface-info-foreground:        color-mix(in srgb, var(--stuic-color-info), black 10%);
 	--stuic-color-surface-info-border:            color-mix(in srgb, var(--stuic-color-info) 30%, var(--stuic-color-background));
-	--stuic-color-surface-hover:                  var(--color-zinc-200, #737373);
-	--stuic-color-surface-active:                 var(--color-zinc-300, #737373);
+	--stuic-color-surface-hover:                  var(--color-zinc-300, #737373);
+	--stuic-color-surface-active:                 var(--color-zinc-400, #737373);
 	--stuic-color-surface-foreground:             var(--color-zinc-900, #737373);
 	--stuic-color-surface-foreground-hover:       var(--color-zinc-900, #737373);
 	--stuic-color-surface-foreground-active:      var(--color-zinc-900, #737373);
@@ -80,21 +80,14 @@
 	--stuic-color-background-foreground-hover:    var(--color-zinc-900, #737373);
 	--stuic-color-background-foreground-active:   var(--color-zinc-900, #737373);
 
-	--stuic-color-surface:                        var(--color-zinc-100, #737373);
+	--stuic-color-surface:                        var(--color-zinc-200, #737373);
 
-	--stuic-color-surface-1:                      var(--color-zinc-200, #737373);
-	--stuic-color-surface-1-hover:                var(--color-zinc-300, #737373);
-	--stuic-color-surface-1-active:               var(--color-zinc-400, #737373);
+	--stuic-color-surface-1:                      var(--color-zinc-300, #737373);
+	--stuic-color-surface-1-hover:                var(--color-zinc-400, #737373);
+	--stuic-color-surface-1-active:               var(--color-zinc-500, #737373);
 	--stuic-color-surface-1-foreground:           var(--color-zinc-900, #737373);
 	--stuic-color-surface-1-foreground-hover:     var(--color-zinc-900, #737373);
 	--stuic-color-surface-1-foreground-active:    var(--color-zinc-900, #737373);
-
-	--stuic-color-surface-2:                      var(--color-zinc-300, #737373);
-	--stuic-color-surface-2-hover:                var(--color-zinc-400, #737373);
-	--stuic-color-surface-2-active:               var(--color-zinc-500, #737373);
-	--stuic-color-surface-2-foreground:           var(--color-zinc-900, #737373);
-	--stuic-color-surface-2-foreground-hover:     var(--color-zinc-900, #737373);
-	--stuic-color-surface-2-foreground-active:    var(--color-zinc-900, #737373);
 
 	--stuic-color-muted:                          var(--color-zinc-200, #737373);
 
@@ -215,13 +208,6 @@
 	--stuic-color-surface-1-foreground:           var(--color-zinc-100, #737373);
 	--stuic-color-surface-1-foreground-hover:     var(--color-zinc-100, #737373);
 	--stuic-color-surface-1-foreground-active:    var(--color-zinc-100, #737373);
-
-	--stuic-color-surface-2:                      var(--color-zinc-700, #737373);
-	--stuic-color-surface-2-hover:                var(--color-zinc-600, #737373);
-	--stuic-color-surface-2-active:               var(--color-zinc-500, #737373);
-	--stuic-color-surface-2-foreground:           var(--color-zinc-100, #737373);
-	--stuic-color-surface-2-foreground-hover:     var(--color-zinc-100, #737373);
-	--stuic-color-surface-2-foreground-active:    var(--color-zinc-100, #737373);
 
 	--stuic-color-muted:                          var(--color-zinc-800, #737373);
 

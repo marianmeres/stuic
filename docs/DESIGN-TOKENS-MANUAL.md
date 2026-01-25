@@ -34,7 +34,6 @@ Role colors define **position** in the visual hierarchy. They answer: "Where doe
 | `foreground` | Default text/content color                          |
 | `surface`    | Raised containers (cards, modals, panels, sidebars) |
 | `surface-1`  | Darker surface level (inset areas, nested cards)    |
-| `surface-2`  | Darkest surface level (deeply nested elements)      |
 | `border`     | Default border color                                |
 | `input`      | Form field backgrounds                              |
 | `ring`       | Focus indicator color                               |

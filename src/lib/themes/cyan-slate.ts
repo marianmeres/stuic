@@ -47,22 +47,16 @@ const light: TokenSchema = {
 					foreground: "var(--color-neutral-900)",
 				},
 				surface: {
-					DEFAULT: "var(--color-neutral-50)",
-					foreground: "var(--color-neutral-900)",
-					hover: "var(--color-neutral-100)",
-					active: "var(--color-neutral-200)",
-				},
-				"surface-1": {
-					DEFAULT: "var(--color-neutral-100)",
-					foreground: "var(--color-neutral-900)",
-					hover: "var(--color-neutral-200)",
-					active: "var(--color-neutral-300)",
-				},
-				"surface-2": {
 					DEFAULT: "var(--color-neutral-200)",
 					foreground: "var(--color-neutral-900)",
 					hover: "var(--color-neutral-300)",
 					active: "var(--color-neutral-400)",
+				},
+				"surface-1": {
+					DEFAULT: "var(--color-neutral-300)",
+					foreground: "var(--color-neutral-900)",
+					hover: "var(--color-neutral-400)",
+					active: "var(--color-neutral-500)",
 				},
 				muted: {
 					DEFAULT: "var(--color-neutral-100)",
@@ -74,9 +68,9 @@ const light: TokenSchema = {
 			single: {
 				foreground: "var(--color-neutral-900)",
 				border: {
-					DEFAULT: "var(--color-neutral-200)",
-					hover: "var(--color-neutral-300)",
-					active: "var(--color-neutral-400)",
+					DEFAULT: "var(--color-neutral-300)",
+					hover: "var(--color-neutral-400)",
+					active: "var(--color-neutral-500)",
 				},
 				input: {
 					DEFAULT: "var(--color-white)",
@@ -145,12 +139,6 @@ const dark: TokenSchema = {
 					foreground: "var(--color-neutral-100)",
 					hover: "var(--color-neutral-600)",
 					active: "var(--color-neutral-500)",
-				},
-				"surface-2": {
-					DEFAULT: "var(--color-neutral-600)",
-					foreground: "var(--color-neutral-100)",
-					hover: "var(--color-neutral-500)",
-					active: "var(--color-neutral-400)",
 				},
 				muted: {
 					DEFAULT: "var(--color-neutral-700)",
