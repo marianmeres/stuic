@@ -33,12 +33,6 @@ const light: TokenSchema = {
 				hover: "var(--color-teal-700)",
 				active: "var(--color-teal-800)",
 			},
-			info: {
-				DEFAULT: "var(--color-indigo-500)",
-				foreground: "var(--color-white)",
-				hover: "var(--color-indigo-600)",
-				active: "var(--color-indigo-700)",
-			},
 		},
 		role: {
 			paired: {
@@ -114,12 +108,6 @@ const dark: TokenSchema = {
 				foreground: "var(--color-white)",
 				hover: "var(--color-teal-400)",
 				active: "var(--color-teal-300)",
-			},
-			info: {
-				DEFAULT: "var(--color-indigo-400)",
-				foreground: "var(--color-white)",
-				hover: "var(--color-indigo-300)",
-				active: "var(--color-indigo-200)",
 			},
 		},
 		role: {

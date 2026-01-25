@@ -14,15 +14,13 @@ Design tokens are the atomic values that define a design system's visual languag
 
 Intent colors communicate **purpose** and **meaning**. They answer: "What does this element signify?"
 
-| Token         | Purpose                                               |
-| ------------- | ----------------------------------------------------- |
-| `primary`     | Main actions and key interactive elements ("do this") |
-| `secondary`   | Alternative or less prominent actions                 |
-| `accent`      | Highlights and points of interest ("notice this")     |
-| `destructive` | Dangerous or irreversible actions                     |
-| `warning`     | Caution states requiring attention                    |
-| `success`     | Positive outcomes or confirmations                    |
-| `info`        | Neutral informational messages                        |
+| Token         | Purpose                                                                |
+| ------------- | ---------------------------------------------------------------------- |
+| `primary`     | Main actions and key interactive elements ("do this")                  |
+| `accent`      | (a.k.a. `secondary`) Highlights and points of interest ("notice this") |
+| `destructive` | Dangerous or irreversible actions                                      |
+| `warning`     | Caution states requiring attention                                     |
+| `success`     | Positive outcomes or confirmations                                     |
 
 ### 2. Role Colors
 

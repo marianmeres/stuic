@@ -22,8 +22,7 @@
 			class="inline-block! mb-0!"
 			renderSize="sm"
 			options={[
-				{ value: "", label: "No intent (default)" },
-				{ value: "info", label: "info" },
+				{ value: "", label: "No intent or 'info' (default)" },
 				{ value: "success", label: "success" },
 				{ value: "warning", label: "warning" },
 				{ value: "destructive", label: "destructive" },

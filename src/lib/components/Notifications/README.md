@@ -186,7 +186,6 @@ Notification types use the global STUIC design tokens:
 
 | Type | Background | Foreground | Border |
 |------|------------|------------|--------|
-| `info` | `--stuic-color-info` | `--stuic-color-info-foreground` | `--stuic-color-info-hover` |
 | `success` | `--stuic-color-success` | `--stuic-color-success-foreground` | `--stuic-color-success-hover` |
 | `warn` | `--stuic-color-warning` | `--stuic-color-warning-foreground` | `--stuic-color-warning-hover` |
 | `error` | `--stuic-color-destructive` | `--stuic-color-destructive-foreground` | `--stuic-color-destructive-hover` |
@@ -195,9 +194,9 @@ To customize type colors, override the global intent tokens:
 
 ```css
 :root {
-  --stuic-color-info: var(--color-blue-600);
-  --stuic-color-info-foreground: var(--color-white);
-  --stuic-color-info-hover: var(--color-blue-700);
+  --stuic-color-error: var(--color-blue-600);
+  --stuic-color-error-foreground: var(--color-white);
+  --stuic-color-error-hover: var(--color-blue-700);
 }
 ```
 

@@ -25,11 +25,10 @@ type SingleColor = string | ColorValue;
 /** Known intent color keys */
 export type IntentColorKey =
 	| "primary" // main action color ("do this")
-	| "accent" // complementary highlight color ("notice this")
+	| "accent" // complementary highlight color ("notice this"). A.k.a "secondary"
 	| "destructive"
 	| "warning"
-	| "success"
-	| "info";
+	| "success";
 
 /** Known role color keys (paired) */
 export type RolePairedKey = "background" | "surface" | "muted";

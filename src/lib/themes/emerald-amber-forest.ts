@@ -33,12 +33,6 @@ const light: TokenSchema = {
 				hover: "var(--color-emerald-700)",
 				active: "var(--color-emerald-800)",
 			},
-			info: {
-				DEFAULT: "var(--color-teal-600)",
-				foreground: "var(--color-white)",
-				hover: "var(--color-teal-700)",
-				active: "var(--color-teal-800)",
-			},
 		},
 		role: {
 			paired: {
@@ -47,22 +41,22 @@ const light: TokenSchema = {
 					foreground: "var(--color-stone-900)",
 				},
 				surface: {
-					DEFAULT: "var(--color-stone-200)",
-					foreground: "var(--color-stone-900)",
-					hover: "var(--color-stone-300)",
-					active: "var(--color-stone-400)",
+					DEFAULT: "var(--color-amber-100)",
+					foreground: "var(--color-amber-900)",
+					hover: "var(--color-amber-200)",
+					active: "var(--color-amber-300)",
 				},
 				"surface-1": {
-					DEFAULT: "var(--color-stone-300)",
-					foreground: "var(--color-stone-900)",
-					hover: "var(--color-stone-400)",
-					active: "var(--color-stone-500)",
+					DEFAULT: "var(--color-amber-200)",
+					foreground: "var(--color-amber-900)",
+					hover: "var(--color-amber-300)",
+					active: "var(--color-amber-400)",
 				},
 				muted: {
-					DEFAULT: "var(--color-stone-200)",
-					foreground: "var(--color-stone-500)",
-					hover: "var(--color-stone-300)",
-					active: "var(--color-stone-400)",
+					DEFAULT: "var(--color-amber-100)",
+					foreground: "var(--color-amber-500)",
+					hover: "var(--color-amber-200)",
+					active: "var(--color-amber-300)",
 				},
 			},
 			single: {
@@ -114,12 +108,6 @@ const dark: TokenSchema = {
 				foreground: "var(--color-white)",
 				hover: "var(--color-emerald-400)",
 				active: "var(--color-emerald-300)",
-			},
-			info: {
-				DEFAULT: "var(--color-teal-400)",
-				foreground: "var(--color-white)",
-				hover: "var(--color-teal-300)",
-				active: "var(--color-teal-200)",
 			},
 		},
 		role: {

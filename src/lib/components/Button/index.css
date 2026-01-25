@@ -203,15 +203,6 @@
 		--_fg-active: var(--stuic-color-success-foreground-active);
 	}
 
-	.stuic-button[data-intent="info"] {
-		--_color: var(--stuic-color-info);
-		--_color-hover: var(--stuic-color-info-hover);
-		--_color-active: var(--stuic-color-info-active);
-		--_fg: var(--stuic-color-info-foreground);
-		--_fg-hover: var(--stuic-color-info-foreground-hover);
-		--_fg-active: var(--stuic-color-info-foreground-active);
-	}
-
 	/* ============================================================================
 	   VARIANT STYLES
 	   Each variant determines HOW the color palette is applied.

@@ -6,13 +6,7 @@
 		ValidationResult,
 	} from "../../actions/validate.svelte.js";
 
-	export type SwitchIntent =
-		| "primary"
-		| "accent"
-		| "success"
-		| "warning"
-		| "destructive"
-		| "info";
+	export type SwitchIntent = "primary" | "accent" | "success" | "warning" | "destructive";
 
 	export interface Props extends Omit<HTMLLabelAttributes, "children" | "onchange"> {
 		button?: HTMLButtonElement;

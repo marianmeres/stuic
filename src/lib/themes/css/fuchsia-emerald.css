@@ -40,14 +40,6 @@
 	--stuic-color-success-foreground-hover:       var(--color-white, #ffffff);
 	--stuic-color-success-foreground-active:      var(--color-white, #ffffff);
 
-	--stuic-color-info:                           var(--color-violet-500, #737373);
-
-	--stuic-color-info-hover:                     var(--color-violet-600, #737373);
-	--stuic-color-info-active:                    var(--color-violet-700, #737373);
-	--stuic-color-info-foreground:                var(--color-white, #ffffff);
-	--stuic-color-info-foreground-hover:          var(--color-white, #ffffff);
-	--stuic-color-info-foreground-active:         var(--color-white, #ffffff);
-
 	--stuic-color-surface-primary:                color-mix(in srgb, var(--stuic-color-primary) 15%, var(--stuic-color-background));
 	--stuic-color-surface-primary-foreground:     color-mix(in srgb, var(--stuic-color-primary), black 10%);
 	--stuic-color-surface-primary-border:         color-mix(in srgb, var(--stuic-color-primary) 30%, var(--stuic-color-background));
@@ -63,9 +55,6 @@
 	--stuic-color-surface-success:                color-mix(in srgb, var(--stuic-color-success) 15%, var(--stuic-color-background));
 	--stuic-color-surface-success-foreground:     color-mix(in srgb, var(--stuic-color-success), black 10%);
 	--stuic-color-surface-success-border:         color-mix(in srgb, var(--stuic-color-success) 30%, var(--stuic-color-background));
-	--stuic-color-surface-info:                   color-mix(in srgb, var(--stuic-color-info) 15%, var(--stuic-color-background));
-	--stuic-color-surface-info-foreground:        color-mix(in srgb, var(--stuic-color-info), black 10%);
-	--stuic-color-surface-info-border:            color-mix(in srgb, var(--stuic-color-info) 30%, var(--stuic-color-background));
 	--stuic-color-surface-hover:                  var(--color-neutral-300, #737373);
 	--stuic-color-surface-active:                 var(--color-neutral-400, #737373);
 	--stuic-color-surface-foreground:             var(--color-neutral-900, #737373);
@@ -160,14 +149,6 @@
 	--stuic-color-success-foreground-hover:       var(--color-white, #ffffff);
 	--stuic-color-success-foreground-active:      var(--color-white, #ffffff);
 
-	--stuic-color-info:                           var(--color-violet-400, #737373);
-
-	--stuic-color-info-hover:                     var(--color-violet-300, #737373);
-	--stuic-color-info-active:                    var(--color-violet-200, #737373);
-	--stuic-color-info-foreground:                var(--color-white, #ffffff);
-	--stuic-color-info-foreground-hover:          var(--color-white, #ffffff);
-	--stuic-color-info-foreground-active:         var(--color-white, #ffffff);
-
 	--stuic-color-surface-primary:                color-mix(in srgb, var(--stuic-color-primary) 15%, var(--stuic-color-background));
 	--stuic-color-surface-primary-foreground:     color-mix(in srgb, var(--stuic-color-primary), white 10%);
 	--stuic-color-surface-primary-border:         color-mix(in srgb, var(--stuic-color-primary) 30%, var(--stuic-color-background));
@@ -183,9 +164,6 @@
 	--stuic-color-surface-success:                color-mix(in srgb, var(--stuic-color-success) 15%, var(--stuic-color-background));
 	--stuic-color-surface-success-foreground:     color-mix(in srgb, var(--stuic-color-success), white 10%);
 	--stuic-color-surface-success-border:         color-mix(in srgb, var(--stuic-color-success) 30%, var(--stuic-color-background));
-	--stuic-color-surface-info:                   color-mix(in srgb, var(--stuic-color-info) 15%, var(--stuic-color-background));
-	--stuic-color-surface-info-foreground:        color-mix(in srgb, var(--stuic-color-info), white 10%);
-	--stuic-color-surface-info-border:            color-mix(in srgb, var(--stuic-color-info) 30%, var(--stuic-color-background));
 	--stuic-color-surface-hover:                  var(--color-neutral-700, #737373);
 	--stuic-color-surface-active:                 var(--color-neutral-600, #737373);
 	--stuic-color-surface-foreground:             var(--color-neutral-100, #737373);

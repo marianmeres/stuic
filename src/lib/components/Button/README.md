@@ -6,7 +6,7 @@ A flexible button component with semantic intents, visual variants, sizes, and o
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `intent` | `"primary" \| "accent" \| "destructive" \| "warning" \| "success" \| "info"` | - | Semantic color intent |
+| `intent` | `"primary" \| "accent" \| "destructive" \| "warning" \| "success"` | - | Semantic color intent |
 | `variant` | `"solid" \| "outline" \| "ghost" \| "soft" \| "link"` | `"solid"` | Visual variant (how colors are applied) |
 | `size` | `"sm" \| "md" \| "lg" \| "xl"` | `"md"` | Button size |
 | `muted` | `boolean` | `false` | Reduce emphasis (lower opacity) |
@@ -136,7 +136,7 @@ Override these to customize intent colors globally:
 }
 ```
 
-Available intents: `primary`, `accent`, `destructive`, `warning`, `success`, `info`
+Available intents: `primary`, `accent`, `destructive`, `warning`, `success`
 
 ## Data Attributes
 

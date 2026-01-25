@@ -73,9 +73,10 @@
 	   DEFAULT (NO INTENT): NEUTRAL MUTED APPEARANCE
 	   ============================================================================= */
 
-	.stuic-dismissible-message:not([data-intent]) {
-		--_bg: var(--stuic-color-muted);
-		--_text: var(--stuic-color-muted-foreground);
+	.stuic-dismissible-message:not([data-intent]),
+	.stuic-dismissible-message[data-intent="info"] {
+		--_bg: var(--stuic-color-surface);
+		--_text: var(--stuic-color-surface-foreground);
 		--_border: var(--stuic-color-border);
 	}
 
@@ -86,34 +87,50 @@
 
 	/* Destructive: error messages */
 	.stuic-dismissible-message[data-intent="destructive"] {
-		--_bg: color-mix(in srgb, var(--stuic-color-destructive) 15%, var(--stuic-color-background));
+		--_bg: color-mix(
+			in srgb,
+			var(--stuic-color-destructive) 15%,
+			var(--stuic-color-background)
+		);
 		/* --_text: var(--stuic-color-destructive); */
 		--_text: color-mix(in srgb, var(--stuic-color-destructive), black 15%);
-		--_border: color-mix(in srgb, var(--stuic-color-destructive) 30%, var(--stuic-color-background));
+		--_border: color-mix(
+			in srgb,
+			var(--stuic-color-destructive) 30%,
+			var(--stuic-color-background)
+		);
 	}
 
 	/* Warning: caution messages */
 	.stuic-dismissible-message[data-intent="warning"] {
-		--_bg: color-mix(in srgb, var(--stuic-color-warning) 15%, var(--stuic-color-background));
+		--_bg: color-mix(
+			in srgb,
+			var(--stuic-color-warning) 15%,
+			var(--stuic-color-background)
+		);
 		/* --_text: var(--stuic-color-warning); */
 		--_text: color-mix(in srgb, var(--stuic-color-warning), black 15%);
-		--_border: color-mix(in srgb, var(--stuic-color-warning) 30%, var(--stuic-color-background));
+		--_border: color-mix(
+			in srgb,
+			var(--stuic-color-warning) 30%,
+			var(--stuic-color-background)
+		);
 	}
 
 	/* Success: confirmation messages */
 	.stuic-dismissible-message[data-intent="success"] {
-		--_bg: color-mix(in srgb, var(--stuic-color-success) 15%, var(--stuic-color-background));
+		--_bg: color-mix(
+			in srgb,
+			var(--stuic-color-success) 15%,
+			var(--stuic-color-background)
+		);
 		/* --_text: var(--stuic-color-success); */
 		--_text: color-mix(in srgb, var(--stuic-color-success), black 15%);
-		--_border: color-mix(in srgb, var(--stuic-color-success) 30%, var(--stuic-color-background));
-	}
-
-	/* Info: informational messages */
-	.stuic-dismissible-message[data-intent="info"] {
-		--_bg: color-mix(in srgb, var(--stuic-color-info) 15%, var(--stuic-color-background));
-		/* --_text: var(--stuic-color-info); */
-		--_text: color-mix(in srgb, var(--stuic-color-info), black 15%);
-		--_border: color-mix(in srgb, var(--stuic-color-info) 30%, var(--stuic-color-background));
+		--_border: color-mix(
+			in srgb,
+			var(--stuic-color-success) 30%,
+			var(--stuic-color-background)
+		);
 	}
 
 	/* =============================================================================
@@ -123,8 +140,7 @@
 
 	.dark .stuic-dismissible-message[data-intent="destructive"],
 	.dark .stuic-dismissible-message[data-intent="warning"],
-	.dark .stuic-dismissible-message[data-intent="success"],
-	.dark .stuic-dismissible-message[data-intent="info"] {
+	.dark .stuic-dismissible-message[data-intent="success"] {
 		--_bg: color-mix(in srgb, var(--_text) 20%, var(--stuic-color-background));
 		--_border: color-mix(in srgb, var(--_text) 40%, var(--stuic-color-background));
 	}

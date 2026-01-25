@@ -22,7 +22,6 @@
 	<span class="flex items-center gap-1"
 		><Switch intent="destructive" checked /> destructive</span
 	>
-	<span class="flex items-center gap-1"><Switch intent="info" checked /> info</span>
 </div>
 
 <h3 class="font-semibold mb-2">With icons</h3>

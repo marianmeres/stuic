@@ -46,9 +46,9 @@
 
 	/* Default / info */
 	.stuic-notification {
-		--_bg: var(--stuic-color-info);
-		--_text: var(--stuic-color-info-foreground);
-		--_border: var(--stuic-color-info-hover);
+		--_bg: var(--stuic-color-surface-1);
+		--_text: var(--stuic-color-surface-1-foreground);
+		--_border: var(--stuic-color-surface-1-hover);
 	}
 
 	.stuic-notification[data-type="success"] {

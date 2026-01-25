@@ -29,7 +29,6 @@
 		"destructive",
 		"warning",
 		"success",
-		"info",
 	];
 
 	const variants: ButtonVariant[] = ["solid", "outline", "ghost", "soft", "link"];
@@ -145,7 +144,6 @@
 <div class="flex flex-wrap gap-4">
 	<Button intent="primary" href="#link">Link (solid)</Button>
 	<Button intent="accent" variant="outline" href="#link">Link (outline)</Button>
-	<Button intent="info" variant="link" href="#link">Link (link variant)</Button>
 </div>
 
 <hr class="my-8" />
@@ -168,7 +166,6 @@
 		<div class="flex flex-wrap gap-3">
 			<Button intent="primary">Continue {@html iconArrowRight()}</Button>
 			<Button intent="accent" variant="outline">Download {@html iconDownload()}</Button>
-			<Button variant="link" intent="info">Learn more {@html iconArrowRight()}</Button>
 		</div>
 	</div>
 

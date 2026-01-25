@@ -28,17 +28,13 @@
 	}
 
 	/** Intent colors to demonstrate */
-	export const INTENT_COLORS = [
-		"primary",
-		"accent",
-		"destructive",
-		"warning",
-		"success",
-		"info",
-	] as const;
+	export const INTENT_COLORS = ["primary", "accent"] as const;
+
+	/** Intent colors to demonstrate */
+	export const INTENT_OTHER_COLORS = ["destructive", "warning", "success"] as const;
 
 	/** Button variants to demonstrate */
-	export const BUTTON_VARIANTS = ["solid", "outline", "ghost", "soft", "link"] as const;
+	export const BUTTON_VARIANTS = ["solid", "soft", "outline", "ghost", "link"] as const;
 </script>
 
 <script lang="ts">
@@ -148,60 +144,6 @@
 					dismissibleMessage = null;
 				}}
 			/>
-			<!-- INTENT BUTTONS -->
-			<section class="preview-section">
-				{#if showLabels}
-					<h2 class="section-label">Intent Colors (Buttons)</h2>
-				{/if}
-
-				<div class="button-grid">
-					{#each INTENT_COLORS as intent}
-						<div class="button-column">
-							{#if showLabels}
-								<span class="intent-label">{intent}</span>
-							{/if}
-
-							{#if showAllVariants}
-								{#each BUTTON_VARIANTS as variant}
-									<Button
-										{intent}
-										{variant}
-										onclick={() => {
-											if (!["primary", "accent"].includes(intent)) {
-												dismissibleIntent = intent as DismissibleMessageIntent;
-												dismissibleMessage = intent;
-												notif(intent);
-											} else {
-												alert(intent);
-											}
-										}}
-									>
-										{variant}
-									</Button>
-								{/each}
-							{:else}
-								<Button {intent} onclick={() => alert(intent)}>
-									{intent}
-								</Button>
-							{/if}
-						</div>
-					{/each}
-				</div>
-			</section>
-
-			<section class="preview-section">
-				{#if showLabels}
-					<h2 class="section-label">Default Button (no explicit intent)</h2>
-				{/if}
-				<div class="flex gap-6 flex-wrap">
-					{#each BUTTON_VARIANTS as variant}
-						<div class="flex gap-2">
-							<Button {variant}>{variant}</Button>
-							<Button x {variant} roundedFull />
-						</div>
-					{/each}
-				</div>
-			</section>
 
 			<!-- HIGHLIGHT BOXES -->
 			<section class="preview-section">
@@ -218,6 +160,23 @@
 					<strong>Accent Highlight</strong>
 					<p>This box uses accent colors to draw attention.</p>
 				</div>
+			</section>
+
+			<!-- INTENT BUTTONS -->
+			<section class="preview-section">
+				{#if showLabels}
+					<h2 class="section-label">Intent Colors (Buttons)</h2>
+				{/if}
+
+				{#each INTENT_COLORS as intent}
+					<div class="flex gap-2">
+						{#each BUTTON_VARIANTS as variant}
+							<Button {intent} {variant} class="flex-1" onclick={() => alert(intent)}>
+								{variant}
+							</Button>
+						{/each}
+					</div>
+				{/each}
 			</section>
 
 			<!-- ROLE COLORS -->
@@ -246,6 +205,41 @@
 						<span class="swatch-label">muted</span>
 						<span class="muted-foreground-text">muted-foreground</span>
 					</div>
+				</div>
+			</section>
+
+			<section class="preview-section">
+				{#if showLabels}
+					<h2 class="section-label">Other intents</h2>
+				{/if}
+				{#each INTENT_OTHER_COLORS as intent}
+					<div class="flex items-center gap-2">
+						<DismissibleMessage
+							message={intent}
+							{intent}
+							onDismiss={null}
+							class="m-0 flex-1"
+						/>
+						<div>
+							<Button {intent} onclick={() => notif(intent)}>{intent}</Button>
+						</div>
+					</div>
+				{/each}
+			</section>
+
+			<section class="preview-section">
+				{#if showLabels}
+					<h2 class="section-label">Default Button (no explicit intent)</h2>
+				{/if}
+				<div class="flex gap-6 flex-wrap">
+					{#each BUTTON_VARIANTS as variant}
+						{#if variant !== "link"}
+							<div class="flex gap-2">
+								<Button {variant} onclick={() => notif("info")}>{variant}</Button>
+								<Button x {variant} roundedFull onclick={() => notif("info")} />
+							</div>
+						{/if}
+					{/each}
 				</div>
 			</section>
 

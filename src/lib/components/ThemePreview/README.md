@@ -81,7 +81,6 @@ Communicate **purpose** and **meaning**:
 | `--stuic-color-destructive` | Dangerous/irreversible actions |
 | `--stuic-color-warning` | Caution states |
 | `--stuic-color-success` | Positive outcomes |
-| `--stuic-color-info` | Neutral information |
 
 Each intent has states and foregrounds:
 - `--stuic-color-{intent}` - base color

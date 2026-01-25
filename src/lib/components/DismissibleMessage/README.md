@@ -141,7 +141,6 @@ Intent colors are derived from the global STUIC design tokens:
 | `destructive` | `--stuic-color-destructive` |
 | `warning` | `--stuic-color-warning` |
 | `success` | `--stuic-color-success` |
-| `info` | `--stuic-color-info` |
 
 Customize these in your theme file to change all components at once.
 

@@ -8,7 +8,7 @@ A toggle switch component with size variants, semantic intents, keyboard support
 |------|------|---------|-------------|
 | `checked` | `boolean` | - | Toggle state (bindable) |
 | `size` | `"sm" \| "md" \| "lg" \| "xl" \| string` | `"lg"` | Switch size |
-| `intent` | `"primary" \| "accent" \| "success" \| "warning" \| "destructive" \| "info"` | - | Semantic color intent |
+| `intent` | `"primary" \| "accent" \| "success" \| "warning" \| "destructive"` | - | Semantic color intent |
 | `name` | `string` | - | Form field name for hidden checkbox |
 | `label` | `string` | - | Screen reader label (visually hidden) |
 | `required` | `boolean` | `false` | Mark as required |

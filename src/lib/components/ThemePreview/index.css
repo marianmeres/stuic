@@ -201,18 +201,6 @@
    This separation allows any intent + variant combination to work automatically.
    ============================================================================ */
 
-.stuic-theme-preview .button-grid {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-	gap: 1rem;
-}
-
-.stuic-theme-preview .button-column {
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
-}
-
 .stuic-theme-preview .intent-label {
 	font-size: 0.75rem;
 	color: var(--stuic-color-muted-foreground);
@@ -476,10 +464,6 @@
 		width: 100%;
 		border-right: none;
 		border-bottom: 1px solid var(--stuic-color-border);
-	}
-
-	.stuic-theme-preview .button-grid {
-		grid-template-columns: repeat(2, 1fr);
 	}
 }
 

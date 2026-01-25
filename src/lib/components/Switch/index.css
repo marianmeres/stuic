@@ -68,7 +68,11 @@
 	.stuic-switch:focus {
 		outline: none;
 		box-shadow: 0 0 0 var(--stuic-switch-ring-width)
-			color-mix(in srgb, var(--stuic-switch-ring-color) 30%, var(--stuic-color-background));
+			color-mix(
+				in srgb,
+				var(--stuic-switch-ring-color) 30%,
+				var(--stuic-color-background)
+			);
 	}
 
 	/* Disabled */
@@ -114,9 +118,5 @@
 
 	.stuic-switch[data-intent="destructive"] {
 		--_track-checked: var(--stuic-color-destructive);
-	}
-
-	.stuic-switch[data-intent="info"] {
-		--_track-checked: var(--stuic-color-info);
 	}
 }
