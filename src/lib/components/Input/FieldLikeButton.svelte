@@ -40,7 +40,6 @@
 </script>
 
 <script lang="ts">
-	import { onMount } from "svelte";
 	import {
 		validate as validateAction,
 		type ValidationResult,
@@ -48,7 +47,7 @@
 	import { getId } from "../../utils/get-id.js";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import InputWrap from "./_internal/InputWrap.svelte";
-	import { watch } from "runed";
+	import Button from "../Button/Button.svelte";
 
 	let {
 		input = $bindable(),
@@ -153,12 +152,10 @@
 	{validation}
 	{style}
 >
-	<button
+	<Button
 		type="button"
 		class={twMerge(
-			"no-focus-visible form-field",
-			"w-full text-left py-2.5 px-3 border-0 bg-transparent",
-			"focus:outline-0 focus-visible:outline-0",
+			"w-full inline-block text-left py-2.5 px-3 border-0 bg-transparent",
 			renderSize,
 			classInput
 		)}
@@ -173,7 +170,7 @@
 		{:else}
 			&nbsp;
 		{/if}
-	</button>
+	</Button>
 
 	<input
 		bind:value

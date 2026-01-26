@@ -223,7 +223,7 @@
 <ModalDialog
 	bind:this={modalDialog}
 	classDialog="items-start"
-	class="w-full max-w-3xl bg-transparent! shadow-none! pointer-events-none"
+	class="w-full max-w-3xl bg-transparent shadow-none pointer-events-none"
 	{noScrollLock}
 >
 	<div class="pt-0 md:pt-[20vh] w-full">
@@ -265,7 +265,7 @@
 					<div
 						class="flex flex-col items-center justify-center pl-3 stuic-command-menu-muted"
 					>
-						{@html iconSearch({ size: 19, strokeWidth: 3 })}
+						{@html iconSearch({ size: 19 })}
 					</div>
 				{/snippet}
 				{#snippet inputAfter()}

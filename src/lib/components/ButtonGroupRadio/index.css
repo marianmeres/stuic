@@ -7,7 +7,7 @@
 :root {
 	/* Structure - reference Tailwind vars where applicable */
 	--stuic-button-group-radius: var(--radius-md);
-	--stuic-button-group-padding: 0.375rem;
+	--stuic-button-group-padding: 0.1rem;
 	--stuic-button-group-gap: 0.25rem;
 	--stuic-button-group-border-width: 1px;
 	--stuic-button-group-transition: 150ms;

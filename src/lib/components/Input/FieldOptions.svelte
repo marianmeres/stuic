@@ -798,7 +798,7 @@
 						<div
 							class="flex flex-col items-center justify-center pl-3 stuic-field-options-muted"
 						>
-							{@html iconSearch({ size: 19, strokeWidth: 3 })}
+							{@html iconSearch({ size: 19 })}
 						</div>
 					{/snippet}
 				</InputWrap>
