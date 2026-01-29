@@ -9,6 +9,7 @@ Sed metus sapien, feugiat eget mauris quis, pellentesque porta enim. In hac habi
 	import FieldCheckbox from "$lib/components/Input/FieldCheckbox.svelte";
 	import FieldFile from "$lib/components/Input/FieldFile.svelte";
 	import FieldInput from "$lib/components/Input/FieldInput.svelte";
+	import FieldInputLocalized from "$lib/components/Input/FieldInputLocalized.svelte";
 	import FieldLikeButton from "$lib/components/Input/FieldLikeButton.svelte";
 	import FieldOptions from "$lib/components/Input/FieldOptions.svelte";
 	import FieldRadios from "$lib/components/Input/FieldRadios.svelte";
@@ -52,6 +53,9 @@ Sed metus sapien, feugiat eget mauris quis, pellentesque porta enim. In hac habi
 		options: '[{"id":"initial"},{"id":"not listed"}]',
 		switch: false,
 		images: "[]",
+		localized1: "",
+		localized2: '{"en":"Hello","sk":"Ahoj"}',
+		localized3: "",
 	});
 	// $inspect("values", values).with(clog);
 
@@ -254,7 +258,7 @@ Sed metus sapien, feugiat eget mauris quis, pellentesque porta enim. In hac habi
 			<FieldInput
 				type="range"
 				label="Ranger!"
-				class="!mb-0"
+				class="mb-0"
 				name="range"
 				min="0"
 				max="100"
@@ -342,6 +346,43 @@ Sed metus sapien, feugiat eget mauris quis, pellentesque porta enim. In hac habi
 				},
 			}}
 			{labelLeft}
+		/>
+
+		<FieldInputLocalized
+			bind:value={values.localized1}
+			label="Localized input"
+			name="localized1"
+			languages={["en", "sk", "de"]}
+			defaultLanguage="en"
+			required
+			validate
+			{labelLeft}
+			placeholder="Enter text..."
+			description="Single line, collapsed by default"
+		/>
+
+		<FieldInputLocalized
+			bind:value={values.localized2}
+			label="Localized textarea (expanded)"
+			name="localized2"
+			languages={["en", "sk"]}
+			defaultLanguage="en"
+			expanded
+			multiline
+			{labelLeft}
+			description="Multiline, expanded by default, pre-filled"
+		/>
+
+		<FieldInputLocalized
+			bind:value={values.localized3}
+			label="Localized input"
+			name="localized3"
+			languages={[]}
+			defaultLanguage="en"
+			{labelLeft}
+			placeholder="Enter text..."
+			description="Single line, one default language. Should look like regular input, but serialize as Localized"
+			forceLocalizedOutput
 		/>
 
 		<FieldAssets

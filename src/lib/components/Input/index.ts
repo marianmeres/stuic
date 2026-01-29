@@ -48,6 +48,11 @@ export {
 } from "./FieldTextarea.svelte";
 
 export {
+	default as FieldInputLocalized,
+	type Props as FieldInputLocalizedProps,
+} from "./FieldInputLocalized.svelte";
+
+export {
 	default as FieldKeyValues,
 	type Props as FieldKeyValuesProps,
 	type KeyValueEntry,
