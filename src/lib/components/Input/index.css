@@ -59,6 +59,13 @@
 	--stuic-checkbox-checked-bg: var(--stuic-input-accent);
 	--stuic-checkbox-checked-border: var(--stuic-input-accent);
 
+	/* FieldInputLocalized specific */
+	--stuic-input-localized-divider: var(--stuic-color-border);
+	--stuic-input-localized-toggle-text: var(--stuic-color-muted-foreground);
+	--stuic-input-localized-toggle-text-hover: var(--stuic-color-foreground);
+	--stuic-input-localized-toggle-hover-bg: var(--stuic-color-muted);
+	--stuic-input-localized-label-text: var(--stuic-color-muted-foreground);
+
 	/* FieldOptions specific */
 	--stuic-field-options-divider: var(--stuic-color-border);
 	--stuic-field-options-control-text: var(--stuic-color-muted-foreground);
@@ -217,7 +224,11 @@
 	.stuic-input .input-wrap.invalid:focus-within {
 		border-color: var(--stuic-input-accent-error);
 		box-shadow: 0 0 0 var(--stuic-input-ring-width)
-			color-mix(in srgb, var(--stuic-input-accent-error) 20%, var(--stuic-color-background));
+			color-mix(
+				in srgb,
+				var(--stuic-input-accent-error) 20%,
+				var(--stuic-color-background)
+			);
 	}
 
 	/* Disabled state */
@@ -540,5 +551,38 @@
 
 	.stuic-field-options-icon--selected {
 		opacity: 1;
+	}
+
+	/* ============================================================================
+	   FIELD INPUT LOCALIZED
+	   ============================================================================ */
+
+	.stuic-input-localized .entry-divider {
+		border-top: 1px solid var(--stuic-input-localized-divider);
+	}
+
+	.stuic-input-localized .toggle-btn {
+		color: var(--stuic-input-localized-toggle-text);
+		transition:
+			background var(--stuic-input-transition),
+			color var(--stuic-input-transition);
+	}
+
+	.stuic-input-localized .toggle-btn:hover:not(:disabled) {
+		color: var(--stuic-input-localized-toggle-text-hover);
+		background: var(--stuic-input-localized-toggle-hover-bg);
+	}
+
+	.stuic-input-localized .lang-label {
+		color: var(--stuic-input-localized-label-text);
+	}
+
+	.stuic-input-localized .lang-label-default::after {
+		opacity: 0.5;
+	}
+
+	.stuic-input-localized .expanded-wrap {
+		border-right: 1px solid var(--stuic-input-localized-divider);
+		/* border-radius: var(--stuic-input-radius); */
 	}
 }

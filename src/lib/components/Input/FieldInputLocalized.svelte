@@ -243,32 +243,13 @@
 		setValidationResult,
 	});
 
-	const INPUT_CLS = [
-		"w-full",
-		// "rounded bg-neutral-50 dark:bg-neutral-800",
-		// "focus:outline-none focus:ring-0",
-		// "border border-neutral-300 dark:border-neutral-600",
-		// "focus:border-neutral-400 focus:dark:border-neutral-500",
-		// "focus-visible:outline-none focus-visible:ring-0",
-	].join(" ");
-
-	const INPUT_EXPANDED_CLS = [
-		// "w-full",
-		// "rounded bg-neutral-50 dark:bg-neutral-800",
-		// "focus:outline-none focus:ring-0",
-		"border border-neutral-300 dark:border-neutral-600",
-		// "focus:border-neutral-400 focus:dark:border-neutral-500",
-		// "focus-visible:outline-none focus-visible:ring-0",
-	].join(" ");
+	const INPUT_CLS = "w-full";
 
 	const BTN_CLS = [
+		"toggle-btn",
 		"px-2 rounded-r block",
-		"opacity-60 hover:opacity-100",
 		"min-w-[44px] min-h-[44px]",
 		"flex items-center justify-center",
-		"hover:bg-neutral-200 dark:hover:bg-neutral-600",
-		// "focus-visible:outline-neutral-400",
-		// "disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:bg-transparent",
 	].join(" ");
 </script>
 
@@ -294,19 +275,14 @@
 	{validation}
 	{style}
 >
-	<div class="w-full flex">
+	<div class="stuic-input-localized w-full flex">
 		<div class="flex-1">
 			{#if !expanded}
 				{#if multiline}
 					<textarea
 						value={entries.find((e) => e.language === _defaultLanguage)?.value ?? ""}
 						oninput={(e) => updateEntry(_defaultLanguage, e.currentTarget.value)}
-						class={twMerge(
-							INPUT_CLS,
-							expanded && INPUT_EXPANDED_CLS,
-							"min-h-16",
-							classLanguageInput
-						)}
+						class={twMerge(INPUT_CLS, "min-h-16", classLanguageInput)}
 						{disabled}
 						{tabindex}
 						{placeholder}
@@ -320,30 +296,31 @@
 						type="text"
 						value={entries.find((e) => e.language === _defaultLanguage)?.value ?? ""}
 						oninput={(e) => updateEntry(_defaultLanguage, e.currentTarget.value)}
-						class={twMerge(INPUT_CLS, expanded && INPUT_EXPANDED_CLS, classLanguageInput)}
+						class={twMerge(INPUT_CLS, classLanguageInput)}
 						{disabled}
 						{tabindex}
 						{placeholder}
 					/>
 				{/if}
 			{:else}
-				<div class="">
+				<div class="expanded-wrap">
 					<!-- Expanded: all language rows -->
 					{#each sortedLanguages as lang, idx (lang)}
 						<div
 							class={twMerge(
 								"flex-1 flex gap-2 items-center pl-2",
-								idx > 0 && "border-t border-neutral-200 dark:border-neutral-600",
+								idx > 0 && "entry-divider",
 								classEntry
 							)}
 						>
 							<div
 								class={twMerge(
+									"lang-label",
 									"shrink-0 min-w-8",
 									"flex",
-									"text-sm font-medium opacity-60 uppercase",
+									"text-sm font-medium uppercase",
 									lang === _defaultLanguage &&
-										"after:content-['*'] after:opacity-40 after:pl-0.5",
+										"lang-label-default after:content-['*'] after:pl-0.5",
 									classLanguageLabel
 								)}
 							>
