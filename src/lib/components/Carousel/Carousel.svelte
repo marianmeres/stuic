@@ -51,6 +51,9 @@
 		/** Scroll behavior for programmatic navigation (default: smooth) */
 		scrollBehavior?: ScrollBehavior;
 
+		/** Show scrollbar on hover (default: true). Set to false when using navigation buttons */
+		scrollbar?: boolean;
+
 		/** Custom class for container */
 		class?: string;
 
@@ -95,6 +98,7 @@
 		keyboard = true,
 		loop = false,
 		scrollBehavior = "smooth",
+		scrollbar = true,
 		class: classProp,
 		classTrack,
 		classItem,
@@ -149,7 +153,7 @@
 		// Use setTimeout to allow the ItemCollection state to update first
 		setTimeout(() => {
 			const activeItem = coll.active;
-			if (trackActive && activeItem && itemEls[activeItem.id]) {
+			if (activeItem && itemEls[activeItem.id]) {
 				itemEls[activeItem.id]?.scrollIntoView({
 					behavior: scrollBehavior,
 					block: "nearest",
@@ -247,6 +251,7 @@
 			aria-roledescription="carousel"
 			data-snap={!unstyled && snap ? "true" : undefined}
 			data-snap-align={!unstyled && snap ? snapAlign : undefined}
+			data-scrollbar={!unstyled && scrollbar ? "true" : undefined}
 			onkeydown={handleKeydown}
 		>
 			{#each coll.items as item, i (item.id)}

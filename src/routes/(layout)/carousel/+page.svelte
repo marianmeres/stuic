@@ -114,6 +114,7 @@
 	let carousel2: Carousel;
 
 	let selectedImageId = $state<string | number>("img-1");
+	let imageCarousel: Carousel;
 </script>
 
 <div class="space-y-16 py-8">
@@ -310,6 +311,7 @@
 		</p>
 		<div class="border rounded-lg p-4">
 			<Carousel
+				bind:this={imageCarousel}
 				items={imageRadioItems}
 				itemsPerView={4}
 				peekPercent={5}
@@ -325,7 +327,7 @@
 						class:border-transparent={!active}
 						class:ring-2={active}
 						class:ring-blue-500={active}
-						onclick={() => (selectedImageId = item.id)}
+						onclick={() => imageCarousel.goToId(item.id)}
 					>
 						<img
 							src={item.data?.src}

@@ -17,14 +17,14 @@
 	--stuic-carousel-item-border: transparent;
 	--stuic-carousel-item-border-active: var(--stuic-color-primary);
 	--stuic-carousel-item-border-width: 0;
-	--stuic-carousel-item-border-width-active: 2px;
+	--stuic-carousel-item-border-width-active: 1px;
 
 	/* Scroll behavior */
 	--stuic-carousel-scroll-padding: 0;
 	--stuic-carousel-snap-align: start;
 
 	/* Focus ring */
-	--stuic-carousel-ring-width: 3px;
+	--stuic-carousel-ring-width: 2px;
 	--stuic-carousel-ring-color: var(--stuic-color-ring);
 
 	/* Transition */
@@ -49,7 +49,7 @@
 		overflow-y: hidden;
 		scroll-padding: var(--stuic-carousel-scroll-padding);
 
-		/* Hide scrollbar but keep functionality */
+		/* Hide scrollbar by default */
 		scrollbar-width: none;
 		-ms-overflow-style: none;
 
@@ -58,8 +58,43 @@
 		touch-action: pan-x pan-y;
 	}
 
+	/* Hide scrollbar for non-scrollbar mode */
 	.stuic-carousel-track::-webkit-scrollbar {
 		display: none;
+	}
+
+	/* Always show scrollbar space to prevent height jump, but thumb invisible until hover */
+	.stuic-carousel-track[data-scrollbar="true"] {
+		scrollbar-width: thin;
+		scrollbar-color: transparent transparent;
+	}
+
+	.stuic-carousel-track[data-scrollbar="true"]::-webkit-scrollbar {
+		display: block;
+		height: 8px;
+	}
+
+	.stuic-carousel-track[data-scrollbar="true"]::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	.stuic-carousel-track[data-scrollbar="true"]::-webkit-scrollbar-thumb {
+		background: transparent;
+		border-radius: 4px;
+		transition: background 150ms;
+	}
+
+	/* Show scrollbar thumb on hover */
+	.stuic-carousel-track[data-scrollbar="true"]:hover {
+		scrollbar-color: var(--stuic-color-border, #ccc) transparent;
+	}
+
+	.stuic-carousel-track[data-scrollbar="true"]:hover::-webkit-scrollbar-thumb {
+		background: var(--stuic-color-border, #ccc);
+	}
+
+	.stuic-carousel-track[data-scrollbar="true"]:hover::-webkit-scrollbar-thumb:hover {
+		background: var(--stuic-color-border-hover, #999);
 	}
 
 	/* Snap scrolling */
@@ -144,32 +179,28 @@
 	/* 3 items per view */
 	.stuic-carousel[data-items-per-view="3"] .stuic-carousel-item {
 		--_item-width: calc(
-			(100% - 2 * var(--stuic-carousel-gap) - var(--stuic-carousel-peek-percent, 0%)) /
-				3
+			(100% - 2 * var(--stuic-carousel-gap) - var(--stuic-carousel-peek-percent, 0%)) / 3
 		);
 	}
 
 	/* 4 items per view */
 	.stuic-carousel[data-items-per-view="4"] .stuic-carousel-item {
 		--_item-width: calc(
-			(100% - 3 * var(--stuic-carousel-gap) - var(--stuic-carousel-peek-percent, 0%)) /
-				4
+			(100% - 3 * var(--stuic-carousel-gap) - var(--stuic-carousel-peek-percent, 0%)) / 4
 		);
 	}
 
 	/* 5 items per view */
 	.stuic-carousel[data-items-per-view="5"] .stuic-carousel-item {
 		--_item-width: calc(
-			(100% - 4 * var(--stuic-carousel-gap) - var(--stuic-carousel-peek-percent, 0%)) /
-				5
+			(100% - 4 * var(--stuic-carousel-gap) - var(--stuic-carousel-peek-percent, 0%)) / 5
 		);
 	}
 
 	/* 6 items per view */
 	.stuic-carousel[data-items-per-view="6"] .stuic-carousel-item {
 		--_item-width: calc(
-			(100% - 5 * var(--stuic-carousel-gap) - var(--stuic-carousel-peek-percent, 0%)) /
-				6
+			(100% - 5 * var(--stuic-carousel-gap) - var(--stuic-carousel-peek-percent, 0%)) / 6
 		);
 	}
 }
