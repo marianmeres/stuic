@@ -11,7 +11,7 @@
 		'backdrop', 
         'button', 
         'button-group-radio', 
-		// 'carousel', 
+		'carousel', 
 		'collapsible', 
         'color-scheme', 
 		'command-menu',

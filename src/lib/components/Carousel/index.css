@@ -1,0 +1,175 @@
+/* ============================================================================
+   CAROUSEL COMPONENT TOKENS
+   Override globally: :root { --stuic-carousel-gap: 2rem; }
+   Override locally:  <Carousel style="--stuic-carousel-gap: 2rem;">
+   ============================================================================ */
+
+:root {
+	/* Layout tokens */
+	--stuic-carousel-gap: 1rem;
+	--stuic-carousel-padding: 0;
+	--stuic-carousel-peek-percent: 0%;
+
+	/* Item tokens */
+	--stuic-carousel-item-radius: var(--radius-md);
+	--stuic-carousel-item-bg: transparent;
+	--stuic-carousel-item-bg-active: transparent;
+	--stuic-carousel-item-border: transparent;
+	--stuic-carousel-item-border-active: var(--stuic-color-primary);
+	--stuic-carousel-item-border-width: 0;
+	--stuic-carousel-item-border-width-active: 2px;
+
+	/* Scroll behavior */
+	--stuic-carousel-scroll-padding: 0;
+	--stuic-carousel-snap-align: start;
+
+	/* Focus ring */
+	--stuic-carousel-ring-width: 3px;
+	--stuic-carousel-ring-color: var(--stuic-color-ring);
+
+	/* Transition */
+	--stuic-carousel-transition: 150ms;
+}
+
+@layer components {
+	/* ============================================================================
+	   BASE STYLES
+	   ============================================================================ */
+
+	.stuic-carousel {
+		position: relative;
+		width: 100%;
+		overflow: visible;
+	}
+
+	.stuic-carousel-track {
+		display: flex;
+		gap: var(--stuic-carousel-gap);
+		overflow-x: auto;
+		overflow-y: hidden;
+		scroll-padding: var(--stuic-carousel-scroll-padding);
+
+		/* Hide scrollbar but keep functionality */
+		scrollbar-width: none;
+		-ms-overflow-style: none;
+
+		/* Mobile-friendly */
+		-webkit-overflow-scrolling: touch;
+		touch-action: pan-x pan-y;
+	}
+
+	.stuic-carousel-track::-webkit-scrollbar {
+		display: none;
+	}
+
+	/* Snap scrolling */
+	.stuic-carousel-track[data-snap="true"] {
+		scroll-snap-type: x mandatory;
+	}
+
+	/* Focus styles for keyboard navigation */
+	.stuic-carousel-track:focus {
+		outline: none;
+	}
+
+	.stuic-carousel-track:focus-visible {
+		outline: var(--stuic-carousel-ring-width) solid var(--stuic-carousel-ring-color);
+		outline-offset: 2px;
+	}
+
+	/* ============================================================================
+	   ITEM STYLES
+	   ============================================================================ */
+
+	.stuic-carousel-item {
+		flex: 0 0 auto;
+		/* Width calculated via CSS custom property */
+		width: var(--_item-width, 100%);
+		min-width: 0;
+
+		border-radius: var(--stuic-carousel-item-radius);
+		background: var(--stuic-carousel-item-bg);
+		border: var(--stuic-carousel-item-border-width) solid
+			var(--stuic-carousel-item-border);
+
+		transition:
+			border-color var(--stuic-carousel-transition),
+			background var(--stuic-carousel-transition),
+			border-width var(--stuic-carousel-transition);
+	}
+
+	/* Snap alignment */
+	.stuic-carousel-track[data-snap="true"] .stuic-carousel-item {
+		scroll-snap-align: var(--stuic-carousel-snap-align, start);
+	}
+
+	.stuic-carousel-track[data-snap-align="center"] .stuic-carousel-item {
+		scroll-snap-align: center;
+	}
+
+	.stuic-carousel-track[data-snap-align="end"] .stuic-carousel-item {
+		scroll-snap-align: end;
+	}
+
+	/* Active item */
+	.stuic-carousel-item[data-active="true"] {
+		background: var(--stuic-carousel-item-bg-active);
+		border-color: var(--stuic-carousel-item-border-active);
+		border-width: var(--stuic-carousel-item-border-width-active);
+	}
+
+	/* Disabled item */
+	.stuic-carousel-item[data-disabled="true"] {
+		opacity: 0.5;
+		pointer-events: none;
+	}
+
+	/* ============================================================================
+	   ITEMS PER VIEW CALCULATIONS
+	   Width = (100% - (N-1)*gap - peek) / N
+	   ============================================================================ */
+
+	/* 1 item per view (default) */
+	.stuic-carousel[data-items-per-view="1"] .stuic-carousel-item {
+		--_item-width: calc(100% - var(--stuic-carousel-peek-percent, 0%));
+	}
+
+	/* 2 items per view */
+	.stuic-carousel[data-items-per-view="2"] .stuic-carousel-item {
+		--_item-width: calc(
+			(100% - var(--stuic-carousel-gap) - var(--stuic-carousel-peek-percent, 0%)) / 2
+		);
+	}
+
+	/* 3 items per view */
+	.stuic-carousel[data-items-per-view="3"] .stuic-carousel-item {
+		--_item-width: calc(
+			(100% - 2 * var(--stuic-carousel-gap) - var(--stuic-carousel-peek-percent, 0%)) /
+				3
+		);
+	}
+
+	/* 4 items per view */
+	.stuic-carousel[data-items-per-view="4"] .stuic-carousel-item {
+		--_item-width: calc(
+			(100% - 3 * var(--stuic-carousel-gap) - var(--stuic-carousel-peek-percent, 0%)) /
+				4
+		);
+	}
+
+	/* 5 items per view */
+	.stuic-carousel[data-items-per-view="5"] .stuic-carousel-item {
+		--_item-width: calc(
+			(100% - 4 * var(--stuic-carousel-gap) - var(--stuic-carousel-peek-percent, 0%)) /
+				5
+		);
+	}
+
+	/* 6 items per view */
+	.stuic-carousel[data-items-per-view="6"] .stuic-carousel-item {
+		--_item-width: calc(
+			(100% - 5 * var(--stuic-carousel-gap) - var(--stuic-carousel-peek-percent, 0%)) /
+				6
+		);
+	}
+}
