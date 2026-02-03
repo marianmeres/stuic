@@ -30,6 +30,9 @@
 		/** Enable/disable active item tracking */
 		trackActive?: boolean;
 
+		/** Sync active item based on scroll position (requires trackActive) */
+		syncActiveOnScroll?: boolean;
+
 		/** Currently active item index (bindable) */
 		activeIndex?: number;
 
@@ -91,6 +94,7 @@
 		peekPercent = 0,
 		gap,
 		trackActive = false,
+		syncActiveOnScroll = false,
 		activeIndex = $bindable(0),
 		value = $bindable(),
 		snap = true,
@@ -148,8 +152,61 @@
 		});
 	});
 
+	// Flag to prevent scroll loops (when programmatic scroll triggers observer)
+	let isScrollingProgrammatically = false;
+
+	// Track active item based on scroll position using IntersectionObserver
+	$effect(() => {
+		if (!trackActive || !syncActiveOnScroll || !trackEl) return;
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				if (isScrollingProgrammatically) return;
+
+				// Find the entry with highest intersection ratio
+				let mostVisible: { id: string | number; ratio: number } | null = null;
+
+				for (const entry of entries) {
+					if (entry.isIntersecting) {
+						const id = entry.target.getAttribute("data-id");
+						if (id && (!mostVisible || entry.intersectionRatio > mostVisible.ratio)) {
+							// Parse id back to number if it was originally a number
+							const parsedId = coll.items.find((i) => String(i.id) === id)?.id;
+							if (parsedId !== undefined) {
+								mostVisible = { id: parsedId, ratio: entry.intersectionRatio };
+							}
+						}
+					}
+				}
+
+				if (mostVisible && mostVisible.id !== coll.active?.id) {
+					const item = coll.items.find((i) => i.id === mostVisible!.id);
+					if (item) {
+						coll.setActive(item);
+					}
+				}
+			},
+			{
+				root: trackEl,
+				threshold: [0.5, 0.75, 1.0],
+			}
+		);
+
+		// Observe all item elements
+		for (const id in itemEls) {
+			if (itemEls[id]) {
+				observer.observe(itemEls[id]);
+			}
+		}
+
+		return () => observer.disconnect();
+	});
+
 	// Scroll active item into view when active changes programmatically
 	function scrollActiveIntoView() {
+		// Set flag to prevent IntersectionObserver from re-triggering
+		isScrollingProgrammatically = true;
+
 		// Use setTimeout to allow the ItemCollection state to update first
 		setTimeout(() => {
 			const activeItem = coll.active;
@@ -160,6 +217,11 @@
 					inline: snapAlign === "center" ? "center" : snapAlign === "end" ? "end" : "start",
 				});
 			}
+
+			// Reset flag after scroll animation completes
+			setTimeout(() => {
+				isScrollingProgrammatically = false;
+			}, scrollBehavior === "instant" ? 0 : 300);
 		}, 0);
 	}
 
@@ -258,6 +320,7 @@
 				{@const active = isItemActive(i)}
 				<div
 					bind:this={itemEls[item.id]}
+					data-id={item.id}
 					class={twMerge(
 						!unstyled && "stuic-carousel-item",
 						classItem,

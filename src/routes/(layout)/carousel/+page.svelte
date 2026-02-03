@@ -136,9 +136,9 @@
 
 	<!-- With Active Tracking -->
 	<section>
-		<h2 class="text-xl font-semibold mb-2">With Active Tracking</h2>
+		<h2 class="text-xl font-semibold mb-2">With Active Tracking + Scroll Sync</h2>
 		<p class="text-sm text-neutral-500 mb-4">
-			Tracks the active item. Use buttons or keyboard to navigate.
+			Tracks the active item. Scroll/swipe to change active, or use buttons/keyboard.
 		</p>
 		<div
 			class="border rounded-lg p-4"
@@ -148,6 +148,7 @@
 				bind:this={carousel1}
 				items={basicItems}
 				trackActive
+				syncActiveOnScroll
 				bind:activeIndex={activeIndex1}
 				classItem="p-8 text-center text-2xl font-bold"
 			/>
