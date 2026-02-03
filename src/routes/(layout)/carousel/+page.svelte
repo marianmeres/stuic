@@ -257,9 +257,7 @@
 	<!-- HTML Content (THC) -->
 	<section>
 		<h2 class="text-xl font-semibold mb-2">HTML Content (THC)</h2>
-		<p class="text-sm text-neutral-500 mb-4">
-			Using the THC pattern with HTML content.
-		</p>
+		<p class="text-sm text-neutral-500 mb-4">Using the THC pattern with HTML content.</p>
 		<div
 			class="border rounded-lg p-4"
 			style="--stuic-carousel-item-bg: var(--stuic-color-surface); --stuic-carousel-item-border-width: 1px; --stuic-carousel-item-border: var(--stuic-color-border);"
@@ -322,11 +320,7 @@
 				{#snippet renderItem({ item, active })}
 					<button
 						type="button"
-						class="w-full rounded-lg overflow-hidden border-2 transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-						class:border-blue-500={active}
-						class:border-transparent={!active}
-						class:ring-2={active}
-						class:ring-blue-500={active}
+						class="w-full rounded-md overflow-hidden cursor-pointer focus:outline-none"
 						onclick={() => imageCarousel.goToId(item.id)}
 					>
 						<img
@@ -334,11 +328,7 @@
 							alt={item.data?.label}
 							class="w-full aspect-square object-cover"
 						/>
-						<div
-							class="p-2 text-center text-sm font-medium"
-							class:bg-blue-500={active}
-							class:text-white={active}
-						>
+						<div class="p-2 text-center text-sm font-medium">
 							{item.data?.label}
 						</div>
 					</button>

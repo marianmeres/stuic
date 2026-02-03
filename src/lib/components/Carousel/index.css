@@ -16,7 +16,7 @@
 	--stuic-carousel-item-bg-active: transparent;
 	--stuic-carousel-item-border: transparent;
 	--stuic-carousel-item-border-active: var(--stuic-color-primary);
-	--stuic-carousel-item-border-width: 0;
+	--stuic-carousel-item-border-width: 1px;
 	--stuic-carousel-item-border-width-active: 1px;
 
 	/* Scroll behavior */
