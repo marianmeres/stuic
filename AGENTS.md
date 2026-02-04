@@ -1,250 +1,91 @@
-# AGENTS.md - AI Coding Agent Guidelines for STUIC
+# STUIC - Agent Guide
 
-This document provides strict requirements and conventions for AI coding agents working on the STUIC codebase.
+> Svelte 5 + Tailwind CSS v4 component library with centralized design tokens.
 
-## Project Overview
+## Quick Reference
 
-STUIC (Svelte Tailwind UI Components) is a Svelte 5 component library built with Tailwind CSS v4. It uses a centralized design token system with CSS custom properties.
+| | Command |
+|---|---------|
+| **Dev** | `npm run dev` |
+| **Build** | `npm run build` |
+| **Test** | `npm run test` |
+| **Check** | `npm run check` |
+| **Lint** | `npm run lint` |
+| **Format** | `npm run format` |
 
-## Technology Stack
+**Stack:** Svelte 5 (runes) · Tailwind CSS v4 · SvelteKit (library mode) · Vite
 
-- **Framework**: Svelte 5 with runes (`$state`, `$derived`, `$bindable`, `$props`)
-- **Styling**: Tailwind CSS v4 with `@theme inline` directive
-- **Build**: Vite, SvelteKit (library mode)
-- **Package Manager**: npm/pnpm
+---
 
-## STRICT REQUIREMENTS
+## Project Structure
 
-### 1. CSS Variable Naming Convention
+```
+src/lib/
+├── components/     # 34 UI components
+├── actions/        # 12 Svelte actions
+├── utils/          # 45+ utility functions
+├── themes/css/     # 26 theme files
+├── icons/          # Icon re-exports
+├── index.css       # Centralized CSS imports
+└── index.ts        # Main exports
+```
 
-**ALL CSS variables MUST follow this pattern:**
+---
+
+## Critical Rules
+
+### DO NOT
+
+1. Use abbreviated CSS var names (`--stuic-lib-bg` wrong → `--stuic-list-item-button-bg`)
+2. Use `-dark` suffix (use `:root.dark {}` selector instead)
+3. Put state before property (`--stuic-button-hover-bg` wrong → `--stuic-button-bg-hover`)
+4. Use Svelte 4 syntax (`export let`, `$:`) — use runes (`$props()`, `$derived()`)
+5. Create components without `unstyled`, `class`, `el` props
+6. Use `dark:` Tailwind prefix when CSS vars handle dark mode
+7. Import CSS inside components — centralize in `src/lib/index.css`
+
+### CSS Variable Pattern
 
 ```
 --stuic-{component}-{element?}-{property}-{state?}
 ```
 
-**Rules:**
-- Use `--stuic-` prefix for all custom properties
-- Use **full component names** (no abbreviations)
-  - Correct: `--stuic-list-item-button-bg`
-  - Wrong: `--stuic-lib-bg`
-- Put **state at the end**
-  - Correct: `--stuic-button-bg-hover`
-  - Wrong: `--stuic-button-hover-bg`
-- **No `-dark` suffix** - dark mode is defined in `.dark {}` selector
-  - Correct: Define in `.dark { --stuic-button-bg: ...; }`
-  - Wrong: `--stuic-button-bg-dark`
-- Standard properties: `bg`, `text`, `border`, `ring`, `shadow`, `accent`, `radius`
-- Standard states: `hover`, `active`, `focus`, `disabled`, `error`
+---
 
-### 2. Component CSS Structure
+## Before Making Changes
 
-Every component with customizable styling MUST have an `index.css` file with this structure:
+- [ ] Check existing patterns in similar components
+- [ ] Follow centralized CSS import pattern
+- [ ] Run `npm run build` to verify
+- [ ] Test both light and dark modes
+- [ ] Verify `--stuic-color-primary` changes cascade
 
-```css
-/* prettier-ignore */
-:root {
-	/* Component-level customization tokens */
-	--stuic-{component}-{property}: {default-value};
-	--stuic-{component}-{property}-{state}: {value};
-}
+---
 
-@layer components {
-	.stuic-{component} {
-		/* Base styles using CSS vars or internal vars */
-		background: var(--_bg);
-		color: var(--_text);
-	}
+## Documentation Index
 
-	/* Intent/variant styles set internal vars */
-	.stuic-{component}[data-intent="primary"] {
-		--_color: var(--stuic-color-primary);
-		--_fg: var(--stuic-color-primary-foreground);
-	}
+### Core Docs
+- [Architecture](./docs/architecture.md) — System design, data flow
+- [Conventions](./docs/conventions.md) — Code standards, patterns
+- [Tasks](./docs/tasks.md) — Common procedures
 
-	/* Dark mode overrides */
-	.dark .stuic-{component} { }
-}
-```
+### Domain Docs
+- [Components](./docs/domains/components.md) — 34 components, Props pattern, snippets
+- [Theming](./docs/domains/theming.md) — CSS tokens, dark mode, themes
+- [Actions](./docs/domains/actions.md) — 12 Svelte directives
+- [Utils](./docs/domains/utils.md) — 45+ utility functions
 
-**Example (Button):**
-```css
-/* prettier-ignore */
-:root {
-	--stuic-button-radius: var(--radius-md);
-	--stuic-button-ring-color: var(--stuic-color-ring);
-	--stuic-button-padding-x-md: 1rem;
-}
+### Reference
+- [Design Tokens Manual](./docs/DESIGN_TOKENS_MANUAL.md) — Token philosophy
+- [Tailwind v4 Variables](./docs/TAILWIND_V4_CSS_VARIABLES.md) — CSS variable reference
 
-@layer components {
-	.stuic-button {
-		background: var(--_bg);
-		color: var(--_text);
-		border-color: var(--_border);
-	}
+---
 
-	.stuic-button[data-intent="primary"] {
-		--_color: var(--stuic-color-primary);
-		--_fg: var(--stuic-color-primary-foreground);
-	}
+## Key Files
 
-	.stuic-button[data-variant="solid"] {
-		--_bg: var(--_color);
-		--_text: var(--_fg);
-	}
-}
-```
-
-### 3. Global Design Tokens
-
-Theme tokens are defined in `src/lib/themes/css/` (e.g., `stone.css`). The default theme is imported in `src/lib/index.css`.
-
-**Intent Colors** (5 types, each with state variants):
-- `--stuic-color-primary` - Primary actions
-- `--stuic-color-accent` - Secondary emphasis
-- `--stuic-color-destructive` - Dangerous actions
-- `--stuic-color-warning` - Caution states
-- `--stuic-color-success` - Positive states
-
-Each intent has these variants:
-- `-hover`, `-active` (background states)
-- `-foreground`, `-foreground-hover`, `-foreground-active` (text on intent)
-
-**Surface Colors for Intents:**
-- `--stuic-color-surface-{intent}` - Soft/muted background tint
-- `--stuic-color-surface-{intent}-foreground` - Text on surface
-- `--stuic-color-surface-{intent}-border` - Border on surface
-
-**Layout Colors:**
-- `--stuic-color-background` - Page background (with `-foreground` variants)
-- `--stuic-color-surface` - Base surface level
-- `--stuic-color-surface-1` - Elevated surface (with `-hover`, `-active`, `-foreground` variants)
-- `--stuic-color-muted` - Subdued elements (with state variants)
-
-**Semantic Colors:**
-- `--stuic-color-foreground` - Primary text
-- `--stuic-color-border` - Default borders (with `-hover`, `-active`)
-- `--stuic-color-input` - Input backgrounds (with state variants)
-- `--stuic-color-ring` - Focus ring color
-
-**Dark Mode:**
-Dark mode is defined in `:root.dark {}` selector within theme files. DO NOT use `-dark` suffix on variable names.
-
-### 4. Svelte 5 Patterns
-
-**Props declaration:**
-```svelte
-<script lang="ts">
-	import type { Snippet } from 'svelte';
-	import type { HTMLButtonAttributes } from 'svelte/elements';
-
-	interface Props extends HTMLButtonAttributes {
-		children?: Snippet;
-		variant?: 'primary' | 'secondary';
-		unstyled?: boolean;
-		class?: string;
-		el?: HTMLButtonElement;
-	}
-
-	let {
-		children,
-		variant,
-		unstyled = false,
-		class: className = '',
-		el = $bindable(),
-		...rest
-	}: Props = $props();
-</script>
-```
-
-**State management:**
-```svelte
-<script lang="ts">
-	let count = $state(0);
-	let doubled = $derived(count * 2);
-</script>
-```
-
-### 5. Component Features
-
-Every visual component SHOULD support:
-- `unstyled` prop - Removes all default styling
-- `class` prop - Additional CSS classes (merged with `twMerge`)
-- `el` prop - Bindable element reference
-
-### 6. File Structure
-
-```
-src/lib/components/{ComponentName}/
-├── {ComponentName}.svelte    # Main component
-├── index.ts                  # Exports
-├── index.css                 # Component tokens (if customizable)
-└── README.md                 # Documentation
-```
-
-### 7. Import Patterns
-
-```ts
-// index.ts
-export { default as ComponentName } from './ComponentName.svelte';
-export type { Props as ComponentNameProps } from './ComponentName.svelte';
-```
-
-### 8. Tailwind CSS v4 Specifics
-
-- Use `:root {}` for component token definitions
-- Use `@layer components {}` for component styles
-- No `dark:` prefix in Tailwind classes when CSS variables handle dark mode
-- Use `twMerge()` for class prop merging
-- Prefer `bg-linear-to-r` over `bg-gradient-to-r` (v4 canonical)
-
-### 9. Documentation Requirements
-
-Every component README MUST include:
-- Description
-- Props table with types, defaults, descriptions
-- Usage examples
-- CSS variables reference (if applicable)
-
-## DO NOT
-
-1. **DO NOT** use abbreviated component names in CSS variables
-2. **DO NOT** use `-dark` suffix for CSS variables (use `:root.dark {}` selector)
-3. **DO NOT** put state before property in variable names
-4. **DO NOT** use `--color-*` prefix for new variables (use `--stuic-color-*`)
-5. **DO NOT** add `dark:` Tailwind prefixes when CSS variables handle dark mode
-6. **DO NOT** create components without `unstyled` and `class` props
-7. **DO NOT** use Svelte 4 syntax (`export let`, `$:`, etc.)
-
-## Testing Changes
-
-After making changes:
-1. Run `npm run build` to check for build errors
-2. Run `npm run dev` to test visually
-3. Test both light and dark modes
-4. Test that `--stuic-color-primary` changes cascade to affected components
-
-## Common Tasks
-
-### Adding a New Component with Theming
-
-1. Create component folder structure
-2. Create `index.css` with tokens referencing global tokens
-3. Import CSS in component with `import './index.css';`
-4. Add to `src/lib/index.css` imports
-5. Export from `src/lib/index.ts`
-6. Create README.md documentation
-
-### Updating CSS Variable Names
-
-1. Update `index.css` with new `--stuic-*` names
-2. Keep old names as Tailwind utility aliases
-3. Update README.md CSS variables section
-4. Update any Svelte component references
-
-## Reference Files
-
-- Main CSS entry: `src/lib/index.css`
-- Theme files: `src/lib/themes/css/` (e.g., `stone.css`)
-- Main exports: `src/lib/index.ts`
-- Example component: `src/lib/components/Button/`
+| File | Purpose |
+|------|---------|
+| `src/lib/index.css` | CSS entry point |
+| `src/lib/index.ts` | JS entry point |
+| `src/lib/themes/css/stone.css` | Default theme |
+| `src/lib/components/Button/` | Reference component |
