@@ -118,6 +118,10 @@
 </script>
 
 <div class="space-y-16 py-8">
+	<div>
+		<a href="../carousel-full" class="underline">Full-screen presentation-like example</a>
+	</div>
+
 	<!-- Basic Carousel -->
 	<section>
 		<h2 class="text-xl font-semibold mb-2">Basic Carousel (1 per view)</h2>
@@ -279,7 +283,7 @@
 			<Carousel items={richItems} itemsPerView={2} peekPercent={10} gap={16} trackActive>
 				{#snippet renderItem({ item, active })}
 					<div
-						class="rounded-lg overflow-hidden border transition-all"
+						class="h-full flex flex-col rounded-lg overflow-hidden border transition-all"
 						class:ring-2={active}
 						class:ring-blue-500={active}
 					>
@@ -288,7 +292,7 @@
 							alt={String(item.content)}
 							class="w-full h-48 object-cover"
 						/>
-						<div class="p-4">
+						<div class="p-4 flex-1">
 							<h3 class="font-bold text-lg">{item.content}</h3>
 							<p class="text-sm text-neutral-600 dark:text-neutral-400">
 								{item.data?.description}

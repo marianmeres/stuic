@@ -57,6 +57,9 @@
 		/** Show scrollbar on hover (default: true). Set to false when using navigation buttons */
 		scrollbar?: boolean;
 
+		/** Enable horizontal scrolling via mouse wheel (default: true) */
+		wheelScroll?: boolean;
+
 		/** Custom class for container */
 		class?: string;
 
@@ -103,6 +106,7 @@
 		loop = false,
 		scrollBehavior = "smooth",
 		scrollbar = true,
+		wheelScroll = true,
 		class: classProp,
 		classTrack,
 		classItem,
@@ -214,14 +218,18 @@
 				itemEls[activeItem.id]?.scrollIntoView({
 					behavior: scrollBehavior,
 					block: "nearest",
-					inline: snapAlign === "center" ? "center" : snapAlign === "end" ? "end" : "start",
+					inline:
+						snapAlign === "center" ? "center" : snapAlign === "end" ? "end" : "start",
 				});
 			}
 
 			// Reset flag after scroll animation completes
-			setTimeout(() => {
-				isScrollingProgrammatically = false;
-			}, scrollBehavior === "instant" ? 0 : 300);
+			setTimeout(
+				() => {
+					isScrollingProgrammatically = false;
+				},
+				scrollBehavior === "instant" ? 0 : 300
+			);
 		}, 0);
 	}
 
@@ -245,6 +253,24 @@
 			e.preventDefault();
 			coll.setActiveLast();
 			scrollActiveIntoView();
+		}
+	}
+
+	// Mouse wheel horizontal scroll handler
+	function handleWheel(e: WheelEvent) {
+		if (!wheelScroll || e.deltaY === 0) return;
+		e.preventDefault();
+
+		// With snap enabled, navigate by item; otherwise scroll by pixels
+		if (snap) {
+			if (e.deltaY > 0) {
+				coll.setActiveNext();
+			} else {
+				coll.setActivePrevious();
+			}
+			scrollActiveIntoView();
+		} else {
+			trackEl!.scrollLeft += e.deltaY;
 		}
 	}
 
@@ -315,6 +341,7 @@
 			data-snap-align={!unstyled && snap ? snapAlign : undefined}
 			data-scrollbar={!unstyled && scrollbar ? "true" : undefined}
 			onkeydown={handleKeydown}
+			onwheel={handleWheel}
 		>
 			{#each coll.items as item, i (item.id)}
 				{@const active = isItemActive(i)}
