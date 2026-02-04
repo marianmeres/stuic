@@ -2,7 +2,7 @@
 
 ## Overview
 
-34 Svelte 5 components with consistent API patterns. All use runes-based reactivity.
+35 Svelte 5 components with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 

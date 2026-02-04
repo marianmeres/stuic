@@ -2,7 +2,7 @@
 
 ## Overview
 
-45+ utility functions for common tasks. Organized by category.
+42 utility functions for common tasks. Organized by category.
 
 ---
 

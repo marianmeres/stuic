@@ -2,6 +2,8 @@
 
 > Svelte 5 + Tailwind CSS v4 component library with centralized design tokens.
 
+---
+
 ## Quick Reference
 
 | | Command |
@@ -21,9 +23,9 @@
 
 ```
 src/lib/
-├── components/     # 34 UI components
+├── components/     # 35 UI components
 ├── actions/        # 12 Svelte actions
-├── utils/          # 45+ utility functions
+├── utils/          # 42 utility functions
 ├── themes/css/     # 26 theme files
 ├── icons/          # Icon re-exports
 ├── index.css       # Centralized CSS imports
@@ -32,7 +34,7 @@ src/lib/
 
 ---
 
-## Critical Rules
+## Critical Conventions
 
 ### DO NOT
 
@@ -70,10 +72,10 @@ src/lib/
 - [Tasks](./docs/tasks.md) — Common procedures
 
 ### Domain Docs
-- [Components](./docs/domains/components.md) — 34 components, Props pattern, snippets
+- [Components](./docs/domains/components.md) — 35 components, Props pattern, snippets
 - [Theming](./docs/domains/theming.md) — CSS tokens, dark mode, themes
 - [Actions](./docs/domains/actions.md) — 12 Svelte directives
-- [Utils](./docs/domains/utils.md) — 45+ utility functions
+- [Utils](./docs/domains/utils.md) — 42 utility functions
 
 ### Reference
 - [Design Tokens Manual](./docs/DESIGN_TOKENS_MANUAL.md) — Token philosophy
