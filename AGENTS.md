@@ -43,65 +43,92 @@ Every component with customizable styling MUST have an `index.css` file with thi
 
 ```css
 /* prettier-ignore */
-@theme inline {
-	/* Component tokens - reference global tokens as fallbacks */
-	--stuic-{component}-{property}: var(--stuic-{component}-{property}, var(--stuic-{global-token}));
+:root {
+	/* Component-level customization tokens */
+	--stuic-{component}-{property}: {default-value};
+	--stuic-{component}-{property}-{state}: {value};
+}
 
-	/* Tailwind utility aliases (for backwards compatibility) */
-	--color-{legacy-name}: var(--stuic-{component}-{property});
-	--color-{legacy-name}-dark: var(--stuic-{component}-{property});
+@layer components {
+	.stuic-{component} {
+		/* Base styles using CSS vars or internal vars */
+		background: var(--_bg);
+		color: var(--_text);
+	}
+
+	/* Intent/variant styles set internal vars */
+	.stuic-{component}[data-intent="primary"] {
+		--_color: var(--stuic-color-primary);
+		--_fg: var(--stuic-color-primary-foreground);
+	}
+
+	/* Dark mode overrides */
+	.dark .stuic-{component} { }
 }
 ```
 
 **Example (Button):**
 ```css
 /* prettier-ignore */
-@theme inline {
-	--stuic-button-bg: var(--stuic-button-bg, var(--stuic-surface-interactive));
-	--stuic-button-text: var(--stuic-button-text, var(--stuic-text));
-	--stuic-button-border: var(--stuic-button-border, var(--stuic-border-strong));
+:root {
+	--stuic-button-radius: var(--radius-md);
+	--stuic-button-ring-color: var(--stuic-color-ring);
+	--stuic-button-padding-x-md: 1rem;
+}
 
-	/* Tailwind utility aliases */
-	--color-button-bg: var(--stuic-button-bg);
-	--color-button-bg-dark: var(--stuic-button-bg);
+@layer components {
+	.stuic-button {
+		background: var(--_bg);
+		color: var(--_text);
+		border-color: var(--_border);
+	}
+
+	.stuic-button[data-intent="primary"] {
+		--_color: var(--stuic-color-primary);
+		--_fg: var(--stuic-color-primary-foreground);
+	}
+
+	.stuic-button[data-variant="solid"] {
+		--_bg: var(--_color);
+		--_text: var(--_fg);
+	}
 }
 ```
 
 ### 3. Global Design Tokens
 
-Global tokens are defined in `src/lib/theme.css`. Components MUST reference these as fallback defaults:
+Theme tokens are defined in `src/lib/themes/css/` (e.g., `stone.css`). The default theme is imported in `src/lib/index.css`.
 
-**Accent Colors:**
-- `--stuic-accent` - Primary accent color
-- `--stuic-accent-hover`, `--stuic-accent-active`
-- `--stuic-accent-destructive`, `--stuic-accent-destructive-hover`
+**Intent Colors** (5 types, each with state variants):
+- `--stuic-color-primary` - Primary actions
+- `--stuic-color-accent` - Secondary emphasis
+- `--stuic-color-destructive` - Dangerous actions
+- `--stuic-color-warning` - Caution states
+- `--stuic-color-success` - Positive states
 
-**Surface Colors:**
-- `--stuic-surface` - Base background
-- `--stuic-surface-elevated` - Cards, modals
-- `--stuic-surface-sunken` - Input backgrounds
-- `--stuic-surface-overlay` - Tooltips, backdrops
-- `--stuic-surface-interactive` - Buttons, list items
-- `--stuic-surface-interactive-hover`, `--stuic-surface-interactive-active`
+Each intent has these variants:
+- `-hover`, `-active` (background states)
+- `-foreground`, `-foreground-hover`, `-foreground-active` (text on intent)
 
-**Text Colors:**
-- `--stuic-text` - Primary text
-- `--stuic-text-muted` - Secondary text
-- `--stuic-text-inverse` - On dark backgrounds
-- `--stuic-text-on-accent` - On accent backgrounds
-- `--stuic-text-destructive` - Error text
+**Surface Colors for Intents:**
+- `--stuic-color-surface-{intent}` - Soft/muted background tint
+- `--stuic-color-surface-{intent}-foreground` - Text on surface
+- `--stuic-color-surface-{intent}-border` - Border on surface
 
-**Border Colors:**
-- `--stuic-border` - Default border
-- `--stuic-border-strong` - Emphasized
-- `--stuic-border-subtle` - Light
-- `--stuic-border-focus` - Focus state
-- `--stuic-border-error` - Error state
+**Layout Colors:**
+- `--stuic-color-background` - Page background (with `-foreground` variants)
+- `--stuic-color-surface` - Base surface level
+- `--stuic-color-surface-1` - Elevated surface (with `-hover`, `-active`, `-foreground` variants)
+- `--stuic-color-muted` - Subdued elements (with state variants)
 
-**Other:**
-- `--stuic-ring` - Focus ring color
-- `--stuic-radius`, `--stuic-radius-sm`, `--stuic-radius-lg`
-- `--stuic-transition-fast`, `--stuic-transition-normal`, `--stuic-transition-slow`
+**Semantic Colors:**
+- `--stuic-color-foreground` - Primary text
+- `--stuic-color-border` - Default borders (with `-hover`, `-active`)
+- `--stuic-color-input` - Input backgrounds (with state variants)
+- `--stuic-color-ring` - Focus ring color
+
+**Dark Mode:**
+Dark mode is defined in `:root.dark {}` selector within theme files. DO NOT use `-dark` suffix on variable names.
 
 ### 4. Svelte 5 Patterns
 
@@ -165,7 +192,8 @@ export type { Props as ComponentNameProps } from './ComponentName.svelte';
 
 ### 8. Tailwind CSS v4 Specifics
 
-- Use `@theme inline` for CSS variable definitions
+- Use `:root {}` for component token definitions
+- Use `@layer components {}` for component styles
 - No `dark:` prefix in Tailwind classes when CSS variables handle dark mode
 - Use `twMerge()` for class prop merging
 - Prefer `bg-linear-to-r` over `bg-gradient-to-r` (v4 canonical)
@@ -181,13 +209,12 @@ Every component README MUST include:
 ## DO NOT
 
 1. **DO NOT** use abbreviated component names in CSS variables
-2. **DO NOT** use `-dark` suffix for CSS variables
+2. **DO NOT** use `-dark` suffix for CSS variables (use `:root.dark {}` selector)
 3. **DO NOT** put state before property in variable names
-4. **DO NOT** use `--color-*` prefix for new variables (legacy only)
+4. **DO NOT** use `--color-*` prefix for new variables (use `--stuic-color-*`)
 5. **DO NOT** add `dark:` Tailwind prefixes when CSS variables handle dark mode
-6. **DO NOT** forget to add Tailwind utility aliases for backwards compatibility
-7. **DO NOT** create components without `unstyled` and `class` props
-8. **DO NOT** use Svelte 4 syntax (`export let`, `$:`, etc.)
+6. **DO NOT** create components without `unstyled` and `class` props
+7. **DO NOT** use Svelte 4 syntax (`export let`, `$:`, etc.)
 
 ## Testing Changes
 
@@ -195,7 +222,7 @@ After making changes:
 1. Run `npm run build` to check for build errors
 2. Run `npm run dev` to test visually
 3. Test both light and dark modes
-4. Test that `--stuic-accent` changes cascade to affected components
+4. Test that `--stuic-color-primary` changes cascade to affected components
 
 ## Common Tasks
 
@@ -217,7 +244,7 @@ After making changes:
 
 ## Reference Files
 
-- Global tokens: `src/lib/theme.css`
-- Main CSS imports: `src/lib/index.css`
+- Main CSS entry: `src/lib/index.css`
+- Theme files: `src/lib/themes/css/` (e.g., `stone.css`)
 - Main exports: `src/lib/index.ts`
 - Example component: `src/lib/components/Button/`
