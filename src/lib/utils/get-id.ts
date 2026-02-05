@@ -1,4 +1,7 @@
-let _id = 0;
+const GLOBAL_KEY = Symbol.for("@marianmeres/stuic/get-id");
+
+const g = globalThis as unknown as { [GLOBAL_KEY]: number };
+g[GLOBAL_KEY] ??= 0;
 
 /**
  * Generates a unique sequential ID with an optional prefix.
@@ -17,5 +20,5 @@ let _id = 0;
  * ```
  */
 export function getId(prefix: string = "id-") {
-	return `${prefix}${++_id}`;
+	return `${prefix}${++g[GLOBAL_KEY]}`;
 }
