@@ -92,9 +92,13 @@
 		return _tooltip ? _tooltip : () => ({ enabled: false });
 	});
 
+	const DEFAULT_X_CLS = "size-7 -m-2";
+
 	let _xProps: undefined | XProps = $derived.by(() => {
 		if (x) {
-			return typeof x === "boolean" ? {} : x;
+			const props = typeof x === "boolean" ? { class: "" } : { ...x };
+			props.class = twMerge(DEFAULT_X_CLS, props.class);
+			return props;
 		}
 	});
 

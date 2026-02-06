@@ -24,7 +24,7 @@
 	--stuic-avatar-font-size-sm: var(--text-xs);
 
 	/* Size: md */
-	--stuic-avatar-size-md: calc(var(--spacing) * 10);
+	--stuic-avatar-size-md: calc(var(--spacing) * 11);
 	--stuic-avatar-font-size-md: var(--text-base);
 
 	/* Size: lg */

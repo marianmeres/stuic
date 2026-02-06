@@ -60,10 +60,12 @@
 		el = $bindable(),
 	}: Props = $props();
 
+	const DEFAULT_ICON_SIZE = 24;
+
 	// Icon sizes for preset sizes (visual sizes are handled by CSS)
 	const ICON_SIZES: Record<string, number> = {
 		sm: 16,
-		md: 20,
+		md: DEFAULT_ICON_SIZE,
 		lg: 28,
 		xl: 32,
 		"2xl": 36,
@@ -159,7 +161,7 @@
 			return parseInt(match[1]) * 2;
 		}
 
-		return 20; // Default fallback
+		return DEFAULT_ICON_SIZE; // Default fallback
 	});
 
 	let colors = $derived(

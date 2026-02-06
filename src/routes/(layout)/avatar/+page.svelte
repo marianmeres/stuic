@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Button from "../../../lib/components/Button/Button.svelte";
 	import { Avatar, iconUser, iconAlertInfo } from "../../../lib/index.js";
 
 	let clickCount = $state(0);
@@ -28,7 +29,10 @@
 	<Avatar />
 	<Avatar autoColor hashSource="user-1" />
 	<Avatar autoColor hashSource="user-2" />
-	<Avatar icon={iconAlertInfo} />
+
+	<Avatar icon={iconAlertInfo} class="bg-zinc-400" />
+	<Button x roundedFull aspect1 class="bg-zinc-400" />
+	(this is a button - default sizes should match)
 </div>
 
 <hr class="my-6" />
