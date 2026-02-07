@@ -1,6 +1,7 @@
 import { mount, unmount } from "svelte";
 import { twMerge } from "../../utils/tw-merge.js";
 import { addAnchorName, removeAnchorName } from "../../utils/anchor-name.js";
+import { iconX } from "../../icons/index.js";
 import { BodyScroll } from "../../utils/body-scroll-locker.js";
 import type { THC } from "../../components/Thc/Thc.svelte";
 import PopoverContent from "./PopoverContent.svelte";
@@ -529,20 +530,9 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 			const closeBtn = document.createElement("button");
 			closeBtn.setAttribute("type", "button");
 			closeBtn.setAttribute("aria-label", "Close");
-			closeBtn.innerHTML = `<svg fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width:1.25rem;height:1.25rem"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>`;
-			closeBtn.style.cssText = `
-				position: absolute;
-				top: 4px;
-				right: 4px;
-				background: black;
-				color: white;
-				border: none;
-				border-radius: 0.25rem;
-				cursor: pointer;
-				opacity: 0.6;
-				padding: 0.33rem;
-				line-height: 1;
-			`;
+			closeBtn.classList.add("stuic-close-button");
+			closeBtn.style.cssText = `position: absolute; top: 4px; right: 4px;`;
+			closeBtn.innerHTML = iconX();
 			closeBtn.addEventListener("click", hide);
 			popoverEl.appendChild(closeBtn);
 		}

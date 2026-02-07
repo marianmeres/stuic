@@ -1,8 +1,6 @@
 ---
 name: new-component
 description: Create a new STUIC Svelte 5 component with all required files
-argument-hint: [ComponentName]
-disable-model-invocation: true
 ---
 
 Create a new STUIC component named `$ARGUMENTS`.
@@ -19,6 +17,7 @@ Create these files at `src/lib/components/$ARGUMENTS/`:
 ### 1. `$ARGUMENTS.svelte`
 
 Must include:
+
 - `<script lang="ts" module>` block with exported Props interface
 - Props extending appropriate HTML element attributes
 - Universal props: `unstyled`, `class`, `el = $bindable()`
@@ -29,13 +28,14 @@ Must include:
 ### 2. `index.ts`
 
 ```ts
-export { default as $ARGUMENTS } from './$ARGUMENTS.svelte';
-export type { Props as $ARGUMENTSProps } from './$ARGUMENTS.svelte';
+export { default as $ARGUMENTS } from "./$ARGUMENTS.svelte";
+export type { Props as $ARGUMENTSProps } from "./$ARGUMENTS.svelte";
 ```
 
 ### 3. `index.css` (if component needs theming)
 
 Must follow CSS structure from AGENTS.md:
+
 - `@theme inline` block with component tokens
 - Tokens reference global tokens as fallbacks
 - Pattern: `--stuic-{component}-{property}-{state}`
@@ -44,6 +44,7 @@ Must follow CSS structure from AGENTS.md:
 ### 4. `README.md`
 
 Include:
+
 - Component description
 - Props table with types/defaults/descriptions
 - Usage examples

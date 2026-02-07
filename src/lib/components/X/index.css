@@ -1,0 +1,45 @@
+/* =============================================================================
+   CLOSE BUTTON - Shared "floating X dismiss" for fallback/modal contexts
+   Override globally: :root { --stuic-close-button-radius: 0.25rem; }
+   Override locally:  .my-component .stuic-close-button { --stuic-close-button-opacity: 0.8; }
+   ============================================================================= */
+
+:root {
+	--stuic-close-button-bg: var(--stuic-color-foreground);
+	--stuic-close-button-text: var(--stuic-color-background);
+	--stuic-close-button-opacity: 0.6;
+	--stuic-close-button-opacity-hover: 1;
+	--stuic-close-button-radius: 9999px;
+	--stuic-close-button-padding: calc(var(--spacing) * 2);
+	--stuic-close-button-min-size: 44px;
+	--stuic-close-button-transition: 150ms;
+	--stuic-close-button-icon-size: 1.75rem;
+}
+
+@layer components {
+	.stuic-close-button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		background: var(--stuic-close-button-bg);
+		color: var(--stuic-close-button-text);
+		opacity: var(--stuic-close-button-opacity);
+		border: none;
+		border-radius: var(--stuic-close-button-radius);
+		padding: var(--stuic-close-button-padding);
+		cursor: pointer;
+		line-height: 1;
+		min-height: var(--stuic-close-button-min-size);
+		min-width: var(--stuic-close-button-min-size);
+		transition: opacity var(--stuic-close-button-transition);
+	}
+
+	.stuic-close-button:hover {
+		opacity: var(--stuic-close-button-opacity-hover);
+	}
+
+	.stuic-close-button svg {
+		width: var(--stuic-close-button-icon-size);
+		height: var(--stuic-close-button-icon-size);
+	}
+}

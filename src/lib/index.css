@@ -48,6 +48,7 @@ In practice:
 @import "./components/TabbedMenu/index.css";
 @import "./components/ThemePreview/index.css";
 @import "./components/TwCheck/index.css";
+@import "./components/X/index.css";
 
 /* Base styles for STUIC components */
 @layer base {

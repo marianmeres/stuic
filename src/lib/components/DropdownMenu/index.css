@@ -56,12 +56,6 @@
 	--stuic-dropdown-menu-backdrop-bg: rgb(0 0 0 / 0.25);
 	--stuic-dropdown-menu-backdrop-z-index: 40;
 
-	/* Close button (fallback mode) */
-	--stuic-dropdown-menu-close-bg: var(--stuic-color-foreground);
-	--stuic-dropdown-menu-close-text: var(--stuic-color-background);
-	--stuic-dropdown-menu-close-opacity: 0.6;
-	--stuic-dropdown-menu-close-opacity-hover: 1;
-
 	/* Expandable section indent */
 	--stuic-dropdown-menu-expandable-indent: calc(var(--spacing) * 4);
 
@@ -194,25 +188,6 @@
 		background: var(--stuic-dropdown-menu-backdrop-bg);
 		z-index: var(--stuic-dropdown-menu-backdrop-z-index);
 		transition-property: opacity;
-	}
-
-	/* =============================================================================
-	   CLOSE BUTTON (Fallback Mode)
-	   ============================================================================= */
-
-	.stuic-dropdown-menu-close {
-		background: var(--stuic-dropdown-menu-close-bg);
-		color: var(--stuic-dropdown-menu-close-text);
-		opacity: var(--stuic-dropdown-menu-close-opacity);
-		border-radius: var(--stuic-dropdown-menu-radius);
-		padding: calc(var(--spacing) * 2);
-		cursor: pointer;
-		line-height: 1;
-		transition: opacity var(--stuic-dropdown-menu-transition);
-	}
-
-	.stuic-dropdown-menu-close:hover {
-		opacity: var(--stuic-dropdown-menu-close-opacity-hover);
 	}
 
 	/* =============================================================================

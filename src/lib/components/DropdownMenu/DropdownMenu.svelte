@@ -533,7 +533,12 @@
 		}
 	});
 
-	// Runtime viewport overflow detection
+	// Runtime viewport overflow detection.
+	// Known issue: Safari (as of 18.x) does not honor CSS position-try-fallbacks
+	// for anchor-positioned elements, so this JS check + centered modal fallback
+	// is the actual mechanism that handles overflow on Safari/iOS.
+	// On Chrome/Android, CSS position-try-fallbacks (defined in index.css) handles
+	// overflow natively and this check rarely fires.
 	$effect(() => {
 		if (!isOpen || !dropdownEl || forceFallback || runtimeFallback) return;
 		if (!isAnchorPositioningSupported()) return;
@@ -842,25 +847,13 @@
 					<button
 						type="button"
 						aria-label="Close"
-						class="stuic-dropdown-menu-close absolute right-0 top-0 pointer-events-auto"
+						class="stuic-close-button absolute right-0 top-0 pointer-events-auto"
 						onclick={() => {
 							isOpen = false;
 							triggerEl?.focus();
 						}}
 					>
-						<svg
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke-width="2.5"
-							stroke="currentColor"
-							class="w-5 h-5"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								d="M6 18 18 6M6 6l12 12"
-							/>
-						</svg>
+						{@html iconX()}
 					</button>
 				</div>
 			{/if}
