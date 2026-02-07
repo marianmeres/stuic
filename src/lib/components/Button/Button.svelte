@@ -37,7 +37,15 @@
 		el?: HTMLElement;
 		/** Optional tooltip configuration or direct content */
 		tooltip?: string | TooltipConfig;
-		/** Is this button a "X" button (this is a pragmatic convenience) */
+		/**
+		 * Is this button a "X" button (this is a pragmatic convenience).
+		 *
+		 * Note: this does NOT use the shared `.stuic-close-button` styling (see X/index.css)
+		 * because `<Button x>` is a general-purpose "button with an X icon" (tags, toolbars,
+		 * dialogs...), styled by the Button system (intent/variant/size). The `.stuic-close-button`
+		 * class is specifically for floating overlay dismiss controls (popover/dropdown fallback).
+		 * For that look, use: `<Button x unstyled class="stuic-close-button" />`
+		 */
 		x?: boolean | XProps;
 		/** Optional out-of-the-box spinner support  */
 		spinner?: boolean | THC;

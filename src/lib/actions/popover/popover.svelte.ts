@@ -6,7 +6,6 @@ import { BodyScroll } from "../../utils/body-scroll-locker.js";
 import type { THC } from "../../components/Thc/Thc.svelte";
 import PopoverContent from "./PopoverContent.svelte";
 //
-import "./index.css";
 
 // Registry of open popover hide functions for closeOthers feature
 const openPopovers = new Set<() => void>();

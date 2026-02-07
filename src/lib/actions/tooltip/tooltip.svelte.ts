@@ -1,7 +1,5 @@
 import { twMerge } from "../../utils/tw-merge.js";
 import { addAnchorName, removeAnchorName } from "../../utils/anchor-name.js";
-//
-import "./index.css";
 
 const TIMEOUT = 200;
 const TRANSITION = 200;

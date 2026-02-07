@@ -50,6 +50,10 @@ In practice:
 @import "./components/TwCheck/index.css";
 @import "./components/X/index.css";
 
+/* Action CSS */
+@import "./actions/popover/index.css";
+@import "./actions/tooltip/index.css";
+
 /* Base styles for STUIC components */
 @layer base {
 	button:not(:disabled),
