@@ -31,7 +31,7 @@ export type IntentColorKey =
 	| "success";
 
 /** Known role color keys (paired) */
-export type RolePairedKey = "background" | "surface" | "muted";
+export type RolePairedKey = "background" | "muted" | "surface";
 
 /** Known role color keys (single value) */
 export type RoleSingleKey = "foreground" | "border" | "input" | "ring";
@@ -248,15 +248,11 @@ export function createDarkOverride(
 export type ThemeSchema = { light: TokenSchema; dark?: TokenSchema };
 
 /** Generate complete CSS string for a theme (light + optional dark mode) */
-export function generateThemeCss(
-	schema: ThemeSchema,
-	prefix: string = "stuic-",
-): string {
+export function generateThemeCss(schema: ThemeSchema, prefix: string = "stuic-"): string {
 	let css = toCssString(generateCssTokens(schema.light, prefix, "light"));
 	if (schema.dark) {
 		css +=
-			"\n" +
-			toCssString(generateCssTokens(schema.dark, prefix, "dark"), ":root.dark");
+			"\n" + toCssString(generateCssTokens(schema.dark, prefix, "dark"), ":root.dark");
 	}
 	return css;
 }

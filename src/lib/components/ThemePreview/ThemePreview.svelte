@@ -191,6 +191,11 @@
 						<span class="foreground-text">foreground text</span>
 					</div>
 
+					<div class="color-swatch muted-bg">
+						<span class="swatch-label">muted</span>
+						<span class="muted-foreground-text">muted-foreground</span>
+					</div>
+
 					<div class="color-swatch surface">
 						<span class="swatch-label">surface</span>
 						<span class="surface-foreground-text">surface-foreground</span>
@@ -199,11 +204,6 @@
 					<div class="color-swatch surface-1">
 						<span class="swatch-label">surface-1</span>
 						<span class="surface-1-foreground-text">surface-1-foreground</span>
-					</div>
-
-					<div class="color-swatch muted-bg">
-						<span class="swatch-label">muted</span>
-						<span class="muted-foreground-text">muted-foreground</span>
 					</div>
 				</div>
 			</section>

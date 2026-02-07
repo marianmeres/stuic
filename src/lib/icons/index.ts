@@ -38,6 +38,7 @@ export { iconLucideChevronLeft as iconChevronLeft } from "@marianmeres/icons-fns
 export { iconLucideChevronRight as iconChevronRight } from "@marianmeres/icons-fns/lucide/iconLucideChevronRight.js";
 export { iconLucideChevronUp as iconChevronUp } from "@marianmeres/icons-fns/lucide/iconLucideChevronUp.js";
 export { iconLucideCircle as iconCircle } from "@marianmeres/icons-fns/lucide/iconLucideCircle.js";
+export { iconLucideCircleCheckBig as iconCircleCheckBig } from "@marianmeres/icons-fns/lucide/iconLucideCircleCheckBig.js";
 export { iconLucideDot as iconDot } from "@marianmeres/icons-fns/lucide/iconLucideDot.js";
 export { iconLucideEllipsisVertical as iconEllipsisVertical } from "@marianmeres/icons-fns/lucide/iconLucideEllipsisVertical.js";
 export { iconLucideLanguages as iconLanguages } from "@marianmeres/icons-fns/lucide/iconLucideLanguages.js";

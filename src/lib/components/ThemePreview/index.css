@@ -25,10 +25,10 @@
 	--stuic-theme-preview-transition:      150ms;
 
 	/* Section-specific tokens that consume theme colors */
-	--stuic-theme-preview-header-bg:       var(--stuic-color-surface-1);
-	--stuic-theme-preview-header-text:     var(--stuic-color-surface-1-foreground);
-	--stuic-theme-preview-sidebar-bg:      var(--stuic-color-surface-1);
-	--stuic-theme-preview-sidebar-text:    var(--stuic-color-surface-1-foreground);
+	--stuic-theme-preview-header-bg:       var(--stuic-color-surface);
+	--stuic-theme-preview-header-text:     var(--stuic-color-surface-foreground);
+	--stuic-theme-preview-sidebar-bg:      var(--stuic-color-surface);
+	--stuic-theme-preview-sidebar-text:    var(--stuic-color-surface-foreground);
 	--stuic-theme-preview-sidebar-width:   200px;
 	--stuic-theme-preview-main-bg:         var(--stuic-color-background);
 	--stuic-theme-preview-main-text:       var(--stuic-color-foreground);
@@ -103,7 +103,6 @@
 	background: var(--stuic-theme-preview-sidebar-bg);
 	color: var(--stuic-theme-preview-sidebar-text);
 	padding: 1rem;
-	border-right: 1px solid var(--stuic-color-border);
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
