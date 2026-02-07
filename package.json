@@ -39,7 +39,8 @@
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
-			"svelte": "./dist/index.js"
+			"svelte": "./dist/index.js",
+			"default": "./dist/index.js"
 		},
 		"./themes/*": {
 			"types": "./dist/themes/*.d.ts",
