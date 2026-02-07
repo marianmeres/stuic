@@ -89,9 +89,39 @@ Add `class="dark"` to the `<html>` element. All tokens switch automatically — 
 26 pre-built themes available. Default: `stone`.
 
 ```css
-/* Use a different theme */
-@import "@marianmeres/stuic/dist/themes/css/blue-orange.css";
+/* Use a different pre-built theme */
+@import "@marianmeres/stuic/themes/css/blue-orange.css";
 ```
+
+### Custom Themes
+
+Create your own theme programmatically using the exported types and generation functions:
+
+```ts
+import type { ThemeSchema } from '@marianmeres/stuic';
+import { generateThemeCss } from '@marianmeres/stuic';
+import stone from '@marianmeres/stuic/themes/stone';
+
+// Extend the stone theme with a custom primary color
+const myTheme: ThemeSchema = {
+  light: {
+    ...stone.light,
+    colors: {
+      ...stone.light.colors,
+      intent: {
+        ...stone.light.colors.intent,
+        primary: { DEFAULT: '#3b82f6', foreground: '#ffffff', hover: '#2563eb' },
+      },
+    },
+  },
+  dark: stone.dark,
+};
+
+// Generate CSS string — write to a file in your build pipeline
+const css = generateThemeCss(myTheme);
+```
+
+See [API.md](API.md) for the full list of exported theme types (`ThemeSchema`, `TokenSchema`, `ColorPair`, `ColorValue`, `SingleColor`).
 
 ## Components
 

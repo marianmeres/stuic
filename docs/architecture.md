@@ -50,7 +50,8 @@ src/lib/
 │   └── index.ts              # Barrel export
 │
 ├── themes/
-│   └── css/              # 26 theme files
+│   ├── *.ts              # 26 theme definitions (TokenSchema)
+│   └── css/              # 26 generated CSS files
 │       └── stone.css         # Default theme
 │
 ├── icons/                # Icon re-exports
@@ -131,7 +132,7 @@ Props → Component → Data Attributes → CSS Selectors
 | `src/lib/index.ts` | JS entry point (barrel export) |
 | `src/lib/themes/css/stone.css` | Default theme |
 | `src/lib/utils/tw-merge.ts` | Tailwind class merging |
-| `src/lib/utils/design-tokens.ts` | Token generation helpers |
+| `src/lib/utils/design-tokens.ts` | Theme types (`ThemeSchema`, `ColorPair`, etc.) and CSS generation functions |
 
 ---
 
@@ -145,7 +146,17 @@ dist/
 ├── components/           # Individual component modules
 ├── actions/              # Individual action modules
 ├── utils/                # Individual utility modules
-└── themes/css/           # Theme CSS files
+└── themes/
+    ├── *.js + *.d.ts     # Theme definition modules (subpath exported)
+    └── css/              # Theme CSS files (subpath exported)
+```
+
+### Package Exports
+
+```json
+".":            Main entry (components, utils, actions, icons, theme types)
+"./themes/*":   Theme definition objects (e.g., import stone from '.../themes/stone')
+"./themes/css/*": Pre-built CSS themes (e.g., import '.../themes/css/stone.css')
 ```
 
 ---

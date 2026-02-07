@@ -128,21 +128,50 @@ export {
 
 ---
 
-## Create New Theme
+## Create New Theme (Library-Internal)
+
+For adding a new theme to the library itself.
 
 ### Steps
 
-1. Copy `src/lib/themes/css/stone.css` as template
-2. Rename to `{name}.css`
-3. Update color values in `:root {}` section
-4. Update color values in `:root.dark {}` section
-5. Use Tailwind color variables: `var(--color-{palette}-{shade})`
+1. Create `src/lib/themes/{name}.ts` defining `light` and `dark` `TokenSchema` objects
+2. Export as `default: { light, dark }`
+3. Run `pnpm run build:theme:all` to generate CSS
+4. Verify generated `src/lib/themes/css/{name}.css`
 
-### Usage
+### Template: {name}.ts
 
-```css
-/* Replace default theme in your app */
-@import "@marianmeres/stuic/dist/themes/css/{name}.css";
+```ts
+import type { TokenSchema } from "../utils/design-tokens.js";
+
+const light: TokenSchema = {
+  colors: {
+    intent: {
+      primary:     { DEFAULT: "var(--color-blue-600)", foreground: "var(--color-white)" },
+      accent:      { DEFAULT: "var(--color-orange-500)", foreground: "var(--color-white)" },
+      destructive: { DEFAULT: "var(--color-rose-500)", foreground: "var(--color-white)" },
+      warning:     { DEFAULT: "var(--color-orange-400)", foreground: "var(--color-black)" },
+      success:     { DEFAULT: "var(--color-teal-500)", foreground: "var(--color-white)" },
+    },
+    role: {
+      paired: {
+        background: { DEFAULT: "var(--color-white)", foreground: "var(--color-stone-900)" },
+        surface:    { DEFAULT: "var(--color-stone-200)", foreground: "var(--color-stone-900)" },
+        muted:      { DEFAULT: "var(--color-stone-100)", foreground: "var(--color-stone-500)" },
+      },
+      single: {
+        foreground: "var(--color-stone-900)",
+        border:     { DEFAULT: "var(--color-stone-300)", hover: "var(--color-stone-400)" },
+        input:      { DEFAULT: "var(--color-stone-50)" },
+        ring:       "color-mix(in srgb, var(--color-blue-600) 20%, transparent)",
+      },
+    },
+  },
+};
+
+const dark: TokenSchema = { /* dark mode overrides */ };
+
+export default { light, dark };
 ```
 
 ### Checklist
@@ -150,7 +179,51 @@ export {
 - [ ] All intent colors defined (primary, accent, destructive, warning, success)
 - [ ] All role colors defined (background, surface, foreground, border, input, ring, muted)
 - [ ] Dark mode section complete
+- [ ] `pnpm run build:theme:all` generates CSS without errors
 - [ ] Test light and dark modes visually
+
+---
+
+## Create Custom Theme (Consumer)
+
+For consumers creating their own theme outside the library.
+
+### Steps
+
+1. Define a `ThemeSchema` object (or extend a built-in theme)
+2. Call `generateThemeCss()` to produce CSS
+3. Write the CSS to a file in your build pipeline
+
+### Template: build-theme.ts
+
+```ts
+import type { ThemeSchema } from '@marianmeres/stuic';
+import { generateThemeCss } from '@marianmeres/stuic';
+import stone from '@marianmeres/stuic/themes/stone';
+import { writeFileSync } from 'node:fs';
+
+const myTheme: ThemeSchema = {
+  light: {
+    ...stone.light,
+    colors: {
+      ...stone.light.colors,
+      intent: {
+        ...stone.light.colors.intent,
+        primary: { DEFAULT: '#3b82f6', foreground: '#ffffff', hover: '#2563eb' },
+      },
+    },
+  },
+  dark: stone.dark,
+};
+
+writeFileSync('src/theme.css', generateThemeCss(myTheme));
+```
+
+### Checklist
+
+- [ ] TypeScript compiles without errors
+- [ ] Generated CSS contains `:root {}` and `:root.dark {}` blocks
+- [ ] Import generated CSS in your app
 
 ---
 

@@ -1,7 +1,7 @@
 import { readdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import {
-	type TokenSchema,
+	type ThemeSchema,
 	generateCssTokens,
 	toCssString,
 } from "../src/lib/utils/design-tokens.ts";
@@ -46,8 +46,6 @@ function parseArgs(): Args {
 	);
 	process.exit(1);
 }
-
-type ThemeSchema = { light: TokenSchema; dark?: TokenSchema };
 
 function isValidThemeModule(
 	mod: unknown,

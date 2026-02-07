@@ -782,13 +782,69 @@ Human-readable file type label from filename.
 
 ### Design Tokens
 
-#### `generateCssTokens(schema)`
+#### `generateThemeCss(schema, prefix?)`
 
-Convert a token schema object to CSS custom property declarations.
+Generate a complete CSS string for a theme, including both light and dark mode blocks.
 
-#### `toCssString(tokens)`
+**Parameters:**
+- `schema` (ThemeSchema) — Theme definition with `light` and optional `dark` modes
+- `prefix` (string, optional) — CSS variable prefix. Default: `"stuic-"`
 
-Format token declarations as a CSS string.
+**Returns:** `string` — Complete CSS with `:root {}` and `:root.dark {}` blocks
+
+**Example:**
+```ts
+import type { ThemeSchema } from '@marianmeres/stuic';
+import { generateThemeCss } from '@marianmeres/stuic';
+import stone from '@marianmeres/stuic/themes/stone';
+
+const custom: ThemeSchema = {
+  light: {
+    ...stone.light,
+    colors: {
+      ...stone.light.colors,
+      intent: {
+        ...stone.light.colors.intent,
+        primary: { DEFAULT: '#3b82f6', foreground: '#ffffff', hover: '#2563eb' },
+      },
+    },
+  },
+  dark: stone.dark,
+};
+
+const css = generateThemeCss(custom);
+```
+
+#### `generateCssTokens(schema, prefix?, mode?)`
+
+Lower-level function: convert a single `TokenSchema` to a token record.
+
+**Parameters:**
+- `schema` (TokenSchema) — Single-mode schema (light or dark)
+- `prefix` (string, optional) — CSS variable prefix. Default: `"stuic-"`
+- `mode` (`"light" | "dark"`, optional) — Affects surface-intent derivation. Default: `"light"`
+
+**Returns:** `GeneratedTokens` — `Record<string, string>` of CSS custom property names to values
+
+#### `toCssString(tokens, selector?)`
+
+Format a token record as a CSS selector block.
+
+**Parameters:**
+- `tokens` (GeneratedTokens) — Token record from `generateCssTokens`
+- `selector` (string, optional) — CSS selector. Default: `":root"`
+
+**Returns:** `string` — CSS block string
+
+#### `createDarkOverride(baseTokens, overrides)`
+
+Create a filtered dark mode token set from base tokens and overrides.
+
+**Parameters:**
+- `baseTokens` (GeneratedTokens) — Light mode tokens (used as key filter)
+- `overrides` (Partial\<GeneratedTokens\>) — Dark mode values
+
+**Returns:** `GeneratedTokens`
 
 ---
 
@@ -834,6 +890,22 @@ Additional exported types include:
 - `FieldOption` — Option type for FieldOptions
 - `KeyValueEntry` — Entry type for FieldKeyValues
 - `ButtonVariant`, `ButtonSize` — Button enum types
+
+### Theme Types
+
+```ts
+import type {
+  ThemeSchema,     // { light: TokenSchema; dark?: TokenSchema }
+  TokenSchema,     // Core schema for a single mode (light or dark)
+  ColorPair,       // { DEFAULT, foreground, hover?, active?, foregroundHover?, foregroundActive? }
+  ColorValue,      // { DEFAULT, hover?, active? }
+  SingleColor,     // string | ColorValue
+  IntentColorKey,  // "primary" | "accent" | "destructive" | "warning" | "success"
+  RolePairedKey,   // "background" | "surface" | "muted"
+  RoleSingleKey,   // "foreground" | "border" | "input" | "ring"
+  GeneratedTokens, // Record<string, string>
+} from '@marianmeres/stuic';
+```
 
 ---
 
@@ -913,7 +985,15 @@ Each component defines customization tokens. Override globally in `:root {}` or 
 
 ### Available Themes (26)
 
-Default theme: `stone`. Import alternatives from `@marianmeres/stuic/dist/themes/css/{name}.css`.
+Default theme: `stone`.
+
+```ts
+// Import pre-built CSS
+import '@marianmeres/stuic/themes/css/blue-orange.css';
+
+// Import theme definition object (to extend/customize)
+import stone from '@marianmeres/stuic/themes/stone';
+```
 
 stone, gray, blue-orange, cyan-red, cyan-slate, emerald-amber-forest, emerald-pink, fuchsia-emerald, indigo-amber, lime-fuchsia-neon, orange-pink-sunset, pink-emerald, pink-teal, purple-yellow, rainbow, red-blue, red-cyan, red-sky, rose-teal, sky-amber, slate-cyan, slate-teal-ocean, stone-orange-earth, teal-rose, violet-lime, violet-rose-dusk
 

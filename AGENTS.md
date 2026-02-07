@@ -26,7 +26,7 @@ src/lib/
 ├── components/     # 35 UI components
 ├── actions/        # 12 Svelte actions
 ├── utils/          # 42 utility functions
-├── themes/css/     # 26 theme files
+├── themes/         # 26 theme definitions (.ts) + generated CSS (css/)
 ├── icons/          # Icon re-exports
 ├── index.css       # Centralized CSS imports
 └── index.ts        # Main exports
@@ -89,5 +89,8 @@ src/lib/
 |------|---------|
 | `src/lib/index.css` | CSS entry point |
 | `src/lib/index.ts` | JS entry point |
-| `src/lib/themes/css/stone.css` | Default theme |
+| `src/lib/utils/design-tokens.ts` | Theme types + CSS generation (`ThemeSchema`, `generateThemeCss`, etc.) |
+| `src/lib/themes/*.ts` | Theme definitions (26 themes, `TokenSchema`-typed) |
+| `src/lib/themes/css/stone.css` | Default theme (generated) |
 | `src/lib/components/Button/` | Reference component |
+| `scripts/generate-theme.ts` | CLI: `pnpm run build:theme:all` |

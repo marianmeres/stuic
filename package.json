@@ -24,7 +24,11 @@
 	"files": [
 		"dist",
 		"!dist/**/*.test.*",
-		"!dist/**/*.spec.*"
+		"!dist/**/*.spec.*",
+		"docs",
+		"AGENTS.md",
+		"CLAUDE.md",
+		"API.md"
 	],
 	"sideEffects": [
 		"**/*.css"
@@ -36,7 +40,12 @@
 		".": {
 			"types": "./dist/index.d.ts",
 			"svelte": "./dist/index.js"
-		}
+		},
+		"./themes/*": {
+			"types": "./dist/themes/*.d.ts",
+			"default": "./dist/themes/*.js"
+		},
+		"./themes/css/*": "./dist/themes/css/*"
 	},
 	"peerDependencies": {
 		"svelte": "^5.0.0"

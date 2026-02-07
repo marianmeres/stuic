@@ -3,14 +3,14 @@
 // ============================================================================
 
 /** Base color value with optional pseudo states */
-type ColorValue = {
+export type ColorValue = {
 	DEFAULT: string;
 	hover?: string;
 	active?: string;
 };
 
 /** Color pair enforcing the -foreground convention, with optional pseudo states */
-type ColorPair = {
+export type ColorPair = {
 	DEFAULT: string;
 	foreground: string;
 	hover?: string;
@@ -20,7 +20,7 @@ type ColorPair = {
 };
 
 /** Single color: either a plain string or an object with pseudo states */
-type SingleColor = string | ColorValue;
+export type SingleColor = string | ColorValue;
 
 /** Known intent color keys */
 export type IntentColorKey =
@@ -238,4 +238,25 @@ export function createDarkOverride(
 	}
 
 	return darkTokens;
+}
+
+// ============================================================================
+// Theme Schema (light + dark)
+// ============================================================================
+
+/** A complete theme definition with required light mode and optional dark mode */
+export type ThemeSchema = { light: TokenSchema; dark?: TokenSchema };
+
+/** Generate complete CSS string for a theme (light + optional dark mode) */
+export function generateThemeCss(
+	schema: ThemeSchema,
+	prefix: string = "stuic-",
+): string {
+	let css = toCssString(generateCssTokens(schema.light, prefix, "light"));
+	if (schema.dark) {
+		css +=
+			"\n" +
+			toCssString(generateCssTokens(schema.dark, prefix, "dark"), ":root.dark");
+	}
+	return css;
 }
