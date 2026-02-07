@@ -88,7 +88,6 @@
 	});
 
 	let hasLabel = $derived(isTHCNotEmpty(label) || typeof label === "function");
-
 </script>
 
 {#snippet snippetOrThc({ id, value }: { id: string; value?: SnippetWithId | THC })}
@@ -140,7 +139,7 @@
 
 	<div
 		class={twMerge(
-			"input-box",
+			"input-box min-w-0",
 			hasLabel && labelLeft && labelLeftWidth === "normal" && "flex-3",
 			hasLabel && labelLeft && labelLeftWidth === "wide" && "flex-2",
 			classInputBox
@@ -164,24 +163,14 @@
 		{#if validation && !validation?.valid}
 			<div
 				transition:slide={{ duration: 150 }}
-				class={twMerge(
-					"validation-box",
-					"my-1 text-sm px-2",
-					classValidationBox
-				)}
+				class={twMerge("validation-box", "my-1 text-sm px-2", classValidationBox)}
 			>
 				{validation.message}
 			</div>
 		{/if}
 
 		{#if description}
-			<div
-				class={twMerge(
-					"desc-box",
-					"mx-2 mt-1 text-sm opacity-50",
-					classDescBox
-				)}
-			>
+			<div class={twMerge("desc-box", "mx-2 mt-1 text-sm opacity-50", classDescBox)}>
 				{#if descriptionCollapsible}
 					<Collapsible
 						expanded={descriptionDefaultExpanded}

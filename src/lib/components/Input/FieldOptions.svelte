@@ -94,7 +94,7 @@
 			cardinality_of: "of max",
 			cardinality_selected: "selected",
 			submit: "Submit",
-			select_all: "Select results",
+			select_all: "Select all",
 			clear_all: "Clear selected",
 			clear: "Clear",
 			search_placeholder: "Type to search...",
@@ -561,7 +561,7 @@
 		bind:this={modalDialog}
 		preEscapeClose={escape}
 		classDialog="items-start"
-		class={twMerge("w-full max-w-2xl bg-transparent! shadow-none! pointer-events-none")}
+		class={twMerge("w-full max-w-2xl bg-transparent shadow-none pointer-events-none")}
 		ariaLabelledby={id}
 		{noScrollLock}
 	>
@@ -569,7 +569,7 @@
 			<div class="pointer-events-auto">
 				<InputWrap
 					size={renderSize}
-					class={twMerge("m-2 mb-12 shadow-xl", classModalField)}
+					class={twMerge("m-1 sm:m-2 mb-12 shadow-xl", classModalField)}
 					classInputBoxWrap={twMerge(
 						// always look like focused
 						`border border-(--stuic-input-accent)`,

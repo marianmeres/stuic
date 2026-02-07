@@ -62,7 +62,7 @@
 		setOpener(
 			openerOrEvent instanceof MouseEvent
 				? (openerOrEvent.currentTarget as HTMLElement)
-				: openerOrEvent ?? (document.activeElement as HTMLElement)
+				: (openerOrEvent ?? (document.activeElement as HTMLElement))
 		);
 		// dialog must be rendered in the DOM before it can be opened...
 		waitForNextRepaint().then(() => {
@@ -134,7 +134,10 @@
 		aria-describedby={ariaDescribedby}
 		class={twMerge(
 			"stuic-modal-dialog",
-			"fixed inset-4 m-auto size-auto",
+			"fixed m-auto size-auto",
+			// Note that the default browser styling is (so we are not touching the edge):
+			// max-width/height: calc((100% - 6px) - 2em);
+			"p-0 inset-0",
 			"flex justify-center items-center",
 			"focus:outline-none focus-visible:outline-none",
 			"bg-transparent",

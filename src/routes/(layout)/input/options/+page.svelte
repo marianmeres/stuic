@@ -71,6 +71,10 @@
 
 		return { coll, found };
 	}
+
+	function raw(v: unknown) {
+		return JSON.stringify(maybeJsonParse(v), null, 2);
+	}
 </script>
 
 <Notifications {notifications} />
@@ -91,7 +95,7 @@
 			validate={{ customValidator }}
 			{itemIdPropName}
 		/>
-		<pre class="text-xs">{JSON.stringify(maybeJsonParse(values.item))}</pre>
+		<pre class="text-xs">{raw(values.item)}</pre>
 	</form>
 
 	<form use:onSubmitValidityCheck class="max-w-3xl border p-4">
@@ -110,7 +114,7 @@
 			{itemIdPropName}
 			allowUnknown
 		/>
-		<pre class="text-xs">{JSON.stringify(maybeJsonParse(values.item2))}</pre>
+		<pre class="text-xs">{raw(values.item2)}</pre>
 	</form>
 
 	<form use:onSubmitValidityCheck class="max-w-3xl border p-4">
@@ -128,7 +132,7 @@
 			validate={{ customValidator }}
 			{itemIdPropName}
 		/>
-		<pre class="text-xs">{JSON.stringify(maybeJsonParse(values.items))}</pre>
+		<pre class="text-xs">{raw(values.items)}</pre>
 	</form>
 
 	<form use:onSubmitValidityCheck class="max-w-3xl border p-4">
@@ -147,6 +151,12 @@
 			allowUnknown
 			validate={{ customValidator }}
 		/>
-		<pre class="text-xs">{JSON.stringify(maybeJsonParse(values.items2))}</pre>
+		<pre class="text-xs">{raw(values.items2)}</pre>
 	</form>
 </div>
+
+<style>
+	pre {
+		text-wrap: wrap;
+	}
+</style>

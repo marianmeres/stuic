@@ -163,13 +163,15 @@
 		{...rest as any}
 		{tabindex}
 	>
-		{#if typeof rendered === "function"}
-			{@render rendered(value)}
-		{:else if rendered}
-			{@html rendered}
-		{:else}
-			&nbsp;
-		{/if}
+		<span class="block truncate">
+			{#if typeof rendered === "function"}
+				{@render rendered(value)}
+			{:else if rendered}
+				{@html rendered}
+			{:else}
+				&nbsp;
+			{/if}
+		</span>
 	</Button>
 
 	<input
