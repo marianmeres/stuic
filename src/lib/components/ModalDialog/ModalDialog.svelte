@@ -106,10 +106,17 @@
 		};
 	}
 
-	onClickOutside(
+	// Click outside handler — only active when visible (prevents stale refs on destroy)
+	const _clickOutside = onClickOutside(
 		() => box,
-		() => !noClickOutsideClose && close()
+		() => !noClickOutsideClose && close(),
+		{ immediate: false }
 	);
+
+	$effect(() => {
+		if (visible && box) _clickOutside.start();
+		else _clickOutside.stop();
+	});
 
 	$effect(() => {
 		// noop if we're undefined ($effect runs immediately as onMount)

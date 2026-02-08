@@ -7,6 +7,7 @@
 /* prettier-ignore */
 :root {
 	/* Structure */
+	--stuic-data-table-layout: fixed;
 	--stuic-data-table-radius: var(--radius-md);
 	--stuic-data-table-border-width: 1px;
 	--stuic-data-table-border-color: var(--stuic-color-border);
@@ -83,7 +84,7 @@
 	.stuic-data-table table {
 		width: 100%;
 		border-collapse: collapse;
-		table-layout: fixed;
+		table-layout: var(--stuic-data-table-layout);
 	}
 
 	/* ============================================================================

@@ -605,16 +605,22 @@
 		isOpen ? BodyScroll.lock() : BodyScroll.unlock();
 	});
 
-	// Click outside handler
-	onClickOutside(
+	// Click outside handler — only active when open (prevents stale refs on destroy)
+	const _clickOutside = onClickOutside(
 		() => wrapperEl,
 		() => {
 			if (closeOnClickOutside && isOpen) {
 				isOpen = false;
 				triggerEl?.focus();
 			}
-		}
+		},
+		{ immediate: false }
 	);
+
+	$effect(() => {
+		if (isOpen && wrapperEl) _clickOutside.start();
+		else _clickOutside.stop();
+	});
 
 	// Helper to generate item IDs
 	function itemId(id: string | number): string {
