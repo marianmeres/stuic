@@ -360,7 +360,7 @@
 							})}
 						{/if}
 						<span
-							class="absolute bottom-1 left-1 right-1 grid bg-white/50 rounded"
+							class="absolute bottom-1 left-1 right-1 grid bg-black/60 text-white rounded"
 							use:tooltip={() => ({ content: asset.name })}
 						>
 							<span class="truncate px-2 text-xs">{asset.name}</span>
