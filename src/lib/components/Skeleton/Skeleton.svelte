@@ -64,7 +64,7 @@
 			"block",
 			effectiveAnimation === "shimmer" && "stuic-skeleton-shimmer",
 			effectiveAnimation === "pulse" && "stuic-skeleton-pulse",
-			effectiveAnimation === "none" && "bg-[var(--stuic-skeleton-bg)]",
+			effectiveAnimation === "none" && "bg-(--stuic-skeleton-bg)",
 			variant === "circle" && "stuic-skeleton-circle",
 			rounded === true && variant !== "circle" && "stuic-skeleton-rounded",
 			classProp

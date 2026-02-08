@@ -408,7 +408,7 @@
 	class={twMerge("w-full stuic-field-assets mb-8", classWrap)}
 	use:highlightDragover={() => ({
 		enabled: typeof processAssets === "function",
-		classes: ["outline-dashed outline-2 outline-[var(--stuic-color-border)]"],
+		classes: ["outline-dashed outline-2 outline-(--stuic-color-border)"],
 	})}
 	use:fileDropzone={() => ({
 		enabled: typeof processAssets === "function",

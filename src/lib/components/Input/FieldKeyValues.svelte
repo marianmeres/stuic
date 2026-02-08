@@ -274,16 +274,16 @@
 	const BTN_CLS = [
 		"p-1 rounded",
 		"opacity-50 hover:opacity-100",
-		"hover:bg-[var(--stuic-color-muted)]",
-		"focus-visible:outline-[var(--stuic-color-border-hover)]",
+		"hover:bg-(--stuic-color-muted)",
+		"focus-visible:outline-(--stuic-color-border-hover)",
 		"disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:bg-transparent",
 	].join(" ");
 
 	const INPUT_CLS = [
-		"rounded bg-[var(--stuic-color-input)]",
+		"rounded bg-(--stuic-color-input)",
 		"focus:outline-none focus:ring-0",
-		"border border-[var(--stuic-color-border)]",
-		"focus:border-[var(--stuic-color-border-hover)]",
+		"border border-(--stuic-color-border)",
+		"focus:border-(--stuic-color-border-hover)",
 		"focus-visible:outline-none focus-visible:ring-0",
 		// "py-1.5 px-2.5",
 	].join(" ");
@@ -322,7 +322,7 @@
 					<div
 						class={twMerge(
 							"flex gap-2 items-start py-2",
-							idx > 0 && "border-t border-[var(--stuic-color-border)]",
+							idx > 0 && "border-t border-(--stuic-color-border)",
 							classEntry
 						)}
 					>
@@ -350,17 +350,11 @@
 								value={entry.value}
 								oninput={(e) => updateEntry(idx, "value", e.currentTarget.value)}
 								placeholder={valuePlaceholder ?? t("value_placeholder")}
-								class={twMerge(
-									INPUT_CLS,
-									"min-h-10 overflow-auto",
-									// renderSize === "sm" && "text-sm",
-									classValueInput
-								)}
-								style="resize: vertical;"
+								class={twMerge(INPUT_CLS, "min-h-10 flex-none", classValueInput)}
 								{disabled}
 								{tabindex}
+								use:autogrow={() => ({ enabled: true, value: entry.value })}
 							></textarea>
-							<!-- use:autogrow={() => ({ enabled: true, value: entry.value })} -->
 						</div>
 
 						<!-- Delete button -->
@@ -384,7 +378,7 @@
 		<div
 			class={twMerge(
 				"p-2",
-				entries.length > 0 && "border-t border-[var(--stuic-color-border)]"
+				entries.length > 0 && "border-t border-(--stuic-color-border)"
 			)}
 		>
 			<button
@@ -392,8 +386,8 @@
 				onclick={addEntry}
 				class={twMerge(
 					"flex items-center gap-1 text-sm opacity-75 hover:opacity-100",
-					"bg-[var(--stuic-color-muted)]",
-					"p-1.5 pr-2 rounded hover:bg-[var(--stuic-color-muted-hover)]"
+					"bg-(--stuic-color-muted)",
+					"p-1.5 pr-2 rounded hover:bg-(--stuic-color-muted-hover)"
 				)}
 				{disabled}
 			>
