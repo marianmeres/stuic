@@ -55,7 +55,8 @@
 			<li>
 				<a
 					href={link}
-					class="block p-2 px-4 rounded-lg bg-neutral-200 hover:bg-neutral-300">{link}</a
+					class="block p-2 px-4 rounded-lg bg-neutral-200 dark:bg-neutral-900 hover:text-white hover:bg-neutral-600"
+					>{link}</a
 				>
 			</li>
 		{/each}

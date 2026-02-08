@@ -148,14 +148,14 @@
 	   Each intent sets the color palette via internal CSS vars.
 	   ============================================================================ */
 
-	/* Default (no intent): neutral gray (no blue undertone) */
+	/* Default (no intent): uses role tokens for theme-aware neutral styling */
 	.stuic-button:not([data-intent]) {
-		--_color: var(--color-neutral-200);
-		--_color-hover: var(--color-neutral-300);
-		--_color-active: var(--color-neutral-400);
-		--_fg: var(--color-neutral-800);
-		--_fg-hover: var(--color-neutral-800);
-		--_fg-active: var(--color-neutral-800);
+		--_color: var(--stuic-color-muted);
+		--_color-hover: var(--stuic-color-muted-hover);
+		--_color-active: var(--stuic-color-muted-active);
+		--_fg: var(--stuic-color-foreground);
+		--_fg-hover: var(--stuic-color-foreground-hover);
+		--_fg-active: var(--stuic-color-foreground-active);
 	}
 
 	.stuic-button[data-intent="primary"] {
@@ -294,103 +294,43 @@
 	/* Default solid: add visible border */
 	.stuic-button:not([data-intent])[data-variant="solid"],
 	.stuic-button:not([data-intent]):not([data-variant]) {
-		--_border: var(--color-neutral-400);
-		--_border-hover: var(--color-neutral-500);
-		--_border-active: var(--color-neutral-500);
+		--_border: var(--stuic-color-border-hover);
+		--_border-hover: var(--stuic-color-border-active);
+		--_border-active: var(--stuic-color-border-active);
 	}
 
 	.stuic-button:not([data-intent])[data-variant="outline"] {
-		--_text: var(--color-neutral-800);
-		--_text-hover: var(--color-neutral-900);
-		--_text-active: var(--color-neutral-900);
-		--_border: var(--color-neutral-400);
-		--_border-hover: var(--color-neutral-400);
-		--_border-active: var(--color-neutral-500);
-		--_bg-hover: var(--color-neutral-100);
-		--_bg-active: var(--color-neutral-200);
+		--_text: var(--stuic-color-foreground);
+		--_text-hover: var(--stuic-color-foreground-hover);
+		--_text-active: var(--stuic-color-foreground-active);
+		--_border: var(--stuic-color-border-hover);
+		--_border-hover: var(--stuic-color-border-hover);
+		--_border-active: var(--stuic-color-border-active);
+		--_bg-hover: var(--stuic-color-muted-hover);
+		--_bg-active: var(--stuic-color-muted-active);
 	}
 
 	.stuic-button:not([data-intent])[data-variant="ghost"] {
-		--_text: var(--color-neutral-800);
-		--_text-hover: var(--color-neutral-900);
-		--_text-active: var(--color-neutral-900);
-		--_bg-hover: var(--color-neutral-100);
-		--_bg-active: var(--color-neutral-200);
+		--_text: var(--stuic-color-foreground);
+		--_text-hover: var(--stuic-color-foreground-hover);
+		--_text-active: var(--stuic-color-foreground-active);
+		--_bg-hover: var(--stuic-color-muted-hover);
+		--_bg-active: var(--stuic-color-muted-active);
 	}
 
 	.stuic-button:not([data-intent])[data-variant="soft"] {
-		--_text: var(--color-neutral-800);
-		--_text-hover: var(--color-neutral-900);
-		--_text-active: var(--color-neutral-900);
-		--_bg: var(--color-neutral-100);
-		--_bg-hover: var(--color-neutral-200);
-		--_bg-active: var(--color-neutral-300);
+		--_text: var(--stuic-color-foreground);
+		--_text-hover: var(--stuic-color-foreground-hover);
+		--_text-active: var(--stuic-color-foreground-active);
+		--_bg: var(--stuic-color-muted);
+		--_bg-hover: var(--stuic-color-muted-hover);
+		--_bg-active: var(--stuic-color-muted-active);
 	}
 
 	.stuic-button:not([data-intent])[data-variant="link"] {
-		--_text: var(--color-neutral-700);
-		--_text-hover: var(--color-neutral-900);
-		--_text-active: var(--color-neutral-900);
-	}
-
-	/* ============================================================================
-	   DEFAULT INTENT DARK MODE OVERRIDES
-	   ============================================================================ */
-
-	/* Default (no intent) in dark mode: lighter neutral colors */
-	.dark .stuic-button:not([data-intent]) {
-		--_color: var(--color-neutral-700);
-		--_color-hover: var(--color-neutral-600);
-		--_color-active: var(--color-neutral-500);
-		--_fg: var(--color-neutral-100);
-		--_fg-hover: var(--color-neutral-100);
-		--_fg-active: var(--color-neutral-100);
-	}
-
-	/* Default solid in dark mode */
-	.dark .stuic-button:not([data-intent])[data-variant="solid"],
-	.dark .stuic-button:not([data-intent]):not([data-variant]) {
-		--_border: var(--color-neutral-500);
-		--_border-hover: var(--color-neutral-400);
-		--_border-active: var(--color-neutral-400);
-	}
-
-	/* Default outline in dark mode */
-	.dark .stuic-button:not([data-intent])[data-variant="outline"] {
-		--_text: var(--color-neutral-200);
-		--_text-hover: var(--color-neutral-100);
-		--_text-active: var(--color-neutral-100);
-		--_border: var(--color-neutral-500);
-		--_border-hover: var(--color-neutral-400);
-		--_border-active: var(--color-neutral-400);
-		--_bg-hover: var(--color-neutral-800);
-		--_bg-active: var(--color-neutral-700);
-	}
-
-	/* Default ghost in dark mode */
-	.dark .stuic-button:not([data-intent])[data-variant="ghost"] {
-		--_text: var(--color-neutral-200);
-		--_text-hover: var(--color-neutral-100);
-		--_text-active: var(--color-neutral-100);
-		--_bg-hover: var(--color-neutral-800);
-		--_bg-active: var(--color-neutral-700);
-	}
-
-	/* Default soft in dark mode */
-	.dark .stuic-button:not([data-intent])[data-variant="soft"] {
-		--_text: var(--color-neutral-200);
-		--_text-hover: var(--color-neutral-100);
-		--_text-active: var(--color-neutral-100);
-		--_bg: var(--color-neutral-800);
-		--_bg-hover: var(--color-neutral-700);
-		--_bg-active: var(--color-neutral-600);
-	}
-
-	/* Default link in dark mode */
-	.dark .stuic-button:not([data-intent])[data-variant="link"] {
-		--_text: var(--color-neutral-300);
-		--_text-hover: var(--color-neutral-100);
-		--_text-active: var(--color-neutral-100);
+		--_text: var(--stuic-color-muted-foreground);
+		--_text-hover: var(--stuic-color-foreground-hover);
+		--_text-active: var(--stuic-color-foreground-active);
 	}
 
 	/* ============================================================================

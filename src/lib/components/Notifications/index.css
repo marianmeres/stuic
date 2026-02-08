@@ -31,8 +31,8 @@
 	--stuic-notification-badge-padding-x: calc(var(--spacing) * 2);
 	--stuic-notification-badge-padding-y: calc(var(--spacing) * 1);
 	--stuic-notification-badge-radius: 9999px;
-	--stuic-notification-badge-bg: var(--color-neutral-950);
-	--stuic-notification-badge-text: var(--color-neutral-50);
+	--stuic-notification-badge-bg: var(--stuic-color-foreground);
+	--stuic-notification-badge-text: var(--stuic-color-background);
 
 	/* Progress bar */
 	/* --stuic-notification-progress-opacity: 0.1; */

@@ -40,6 +40,12 @@ const light: TokenSchema = {
 					DEFAULT: "var(--color-white)",
 					foreground: "var(--color-stone-900)",
 				},
+				muted: {
+					DEFAULT: "var(--color-stone-100)",
+					foreground: "var(--color-stone-500)",
+					hover: "var(--color-stone-200)",
+					active: "var(--color-stone-300)",
+				},
 				surface: {
 					DEFAULT: "var(--color-stone-200)",
 					foreground: "var(--color-stone-900)",
@@ -51,12 +57,6 @@ const light: TokenSchema = {
 					foreground: "var(--color-stone-900)",
 					hover: "var(--color-stone-400)",
 					active: "var(--color-stone-500)",
-				},
-				muted: {
-					DEFAULT: "var(--color-stone-100)",
-					foreground: "var(--color-stone-500)",
-					hover: "var(--color-stone-200)",
-					active: "var(--color-stone-300)",
 				},
 			},
 			single: {
@@ -116,23 +116,23 @@ const dark: TokenSchema = {
 					DEFAULT: "var(--color-stone-900)",
 					foreground: "var(--color-stone-50)",
 				},
-				surface: {
+				muted: {
 					DEFAULT: "var(--color-stone-800)",
-					foreground: "var(--color-stone-100)",
+					foreground: "var(--color-stone-400)",
 					hover: "var(--color-stone-700)",
 					active: "var(--color-stone-600)",
 				},
-				"surface-1": {
+				surface: {
 					DEFAULT: "var(--color-stone-700)",
-					foreground: "var(--color-stone-100)",
+					foreground: "var(--color-stone-300)",
 					hover: "var(--color-stone-600)",
 					active: "var(--color-stone-500)",
 				},
-				muted: {
-					DEFAULT: "var(--color-stone-700)",
-					foreground: "var(--color-stone-400)",
-					hover: "var(--color-stone-600)",
-					active: "var(--color-stone-500)",
+				"surface-1": {
+					DEFAULT: "var(--color-stone-600)",
+					foreground: "var(--color-stone-200)",
+					hover: "var(--color-stone-500)",
+					active: "var(--color-stone-400)",
 				},
 			},
 			single: {

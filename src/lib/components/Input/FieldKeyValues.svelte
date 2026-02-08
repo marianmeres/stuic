@@ -274,16 +274,16 @@
 	const BTN_CLS = [
 		"p-1 rounded",
 		"opacity-50 hover:opacity-100",
-		"hover:bg-neutral-200 dark:hover:bg-neutral-600",
-		"focus-visible:outline-neutral-400",
+		"hover:bg-[var(--stuic-color-muted)]",
+		"focus-visible:outline-[var(--stuic-color-border-hover)]",
 		"disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:bg-transparent",
 	].join(" ");
 
 	const INPUT_CLS = [
-		"rounded bg-neutral-50 dark:bg-neutral-800",
+		"rounded bg-[var(--stuic-color-input)]",
 		"focus:outline-none focus:ring-0",
-		"border border-neutral-300 dark:border-neutral-600",
-		"focus:border-neutral-400 focus:dark:border-neutral-500",
+		"border border-[var(--stuic-color-border)]",
+		"focus:border-[var(--stuic-color-border-hover)]",
 		"focus-visible:outline-none focus-visible:ring-0",
 		// "py-1.5 px-2.5",
 	].join(" ");
@@ -322,7 +322,7 @@
 					<div
 						class={twMerge(
 							"flex gap-2 items-start py-2",
-							idx > 0 && "border-t border-neutral-200 dark:border-neutral-600",
+							idx > 0 && "border-t border-[var(--stuic-color-border)]",
 							classEntry
 						)}
 					>
@@ -384,7 +384,7 @@
 		<div
 			class={twMerge(
 				"p-2",
-				entries.length > 0 && "border-t border-neutral-200 dark:border-neutral-600"
+				entries.length > 0 && "border-t border-[var(--stuic-color-border)]"
 			)}
 		>
 			<button
@@ -392,8 +392,8 @@
 				onclick={addEntry}
 				class={twMerge(
 					"flex items-center gap-1 text-sm opacity-75 hover:opacity-100",
-					"bg-neutral-200 dark:bg-neutral-600",
-					"p-1.5 pr-2 rounded hover:bg-neutral-300 dark:hover:bg-neutral-500"
+					"bg-[var(--stuic-color-muted)]",
+					"p-1.5 pr-2 rounded hover:bg-[var(--stuic-color-muted-hover)]"
 				)}
 				{disabled}
 			>

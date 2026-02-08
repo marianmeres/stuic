@@ -20,7 +20,7 @@
 <fieldset
 	class={twMerge(
 		"stuic-fieldset",
-		"border border-neutral-300 p-4 pt-3 rounded-md my-8",
+		"border border-[var(--stuic-color-border)] p-4 pt-3 rounded-md my-8",
 		classProp
 	)}
 >
