@@ -185,25 +185,16 @@
 					<h2 class="section-label">Role Colors</h2>
 				{/if}
 
-				<div class="role-colors-grid">
-					<div class="color-swatch background">
-						<span class="swatch-label">background</span>
-						<span class="foreground-text">foreground text</span>
-					</div>
-
-					<div class="color-swatch muted-bg">
-						<span class="swatch-label">muted</span>
-						<span class="muted-foreground-text">muted-foreground</span>
-					</div>
-
-					<div class="color-swatch surface">
-						<span class="swatch-label">surface</span>
-						<span class="surface-foreground-text">surface-foreground</span>
-					</div>
-
-					<div class="color-swatch surface-1">
-						<span class="swatch-label">surface-1</span>
-						<span class="surface-1-foreground-text">surface-1-foreground</span>
+				<div class="role-color-nested background">
+					<span class="role-color-label foreground-text">background / foreground</span>
+					<div class="role-color-nested muted-bg">
+						<span class="role-color-label muted-foreground-text">muted / muted-foreground</span>
+						<div class="role-color-nested surface">
+							<span class="role-color-label surface-foreground-text">surface / surface-foreground</span>
+							<div class="role-color-nested surface-1">
+								<span class="role-color-label surface-1-foreground-text">surface-1 / surface-1-foreground</span>
+							</div>
+						</div>
 					</div>
 				</div>
 			</section>

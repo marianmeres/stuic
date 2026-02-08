@@ -6,32 +6,22 @@ const light: TokenSchema = {
 			primary: {
 				DEFAULT: "var(--color-slate-700)",
 				foreground: "var(--color-white)",
-				hover: "var(--color-slate-800)",
-				active: "var(--color-slate-900)",
 			},
 			accent: {
 				DEFAULT: "var(--color-teal-500)",
 				foreground: "var(--color-white)",
-				hover: "var(--color-teal-600)",
-				active: "var(--color-teal-700)",
 			},
 			destructive: {
 				DEFAULT: "var(--color-red-600)",
 				foreground: "var(--color-white)",
-				hover: "var(--color-red-700)",
-				active: "var(--color-red-800)",
 			},
 			warning: {
 				DEFAULT: "var(--color-amber-500)",
 				foreground: "var(--color-white)",
-				hover: "var(--color-amber-600)",
-				active: "var(--color-amber-700)",
 			},
 			success: {
 				DEFAULT: "var(--color-teal-600)",
 				foreground: "var(--color-white)",
-				hover: "var(--color-teal-700)",
-				active: "var(--color-teal-800)",
 			},
 		},
 		role: {
@@ -40,31 +30,23 @@ const light: TokenSchema = {
 					DEFAULT: "var(--color-slate-50)",
 					foreground: "var(--color-slate-900)",
 				},
+				muted: {
+					DEFAULT: "var(--color-slate-100)",
+					foreground: "var(--color-slate-500)",
+				},
 				surface: {
 					DEFAULT: "var(--color-slate-200)",
 					foreground: "var(--color-slate-900)",
-					hover: "var(--color-slate-300)",
-					active: "var(--color-slate-400)",
 				},
 				"surface-1": {
 					DEFAULT: "var(--color-slate-300)",
 					foreground: "var(--color-slate-900)",
-					hover: "var(--color-slate-400)",
-					active: "var(--color-slate-500)",
-				},
-				muted: {
-					DEFAULT: "var(--color-slate-200)",
-					foreground: "var(--color-slate-500)",
-					hover: "var(--color-slate-300)",
-					active: "var(--color-slate-400)",
 				},
 			},
 			single: {
 				foreground: "var(--color-slate-900)",
 				border: {
 					DEFAULT: "var(--color-slate-300)",
-					hover: "var(--color-slate-400)",
-					active: "var(--color-slate-500)",
 				},
 				input: {
 					DEFAULT: "var(--color-white)",
@@ -82,32 +64,22 @@ const dark: TokenSchema = {
 			primary: {
 				DEFAULT: "var(--color-slate-400)",
 				foreground: "var(--color-slate-950)",
-				hover: "var(--color-slate-300)",
-				active: "var(--color-slate-200)",
 			},
 			accent: {
 				DEFAULT: "var(--color-teal-400)",
 				foreground: "var(--color-white)",
-				hover: "var(--color-teal-300)",
-				active: "var(--color-teal-200)",
 			},
 			destructive: {
 				DEFAULT: "var(--color-red-500)",
 				foreground: "var(--color-white)",
-				hover: "var(--color-red-400)",
-				active: "var(--color-red-300)",
 			},
 			warning: {
 				DEFAULT: "var(--color-amber-400)",
 				foreground: "var(--color-black)",
-				hover: "var(--color-amber-300)",
-				active: "var(--color-amber-200)",
 			},
 			success: {
 				DEFAULT: "var(--color-teal-500)",
 				foreground: "var(--color-white)",
-				hover: "var(--color-teal-400)",
-				active: "var(--color-teal-300)",
 			},
 		},
 		role: {
@@ -116,31 +88,23 @@ const dark: TokenSchema = {
 					DEFAULT: "var(--color-slate-950)",
 					foreground: "var(--color-slate-50)",
 				},
-				surface: {
+				muted: {
 					DEFAULT: "var(--color-slate-900)",
-					foreground: "var(--color-slate-100)",
-					hover: "var(--color-slate-800)",
-					active: "var(--color-slate-700)",
+					foreground: "var(--color-slate-500)",
+				},
+				surface: {
+					DEFAULT: "var(--color-slate-800)",
+					foreground: "var(--color-slate-400)",
 				},
 				"surface-1": {
-					DEFAULT: "var(--color-slate-800)",
-					foreground: "var(--color-slate-100)",
-					hover: "var(--color-slate-700)",
-					active: "var(--color-slate-600)",
-				},
-				muted: {
-					DEFAULT: "var(--color-slate-800)",
-					foreground: "var(--color-slate-500)",
-					hover: "var(--color-slate-700)",
-					active: "var(--color-slate-600)",
+					DEFAULT: "var(--color-slate-700)",
+					foreground: "var(--color-slate-300)",
 				},
 			},
 			single: {
 				foreground: "var(--color-slate-50)",
 				border: {
 					DEFAULT: "var(--color-slate-700)",
-					hover: "var(--color-slate-600)",
-					active: "var(--color-slate-500)",
 				},
 				input: {
 					DEFAULT: "var(--color-slate-900)",

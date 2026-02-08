@@ -15,8 +15,6 @@ export type ColorPair = {
 	foreground: string;
 	hover?: string;
 	active?: string;
-	foregroundHover?: string;
-	foregroundActive?: string;
 };
 
 /** Single color: either a plain string or an object with pseudo states */
@@ -73,6 +71,53 @@ function isSingleColorObject(value: SingleColor): value is ColorValue {
 	return typeof value === "object" && "DEFAULT" in value;
 }
 
+/** Tailwind shade scale (ordered light → dark) */
+const SHADE_SCALE = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
+
+/**
+ * Derive hover/active shades from a Tailwind CSS variable.
+ * Light mode steps darker (+1, +2 in scale), dark mode steps lighter (-1, -2).
+ * Returns defaultValue for both if the value is not a parseable shade variable.
+ */
+function deriveShadeSteps(
+	defaultValue: string,
+	mode: "light" | "dark"
+): { hover: string; active: string } {
+	const match = defaultValue.match(/^var\(--color-([a-z]+)-(\d+)\)$/);
+	if (!match) return { hover: defaultValue, active: defaultValue };
+
+	const [, name, shadeStr] = match;
+	const shade = parseInt(shadeStr, 10);
+	const idx = SHADE_SCALE.indexOf(shade);
+	if (idx === -1) return { hover: defaultValue, active: defaultValue };
+
+	const step = mode === "light" ? 1 : -1;
+	const hoverIdx = idx + step;
+	const activeIdx = idx + step * 2;
+
+	if (hoverIdx < 0 || hoverIdx >= SHADE_SCALE.length) return { hover: defaultValue, active: defaultValue };
+	if (activeIdx < 0 || activeIdx >= SHADE_SCALE.length) return { hover: defaultValue, active: defaultValue };
+
+	return {
+		hover: `var(--color-${name}-${SHADE_SCALE[hoverIdx]})`,
+		active: `var(--color-${name}-${SHADE_SCALE[activeIdx]})`,
+	};
+}
+
+/** Fill missing hover/active on a ColorPair using shade derivation */
+function fillPairStates(pair: ColorPair, mode: "light" | "dark"): ColorPair {
+	if (pair.hover !== undefined && pair.active !== undefined) return pair;
+	const derived = deriveShadeSteps(pair.DEFAULT, mode);
+	return { ...pair, hover: pair.hover ?? derived.hover, active: pair.active ?? derived.active };
+}
+
+/** Fill missing hover/active on a ColorValue using shade derivation */
+function fillColorValueStates(color: ColorValue, mode: "light" | "dark"): ColorValue {
+	if (color.hover !== undefined && color.active !== undefined) return color;
+	const derived = deriveShadeSteps(color.DEFAULT, mode);
+	return { ...color, hover: color.hover ?? derived.hover, active: color.active ?? derived.active };
+}
+
 /** Generate color tokens for a paired color (with foreground) */
 function generatePairedColorTokens(
 	tokens: GeneratedTokens,
@@ -87,10 +132,8 @@ function generatePairedColorTokens(
 
 	// Foreground
 	tokens[`${prefix}color-${key}-foreground`] = pair.foreground;
-	tokens[`${prefix}color-${key}-foreground-hover`] =
-		pair.foregroundHover ?? pair.foreground;
-	tokens[`${prefix}color-${key}-foreground-active`] =
-		pair.foregroundActive ?? pair.foreground;
+	tokens[`${prefix}color-${key}-foreground-hover`] = pair.foreground;
+	tokens[`${prefix}color-${key}-foreground-active`] = pair.foreground;
 }
 
 /** Generate color tokens for a single color */
@@ -123,9 +166,9 @@ export function generateCssTokens(
 ): GeneratedTokens {
 	const tokens: GeneratedTokens = {};
 
-	// Intent colors
+	// Intent colors (auto-derive hover/active from shade steps)
 	for (const [key, pair] of Object.entries(schema.colors.intent)) {
-		generatePairedColorTokens(tokens, key, pair, prefix);
+		generatePairedColorTokens(tokens, key, fillPairStates(pair, mode), prefix);
 	}
 
 	// Surface-intent tokens (auto-derived from intent colors)
@@ -143,14 +186,19 @@ export function generateCssTokens(
 			`color-mix(in srgb, var(--${prefix}color-${key}) 30%, var(--stuic-color-background))`;
 	}
 
-	// Role colors (paired)
+	// Role colors (paired) — auto-derive except "background" (no hover/active by design)
 	for (const [key, pair] of Object.entries(schema.colors.role.paired)) {
-		generatePairedColorTokens(tokens, key, pair, prefix);
+		const filled = key === "background" ? pair : fillPairStates(pair, mode);
+		generatePairedColorTokens(tokens, key, filled, prefix);
 	}
 
-	// Role colors (single)
+	// Role colors (single) — auto-derive for object types (e.g. border)
 	for (const [key, color] of Object.entries(schema.colors.role.single)) {
-		generateSingleColorTokens(tokens, key, color, prefix);
+		if (isSingleColorObject(color)) {
+			generateSingleColorTokens(tokens, key, fillColorValueStates(color, mode), prefix);
+		} else {
+			generateSingleColorTokens(tokens, key, color, prefix);
+		}
 	}
 
 	return tokens;

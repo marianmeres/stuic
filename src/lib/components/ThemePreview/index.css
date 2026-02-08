@@ -212,41 +212,33 @@
    Demonstrates: background/surface/muted with their paired foregrounds
    ============================================================================ */
 
-.stuic-theme-preview .role-colors-grid {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-	gap: 1rem;
-}
-
-.stuic-theme-preview .color-swatch {
+.stuic-theme-preview .role-color-nested {
 	padding: 1rem;
 	border-radius: var(--stuic-theme-preview-radius);
-	/* border: 1px solid var(--stuic-color-border); */
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
 }
 
-.stuic-theme-preview .color-swatch .swatch-label {
+.stuic-theme-preview .role-color-label {
+	display: block;
 	font-size: 0.75rem;
 	font-weight: 600;
-	opacity: 0.7;
+	margin-bottom: 0.75rem;
 }
 
-/* Each swatch uses its role color as background */
-.stuic-theme-preview .color-swatch.background {
+/* Each nested level uses its role color as background */
+.stuic-theme-preview .role-color-nested.background {
 	background: var(--stuic-color-background);
+	border: 1px solid var(--stuic-color-border);
 }
 
-.stuic-theme-preview .color-swatch.surface {
+.stuic-theme-preview .role-color-nested.surface {
 	background: var(--stuic-color-surface);
 }
 
-.stuic-theme-preview .color-swatch.surface-1 {
+.stuic-theme-preview .role-color-nested.surface-1 {
 	background: var(--stuic-color-surface-1);
 }
 
-.stuic-theme-preview .color-swatch.muted-bg {
+.stuic-theme-preview .role-color-nested.muted-bg {
 	background: var(--stuic-color-muted);
 }
 
