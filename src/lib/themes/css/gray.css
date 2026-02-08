@@ -205,10 +205,10 @@
 	--stuic-color-border-hover:                   var(--color-gray-600, #737373);
 	--stuic-color-border-active:                  var(--color-gray-500, #737373);
 
-	--stuic-color-input:                          var(--color-gray-800, #737373);
+	--stuic-color-input:                          var(--color-gray-900, #737373);
 
-	--stuic-color-input-hover:                    var(--color-gray-700, #737373);
-	--stuic-color-input-active:                   var(--color-gray-600, #737373);
+	--stuic-color-input-hover:                    var(--color-gray-800, #737373);
+	--stuic-color-input-active:                   var(--color-gray-700, #737373);
 
 	--stuic-color-ring:                           color-mix(in srgb, var(--color-gray-200) 25%, transparent);
 

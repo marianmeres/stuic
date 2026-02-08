@@ -107,8 +107,8 @@ const dark: TokenSchema = {
 					DEFAULT: "var(--color-neutral-700)",
 				},
 				input: {
-					DEFAULT: "var(--color-neutral-800)",
-					hover: "var(--color-neutral-700)",
+					DEFAULT: "var(--color-neutral-900)",
+					hover: "var(--color-neutral-800)",
 				},
 				ring: "color-mix(in srgb, var(--color-teal-400) 25%, transparent)",
 			},
