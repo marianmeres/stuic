@@ -14,6 +14,9 @@ importers:
       '@marianmeres/item-collection':
         specifier: ^1.3.5
         version: 1.3.5
+      '@marianmeres/paging-store':
+        specifier: ^2.0.2
+        version: 2.0.2
       '@marianmeres/parse-boolean':
         specifier: ^2.0.5
         version: 2.0.5
@@ -348,6 +351,9 @@ packages:
 
   '@marianmeres/item-collection@1.3.5':
     resolution: {integrity: sha512-guDQrktZFhxw9rDnRaOc2xwYhDFcdsX9V/gWeFilyua3i20lBQ8lcW1F7PcB/1Ja7v/wZJHme6NVPgkAKjR7fg==}
+
+  '@marianmeres/paging-store@2.0.2':
+    resolution: {integrity: sha512-Gyn0TLGuf+qhcdfRrthRSo4Sx13rq+kWfc99doDBo1/Pw5cvO3kJSDPxXL9QZ5Vl8qPrQiWyLRsfD3JTgyOdRg==}
 
   '@marianmeres/parse-boolean@2.0.5':
     resolution: {integrity: sha512-bP/oZ+3yvbkVhlcP8uOTRSwI7fjfGRXrG3Fr3m0ZvSZD+ahTX86mrVFLuycDpUqYEmE95XqgiUwqPmelCwryAA==}
@@ -1828,6 +1834,10 @@ snapshots:
     dependencies:
       '@marianmeres/pubsub': 2.4.6
       '@marianmeres/searchable': 2.4.0
+
+  '@marianmeres/paging-store@2.0.2':
+    dependencies:
+      '@marianmeres/store': 2.4.4
 
   '@marianmeres/parse-boolean@2.0.5': {}
 

@@ -16,6 +16,7 @@
         'color-scheme', 
 		'command-menu',
 		'dismissible-message', 
+        'data-table', 
         // 'drag-drop', 
         'drawer',
         'dropdown-menu',

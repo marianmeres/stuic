@@ -35,6 +35,7 @@ export * from "./components/Carousel/index.js";
 export * from "./components/Collapsible/index.js";
 export * from "./components/ColorScheme/index.js";
 export * from "./components/CommandMenu/index.js";
+export * from "./components/DataTable/index.js";
 export * from "./components/DismissibleMessage/index.js";
 export * from "./components/Drawer/index.js";
 export * from "./components/DropdownMenu/index.js";
