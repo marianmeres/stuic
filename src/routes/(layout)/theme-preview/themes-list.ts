@@ -7,6 +7,7 @@ import fuchsiaEmeraldCss from "$lib/themes/css/fuchsia-emerald.css?raw";
 import grayCss from "$lib/themes/css/gray.css?raw";
 import indigoAmberCss from "$lib/themes/css/indigo-amber.css?raw";
 import stoneCss from "$lib/themes/css/stone.css?raw";
+import zinkCss from "$lib/themes/css/zink.css?raw";
 import pinkEmeraldCss from "$lib/themes/css/pink-emerald.css?raw";
 import pinkTealCss from "$lib/themes/css/pink-teal.css?raw";
 import purpleYellowCss from "$lib/themes/css/purple-yellow.css?raw";
@@ -30,6 +31,7 @@ import violetRoseDuskCss from "$lib/themes/css/violet-rose-dusk.css?raw";
 const themes: Record<string, string> = {
 	stone: stoneCss,
 	gray: grayCss,
+	zink: zinkCss,
 	rainbow: rainbowCss,
 	"blue-orange": blueOrangeCss,
 	"cyan-red": cyanRedCss,
