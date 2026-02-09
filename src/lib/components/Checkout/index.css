@@ -65,6 +65,16 @@
 	--stuic-checkout-step-grid-columns: 3fr 2fr;
 	--stuic-checkout-step-sidebar-top: 2rem;
 
+	/* CheckoutOrderSummary */
+	--stuic-checkout-summary-gap: 0.75rem;
+	--stuic-checkout-summary-label-color: var(--stuic-color-muted-foreground);
+	--stuic-checkout-summary-label-font-size: 0.875rem;
+	--stuic-checkout-summary-value-font-size: 0.875rem;
+	--stuic-checkout-summary-total-font-size: 1.125rem;
+	--stuic-checkout-summary-total-font-weight: 700;
+	--stuic-checkout-summary-border-color: var(--stuic-color-border);
+	--stuic-checkout-summary-discount-color: #16a34a;
+
 	/* Transitions */
 	--stuic-checkout-transition: 150ms;
 }
@@ -173,5 +183,50 @@
 		border: 1px solid var(--stuic-checkout-error-border-color);
 		background: var(--stuic-checkout-error-bg);
 		color: var(--stuic-checkout-error-color);
+	}
+
+	/* ============================================================================
+	   CHECKOUT ORDER SUMMARY
+	   ============================================================================ */
+
+	.stuic-checkout-summary {
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-checkout-summary-gap);
+	}
+
+	.stuic-checkout-summary-row {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		font-size: var(--stuic-checkout-summary-label-font-size);
+	}
+
+	.stuic-checkout-summary-row > :first-child {
+		color: var(--stuic-checkout-summary-label-color);
+	}
+
+	.stuic-checkout-summary-row > :last-child {
+		font-size: var(--stuic-checkout-summary-value-font-size);
+	}
+
+	.stuic-checkout-summary-row--discount > :last-child {
+		color: var(--stuic-checkout-summary-discount-color);
+	}
+
+	.stuic-checkout-summary-row--total {
+		border-top: 1px solid var(--stuic-checkout-summary-border-color);
+		padding-top: var(--stuic-checkout-summary-gap);
+	}
+
+	.stuic-checkout-summary-row--total > :first-child {
+		font-size: var(--stuic-checkout-summary-total-font-size);
+		font-weight: var(--stuic-checkout-summary-total-font-weight);
+		color: inherit;
+	}
+
+	.stuic-checkout-summary-row--total > :last-child {
+		font-size: var(--stuic-checkout-summary-total-font-size);
+		font-weight: var(--stuic-checkout-summary-total-font-weight);
 	}
 }

@@ -51,7 +51,7 @@
 
 <div class="p-4">
 	<ul class="space-y-2">
-		{#each ["checkout-progress"] as link}
+		{#each ["checkout-progress", "checkout-order-summary"] as link}
 			<li>
 				<a
 					href="/checkout/{link}"

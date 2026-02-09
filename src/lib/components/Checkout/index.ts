@@ -4,6 +4,11 @@ export {
 	type Props as CheckoutProgressProps,
 } from "./CheckoutProgress.svelte";
 
+export {
+	default as CheckoutOrderSummary,
+	type Props as CheckoutOrderSummaryProps,
+} from "./CheckoutOrderSummary.svelte";
+
 // Types
 export type {
 	CheckoutStep,
