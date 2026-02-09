@@ -60,6 +60,7 @@
 		"checkout-order-confirmation",
 		"checkout-review-step",
 		"checkout-shipping-step",
+		"checkout-confirm-step",
 	];
 </script>
 

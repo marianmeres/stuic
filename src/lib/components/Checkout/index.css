@@ -179,6 +179,16 @@
 	--stuic-checkout-shipping-step-heading-font-size: 1.125rem;
 	--stuic-checkout-shipping-step-heading-font-weight: 600;
 
+	/* CheckoutConfirmStep (composite) */
+	--stuic-checkout-confirm-step-grid-gap: var(--stuic-checkout-step-grid-gap);
+	--stuic-checkout-confirm-step-grid-columns: var(--stuic-checkout-step-grid-columns);
+	--stuic-checkout-confirm-step-sidebar-top: var(--stuic-checkout-step-sidebar-top);
+	--stuic-checkout-confirm-step-back-color: var(--stuic-color-muted-foreground);
+	--stuic-checkout-confirm-step-back-hover-color: var(--stuic-color-foreground);
+	--stuic-checkout-confirm-step-validation-gap: 0.5rem;
+	--stuic-checkout-confirm-step-heading-font-size: 1.125rem;
+	--stuic-checkout-confirm-step-heading-font-weight: 600;
+
 	/* Transitions */
 	--stuic-checkout-transition: 150ms;
 }
@@ -917,5 +927,97 @@
 
 	.stuic-checkout-shipping-step-billing-toggle {
 		margin-bottom: 0;
+	}
+
+	/* ============================================================================
+	   CHECKOUT CONFIRM STEP (composite)
+	   ============================================================================ */
+
+	.stuic-checkout-confirm-step {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+
+	.stuic-checkout-confirm-step-grid {
+		display: grid;
+		grid-template-columns: var(--stuic-checkout-confirm-step-grid-columns);
+		gap: var(--stuic-checkout-confirm-step-grid-gap);
+	}
+
+	@media (max-width: 768px) {
+		.stuic-checkout-confirm-step-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	.stuic-checkout-confirm-step-left {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.stuic-checkout-confirm-step-right {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.stuic-checkout-confirm-step-sidebar {
+		position: sticky;
+		top: var(--stuic-checkout-confirm-step-sidebar-top);
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	@media (max-width: 768px) {
+		.stuic-checkout-confirm-step-sidebar {
+			position: static;
+		}
+	}
+
+	.stuic-checkout-confirm-step-section-heading {
+		font-size: var(--stuic-checkout-confirm-step-heading-font-size);
+		font-weight: var(--stuic-checkout-confirm-step-heading-font-weight);
+		margin: 0 0 0.75rem;
+	}
+
+	.stuic-checkout-confirm-step-back {
+		all: unset;
+		cursor: pointer;
+		color: var(--stuic-checkout-confirm-step-back-color);
+		font-size: 0.875rem;
+		transition: color var(--stuic-checkout-transition);
+	}
+
+	.stuic-checkout-confirm-step-back:hover {
+		color: var(--stuic-checkout-confirm-step-back-hover-color);
+	}
+
+	.stuic-checkout-confirm-step-back:focus-visible {
+		outline: 2px solid var(--stuic-checkout-input-focus-ring);
+		outline-offset: 2px;
+	}
+
+	.stuic-checkout-confirm-step-validation {
+		padding: 0.75rem 1rem;
+		border-radius: var(--stuic-checkout-card-radius);
+		border: 1px solid var(--stuic-checkout-error-border-color);
+		background: var(--stuic-checkout-error-bg);
+		color: var(--stuic-checkout-error-color);
+	}
+
+	.stuic-checkout-confirm-step-validation p {
+		margin: 0 0 0.5rem;
+		font-weight: 500;
+	}
+
+	.stuic-checkout-confirm-step-validation ul {
+		margin: 0;
+		padding: 0 0 0 1.25rem;
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-checkout-confirm-step-validation-gap);
 	}
 }
