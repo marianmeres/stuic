@@ -94,3 +94,16 @@ src/lib/
 | `src/lib/themes/css/stone.css` | Default theme (generated) |
 | `src/lib/components/Button/` | Reference component |
 | `scripts/generate-theme.ts` | CLI: `pnpm run build:theme:all` |
+
+---
+
+## Svelte MCP Server
+
+You have access to the Svelte MCP server providing comprehensive Svelte 5 documentation.
+This is a **component library**, not a SvelteKit application — skip SvelteKit-specific guidance (routing, load functions, hooks, adapters, etc.).
+
+### Available Tools
+1. **list-sections**: Call FIRST to discover available documentation sections.
+2. **get-documentation**: Fetch full docs for specific sections (runes, lifecycle, snippets, etc.).
+3. **svelte-autofixer**: Validate Svelte code for correctness — always run before finalizing component changes.
+4. **playground-link**: Generate a Svelte Playground link — only after user confirms they want one.
