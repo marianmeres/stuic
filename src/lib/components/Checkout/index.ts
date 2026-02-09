@@ -9,6 +9,11 @@ export {
 	type Props as CheckoutOrderSummaryProps,
 } from "./CheckoutOrderSummary.svelte";
 
+export {
+	default as CheckoutCartReview,
+	type Props as CheckoutCartReviewProps,
+} from "./CheckoutCartReview.svelte";
+
 // Types
 export type {
 	CheckoutStep,
