@@ -14,6 +14,11 @@ export {
 	type Props as CheckoutCartReviewProps,
 } from "./CheckoutCartReview.svelte";
 
+export {
+	default as CheckoutGuestForm,
+	type Props as CheckoutGuestFormProps,
+} from "./CheckoutGuestForm.svelte";
+
 // Types
 export type {
 	CheckoutStep,
