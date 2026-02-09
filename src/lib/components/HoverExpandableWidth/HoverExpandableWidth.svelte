@@ -61,7 +61,7 @@
 	});
 
 	function clear() {
-		clearTimeout(_timer);
+		if (_timer) clearTimeout(_timer);
 		_timer = null;
 	}
 
