@@ -49,6 +49,11 @@ export {
 	type Props as CheckoutReviewStepProps,
 } from "./CheckoutReviewStep.svelte";
 
+export {
+	default as CheckoutShippingStep,
+	type Props as CheckoutShippingStepProps,
+} from "./CheckoutShippingStep.svelte";
+
 // Types
 export type {
 	CheckoutStep,
