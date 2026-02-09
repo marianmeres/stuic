@@ -141,7 +141,10 @@ Notifications, AlertConfirmPrompt, DismissibleMessage, Progress, Spinner, Skelet
 CommandMenu, DropdownMenu, TabbedMenu, TypeaheadInput, KbdShortcut
 
 ### Display & Utility
-Avatar, Carousel, AnimatedElipsis, ThemePreview, ColorScheme, Thc, HoverExpandableWidth, AssetsPreview
+Avatar, Carousel, AnimatedElipsis, ThemePreview, ColorScheme, Thc, HoverExpandableWidth, AssetsPreview, DataTable
+
+### E-commerce
+Cart
 
 ## Actions
 

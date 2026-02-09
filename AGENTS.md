@@ -23,7 +23,7 @@
 
 ```
 src/lib/
-├── components/     # 36 UI components
+├── components/     # 37 UI components
 ├── actions/        # 12 Svelte actions
 ├── utils/          # 42 utility functions
 ├── themes/         # 26 theme definitions (.ts) + generated CSS (css/)
@@ -72,7 +72,7 @@ src/lib/
 - [Tasks](./docs/tasks.md) — Common procedures
 
 ### Domain Docs
-- [Components](./docs/domains/components.md) — 36 components, Props pattern, snippets
+- [Components](./docs/domains/components.md) — 37 components, Props pattern, snippets
 - [Theming](./docs/domains/theming.md) — CSS tokens, dark mode, themes
 - [Actions](./docs/domains/actions.md) — 12 Svelte directives
 - [Utils](./docs/domains/utils.md) — 42 utility functions

@@ -323,6 +323,56 @@ Loading placeholder with animation.
 
 ---
 
+### E-commerce
+
+#### `Cart`
+
+Shopping cart component with quantity controls, pricing, and summary. Supports interactive (full cart), readonly (checkout summary), and compact (popover preview) modes.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `items` | `CartComponentItem[]` | required | Cart items to display |
+| `variant` | `"default" \| "compact"` | `"default"` | Layout variant. Compact is smaller, scrollable, implicitly readonly |
+| `formatPrice` | `(value: number) => string` | `(v) => (v / 100).toFixed(2)` | Format numeric price for display |
+| `onQuantityChange` | `(id: string, qty: number) => void` | — | Called when quantity changes |
+| `onRemove` | `(id: string) => void` | — | Called when remove is clicked |
+| `noThumbnails` | `boolean` | `false` | Hide all thumbnails |
+| `readonly` | `boolean` | `false` | Hide interactive controls |
+| `loading` | `boolean` | `false` | Show loading skeleton |
+| `updatingItems` | `Set<string>` | `new Set()` | Item IDs currently being updated (reduced opacity) |
+| `t` | `TranslateFn` | built-in | Translation function for i18n |
+
+**Snippets:**
+
+| Snippet | Params | Description |
+|---------|--------|-------------|
+| `thumbnail` | `{ item }` | Override thumbnail rendering |
+| `itemRow` | `{ item, isUpdating, readonly, formatPrice }` | Override entire item row |
+| `summary` | `{ items, total, itemCount, formatPrice }` | Override summary section |
+| `empty` | — | Custom empty state |
+| `footer` | `{ items, total, itemCount }` | Content after summary (CTAs) |
+
+```svelte
+<Cart
+  {items}
+  formatPrice={(v) => `$${(v / 100).toFixed(2)}`}
+  onQuantityChange={handleQuantityChange}
+  onRemove={handleRemove}
+/>
+
+<!-- Readonly mode (checkout summary) -->
+<Cart {items} readonly formatPrice={(v) => `$${(v / 100).toFixed(2)}`} />
+
+<!-- Compact variant (for popovers) -->
+<Cart {items} variant="compact" formatPrice={(v) => `$${(v / 100).toFixed(2)}`}>
+  {#snippet footer({ total, itemCount })}
+    <a href="/cart">View Cart</a>
+  {/snippet}
+</Cart>
+```
+
+---
+
 ### Display
 
 #### `Avatar`
@@ -355,6 +405,39 @@ Image/content slider with navigation.
 #### `AnimatedElipsis`
 
 Animated loading dots ("...").
+
+#### `DataTable`
+
+Responsive data table with paging, row selection, batch actions, and mobile card view.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `columns` | `DataTableColumn<T>[]` | required | Column definitions |
+| `data` | `T[]` | required | Row data objects |
+| `getRowId` | `(row: T, index: number) => string \| number` | index | Unique row ID extractor |
+| `paging` | `PagingCalcResult` | — | Paging calculation from `@marianmeres/paging-store` |
+| `onPageChange` | `(offset: number) => void` | — | Page navigation callback |
+| `selectable` | `boolean` | `false` | Enable row selection checkboxes |
+| `selected` | `Set<string \| number>` | — | Bindable set of selected row IDs |
+| `selectOnRowClick` | `boolean` | `false` | Toggle selection on row click |
+| `onRowClick` | `(row: T, index: number) => void` | — | Row click callback |
+| `loading` | `boolean` | `false` | Show loading overlay |
+| `t` | `TranslateFn` | built-in | Translation function for i18n |
+
+**Snippets:** `cell`, `batchActions`, `empty`, `mobileRow`
+
+```svelte
+<DataTable
+  columns={[
+    { key: "name", label: "Name" },
+    { key: "email", label: "Email" },
+    { key: "role", label: "Role", align: "center" },
+  ]}
+  data={users}
+  selectable
+  bind:selected={selectedIds}
+/>
+```
 
 #### `ThemePreview`
 
@@ -886,6 +969,8 @@ import type {
 Naming pattern: `{ComponentName}Props`
 
 Additional exported types include:
+- `CartComponentItem`, `CartVariant` — Cart component types
+- `DataTableColumn` — DataTable column definition type
 - `FieldAsset`, `FieldAssetUrlObj`, `FieldAssetWithBlobUrl` — Asset field types
 - `FieldOption` — Option type for FieldOptions
 - `KeyValueEntry` — Entry type for FieldKeyValues
@@ -969,6 +1054,7 @@ Each component defines customization tokens. Override globally in `:root {}` or 
 | Tooltip | `--stuic-tooltip-*` | `bg`, `text` |
 | Popover | `--stuic-popover-*` | `bg`, `text`, `border` |
 | Skeleton | `--stuic-skeleton-*` | `bg`, `bg-highlight`, `duration` |
+| Cart | `--stuic-cart-*` | `gap`, `item-padding`, `item-radius`, `item-border-color`, `item-bg`, `thumbnail-size`, `quantity-border-color`, `remove-color`, `summary-border-color`, `compact-max-height`, `transition` |
 
 ### CSS Variable Naming Convention
 

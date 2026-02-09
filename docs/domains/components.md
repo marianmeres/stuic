@@ -2,7 +2,7 @@
 
 ## Overview
 
-36 Svelte 5 components with consistent API patterns. All use runes-based reactivity.
+37 Svelte 5 components with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
@@ -56,6 +56,11 @@
 | AnimatedElipsis | Loading dots animation |
 | DataTable | Responsive data table with paging, selection, batch actions |
 | ThemePreview | Theme color swatches |
+
+### E-commerce
+| Component | Purpose |
+|-----------|---------|
+| Cart | Shopping cart with quantity controls, pricing, summary; default/compact/readonly variants |
 
 ---
 
