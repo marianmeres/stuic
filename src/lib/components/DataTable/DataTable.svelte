@@ -23,7 +23,11 @@
 			select_row: "Select row",
 		};
 		let out = m[k] ?? fallback ?? k;
-		return isPlainObject(values) ? replaceMap(out, values as any) : out;
+		return isPlainObject(values)
+			? replaceMap(out, values as any, {
+					preSearchKeyTransform: (k) => `{${k}}`,
+				})
+			: out;
 	}
 
 	export interface DataTableColumn<T = Record<string, any>> {

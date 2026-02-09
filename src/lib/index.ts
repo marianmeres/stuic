@@ -31,6 +31,7 @@ export * from "./components/Avatar/index.js";
 export * from "./components/Backdrop/index.js";
 export * from "./components/Button/index.js";
 export * from "./components/ButtonGroupRadio/index.js";
+export * from "./components/Cart/index.js";
 export * from "./components/Carousel/index.js";
 export * from "./components/Collapsible/index.js";
 export * from "./components/ColorScheme/index.js";

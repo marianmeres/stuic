@@ -12,6 +12,7 @@
         'button', 
         'button-group-radio', 
 		'carousel', 
+		'cart',
 		'collapsible', 
         'color-scheme', 
 		'command-menu',

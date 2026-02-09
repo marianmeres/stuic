@@ -1,0 +1,409 @@
+/* ============================================================================
+   CART COMPONENT TOKENS
+   Override globally: :root { --stuic-cart-item-padding: 0.5rem; }
+   Override locally:  <Cart style="--stuic-cart-item-padding: 0.5rem;">
+   ============================================================================ */
+
+:root {
+	/* Layout */
+	--stuic-cart-gap: 1rem;
+	--stuic-cart-transition: 150ms;
+
+	/* Item card */
+	--stuic-cart-item-padding: 1rem;
+	--stuic-cart-item-radius: var(--radius-lg);
+	--stuic-cart-item-border-color: var(--stuic-color-border);
+	--stuic-cart-item-bg: var(--stuic-color-background);
+
+	/* Thumbnail */
+	--stuic-cart-thumbnail-size: 4rem;
+	--stuic-cart-thumbnail-size-sm: 3rem;
+	--stuic-cart-thumbnail-radius: var(--radius-md);
+	--stuic-cart-thumbnail-bg: var(--stuic-color-muted);
+
+	/* Quantity controls */
+	--stuic-cart-quantity-border-color: var(--stuic-color-border);
+	--stuic-cart-quantity-button-size: 2rem;
+	--stuic-cart-quantity-button-bg-hover: var(--stuic-color-muted);
+	--stuic-cart-quantity-input-bg: var(--stuic-color-input);
+
+	/* Remove button */
+	--stuic-cart-remove-color: var(--stuic-color-destructive);
+	--stuic-cart-remove-color-hover: var(--stuic-color-destructive-hover);
+
+	/* Summary */
+	--stuic-cart-summary-border-color: var(--stuic-color-border);
+
+	/* Compact variant */
+	--stuic-cart-compact-max-height: 12rem;
+	--stuic-cart-compact-item-padding: 0.5rem;
+}
+
+@layer components {
+	/* ============================================================================
+	   BASE STYLES
+	   ============================================================================ */
+
+	.stuic-cart {
+		display: flex;
+		flex-direction: column;
+	}
+
+	/* ============================================================================
+	   SKELETON (loading state)
+	   ============================================================================ */
+
+	.stuic-cart-skeleton {
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-cart-gap);
+	}
+
+	.stuic-cart-skeleton-item {
+		display: flex;
+		align-items: flex-start;
+		gap: 1rem;
+		padding: var(--stuic-cart-item-padding);
+		border: 1px solid var(--stuic-cart-item-border-color);
+		border-radius: var(--stuic-cart-item-radius);
+		background: var(--stuic-cart-item-bg);
+	}
+
+	.stuic-cart-skeleton-content {
+		flex: 1;
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	/* ============================================================================
+	   EMPTY STATE
+	   ============================================================================ */
+
+	.stuic-cart-empty {
+		text-align: center;
+		padding: 3rem 1rem;
+		opacity: 0.7;
+	}
+
+	/* ============================================================================
+	   ITEMS LIST
+	   ============================================================================ */
+
+	.stuic-cart-items {
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-cart-gap);
+	}
+
+	.stuic-cart-items[data-variant="compact"] {
+		max-height: var(--stuic-cart-compact-max-height);
+		overflow-y: auto;
+		gap: 0;
+	}
+
+	/* ============================================================================
+	   ITEM CARD
+	   ============================================================================ */
+
+	.stuic-cart-item {
+		display: flex;
+		align-items: flex-start;
+		gap: 1rem;
+		padding: var(--stuic-cart-item-padding);
+		border: 1px solid var(--stuic-cart-item-border-color);
+		border-radius: var(--stuic-cart-item-radius);
+		background: var(--stuic-cart-item-bg);
+		transition: opacity var(--stuic-cart-transition);
+	}
+
+	.stuic-cart-item[data-variant="compact"] {
+		padding: var(--stuic-cart-compact-item-padding);
+		border-radius: 0;
+		border-left: 0;
+		border-right: 0;
+		border-bottom: 0;
+	}
+
+	.stuic-cart-item[data-variant="compact"]:first-child {
+		border-top: 0;
+	}
+
+	.stuic-cart-item[data-updating] {
+		opacity: 0.5;
+		pointer-events: none;
+	}
+
+	/* ============================================================================
+	   THUMBNAIL
+	   ============================================================================ */
+
+	.stuic-cart-item-thumbnail {
+		flex-shrink: 0;
+		width: var(--stuic-cart-thumbnail-size);
+		height: var(--stuic-cart-thumbnail-size);
+		border-radius: var(--stuic-cart-thumbnail-radius);
+		background: var(--stuic-cart-thumbnail-bg);
+		overflow: hidden;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.stuic-cart-item-thumbnail[data-variant="compact"] {
+		width: var(--stuic-cart-thumbnail-size-sm);
+		height: var(--stuic-cart-thumbnail-size-sm);
+	}
+
+	.stuic-cart-item-image {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.stuic-cart-item-placeholder {
+		width: 100%;
+		height: 100%;
+		background: var(--stuic-cart-thumbnail-bg);
+		opacity: 0.3;
+	}
+
+	/* ============================================================================
+	   ITEM INFO
+	   ============================================================================ */
+
+	.stuic-cart-item-info {
+		flex: 1;
+		min-width: 0;
+	}
+
+	a.stuic-cart-item-name {
+		font-weight: var(--font-weight-medium);
+		display: block;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		text-decoration: none;
+		color: inherit;
+	}
+
+	a.stuic-cart-item-name:hover {
+		text-decoration: underline;
+	}
+
+	span.stuic-cart-item-name {
+		font-weight: var(--font-weight-medium);
+		display: block;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.stuic-cart-item-description {
+		font-size: var(--text-sm);
+		opacity: 0.6;
+		margin-top: 0.125rem;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.stuic-cart-item-unit-price {
+		font-size: var(--text-sm);
+		opacity: 0.6;
+		margin-top: 0.25rem;
+	}
+
+	.stuic-cart-item-quantity-readonly {
+		font-size: var(--text-sm);
+		opacity: 0.6;
+		margin-top: 0.25rem;
+	}
+
+	/* ============================================================================
+	   QUANTITY CONTROLS
+	   ============================================================================ */
+
+	.stuic-cart-item-controls {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-top: 0.75rem;
+		flex-wrap: wrap;
+	}
+
+	.stuic-cart-quantity {
+		display: inline-flex;
+		align-items: center;
+		border: 1px solid var(--stuic-cart-quantity-border-color);
+		border-radius: var(--radius-md);
+		overflow: hidden;
+	}
+
+	.stuic-cart-quantity-button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: var(--stuic-cart-quantity-button-size);
+		height: var(--stuic-cart-quantity-button-size);
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		font-size: 1rem;
+		line-height: 1;
+		color: inherit;
+		transition: background var(--stuic-cart-transition);
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	.stuic-cart-quantity-button:hover:not(:disabled) {
+		background: var(--stuic-cart-quantity-button-bg-hover);
+	}
+
+	.stuic-cart-quantity-button:disabled {
+		opacity: 0.3;
+		cursor: not-allowed;
+	}
+
+	.stuic-cart-quantity-value {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 2.5rem;
+		height: var(--stuic-cart-quantity-button-size);
+		background: transparent;
+		border: none;
+		cursor: text;
+		font-size: var(--text-sm);
+		font-weight: var(--font-weight-medium);
+		text-align: center;
+		color: inherit;
+		transition: background var(--stuic-cart-transition);
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	.stuic-cart-quantity-value:hover:not(:disabled) {
+		background: var(--stuic-cart-quantity-input-bg);
+	}
+
+	.stuic-cart-quantity-value:disabled {
+		cursor: default;
+	}
+
+	.stuic-cart-quantity-input {
+		width: 3rem;
+		height: var(--stuic-cart-quantity-button-size);
+		text-align: center;
+		font-size: var(--text-sm);
+		font-weight: var(--font-weight-medium);
+		border: none;
+		background: var(--stuic-cart-quantity-input-bg);
+		color: inherit;
+		outline: none;
+		-moz-appearance: textfield;
+	}
+
+	.stuic-cart-quantity-input::-webkit-inner-spin-button,
+	.stuic-cart-quantity-input::-webkit-outer-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	.stuic-cart-item-unit {
+		font-size: var(--text-sm);
+		opacity: 0.6;
+	}
+
+	/* ============================================================================
+	   REMOVE BUTTON
+	   ============================================================================ */
+
+	.stuic-cart-remove {
+		background: none;
+		border: none;
+		cursor: pointer;
+		font-size: var(--text-sm);
+		color: var(--stuic-cart-remove-color);
+		padding: 0;
+		-webkit-tap-highlight-color: transparent;
+		transition: color var(--stuic-cart-transition);
+	}
+
+	.stuic-cart-remove:hover:not(:disabled) {
+		text-decoration: underline;
+		color: var(--stuic-cart-remove-color-hover);
+	}
+
+	.stuic-cart-remove:disabled {
+		opacity: 0.3;
+		cursor: not-allowed;
+	}
+
+	/* ============================================================================
+	   LINE TOTAL
+	   ============================================================================ */
+
+	.stuic-cart-item-total {
+		flex-shrink: 0;
+		text-align: right;
+		font-weight: var(--font-weight-bold);
+		font-size: var(--text-lg);
+		white-space: nowrap;
+	}
+
+	.stuic-cart-item[data-variant="compact"] .stuic-cart-item-total {
+		font-size: var(--text-base);
+	}
+
+	/* ============================================================================
+	   SUMMARY
+	   ============================================================================ */
+
+	.stuic-cart-summary {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-top: 1.5rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--stuic-cart-summary-border-color);
+	}
+
+	.stuic-cart-summary[data-variant="compact"] {
+		margin-top: 0;
+		padding: var(--stuic-cart-compact-item-padding);
+		padding-top: calc(var(--stuic-cart-compact-item-padding) + 0.25rem);
+		border-top: 1px solid var(--stuic-cart-summary-border-color);
+	}
+
+	.stuic-cart-summary-label {
+		font-size: var(--text-lg);
+	}
+
+	.stuic-cart-summary[data-variant="compact"] .stuic-cart-summary-label {
+		font-size: var(--text-base);
+	}
+
+	.stuic-cart-summary-total {
+		font-size: var(--text-2xl);
+		font-weight: var(--font-weight-bold);
+	}
+
+	.stuic-cart-summary-total[data-variant="compact"] {
+		font-size: var(--text-lg);
+	}
+
+	/* ============================================================================
+	   FOOTER
+	   ============================================================================ */
+
+	.stuic-cart-footer {
+		margin-top: 1.5rem;
+	}
+
+	.stuic-cart-summary[data-variant="compact"] + .stuic-cart-footer {
+		margin-top: 0;
+		padding: var(--stuic-cart-compact-item-padding);
+		border-top: 1px solid var(--stuic-cart-summary-border-color);
+	}
+}

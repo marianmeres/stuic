@@ -30,6 +30,7 @@ In practice:
 @import "./components/Button/index.css";
 @import "./components/ButtonGroupRadio/index.css";
 @import "./components/Collapsible/index.css";
+@import "./components/Cart/index.css";
 @import "./components/Carousel/index.css";
 @import "./components/CommandMenu/index.css";
 @import "./components/DataTable/index.css";
