@@ -47,11 +47,20 @@
 	function addressFieldError(field: string): string | undefined {
 		return addressErrors.find((e) => e.field === `shipping.${field}`)?.message;
 	}
+
+	const checkoutSubs = [
+		"checkout-progress",
+		"checkout-order-summary",
+		"checkout-cart-review",
+		"checkout-guest-form",
+		"checkout-login-form",
+		"checkout-address-form",
+	];
 </script>
 
 <div class="p-4">
 	<ul class="space-y-2">
-		{#each ["checkout-progress", "checkout-order-summary", "checkout-cart-review", "checkout-guest-form", "checkout-login-form"] as link}
+		{#each checkoutSubs as link}
 			<li>
 				<a
 					href="/checkout/{link}"

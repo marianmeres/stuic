@@ -142,6 +142,7 @@
 		placeholder={t("checkout.guest.email_placeholder")}
 		required
 		name="checkout-guest-email"
+		labelLeftBreakpoint={0}
 		validate={{
 			customValidator(val) {
 				return fieldError("email") || "";
@@ -179,6 +180,7 @@
 			type="tel"
 			placeholder={t("checkout.guest.phone_placeholder")}
 			name="checkout-guest-phone"
+			labelLeftBreakpoint={0}
 		/>
 	{/if}
 
@@ -197,6 +199,7 @@
 						bind:value={formData.company_name}
 						label={t("checkout.guest.company_name_label")}
 						name="checkout-guest-company-name"
+						labelLeftBreakpoint={0}
 					/>
 				{/if}
 				{#if fields?.tax_id !== false || fields?.vat_number !== false}

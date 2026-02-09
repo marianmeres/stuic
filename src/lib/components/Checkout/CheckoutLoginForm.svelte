@@ -138,6 +138,7 @@
 		placeholder={t("checkout.login.email_placeholder")}
 		required
 		name="checkout-login-email"
+		labelLeftBreakpoint={0}
 		validate={{
 			customValidator(val) {
 				return fieldError("email") || "";
@@ -153,6 +154,7 @@
 		placeholder={t("checkout.login.password_placeholder")}
 		required
 		name="checkout-login-password"
+		labelLeftBreakpoint={0}
 		validate={{
 			customValidator(val) {
 				return fieldError("password") || "";

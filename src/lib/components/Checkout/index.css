@@ -47,7 +47,11 @@
 	/* Error styling */
 	--stuic-checkout-error-color: var(--stuic-color-destructive);
 	--stuic-checkout-error-font-size: 0.875rem;
-	--stuic-checkout-error-bg: color-mix(in srgb, var(--stuic-color-destructive) 5%, transparent);
+	--stuic-checkout-error-bg: color-mix(
+		in srgb,
+		var(--stuic-color-destructive) 5%,
+		transparent
+	);
 	--stuic-checkout-error-border-color: color-mix(
 		in srgb,
 		var(--stuic-color-destructive) 30%,
@@ -85,7 +89,8 @@
 	--stuic-checkout-cart-review-summary-total-font-size: 1.25rem;
 
 	/* CheckoutGuestForm */
-	--stuic-checkout-guest-gap: 1rem;
+	--stuic-checkout-guest-gap: 0rem;
+	--stuic-checkout-guest-gap-row: 2rem;
 	--stuic-checkout-guest-b2b-border-color: var(--stuic-color-border);
 	--stuic-checkout-guest-b2b-radius: 0.375rem;
 	--stuic-checkout-guest-b2b-padding: 1rem;
@@ -93,10 +98,14 @@
 	--stuic-checkout-guest-b2b-summary-hover-color: var(--stuic-color-foreground);
 
 	/* CheckoutLoginForm */
-	--stuic-checkout-login-gap: 1rem;
+	--stuic-checkout-login-gap: 0rem;
+	--stuic-checkout-login-gap-row: 2rem;
 	--stuic-checkout-login-forgot-color: var(--stuic-color-muted-foreground);
 	--stuic-checkout-login-forgot-hover-color: var(--stuic-color-foreground);
 	--stuic-checkout-login-forgot-font-size: 0.875rem;
+
+	/* CheckoutAddressForm */
+	--stuic-checkout-address-gap: 0rem;
 
 	/* Transitions */
 	--stuic-checkout-transition: 150ms;
@@ -298,7 +307,7 @@
 	.stuic-checkout-guest-row {
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
-		gap: var(--stuic-checkout-guest-gap);
+		gap: var(--stuic-checkout-guest-gap-row);
 	}
 
 	.stuic-checkout-guest-row:has(> :only-child) {
@@ -328,7 +337,8 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--stuic-checkout-guest-gap);
-		padding: 0 var(--stuic-checkout-guest-b2b-padding) var(--stuic-checkout-guest-b2b-padding);
+		padding: 0 var(--stuic-checkout-guest-b2b-padding)
+			var(--stuic-checkout-guest-b2b-padding);
 	}
 
 	.stuic-checkout-guest-submit {
@@ -364,5 +374,32 @@
 
 	.stuic-checkout-login-submit {
 		padding-top: 0.5rem;
+	}
+
+	/* ============================================================================
+	   CHECKOUT ADDRESS FORM
+	   ============================================================================ */
+
+	.stuic-checkout-address {
+		all: unset;
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-checkout-address-gap);
+	}
+
+	.stuic-checkout-address-row {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: var(--stuic-checkout-address-gap);
+	}
+
+	.stuic-checkout-address-row:has(> :only-child) {
+		grid-template-columns: 1fr;
+	}
+
+	@media (max-width: 480px) {
+		.stuic-checkout-address-row {
+			grid-template-columns: 1fr;
+		}
 	}
 }
