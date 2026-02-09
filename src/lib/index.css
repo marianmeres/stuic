@@ -32,6 +32,7 @@ In practice:
 @import "./components/Collapsible/index.css";
 @import "./components/Cart/index.css";
 @import "./components/Carousel/index.css";
+@import "./components/Checkout/index.css";
 @import "./components/CommandMenu/index.css";
 @import "./components/DataTable/index.css";
 @import "./components/DismissibleMessage/index.css";

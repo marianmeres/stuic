@@ -13,6 +13,7 @@
         'button-group-radio', 
 		'carousel', 
 		'cart',
+		'checkout',
 		'collapsible', 
         'color-scheme', 
 		'command-menu',

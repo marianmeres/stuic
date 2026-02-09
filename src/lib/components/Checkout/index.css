@@ -1,0 +1,104 @@
+/* ============================================================================
+   CHECKOUT COMPONENT TOKENS (shared across all checkout sub-components)
+   Override globally: :root { --stuic-checkout-input-radius: 0.5rem; }
+   Override locally:  <div style="--stuic-checkout-input-radius: 0.5rem;">
+   ============================================================================ */
+
+:root {
+	/* Input styling (shared by GuestForm, LoginForm, AddressForm) */
+	--stuic-checkout-input-border-color: var(--stuic-color-border);
+	--stuic-checkout-input-border-color-error: var(--stuic-color-destructive);
+	--stuic-checkout-input-bg: var(--stuic-color-input);
+	--stuic-checkout-input-fg: var(--stuic-color-foreground);
+	--stuic-checkout-input-placeholder: var(--stuic-color-muted-foreground);
+	--stuic-checkout-input-radius: 0.375rem;
+	--stuic-checkout-input-padding-x: 0.75rem;
+	--stuic-checkout-input-padding-y: 0.5rem;
+	--stuic-checkout-input-focus-ring: var(--stuic-color-ring);
+
+	/* Label styling */
+	--stuic-checkout-label-font-size: 0.875rem;
+	--stuic-checkout-label-font-weight: 500;
+	--stuic-checkout-label-margin-bottom: 0.25rem;
+
+	/* Error styling */
+	--stuic-checkout-error-color: var(--stuic-color-destructive);
+	--stuic-checkout-error-font-size: 0.875rem;
+	--stuic-checkout-error-bg: color-mix(in srgb, var(--stuic-color-destructive) 5%, transparent);
+	--stuic-checkout-error-border-color: color-mix(
+		in srgb,
+		var(--stuic-color-destructive) 30%,
+		transparent
+	);
+
+	/* Card sections (used in ReviewStep, OrderReview, etc.) */
+	--stuic-checkout-card-border-color: var(--stuic-color-border);
+	--stuic-checkout-card-bg: var(--stuic-color-background);
+	--stuic-checkout-card-radius: 0.5rem;
+	--stuic-checkout-card-padding: 1rem;
+
+	/* Step layout (shared by composite steps) */
+	--stuic-checkout-step-grid-gap: 2rem;
+	--stuic-checkout-step-grid-columns: 3fr 2fr;
+	--stuic-checkout-step-sidebar-top: 2rem;
+
+	/* Transitions */
+	--stuic-checkout-transition: 150ms;
+}
+
+@layer components {
+	/* ============================================================================
+	   SHARED INPUT STYLES
+	   ============================================================================ */
+
+	.stuic-checkout-input {
+		width: 100%;
+		padding: var(--stuic-checkout-input-padding-y) var(--stuic-checkout-input-padding-x);
+		border-radius: var(--stuic-checkout-input-radius);
+		border: 1px solid var(--stuic-checkout-input-border-color);
+		background: var(--stuic-checkout-input-bg);
+		color: var(--stuic-checkout-input-fg);
+	}
+
+	.stuic-checkout-input::placeholder {
+		color: var(--stuic-checkout-input-placeholder);
+	}
+
+	.stuic-checkout-input:focus {
+		outline: none;
+		box-shadow: 0 0 0 2px var(--stuic-checkout-input-focus-ring);
+	}
+
+	.stuic-checkout-input-error {
+		border-color: var(--stuic-checkout-input-border-color-error);
+	}
+
+	/* ============================================================================
+	   SHARED LABEL STYLES
+	   ============================================================================ */
+
+	.stuic-checkout-label {
+		display: block;
+		font-size: var(--stuic-checkout-label-font-size);
+		font-weight: var(--stuic-checkout-label-font-weight);
+		margin-bottom: var(--stuic-checkout-label-margin-bottom);
+	}
+
+	/* ============================================================================
+	   SHARED ERROR STYLES
+	   ============================================================================ */
+
+	.stuic-checkout-field-error {
+		color: var(--stuic-checkout-error-color);
+		font-size: var(--stuic-checkout-error-font-size);
+		margin-top: 0.25rem;
+	}
+
+	.stuic-checkout-alert {
+		padding: 0.75rem 1rem;
+		border-radius: var(--stuic-checkout-card-radius);
+		border: 1px solid var(--stuic-checkout-error-border-color);
+		background: var(--stuic-checkout-error-bg);
+		color: var(--stuic-checkout-error-color);
+	}
+}
