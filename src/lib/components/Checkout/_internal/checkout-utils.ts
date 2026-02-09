@@ -71,6 +71,27 @@ export function validateAddress(
 }
 
 // ====================================================================
+// Login form validation
+// ====================================================================
+
+export function validateLoginForm(
+	data: CheckoutLoginFormData,
+	t: TranslateFn
+): CheckoutValidationError[] {
+	const errors: CheckoutValidationError[] = [];
+	const trimmedEmail = data.email.trim();
+	if (!trimmedEmail) {
+		errors.push({ field: "email", message: t("checkout.login.email_required") });
+	} else if (!EMAIL_RE.test(trimmedEmail)) {
+		errors.push({ field: "email", message: t("checkout.login.email_invalid") });
+	}
+	if (!data.password) {
+		errors.push({ field: "password", message: t("checkout.login.password_required") });
+	}
+	return errors;
+}
+
+// ====================================================================
 // Empty data factories
 // ====================================================================
 

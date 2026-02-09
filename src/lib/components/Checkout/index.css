@@ -92,6 +92,12 @@
 	--stuic-checkout-guest-b2b-summary-color: var(--stuic-color-muted-foreground);
 	--stuic-checkout-guest-b2b-summary-hover-color: var(--stuic-color-foreground);
 
+	/* CheckoutLoginForm */
+	--stuic-checkout-login-gap: 1rem;
+	--stuic-checkout-login-forgot-color: var(--stuic-color-muted-foreground);
+	--stuic-checkout-login-forgot-hover-color: var(--stuic-color-foreground);
+	--stuic-checkout-login-forgot-font-size: 0.875rem;
+
 	/* Transitions */
 	--stuic-checkout-transition: 150ms;
 }
@@ -326,6 +332,37 @@
 	}
 
 	.stuic-checkout-guest-submit {
+		padding-top: 0.5rem;
+	}
+
+	/* ============================================================================
+	   CHECKOUT LOGIN FORM
+	   ============================================================================ */
+
+	.stuic-checkout-login-form {
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-checkout-login-gap);
+	}
+
+	.stuic-checkout-login-forgot {
+		all: unset;
+		cursor: pointer;
+		font-size: var(--stuic-checkout-login-forgot-font-size);
+		color: var(--stuic-checkout-login-forgot-color);
+		transition: color var(--stuic-checkout-transition);
+	}
+
+	.stuic-checkout-login-forgot:hover {
+		color: var(--stuic-checkout-login-forgot-hover-color);
+	}
+
+	.stuic-checkout-login-forgot:focus-visible {
+		outline: 2px solid var(--stuic-checkout-input-focus-ring);
+		outline-offset: 2px;
+	}
+
+	.stuic-checkout-login-submit {
 		padding-top: 0.5rem;
 	}
 }

@@ -19,6 +19,11 @@ export {
 	type Props as CheckoutGuestFormProps,
 } from "./CheckoutGuestForm.svelte";
 
+export {
+	default as CheckoutLoginForm,
+	type Props as CheckoutLoginFormProps,
+} from "./CheckoutLoginForm.svelte";
+
 // Types
 export type {
 	CheckoutStep,
@@ -39,6 +44,7 @@ export {
 	validateEmail,
 	validateAddress,
 	validateCustomerForm,
+	validateLoginForm,
 	createEmptyAddress,
 	createEmptyCustomerFormData,
 	createEmptyLoginFormData,
