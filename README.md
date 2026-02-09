@@ -144,7 +144,7 @@ CommandMenu, DropdownMenu, TabbedMenu, TypeaheadInput, KbdShortcut
 Avatar, Carousel, AnimatedElipsis, ThemePreview, ColorScheme, Thc, HoverExpandableWidth, AssetsPreview, DataTable
 
 ### E-commerce
-Cart
+Cart, Checkout (CheckoutProgress, CheckoutOrderSummary, CheckoutCartReview, CheckoutGuestForm, CheckoutLoginForm, CheckoutAddressForm, CheckoutDeliveryOptions, CheckoutOrderReview, CheckoutOrderConfirmation, CheckoutReviewStep, CheckoutShippingStep, CheckoutConfirmStep, CheckoutCompleteStep)
 
 ## Actions
 

@@ -371,6 +371,223 @@ Shopping cart component with quantity controls, pricing, and summary. Supports i
 </Cart>
 ```
 
+#### Checkout
+
+Multi-step checkout flow with 13 sub-components: 9 atomic building blocks and 4 composite step pages.
+
+**Atomic Components:**
+
+##### `CheckoutProgress`
+
+Step indicator with navigation for past steps.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `steps` | `CheckoutStep[]` | 4-step flow | Step definitions |
+| `currentStep` | `string` | required | Active step ID |
+| `onNavigate` | `(step: CheckoutStep) => void` | — | Past step click callback |
+| `separator` | `Snippet \| string` | `"→"` | Step separator |
+| `t` | `TranslateFn` | built-in | Translation function |
+
+##### `CheckoutOrderSummary`
+
+Price totals display (subtotal, shipping, tax, discount, total).
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `totals` | `CheckoutOrderTotals` | required | Price totals |
+| `hasShipping` | `boolean` | `true` | Show shipping row |
+| `formatPrice` | `(value: number) => string` | `defaultFormatPrice` | Price formatter |
+| `row` | `Snippet` | — | Custom row rendering |
+| `extraRows` | `Snippet` | — | Extra content before total |
+
+##### `CheckoutCartReview`
+
+Readonly cart display with summary.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `items` | `CartComponentItem[]` | required | Cart items |
+| `formatPrice` | `(value: number) => string` | `defaultFormatPrice` | Price formatter |
+| `onEditCart` | `() => void` | — | Edit cart callback |
+| `thumbnail` | `Snippet` | — | Custom thumbnail |
+| `title` | `Snippet \| string` | `"Order Summary"` | Header title |
+
+##### `CheckoutGuestForm`
+
+Guest checkout form with email, name, phone, and optional B2B fields.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `formData` | `CheckoutCustomerFormData` | empty | Bindable form data |
+| `onSubmit` | `(data: CheckoutCustomerFormData) => void` | required | Submit callback |
+| `isSubmitting` | `boolean` | `false` | Disables CTA |
+| `errors` | `CheckoutValidationError[]` | `[]` | Server validation errors |
+| `showB2bFields` | `boolean` | `true` | Show B2B section |
+| `fields` | `object` | all visible | Field visibility overrides |
+| `validate` | `(data) => CheckoutValidationError[]` | — | Custom validator |
+
+##### `CheckoutLoginForm`
+
+Login form with email and password.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `formData` | `CheckoutLoginFormData` | empty | Bindable login data |
+| `onSubmit` | `(data: CheckoutLoginFormData) => void` | required | Submit callback |
+| `isSubmitting` | `boolean` | `false` | Disables CTA |
+| `errors` | `CheckoutValidationError[]` | `[]` | Field errors |
+| `error` | `string` | — | General error message |
+| `onForgotPassword` | `() => void` | — | Forgot password callback |
+| `footer` | `Snippet` | — | Content below form |
+
+##### `CheckoutAddressForm`
+
+Address input fieldset with configurable required fields.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `address` | `CheckoutAddressData` | empty | Bindable address data |
+| `label` | `string` | `"address"` | Prefix for field IDs |
+| `errors` | `CheckoutValidationError[]` | `[]` | Validation errors |
+| `requiredFields` | `string[]` | name, street, city, postal_code, country | Required fields |
+| `countryField` | `Snippet` | — | Custom country field (replaces text input) |
+
+##### `CheckoutDeliveryOptions`
+
+Delivery method radio selection with free shipping threshold logic.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `options` | `CheckoutDeliveryOption[]` | required | Available delivery options |
+| `selectedId` | `string` | — | Bindable selected option ID |
+| `onSelect` | `(optionId: string) => void` | — | Selection callback |
+| `subtotal` | `number` | `0` | Order subtotal (for free shipping calc) |
+| `isUpdating` | `boolean` | `false` | Reduced opacity during API calls |
+| `formatPrice` | `(value: number) => string` | `defaultFormatPrice` | Price formatter |
+| `option` | `Snippet` | — | Custom option card |
+
+##### `CheckoutOrderReview`
+
+Full order review display with per-section edit callbacks.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `order` | `CheckoutOrderData` | required | Order data |
+| `formatPrice` | `(value: number) => string` | `defaultFormatPrice` | Price formatter |
+| `onEditItems` | `() => void` | — | Edit items callback |
+| `onEditShippingAddress` | `() => void` | — | Edit shipping callback |
+| `onEditBillingAddress` | `() => void` | — | Edit billing callback |
+| `onEditDelivery` | `() => void` | — | Edit delivery callback |
+
+##### `CheckoutOrderConfirmation`
+
+Order success screen with details and continue shopping CTA.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `order` | `CheckoutOrderData` | required | Completed order |
+| `orderId` | `string` | required | Order ID for display |
+| `emailSent` | `boolean` | `false` | Show email confirmation |
+| `formatPrice` | `(value: number) => string` | `defaultFormatPrice` | Price formatter |
+| `onContinueShopping` | `() => void` | — | Continue shopping callback |
+
+**Composite Step Components:**
+
+##### `CheckoutReviewStep`
+
+Cart review + guest/login forms in 2-column layout.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `items` | `CartComponentItem[]` | required | Cart items |
+| `guestForm` | `object` | — | Guest form config (`formData`, `onSubmit`, `isSubmitting`, `errors`) |
+| `loginForm` | `object` | — | Login form config (`formData`, `onSubmit`, `isSubmitting`, `errors`, `onForgotPassword`) |
+| `formMode` | `"guest-only" \| "login-only" \| "tabbed" \| "stacked"` | `"tabbed"` | Form display mode |
+| `onEditCart` | `() => void` | — | Edit cart callback |
+| `formatPrice` | `(v: number) => string` | `defaultFormatPrice` | Price formatter |
+| `leftColumn` | `Snippet` | — | Override left column |
+| `rightColumn` | `Snippet` | — | Override right column |
+
+##### `CheckoutShippingStep`
+
+Shipping/billing addresses + delivery selection with sidebar summary.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `order` | `CheckoutOrderData` | required | Order data for totals |
+| `deliveryOptions` | `CheckoutDeliveryOption[]` | required | Available delivery options |
+| `shippingAddress` | `CheckoutAddressData` | — | Bindable shipping address |
+| `billingAddress` | `CheckoutAddressData` | — | Bindable billing address |
+| `billingSameAsShipping` | `boolean` | `true` | Bindable toggle |
+| `selectedDeliveryId` | `string` | — | Bindable delivery selection |
+| `onContinue` | `() => void` | — | Continue callback |
+| `onBack` | `() => void` | — | Back callback |
+| `countryField` | `Snippet` | — | Custom country field |
+
+##### `CheckoutConfirmStep`
+
+Order review + place order CTA with sidebar summary.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `order` | `CheckoutOrderData` | required | Order to confirm |
+| `validationErrors` | `CheckoutValidationError[]` | `[]` | Validation errors |
+| `isValid` | `boolean` | `true` | Enable/disable place order |
+| `isSubmitting` | `boolean` | `false` | Processing state |
+| `onPlaceOrder` | `() => void` | — | Place order callback |
+| `onBack` | `() => void` | — | Back callback |
+| `onEditItems` | `() => void` | — | Edit items callback |
+| `onEditShippingAddress` | `() => void` | — | Edit shipping callback |
+
+##### `CheckoutCompleteStep`
+
+Order confirmation with loading/error/success states.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `order` | `CheckoutOrderData` | required | Completed order |
+| `orderId` | `string` | required | Order ID |
+| `emailSent` | `boolean` | `false` | Email confirmation flag |
+| `isLoading` | `boolean` | `false` | Show loading skeleton |
+| `error` | `string \| null` | — | Error message |
+| `onContinueShopping` | `() => void` | — | Continue shopping callback |
+| `onReturnToCheckout` | `() => void` | — | Return callback (error state) |
+
+All composite step components also accept `currentStep`, `steps`, `onStepNavigate` (for CheckoutProgress), and `t` (TranslateFn).
+
+**Checkout Utilities:**
+
+```ts
+import {
+  defaultFormatPrice,      // (cents: number) => string — "12.99"
+  validateEmail,           // (email, t) => string | null
+  validateAddress,         // (address, prefix, t) => CheckoutValidationError[]
+  validateCustomerForm,    // (data, t) => CheckoutValidationError[]
+  validateLoginForm,       // (data, t) => CheckoutValidationError[]
+  createEmptyAddress,      // () => CheckoutAddressData
+  createEmptyCustomerFormData,  // () => CheckoutCustomerFormData
+  createEmptyLoginFormData,     // () => CheckoutLoginFormData
+} from "@marianmeres/stuic";
+```
+
+**Checkout Types:**
+
+```ts
+import type {
+  CheckoutStep,
+  CheckoutAddressData,
+  CheckoutCustomerFormData,
+  CheckoutLoginFormData,
+  CheckoutOrderLineItem,
+  CheckoutOrderTotals,
+  CheckoutDeliveryOption,
+  CheckoutDeliverySnapshot,
+  CheckoutOrderData,
+  CheckoutValidationError,
+} from "@marianmeres/stuic";
+```
+
 ---
 
 ### Display
@@ -970,6 +1187,7 @@ Naming pattern: `{ComponentName}Props`
 
 Additional exported types include:
 - `CartComponentItem`, `CartVariant` — Cart component types
+- `CheckoutStep`, `CheckoutAddressData`, `CheckoutCustomerFormData`, `CheckoutLoginFormData`, `CheckoutOrderLineItem`, `CheckoutOrderTotals`, `CheckoutDeliveryOption`, `CheckoutDeliverySnapshot`, `CheckoutOrderData`, `CheckoutValidationError` — Checkout types
 - `DataTableColumn` — DataTable column definition type
 - `FieldAsset`, `FieldAssetUrlObj`, `FieldAssetWithBlobUrl` — Asset field types
 - `FieldOption` — Option type for FieldOptions
@@ -1055,6 +1273,7 @@ Each component defines customization tokens. Override globally in `:root {}` or 
 | Popover | `--stuic-popover-*` | `bg`, `text`, `border` |
 | Skeleton | `--stuic-skeleton-*` | `bg`, `bg-highlight`, `duration` |
 | Cart | `--stuic-cart-*` | `gap`, `item-padding`, `item-radius`, `item-border-color`, `item-bg`, `thumbnail-size`, `quantity-border-color`, `remove-color`, `summary-border-color`, `compact-max-height`, `transition` |
+| Checkout | `--stuic-checkout-*` | `input-border`, `input-bg`, `input-focus-ring`, `input-radius`, `card-border`, `card-bg`, `card-radius`, `step-gap`, `progress-*`, `summary-*`, `guest-*`, `login-*`, `address-*`, `delivery-*`, `review-*`, `confirmation-*` |
 
 ### CSS Variable Naming Convention
 
