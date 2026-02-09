@@ -39,6 +39,11 @@ export {
 	type Props as CheckoutOrderReviewProps,
 } from "./CheckoutOrderReview.svelte";
 
+export {
+	default as CheckoutOrderConfirmation,
+	type Props as CheckoutOrderConfirmationProps,
+} from "./CheckoutOrderConfirmation.svelte";
+
 // Types
 export type {
 	CheckoutStep,

@@ -57,6 +57,7 @@
 		"checkout-address-form",
 		"checkout-delivery-options",
 		"checkout-order-review",
+		"checkout-order-confirmation",
 	];
 </script>
 
