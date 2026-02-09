@@ -160,6 +160,13 @@
 	--stuic-checkout-confirmation-subsection-label-color: var(--stuic-color-muted-foreground);
 	--stuic-checkout-confirmation-delivery-detail-color: var(--stuic-color-muted-foreground);
 
+	/* CheckoutReviewStep (composite) */
+	--stuic-checkout-review-step-grid-gap: var(--stuic-checkout-step-grid-gap);
+	--stuic-checkout-review-step-grid-columns: var(--stuic-checkout-step-grid-columns);
+	--stuic-checkout-review-step-divider-color: var(--stuic-color-border);
+	--stuic-checkout-review-step-heading-font-size: 1.125rem;
+	--stuic-checkout-review-step-heading-font-weight: 600;
+
 	/* Transitions */
 	--stuic-checkout-transition: 150ms;
 }
@@ -756,5 +763,72 @@
 	.stuic-checkout-confirmation-cta {
 		text-align: center;
 		padding-top: 0.5rem;
+	}
+
+	/* ============================================================================
+	   CHECKOUT REVIEW STEP (composite)
+	   ============================================================================ */
+
+	.stuic-checkout-review-step {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+
+	.stuic-checkout-review-step-grid {
+		display: grid;
+		grid-template-columns: var(--stuic-checkout-review-step-grid-columns);
+		gap: var(--stuic-checkout-review-step-grid-gap);
+	}
+
+	@media (max-width: 768px) {
+		.stuic-checkout-review-step-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	.stuic-checkout-review-step-left {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.stuic-checkout-review-step-right {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+
+	.stuic-checkout-review-step-heading {
+		font-size: var(--stuic-checkout-review-step-heading-font-size);
+		font-weight: var(--stuic-checkout-review-step-heading-font-weight);
+		margin: 0 0 0.75rem;
+	}
+
+	/* Tabs (uses TabbedMenu component) */
+
+	.stuic-checkout-review-step-tabs {
+		margin-bottom: 1rem;
+		--stuic-tabbed-menu-item-max-width: none;
+		--stuic-tabbed-menu-gap: 0.25rem;
+	}
+
+	/* Divider (stacked mode) */
+
+	.stuic-checkout-review-step-divider {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		margin: 1rem 0;
+		color: var(--stuic-checkout-review-step-divider-color);
+		font-size: 0.875rem;
+	}
+
+	.stuic-checkout-review-step-divider::before,
+	.stuic-checkout-review-step-divider::after {
+		content: "";
+		flex: 1;
+		height: 1px;
+		background: var(--stuic-checkout-review-step-divider-color);
 	}
 }
