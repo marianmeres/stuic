@@ -29,6 +29,11 @@ export {
 	type Props as CheckoutAddressFormProps,
 } from "./CheckoutAddressForm.svelte";
 
+export {
+	default as CheckoutDeliveryOptions,
+	type Props as CheckoutDeliveryOptionsProps,
+} from "./CheckoutDeliveryOptions.svelte";
+
 // Types
 export type {
 	CheckoutStep,

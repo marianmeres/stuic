@@ -55,6 +55,7 @@
 		"checkout-guest-form",
 		"checkout-login-form",
 		"checkout-address-form",
+		"checkout-delivery-options",
 	];
 </script>
 
