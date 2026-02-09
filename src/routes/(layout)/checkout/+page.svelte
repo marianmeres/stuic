@@ -61,6 +61,7 @@
 		"checkout-review-step",
 		"checkout-shipping-step",
 		"checkout-confirm-step",
+		"checkout-complete-step",
 	];
 </script>
 
