@@ -1,3 +1,9 @@
+// Components
+export {
+	default as CheckoutProgress,
+	type Props as CheckoutProgressProps,
+} from "./CheckoutProgress.svelte";
+
 // Types
 export type {
 	CheckoutStep,

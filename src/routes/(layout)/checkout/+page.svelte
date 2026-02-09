@@ -19,14 +19,15 @@
 	const priceExamples = [0, 99, 1299, 12999, 100000];
 
 	// --- i18n interpolation demos ---
-	const i18nExamples: { key: string; values: Record<string, string | number> | null }[] = [
-		{ key: "checkout.cart.item_count_1", values: null },
-		{ key: "checkout.cart.item_count_n", values: { count: 5 } },
-		{ key: "checkout.delivery.free_above", values: { threshold: "$50.00" } },
-		{ key: "checkout.complete.email_sent", values: { email: "user@example.com" } },
-		{ key: "checkout.address.field_required", values: { field: "City" } },
-		{ key: "checkout.step.place_order", values: null },
-	];
+	const i18nExamples: { key: string; values: Record<string, string | number> | null }[] =
+		[
+			{ key: "checkout.cart.item_count_1", values: null },
+			{ key: "checkout.cart.item_count_n", values: { count: 5 } },
+			{ key: "checkout.delivery.free_above", values: { threshold: "$50.00" } },
+			{ key: "checkout.complete.email_sent", values: { email: "user@example.com" } },
+			{ key: "checkout.address.field_required", values: { field: "City" } },
+			{ key: "checkout.step.place_order", values: null },
+		];
 
 	// --- Validation demos ---
 	let emailInput = $state("");
@@ -48,12 +49,29 @@
 	}
 </script>
 
+<div class="p-4">
+	<ul class="space-y-2">
+		{#each ["checkout-progress"] as link}
+			<li>
+				<a
+					href="/checkout/{link}"
+					class="block p-2 px-4 rounded-lg bg-neutral-200 dark:bg-neutral-900 hover:text-white hover:bg-neutral-600"
+					>{link}</a
+				>
+			</li>
+		{/each}
+	</ul>
+</div>
+
+<hr class="my-6" />
+
 <h1 class="text-2xl font-bold mb-8">Checkout — Shared Foundation</h1>
 
 <!-- ============== FORMAT PRICE ============== -->
 <h2 class="text-lg font-bold mb-4">defaultFormatPrice()</h2>
 <p class="text-sm opacity-60 mb-4">
-	Converts cents to a simple decimal string. Host projects override with locale-aware formatting.
+	Converts cents to a simple decimal string. Host projects override with locale-aware
+	formatting.
 </p>
 <div class="max-w-md">
 	<table class="w-full text-sm">
@@ -205,9 +223,7 @@
 
 <!-- ============== CUSTOMER FORM VALIDATION ============== -->
 <h2 class="text-lg font-bold mb-4">validateCustomerForm()</h2>
-<p class="text-sm opacity-60 mb-4">
-	Customer form validation — only email is required.
-</p>
+<p class="text-sm opacity-60 mb-4">Customer form validation — only email is required.</p>
 <div class="max-w-md">
 	<FieldInput
 		bind:value={customerData.email}
@@ -220,7 +236,7 @@
 			customValidator(val) {
 				const errors = validateCustomerForm(
 					{ ...customerData, email: String(val || "") },
-					t_default,
+					t_default
 				);
 				return errors[0]?.message || "";
 			},
@@ -237,7 +253,9 @@
 </p>
 <div class="max-w-md space-y-6">
 	<div>
-		<h3 class="text-sm font-semibold mb-2">.stuic-checkout-label + .stuic-checkout-input</h3>
+		<h3 class="text-sm font-semibold mb-2">
+			.stuic-checkout-label + .stuic-checkout-input
+		</h3>
 		<label class="stuic-checkout-label" for="sample-input">Sample Label</label>
 		<input
 			id="sample-input"
@@ -269,23 +287,30 @@
 
 <!-- ============== FACTORY FUNCTIONS ============== -->
 <h2 class="text-lg font-bold mb-4">Empty Data Factories</h2>
-<p class="text-sm opacity-60 mb-4">
-	Output of factory functions for initial form state.
-</p>
+<p class="text-sm opacity-60 mb-4">Output of factory functions for initial form state.</p>
 <div class="max-w-xl space-y-4">
 	<div>
 		<h3 class="text-sm font-semibold mb-1">createEmptyAddress()</h3>
-		<pre
-			class="text-xs bg-muted p-3 rounded-md overflow-x-auto">{JSON.stringify(emptyAddress, null, 2)}</pre>
+		<pre class="text-xs bg-muted p-3 rounded-md overflow-x-auto">{JSON.stringify(
+				emptyAddress,
+				null,
+				2
+			)}</pre>
 	</div>
 	<div>
 		<h3 class="text-sm font-semibold mb-1">createEmptyCustomerFormData()</h3>
-		<pre
-			class="text-xs bg-muted p-3 rounded-md overflow-x-auto">{JSON.stringify(emptyCustomer, null, 2)}</pre>
+		<pre class="text-xs bg-muted p-3 rounded-md overflow-x-auto">{JSON.stringify(
+				emptyCustomer,
+				null,
+				2
+			)}</pre>
 	</div>
 	<div>
 		<h3 class="text-sm font-semibold mb-1">createEmptyLoginFormData()</h3>
-		<pre
-			class="text-xs bg-muted p-3 rounded-md overflow-x-auto">{JSON.stringify(emptyLogin, null, 2)}</pre>
+		<pre class="text-xs bg-muted p-3 rounded-md overflow-x-auto">{JSON.stringify(
+				emptyLogin,
+				null,
+				2
+			)}</pre>
 	</div>
 </div>
