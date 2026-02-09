@@ -129,6 +129,19 @@
 	--stuic-checkout-delivery-description-font-size: 0.875rem;
 	--stuic-checkout-delivery-updating-opacity: 0.6;
 
+	/* CheckoutOrderReview */
+	--stuic-checkout-review-section-gap: 1.5rem;
+	--stuic-checkout-review-header-font-size: 1rem;
+	--stuic-checkout-review-header-font-weight: 500;
+	--stuic-checkout-review-item-gap: 0.5rem;
+	--stuic-checkout-review-address-color: var(--stuic-color-muted-foreground);
+	--stuic-checkout-review-address-font-size: 0.875rem;
+	--stuic-checkout-review-delivery-estimate-color: var(--stuic-color-muted-foreground);
+	--stuic-checkout-review-delivery-estimate-font-size: 0.875rem;
+	--stuic-checkout-review-item-each-color: var(--stuic-color-muted-foreground);
+	--stuic-checkout-review-item-each-font-size: 0.8125rem;
+	--stuic-checkout-review-billing-same-color: var(--stuic-color-muted-foreground);
+
 	/* Transitions */
 	--stuic-checkout-transition: 150ms;
 }
@@ -516,5 +529,83 @@
 		color: var(--stuic-checkout-delivery-description-color);
 		font-size: var(--stuic-checkout-delivery-description-font-size);
 		margin-top: 0.25rem;
+	}
+
+	/* ============================================================================
+	   SHARED CARD SECTION
+	   ============================================================================ */
+
+	.stuic-checkout-card {
+		border: 1px solid var(--stuic-checkout-card-border-color);
+		border-radius: var(--stuic-checkout-card-radius);
+		background: var(--stuic-checkout-card-bg);
+		padding: var(--stuic-checkout-card-padding);
+	}
+
+	/* ============================================================================
+	   CHECKOUT ORDER REVIEW
+	   ============================================================================ */
+
+	.stuic-checkout-review {
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-checkout-review-section-gap);
+	}
+
+	.stuic-checkout-review-section-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.5rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.stuic-checkout-review-heading {
+		font-size: var(--stuic-checkout-review-header-font-size);
+		font-weight: var(--stuic-checkout-review-header-font-weight);
+		margin: 0;
+	}
+
+	.stuic-checkout-review-items {
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-checkout-review-item-gap);
+	}
+
+	.stuic-checkout-review-item {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 0.5rem;
+	}
+
+	.stuic-checkout-review-item-each {
+		font-size: var(--stuic-checkout-review-item-each-font-size);
+		color: var(--stuic-checkout-review-item-each-color);
+	}
+
+	.stuic-checkout-review-address {
+		color: var(--stuic-checkout-review-address-color);
+		font-size: var(--stuic-checkout-review-address-font-size);
+		line-height: 1.5;
+	}
+
+	.stuic-checkout-review-billing-same {
+		color: var(--stuic-checkout-review-billing-same-color);
+		font-size: var(--stuic-checkout-review-address-font-size);
+		margin: 0;
+	}
+
+	.stuic-checkout-review-delivery {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 0.5rem;
+	}
+
+	.stuic-checkout-review-delivery-estimate {
+		color: var(--stuic-checkout-review-delivery-estimate-color);
+		font-size: var(--stuic-checkout-review-delivery-estimate-font-size);
+		margin: 0.25rem 0 0;
 	}
 }
