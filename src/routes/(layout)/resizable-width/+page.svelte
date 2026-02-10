@@ -2,6 +2,7 @@
 	import { resizableWidth } from "../../../lib/index.js";
 	let width1 = $state<string>("");
 	let width2 = $state<string>("");
+	let width3 = $state<string>("");
 </script>
 
 <div class="border flex mb-4">
@@ -43,4 +44,24 @@
 		{width2}
 	</div>
 	<div class="flex-1 p-4 py-12">right</div>
+</div>
+
+<div class="border flex mb-4">
+	<div class="flex-1 p-4 py-10">left</div>
+	<div
+		class="relative p-4"
+		use:resizableWidth={() => ({
+			initial: 250,
+			min: 100,
+			max: 500,
+			units: "px",
+			reverse: true,
+			onResize(info) {
+				width3 = Math.round(info.width) + info.units;
+			},
+			key: "example-3",
+		})}
+	>
+		{width3} (reverse)
+	</div>
 </div>
