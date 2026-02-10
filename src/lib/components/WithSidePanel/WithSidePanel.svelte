@@ -49,7 +49,7 @@
 		side,
 		position = "left",
 		width = $bindable("300px"),
-		threshold = 768,
+		threshold = 640,
 		transition = true,
 		transitionDuration = 200,
 		open = $bindable(true),
@@ -138,7 +138,7 @@
 	{#if _showSide}
 		<div
 			class={twMerge(!unstyled && "stuic-with-side-panel-side", classSide)}
-			style:width={_isResizable ? undefined : _sideWidth}
+			style:width={_sideWidth}
 			style:min-width={_isResizable ? undefined : _sideWidth}
 			transition:slide={{ axis: "x", duration: _duration }}
 			use:resizableWidth={() => ({
