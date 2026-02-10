@@ -59,6 +59,7 @@ export * from "./components/Thc/index.js";
 export * from "./components/ThemePreview/index.js";
 export * from "./components/TwCheck/index.js";
 export * from "./components/TypeaheadInput/index.js";
+export * from "./components/WithSidePanel/index.js";
 export * from "./components/X/index.js";
 
 // utils

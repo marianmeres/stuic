@@ -47,6 +47,7 @@
         'theme-preview', 
         'tooltip',
         'tw-check',
+		'with-side-panel',
 		// 'viewport',
 		'x'
 	].toSorted();

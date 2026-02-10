@@ -1,0 +1,55 @@
+/* ============================================================================
+   WITH SIDE PANEL COMPONENT TOKENS
+   Override globally: :root { --stuic-with-side-panel-border-color: red; }
+   Override locally:  style="--stuic-with-side-panel-border-color: blue;"
+   ============================================================================ */
+
+@theme inline {
+	--stuic-with-side-panel-border-color: var(--color-gray-200);
+	--stuic-with-side-panel-border-width: 1px;
+}
+
+:root.dark {
+	--stuic-with-side-panel-border-color: var(--color-gray-700);
+}
+
+@layer components {
+	.stuic-with-side-panel {
+		display: flex;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+	}
+
+	.stuic-with-side-panel-side {
+		flex-shrink: 0;
+		height: 100%;
+		z-index: 1;
+	}
+
+	.stuic-with-side-panel-side-scroll {
+		height: 100%;
+		overflow-y: auto;
+		overflow-x: hidden;
+	}
+
+	/* border between panels: left position */
+	.stuic-with-side-panel[data-position="left"] .stuic-with-side-panel-side {
+		border-right: var(--stuic-with-side-panel-border-width) solid
+			var(--stuic-with-side-panel-border-color);
+	}
+
+	/* border between panels: right position */
+	.stuic-with-side-panel[data-position="right"] .stuic-with-side-panel-side {
+		border-left: var(--stuic-with-side-panel-border-width) solid
+			var(--stuic-with-side-panel-border-color);
+	}
+
+	.stuic-with-side-panel-main {
+		flex: 1;
+		height: 100%;
+		overflow-y: auto;
+		overflow-x: hidden;
+		min-width: 0;
+	}
+}

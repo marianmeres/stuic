@@ -14,6 +14,8 @@ export interface ResizableWidthOptions {
 	min?: number;
 	max?: number;
 	units?: "px" | "%";
+	/** Reverses handle position (left instead of right) and drag direction */
+	reverse?: boolean;
 	key?: string | number | null | undefined;
 	storage?: "local" | "session";
 	handleClass?: string;
@@ -25,7 +27,8 @@ export interface ResizableWidthOptions {
 /**
  * A Svelte action that makes an element's width resizable via drag handle.
  *
- * Adds a draggable handle to the right edge of the element. Supports mouse and touch input.
+ * Adds a draggable handle to the right (or left with `reverse`) edge of the element.
+ * Supports mouse and touch input.
  * Optionally persists the width to localStorage/sessionStorage.
  *
  * Features:
@@ -65,9 +68,9 @@ export interface ResizableWidthOptions {
  * ```
  */
 export function resizableWidth(el: HTMLDivElement, fn?: () => ResizableWidthOptions) {
-	const DEFAULT_HANDLE_CLS = [
+	const HANDLE_CLS_BASE = [
 		"group",
-		"absolute top-0 right-0 bottom-0",
+		"absolute top-0 bottom-0",
 		"w-[1px]",
 		"bg-black/20 hover:bg-black/30",
 		"dark:bg-white/10 dark:hover:bg-white/20",
@@ -88,7 +91,8 @@ export function resizableWidth(el: HTMLDivElement, fn?: () => ResizableWidthOpti
 	function create_handle(
 		el: HTMLDivElement,
 		handleClass?: string,
-		handleDragClass?: string
+		handleDragClass?: string,
+		reverse?: boolean
 	) {
 		const handle = document.createElement("div");
 		handle.setAttribute("data-handle", "true");
@@ -102,7 +106,8 @@ export function resizableWidth(el: HTMLDivElement, fn?: () => ResizableWidthOpti
 		el.appendChild(handle);
 
 		//
-		handle.classList.add(...twMerge(DEFAULT_HANDLE_CLS, handleClass).split(" "));
+		const positionCls = reverse ? "left-0" : "right-0";
+		handle.classList.add(...twMerge(HANDLE_CLS_BASE, positionCls, handleClass).split(" "));
 
 		return handle;
 	}
@@ -114,6 +119,7 @@ export function resizableWidth(el: HTMLDivElement, fn?: () => ResizableWidthOpti
 			min = 0,
 			max = 0,
 			units = "px",
+			reverse = false,
 			key,
 			storage = "session",
 			handleClass = "",
@@ -136,7 +142,7 @@ export function resizableWidth(el: HTMLDivElement, fn?: () => ResizableWidthOpti
 		let startWidth = 0;
 		let containerW: number | undefined = undefined;
 		//
-		const handle = create_handle(el, handleClass, handleDragClass);
+		const handle = create_handle(el, handleClass, handleDragClass, reverse);
 		const container = el.parentElement!;
 
 		// do we have a storage? if so, adjust the initial value...
@@ -209,7 +215,7 @@ export function resizableWidth(el: HTMLDivElement, fn?: () => ResizableWidthOpti
 			//
 			const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
 			const deltaX = clientX - startX;
-			const width = startWidth + deltaX;
+			const width = reverse ? startWidth - deltaX : startWidth + deltaX;
 
 			set_width_px(width);
 		}
