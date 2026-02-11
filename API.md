@@ -623,6 +623,32 @@ Image/content slider with navigation.
 
 Animated loading dots ("...").
 
+#### `IconSwap`
+
+Swap visibility between N states with opacity transitions. Commonly used for hamburger/X icon toggle, but supports any content.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `states` | `Array<string \| Snippet>` | required | Array of visual states (HTML strings or Snippets) |
+| `active` | `number` | `0` | Index of the currently visible state (bindable) |
+| `duration` | `number` | `300` | Transition duration in ms |
+| `easing` | `string` | `"ease"` | CSS transition-timing-function |
+| `stateClass` | `string` | — | Additional CSS classes for each state wrapper |
+
+**CSS Variables:** `--stuic-icon-swap-duration`, `--stuic-icon-swap-easing`
+
+```svelte
+<script>
+  import { IconSwap } from "@marianmeres/stuic";
+  import { iconMenu, iconX } from "@marianmeres/stuic";
+  let isOpen = $state(false);
+</script>
+
+<button onclick={() => (isOpen = !isOpen)}>
+  <IconSwap active={isOpen ? 1 : 0} states={[iconMenu(), iconX()]} />
+</button>
+```
+
 #### `DataTable`
 
 Responsive data table with paging, row selection, batch actions, and mobile card view.

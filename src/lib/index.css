@@ -37,6 +37,7 @@ In practice:
 @import "./components/DataTable/index.css";
 @import "./components/DismissibleMessage/index.css";
 @import "./components/DropdownMenu/index.css";
+@import "./components/IconSwap/index.css";
 @import "./components/Input/index.css";
 @import "./components/KbdShortcut/index.css";
 @import "./components/ListItemButton/index.css";

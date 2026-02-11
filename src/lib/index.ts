@@ -42,6 +42,7 @@ export * from "./components/DismissibleMessage/index.js";
 export * from "./components/Drawer/index.js";
 export * from "./components/DropdownMenu/index.js";
 export * from "./components/HoverExpandableWidth/index.js";
+export * from "./components/IconSwap/index.js";
 export * from "./components/Input/index.js";
 export * from "./components/KbdShortcut/index.js";
 export * from "./components/ListItemButton/index.js";

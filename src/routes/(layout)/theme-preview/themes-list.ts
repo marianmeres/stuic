@@ -28,6 +28,9 @@ import slateTealOceanCss from "$lib/themes/css/slate-teal-ocean.css?raw";
 import stoneOrangeEarthCss from "$lib/themes/css/stone-orange-earth.css?raw";
 import violetRoseDuskCss from "$lib/themes/css/violet-rose-dusk.css?raw";
 
+// custom
+import ddsCss from "$lib/themes/css/dds.css?raw";
+
 const themes: Record<string, string> = {
 	stone: stoneCss,
 	gray: grayCss,
@@ -57,6 +60,8 @@ const themes: Record<string, string> = {
 	"slate-teal-ocean": slateTealOceanCss,
 	"stone-orange-earth": stoneOrangeEarthCss,
 	"violet-rose-dusk": violetRoseDuskCss,
+	//
+	dds: ddsCss,
 };
 
 const themeNames = Object.keys(themes);

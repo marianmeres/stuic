@@ -1,0 +1,33 @@
+/* ============================================================================
+   ICON SWAP COMPONENT TOKENS
+   Override globally: :root { --stuic-icon-swap-duration: 500ms; }
+   Override locally:  <IconSwap style="--stuic-icon-swap-duration: 500ms;">
+   ============================================================================ */
+
+:root {
+	--stuic-icon-swap-duration: 150ms;
+	--stuic-icon-swap-easing: ease;
+}
+
+@layer components {
+	.stuic-icon-swap {
+		display: grid;
+		width: fit-content;
+	}
+
+	.stuic-icon-swap > .stuic-icon-swap-state {
+		grid-column: 1 / -1;
+		grid-row: 1 / -1;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity var(--stuic-icon-swap-duration) var(--stuic-icon-swap-easing);
+	}
+
+	.stuic-icon-swap > .stuic-icon-swap-state[data-visible="true"] {
+		opacity: 1;
+		pointer-events: auto;
+	}
+}

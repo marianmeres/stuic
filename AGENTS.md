@@ -23,7 +23,7 @@
 
 ```
 src/lib/
-├── components/     # 38 UI components
+├── components/     # 39 UI components
 ├── actions/        # 12 Svelte actions
 ├── utils/          # 42 utility functions
 ├── themes/         # 26 theme definitions (.ts) + generated CSS (css/)
