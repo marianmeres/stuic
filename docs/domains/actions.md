@@ -2,7 +2,7 @@
 
 ## Overview
 
-12 Svelte actions (directives) for reusable DOM behavior.
+13 Svelte actions (directives) for reusable DOM behavior.
 
 ---
 
@@ -21,6 +21,7 @@
 | `typeahead` | Advanced autocomplete behavior | `typeahead.svelte.ts` |
 | `onSubmitValidityCheck` | Form submit validation | `on-submit-validity-check.svelte.ts` |
 | `popover` | Popover positioning | `popover/` |
+| `spotlight` | Spotlight/coach mark overlay with cutout hole | `spotlight/` |
 | `tooltip` | Tooltip positioning and display | `tooltip/` |
 
 ---
@@ -76,6 +77,22 @@ Actions using `$effect()` accept a function returning options:
 </div>
 ```
 
+### Spotlight
+
+```svelte
+<div
+  use:spotlight={() => ({
+    content: "Check out this feature!",
+    position: "bottom",
+    id: "intro-step-1",
+  })}
+>
+  Target Element
+</div>
+
+<button onclick={() => showSpotlight('intro-step-1')}>Start Tour</button>
+```
+
 ### Tooltip
 
 ```svelte
@@ -121,4 +138,5 @@ export function focusTrap(el: HTMLElement, options?: Options) {
 | src/lib/actions/index.ts | All action exports |
 | src/lib/actions/validate.svelte.ts | Complex action example |
 | src/lib/actions/focus-trap.ts | Traditional action pattern |
+| src/lib/actions/spotlight/ | Spotlight/coach mark action |
 | src/lib/actions/tooltip/ | Multi-file action example |

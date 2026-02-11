@@ -831,6 +831,66 @@ Anchored popover positioning.
 </button>
 ```
 
+### `spotlight`
+
+Spotlight/coach mark overlay that highlights a target element by dimming everything else behind a backdrop with a cutout hole. Includes built-in annotation support positioned next to the target.
+
+**Options:**
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `enabled` | `boolean` | `true` | Whether the spotlight is enabled |
+| `content` | `THC \| null` | `undefined` | Annotation content (string, {html}, {component, props}, snippet) |
+| `position` | `SpotlightPosition` | `"bottom"` | Annotation placement relative to target |
+| `padding` | `number` | `8` | Padding around target in the cutout (px) |
+| `borderRadius` | `number` | `8` | Border radius of the cutout hole (px) |
+| `class` | `string` | `undefined` | Custom class for annotation |
+| `classBackdrop` | `string` | `undefined` | Custom class for backdrop |
+| `offset` | `string` | `"0.5rem"` | Annotation offset from target (CSS value) |
+| `closeOnEscape` | `boolean` | `true` | Close on Escape key |
+| `closeOnBackdropClick` | `boolean` | `true` | Close on backdrop click |
+| `scrollIntoView` | `boolean` | `true` | Scroll target into view before showing |
+| `open` | `boolean` | `undefined` | Reactive programmatic control |
+| `id` | `string` | `undefined` | ID for registry-based control |
+| `onShow` | `() => void` | `undefined` | Callback when spotlight opens |
+| `onHide` | `() => void` | `undefined` | Callback when spotlight hides |
+
+**Registry functions:**
+
+- `showSpotlight(id)` — Show a spotlight by ID
+- `hideSpotlight(id)` — Hide a spotlight by ID
+- `isSpotlightOpen(id)` — Check if a spotlight is open
+
+```svelte
+<script>
+  import { spotlight, showSpotlight } from "@marianmeres/stuic";
+</script>
+
+<!-- Attach to target, control via registry -->
+<div
+  use:spotlight={() => ({
+    content: "Check out this feature!",
+    position: "bottom",
+    id: "intro",
+  })}
+>
+  Target
+</div>
+
+<button onclick={() => showSpotlight("intro")}>Show</button>
+
+<!-- Or control via reactive open prop -->
+<div
+  use:spotlight={() => ({
+    content: { html: "<p>Step 1 of 3</p>" },
+    open: tourStep === 1,
+    onHide: () => { tourStep = 0; },
+  })}
+>
+  Tour Target
+</div>
+```
+
 ### `tooltip`
 
 Tooltip display from `aria-label`.
@@ -1298,6 +1358,7 @@ Each component defines customization tokens. Override globally in `:root {}` or 
 | Tooltip | `--stuic-tooltip-*` | `bg`, `text` |
 | Popover | `--stuic-popover-*` | `bg`, `text`, `border` |
 | Skeleton | `--stuic-skeleton-*` | `bg`, `bg-highlight`, `duration` |
+| Spotlight | `--stuic-spotlight-*` | `backdrop-bg`, `annotation-bg`, `annotation-text`, `annotation-border` |
 | Cart | `--stuic-cart-*` | `gap`, `item-padding`, `item-radius`, `item-border-color`, `item-bg`, `thumbnail-size`, `quantity-border-color`, `remove-color`, `summary-border-color`, `compact-max-height`, `transition` |
 | Checkout | `--stuic-checkout-*` | `input-border`, `input-bg`, `input-focus-ring`, `input-radius`, `card-border`, `card-bg`, `card-radius`, `step-gap`, `progress-*`, `summary-*`, `guest-*`, `login-*`, `address-*`, `delivery-*`, `review-*`, `confirmation-*` |
 

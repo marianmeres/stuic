@@ -6,6 +6,7 @@ export * from "./highlight-dragover.svelte.js";
 export * from "./on-submit-validity-check.svelte.js";
 export * from "./popover/popover.svelte.js";
 export * from "./resizable-width.svelte.js";
+export * from "./spotlight/spotlight.svelte.js";
 export * from "./tooltip/tooltip.svelte.js";
 export * from "./trim.svelte.js";
 export * from "./typeahead.svelte.js";

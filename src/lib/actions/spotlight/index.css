@@ -1,0 +1,55 @@
+/* Spotlight action tokens */
+/* Note: style props will not work as with regular components, because spotlight elements are created outside of the anchor DOM tree */
+:root {
+	--stuic-spotlight-backdrop-bg: rgba(0, 0, 0, 0.5);
+	--stuic-spotlight-annotation-bg: var(--stuic-color-surface);
+	--stuic-spotlight-annotation-text: var(--stuic-color-foreground);
+	--stuic-spotlight-annotation-border: var(--stuic-color-border);
+}
+
+/* Backdrop overlay with clip-path hole */
+.stuic-spotlight-backdrop {
+	opacity: 0;
+	transition-property: opacity;
+	&.spot-visible {
+		opacity: 1;
+	}
+}
+
+/* Annotation element (positioned via CSS Anchor Positioning) */
+.stuic-spotlight-annotation {
+	position: fixed;
+	display: none;
+	opacity: 0;
+	transition-property: opacity;
+}
+
+@supports (anchor-name: --anchor) {
+	.stuic-spotlight-annotation {
+		position-try-order: most-width;
+		position-try-fallbacks:
+			flip-block, flip-inline, flip-block flip-inline;
+
+		&.spot-block {
+			display: block;
+			opacity: 0;
+			&.spot-visible {
+				opacity: 1;
+			}
+		}
+	}
+}
+
+/* Fallback annotation (no CSS Anchor Positioning) */
+.stuic-spotlight-annotation-fallback {
+	display: none;
+	opacity: 0;
+	transition-property: opacity;
+	&.spot-block {
+		display: block;
+		opacity: 0;
+		&.spot-visible {
+			opacity: 1;
+		}
+	}
+}

@@ -57,6 +57,7 @@ In practice:
 
 /* Action CSS */
 @import "./actions/popover/index.css";
+@import "./actions/spotlight/index.css";
 @import "./actions/tooltip/index.css";
 
 /* Base styles for STUIC components */
