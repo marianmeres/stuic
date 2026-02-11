@@ -1,0 +1,26 @@
+/* ============================================================================
+   DIM BEHIND ACTION
+   A simplified alternative to spotlight — dims everything behind a target element.
+   ============================================================================ */
+
+:root {
+	--stuic-dim-behind-backdrop-bg: rgb(0 0 0 / 0.5);
+	--stuic-dim-behind-backdrop-z-index: 40;
+	--stuic-dim-behind-element-z-index: 41;
+	--stuic-dim-behind-transition-duration: 150ms;
+}
+
+.stuic-dim-behind-backdrop {
+	position: fixed;
+	inset: 0;
+	z-index: var(--stuic-dim-behind-backdrop-z-index);
+	background: var(--stuic-dim-behind-backdrop-bg);
+	opacity: 0;
+	transition-property: opacity;
+	transition-duration: var(--stuic-dim-behind-transition-duration);
+	pointer-events: auto;
+
+	&.dim-visible {
+		opacity: 1;
+	}
+}

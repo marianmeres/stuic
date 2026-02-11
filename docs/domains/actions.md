@@ -2,7 +2,7 @@
 
 ## Overview
 
-13 Svelte actions (directives) for reusable DOM behavior.
+14 Svelte actions (directives) for reusable DOM behavior.
 
 ---
 
@@ -14,6 +14,7 @@
 | `focusTrap` | Keyboard focus containment (modals/dialogs) | `focus-trap.ts` |
 | `autogrow` | Auto-resize textarea to content | `autogrow.svelte.ts` |
 | `autoscroll` | Auto-scroll container to bottom | `autoscroll.ts` |
+| `dimBehind` | Dim everything behind a target element (simplified spotlight) | `dim-behind/` |
 | `fileDropzone` | Drag-and-drop file handling | `file-dropzone.svelte.ts` |
 | `highlightDragover` | Visual feedback on drag-over | `highlight-dragover.svelte.ts` |
 | `resizableWidth` | Draggable width resizing | `resizable-width.svelte.ts` |
@@ -93,6 +94,21 @@ Actions using `$effect()` accept a function returning options:
 <button onclick={() => showSpotlight('intro-step-1')}>Start Tour</button>
 ```
 
+### Dim Behind
+
+```svelte
+<div
+  use:dimBehind={() => ({
+    open: isDimmed,
+    onHide: () => isDimmed = false,
+  })}
+>
+  Highlighted Element
+</div>
+
+<button onclick={() => showDimBehind('my-id')}>Highlight</button>
+```
+
 ### Tooltip
 
 ```svelte
@@ -138,5 +154,6 @@ export function focusTrap(el: HTMLElement, options?: Options) {
 | src/lib/actions/index.ts | All action exports |
 | src/lib/actions/validate.svelte.ts | Complex action example |
 | src/lib/actions/focus-trap.ts | Traditional action pattern |
+| src/lib/actions/dim-behind/ | Simplified spotlight alternative |
 | src/lib/actions/spotlight/ | Spotlight/coach mark action |
 | src/lib/actions/tooltip/ | Multi-file action example |
