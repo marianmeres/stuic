@@ -27,7 +27,7 @@
 	 * Configuration for rendering a Svelte snippet.
 	 */
 	interface WithSnippet {
-		snippet: Snippet;
+		snippet: Snippet<[Record<string, any>]>;
 	}
 
 	type AsSnippet = Snippet;
@@ -131,15 +131,15 @@
 
 {#if typeof thc === "string"}
 	{#if forceAsHtml}{@html thc}{:else}{thc}{/if}
-{:else if "text" in thc && thc.text}
+{:else if thc && typeof thc === "object" && "text" in thc && thc.text}
 	{#if forceAsHtml}{@html thc.text}{:else}{thc.text}{/if}
-{:else if "html" in thc && thc.html}
+{:else if thc && typeof thc === "object" && "html" in thc && thc.html}
 	{@html thc.html}
 {:else if typeof thc === "function"}
 	{@render thc()}
-{:else if typeof thc === "object" && "snippet" in thc}
-	{@render thc.snippet()}
-{:else if typeof thc === "object" && "component" in thc}
+{:else if thc && typeof thc === "object" && "snippet" in thc}
+	{@render thc.snippet({ ...(rest || {}) })}
+{:else if thc && typeof thc === "object" && "component" in thc}
 	<thc.component {...thc.props || {}} {...rest || {}} />
 {:else if allowCastToStringFallback}
 	<!-- cast to string as the last resort (if enabled) -->
