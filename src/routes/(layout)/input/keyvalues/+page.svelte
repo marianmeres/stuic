@@ -44,7 +44,12 @@
 			label="HTTP Headers"
 			description="Add custom headers as key-value pairs"
 		/>
-		<pre class="text-xs mt-2 bg-neutral-100 dark:bg-neutral-800 p-2 rounded overflow-auto">{JSON.stringify(maybeJsonParse(values.simple), null, 2)}</pre>
+		<pre
+			class="text-xs mt-2 bg-neutral-100 dark:bg-neutral-800 p-2 rounded overflow-auto">{JSON.stringify(
+				maybeJsonParse(values.simple),
+				null,
+				2
+			)}</pre>
 		<Button type="submit" class="mt-4">Submit</Button>
 	</form>
 
@@ -57,7 +62,12 @@
 			label="Configuration"
 			description="Values can be any valid JSON (strings auto-detected)"
 		/>
-		<pre class="text-xs mt-2 bg-neutral-100 dark:bg-neutral-800 p-2 rounded overflow-auto">{JSON.stringify(maybeJsonParse(values.prefilled), null, 2)}</pre>
+		<pre
+			class="text-xs mt-2 bg-neutral-100 dark:bg-neutral-800 p-2 rounded overflow-auto">{JSON.stringify(
+				maybeJsonParse(values.prefilled),
+				null,
+				2
+			)}</pre>
 	</form>
 
 	<!-- Required -->

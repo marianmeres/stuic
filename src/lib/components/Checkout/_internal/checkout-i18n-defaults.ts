@@ -1,6 +1,5 @@
 import { isPlainObject } from "../../../utils/is-plain-object.js";
 import { replaceMap } from "../../../utils/replace-map.js";
-import type { TranslateFn } from "../../../types.js";
 
 /**
  * Complete default English i18n map for all Checkout components.
@@ -135,12 +134,11 @@ const DEFAULTS: Record<string, string> = {
 export function t_default(
 	k: string,
 	values: false | null | undefined | Record<string, string | number> = null,
-	fallback: string | boolean = "",
-	_i18nSpanWrap: boolean = true
+	fallback: string | boolean = ""
 ): string {
-	let out = DEFAULTS[k] ?? (typeof fallback === "string" ? fallback : "") ?? k;
+	const out = DEFAULTS[k] ?? (typeof fallback === "string" ? fallback : "") ?? k;
 	return isPlainObject(values)
-		? replaceMap(out, values as any, {
+		? replaceMap(out, values as Record<string, string | CallableFunction>, {
 				preSearchKeyTransform: (k) => `{${k}}`,
 			})
 		: out;

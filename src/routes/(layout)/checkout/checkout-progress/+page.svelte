@@ -1,8 +1,5 @@
 <script lang="ts">
-	import {
-		CheckoutProgress,
-		type CheckoutStep,
-	} from "$lib/index.js";
+	import { CheckoutProgress, type CheckoutStep } from "$lib/index.js";
 	import Button from "$lib/components/Button/Button.svelte";
 
 	// --- Basic demo ---
@@ -94,8 +91,8 @@
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Non-navigable past step</h2>
 	<p class="text-sm opacity-60 mb-4">
-		"Shipping" has <code>navigable: false</code> — even with <code>onNavigate</code>,
-		it renders as plain text.
+		"Shipping" has <code>navigable: false</code> — even with <code>onNavigate</code>, it
+		renders as plain text.
 	</p>
 
 	<CheckoutProgress
@@ -121,9 +118,7 @@
 <!-- ============== CUSTOM STEPS ============== -->
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Custom steps</h2>
-	<p class="text-sm opacity-60 mb-4">
-		A 3-step custom flow: Cart, Payment, Done.
-	</p>
+	<p class="text-sm opacity-60 mb-4">A 3-step custom flow: Cart, Payment, Done.</p>
 
 	<CheckoutProgress
 		steps={customSteps}

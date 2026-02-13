@@ -73,7 +73,8 @@
 	.stuic-data-table-wrapper {
 		overflow-x: auto;
 		border-radius: var(--stuic-data-table-radius);
-		border: var(--stuic-data-table-border-width) solid var(--stuic-data-table-border-color);
+		border: var(--stuic-data-table-border-width) solid
+			var(--stuic-data-table-border-color);
 		transition: opacity var(--stuic-data-table-transition);
 	}
 
@@ -96,7 +97,8 @@
 	}
 
 	.stuic-data-table th {
-		padding: var(--stuic-data-table-header-padding-y) var(--stuic-data-table-header-padding-x);
+		padding: var(--stuic-data-table-header-padding-y)
+			var(--stuic-data-table-header-padding-x);
 		font-size: var(--stuic-data-table-header-font-size);
 		font-weight: var(--stuic-data-table-header-font-weight);
 		color: var(--stuic-data-table-header-color);
@@ -205,7 +207,8 @@
 		display: flex;
 		align-items: center;
 		gap: var(--stuic-data-table-paging-gap);
-		padding: var(--stuic-data-table-batch-padding-y) var(--stuic-data-table-batch-padding-x);
+		padding: var(--stuic-data-table-batch-padding-y)
+			var(--stuic-data-table-batch-padding-x);
 		background: var(--stuic-data-table-batch-bg);
 		border-radius: var(--stuic-data-table-radius);
 		margin-bottom: 0.5rem;
@@ -260,7 +263,8 @@
 
 	.stuic-data-table-card {
 		background: var(--stuic-data-table-card-bg);
-		border: var(--stuic-data-table-border-width) solid var(--stuic-data-table-card-border-color);
+		border: var(--stuic-data-table-border-width) solid
+			var(--stuic-data-table-card-border-color);
 		border-radius: var(--stuic-data-table-card-radius);
 		padding: var(--stuic-data-table-card-padding);
 		transition: background var(--stuic-data-table-transition);

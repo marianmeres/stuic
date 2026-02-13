@@ -75,7 +75,9 @@
 	}
 
 	// -- Mode switcher --
-	let selectedMode = $state<"guest-only" | "login-only" | "tabbed" | "stacked">("guest-only");
+	let selectedMode = $state<"guest-only" | "login-only" | "tabbed" | "stacked">(
+		"guest-only"
+	);
 	const modes = ["guest-only", "login-only", "tabbed", "stacked"] as const;
 </script>
 
@@ -85,8 +87,8 @@
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Default (guest-only)</h2>
 	<p class="text-sm opacity-60 mb-4">
-		Two-column layout with cart review on the left and guest form on the right.
-		Progress indicator at the top.
+		Two-column layout with cart review on the left and guest form on the right. Progress
+		indicator at the top.
 	</p>
 
 	<CheckoutReviewStep
@@ -105,9 +107,7 @@
 <!-- ============== FORM MODE SWITCHER ============== -->
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Form mode switcher</h2>
-	<p class="text-sm opacity-60 mb-4">
-		Toggle between form modes to see each layout.
-	</p>
+	<p class="text-sm opacity-60 mb-4">Toggle between form modes to see each layout.</p>
 
 	<div class="flex gap-2 mb-6">
 		{#each modes as mode}
@@ -144,9 +144,7 @@
 <!-- ============== TABBED MODE ============== -->
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Tabbed mode</h2>
-	<p class="text-sm opacity-60 mb-4">
-		Guest and login forms in switchable tabs.
-	</p>
+	<p class="text-sm opacity-60 mb-4">Guest and login forms in switchable tabs.</p>
 
 	<CheckoutReviewStep
 		items={sampleItems}
@@ -268,7 +266,8 @@
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Custom column overrides (snippets)</h2>
 	<p class="text-sm opacity-60 mb-4">
-		Override left and right columns via <code>leftColumn</code> and <code>rightColumn</code> snippets.
+		Override left and right columns via <code>leftColumn</code> and
+		<code>rightColumn</code> snippets.
 	</p>
 
 	<CheckoutReviewStep
@@ -279,12 +278,16 @@
 		}}
 	>
 		{#snippet leftColumn()}
-			<div class="p-8 border-2 border-dashed border-blue-300 dark:border-blue-700 rounded-lg text-center text-blue-600 dark:text-blue-400">
+			<div
+				class="p-8 border-2 border-dashed border-blue-300 dark:border-blue-700 rounded-lg text-center text-blue-600 dark:text-blue-400"
+			>
 				Custom left column content
 			</div>
 		{/snippet}
 		{#snippet rightColumn()}
-			<div class="p-8 border-2 border-dashed border-green-300 dark:border-green-700 rounded-lg text-center text-green-600 dark:text-green-400">
+			<div
+				class="p-8 border-2 border-dashed border-green-300 dark:border-green-700 rounded-lg text-center text-green-600 dark:text-green-400"
+			>
 				Custom right column content
 			</div>
 		{/snippet}
@@ -341,7 +344,10 @@
 {#if actionLog.length > 0}
 	<section class="mb-12">
 		<h2 class="text-lg font-bold mb-2">Action log</h2>
-		<pre class="text-xs p-3 bg-neutral-100 dark:bg-neutral-900 rounded overflow-auto max-h-48">{actionLog.join("\n")}</pre>
+		<pre
+			class="text-xs p-3 bg-neutral-100 dark:bg-neutral-900 rounded overflow-auto max-h-48">{actionLog.join(
+				"\n"
+			)}</pre>
 		<button
 			class="mt-2 text-xs px-2 py-1 border rounded hover:bg-neutral-100 dark:hover:bg-neutral-800"
 			onclick={() => (actionLog = [])}

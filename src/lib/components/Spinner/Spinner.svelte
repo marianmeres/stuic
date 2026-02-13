@@ -45,7 +45,8 @@
 
 <div
 	class={twMerge("stuic-spinner", classProp)}
-	style="{styleProp ?? ''}; width: {containerSize}px; height: {containerSize}px; --stuic-spinner-duration: {duration}ms;"
+	style="{styleProp ??
+		''}; width: {containerSize}px; height: {containerSize}px; --stuic-spinner-duration: {duration}ms;"
 >
 	{#each Array(count) as _, i}
 		{@const angle = (360 / count) * i}

@@ -103,7 +103,8 @@
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Interactive</h2>
 	<p class="text-sm opacity-60 mb-4">
-		Full-featured demo with controls. Change subtotal to see free shipping threshold behavior.
+		Full-featured demo with controls. Change subtotal to see free shipping threshold
+		behavior.
 	</p>
 
 	<div class="max-w-sm mb-4 space-y-2">
@@ -140,7 +141,10 @@
 		/>
 	</div>
 
-	<pre class="text-xs mt-4 p-3 bg-neutral-100 dark:bg-neutral-900 rounded">selectedId: {JSON.stringify(selectedId)}, subtotal: {subtotal}</pre>
+	<pre
+		class="text-xs mt-4 p-3 bg-neutral-100 dark:bg-neutral-900 rounded">selectedId: {JSON.stringify(
+			selectedId
+		)}, subtotal: {subtotal}</pre>
 </section>
 
 <!-- ============== BASIC (MINIMAL PROPS) ============== -->
@@ -159,7 +163,8 @@
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Free shipping threshold met</h2>
 	<p class="text-sm opacity-60 mb-4">
-		Subtotal (7500) exceeds the free_above threshold (5000) — "Free shipping applied!" shown.
+		Subtotal (7500) exceeds the free_above threshold (5000) — "Free shipping applied!"
+		shown.
 	</p>
 
 	<div class="max-w-lg">
@@ -258,10 +263,7 @@
 	</p>
 
 	<div class="max-w-lg">
-		<CheckoutDeliveryOptions
-			options={minimalOptions}
-			formatPrice={dollarFormat}
-		>
+		<CheckoutDeliveryOptions options={minimalOptions} formatPrice={dollarFormat}>
 			{#snippet option({ option: opt, selected, free, effectivePrice, formatPrice: fp })}
 				<button
 					type="button"

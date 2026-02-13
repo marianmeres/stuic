@@ -32,7 +32,7 @@ function showBackdrop(classBackdrop?: string) {
 		}
 		document.body.appendChild(backdropEl);
 		// Force reflow for transition
-		backdropEl.offsetHeight;
+		void backdropEl.offsetHeight;
 		backdropEl.classList.add("dim-visible");
 	}
 }

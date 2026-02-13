@@ -38,38 +38,46 @@
 
 		/** Override items section rendering */
 		itemsSection?: Snippet<
-			[{
-				items: CheckoutOrderLineItem[];
-				formatPrice: (v: number) => string;
-				onEdit?: () => void;
-			}]
+			[
+				{
+					items: CheckoutOrderLineItem[];
+					formatPrice: (v: number) => string;
+					onEdit?: () => void;
+				},
+			]
 		>;
 
 		/** Override shipping address section rendering */
 		shippingSection?: Snippet<
-			[{
-				address: CheckoutAddressData;
-				onEdit?: () => void;
-			}]
+			[
+				{
+					address: CheckoutAddressData;
+					onEdit?: () => void;
+				},
+			]
 		>;
 
 		/** Override billing address section rendering */
 		billingSection?: Snippet<
-			[{
-				address?: CheckoutAddressData;
-				shippingAddress?: CheckoutAddressData;
-				isSameAsShipping: boolean;
-				onEdit?: () => void;
-			}]
+			[
+				{
+					address?: CheckoutAddressData;
+					shippingAddress?: CheckoutAddressData;
+					isSameAsShipping: boolean;
+					onEdit?: () => void;
+				},
+			]
 		>;
 
 		/** Override delivery method section rendering */
 		deliverySection?: Snippet<
-			[{
-				delivery: CheckoutDeliverySnapshot;
-				formatPrice: (v: number) => string;
-				onEdit?: () => void;
-			}]
+			[
+				{
+					delivery: CheckoutDeliverySnapshot;
+					formatPrice: (v: number) => string;
+					onEdit?: () => void;
+				},
+			]
 		>;
 
 		t?: TranslateFn;
@@ -131,14 +139,17 @@
 	{#if itemsSection}
 		{@render itemsSection({ items: order.items, formatPrice: fp, onEdit: onEditItems })}
 	{:else}
-		<section class={unstyled ? undefined : "stuic-checkout-review-section stuic-checkout-card"}>
+		<section
+			class={unstyled ? undefined : "stuic-checkout-review-section stuic-checkout-card"}
+		>
 			<div class={unstyled ? undefined : "stuic-checkout-review-section-header"}>
 				<h4 class={unstyled ? undefined : "stuic-checkout-review-heading"}>
 					{t("checkout.review.items_title")}
 				</h4>
 				{#if onEditItems}
 					<Button variant="ghost" size="sm" onclick={onEditItems}>
-						{#if editIcon}{@html editIcon}{/if} {t("checkout.review.edit")}
+						{#if editIcon}{@html editIcon}{/if}
+						{t("checkout.review.edit")}
 					</Button>
 				{/if}
 			</div>
@@ -161,16 +172,22 @@
 	<!-- Shipping Address Section -->
 	{#if order.shipping_address}
 		{#if shippingSection}
-			{@render shippingSection({ address: order.shipping_address, onEdit: onEditShippingAddress })}
+			{@render shippingSection({
+				address: order.shipping_address,
+				onEdit: onEditShippingAddress,
+			})}
 		{:else}
-			<section class={unstyled ? undefined : "stuic-checkout-review-section stuic-checkout-card"}>
+			<section
+				class={unstyled ? undefined : "stuic-checkout-review-section stuic-checkout-card"}
+			>
 				<div class={unstyled ? undefined : "stuic-checkout-review-section-header"}>
 					<h4 class={unstyled ? undefined : "stuic-checkout-review-heading"}>
 						{t("checkout.review.shipping_title")}
 					</h4>
 					{#if onEditShippingAddress}
 						<Button variant="ghost" size="sm" onclick={onEditShippingAddress}>
-							{#if editIcon}{@html editIcon}{/if} {t("checkout.review.edit")}
+							{#if editIcon}{@html editIcon}{/if}
+							{t("checkout.review.edit")}
 						</Button>
 					{/if}
 				</div>
@@ -196,14 +213,17 @@
 			onEdit: onEditBillingAddress,
 		})}
 	{:else}
-		<section class={unstyled ? undefined : "stuic-checkout-review-section stuic-checkout-card"}>
+		<section
+			class={unstyled ? undefined : "stuic-checkout-review-section stuic-checkout-card"}
+		>
 			<div class={unstyled ? undefined : "stuic-checkout-review-section-header"}>
 				<h4 class={unstyled ? undefined : "stuic-checkout-review-heading"}>
 					{t("checkout.review.billing_title")}
 				</h4>
 				{#if onEditBillingAddress}
 					<Button variant="ghost" size="sm" onclick={onEditBillingAddress}>
-						{#if editIcon}{@html editIcon}{/if} {t("checkout.review.edit")}
+						{#if editIcon}{@html editIcon}{/if}
+						{t("checkout.review.edit")}
 					</Button>
 				{/if}
 			</div>
@@ -228,16 +248,23 @@
 	<!-- Delivery Method Section -->
 	{#if order.delivery_option}
 		{#if deliverySection}
-			{@render deliverySection({ delivery: order.delivery_option, formatPrice: fp, onEdit: onEditDelivery })}
+			{@render deliverySection({
+				delivery: order.delivery_option,
+				formatPrice: fp,
+				onEdit: onEditDelivery,
+			})}
 		{:else}
-			<section class={unstyled ? undefined : "stuic-checkout-review-section stuic-checkout-card"}>
+			<section
+				class={unstyled ? undefined : "stuic-checkout-review-section stuic-checkout-card"}
+			>
 				<div class={unstyled ? undefined : "stuic-checkout-review-section-header"}>
 					<h4 class={unstyled ? undefined : "stuic-checkout-review-heading"}>
 						{t("checkout.review.delivery_title")}
 					</h4>
 					{#if onEditDelivery}
 						<Button variant="ghost" size="sm" onclick={onEditDelivery}>
-							{#if editIcon}{@html editIcon}{/if} {t("checkout.review.edit")}
+							{#if editIcon}{@html editIcon}{/if}
+							{t("checkout.review.edit")}
 						</Button>
 					{/if}
 				</div>

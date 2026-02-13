@@ -30,5 +30,9 @@
 <span
 	class={twMerge("stuic-spinner-circle size-4", classProp)}
 	data-thickness={_thickness}
-	style="{styleProp ?? ''}; --stuic-spinner-circle-duration: {duration}ms; animation-direction: {direction === 'ccw' ? 'reverse' : 'normal'};"
+	style="{styleProp ??
+		''}; --stuic-spinner-circle-duration: {duration}ms; animation-direction: {direction ===
+	'ccw'
+		? 'reverse'
+		: 'normal'};"
 ></span>

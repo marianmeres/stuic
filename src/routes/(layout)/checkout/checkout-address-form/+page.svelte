@@ -93,14 +93,24 @@
 	</p>
 
 	<div class="max-w-sm mb-4 space-y-2">
-		<FieldSwitch bind:checked={showName} label="Show Name" name="show-name" renderSize="sm" />
+		<FieldSwitch
+			bind:checked={showName}
+			label="Show Name"
+			name="show-name"
+			renderSize="sm"
+		/>
 		<FieldSwitch
 			bind:checked={showStreet}
 			label="Show Street"
 			name="show-street"
 			renderSize="sm"
 		/>
-		<FieldSwitch bind:checked={showCity} label="Show City" name="show-city" renderSize="sm" />
+		<FieldSwitch
+			bind:checked={showCity}
+			label="Show City"
+			name="show-city"
+			renderSize="sm"
+		/>
 		<FieldSwitch
 			bind:checked={showPostalCode}
 			label="Show Postal Code"
@@ -129,16 +139,11 @@
 
 	<div class="max-w-lg">
 		{#if useCustomCountry}
-			<CheckoutAddressForm
-				bind:address
-				label="shipping"
-				{errors}
-				fields={fieldsConfig}
-			>
+			<CheckoutAddressForm bind:address label="shipping" {errors} fields={fieldsConfig}>
 				{#snippet countryField({ value, onchange, error, label: fieldLabel, id })}
 					<FieldSelect
 						options={COUNTRIES}
-						value={value}
+						{value}
 						onchange={(e) => onchange(e.currentTarget.value)}
 						label={fieldLabel}
 						{id}
@@ -148,12 +153,7 @@
 				{/snippet}
 			</CheckoutAddressForm>
 		{:else}
-			<CheckoutAddressForm
-				bind:address
-				label="shipping"
-				{errors}
-				fields={fieldsConfig}
-			/>
+			<CheckoutAddressForm bind:address label="shipping" {errors} fields={fieldsConfig} />
 		{/if}
 	</div>
 
@@ -199,8 +199,8 @@
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Billing address</h2>
 	<p class="text-sm opacity-60 mb-4">
-		Same component with <code>label="billing"</code> — generates billing-prefixed IDs and
-		matches billing-prefixed errors.
+		Same component with <code>label="billing"</code> — generates billing-prefixed IDs and matches
+		billing-prefixed errors.
 	</p>
 
 	<div class="max-w-lg">
@@ -243,8 +243,8 @@
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Custom required fields</h2>
 	<p class="text-sm opacity-60 mb-4">
-		Only name, city, and country are required.
-		Street, postal code, and phone are optional.
+		Only name, city, and country are required. Street, postal code, and phone are
+		optional.
 	</p>
 
 	<div class="max-w-lg">
@@ -257,7 +257,8 @@
 	</div>
 
 	<div class="mt-4 flex gap-2">
-		<Button size="sm" class="border px-3" onclick={handleMinimalValidate}>Validate</Button>
+		<Button size="sm" class="border px-3" onclick={handleMinimalValidate}>Validate</Button
+		>
 		<Button
 			size="sm"
 			class="border px-3"
@@ -287,8 +288,8 @@
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Unstyled</h2>
 	<p class="text-sm opacity-60 mb-4">
-		With <code>unstyled</code> prop — no checkout-specific CSS classes applied.
-		FieldInput styling still applies.
+		With <code>unstyled</code> prop — no checkout-specific CSS classes applied. FieldInput styling
+		still applies.
 	</p>
 
 	<div class="max-w-lg">

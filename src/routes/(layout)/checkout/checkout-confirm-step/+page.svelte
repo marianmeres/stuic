@@ -143,8 +143,8 @@
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">With payment error</h2>
 	<p class="text-sm opacity-60 mb-4">
-		Simulates a payment failure redirect. The host page parses the URL and passes the error
-		message as a prop.
+		Simulates a payment failure redirect. The host page parses the URL and passes the
+		error message as a prop.
 	</p>
 
 	<CheckoutConfirmStep
@@ -281,7 +281,9 @@
 	<section class="mb-12">
 		<h2 class="text-lg font-bold mb-2">Action log</h2>
 		<pre
-			class="text-xs p-3 bg-neutral-100 dark:bg-neutral-900 rounded overflow-auto max-h-48">{actionLog.join("\n")}</pre>
+			class="text-xs p-3 bg-neutral-100 dark:bg-neutral-900 rounded overflow-auto max-h-48">{actionLog.join(
+				"\n"
+			)}</pre>
 		<button
 			class="mt-2 text-xs px-2 py-1 border rounded hover:bg-neutral-100 dark:hover:bg-neutral-800"
 			onclick={() => (actionLog = [])}

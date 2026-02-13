@@ -4,14 +4,14 @@ A Svelte action that displays a tooltip anchored to an element using CSS Anchor 
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `enabled` | `boolean` | `true` | Enable/disable tooltip |
-| `content` | `string \| null` | - | Tooltip text (falls back to `aria-label`) |
-| `position` | `TooltipPosition` | `"top"` | Placement relative to anchor |
-| `class` | `string` | - | Custom CSS for tooltip |
-| `onShow` | `() => void` | - | Callback when tooltip shows |
-| `onHide` | `() => void` | - | Callback when tooltip hides |
+| Option     | Type              | Default | Description                               |
+| ---------- | ----------------- | ------- | ----------------------------------------- |
+| `enabled`  | `boolean`         | `true`  | Enable/disable tooltip                    |
+| `content`  | `string \| null`  | -       | Tooltip text (falls back to `aria-label`) |
+| `position` | `TooltipPosition` | `"top"` | Placement relative to anchor              |
+| `class`    | `string`          | -       | Custom CSS for tooltip                    |
+| `onShow`   | `() => void`      | -       | Callback when tooltip shows               |
+| `onHide`   | `() => void`      | -       | Callback when tooltip hides               |
 
 ## Positions
 
@@ -29,54 +29,41 @@ bottom-left bottom bottom-right
 
 ```svelte
 <script lang="ts">
-  import { tooltip } from 'stuic';
+	import { tooltip } from "stuic";
 </script>
 
-<button use:tooltip={() => ({ content: "Save your changes" })}>
-  Save
-</button>
+<button use:tooltip={() => ({ content: "Save your changes" })}> Save </button>
 ```
 
 ### Using aria-label
 
 ```svelte
 <!-- Content is taken from aria-label when not specified -->
-<button
-  aria-label="Delete item"
-  use:tooltip
->
-  Delete
-</button>
+<button aria-label="Delete item" use:tooltip> Delete </button>
 ```
 
 ### Different Positions
 
 ```svelte
-<button use:tooltip={() => ({ content: "Top", position: "top" })}>
-  Top
-</button>
+<button use:tooltip={() => ({ content: "Top", position: "top" })}> Top </button>
 
-<button use:tooltip={() => ({ content: "Bottom", position: "bottom" })}>
-  Bottom
-</button>
+<button use:tooltip={() => ({ content: "Bottom", position: "bottom" })}> Bottom </button>
 
-<button use:tooltip={() => ({ content: "Left", position: "left" })}>
-  Left
-</button>
+<button use:tooltip={() => ({ content: "Left", position: "left" })}> Left </button>
 
-<button use:tooltip={() => ({ content: "Right", position: "right" })}>
-  Right
-</button>
+<button use:tooltip={() => ({ content: "Right", position: "right" })}> Right </button>
 ```
 
 ### Custom Styling
 
 ```svelte
-<button use:tooltip={() => ({
-  content: "Custom styled tooltip",
-  class: "bg-blue-600 text-white"
-})}>
-  Styled
+<button
+	use:tooltip={() => ({
+		content: "Custom styled tooltip",
+		class: "bg-blue-600 text-white",
+	})}
+>
+	Styled
 </button>
 ```
 
@@ -84,38 +71,42 @@ bottom-left bottom bottom-right
 
 ```svelte
 <script lang="ts">
-  let showTooltip = $state(true);
+	let showTooltip = $state(true);
 </script>
 
-<button use:tooltip={() => ({
-  content: "Conditional tooltip",
-  enabled: showTooltip
-})}>
-  Conditional
+<button
+	use:tooltip={() => ({
+		content: "Conditional tooltip",
+		enabled: showTooltip,
+	})}
+>
+	Conditional
 </button>
 ```
 
 ### With Callbacks
 
 ```svelte
-<button use:tooltip={() => ({
-  content: "Tracked tooltip",
-  onShow: () => console.log('Tooltip shown'),
-  onHide: () => console.log('Tooltip hidden')
-})}>
-  Tracked
+<button
+	use:tooltip={() => ({
+		content: "Tracked tooltip",
+		onShow: () => console.log("Tooltip shown"),
+		onHide: () => console.log("Tooltip hidden"),
+	})}
+>
+	Tracked
 </button>
 ```
 
 ## Helper Function
 
 ```ts
-import { isTooltipSupported } from 'stuic';
+import { isTooltipSupported } from "stuic";
 
 if (isTooltipSupported()) {
-  // CSS Anchor Positioning is available
+	// CSS Anchor Positioning is available
 } else {
-  // Tooltip will not work
+	// Tooltip will not work
 }
 ```
 
@@ -129,17 +120,17 @@ if (isTooltipSupported()) {
 
 ## CSS Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--stuic-tooltip-bg` | `--stuic-surface-overlay` | Tooltip background |
-| `--stuic-tooltip-text` | `--stuic-text-inverse` | Tooltip text color |
+| Variable               | Default                   | Description        |
+| ---------------------- | ------------------------- | ------------------ |
+| `--stuic-tooltip-bg`   | `--stuic-surface-overlay` | Tooltip background |
+| `--stuic-tooltip-text` | `--stuic-text-inverse`    | Tooltip text color |
 
 ### Example Override
 
 ```css
 :root {
-  --stuic-tooltip-bg: var(--color-indigo-900);
-  --stuic-tooltip-text: var(--color-indigo-100);
+	--stuic-tooltip-bg: var(--color-indigo-900);
+	--stuic-tooltip-text: var(--color-indigo-100);
 }
 ```
 

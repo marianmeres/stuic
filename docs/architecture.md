@@ -105,7 +105,7 @@ Props → Component → Data Attributes → CSS Selectors
 ```css
 /* CSS */
 .stuic-button[data-intent="primary"][data-variant="solid"] {
-  --_bg: var(--stuic-color-primary);
+	--_bg: var(--stuic-color-primary);
 }
 ```
 
@@ -113,25 +113,25 @@ Props → Component → Data Attributes → CSS Selectors
 
 ## External Dependencies
 
-| Package | Purpose |
-|---------|---------|
-| `tailwind-merge` | CSS class conflict resolution |
-| `runed` | Svelte 5 reactive utilities |
-| `esm-env` | Environment detection |
-| `@marianmeres/icons-fns` | Icon SVG generation |
-| `@marianmeres/item-collection` | Collection management |
-| `@marianmeres/ticker` | Animation timing |
+| Package                        | Purpose                       |
+| ------------------------------ | ----------------------------- |
+| `tailwind-merge`               | CSS class conflict resolution |
+| `runed`                        | Svelte 5 reactive utilities   |
+| `esm-env`                      | Environment detection         |
+| `@marianmeres/icons-fns`       | Icon SVG generation           |
+| `@marianmeres/item-collection` | Collection management         |
+| `@marianmeres/ticker`          | Animation timing              |
 
 ---
 
 ## Key Files
 
-| File | Purpose |
-|------|---------|
-| `src/lib/index.css` | CSS entry point (import this) |
-| `src/lib/index.ts` | JS entry point (barrel export) |
-| `src/lib/themes/css/stone.css` | Default theme |
-| `src/lib/utils/tw-merge.ts` | Tailwind class merging |
+| File                             | Purpose                                                                     |
+| -------------------------------- | --------------------------------------------------------------------------- |
+| `src/lib/index.css`              | CSS entry point (import this)                                               |
+| `src/lib/index.ts`               | JS entry point (barrel export)                                              |
+| `src/lib/themes/css/stone.css`   | Default theme                                                               |
+| `src/lib/utils/tw-merge.ts`      | Tailwind class merging                                                      |
 | `src/lib/utils/design-tokens.ts` | Theme types (`ThemeSchema`, `ColorPair`, etc.) and CSS generation functions |
 
 ---

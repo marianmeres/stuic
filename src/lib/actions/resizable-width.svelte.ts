@@ -107,7 +107,9 @@ export function resizableWidth(el: HTMLDivElement, fn?: () => ResizableWidthOpti
 
 		//
 		const positionCls = reverse ? "left-0" : "right-0";
-		handle.classList.add(...twMerge(HANDLE_CLS_BASE, positionCls, handleClass).split(" "));
+		handle.classList.add(
+			...twMerge(HANDLE_CLS_BASE, positionCls, handleClass).split(" ")
+		);
 
 		return handle;
 	}

@@ -4,10 +4,10 @@ An animated loading indicator displaying three dots that fade in sequentially to
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `class` | `string` | - | CSS classes for the wrapper span |
-| `enabled` | `boolean` | `true` | When `false`, all dots are visible (no animation) |
+| Prop      | Type      | Default | Description                                       |
+| --------- | --------- | ------- | ------------------------------------------------- |
+| `class`   | `string`  | -       | CSS classes for the wrapper span                  |
+| `enabled` | `boolean` | `true`  | When `false`, all dots are visible (no animation) |
 
 ## Usage
 
@@ -15,7 +15,7 @@ An animated loading indicator displaying three dots that fade in sequentially to
 
 ```svelte
 <script lang="ts">
-  import { AnimatedEllipsis } from 'stuic';
+	import { AnimatedEllipsis } from "stuic";
 </script>
 
 <span>Loading<AnimatedEllipsis /></span>
@@ -25,13 +25,13 @@ An animated loading indicator displaying three dots that fade in sequentially to
 
 ```svelte
 <script lang="ts">
-  import { AnimatedEllipsis } from 'stuic';
+	import { AnimatedEllipsis } from "stuic";
 
-  let isLoading = $state(true);
+	let isLoading = $state(true);
 </script>
 
 <span>
-  Processing<AnimatedEllipsis enabled={isLoading} />
+	Processing<AnimatedEllipsis enabled={isLoading} />
 </span>
 ```
 

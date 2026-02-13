@@ -10,7 +10,7 @@ and works both as a group (`Accordion` + `AccordionItem`) or standalone (`Accord
 
 ```svelte
 <script>
-	import { Accordion, AccordionItem } from '@marianmeres/stuic';
+	import { Accordion, AccordionItem } from "@marianmeres/stuic";
 </script>
 
 <Accordion>
@@ -58,7 +58,7 @@ Only one item can be open at a time:
 	let isOpen = $state(false);
 </script>
 
-<button onclick={() => isOpen = !isOpen}>Toggle</button>
+<button onclick={() => (isOpen = !isOpen)}>Toggle</button>
 
 <AccordionItem bind:open={isOpen}>
 	{#snippet trigger()}Controlled{/snippet}
@@ -68,43 +68,43 @@ Only one item can be open at a time:
 
 ## Accordion Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `exclusive` | `boolean` | `false` | Only one item open at a time |
-| `class` | `string` | — | Container class |
-| `unstyled` | `boolean` | `false` | Strip all component styling |
-| `style` | `string` | — | Inline styles (CSS variable overrides) |
-| `el` | `HTMLDivElement` | — | Bindable element reference |
+| Prop        | Type             | Default | Description                            |
+| ----------- | ---------------- | ------- | -------------------------------------- |
+| `exclusive` | `boolean`        | `false` | Only one item open at a time           |
+| `class`     | `string`         | —       | Container class                        |
+| `unstyled`  | `boolean`        | `false` | Strip all component styling            |
+| `style`     | `string`         | —       | Inline styles (CSS variable overrides) |
+| `el`        | `HTMLDivElement` | —       | Bindable element reference             |
 
 ## AccordionItem Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `open` | `boolean` | `false` | Expanded state (bindable) |
-| `disabled` | `boolean` | `false` | Prevent toggling |
-| `class` | `string` | — | Item wrapper class |
-| `classTrigger` | `string` | — | Trigger button class |
-| `classContent` | `string` | — | Content panel class |
-| `unstyled` | `boolean` | `false` | Strip all component styling |
-| `style` | `string` | — | Inline styles (CSS variable overrides) |
-| `el` | `HTMLDivElement` | — | Bindable element reference |
-| `trigger` | `Snippet` | — | Header/trigger content (required) |
-| `children` | `Snippet` | — | Panel content (required) |
+| Prop           | Type             | Default | Description                            |
+| -------------- | ---------------- | ------- | -------------------------------------- |
+| `open`         | `boolean`        | `false` | Expanded state (bindable)              |
+| `disabled`     | `boolean`        | `false` | Prevent toggling                       |
+| `class`        | `string`         | —       | Item wrapper class                     |
+| `classTrigger` | `string`         | —       | Trigger button class                   |
+| `classContent` | `string`         | —       | Content panel class                    |
+| `unstyled`     | `boolean`        | `false` | Strip all component styling            |
+| `style`        | `string`         | —       | Inline styles (CSS variable overrides) |
+| `el`           | `HTMLDivElement` | —       | Bindable element reference             |
+| `trigger`      | `Snippet`        | —       | Header/trigger content (required)      |
+| `children`     | `Snippet`        | —       | Panel content (required)               |
 
 ## CSS Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--stuic-accordion-border-color` | `--stuic-color-border` | Item separator color |
-| `--stuic-accordion-border-width` | `1px` | Separator width |
-| `--stuic-accordion-radius` | `--radius-md` | Corner rounding |
-| `--stuic-accordion-transition` | `200ms` | Open/close animation duration |
-| `--stuic-accordion-trigger-padding-x` | `1rem` | Trigger horizontal padding |
-| `--stuic-accordion-trigger-padding-y` | `0.75rem` | Trigger vertical padding |
-| `--stuic-accordion-trigger-font-weight` | `--font-weight-medium` | Trigger text weight |
-| `--stuic-accordion-trigger-bg` | `transparent` | Trigger background |
-| `--stuic-accordion-trigger-bg-hover` | muted mix | Trigger hover background |
-| `--stuic-accordion-content-padding-x` | `1rem` | Content horizontal padding |
-| `--stuic-accordion-content-padding-y` | `0.75rem` | Content vertical padding |
-| `--stuic-accordion-ring-width` | `2px` | Focus ring width |
-| `--stuic-accordion-ring-color` | `--stuic-color-ring` | Focus ring color |
+| Variable                                | Default                | Description                   |
+| --------------------------------------- | ---------------------- | ----------------------------- |
+| `--stuic-accordion-border-color`        | `--stuic-color-border` | Item separator color          |
+| `--stuic-accordion-border-width`        | `1px`                  | Separator width               |
+| `--stuic-accordion-radius`              | `--radius-md`          | Corner rounding               |
+| `--stuic-accordion-transition`          | `200ms`                | Open/close animation duration |
+| `--stuic-accordion-trigger-padding-x`   | `1rem`                 | Trigger horizontal padding    |
+| `--stuic-accordion-trigger-padding-y`   | `0.75rem`              | Trigger vertical padding      |
+| `--stuic-accordion-trigger-font-weight` | `--font-weight-medium` | Trigger text weight           |
+| `--stuic-accordion-trigger-bg`          | `transparent`          | Trigger background            |
+| `--stuic-accordion-trigger-bg-hover`    | muted mix              | Trigger hover background      |
+| `--stuic-accordion-content-padding-x`   | `1rem`                 | Content horizontal padding    |
+| `--stuic-accordion-content-padding-y`   | `0.75rem`              | Content vertical padding      |
+| `--stuic-accordion-ring-width`          | `2px`                  | Focus ring width              |
+| `--stuic-accordion-ring-color`          | `--stuic-color-ring`   | Focus ring color              |

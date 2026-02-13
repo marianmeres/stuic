@@ -34,9 +34,7 @@
 			: []
 	);
 
-	let generalError = $derived(
-		showGeneralError ? "Invalid email or password" : undefined
-	);
+	let generalError = $derived(showGeneralError ? "Invalid email or password" : undefined);
 
 	function handleForgotPassword() {
 		alert("Forgot password clicked!");
@@ -48,9 +46,7 @@
 <!-- ============== INTERACTIVE DEMO ============== -->
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Interactive</h2>
-	<p class="text-sm opacity-60 mb-4">
-		Full login form with configurable options.
-	</p>
+	<p class="text-sm opacity-60 mb-4">Full login form with configurable options.</p>
 
 	<div class="max-w-sm mb-4 space-y-2">
 		<FieldSwitch
@@ -100,8 +96,8 @@
 						Or <button
 							type="button"
 							class="underline"
-							onclick={() => alert("Continue as guest")}
-						>continue as guest</button>
+							onclick={() => alert("Continue as guest")}>continue as guest</button
+						>
 					</div>
 				{/if}
 			{/snippet}
@@ -205,20 +201,13 @@
 <!-- ============== CUSTOM SUBMIT BUTTON ============== -->
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Custom submit button (snippet)</h2>
-	<p class="text-sm opacity-60 mb-4">
-		Override the CTA section with a custom snippet.
-	</p>
+	<p class="text-sm opacity-60 mb-4">Override the CTA section with a custom snippet.</p>
 
 	<div class="max-w-lg">
 		<CheckoutLoginForm onSubmit={(data) => alert("Submitted: " + data.email)}>
 			{#snippet submitButton({ isSubmitting: submitting, disabled })}
 				<div class="flex gap-2 pt-2">
-					<Button
-						type="submit"
-						intent="primary"
-						{disabled}
-						class="flex-1"
-					>
+					<Button type="submit" intent="primary" {disabled} class="flex-1">
 						{submitting ? "Please wait..." : "Sign In with Email"}
 					</Button>
 				</div>
@@ -241,8 +230,20 @@
 		>
 			{#snippet footer()}
 				<div class="text-center text-sm opacity-60 pt-2 space-y-2">
-					<p>Or continue as <button type="button" class="underline" onclick={() => alert("Guest")}>guest</button></p>
-					<p>Don't have an account? <button type="button" class="underline" onclick={() => alert("Register")}>Sign up</button></p>
+					<p>
+						Or continue as <button
+							type="button"
+							class="underline"
+							onclick={() => alert("Guest")}>guest</button
+						>
+					</p>
+					<p>
+						Don't have an account? <button
+							type="button"
+							class="underline"
+							onclick={() => alert("Register")}>Sign up</button
+						>
+					</p>
 				</div>
 			{/snippet}
 		</CheckoutLoginForm>
@@ -253,8 +254,8 @@
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Unstyled</h2>
 	<p class="text-sm opacity-60 mb-4">
-		With <code>unstyled</code> prop — no checkout-specific CSS classes applied.
-		FieldInput styling still applies.
+		With <code>unstyled</code> prop — no checkout-specific CSS classes applied. FieldInput styling
+		still applies.
 	</p>
 
 	<div class="max-w-lg">

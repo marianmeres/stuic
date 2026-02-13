@@ -147,7 +147,9 @@
 		</div>
 	{:else}
 		{#if error}
-			<div class={unstyled ? undefined : "stuic-checkout-alert"} role="alert">{error}</div>
+			<div class={unstyled ? undefined : "stuic-checkout-alert"} role="alert">
+				{error}
+			</div>
 		{/if}
 
 		<div class={unstyled ? undefined : "stuic-checkout-confirm-step-grid"}>
@@ -187,9 +189,7 @@
 				{:else}
 					<div class={unstyled ? undefined : "stuic-checkout-confirm-step-sidebar"}>
 						<h3
-							class={unstyled
-								? undefined
-								: "stuic-checkout-confirm-step-section-heading"}
+							class={unstyled ? undefined : "stuic-checkout-confirm-step-section-heading"}
 						>
 							{t("checkout.step.summary_title")}
 						</h3>
@@ -204,9 +204,7 @@
 						<!-- Validation Errors -->
 						{#if validationErrors && validationErrors.length > 0}
 							<div
-								class={unstyled
-									? undefined
-									: "stuic-checkout-confirm-step-validation"}
+								class={unstyled ? undefined : "stuic-checkout-confirm-step-validation"}
 								role="alert"
 							>
 								<p>{t("checkout.step.validation_errors")}</p>

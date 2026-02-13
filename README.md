@@ -15,15 +15,15 @@ npm install @marianmeres/stuic
 
 ```svelte
 <script>
-  import { Button, Modal } from "@marianmeres/stuic";
+	import { Button, Modal } from "@marianmeres/stuic";
 
-  let open = $state(false);
+	let open = $state(false);
 </script>
 
-<Button onclick={() => open = true}>Open Modal</Button>
+<Button onclick={() => (open = true)}>Open Modal</Button>
 
 <Modal bind:open>
-  <p>Hello from Modal!</p>
+	<p>Hello from Modal!</p>
 </Modal>
 ```
 
@@ -45,12 +45,12 @@ Override theme tokens in your app's CSS:
 
 ```css
 :root {
-  --stuic-color-primary: #6366f1;
-  --stuic-color-primary-hover: #4f46e5;
+	--stuic-color-primary: #6366f1;
+	--stuic-color-primary-hover: #4f46e5;
 }
 
 :root.dark {
-  --stuic-color-primary: #818cf8;
+	--stuic-color-primary: #818cf8;
 }
 ```
 
@@ -60,8 +60,8 @@ Override specific component tokens:
 
 ```css
 :root {
-  --stuic-button-radius: 9999px;  /* Pill buttons */
-  --stuic-switch-accent: #10b981; /* Green switches */
+	--stuic-button-radius: 9999px; /* Pill buttons */
+	--stuic-switch-accent: #10b981; /* Green switches */
 }
 ```
 
@@ -70,14 +70,10 @@ Override specific component tokens:
 Use `class` props or inline styles:
 
 ```svelte
-<Button class="bg-purple-500 hover:bg-purple-600 text-white">
-  Custom Button
-</Button>
+<Button class="bg-purple-500 hover:bg-purple-600 text-white">Custom Button</Button>
 
 <!-- Or use unstyled mode for full control -->
-<Button unstyled class="my-custom-button">
-  Fully Custom
-</Button>
+<Button unstyled class="my-custom-button">Fully Custom</Button>
 ```
 
 ### Dark Mode
@@ -98,23 +94,23 @@ Add `class="dark"` to the `<html>` element. All tokens switch automatically — 
 Create your own theme programmatically using the exported types and generation functions:
 
 ```ts
-import type { ThemeSchema } from '@marianmeres/stuic';
-import { generateThemeCss } from '@marianmeres/stuic';
-import stone from '@marianmeres/stuic/themes/stone';
+import type { ThemeSchema } from "@marianmeres/stuic";
+import { generateThemeCss } from "@marianmeres/stuic";
+import stone from "@marianmeres/stuic/themes/stone";
 
 // Extend the stone theme with a custom primary color
 const myTheme: ThemeSchema = {
-  light: {
-    ...stone.light,
-    colors: {
-      ...stone.light.colors,
-      intent: {
-        ...stone.light.colors.intent,
-        primary: { DEFAULT: '#3b82f6', foreground: '#ffffff', hover: '#2563eb' },
-      },
-    },
-  },
-  dark: stone.dark,
+	light: {
+		...stone.light,
+		colors: {
+			...stone.light.colors,
+			intent: {
+				...stone.light.colors.intent,
+				primary: { DEFAULT: "#3b82f6", foreground: "#ffffff", hover: "#2563eb" },
+			},
+		},
+	},
+	dark: stone.dark,
 };
 
 // Generate CSS string — write to a file in your build pipeline
@@ -126,24 +122,31 @@ See [API.md](API.md) for the full list of exported theme types (`ThemeSchema`, `
 ## Components
 
 ### Layout & Overlays
+
 AppShell, Backdrop, Modal, ModalDialog, Drawer, Collapsible, SlidingPanels, Nav
 
 ### Forms & Inputs
+
 FieldInput, FieldTextarea, FieldSelect, FieldCheckbox, FieldRadios, FieldFile, FieldAssets, FieldOptions, FieldKeyValues, FieldSwitch, FieldInputLocalized, FieldLikeButton, Fieldset
 
 ### Buttons & Controls
+
 Button, ButtonGroupRadio, Switch, TwCheck, ListItemButton, X
 
 ### Feedback & Notifications
+
 Notifications, AlertConfirmPrompt, DismissibleMessage, Progress, Spinner, Skeleton
 
 ### Navigation & Menus
+
 CommandMenu, DropdownMenu, TabbedMenu, TypeaheadInput, KbdShortcut
 
 ### Display & Utility
+
 Avatar, Carousel, AnimatedElipsis, ThemePreview, ColorScheme, Thc, HoverExpandableWidth, AssetsPreview, DataTable
 
 ### E-commerce
+
 Cart, Checkout (CheckoutProgress, CheckoutOrderSummary, CheckoutCartReview, CheckoutGuestForm, CheckoutLoginForm, CheckoutAddressForm, CheckoutDeliveryOptions, CheckoutOrderReview, CheckoutOrderConfirmation, CheckoutReviewStep, CheckoutShippingStep, CheckoutConfirmStep, CheckoutCompleteStep)
 
 ## Actions

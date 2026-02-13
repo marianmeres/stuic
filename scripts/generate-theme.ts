@@ -42,14 +42,12 @@ function parseArgs(): Args {
 	}
 
 	console.error(
-		"Usage: --infile=<path> [--outfile=<path>]\n       --indir=<path> --outdir=<path>",
+		"Usage: --infile=<path> [--outfile=<path>]\n       --indir=<path> --outdir=<path>"
 	);
 	process.exit(1);
 }
 
-function isValidThemeModule(
-	mod: unknown,
-): mod is { default: ThemeSchema } {
+function isValidThemeModule(mod: unknown): mod is { default: ThemeSchema } {
 	if (!mod || typeof mod !== "object") return false;
 	const def = (mod as Record<string, unknown>).default;
 	if (!def || typeof def !== "object") return false;

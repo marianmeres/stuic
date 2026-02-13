@@ -42,14 +42,16 @@
 		 * Override rendering of an individual delivery option card.
 		 */
 		option?: Snippet<
-			[{
-				option: CheckoutDeliveryOption;
-				selected: boolean;
-				free: boolean;
-				effectivePrice: number;
-				formatPrice: (v: number) => string;
-				isUpdating: boolean;
-			}]
+			[
+				{
+					option: CheckoutDeliveryOption;
+					selected: boolean;
+					free: boolean;
+					effectivePrice: number;
+					formatPrice: (v: number) => string;
+					isUpdating: boolean;
+				},
+			]
 		>;
 
 		t?: TranslateFn;
@@ -91,13 +93,13 @@
 
 	// Filter to active options, sorted by sort_order
 	let activeOptions = $derived(
-		options
-			.filter((o) => o.is_active)
-			.sort((a, b) => a.sort_order - b.sort_order)
+		options.filter((o) => o.is_active).sort((a, b) => a.sort_order - b.sort_order)
 	);
 
 	function isFree(opt: CheckoutDeliveryOption): boolean {
-		return opt.price === 0 || (opt.free_above != null && (subtotal ?? 0) >= opt.free_above);
+		return (
+			opt.price === 0 || (opt.free_above != null && (subtotal ?? 0) >= opt.free_above)
+		);
 	}
 
 	function getEffectivePrice(opt: CheckoutDeliveryOption): number {
@@ -127,7 +129,14 @@
 			{@const selected = selectedId === opt.id}
 
 			{#if optionSnippet}
-				{@render optionSnippet({ option: opt, selected, free, effectivePrice: price, formatPrice: fp, isUpdating })}
+				{@render optionSnippet({
+					option: opt,
+					selected,
+					free,
+					effectivePrice: price,
+					formatPrice: fp,
+					isUpdating,
+				})}
 			{:else}
 				<FieldRadioInternal
 					name="delivery-option"
@@ -164,7 +173,11 @@
 						</div>
 
 						{#if opt.description}
-							<p class={unstyled ? undefined : "stuic-checkout-delivery-option-description"}>
+							<p
+								class={unstyled
+									? undefined
+									: "stuic-checkout-delivery-option-description"}
+							>
 								{opt.description}
 							</p>
 						{/if}
@@ -180,7 +193,9 @@
 								{t("checkout.delivery.free_applied")}
 							</p>
 						{:else if opt.free_above && !free}
-							<p class={unstyled ? undefined : "stuic-checkout-delivery-option-threshold"}>
+							<p
+								class={unstyled ? undefined : "stuic-checkout-delivery-option-threshold"}
+							>
 								{t("checkout.delivery.free_above", { threshold: fp(opt.free_above) })}
 							</p>
 						{/if}

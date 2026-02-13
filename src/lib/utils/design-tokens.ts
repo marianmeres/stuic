@@ -95,8 +95,10 @@ function deriveShadeSteps(
 	const hoverIdx = idx + step;
 	const activeIdx = idx + step * 2;
 
-	if (hoverIdx < 0 || hoverIdx >= SHADE_SCALE.length) return { hover: defaultValue, active: defaultValue };
-	if (activeIdx < 0 || activeIdx >= SHADE_SCALE.length) return { hover: defaultValue, active: defaultValue };
+	if (hoverIdx < 0 || hoverIdx >= SHADE_SCALE.length)
+		return { hover: defaultValue, active: defaultValue };
+	if (activeIdx < 0 || activeIdx >= SHADE_SCALE.length)
+		return { hover: defaultValue, active: defaultValue };
 
 	return {
 		hover: `var(--color-${name}-${SHADE_SCALE[hoverIdx]})`,
@@ -108,14 +110,22 @@ function deriveShadeSteps(
 function fillPairStates(pair: ColorPair, mode: "light" | "dark"): ColorPair {
 	if (pair.hover !== undefined && pair.active !== undefined) return pair;
 	const derived = deriveShadeSteps(pair.DEFAULT, mode);
-	return { ...pair, hover: pair.hover ?? derived.hover, active: pair.active ?? derived.active };
+	return {
+		...pair,
+		hover: pair.hover ?? derived.hover,
+		active: pair.active ?? derived.active,
+	};
 }
 
 /** Fill missing hover/active on a ColorValue using shade derivation */
 function fillColorValueStates(color: ColorValue, mode: "light" | "dark"): ColorValue {
 	if (color.hover !== undefined && color.active !== undefined) return color;
 	const derived = deriveShadeSteps(color.DEFAULT, mode);
-	return { ...color, hover: color.hover ?? derived.hover, active: color.active ?? derived.active };
+	return {
+		...color,
+		hover: color.hover ?? derived.hover,
+		active: color.active ?? derived.active,
+	};
 }
 
 /** Generate color tokens for a paired color (with foreground) */

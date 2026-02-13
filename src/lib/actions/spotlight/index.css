@@ -28,7 +28,9 @@
 	.stuic-spotlight-annotation {
 		position-try-order: most-width;
 		position-try-fallbacks:
-			flip-block, flip-inline, flip-block flip-inline;
+			flip-block,
+			flip-inline,
+			flip-block flip-inline;
 
 		&.spot-block {
 			display: block;

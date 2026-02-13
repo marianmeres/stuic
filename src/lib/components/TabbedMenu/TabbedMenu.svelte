@@ -33,7 +33,6 @@
 </script>
 
 <script lang="ts">
-
 	//
 	let {
 		items,
@@ -127,7 +126,10 @@
 				onclick: () => selectItem(item),
 				onkeydown: (e: KeyboardEvent) => handleKeydown(e, item),
 			}}
-			<li class={twMerge(!unstyled && "stuic-tabbed-menu-item", classItem)} role="presentation">
+			<li
+				class={twMerge(!unstyled && "stuic-tabbed-menu-item", classItem)}
+				role="presentation"
+			>
 				{#if item.href}
 					<a href={item.href} {...props} bind:this={buttonEls[item.id]}>
 						<Thc thc={item.label} />

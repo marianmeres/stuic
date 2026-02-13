@@ -49,7 +49,13 @@ export function validateCustomerForm(
 // Address validation
 // ====================================================================
 
-const REQUIRED_ADDRESS_FIELDS = ["name", "street", "city", "postal_code", "country"] as const;
+const REQUIRED_ADDRESS_FIELDS = [
+	"name",
+	"street",
+	"city",
+	"postal_code",
+	"country",
+] as const;
 
 export function validateAddress(
 	address: CheckoutAddressData,

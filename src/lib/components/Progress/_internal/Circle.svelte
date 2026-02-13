@@ -35,4 +35,8 @@
 	});
 </script>
 
-<div bind:this={container} class={twMerge("stuic-progress-circle", classProp)} style={styleProp}></div>
+<div
+	bind:this={container}
+	class={twMerge("stuic-progress-circle", classProp)}
+	style={styleProp}
+></div>

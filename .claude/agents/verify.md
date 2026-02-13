@@ -20,6 +20,7 @@ Run these commands in order. Continue even if one fails.
 ## How to Report
 
 For each step, report ONE of:
+
 - PASS - no output needed
 - FAIL - include ONLY the error messages, not the full output
 

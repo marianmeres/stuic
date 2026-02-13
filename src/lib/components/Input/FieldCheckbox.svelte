@@ -69,8 +69,6 @@
 	let idDesc = getId();
 
 	// $inspect(33333, invalid, validation);
-
-
 </script>
 
 {#snippet snippetOrThc({ id, value }: { id: string; value?: SnippetWithId | THC })}
@@ -92,13 +90,7 @@
 	data-size={renderSize}
 	{style}
 >
-	<div
-		class={twMerge(
-			"input-box",
-			"flex h-6 items-center ml-1",
-			classInputBox
-		)}
-	>
+	<div class={twMerge("input-box", "flex h-6 items-center ml-1", classInputBox)}>
 		<input
 			{id}
 			type="checkbox"
@@ -138,11 +130,7 @@
 		{#if validation && !validation?.valid}
 			<div
 				transition:slide={{ duration: 150 }}
-				class={twMerge(
-					"validation-box",
-					"text-sm tracking-tight",
-					classValidationBox
-				)}
+				class={twMerge("validation-box", "text-sm tracking-tight", classValidationBox)}
 			>
 				{validation.message}
 			</div>

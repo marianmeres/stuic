@@ -199,14 +199,23 @@
 
 	<!-- Custom duration -->
 	<div class="flex items-center space-x-6">
-		<SpinnerCircle style="--stuic-spinner-circle-duration: 400ms;" class="text-purple-500" />
-		<SpinnerCircle style="--stuic-spinner-circle-duration: 1500ms;" class="text-orange-500" />
+		<SpinnerCircle
+			style="--stuic-spinner-circle-duration: 400ms;"
+			class="text-purple-500"
+		/>
+		<SpinnerCircle
+			style="--stuic-spinner-circle-duration: 1500ms;"
+			class="text-orange-500"
+		/>
 		<span class="text-sm text-neutral-500">Fast and slow via CSS variable</span>
 	</div>
 
 	<!-- Custom unicode font size -->
 	<div class="flex items-center space-x-6">
-		<SpinnerUnicode style="--stuic-spinner-unicode-font-size: 2rem;" variant="braille_bar" />
+		<SpinnerUnicode
+			style="--stuic-spinner-unicode-font-size: 2rem;"
+			variant="braille_bar"
+		/>
 		<span class="text-sm text-neutral-500">Larger unicode spinner</span>
 	</div>
 </div>

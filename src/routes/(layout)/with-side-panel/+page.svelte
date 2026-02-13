@@ -47,7 +47,8 @@
 			>
 				setWidth(200px)
 			</button>
-			{#if current1}<code class="text-sm self-center">{JSON.stringify(current1)}</code>{/if}
+			{#if current1}<code class="text-sm self-center">{JSON.stringify(current1)}</code
+				>{/if}
 		</div>
 		<div class="border h-[300px]">
 			<WithSidePanel bind:this={panel1} bind:current={current1} width="250px">
@@ -101,7 +102,9 @@
 
 	<!-- Demo 3: Resizable left -->
 	<section>
-		<h2 class="text-lg font-semibold mb-2">3. Resizable (left, 300px, min:150, max:500)</h2>
+		<h2 class="text-lg font-semibold mb-2">
+			3. Resizable (left, 300px, min:150, max:500)
+		</h2>
 		<div class="flex gap-2 mb-2">
 			<button class="border px-3 py-1 rounded text-sm" onclick={() => panel3.toggle()}>
 				toggle
@@ -132,7 +135,9 @@
 
 	<!-- Demo 4: Resizable right -->
 	<section>
-		<h2 class="text-lg font-semibold mb-2">4. Resizable (right, 250px, min:150, max:400)</h2>
+		<h2 class="text-lg font-semibold mb-2">
+			4. Resizable (right, 250px, min:150, max:400)
+		</h2>
 		<div class="flex gap-2 mb-2">
 			<button class="border px-3 py-1 rounded text-sm" onclick={() => panel4.toggle()}>
 				toggle
@@ -168,14 +173,23 @@
 			<button class="border px-3 py-1 rounded text-sm" onclick={() => panel5.toggle()}>
 				toggle
 			</button>
-			{#if current5}<code class="text-sm self-center">{JSON.stringify(current5)}</code>{/if}
+			{#if current5}<code class="text-sm self-center">{JSON.stringify(current5)}</code
+				>{/if}
 		</div>
 		<p class="text-sm text-gray-500 mb-2">
-			Resize the container below (drag its right edge) to see threshold behavior.
-			Below 500px the side auto-hides. Toggle opens it full-width.
+			Resize the container below (drag its right edge) to see threshold behavior. Below
+			500px the side auto-hides. Toggle opens it full-width.
 		</p>
-		<div class="border h-[300px] max-w-[800px]" style="resize: horizontal; overflow: hidden;">
-			<WithSidePanel bind:this={panel5} bind:current={current5} threshold={500} width="200px">
+		<div
+			class="border h-[300px] max-w-[800px]"
+			style="resize: horizontal; overflow: hidden;"
+		>
+			<WithSidePanel
+				bind:this={panel5}
+				bind:current={current5}
+				threshold={500}
+				width="200px"
+			>
 				{#snippet side()}
 					<div class="p-3">
 						<h3 class="font-semibold mb-2">Side</h3>
@@ -184,9 +198,7 @@
 				{/snippet}
 				<div class="p-3">
 					<h3 class="font-semibold mb-2">Main Content</h3>
-					<p class="text-sm">
-						Resize this container to see the threshold behavior.
-					</p>
+					<p class="text-sm">Resize this container to see the threshold behavior.</p>
 				</div>
 			</WithSidePanel>
 		</div>

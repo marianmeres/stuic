@@ -160,7 +160,8 @@
 	.stuic-dropdown-menu-divider {
 		height: 0;
 		margin: var(--stuic-dropdown-menu-divider-margin-y) 0;
-		border-top: var(--stuic-dropdown-menu-divider-height) solid var(--stuic-dropdown-menu-divider-bg);
+		border-top: var(--stuic-dropdown-menu-divider-height) solid
+			var(--stuic-dropdown-menu-divider-bg);
 	}
 
 	/* =============================================================================

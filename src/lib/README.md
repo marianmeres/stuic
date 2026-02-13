@@ -130,20 +130,20 @@ const buttonConfig: Partial<ButtonProps> = {
 
 Each component with customizable styling defines CSS custom properties:
 
-| Component | Prefix | Key Properties |
-|-----------|--------|----------------|
-| Button | `--stuic-button-*` | `bg`, `text`, `border`, `border-focus` |
-| Switch | `--stuic-switch-*` | `accent` |
-| Input | `--stuic-input-*` | `accent`, `accent-error` |
-| Progress | `--stuic-progress-*` | `bg`, `accent` |
-| Skeleton | `--stuic-skeleton-*` | `bg`, `bg-highlight`, `duration` |
-| ListItemButton | `--stuic-list-item-button-*` | `bg`, `text`, `border`, plus `-hover`, `-active`, `-focus` states |
-| ButtonGroupRadio | `--stuic-button-group-*` | `bg`, `text`, `border`, `accent`, `bg-active`, `text-active` |
-| TabbedMenu | `--stuic-tabbed-menu-*` | `tab-bg`, `tab-text`, `tab-bg-active`, `tab-text-active`, `border` |
-| DismissibleMessage | `--stuic-dismissible-message-*` | `bg`, `text`, `border` |
-| Notifications | `--stuic-notification-*` | `bg`, `text`, `border` |
-| Tooltip | `--stuic-tooltip-*` | `bg`, `text` |
-| Popover | `--stuic-popover-*` | `bg`, `text`, `border` |
+| Component          | Prefix                          | Key Properties                                                     |
+| ------------------ | ------------------------------- | ------------------------------------------------------------------ |
+| Button             | `--stuic-button-*`              | `bg`, `text`, `border`, `border-focus`                             |
+| Switch             | `--stuic-switch-*`              | `accent`                                                           |
+| Input              | `--stuic-input-*`               | `accent`, `accent-error`                                           |
+| Progress           | `--stuic-progress-*`            | `bg`, `accent`                                                     |
+| Skeleton           | `--stuic-skeleton-*`            | `bg`, `bg-highlight`, `duration`                                   |
+| ListItemButton     | `--stuic-list-item-button-*`    | `bg`, `text`, `border`, plus `-hover`, `-active`, `-focus` states  |
+| ButtonGroupRadio   | `--stuic-button-group-*`        | `bg`, `text`, `border`, `accent`, `bg-active`, `text-active`       |
+| TabbedMenu         | `--stuic-tabbed-menu-*`         | `tab-bg`, `tab-text`, `tab-bg-active`, `tab-text-active`, `border` |
+| DismissibleMessage | `--stuic-dismissible-message-*` | `bg`, `text`, `border`                                             |
+| Notifications      | `--stuic-notification-*`        | `bg`, `text`, `border`                                             |
+| Tooltip            | `--stuic-tooltip-*`             | `bg`, `text`                                                       |
+| Popover            | `--stuic-popover-*`             | `bg`, `text`, `border`                                             |
 
 ### CSS Variable Naming Convention
 

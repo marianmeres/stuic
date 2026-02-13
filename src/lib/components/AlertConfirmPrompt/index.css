@@ -42,25 +42,41 @@
 	/* Variant: info (default) */
 	.stuic-acp[data-variant="info"],
 	.stuic-acp:not([data-variant]) {
-		--_icon-bg: color-mix(in srgb, var(--stuic-color-primary) 15%, var(--stuic-color-background));
+		--_icon-bg: color-mix(
+			in srgb,
+			var(--stuic-color-primary) 15%,
+			var(--stuic-color-background)
+		);
 		--_icon-text: var(--stuic-color-primary);
 	}
 
 	/* Variant: success */
 	.stuic-acp[data-variant="success"] {
-		--_icon-bg: color-mix(in srgb, var(--stuic-color-primary) 15%, var(--stuic-color-background));
+		--_icon-bg: color-mix(
+			in srgb,
+			var(--stuic-color-primary) 15%,
+			var(--stuic-color-background)
+		);
 		--_icon-text: var(--stuic-color-primary);
 	}
 
 	/* Variant: warn */
 	.stuic-acp[data-variant="warn"] {
-		--_icon-bg: color-mix(in srgb, var(--stuic-color-primary) 15%, var(--stuic-color-background));
+		--_icon-bg: color-mix(
+			in srgb,
+			var(--stuic-color-primary) 15%,
+			var(--stuic-color-background)
+		);
 		--_icon-text: var(--stuic-color-primary);
 	}
 
 	/* Variant: error */
 	.stuic-acp[data-variant="error"] {
-		--_icon-bg: color-mix(in srgb, var(--stuic-color-destructive) 15%, var(--stuic-color-background));
+		--_icon-bg: color-mix(
+			in srgb,
+			var(--stuic-color-destructive) 15%,
+			var(--stuic-color-background)
+		);
 		--_icon-text: var(--stuic-color-destructive);
 	}
 }

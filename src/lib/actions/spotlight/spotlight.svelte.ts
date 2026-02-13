@@ -398,10 +398,7 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 				transition-duration: ${TRANSITION}ms;
 			`;
 			backdropEl.classList.add(
-				...twMerge(
-					"stuic-spotlight-backdrop",
-					currentOptions.classBackdrop
-				).split(/\s/)
+				...twMerge("stuic-spotlight-backdrop", currentOptions.classBackdrop).split(/\s/)
 			);
 			backdropEl.style.clipPath = buildClipPath(rect, padding, borderRadius);
 			document.body.appendChild(backdropEl);

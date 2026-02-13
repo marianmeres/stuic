@@ -1,8 +1,10 @@
 <script lang="ts" module>
 	import type { HTMLAttributes } from "svelte/elements";
 
-	export interface Props
-		extends Omit<HTMLAttributes<HTMLDivElement>, "children" | "class" | "role"> {
+	export interface Props extends Omit<
+		HTMLAttributes<HTMLDivElement>,
+		"children" | "class" | "role"
+	> {
 		/** Separator orientation */
 		orientation?: "horizontal" | "vertical";
 		/** If true, separator is purely decorative (sets aria-hidden, removes role) */

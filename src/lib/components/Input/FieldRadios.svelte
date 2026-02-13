@@ -72,13 +72,7 @@
 		data-size={renderSize}
 		{style}
 	>
-		<div
-			class={twMerge(
-				"radios-box",
-				"gap-y-2 grid p-2 mb-8",
-				classProp
-			)}
-		>
+		<div class={twMerge("radios-box", "gap-y-2 grid p-2 mb-8", classProp)}>
 			{#each _options as o, i}
 				<FieldRadioInternal
 					{name}

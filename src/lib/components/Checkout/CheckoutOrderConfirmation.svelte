@@ -153,7 +153,11 @@
 			<div class={unstyled ? undefined : "stuic-checkout-confirmation-shipping-grid"}>
 				{#if order.shipping_address}
 					<div>
-						<h4 class={unstyled ? undefined : "stuic-checkout-confirmation-subsection-label"}>
+						<h4
+							class={unstyled
+								? undefined
+								: "stuic-checkout-confirmation-subsection-label"}
+						>
 							{t("checkout.complete.address_label")}
 						</h4>
 						<div class={unstyled ? undefined : "stuic-checkout-confirmation-address"}>
@@ -168,11 +172,17 @@
 				{/if}
 				{#if order.delivery_option}
 					<div>
-						<h4 class={unstyled ? undefined : "stuic-checkout-confirmation-subsection-label"}>
+						<h4
+							class={unstyled
+								? undefined
+								: "stuic-checkout-confirmation-subsection-label"}
+						>
 							{t("checkout.complete.delivery_label")}
 						</h4>
 						<div>{order.delivery_option.name}</div>
-						<div class={unstyled ? undefined : "stuic-checkout-confirmation-delivery-detail"}>
+						<div
+							class={unstyled ? undefined : "stuic-checkout-confirmation-delivery-detail"}
+						>
 							{#if order.delivery_option.price === 0}
 								{t("checkout.summary.free")}
 							{:else}

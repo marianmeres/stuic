@@ -20,9 +20,21 @@
 			totals: {
 				subtotal: 23497,
 				tax: 1880,
-				shipping: deliveryOptionId === "express" ? 1499 : deliveryOptionId === "standard" ? 599 : 0,
+				shipping:
+					deliveryOptionId === "express"
+						? 1499
+						: deliveryOptionId === "standard"
+							? 599
+							: 0,
 				discount: 0,
-				total: 23497 + 1880 + (deliveryOptionId === "express" ? 1499 : deliveryOptionId === "standard" ? 599 : 0),
+				total:
+					23497 +
+					1880 +
+					(deliveryOptionId === "express"
+						? 1499
+						: deliveryOptionId === "standard"
+							? 599
+							: 0),
 			},
 			delivery_option_id: deliveryOptionId,
 		};
@@ -185,9 +197,7 @@
 			{ field: "shipping.name", message: "Name is required" },
 			{ field: "shipping.city", message: "City is required" },
 		]}
-		billingErrors={[
-			{ field: "billing.street", message: "Street is required" },
-		]}
+		billingErrors={[{ field: "billing.street", message: "Street is required" }]}
 		billingSameAsShipping={false}
 		formatPrice={dollarFormat}
 		onContinue={() => log("Continue with errors")}
@@ -228,7 +238,8 @@
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Custom column overrides (snippets)</h2>
 	<p class="text-sm opacity-60 mb-4">
-		Override left and right columns via <code>leftColumn</code> and <code>rightColumn</code> snippets.
+		Override left and right columns via <code>leftColumn</code> and
+		<code>rightColumn</code> snippets.
 	</p>
 
 	<CheckoutShippingStep
@@ -237,12 +248,16 @@
 		formatPrice={dollarFormat}
 	>
 		{#snippet leftColumn()}
-			<div class="p-8 border-2 border-dashed border-blue-300 dark:border-blue-700 rounded-lg text-center text-blue-600 dark:text-blue-400">
+			<div
+				class="p-8 border-2 border-dashed border-blue-300 dark:border-blue-700 rounded-lg text-center text-blue-600 dark:text-blue-400"
+			>
 				Custom left column content
 			</div>
 		{/snippet}
 		{#snippet rightColumn()}
-			<div class="p-8 border-2 border-dashed border-green-300 dark:border-green-700 rounded-lg text-center text-green-600 dark:text-green-400">
+			<div
+				class="p-8 border-2 border-dashed border-green-300 dark:border-green-700 rounded-lg text-center text-green-600 dark:text-green-400"
+			>
 				Custom right column content
 			</div>
 		{/snippet}
@@ -294,7 +309,8 @@
 <!-- ============== STATE INSPECTOR ============== -->
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">State (from default demo)</h2>
-	<pre class="text-xs p-3 bg-neutral-100 dark:bg-neutral-900 rounded overflow-auto max-h-64">{JSON.stringify(
+	<pre
+		class="text-xs p-3 bg-neutral-100 dark:bg-neutral-900 rounded overflow-auto max-h-64">{JSON.stringify(
 			{
 				shippingAddress,
 				billingAddress,
@@ -310,7 +326,10 @@
 {#if actionLog.length > 0}
 	<section class="mb-12">
 		<h2 class="text-lg font-bold mb-2">Action log</h2>
-		<pre class="text-xs p-3 bg-neutral-100 dark:bg-neutral-900 rounded overflow-auto max-h-48">{actionLog.join("\n")}</pre>
+		<pre
+			class="text-xs p-3 bg-neutral-100 dark:bg-neutral-900 rounded overflow-auto max-h-48">{actionLog.join(
+				"\n"
+			)}</pre>
 		<button
 			class="mt-2 text-xs px-2 py-1 border rounded hover:bg-neutral-100 dark:hover:bg-neutral-800"
 			onclick={() => (actionLog = [])}

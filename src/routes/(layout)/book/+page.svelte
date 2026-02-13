@@ -42,19 +42,11 @@
 				class="w-full"
 				style="--stuic-book-page-width: 280px; --stuic-book-page-height: 400px;"
 			>
-				<Book
-					bind:this={book}
-					{pages}
-					bind:activeSpread
-				/>
+				<Book bind:this={book} {pages} bind:activeSpread />
 			</div>
 
 			<div class="flex items-center gap-4">
-				<Button
-					size="sm"
-					onclick={() => book.previous()}
-					disabled={activeSpread === 0}
-				>
+				<Button size="sm" onclick={() => book.previous()} disabled={activeSpread === 0}>
 					Previous
 				</Button>
 				<span class="text-sm text-neutral-600 dark:text-neutral-400 min-w-32 text-center">
@@ -70,9 +62,7 @@
 			</div>
 
 			<div class="flex items-center gap-4">
-				<Button size="sm" variant="outline" onclick={() => book.zoomIn()}>
-					Zoom In
-				</Button>
+				<Button size="sm" variant="outline" onclick={() => book.zoomIn()}>Zoom In</Button>
 				<Button size="sm" variant="outline" onclick={() => book.zoomOut()}>
 					Zoom Out
 				</Button>
@@ -152,8 +142,7 @@
 	<section>
 		<h2 class="text-xl font-semibold mb-2">Single-Page Mode (forced)</h2>
 		<p class="text-sm text-neutral-500 mb-4">
-			Using <code>singlePage</code> prop. Each flip shows one page at a time.
-			9 pages = 9 spreads.
+			Using <code>singlePage</code> prop. Each flip shows one page at a time. 9 pages = 9 spreads.
 		</p>
 
 		<div class="flex flex-col items-center gap-6">
@@ -229,12 +218,7 @@
 				<span class="text-sm text-neutral-600 dark:text-neutral-400 min-w-32 text-center">
 					Spread {responsiveActiveSpread + 1}
 				</span>
-				<Button
-					size="sm"
-					onclick={() => responsiveBook.next()}
-				>
-					Next
-				</Button>
+				<Button size="sm" onclick={() => responsiveBook.next()}>Next</Button>
 			</div>
 		</div>
 	</section>

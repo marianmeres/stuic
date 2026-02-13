@@ -9,7 +9,13 @@
 		styleBar?: string;
 	}
 
-	let { progress = 0, class: classProp, style: styleProp, classBar, styleBar = "" }: Props = $props();
+	let {
+		progress = 0,
+		class: classProp,
+		style: styleProp,
+		classBar,
+		styleBar = "",
+	}: Props = $props();
 </script>
 
 <div class={twMerge("stuic-progress-bar", classProp)} style={styleProp}>

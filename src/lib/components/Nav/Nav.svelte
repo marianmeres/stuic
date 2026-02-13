@@ -168,7 +168,7 @@
 		unstyled = false,
 		el = $bindable(),
 		persistState = true,
-		storageKeyPrefix = 'stuic-nav',
+		storageKeyPrefix = "stuic-nav",
 		...rest
 	}: Props = $props();
 
@@ -200,7 +200,10 @@
 
 	function loadGroupState(groupId: string): boolean | undefined {
 		if (!persistState) return undefined;
-		return localStorageValue<boolean | undefined>(getGroupStorageKey(groupId), undefined).get();
+		return localStorageValue<boolean | undefined>(
+			getGroupStorageKey(groupId),
+			undefined
+		).get();
 	}
 
 	function saveGroupState(groupId: string, expanded: boolean): void {
@@ -210,7 +213,10 @@
 
 	function loadItemState(itemId: string): boolean | undefined {
 		if (!persistState) return undefined;
-		return localStorageValue<boolean | undefined>(getItemStorageKey(itemId), undefined).get();
+		return localStorageValue<boolean | undefined>(
+			getItemStorageKey(itemId),
+			undefined
+		).get();
 	}
 
 	function saveItemState(itemId: string, expanded: boolean): void {
@@ -246,7 +252,7 @@
 			// First priority: localStorage (if persistence enabled)
 			if (persistState && g.id) {
 				const stored = loadGroupState(g.id);
-				if (stored != null) return stored;  // Check for both null and undefined
+				if (stored != null) return stored; // Check for both null and undefined
 			}
 			// Second priority: auto-expand if group has an active child
 			if (groupHasActiveChild(g)) {
@@ -466,11 +472,7 @@
 	<!-- Section title (optional, non-interactive) -->
 	{#if title}
 		<span
-			class={twMerge(
-				!unstyled && NAV_SECTION_TITLE_CLASSES,
-				"uppercase",
-				classTitle
-			)}
+			class={twMerge(!unstyled && NAV_SECTION_TITLE_CLASSES, "uppercase", classTitle)}
 			data-collapsed={!unstyled && isCollapsed ? "" : undefined}
 		>
 			{resolveLabel(title)}
@@ -638,7 +640,9 @@
 											<Thc thc={item.icon} />
 										</span>
 									{:else if isCollapsed}
-										<span class={twMerge("shrink-0 font-medium", classIcon)}>{getFirstLetter(label)}</span>
+										<span class={twMerge("shrink-0 font-medium", classIcon)}
+											>{getFirstLetter(label)}</span
+										>
 									{/if}
 									{#if !isCollapsed}
 										<span class={classLabel}>{label}</span>
@@ -675,7 +679,9 @@
 											<Thc thc={item.icon} />
 										</span>
 									{:else if isCollapsed}
-										<span class={twMerge("shrink-0 font-medium", classIcon)}>{getFirstLetter(label)}</span>
+										<span class={twMerge("shrink-0 font-medium", classIcon)}
+											>{getFirstLetter(label)}</span
+										>
 									{/if}
 									{#if !isCollapsed}
 										<span class={classLabel}>{label}</span>
@@ -718,7 +724,9 @@
 							<Thc thc={group.icon} />
 						</span>
 					{:else if isCollapsed}
-						<span class={twMerge("shrink-0 font-medium", classIcon)}>{getFirstLetter(label)}</span>
+						<span class={twMerge("shrink-0 font-medium", classIcon)}
+							>{getFirstLetter(label)}</span
+						>
 					{/if}
 					{#if !isCollapsed}
 						<span class={classLabel}>{label}</span>
@@ -749,7 +757,9 @@
 							<Thc thc={group.icon} />
 						</span>
 					{:else if isCollapsed}
-						<span class={twMerge("shrink-0 font-medium", classIcon)}>{getFirstLetter(label)}</span>
+						<span class={twMerge("shrink-0 font-medium", classIcon)}
+							>{getFirstLetter(label)}</span
+						>
 					{/if}
 					{#if !isCollapsed}
 						<span class={classLabel}>{label}</span>

@@ -25,6 +25,7 @@
         'drawer',
         'dropdown-menu',
 		'file-dropzone',
+		'h',
 		'hover-expandable-width',
 		'icons',
 		'icon-swap',

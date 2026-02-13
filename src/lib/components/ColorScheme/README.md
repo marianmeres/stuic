@@ -29,7 +29,7 @@ Both components use the localStorage key: `stuic-color-scheme`
 
 ```svelte
 <script lang="ts">
-  import { ColorSchemeSystemAware } from 'stuic';
+	import { ColorSchemeSystemAware } from "stuic";
 </script>
 
 <ColorSchemeSystemAware />
@@ -39,7 +39,7 @@ Both components use the localStorage key: `stuic-color-scheme`
 
 ```svelte
 <script lang="ts">
-  import { ColorSchemeLocal } from 'stuic';
+	import { ColorSchemeLocal } from "stuic";
 </script>
 
 <ColorSchemeLocal />
@@ -49,13 +49,13 @@ Both components use the localStorage key: `stuic-color-scheme`
 
 ```svelte
 <script lang="ts">
-  import { ColorSchemeSystemAware } from 'stuic';
+	import { ColorSchemeSystemAware } from "stuic";
 
-  function toggleDarkMode() {
-    const root = document.documentElement;
-    const isDark = root.classList.toggle('dark');
-    localStorage.setItem('stuic-color-scheme', isDark ? 'dark' : 'light');
-  }
+	function toggleDarkMode() {
+		const root = document.documentElement;
+		const isDark = root.classList.toggle("dark");
+		localStorage.setItem("stuic-color-scheme", isDark ? "dark" : "light");
+	}
 </script>
 
 <ColorSchemeSystemAware />

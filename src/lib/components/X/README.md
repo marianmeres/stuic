@@ -4,10 +4,10 @@ A simple SVG close/dismiss icon (X shape) with configurable stroke width.
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `strokeWidth` | `0.5 \| 1 \| 1.5 \| 2 \| 2.5 \| 3 \| 3.5 \| 4` | `2` | Stroke width of the X lines |
-| `class` | `string` | - | CSS classes (default size is `size-6` / 1.5rem) |
+| Prop          | Type                                           | Default | Description                                     |
+| ------------- | ---------------------------------------------- | ------- | ----------------------------------------------- |
+| `strokeWidth` | `0.5 \| 1 \| 1.5 \| 2 \| 2.5 \| 3 \| 3.5 \| 4` | `2`     | Stroke width of the X lines                     |
+| `class`       | `string`                                       | -       | CSS classes (default size is `size-6` / 1.5rem) |
 
 ## Usage
 
@@ -15,11 +15,11 @@ A simple SVG close/dismiss icon (X shape) with configurable stroke width.
 
 ```svelte
 <script lang="ts">
-  import { X } from 'stuic';
+	import { X } from "stuic";
 </script>
 
 <button>
-  <X />
+	<X />
 </button>
 ```
 
@@ -49,11 +49,8 @@ A simple SVG close/dismiss icon (X shape) with configurable stroke width.
 ### In a Close Button
 
 ```svelte
-<button
-  onclick={handleClose}
-  class="p-2 hover:bg-gray-100 rounded-full"
->
-  <X strokeWidth={1.5} class="size-5" />
+<button onclick={handleClose} class="p-2 hover:bg-gray-100 rounded-full">
+	<X strokeWidth={1.5} class="size-5" />
 </button>
 ```
 
@@ -61,9 +58,9 @@ A simple SVG close/dismiss icon (X shape) with configurable stroke width.
 
 ```svelte
 <div class="flex items-center justify-between p-4 bg-blue-100 rounded">
-  <span>Notification message</span>
-  <button onclick={() => visible = false}>
-    <X class="size-4 text-blue-600 hover:text-blue-800" />
-  </button>
+	<span>Notification message</span>
+	<button onclick={() => (visible = false)}>
+		<X class="size-4 text-blue-600 hover:text-blue-800" />
+	</button>
 </div>
 ```

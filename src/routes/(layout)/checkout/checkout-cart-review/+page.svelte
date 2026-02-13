@@ -1,8 +1,5 @@
 <script lang="ts">
-	import {
-		CheckoutCartReview,
-		defaultFormatPrice,
-	} from "$lib/index.js";
+	import { CheckoutCartReview, defaultFormatPrice } from "$lib/index.js";
 	import type { CartComponentItem } from "$lib/components/Cart/Cart.svelte";
 	import Button from "$lib/components/Button/Button.svelte";
 	import FieldSwitch from "$lib/components/Input/FieldSwitch.svelte";
@@ -127,15 +124,10 @@
 <!-- ============== SINGLE ITEM ============== -->
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Single item</h2>
-	<p class="text-sm opacity-60 mb-4">
-		Shows singular "1 item" text in the summary.
-	</p>
+	<p class="text-sm opacity-60 mb-4">Shows singular "1 item" text in the summary.</p>
 
 	<div class="max-w-lg">
-		<CheckoutCartReview
-			items={singleItem}
-			onEditCart={() => alert("Edit cart!")}
-		/>
+		<CheckoutCartReview items={singleItem} onEditCart={() => alert("Edit cart!")} />
 	</div>
 </section>
 
@@ -204,7 +196,9 @@
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Custom edit action (snippet)</h2>
 	<p class="text-sm opacity-60 mb-4">
-		Override the edit button with a custom snippet. The snippet receives <code>onEditCart</code>.
+		Override the edit button with a custom snippet. The snippet receives <code
+			>onEditCart</code
+		>.
 	</p>
 
 	<div class="max-w-lg">
@@ -238,7 +232,8 @@
 					<div>
 						<div class="text-lg font-bold">{formatPrice(total)}</div>
 						<div class="text-sm opacity-60">
-							{itemCount} {itemCount === 1 ? "item" : "items"} in cart
+							{itemCount}
+							{itemCount === 1 ? "item" : "items"} in cart
 						</div>
 					</div>
 					<Button size="sm" variant="solid" onclick={() => alert("Proceed to checkout!")}>
@@ -254,8 +249,7 @@
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Custom thumbnail (snippet)</h2>
 	<p class="text-sm opacity-60 mb-4">
-		Override thumbnail rendering via the <code>thumbnail</code> snippet (passed through to
-		Cart).
+		Override thumbnail rendering via the <code>thumbnail</code> snippet (passed through to Cart).
 	</p>
 
 	<div class="max-w-lg">

@@ -125,10 +125,7 @@
 			bind:files
 			bind:this={input}
 			{id}
-			class={twMerge(
-				"block w-full",
-				classInput
-			)}
+			class={twMerge("block w-full", classInput)}
 			use:highlightDragover={() => ({ classes: ["outline-dashed"] })}
 			use:validateAction={() => ({
 				enabled: !!validate,

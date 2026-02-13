@@ -4,7 +4,10 @@
 	import type { TranslateFn } from "../../types.js";
 	import type { CartComponentItem } from "../Cart/Cart.svelte";
 
-	export interface Props extends Omit<HTMLAttributes<HTMLDivElement>, "children" | "title"> {
+	export interface Props extends Omit<
+		HTMLAttributes<HTMLDivElement>,
+		"children" | "title"
+	> {
 		/** Cart items in stuic CartComponentItem format */
 		items: CartComponentItem[];
 
@@ -28,12 +31,14 @@
 		 * Passed through to Cart's `summary` snippet.
 		 */
 		summary?: Snippet<
-			[{
-				items: CartComponentItem[];
-				total: number;
-				itemCount: number;
-				formatPrice: (v: number) => string;
-			}]
+			[
+				{
+					items: CartComponentItem[];
+					total: number;
+					itemCount: number;
+					formatPrice: (v: number) => string;
+				},
+			]
 		>;
 
 		/** Override the title (default: "Order Summary") */
@@ -103,17 +108,20 @@
 	</div>
 
 	<!-- Cart (readonly) -->
-	<Cart
-		{items}
-		readonly
-		formatPrice={fp}
-		{thumbnail}
-		t={tProp}
-		{unstyled}
-	>
-		{#snippet summary({ items: _items, total: _total, itemCount: _itemCount, formatPrice: _fp })}
+	<Cart {items} readonly formatPrice={fp} {thumbnail} t={tProp} {unstyled}>
+		{#snippet summary({
+			items: _items,
+			total: _total,
+			itemCount: _itemCount,
+			formatPrice: _fp,
+		})}
 			{#if summaryProp}
-				{@render summaryProp({ items: _items, total: _total, itemCount: _itemCount, formatPrice: _fp })}
+				{@render summaryProp({
+					items: _items,
+					total: _total,
+					itemCount: _itemCount,
+					formatPrice: _fp,
+				})}
 			{:else}
 				<div class={unstyled ? undefined : "stuic-checkout-cart-review-summary"}>
 					<span>

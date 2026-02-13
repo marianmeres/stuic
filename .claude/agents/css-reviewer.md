@@ -29,6 +29,7 @@ Internal vars (Layer 3) are set by intent/variant selectors and consumed by base
 **Pattern:** `--stuic-{component}-{element?}-{property}-{state?}`
 
 ### CORRECT
+
 ```css
 --stuic-button-bg-hover
 --stuic-button-ring-color
@@ -39,13 +40,13 @@ Internal vars (Layer 3) are set by intent/variant selectors and consumed by base
 
 ### VIOLATIONS TO FLAG
 
-| Violation | Example | Correct |
-|-----------|---------|---------|
-| Abbreviated component | `--stuic-btn-bg` | `--stuic-button-bg` |
-| State before property | `--stuic-button-hover-bg` | `--stuic-button-bg-hover` |
-| `-dark` suffix | `--stuic-button-bg-dark` | Use `:root.dark {}` selector |
-| Missing prefix | `--color-button-bg` | `--stuic-color-button-bg` |
-| `dark:` Tailwind prefix | `dark:bg-gray-800` | CSS var handles dark mode |
+| Violation               | Example                   | Correct                      |
+| ----------------------- | ------------------------- | ---------------------------- |
+| Abbreviated component   | `--stuic-btn-bg`          | `--stuic-button-bg`          |
+| State before property   | `--stuic-button-hover-bg` | `--stuic-button-bg-hover`    |
+| `-dark` suffix          | `--stuic-button-bg-dark`  | Use `:root.dark {}` selector |
+| Missing prefix          | `--color-button-bg`       | `--stuic-color-button-bg`    |
+| `dark:` Tailwind prefix | `dark:bg-gray-800`        | CSS var handles dark mode    |
 
 ## Centralized CSS Import Rule
 
@@ -82,16 +83,19 @@ Internal vars (Layer 3) are set by intent/variant selectors and consumed by base
 Organize findings by priority:
 
 **CRITICAL** (must fix):
+
 - Wrong variable naming pattern
 - CSS imported inside .svelte files
 - `-dark` suffix on variables
 
 **WARNING** (should fix):
+
 - Missing fallback to theme tokens
 - Inconsistent naming within a component
 - `dark:` Tailwind prefix usage
 
 **INFO** (consider):
+
 - Opportunities to use existing theme tokens
 - Redundant variable declarations
 

@@ -2,7 +2,6 @@
 	import { DataTable, Button, type DataTableColumn } from "$lib/index.js";
 	import { createPagingStore, type PagingCalcResult } from "@marianmeres/paging-store";
 
-
 	// --- Sample data ---
 	interface User {
 		id: number;
@@ -14,18 +13,102 @@
 	}
 
 	const ALL_USERS: User[] = [
-		{ id: 1, name: "Alice Johnson", email: "alice@example.com", role: "Admin", status: "active", joined: "2024-01-15" },
-		{ id: 2, name: "Bob Smith", email: "bob@example.com", role: "Editor", status: "active", joined: "2024-02-20" },
-		{ id: 3, name: "Charlie Brown", email: "charlie@example.com", role: "Viewer", status: "inactive", joined: "2024-03-10" },
-		{ id: 4, name: "Diana Prince", email: "diana@example.com", role: "Admin", status: "active", joined: "2024-04-05" },
-		{ id: 5, name: "Edward Norton", email: "edward@example.com", role: "Editor", status: "pending", joined: "2024-05-12" },
-		{ id: 6, name: "Fiona Apple", email: "fiona@example.com", role: "Viewer", status: "active", joined: "2024-06-18" },
-		{ id: 7, name: "George Clooney", email: "george@example.com", role: "Editor", status: "inactive", joined: "2024-07-22" },
-		{ id: 8, name: "Hannah Montana", email: "hannah@example.com", role: "Viewer", status: "active", joined: "2024-08-01" },
-		{ id: 9, name: "Ivan Drago", email: "ivan@example.com", role: "Admin", status: "pending", joined: "2024-09-14" },
-		{ id: 10, name: "Julia Roberts", email: "julia@example.com", role: "Editor", status: "active", joined: "2024-10-03" },
-		{ id: 11, name: "Kevin Hart", email: "kevin@example.com", role: "Viewer", status: "active", joined: "2024-10-15" },
-		{ id: 12, name: "Laura Palmer", email: "laura@example.com", role: "Admin", status: "inactive", joined: "2024-11-01" },
+		{
+			id: 1,
+			name: "Alice Johnson",
+			email: "alice@example.com",
+			role: "Admin",
+			status: "active",
+			joined: "2024-01-15",
+		},
+		{
+			id: 2,
+			name: "Bob Smith",
+			email: "bob@example.com",
+			role: "Editor",
+			status: "active",
+			joined: "2024-02-20",
+		},
+		{
+			id: 3,
+			name: "Charlie Brown",
+			email: "charlie@example.com",
+			role: "Viewer",
+			status: "inactive",
+			joined: "2024-03-10",
+		},
+		{
+			id: 4,
+			name: "Diana Prince",
+			email: "diana@example.com",
+			role: "Admin",
+			status: "active",
+			joined: "2024-04-05",
+		},
+		{
+			id: 5,
+			name: "Edward Norton",
+			email: "edward@example.com",
+			role: "Editor",
+			status: "pending",
+			joined: "2024-05-12",
+		},
+		{
+			id: 6,
+			name: "Fiona Apple",
+			email: "fiona@example.com",
+			role: "Viewer",
+			status: "active",
+			joined: "2024-06-18",
+		},
+		{
+			id: 7,
+			name: "George Clooney",
+			email: "george@example.com",
+			role: "Editor",
+			status: "inactive",
+			joined: "2024-07-22",
+		},
+		{
+			id: 8,
+			name: "Hannah Montana",
+			email: "hannah@example.com",
+			role: "Viewer",
+			status: "active",
+			joined: "2024-08-01",
+		},
+		{
+			id: 9,
+			name: "Ivan Drago",
+			email: "ivan@example.com",
+			role: "Admin",
+			status: "pending",
+			joined: "2024-09-14",
+		},
+		{
+			id: 10,
+			name: "Julia Roberts",
+			email: "julia@example.com",
+			role: "Editor",
+			status: "active",
+			joined: "2024-10-03",
+		},
+		{
+			id: 11,
+			name: "Kevin Hart",
+			email: "kevin@example.com",
+			role: "Viewer",
+			status: "active",
+			joined: "2024-10-15",
+		},
+		{
+			id: 12,
+			name: "Laura Palmer",
+			email: "laura@example.com",
+			role: "Admin",
+			status: "inactive",
+			joined: "2024-11-01",
+		},
 	];
 
 	const columns: DataTableColumn<User>[] = [
@@ -58,9 +141,7 @@
 	pagingStore.subscribe((v) => (paging = v));
 	let pagingLoading = $state(false);
 
-	let pagedData = $derived(
-		ALL_USERS.slice(paging.offset, paging.offset + paging.limit)
-	);
+	let pagedData = $derived(ALL_USERS.slice(paging.offset, paging.offset + paging.limit));
 
 	async function handlePageChange(offset: number) {
 		pagingLoading = true;
@@ -260,7 +341,9 @@
 		{#snippet empty()}
 			<div class="text-center py-4">
 				<p class="text-lg font-semibold">No records found</p>
-				<p class="text-sm opacity-60 mt-1">Try adjusting your filters or adding new data.</p>
+				<p class="text-sm opacity-60 mt-1">
+					Try adjusting your filters or adding new data.
+				</p>
 			</div>
 		{/snippet}
 	</DataTable>
@@ -307,9 +390,5 @@
 <!-- ============== FORCED SMALL (CARD) LAYOUT ============== -->
 <h2 class="text-lg font-bold mb-4">Forced Card Layout (small prop)</h2>
 <div class="max-w-sm">
-	<DataTable
-		columns={basicColumns}
-		data={basicData}
-		small
-	/>
+	<DataTable columns={basicColumns} data={basicData} small />
 </div>

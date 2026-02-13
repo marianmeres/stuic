@@ -48,9 +48,7 @@
 	});
 
 	// --- Custom validation demo ---
-	function strictValidation(
-		data: CheckoutCustomerFormData
-	): CheckoutValidationError[] {
+	function strictValidation(data: CheckoutCustomerFormData): CheckoutValidationError[] {
 		const errors = validateCustomerForm(data, t_default);
 		if (!data.first_name.trim()) {
 			errors.push({ field: "first_name", message: "First name is required" });
@@ -242,27 +240,16 @@
 <!-- ============== CUSTOM SUBMIT BUTTON ============== -->
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Custom submit button (snippet)</h2>
-	<p class="text-sm opacity-60 mb-4">
-		Override the CTA section with a custom snippet.
-	</p>
+	<p class="text-sm opacity-60 mb-4">Override the CTA section with a custom snippet.</p>
 
 	<div class="max-w-lg">
 		<CheckoutGuestForm onSubmit={(data) => alert("Submitted: " + data.email)}>
 			{#snippet submitButton({ isSubmitting: submitting, disabled })}
 				<div class="flex gap-2 pt-2">
-					<Button
-						type="submit"
-						intent="primary"
-						{disabled}
-						class="flex-1"
-					>
+					<Button type="submit" intent="primary" {disabled} class="flex-1">
 						{submitting ? "Please wait..." : "Create Account & Continue"}
 					</Button>
-					<Button
-						type="button"
-						variant="outline"
-						onclick={() => alert("Skip clicked")}
-					>
+					<Button type="button" variant="outline" onclick={() => alert("Skip clicked")}>
 						Skip
 					</Button>
 				</div>
@@ -306,8 +293,8 @@
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Unstyled</h2>
 	<p class="text-sm opacity-60 mb-4">
-		With <code>unstyled</code> prop — no checkout-specific CSS classes applied.
-		FieldInput styling still applies.
+		With <code>unstyled</code> prop — no checkout-specific CSS classes applied. FieldInput styling
+		still applies.
 	</p>
 
 	<div class="max-w-lg">

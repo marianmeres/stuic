@@ -18,9 +18,9 @@
 <div class="space-y-8 p-4">
 	<h1 class="text-2xl font-bold">Dim Behind Action</h1>
 	<p class="text-sm text-neutral-600 dark:text-neutral-400">
-		A simplified alternative to <code>spotlight</code>. Dims everything behind a target element
-		by showing a shared backdrop and elevating the target above it via z-index. No cutout hole,
-		no annotations — just dim and elevate.
+		A simplified alternative to <code>spotlight</code>. Dims everything behind a target
+		element by showing a shared backdrop and elevating the target above it via z-index. No
+		cutout hole, no annotations — just dim and elevate.
 	</p>
 
 	<hr class="my-4" />
@@ -154,8 +154,8 @@
 	<section class="space-y-4">
 		<h2 class="text-xl font-semibold">Scroll lock</h2>
 		<p class="text-sm text-neutral-600 dark:text-neutral-400">
-			With <code>scrollLock: true</code>, the page becomes non-scrollable while dimmed. Compare
-			with the basic example above where scrolling still works.
+			With <code>scrollLock: true</code>, the page becomes non-scrollable while dimmed.
+			Compare with the basic example above where scrolling still works.
 		</p>
 
 		<div class="flex gap-4 items-center flex-wrap">
@@ -246,7 +246,9 @@
 		</div>
 
 		{#if callbackLog.length}
-			<div class="text-xs font-mono bg-neutral-100 dark:bg-neutral-800 rounded p-3 space-y-1">
+			<div
+				class="text-xs font-mono bg-neutral-100 dark:bg-neutral-800 rounded p-3 space-y-1"
+			>
 				{#each callbackLog as entry}
 					<div>{entry}</div>
 				{/each}

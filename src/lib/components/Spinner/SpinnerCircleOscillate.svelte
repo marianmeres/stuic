@@ -48,5 +48,7 @@
 	class={twMerge("stuic-spinner-circle-oscillate", classProp)}
 	bgStrokeColor={_bgStrokeColor}
 	{strokeWidth}
-	style={rotateDuration ? `--stuic-spinner-circle-oscillate-duration: ${rotateDuration}` : undefined}
+	style={rotateDuration
+		? `--stuic-spinner-circle-oscillate-duration: ${rotateDuration}`
+		: undefined}
 />

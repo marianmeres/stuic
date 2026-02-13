@@ -1,0 +1,66 @@
+/* ============================================================================
+   H (HEADING) COMPONENT TOKENS
+   Override globally: :root { --stuic-h1-font-size: 3rem; }
+   Override locally:  <H style="--stuic-h-font-weight: 400;" />
+   ============================================================================ */
+
+:root {
+	--stuic-h-font-family: inherit;
+	--stuic-h-font-weight: var(--font-weight-bold, 700);
+	--stuic-h-line-height: 1.2;
+	--stuic-h-letter-spacing: normal;
+	--stuic-h-color: inherit;
+	--stuic-h-margin: 0;
+
+	/* Per-level font sizes */
+	--stuic-h1-font-size: 2.25rem;
+	--stuic-h2-font-size: 1.875rem;
+	--stuic-h3-font-size: 1.5rem;
+	--stuic-h4-font-size: 1.25rem;
+	--stuic-h5-font-size: 1.125rem;
+	--stuic-h6-font-size: 1rem;
+}
+
+@layer components {
+	/* ============================================================================
+	   BASE STYLES
+	   ============================================================================ */
+
+	.stuic-h {
+		font-family: var(--stuic-h-font-family);
+		font-weight: var(--stuic-h-font-weight);
+		line-height: var(--stuic-h-line-height);
+		letter-spacing: var(--stuic-h-letter-spacing);
+		color: var(--stuic-h-color);
+		margin: var(--stuic-h-margin);
+	}
+
+	/* ============================================================================
+	   PER-LEVEL SIZING
+	   The data-level attribute reflects the visual level (renderLevel || level).
+	   ============================================================================ */
+
+	.stuic-h[data-level="1"] {
+		font-size: var(--stuic-h1-font-size);
+	}
+
+	.stuic-h[data-level="2"] {
+		font-size: var(--stuic-h2-font-size);
+	}
+
+	.stuic-h[data-level="3"] {
+		font-size: var(--stuic-h3-font-size);
+	}
+
+	.stuic-h[data-level="4"] {
+		font-size: var(--stuic-h4-font-size);
+	}
+
+	.stuic-h[data-level="5"] {
+		font-size: var(--stuic-h5-font-size);
+	}
+
+	.stuic-h[data-level="6"] {
+		font-size: var(--stuic-h6-font-size);
+	}
+}

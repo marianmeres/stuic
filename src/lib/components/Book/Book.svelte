@@ -193,19 +193,14 @@
 	$effect(() => {
 		const mode = isSinglePageMode;
 		if (prevMode !== undefined && prevMode !== mode) {
-			const oldSpreads = prevMode
-				? buildSinglePageSpreads(pages)
-				: buildSpreads(pages);
+			const oldSpreads = prevMode ? buildSinglePageSpreads(pages) : buildSpreads(pages);
 			const s = oldSpreads[activeSpread];
 			const visiblePage = s?.rightPage ?? s?.leftPage;
 			if (visiblePage) {
-				const newSpreads = mode
-					? buildSinglePageSpreads(pages)
-					: buildSpreads(pages);
+				const newSpreads = mode ? buildSinglePageSpreads(pages) : buildSpreads(pages);
 				const targetIdx = newSpreads.findIndex(
 					(sp) =>
-						sp.rightPage?.id === visiblePage.id ||
-						sp.leftPage?.id === visiblePage.id
+						sp.rightPage?.id === visiblePage.id || sp.leftPage?.id === visiblePage.id
 				);
 				if (targetIdx >= 0) activeSpread = targetIdx;
 			}
@@ -232,7 +227,11 @@
 			spreads.map((s) => ({ ...s })),
 			{ idPropName: "id" }
 		);
-		if (activeSpread !== undefined && activeSpread >= 0 && activeSpread < spreads.length) {
+		if (
+			activeSpread !== undefined &&
+			activeSpread >= 0 &&
+			activeSpread < spreads.length
+		) {
 			out.setActiveIndex(activeSpread);
 		}
 		return out;
@@ -385,8 +384,14 @@
 		const wrapperRect = el.getBoundingClientRect();
 		const stageWidth = stageEl?.getBoundingClientRect().width ?? wrapperRect.width;
 		const stageHeight = stageEl?.getBoundingClientRect().height ?? wrapperRect.height;
-		const maxPanX = Math.max(0, (stageWidth * zoomLevel - wrapperRect.width) / 2 / zoomLevel);
-		const maxPanY = Math.max(0, (stageHeight * zoomLevel - wrapperRect.height) / 2 / zoomLevel);
+		const maxPanX = Math.max(
+			0,
+			(stageWidth * zoomLevel - wrapperRect.width) / 2 / zoomLevel
+		);
+		const maxPanY = Math.max(
+			0,
+			(stageHeight * zoomLevel - wrapperRect.height) / 2 / zoomLevel
+		);
 		return {
 			x: Math.max(-maxPanX, Math.min(maxPanX, newX)),
 			y: Math.max(-maxPanY, Math.min(maxPanY, newY)),
@@ -538,9 +543,7 @@
 			if (isSwiping) {
 				isSwiping = false;
 				const clientX =
-					"changedTouches" in e
-						? e.changedTouches[0].clientX
-						: (e as MouseEvent).clientX;
+					"changedTouches" in e ? e.changedTouches[0].clientX : (e as MouseEvent).clientX;
 				const deltaX = clientX - swipeStartX;
 				const elapsed = Date.now() - swipeStartTime;
 				const SWIPE_THRESHOLD = 50;
@@ -591,86 +594,86 @@
 			style:overflow={zoomLevel > 1 || isSinglePage ? "hidden" : undefined}
 			{...rest}
 		>
-		<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-		<div
-			bind:this={stageEl}
-			class={twMerge(!unstyled && "stuic-book-stage", classStage)}
-			use:pannable
-			tabindex={keyboard ? 0 : undefined}
-			role="region"
-			aria-label="Book"
-			aria-roledescription="book"
-			style:margin-left={isSinglePageMode
-				? "calc(var(--stuic-book-page-width) * -1)"
-				: "0px"}
-			style:touch-action="none"
-			style:user-select="none"
-			style:transform={zoomLevel !== 1
-				? `scale(${zoomLevel}) translate(${panX / zoomLevel}px, ${panY / zoomLevel}px)`
-				: undefined}
-			style:transform-origin="center center"
-			class:cursor-grab={zoomLevel > 1 && !isPanning}
-			class:cursor-grabbing={isPanning}
-			onkeydown={handleKeydown}
-		>
-			<!-- Sheets (3D flippable elements) — no static pages needed -->
-			{#each sheets as sheet (sheet.id)}
-				{@const flipped = sheet.id < activeSpread}
-				<div
-					class={twMerge(!unstyled && "stuic-book-sheet")}
-					data-flipped={flipped ? "true" : undefined}
-					style:z-index={getSheetZIndex(sheet.id, flipped)}
-					style:transition-duration="{duration}ms"
-				>
-					<!-- Front face: right page of spread[sheetIndex] -->
+			<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+			<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+			<div
+				bind:this={stageEl}
+				class={twMerge(!unstyled && "stuic-book-stage", classStage)}
+				use:pannable
+				tabindex={keyboard ? 0 : undefined}
+				role="region"
+				aria-label="Book"
+				aria-roledescription="book"
+				style:margin-left={isSinglePageMode
+					? "calc(var(--stuic-book-page-width) * -1)"
+					: "0px"}
+				style:touch-action="none"
+				style:user-select="none"
+				style:transform={zoomLevel !== 1
+					? `scale(${zoomLevel}) translate(${panX / zoomLevel}px, ${panY / zoomLevel}px)`
+					: undefined}
+				style:transform-origin="center center"
+				class:cursor-grab={zoomLevel > 1 && !isPanning}
+				class:cursor-grabbing={isPanning}
+				onkeydown={handleKeydown}
+			>
+				<!-- Sheets (3D flippable elements) — no static pages needed -->
+				{#each sheets as sheet (sheet.id)}
+					{@const flipped = sheet.id < activeSpread}
 					<div
-						class={twMerge(!unstyled && "stuic-book-sheet-front", classPage)}
-						data-placeholder={!sheet.frontPage && sheet.backPage ? "" : undefined}
+						class={twMerge(!unstyled && "stuic-book-sheet")}
+						data-flipped={flipped ? "true" : undefined}
+						style:z-index={getSheetZIndex(sheet.id, flipped)}
+						style:transition-duration="{duration}ms"
 					>
-						{#if sheet.frontPage}
-							{#if renderPage}
-								{@render renderPage({
-									page: sheet.frontPage,
-									position: isSinglePageMode
-										? "right"
-										: sheet.id === 0
-											? "cover"
-											: "right",
-								})}
-							{:else}
-								<img
-									src={sheet.frontPage.src}
-									alt={sheet.frontPage.title ?? ""}
-									draggable="false"
-								/>
+						<!-- Front face: right page of spread[sheetIndex] -->
+						<div
+							class={twMerge(!unstyled && "stuic-book-sheet-front", classPage)}
+							data-placeholder={!sheet.frontPage && sheet.backPage ? "" : undefined}
+						>
+							{#if sheet.frontPage}
+								{#if renderPage}
+									{@render renderPage({
+										page: sheet.frontPage,
+										position: isSinglePageMode
+											? "right"
+											: sheet.id === 0
+												? "cover"
+												: "right",
+									})}
+								{:else}
+									<img
+										src={sheet.frontPage.src}
+										alt={sheet.frontPage.title ?? ""}
+										draggable="false"
+									/>
+								{/if}
 							{/if}
-						{/if}
-					</div>
+						</div>
 
-					<!-- Back face: left page of spread[sheetIndex + 1] -->
-					<div
-						class={twMerge(!unstyled && "stuic-book-sheet-back", classPage)}
-						data-placeholder={!sheet.backPage && sheet.frontPage ? "" : undefined}
-					>
-						{#if sheet.backPage}
-							{#if renderPage}
-								{@render renderPage({
-									page: sheet.backPage,
-									position: isSinglePageMode ? "right" : "left",
-								})}
-							{:else}
-								<img
-									src={sheet.backPage.src}
-									alt={sheet.backPage.title ?? ""}
-									draggable="false"
-								/>
+						<!-- Back face: left page of spread[sheetIndex + 1] -->
+						<div
+							class={twMerge(!unstyled && "stuic-book-sheet-back", classPage)}
+							data-placeholder={!sheet.backPage && sheet.frontPage ? "" : undefined}
+						>
+							{#if sheet.backPage}
+								{#if renderPage}
+									{@render renderPage({
+										page: sheet.backPage,
+										position: isSinglePageMode ? "right" : "left",
+									})}
+								{:else}
+									<img
+										src={sheet.backPage.src}
+										alt={sheet.backPage.title ?? ""}
+										draggable="false"
+									/>
+								{/if}
 							{/if}
-						{/if}
+						</div>
 					</div>
-				</div>
-			{/each}
-		</div>
+				{/each}
+			</div>
 		</div>
 	</div>
 {/if}

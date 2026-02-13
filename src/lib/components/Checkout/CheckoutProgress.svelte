@@ -86,12 +86,7 @@
 	);
 </script>
 
-<nav
-	bind:this={el}
-	class={_class}
-	aria-label={t("checkout.progress.label")}
-	{...rest}
->
+<nav bind:this={el} class={_class} aria-label={t("checkout.progress.label")} {...rest}>
 	{#each steps as step, index (step.id)}
 		{@const isPast = currentIndex >= 0 && index < currentIndex}
 		{@const isCurrent = index === currentIndex}

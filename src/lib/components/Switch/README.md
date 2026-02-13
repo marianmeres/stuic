@@ -4,27 +4,27 @@ A toggle switch component with size variants, semantic intents, keyboard support
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `checked` | `boolean` | - | Toggle state (bindable) |
-| `size` | `"sm" \| "md" \| "lg" \| "xl" \| string` | `"lg"` | Switch size |
-| `intent` | `"primary" \| "accent" \| "success" \| "warning" \| "destructive"` | - | Semantic color intent |
-| `name` | `string` | - | Form field name for hidden checkbox |
-| `label` | `string` | - | Screen reader label (visually hidden) |
-| `required` | `boolean` | `false` | Mark as required |
-| `disabled` | `boolean` | `false` | Disable toggle |
-| `tabindex` | `number` | `0` | Tab index |
-| `preHook` | `(current: boolean) => Promise<false \| any>` | - | Async validation (return `false` to prevent) |
-| `validate` | `boolean \| ValidateOptions` | - | Enable validation |
-| `class` | `string` | - | CSS for switch container |
-| `dotClass` | `string` | - | CSS for toggle knob |
+| Prop       | Type                                                               | Default | Description                                  |
+| ---------- | ------------------------------------------------------------------ | ------- | -------------------------------------------- |
+| `checked`  | `boolean`                                                          | -       | Toggle state (bindable)                      |
+| `size`     | `"sm" \| "md" \| "lg" \| "xl" \| string`                           | `"lg"`  | Switch size                                  |
+| `intent`   | `"primary" \| "accent" \| "success" \| "warning" \| "destructive"` | -       | Semantic color intent                        |
+| `name`     | `string`                                                           | -       | Form field name for hidden checkbox          |
+| `label`    | `string`                                                           | -       | Screen reader label (visually hidden)        |
+| `required` | `boolean`                                                          | `false` | Mark as required                             |
+| `disabled` | `boolean`                                                          | `false` | Disable toggle                               |
+| `tabindex` | `number`                                                           | `0`     | Tab index                                    |
+| `preHook`  | `(current: boolean) => Promise<false \| any>`                      | -       | Async validation (return `false` to prevent) |
+| `validate` | `boolean \| ValidateOptions`                                       | -       | Enable validation                            |
+| `class`    | `string`                                                           | -       | CSS for switch container                     |
+| `dotClass` | `string`                                                           | -       | CSS for toggle knob                          |
 
 ## Snippets
 
-| Snippet | Description |
-|---------|-------------|
-| `on` | Content inside knob when checked |
-| `off` | Content inside knob when unchecked |
+| Snippet | Description                        |
+| ------- | ---------------------------------- |
+| `on`    | Content inside knob when checked   |
+| `off`   | Content inside knob when unchecked |
 
 ## Usage
 
@@ -32,9 +32,9 @@ A toggle switch component with size variants, semantic intents, keyboard support
 
 ```svelte
 <script lang="ts">
-  import { Switch } from '@marianmeres/stuic';
+	import { Switch } from "@marianmeres/stuic";
 
-  let enabled = $state(false);
+	let enabled = $state(false);
 </script>
 
 <Switch bind:checked={enabled} />
@@ -62,12 +62,12 @@ A toggle switch component with size variants, semantic intents, keyboard support
 
 ```svelte
 <Switch bind:checked={darkMode}>
-  {#snippet on()}
-    <span class="text-xs">ON</span>
-  {/snippet}
-  {#snippet off()}
-    <span class="text-xs">OFF</span>
-  {/snippet}
+	{#snippet on()}
+		<span class="text-xs">ON</span>
+	{/snippet}
+	{#snippet off()}
+		<span class="text-xs">OFF</span>
+	{/snippet}
 </Switch>
 ```
 
@@ -75,18 +75,18 @@ A toggle switch component with size variants, semantic intents, keyboard support
 
 ```svelte
 <script lang="ts">
-  let premium = $state(false);
+	let premium = $state(false);
 
-  async function checkPremium(current: boolean) {
-    if (!current) {
-      const canEnable = await checkSubscription();
-      if (!canEnable) {
-        alert('Premium subscription required');
-        return false;
-      }
-    }
-    return true;
-  }
+	async function checkPremium(current: boolean) {
+		if (!current) {
+			const canEnable = await checkSubscription();
+			if (!canEnable) {
+				alert("Premium subscription required");
+				return false;
+			}
+		}
+		return true;
+	}
 </script>
 
 <Switch bind:checked={premium} preHook={checkPremium} />
@@ -96,10 +96,10 @@ A toggle switch component with size variants, semantic intents, keyboard support
 
 ```svelte
 <form>
-  <label class="flex items-center gap-2">
-    <Switch name="notifications" bind:checked={notifications} />
-    <span>Enable notifications</span>
-  </label>
+	<label class="flex items-center gap-2">
+		<Switch name="notifications" bind:checked={notifications} />
+		<span>Enable notifications</span>
+	</label>
 </form>
 ```
 
@@ -114,22 +114,22 @@ A toggle switch component with size variants, semantic intents, keyboard support
 
 ### Component Tokens
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--stuic-switch-track` | `--stuic-color-border` | Unchecked track color |
-| `--stuic-switch-track-checked` | `--stuic-color-primary` | Checked track color |
-| `--stuic-switch-dot` | `--color-white` | Knob background color |
-| `--stuic-switch-dot-foreground` | `--stuic-color-foreground` | Knob text/icon color |
-| `--stuic-switch-ring-width` | `4px` | Focus ring width |
-| `--stuic-switch-ring-color` | `--stuic-color-ring` | Focus ring color |
-| `--stuic-switch-transition` | `100ms` | Transition duration |
+| Variable                        | Default                    | Description           |
+| ------------------------------- | -------------------------- | --------------------- |
+| `--stuic-switch-track`          | `--stuic-color-border`     | Unchecked track color |
+| `--stuic-switch-track-checked`  | `--stuic-color-primary`    | Checked track color   |
+| `--stuic-switch-dot`            | `--color-white`            | Knob background color |
+| `--stuic-switch-dot-foreground` | `--stuic-color-foreground` | Knob text/icon color  |
+| `--stuic-switch-ring-width`     | `4px`                      | Focus ring width      |
+| `--stuic-switch-ring-color`     | `--stuic-color-ring`       | Focus ring color      |
+| `--stuic-switch-transition`     | `100ms`                    | Transition duration   |
 
 ### Example Overrides
 
 ```css
 /* Global: green switches */
 :root {
-  --stuic-switch-track-checked: var(--color-green-500);
+	--stuic-switch-track-checked: var(--color-green-500);
 }
 ```
 

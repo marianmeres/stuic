@@ -20,35 +20,35 @@ Common procedures for working with STUIC.
 
 ```svelte
 <script lang="ts" module>
-  import type { HTMLDivAttributes } from "svelte/elements";
-  import type { Snippet } from "svelte";
+	import type { HTMLDivAttributes } from "svelte/elements";
+	import type { Snippet } from "svelte";
 
-  export interface Props extends Omit<HTMLDivAttributes, "children"> {
-    children?: Snippet;
-    unstyled?: boolean;
-    class?: string;
-    el?: HTMLDivElement;
-  }
+	export interface Props extends Omit<HTMLDivAttributes, "children"> {
+		children?: Snippet;
+		unstyled?: boolean;
+		class?: string;
+		el?: HTMLDivElement;
+	}
 </script>
 
 <script lang="ts">
-  import { twMerge } from "../../utils/tw-merge.js";
+	import { twMerge } from "../../utils/tw-merge.js";
 
-  let {
-    children,
-    unstyled = false,
-    class: classProp,
-    el = $bindable(),
-    ...rest
-  }: Props = $props();
+	let {
+		children,
+		unstyled = false,
+		class: classProp,
+		el = $bindable(),
+		...rest
+	}: Props = $props();
 </script>
 
 <div
-  bind:this={el}
-  class={unstyled ? classProp : twMerge("stuic-{name}", classProp)}
-  {...rest}
+	bind:this={el}
+	class={unstyled ? classProp : twMerge("stuic-{name}", classProp)}
+	{...rest}
 >
-  {@render children?.()}
+	{@render children?.()}
 </div>
 ```
 
@@ -145,31 +145,42 @@ For adding a new theme to the library itself.
 import type { TokenSchema } from "../utils/design-tokens.js";
 
 const light: TokenSchema = {
-  colors: {
-    intent: {
-      primary:     { DEFAULT: "var(--color-blue-600)", foreground: "var(--color-white)" },
-      accent:      { DEFAULT: "var(--color-orange-500)", foreground: "var(--color-white)" },
-      destructive: { DEFAULT: "var(--color-rose-500)", foreground: "var(--color-white)" },
-      warning:     { DEFAULT: "var(--color-orange-400)", foreground: "var(--color-black)" },
-      success:     { DEFAULT: "var(--color-teal-500)", foreground: "var(--color-white)" },
-    },
-    role: {
-      paired: {
-        background: { DEFAULT: "var(--color-white)", foreground: "var(--color-stone-900)" },
-        surface:    { DEFAULT: "var(--color-stone-200)", foreground: "var(--color-stone-900)" },
-        muted:      { DEFAULT: "var(--color-stone-100)", foreground: "var(--color-stone-500)" },
-      },
-      single: {
-        foreground: "var(--color-stone-900)",
-        border:     { DEFAULT: "var(--color-stone-300)", hover: "var(--color-stone-400)" },
-        input:      { DEFAULT: "var(--color-stone-50)" },
-        ring:       "color-mix(in srgb, var(--color-blue-600) 20%, transparent)",
-      },
-    },
-  },
+	colors: {
+		intent: {
+			primary: { DEFAULT: "var(--color-blue-600)", foreground: "var(--color-white)" },
+			accent: { DEFAULT: "var(--color-orange-500)", foreground: "var(--color-white)" },
+			destructive: { DEFAULT: "var(--color-rose-500)", foreground: "var(--color-white)" },
+			warning: { DEFAULT: "var(--color-orange-400)", foreground: "var(--color-black)" },
+			success: { DEFAULT: "var(--color-teal-500)", foreground: "var(--color-white)" },
+		},
+		role: {
+			paired: {
+				background: {
+					DEFAULT: "var(--color-white)",
+					foreground: "var(--color-stone-900)",
+				},
+				surface: {
+					DEFAULT: "var(--color-stone-200)",
+					foreground: "var(--color-stone-900)",
+				},
+				muted: {
+					DEFAULT: "var(--color-stone-100)",
+					foreground: "var(--color-stone-500)",
+				},
+			},
+			single: {
+				foreground: "var(--color-stone-900)",
+				border: { DEFAULT: "var(--color-stone-300)", hover: "var(--color-stone-400)" },
+				input: { DEFAULT: "var(--color-stone-50)" },
+				ring: "color-mix(in srgb, var(--color-blue-600) 20%, transparent)",
+			},
+		},
+	},
 };
 
-const dark: TokenSchema = { /* dark mode overrides */ };
+const dark: TokenSchema = {
+	/* dark mode overrides */
+};
 
 export default { light, dark };
 ```
@@ -197,26 +208,26 @@ For consumers creating their own theme outside the library.
 ### Template: build-theme.ts
 
 ```ts
-import type { ThemeSchema } from '@marianmeres/stuic';
-import { generateThemeCss } from '@marianmeres/stuic';
-import stone from '@marianmeres/stuic/themes/stone';
-import { writeFileSync } from 'node:fs';
+import type { ThemeSchema } from "@marianmeres/stuic";
+import { generateThemeCss } from "@marianmeres/stuic";
+import stone from "@marianmeres/stuic/themes/stone";
+import { writeFileSync } from "node:fs";
 
 const myTheme: ThemeSchema = {
-  light: {
-    ...stone.light,
-    colors: {
-      ...stone.light.colors,
-      intent: {
-        ...stone.light.colors.intent,
-        primary: { DEFAULT: '#3b82f6', foreground: '#ffffff', hover: '#2563eb' },
-      },
-    },
-  },
-  dark: stone.dark,
+	light: {
+		...stone.light,
+		colors: {
+			...stone.light.colors,
+			intent: {
+				...stone.light.colors.intent,
+				primary: { DEFAULT: "#3b82f6", foreground: "#ffffff", hover: "#2563eb" },
+			},
+		},
+	},
+	dark: stone.dark,
 };
 
-writeFileSync('src/theme.css', generateThemeCss(myTheme));
+writeFileSync("src/theme.css", generateThemeCss(myTheme));
 ```
 
 ### Checklist
@@ -264,8 +275,8 @@ writeFileSync('src/theme.css', generateThemeCss(myTheme));
 
 ### Naming Rules
 
-| Correct | Wrong |
-|---------|-------|
-| `--stuic-button-bg-hover` | `--stuic-button-hover-bg` |
-| `--stuic-list-item-button-radius` | `--stuic-lib-radius` |
-| `:root.dark { --stuic-button-bg: ...; }` | `--stuic-button-bg-dark` |
+| Correct                                  | Wrong                     |
+| ---------------------------------------- | ------------------------- |
+| `--stuic-button-bg-hover`                | `--stuic-button-hover-bg` |
+| `--stuic-list-item-button-radius`        | `--stuic-lib-radius`      |
+| `:root.dark { --stuic-button-bg: ...; }` | `--stuic-button-bg-dark`  |

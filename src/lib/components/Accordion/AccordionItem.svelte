@@ -28,10 +28,7 @@
 <script lang="ts">
 	import { getContext } from "svelte";
 	import { twMerge } from "../../utils/tw-merge.js";
-	import {
-		ACCORDION_CTX_KEY,
-		type AccordionContext,
-	} from "./Accordion.svelte";
+	import { ACCORDION_CTX_KEY, type AccordionContext } from "./Accordion.svelte";
 
 	let {
 		open = $bindable(false),
@@ -116,12 +113,7 @@
 			<polyline points="6 9 12 15 18 9"></polyline>
 		</svg>
 	</button>
-	<div
-		id={panelId}
-		class={_classContent}
-		role="region"
-		aria-labelledby={triggerId}
-	>
+	<div id={panelId} class={_classContent} role="region" aria-labelledby={triggerId}>
 		<div class="stuic-accordion-content-inner">
 			<div class="stuic-accordion-content-body">
 				{@render children()}

@@ -58,7 +58,12 @@
 	const orderMinimal: CheckoutOrderData = {
 		status: "completed",
 		items: [
-			{ product_id: "p1", name: "Digital Download — Pro License", price: 4999, quantity: 1 },
+			{
+				product_id: "p1",
+				name: "Digital Download — Pro License",
+				price: 4999,
+				quantity: 1,
+			},
 		],
 		currency: "USD",
 		totals: {
@@ -74,10 +79,7 @@
 	let continueLog = $state<string[]>([]);
 
 	function logContinue(label: string) {
-		continueLog = [
-			...continueLog,
-			`${label} at ${new Date().toLocaleTimeString()}`,
-		];
+		continueLog = [...continueLog, `${label} at ${new Date().toLocaleTimeString()}`];
 	}
 
 	function dollarFormat(cents: number): string {
@@ -95,8 +97,8 @@
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Full order with email notification</h2>
 	<p class="text-sm opacity-60 mb-4">
-		Complete confirmation page with all sections, email notification, and continue shopping
-		CTA.
+		Complete confirmation page with all sections, email notification, and continue
+		shopping CTA.
 	</p>
 
 	<CheckoutOrderConfirmation
@@ -111,8 +113,9 @@
 		<div class="mt-4 max-w-2xl mx-auto">
 			<h3 class="text-sm font-semibold mb-1">Continue shopping log:</h3>
 			<pre
-				class="text-xs p-3 bg-neutral-100 dark:bg-neutral-900 rounded overflow-auto"
-			>{continueLog.join("\n")}</pre>
+				class="text-xs p-3 bg-neutral-100 dark:bg-neutral-900 rounded overflow-auto">{continueLog.join(
+					"\n"
+				)}</pre>
 		</div>
 	{/if}
 </section>

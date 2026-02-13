@@ -29,9 +29,7 @@
 	<section>
 		<h2 class="text-lg font-semibold mb-2">Short content (no toggle needed)</h2>
 		<div class="p-4 bg-neutral-100 dark:bg-neutral-800 rounded">
-			<Collapsible>
-				Short text.
-			</Collapsible>
+			<Collapsible>Short text.</Collapsible>
 		</div>
 	</section>
 

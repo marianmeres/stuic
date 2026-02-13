@@ -68,8 +68,6 @@
 	let invalid = $derived(validation && !validation?.valid);
 	let id = getId();
 	let idDesc = getId();
-
-
 </script>
 
 {#snippet snippetOrThc({ id, value }: { id: string; value?: SnippetWithId | THC })}
@@ -88,13 +86,7 @@
 		classRadioBox
 	)}
 >
-	<div
-		class={twMerge(
-			"input-box",
-			"flex h-6 items-center ml-1",
-			classInputBox
-		)}
-	>
+	<div class={twMerge("input-box", "flex h-6 items-center ml-1", classInputBox)}>
 		<input
 			type="radio"
 			{id}

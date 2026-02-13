@@ -173,7 +173,9 @@
 		<div class={unstyled ? undefined : "stuic-checkout-alert"} role="alert">{error}</div>
 	{:else}
 		{#if error}
-			<div class={unstyled ? undefined : "stuic-checkout-alert"} role="alert">{error}</div>
+			<div class={unstyled ? undefined : "stuic-checkout-alert"} role="alert">
+				{error}
+			</div>
 		{/if}
 
 		<div class={unstyled ? undefined : "stuic-checkout-review-step-grid"}>
@@ -206,12 +208,10 @@
 						{#if guestForm}
 							<CheckoutGuestForm {...guestForm} t={tProp} {unstyled} />
 						{/if}
-
 					{:else if formMode === "login-only"}
 						{#if loginForm}
 							<CheckoutLoginForm {...loginForm} t={tProp} {unstyled} />
 						{/if}
-
 					{:else if formMode === "tabbed"}
 						<TabbedMenu
 							items={tabItems}
@@ -229,7 +229,6 @@
 								<CheckoutLoginForm {...loginForm} t={tProp} {unstyled} />
 							</div>
 						{/if}
-
 					{:else if formMode === "stacked"}
 						{#if loginForm}
 							<CheckoutLoginForm {...loginForm} t={tProp} {unstyled} />

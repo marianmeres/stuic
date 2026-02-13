@@ -22,6 +22,7 @@ project conventions.
 ## Architecture
 
 STUIC uses a 3-layer CSS token system:
+
 ```
 Layer 1: Theme Tokens (--stuic-color-*)     → defined in theme CSS files
 Layer 2: Component Tokens (--stuic-{comp}-*) → defined in component index.css
@@ -35,6 +36,7 @@ All component CSS is centralized in `src/lib/index.css` (NOT imported inside com
 Every component requires these files at `src/lib/components/{Name}/`:
 
 ### 1. `{Name}.svelte`
+
 - `<script lang="ts" module>` block with exported `Props` interface
 - Props MUST extend appropriate HTML element attributes via `Omit<HTMLXAttributes, "children">`
 - MUST include universal props: `unstyled`, `class`, `el = $bindable()`
@@ -45,6 +47,7 @@ Every component requires these files at `src/lib/components/{Name}/`:
 - Conditional data attributes: `data-active={active ? "true" : undefined}`
 
 ### 2. `index.ts`
+
 ```ts
 export {
   default as {Name},
@@ -54,6 +57,7 @@ export {
 ```
 
 ### 3. `index.css` (if component needs theming)
+
 - Define tokens in `:root {}` block
 - Component tokens reference theme tokens as fallbacks
 - Pattern: `--stuic-{component}-{property}-{state}`
@@ -64,6 +68,7 @@ export {
 - Use internal vars (`--_bg`, `--_text`, `--_border`) for state mapping
 
 ### 4. `README.md`
+
 - Component description
 - Props table (Prop | Type | Default | Description)
 - Usage examples (basic + advanced)
@@ -77,6 +82,7 @@ export {
 ## Validation Checklist
 
 Before finishing ANY component work:
+
 - [ ] Run `svelte-autofixer` on the component code
 - [ ] Run `npm run check` to verify no type errors
 - [ ] Verify no Svelte 4 syntax (`export let`, `$:`)
@@ -88,19 +94,20 @@ Before finishing ANY component work:
 
 ## Anti-Patterns (NEVER Do These)
 
-| Wrong | Right |
-|-------|-------|
-| `export let prop` | `let { prop } = $props()` |
-| `$: derived = ...` | `let derived = $derived(...)` |
-| `dark:bg-gray-800` | CSS var with `:root.dark {}` |
+| Wrong                             | Right                         |
+| --------------------------------- | ----------------------------- |
+| `export let prop`                 | `let { prop } = $props()`     |
+| `$: derived = ...`                | `let derived = $derived(...)` |
+| `dark:bg-gray-800`                | CSS var with `:root.dark {}`  |
 | `import './index.css'` in .svelte | Import in `src/lib/index.css` |
-| `class="variant-primary"` | `data-variant="primary"` |
-| `--stuic-btn-*` | `--stuic-button-*` |
-| `--stuic-button-hover-bg` | `--stuic-button-bg-hover` |
+| `class="variant-primary"`         | `data-variant="primary"`      |
+| `--stuic-btn-*`                   | `--stuic-button-*`            |
+| `--stuic-button-hover-bg`         | `--stuic-button-bg-hover`     |
 
 ## Memory
 
 After completing work, update your agent memory with:
+
 - New patterns or conventions you discovered
 - Component relationships or dependencies worth noting
 - Recurring issues and their solutions

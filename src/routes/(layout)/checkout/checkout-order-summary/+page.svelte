@@ -136,8 +136,8 @@
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">With discount</h2>
 	<p class="text-sm opacity-60 mb-4">
-		Discount row appears when <code>totals.discount &gt; 0</code>, shown in green with minus
-		prefix.
+		Discount row appears when <code>totals.discount &gt; 0</code>, shown in green with
+		minus prefix.
 	</p>
 
 	<div class="max-w-xs">

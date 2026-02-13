@@ -64,8 +64,7 @@
 	/** Layout variant */
 	export type CartVariant = "default" | "compact";
 
-	export interface Props
-		extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
+	export interface Props extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
 		/** Cart items to display */
 		items: CartComponentItem[];
 
@@ -93,31 +92,37 @@
 		thumbnail?: Snippet<[{ item: CartComponentItem }]>;
 		/** Override entire item row rendering */
 		itemRow?: Snippet<
-			[{
-				item: CartComponentItem;
-				isUpdating: boolean;
-				readonly: boolean;
-				formatPrice: (v: number) => string;
-			}]
+			[
+				{
+					item: CartComponentItem;
+					isUpdating: boolean;
+					readonly: boolean;
+					formatPrice: (v: number) => string;
+				},
+			]
 		>;
 		/** Override/extend summary section */
 		summary?: Snippet<
-			[{
-				items: CartComponentItem[];
-				total: number;
-				itemCount: number;
-				formatPrice: (v: number) => string;
-			}]
+			[
+				{
+					items: CartComponentItem[];
+					total: number;
+					itemCount: number;
+					formatPrice: (v: number) => string;
+				},
+			]
 		>;
 		/** Custom empty state */
 		empty?: Snippet;
 		/** Content after the summary (e.g., CTA buttons) */
 		footer?: Snippet<
-			[{
-				items: CartComponentItem[];
-				total: number;
-				itemCount: number;
-			}]
+			[
+				{
+					items: CartComponentItem[];
+					total: number;
+					itemCount: number;
+				},
+			]
 		>;
 
 		/** Optional translate function */
@@ -207,9 +212,7 @@
 	}
 
 	// --- CSS ---
-	let rootClass = $derived(
-		unstyled ? classProp : twMerge("stuic-cart", classProp)
-	);
+	let rootClass = $derived(unstyled ? classProp : twMerge("stuic-cart", classProp));
 </script>
 
 <!-- Root container -->
@@ -275,7 +278,8 @@
 					>
 						<!-- Thumbnail -->
 						{#if !noThumbnails}
-							<div class={!unstyled ? "stuic-cart-item-thumbnail" : undefined}
+							<div
+								class={!unstyled ? "stuic-cart-item-thumbnail" : undefined}
 								data-variant={!unstyled ? variant : undefined}
 							>
 								{#if thumbnail}
@@ -309,37 +313,23 @@
 							{#if item.href}
 								<a
 									href={item.href}
-									class={!unstyled
-										? "stuic-cart-item-name"
-										: undefined}
+									class={!unstyled ? "stuic-cart-item-name" : undefined}
 								>
 									{item.name}
 								</a>
 							{:else}
-								<span
-									class={!unstyled
-										? "stuic-cart-item-name"
-										: undefined}
-								>
+								<span class={!unstyled ? "stuic-cart-item-name" : undefined}>
 									{item.name}
 								</span>
 							{/if}
 
 							{#if item.description && !isCompact}
-								<div
-									class={!unstyled
-										? "stuic-cart-item-description"
-										: undefined}
-								>
+								<div class={!unstyled ? "stuic-cart-item-description" : undefined}>
 									{item.description}
 								</div>
 							{/if}
 
-							<div
-								class={!unstyled
-									? "stuic-cart-item-unit-price"
-									: undefined}
-							>
+							<div class={!unstyled ? "stuic-cart-item-unit-price" : undefined}>
 								{t("unit_price_each", {
 									price: formatPrice(item.unitPrice),
 								})}
@@ -347,40 +337,21 @@
 
 							{#if isReadonly}
 								<!-- Readonly quantity display -->
-								<div
-									class={!unstyled
-										? "stuic-cart-item-quantity-readonly"
-										: undefined}
-								>
+								<div class={!unstyled ? "stuic-cart-item-quantity-readonly" : undefined}>
 									{t("quantity_label", {
 										quantity: item.quantity,
 									})}{#if item.unit}&nbsp;{item.unit}{/if}
 								</div>
 							{:else}
 								<!-- Interactive quantity controls -->
-								<div
-									class={!unstyled
-										? "stuic-cart-item-controls"
-										: undefined}
-								>
-									<div
-										class={!unstyled
-											? "stuic-cart-quantity"
-											: undefined}
-									>
+								<div class={!unstyled ? "stuic-cart-item-controls" : undefined}>
+									<div class={!unstyled ? "stuic-cart-quantity" : undefined}>
 										<button
 											type="button"
-											class={!unstyled
-												? "stuic-cart-quantity-button"
-												: undefined}
-											disabled={isUpdating ||
-												item.quantity <=
-													(item.minQuantity ?? 0)}
-											onclick={() =>
-												decrementQuantity(item)}
-											aria-label={t(
-												"decrease_quantity"
-											)}
+											class={!unstyled ? "stuic-cart-quantity-button" : undefined}
+											disabled={isUpdating || item.quantity <= (item.minQuantity ?? 0)}
+											onclick={() => decrementQuantity(item)}
+											aria-label={t("decrease_quantity")}
 										>
 											&minus;
 										</button>
@@ -390,9 +361,7 @@
 												min={item.minQuantity ?? 0}
 												max={item.maxQuantity}
 												step={item.quantityStep ?? 1}
-												class={!unstyled
-													? "stuic-cart-quantity-input"
-													: undefined}
+												class={!unstyled ? "stuic-cart-quantity-input" : undefined}
 												value={item.quantity}
 												onblur={(e) =>
 													handleQuantityInputCommit(
@@ -407,9 +376,7 @@
 															item.quantity,
 															e.currentTarget.value
 														);
-													} else if (
-														e.key === "Escape"
-													) {
+													} else if (e.key === "Escape") {
 														editingItemId = null;
 													}
 												}}
@@ -418,11 +385,8 @@
 										{:else}
 											<button
 												type="button"
-												class={!unstyled
-													? "stuic-cart-quantity-value"
-													: undefined}
-												onclick={() =>
-													(editingItemId = item.id)}
+												class={!unstyled ? "stuic-cart-quantity-value" : undefined}
+												onclick={() => (editingItemId = item.id)}
 												disabled={isUpdating}
 											>
 												{item.quantity}
@@ -430,36 +394,23 @@
 										{/if}
 										<button
 											type="button"
-											class={!unstyled
-												? "stuic-cart-quantity-button"
-												: undefined}
+											class={!unstyled ? "stuic-cart-quantity-button" : undefined}
 											disabled={isUpdating ||
-												(item.maxQuantity != null &&
-													item.quantity >=
-														item.maxQuantity)}
-											onclick={() =>
-												incrementQuantity(item)}
-											aria-label={t(
-												"increase_quantity"
-											)}
+												(item.maxQuantity != null && item.quantity >= item.maxQuantity)}
+											onclick={() => incrementQuantity(item)}
+											aria-label={t("increase_quantity")}
 										>
 											+
 										</button>
 									</div>
 									{#if item.unit}
-										<span
-											class={!unstyled
-												? "stuic-cart-item-unit"
-												: undefined}
-										>
+										<span class={!unstyled ? "stuic-cart-item-unit" : undefined}>
 											{item.unit}
 										</span>
 									{/if}
 									<button
 										type="button"
-										class={!unstyled
-											? "stuic-cart-remove"
-											: undefined}
+										class={!unstyled ? "stuic-cart-remove" : undefined}
 										disabled={isUpdating}
 										onclick={() => onRemove?.(item.id)}
 									>
@@ -470,11 +421,7 @@
 						</div>
 
 						<!-- Line total -->
-						<div
-							class={!unstyled
-								? "stuic-cart-item-total"
-								: undefined}
-						>
+						<div class={!unstyled ? "stuic-cart-item-total" : undefined}>
 							{formatPrice(item.lineTotal)}
 						</div>
 					</div>
@@ -486,7 +433,8 @@
 		{#if summary}
 			{@render summary({ items, total, itemCount, formatPrice })}
 		{:else}
-			<div class={!unstyled ? "stuic-cart-summary" : undefined}
+			<div
+				class={!unstyled ? "stuic-cart-summary" : undefined}
 				data-variant={!unstyled ? variant : undefined}
 			>
 				<span class={!unstyled ? "stuic-cart-summary-label" : undefined}>
@@ -495,7 +443,8 @@
 						? t("item_count_1")
 						: t("item_count_n", { count: itemCount })})
 				</span>
-				<span class={!unstyled ? "stuic-cart-summary-total" : undefined}
+				<span
+					class={!unstyled ? "stuic-cart-summary-total" : undefined}
 					data-variant={!unstyled ? variant : undefined}
 				>
 					{formatPrice(total)}

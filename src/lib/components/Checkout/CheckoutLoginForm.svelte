@@ -116,13 +116,7 @@
 	);
 </script>
 
-<form
-	bind:this={el}
-	class={_class}
-	onsubmit={handleSubmit}
-	novalidate
-	{...rest}
->
+<form bind:this={el} class={_class} onsubmit={handleSubmit} novalidate {...rest}>
 	<!-- General error alert -->
 	{#if error}
 		<div class={unstyled ? undefined : "stuic-checkout-alert"} role="alert">

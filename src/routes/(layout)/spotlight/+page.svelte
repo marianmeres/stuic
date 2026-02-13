@@ -4,6 +4,7 @@
 		showSpotlight,
 		hideSpotlight,
 		isSpotlightOpen,
+		type SpotlightPosition,
 	} from "$lib/index.js";
 
 	let tourStep = $state(0);
@@ -25,7 +26,8 @@
 	<h1 class="text-2xl font-bold">Spotlight Action</h1>
 	<p class="text-sm text-neutral-600 dark:text-neutral-400">
 		Highlights a target element by dimming everything else behind a backdrop with a cutout
-		hole. Useful for onboarding tutorials, feature tours, and drawing attention to UI elements.
+		hole. Useful for onboarding tutorials, feature tours, and drawing attention to UI
+		elements.
 	</p>
 
 	<hr class="my-4" />
@@ -33,7 +35,8 @@
 	<section class="space-y-4">
 		<h2 class="text-xl font-semibold">Basic (programmatic via ID)</h2>
 		<p class="text-sm text-neutral-600 dark:text-neutral-400">
-			Click "Show" to spotlight the target element. Close via Escape or clicking the backdrop.
+			Click "Show" to spotlight the target element. Close via Escape or clicking the
+			backdrop.
 		</p>
 
 		<div class="flex gap-4 items-center flex-wrap">
@@ -117,7 +120,7 @@
 					class="px-4 py-2 bg-neutral-200 dark:bg-neutral-700 rounded"
 					use:spotlight={() => ({
 						content: `Position: ${pos}`,
-						position: pos,
+						position: pos as SpotlightPosition,
 						id,
 						class: "p-2 text-sm",
 					})}

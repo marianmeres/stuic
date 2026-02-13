@@ -6,13 +6,13 @@
 
 ## Quick Reference
 
-| | Command |
-|---|---------|
-| **Dev** | `npm run dev` |
-| **Build** | `npm run build` |
-| **Test** | `npm run test` |
-| **Check** | `npm run check` |
-| **Lint** | `npm run lint` |
+|            | Command          |
+| ---------- | ---------------- |
+| **Dev**    | `npm run dev`    |
+| **Build**  | `npm run build`  |
+| **Test**   | `npm run test`   |
+| **Check**  | `npm run check`  |
+| **Lint**   | `npm run lint`   |
 | **Format** | `npm run format` |
 
 **Stack:** Svelte 5 (runes) · Tailwind CSS v4 · SvelteKit (library mode) · Vite
@@ -67,17 +67,20 @@ src/lib/
 ## Documentation Index
 
 ### Core Docs
+
 - [Architecture](./docs/architecture.md) — System design, data flow
 - [Conventions](./docs/conventions.md) — Code standards, patterns
 - [Tasks](./docs/tasks.md) — Common procedures
 
 ### Domain Docs
+
 - [Components](./docs/domains/components.md) — 38 components, Props pattern, snippets
 - [Theming](./docs/domains/theming.md) — CSS tokens, dark mode, themes
 - [Actions](./docs/domains/actions.md) — 14 Svelte directives
 - [Utils](./docs/domains/utils.md) — 42 utility functions
 
 ### Reference
+
 - [Design Tokens Manual](./docs/DESIGN_TOKENS_MANUAL.md) — Token philosophy
 - [Tailwind v4 Variables](./docs/TAILWIND_V4_CSS_VARIABLES.md) — CSS variable reference
 
@@ -85,15 +88,15 @@ src/lib/
 
 ## Key Files
 
-| File | Purpose |
-|------|---------|
-| `src/lib/index.css` | CSS entry point |
-| `src/lib/index.ts` | JS entry point |
+| File                             | Purpose                                                                |
+| -------------------------------- | ---------------------------------------------------------------------- |
+| `src/lib/index.css`              | CSS entry point                                                        |
+| `src/lib/index.ts`               | JS entry point                                                         |
 | `src/lib/utils/design-tokens.ts` | Theme types + CSS generation (`ThemeSchema`, `generateThemeCss`, etc.) |
-| `src/lib/themes/*.ts` | Theme definitions (26 themes, `TokenSchema`-typed) |
-| `src/lib/themes/css/stone.css` | Default theme (generated) |
-| `src/lib/components/Button/` | Reference component |
-| `scripts/generate-theme.ts` | CLI: `pnpm run build:theme:all` |
+| `src/lib/themes/*.ts`            | Theme definitions (26 themes, `TokenSchema`-typed)                     |
+| `src/lib/themes/css/stone.css`   | Default theme (generated)                                              |
+| `src/lib/components/Button/`     | Reference component                                                    |
+| `scripts/generate-theme.ts`      | CLI: `pnpm run build:theme:all`                                        |
 
 ---
 
@@ -103,6 +106,7 @@ You have access to the Svelte MCP server providing comprehensive Svelte 5 docume
 This is a **component library**, not a SvelteKit application — skip SvelteKit-specific guidance (routing, load functions, hooks, adapters, etc.).
 
 ### Available Tools
+
 1. **list-sections**: Call FIRST to discover available documentation sections.
 2. **get-documentation**: Fetch full docs for specific sections (runes, lifecycle, snippets, etc.).
 3. **svelte-autofixer**: Validate Svelte code for correctness — always run before finalizing component changes.

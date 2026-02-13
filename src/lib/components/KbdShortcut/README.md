@@ -4,24 +4,24 @@ Display keyboard shortcuts with platform-aware modifier key symbols. Automatical
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `keys` | `string` | - | The key(s) to display (e.g., `"K"`, `"Enter"`) |
-| `metas` | `KnownMeta[]` | `[]` | Array of modifier keys |
-| `forcedOs` | `"mac" \| "win" \| "linux"` | - | Force specific OS symbols |
-| `class` | `string` | - | CSS classes |
+| Prop       | Type                        | Default | Description                                    |
+| ---------- | --------------------------- | ------- | ---------------------------------------------- |
+| `keys`     | `string`                    | -       | The key(s) to display (e.g., `"K"`, `"Enter"`) |
+| `metas`    | `KnownMeta[]`               | `[]`    | Array of modifier keys                         |
+| `forcedOs` | `"mac" \| "win" \| "linux"` | -       | Force specific OS symbols                      |
+| `class`    | `string`                    | -       | CSS classes                                    |
 
 ## Meta Keys
 
-| Meta | macOS | Windows/Linux |
-|------|-------|---------------|
-| `cmd` | ⌘ | ⊞ |
-| `meta` | ⌘ | ⊞ |
-| `win` | ⌘ | ⊞ |
-| `opt` | ⌥ | Alt |
-| `alt` | ⌥ | Alt |
-| `shift` | ⇧ | ⇧ |
-| `ctrl` | ⌃ | Ctrl |
+| Meta    | macOS | Windows/Linux |
+| ------- | ----- | ------------- |
+| `cmd`   | ⌘     | ⊞             |
+| `meta`  | ⌘     | ⊞             |
+| `win`   | ⌘     | ⊞             |
+| `opt`   | ⌥     | Alt           |
+| `alt`   | ⌥     | Alt           |
+| `shift` | ⇧     | ⇧             |
+| `ctrl`  | ⌃     | Ctrl          |
 
 ## Usage
 
@@ -29,10 +29,10 @@ Display keyboard shortcuts with platform-aware modifier key symbols. Automatical
 
 ```svelte
 <script lang="ts">
-  import { KbdShortcut } from 'stuic';
+	import { KbdShortcut } from "stuic";
 </script>
 
-<KbdShortcut metas={['cmd']} keys="K" />
+<KbdShortcut metas={["cmd"]} keys="K" />
 <!-- macOS: ⌘K -->
 <!-- Windows: ⊞K -->
 ```
@@ -40,7 +40,7 @@ Display keyboard shortcuts with platform-aware modifier key symbols. Automatical
 ### Multiple Modifiers
 
 ```svelte
-<KbdShortcut metas={['cmd', 'shift']} keys="P" />
+<KbdShortcut metas={["cmd", "shift"]} keys="P" />
 <!-- macOS: ⌘⇧P -->
 <!-- Windows: ⊞⇧P -->
 ```
@@ -55,10 +55,10 @@ Display keyboard shortcuts with platform-aware modifier key symbols. Automatical
 ### Force Specific OS
 
 ```svelte
-<KbdShortcut metas={['cmd']} keys="S" forcedOs="mac" />
+<KbdShortcut metas={["cmd"]} keys="S" forcedOs="mac" />
 <!-- Always shows: ⌘S -->
 
-<KbdShortcut metas={['cmd']} keys="S" forcedOs="win" />
+<KbdShortcut metas={["cmd"]} keys="S" forcedOs="win" />
 <!-- Always shows: ⊞S -->
 ```
 
@@ -66,41 +66,37 @@ Display keyboard shortcuts with platform-aware modifier key symbols. Automatical
 
 ```svelte
 <p>
-  Press <KbdShortcut metas={['cmd']} keys="K" /> to open search
+	Press <KbdShortcut metas={["cmd"]} keys="K" /> to open search
 </p>
 ```
 
 ### Custom Styling
 
 ```svelte
-<KbdShortcut
-  metas={['cmd', 'shift']}
-  keys="Z"
-  class="bg-gray-100 px-2 py-1"
-/>
+<KbdShortcut metas={["cmd", "shift"]} keys="Z" class="bg-gray-100 px-2 py-1" />
 ```
 
 ## CSS Variables
 
 Override to customize appearance:
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--stuic-kbd-font-family` | `var(--font-mono)` | Font family |
-| `--stuic-kbd-font-size` | `var(--text-sm)` | Font size |
-| `--stuic-kbd-padding-x` | `calc(var(--spacing) * 1)` | Horizontal padding |
-| `--stuic-kbd-padding-y` | `0` | Vertical padding |
-| `--stuic-kbd-gap` | `calc(var(--spacing) * 0.5)` | Gap between elements |
-| `--stuic-kbd-radius` | `var(--radius-sm)` | Border radius |
-| `--stuic-kbd-border-width` | `1px` | Border width |
-| `--stuic-kbd-border-color` | `var(--stuic-color-border)` | Border color (themeable) |
+| Variable                   | Default                      | Description              |
+| -------------------------- | ---------------------------- | ------------------------ |
+| `--stuic-kbd-font-family`  | `var(--font-mono)`           | Font family              |
+| `--stuic-kbd-font-size`    | `var(--text-sm)`             | Font size                |
+| `--stuic-kbd-padding-x`    | `calc(var(--spacing) * 1)`   | Horizontal padding       |
+| `--stuic-kbd-padding-y`    | `0`                          | Vertical padding         |
+| `--stuic-kbd-gap`          | `calc(var(--spacing) * 0.5)` | Gap between elements     |
+| `--stuic-kbd-radius`       | `var(--radius-sm)`           | Border radius            |
+| `--stuic-kbd-border-width` | `1px`                        | Border width             |
+| `--stuic-kbd-border-color` | `var(--stuic-color-border)`  | Border color (themeable) |
 
 ### Global Override
 
 ```css
 :root {
-  --stuic-kbd-border-color: var(--color-blue-500);
-  --stuic-kbd-radius: var(--radius-lg);
+	--stuic-kbd-border-color: var(--color-blue-500);
+	--stuic-kbd-radius: var(--radius-lg);
 }
 ```
 
@@ -108,8 +104,8 @@ Override to customize appearance:
 
 ```svelte
 <KbdShortcut
-  metas={['cmd']}
-  keys="K"
-  style="--stuic-kbd-border-color: blue; --stuic-kbd-radius: 0;"
+	metas={["cmd"]}
+	keys="K"
+	style="--stuic-kbd-border-color: blue; --stuic-kbd-radius: 0;"
 />
 ```

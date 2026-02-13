@@ -6,21 +6,21 @@ A flexible content renderer supporting multiple content formats: Text, Html, or 
 
 ```ts
 type THC =
-  | string                              // Plain string
-  | { text: string }                    // Explicit text
-  | { html: string }                    // HTML (rendered with @html)
-  | { component: Component, props?: {} } // Svelte component
-  | { snippet: Snippet }                // Svelte snippet
-  | Snippet                             // Direct snippet function
+	| string // Plain string
+	| { text: string } // Explicit text
+	| { html: string } // HTML (rendered with @html)
+	| { component: Component; props?: {} } // Svelte component
+	| { snippet: Snippet } // Svelte snippet
+	| Snippet; // Direct snippet function
 ```
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `thc` | `THC` | - | Content to render |
-| `forceAsHtml` | `boolean` | `false` | Render strings as HTML |
-| `allowCastToStringFallback` | `boolean` | `true` | Cast unknown types to string |
+| Prop                        | Type      | Default | Description                  |
+| --------------------------- | --------- | ------- | ---------------------------- |
+| `thc`                       | `THC`     | -       | Content to render            |
+| `forceAsHtml`               | `boolean` | `false` | Render strings as HTML       |
+| `allowCastToStringFallback` | `boolean` | `true`  | Cast unknown types to string |
 
 ## Utility Functions
 
@@ -29,10 +29,10 @@ type THC =
 Checks if a THC value has renderable content.
 
 ```ts
-isTHCNotEmpty("Hello");           // true
-isTHCNotEmpty({ text: "Hi" });    // true
-isTHCNotEmpty("");                // false
-isTHCNotEmpty(null);              // false
+isTHCNotEmpty("Hello"); // true
+isTHCNotEmpty({ text: "Hi" }); // true
+isTHCNotEmpty(""); // false
+isTHCNotEmpty(null); // false
 ```
 
 ### `getTHCStringContent(value)`
@@ -40,10 +40,10 @@ isTHCNotEmpty(null);              // false
 Extracts string content from a THC value.
 
 ```ts
-getTHCStringContent("Hello");           // "Hello"
-getTHCStringContent({ text: "Hi" });    // "Hi"
+getTHCStringContent("Hello"); // "Hello"
+getTHCStringContent({ text: "Hi" }); // "Hi"
 getTHCStringContent({ html: "<b>X</b>" }); // "<b>X</b>"
-getTHCStringContent(null);              // ""
+getTHCStringContent(null); // ""
 ```
 
 ## Usage
@@ -52,7 +52,7 @@ getTHCStringContent(null);              // ""
 
 ```svelte
 <script lang="ts">
-  import { Thc } from 'stuic';
+	import { Thc } from "stuic";
 </script>
 
 <Thc thc="Hello World" />
@@ -74,20 +74,22 @@ getTHCStringContent(null);              // ""
 
 ```svelte
 <script lang="ts">
-  import MyIcon from './MyIcon.svelte';
+	import MyIcon from "./MyIcon.svelte";
 </script>
 
-<Thc thc={{
-  component: MyIcon,
-  props: { size: 24, color: 'blue' }
-}} />
+<Thc
+	thc={{
+		component: MyIcon,
+		props: { size: 24, color: "blue" },
+	}}
+/>
 ```
 
 ### Snippet Content
 
 ```svelte
 {#snippet myContent()}
-  <span class="custom">Custom snippet content</span>
+	<span class="custom">Custom snippet content</span>
 {/snippet}
 
 <Thc thc={{ snippet: myContent }} />
@@ -102,12 +104,9 @@ Many stuic components accept THC for labels and content:
 
 ```svelte
 <FieldInput
-  label="Username"
-  description={{ html: "Enter your <strong>unique</strong> username" }}
+	label="Username"
+	description={{ html: "Enter your <strong>unique</strong> username" }}
 />
 
-<DismissibleMessage
-  message={{ text: "Operation completed" }}
-  theme="green"
-/>
+<DismissibleMessage message={{ text: "Operation completed" }} theme="green" />
 ```

@@ -158,8 +158,12 @@
 	--stuic-checkout-confirmation-subtitle-color: var(--stuic-color-muted-foreground);
 	--stuic-checkout-confirmation-email-color: var(--stuic-color-muted-foreground);
 	--stuic-checkout-confirmation-item-gap: 0.5rem;
-	--stuic-checkout-confirmation-subsection-label-color: var(--stuic-color-muted-foreground);
-	--stuic-checkout-confirmation-delivery-detail-color: var(--stuic-color-muted-foreground);
+	--stuic-checkout-confirmation-subsection-label-color: var(
+		--stuic-color-muted-foreground
+	);
+	--stuic-checkout-confirmation-delivery-detail-color: var(
+		--stuic-color-muted-foreground
+	);
 
 	/* CheckoutReviewStep (composite) */
 	--stuic-checkout-review-step-grid-gap: var(--stuic-checkout-step-grid-gap);

@@ -127,13 +127,7 @@
 	);
 </script>
 
-<form
-	bind:this={el}
-	class={_class}
-	onsubmit={handleSubmit}
-	novalidate
-	{...rest}
->
+<form bind:this={el} class={_class} onsubmit={handleSubmit} novalidate {...rest}>
 	<!-- Email (always shown, always required) -->
 	<FieldInput
 		bind:value={formData.email}
@@ -186,10 +180,7 @@
 
 	<!-- B2B Section -->
 	{#if showB2bFields}
-		<details
-			class={unstyled ? undefined : "stuic-checkout-guest-b2b"}
-			open={b2bExpanded}
-		>
+		<details class={unstyled ? undefined : "stuic-checkout-guest-b2b"} open={b2bExpanded}>
 			<summary class={unstyled ? undefined : "stuic-checkout-guest-b2b-summary"}>
 				{t("checkout.guest.b2b_toggle")}
 			</summary>

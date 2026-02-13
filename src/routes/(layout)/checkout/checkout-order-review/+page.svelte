@@ -69,9 +69,7 @@
 
 	const orderMinimal: CheckoutOrderData = {
 		status: "pending",
-		items: [
-			{ product_id: "p1", name: "Widget", price: 999, quantity: 1 },
-		],
+		items: [{ product_id: "p1", name: "Widget", price: 999, quantity: 1 }],
 		currency: "USD",
 		totals: {
 			subtotal: 999,
@@ -104,7 +102,8 @@
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Interactive (all edit callbacks)</h2>
 	<p class="text-sm opacity-60 mb-4">
-		Full order review with edit buttons on every section. Click edit to see callbacks fire.
+		Full order review with edit buttons on every section. Click edit to see callbacks
+		fire.
 	</p>
 
 	<div class="max-w-lg">
@@ -121,7 +120,10 @@
 	{#if editLog.length > 0}
 		<div class="mt-4 max-w-lg">
 			<h3 class="text-sm font-semibold mb-1">Edit log:</h3>
-			<pre class="text-xs p-3 bg-neutral-100 dark:bg-neutral-900 rounded overflow-auto">{editLog.join("\n")}</pre>
+			<pre
+				class="text-xs p-3 bg-neutral-100 dark:bg-neutral-900 rounded overflow-auto">{editLog.join(
+					"\n"
+				)}</pre>
 		</div>
 	{/if}
 </section>
@@ -135,10 +137,7 @@
 	</p>
 
 	<div class="max-w-lg">
-		<CheckoutOrderReview
-			order={sampleOrder}
-			formatPrice={dollarFormat}
-		/>
+		<CheckoutOrderReview order={sampleOrder} formatPrice={dollarFormat} />
 	</div>
 </section>
 
@@ -150,10 +149,7 @@
 	</p>
 
 	<div class="max-w-lg">
-		<CheckoutOrderReview
-			order={orderDifferentBilling}
-			formatPrice={dollarFormat}
-		/>
+		<CheckoutOrderReview order={orderDifferentBilling} formatPrice={dollarFormat} />
 	</div>
 </section>
 
@@ -165,10 +161,7 @@
 	</p>
 
 	<div class="max-w-lg">
-		<CheckoutOrderReview
-			order={orderFreeShipping}
-			formatPrice={dollarFormat}
-		/>
+		<CheckoutOrderReview order={orderFreeShipping} formatPrice={dollarFormat} />
 	</div>
 </section>
 
@@ -181,10 +174,7 @@
 	</p>
 
 	<div class="max-w-lg">
-		<CheckoutOrderReview
-			order={orderMinimal}
-			formatPrice={dollarFormat}
-		/>
+		<CheckoutOrderReview order={orderMinimal} formatPrice={dollarFormat} />
 	</div>
 </section>
 
@@ -196,10 +186,7 @@
 	</p>
 
 	<div class="max-w-lg">
-		<CheckoutOrderReview
-			order={orderDifferentBilling}
-			formatPrice={dollarFormat}
-		/>
+		<CheckoutOrderReview order={orderDifferentBilling} formatPrice={dollarFormat} />
 	</div>
 </section>
 
@@ -209,10 +196,7 @@
 	<p class="text-sm opacity-60 mb-4">Override price formatting with a Euro formatter.</p>
 
 	<div class="max-w-lg">
-		<CheckoutOrderReview
-			order={sampleOrder}
-			formatPrice={euroFormat}
-		/>
+		<CheckoutOrderReview order={sampleOrder} formatPrice={euroFormat} />
 	</div>
 </section>
 
@@ -224,12 +208,11 @@
 	</p>
 
 	<div class="max-w-lg">
-		<CheckoutOrderReview
-			order={sampleOrder}
-			formatPrice={dollarFormat}
-		>
+		<CheckoutOrderReview order={sampleOrder} formatPrice={dollarFormat}>
 			{#snippet itemsSection({ items, formatPrice, onEdit })}
-				<div class="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
+				<div
+					class="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800"
+				>
 					<h4 class="font-semibold text-blue-800 dark:text-blue-200 mb-2">
 						Custom Items ({items.length})
 					</h4>

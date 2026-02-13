@@ -126,14 +126,12 @@
 <!-- ============== INTERACTIVE (DEFAULT) ============== -->
 <h2 class="text-lg font-bold mb-4">Interactive Cart</h2>
 <p class="text-sm opacity-60 mb-4">
-	Full cart with quantity controls, inline editing (click qty number), remove,
-	and async update simulation.
+	Full cart with quantity controls, inline editing (click qty number), remove, and async
+	update simulation.
 </p>
 <div class="max-w-3xl">
 	<div class="mb-4">
-		<Button size="sm" variant="outline" onclick={resetItems}>
-			Reset Cart
-		</Button>
+		<Button size="sm" variant="outline" onclick={resetItems}>Reset Cart</Button>
 	</div>
 	<Cart
 		{items}
@@ -144,9 +142,7 @@
 	>
 		{#snippet footer()}
 			<div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
-				<Button intent="primary">
-					Proceed to Checkout
-				</Button>
+				<Button intent="primary">Proceed to Checkout</Button>
 			</div>
 		{/snippet}
 	</Cart>
@@ -168,8 +164,8 @@
 <!-- ============== COMPACT VARIANT (POPOVER) ============== -->
 <h2 class="text-lg font-bold mb-4">Compact Variant (for popovers)</h2>
 <p class="text-sm opacity-60 mb-4">
-	Smaller thumbnails, tighter spacing, scrollable, implicitly readonly.
-	Wrap in a DropdownMenu for a real popover.
+	Smaller thumbnails, tighter spacing, scrollable, implicitly readonly. Wrap in a
+	DropdownMenu for a real popover.
 </p>
 <div class="max-w-sm border border-border rounded-lg p-2 bg-surface">
 	<Cart items={PRODUCTS} variant="compact" formatPrice={fmt}>
@@ -207,7 +203,9 @@
 		{#snippet empty()}
 			<div class="text-center py-8">
 				<p class="text-lg font-semibold mb-2">Nothing here yet</p>
-				<p class="text-sm opacity-60 mb-4">Browse our catalog and add items to your cart.</p>
+				<p class="text-sm opacity-60 mb-4">
+					Browse our catalog and add items to your cart.
+				</p>
 				<Button variant="outline" href="#shop">Start Shopping</Button>
 			</div>
 		{/snippet}
@@ -219,8 +217,8 @@
 <!-- ============== WEIGHT-BASED UNITS ============== -->
 <h2 class="text-lg font-bold mb-4">Weight-Based Units (custom step & limits)</h2>
 <p class="text-sm opacity-60 mb-4">
-	Items with <code>unit="kg"</code>, <code>quantityStep=0.25/0.5</code>,
-	and min/max constraints.
+	Items with <code>unit="kg"</code>, <code>quantityStep=0.25/0.5</code>, and min/max
+	constraints.
 </p>
 <div class="max-w-3xl">
 	<Cart

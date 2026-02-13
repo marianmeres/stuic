@@ -4,10 +4,10 @@ A development utility component to verify that Tailwind CSS is properly loaded a
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `theme` | `string` | - | Tailwind color palette name (e.g., "blue", "amber") |
-| `class` | `string` | - | Additional CSS classes |
+| Prop    | Type     | Default | Description                                         |
+| ------- | -------- | ------- | --------------------------------------------------- |
+| `theme` | `string` | -       | Tailwind color palette name (e.g., "blue", "amber") |
+| `class` | `string` | -       | Additional CSS classes                              |
 
 ## Component Tokens
 
@@ -15,10 +15,10 @@ Override to customize appearance:
 
 ```css
 :root {
-    --stuic-twcheck-bg: var(--stuic-color-primary);
-    --stuic-twcheck-text: var(--stuic-color-primary-foreground);
-    --stuic-twcheck-border-color: var(--stuic-color-accent);
-    --stuic-twcheck-padding-x: calc(var(--spacing) * 2);
+	--stuic-twcheck-bg: var(--stuic-color-primary);
+	--stuic-twcheck-text: var(--stuic-color-primary-foreground);
+	--stuic-twcheck-border-color: var(--stuic-color-accent);
+	--stuic-twcheck-padding-x: calc(var(--spacing) * 2);
 }
 ```
 
@@ -28,7 +28,7 @@ Override to customize appearance:
 
 ```svelte
 <script lang="ts">
-  import { TwCheck } from '@marianmeres/stuic';
+	import { TwCheck } from "@marianmeres/stuic";
 </script>
 
 <TwCheck>TW Check</TwCheck>
@@ -53,6 +53,7 @@ Override to customize appearance:
 ## Visual Indicators
 
 When Tailwind CSS is properly loaded:
+
 - **Mobile**: Smaller text (text-base), no border
 - **Desktop (sm+)**: Larger text (text-2xl), visible border
 
@@ -64,10 +65,10 @@ Add temporarily during development to verify Tailwind setup:
 
 ```svelte
 <script lang="ts">
-  import { dev } from '$app/environment';
+	import { dev } from "$app/environment";
 </script>
 
 {#if dev}
-  <TwCheck>CSS OK</TwCheck>
+	<TwCheck>CSS OK</TwCheck>
 {/if}
 ```

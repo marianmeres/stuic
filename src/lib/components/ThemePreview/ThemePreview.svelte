@@ -188,11 +188,17 @@
 				<div class="role-color-nested background">
 					<span class="role-color-label foreground-text">background / foreground</span>
 					<div class="role-color-nested muted-bg">
-						<span class="role-color-label muted-foreground-text">muted / muted-foreground</span>
+						<span class="role-color-label muted-foreground-text"
+							>muted / muted-foreground</span
+						>
 						<div class="role-color-nested surface">
-							<span class="role-color-label surface-foreground-text">surface / surface-foreground</span>
+							<span class="role-color-label surface-foreground-text"
+								>surface / surface-foreground</span
+							>
 							<div class="role-color-nested surface-1">
-								<span class="role-color-label surface-1-foreground-text">surface-1 / surface-1-foreground</span>
+								<span class="role-color-label surface-1-foreground-text"
+									>surface-1 / surface-1-foreground</span
+								>
 							</div>
 						</div>
 					</div>

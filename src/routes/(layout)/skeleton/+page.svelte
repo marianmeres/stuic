@@ -106,7 +106,9 @@
 <hr class="my-6" />
 
 <h3 class="font-semibold mb-2">Card Placeholder Example</h3>
-<div class="border border-neutral-200 dark:border-neutral-700 rounded-lg p-4 max-w-sm mb-8">
+<div
+	class="border border-neutral-200 dark:border-neutral-700 rounded-lg p-4 max-w-sm mb-8"
+>
 	<div class="flex items-center gap-3 mb-4">
 		<Skeleton variant="circle" size="48px" />
 		<div class="flex-1">
@@ -123,7 +125,9 @@
 <h3 class="font-semibold mb-2">List Placeholder Example</h3>
 <div class="space-y-3 max-w-md">
 	{#each [1, 2, 3] as _}
-		<div class="flex items-center gap-3 p-2 border border-neutral-200 dark:border-neutral-700 rounded">
+		<div
+			class="flex items-center gap-3 p-2 border border-neutral-200 dark:border-neutral-700 rounded"
+		>
 			<Skeleton variant="circle" size="40px" />
 			<div class="flex-1">
 				<Skeleton width="70%" height="0.875rem" class="mb-1" />
@@ -157,10 +161,6 @@
 	</div>
 	<div>
 		<p class="text-sm text-neutral-500 mb-2">Custom timing (linear):</p>
-		<Skeleton
-			width="100%"
-			height="2rem"
-			style="--stuic-skeleton-timing: linear;"
-		/>
+		<Skeleton width="100%" height="2rem" style="--stuic-skeleton-timing: linear;" />
 	</div>
 </div>

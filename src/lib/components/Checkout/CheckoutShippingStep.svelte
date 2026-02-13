@@ -180,7 +180,9 @@
 		</div>
 	{:else}
 		{#if error}
-			<div class={unstyled ? undefined : "stuic-checkout-alert"} role="alert">{error}</div>
+			<div class={unstyled ? undefined : "stuic-checkout-alert"} role="alert">
+				{error}
+			</div>
 		{/if}
 
 		<div class={unstyled ? undefined : "stuic-checkout-shipping-step-grid"}>
@@ -262,7 +264,7 @@
 							onSelect={onSelectDelivery}
 							subtotal={order.totals.subtotal}
 							isUpdating={isSelectingDelivery}
-							formatPrice={formatPrice}
+							{formatPrice}
 							t={tProp}
 							{unstyled}
 						/>
@@ -286,7 +288,7 @@
 						<CheckoutOrderSummary
 							totals={order.totals}
 							hasShipping={!!order.delivery_option_id}
-							formatPrice={formatPrice}
+							{formatPrice}
 							t={tProp}
 							{unstyled}
 						/>
