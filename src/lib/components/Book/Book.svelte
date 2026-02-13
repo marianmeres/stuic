@@ -37,7 +37,7 @@
 		keyboard?: boolean;
 		/** Enable swipe gesture navigation (default: true) */
 		swipe?: boolean;
-		/** Flip animation duration in ms (default: 600) */
+		/** Flip animation duration in ms (default: 500) */
 		duration?: number;
 		/** Enable zoom capability (default: true) */
 		zoom?: boolean;
@@ -158,7 +158,7 @@
 		activeSpread = $bindable(0),
 		keyboard = true,
 		swipe = true,
-		duration = 600,
+		duration = 500,
 		zoom: zoomEnabled = true,
 		zoomLevels: ZOOM_LEVELS = [1, 1.5, 2, 3],
 		clampPan = false,

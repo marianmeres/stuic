@@ -1,8 +1,8 @@
 /* Book Component Tokens */
 @theme inline {
-	--stuic-book-perspective: 1200px;
-	--stuic-book-duration: 600ms;
-	--stuic-book-timing: ease-in-out;
+	--stuic-book-perspective: 2000px;
+	--stuic-book-duration: 500ms;
+	--stuic-book-timing: ease-out;
 	--stuic-book-page-bg: transparent; /*var(--stuic-color-surface, #fff);*/
 	--stuic-book-page-shadow: none; /*0 2px 16px rgba(0, 0, 0, 0.15);*/
 	--stuic-book-radius: var(--radius-sm, 2px);
@@ -54,8 +54,9 @@
 		height: 100%;
 		transform-style: preserve-3d;
 		transform-origin: left center;
+		transform: rotateY(0deg);
 		transition: transform var(--stuic-book-duration) var(--stuic-book-timing);
-		will-change: transform;
+		outline: 3px solid black;
 	}
 
 	/* Front face (visible when not flipped — right side of the book) */
@@ -67,7 +68,6 @@
 		background: var(--stuic-book-page-bg);
 		border-radius: 0 var(--stuic-book-radius) var(--stuic-book-radius) 0;
 		overflow: hidden;
-		clip-path: inset(0);
 	}
 
 	.stuic-book-sheet-front img {
@@ -86,7 +86,6 @@
 		background: var(--stuic-book-page-bg);
 		border-radius: var(--stuic-book-radius) 0 0 var(--stuic-book-radius);
 		overflow: hidden;
-		clip-path: inset(0);
 	}
 
 	.stuic-book-sheet-back img {
