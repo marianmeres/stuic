@@ -32,9 +32,9 @@
 	}
 
 	/*
-	 * Stage — always full double-page width, positioned via margin-left.
-	 * When the cover is shown (spread 0), margin-left shifts the stage left
-	 * so only the right half (the cover sheet) is visible in the wrapper.
+	 * Stage — always full double-page width, positioned via translate.
+	 * In single-page mode, translate shifts the stage left so only the
+	 * right half (the visible sheet) is shown in the wrapper.
 	 * Transparent — the wrapper provides the page background.
 	 */
 	.stuic-book-stage {
@@ -42,7 +42,7 @@
 		perspective: var(--stuic-book-perspective);
 		width: calc(var(--stuic-book-page-width) * 2);
 		height: var(--stuic-book-page-height);
-		transition: margin-left var(--stuic-book-duration) var(--stuic-book-timing);
+		transition: translate var(--stuic-book-duration) var(--stuic-book-timing);
 	}
 
 	/* ---- Sheet (the flippable paper) ---- */
@@ -56,7 +56,7 @@
 		transform-origin: left center;
 		transform: rotateY(0deg);
 		transition: transform var(--stuic-book-duration) var(--stuic-book-timing);
-		outline: 3px solid black;
+		/* outline: 3px solid black; */
 	}
 
 	/* Front face (visible when not flipped — right side of the book) */

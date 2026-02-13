@@ -416,8 +416,6 @@
 
 	export function next() {
 		if (activeSpread < totalSpreads - 1) {
-			// The sheet being flipped is the one at index === activeSpread
-			setTransitioningSheet(activeSpread);
 			coll.setActiveNext();
 			resetZoom();
 		}
@@ -425,8 +423,6 @@
 
 	export function previous() {
 		if (activeSpread > 0) {
-			// The sheet being flipped back is the one at index === activeSpread - 1
-			setTransitioningSheet(activeSpread - 1);
 			coll.setActivePrevious();
 			resetZoom();
 		}
@@ -644,9 +640,9 @@
 				role="region"
 				aria-label="Book"
 				aria-roledescription="book"
-				style:margin-left={isSinglePageMode
+				style:translate={isSinglePageMode
 					? "calc(var(--stuic-book-page-width) * -1)"
-					: "0px"}
+					: "0"}
 				style:touch-action="none"
 				style:user-select="none"
 				style:transform={zoomLevel !== 1
