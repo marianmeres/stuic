@@ -23,6 +23,7 @@
  */
 
 // components
+export * from "./components/Accordion/index.js";
 export * from "./components/AlertConfirmPrompt/index.js";
 export * from "./components/AnimatedElipsis/index.js";
 export * from "./components/AppShell/index.js";

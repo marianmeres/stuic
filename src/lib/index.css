@@ -23,6 +23,7 @@ In practice:
     - ❌ import "./index.css" inside each component
 
 *****************************************************************************************/
+@import "./components/Accordion/index.css";
 @import "./components/AlertConfirmPrompt/index.css";
 @import "./components/AssetsPreview/index.css";
 @import "./components/Avatar/index.css";

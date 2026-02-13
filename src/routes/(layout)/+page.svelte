@@ -1,7 +1,8 @@
 <script lang="ts">
 	// prettier-ignore
 	let links = [
-		'alert-confirm-prompt', 
+		'accordion',
+		'alert-confirm-prompt',
 		'animated-ellipsis',
 		'avatar',
 		'app-shell', 

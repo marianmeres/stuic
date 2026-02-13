@@ -1,0 +1,127 @@
+/* ============================================================================
+   ACCORDION COMPONENT TOKENS
+   Override globally: :root { --stuic-accordion-border-color: red; }
+   Override locally:  <Accordion style="--stuic-accordion-border-color: red;">
+   ============================================================================ */
+
+:root {
+	/* Border & shape */
+	--stuic-accordion-border-color: var(--stuic-color-border);
+	--stuic-accordion-border-width: 1px;
+	--stuic-accordion-radius: var(--radius-md);
+
+	/* Animation */
+	--stuic-accordion-transition: 200ms;
+
+	/* Trigger */
+	--stuic-accordion-trigger-padding-x: 1rem;
+	--stuic-accordion-trigger-padding-y: 0.75rem;
+	--stuic-accordion-trigger-font-weight: var(--font-weight-medium);
+	--stuic-accordion-trigger-bg: transparent;
+	--stuic-accordion-trigger-bg-hover: color-mix(
+		in srgb,
+		var(--stuic-color-muted) 50%,
+		transparent
+	);
+
+	/* Content */
+	--stuic-accordion-content-padding-x: 1rem;
+	--stuic-accordion-content-padding-y: 0.75rem;
+
+	/* Focus ring */
+	--stuic-accordion-ring-width: 2px;
+	--stuic-accordion-ring-color: var(--stuic-color-ring);
+}
+
+@layer components {
+	/* ============================================================================
+	   WRAPPER
+	   ============================================================================ */
+
+	.stuic-accordion {
+		border: var(--stuic-accordion-border-width) solid
+			var(--stuic-accordion-border-color);
+		border-radius: var(--stuic-accordion-radius);
+		overflow: hidden;
+	}
+
+	/* ============================================================================
+	   ITEM
+	   ============================================================================ */
+
+	.stuic-accordion-item + .stuic-accordion-item {
+		border-top: var(--stuic-accordion-border-width) solid
+			var(--stuic-accordion-border-color);
+	}
+
+	/* ============================================================================
+	   TRIGGER BUTTON
+	   ============================================================================ */
+
+	.stuic-accordion-trigger {
+		display: flex;
+		align-items: center;
+		width: 100%;
+		gap: 0.5rem;
+		padding: var(--stuic-accordion-trigger-padding-y)
+			var(--stuic-accordion-trigger-padding-x);
+		font-weight: var(--stuic-accordion-trigger-font-weight);
+		background: var(--stuic-accordion-trigger-bg);
+		border: none;
+		cursor: pointer;
+		text-align: left;
+		transition: background var(--stuic-accordion-transition);
+	}
+
+	.stuic-accordion-trigger:hover:not(:disabled) {
+		background: var(--stuic-accordion-trigger-bg-hover);
+	}
+
+	.stuic-accordion-trigger:focus-visible {
+		outline: var(--stuic-accordion-ring-width) solid
+			var(--stuic-accordion-ring-color);
+		outline-offset: -2px;
+	}
+
+	.stuic-accordion-trigger:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+
+	/* ============================================================================
+	   CHEVRON INDICATOR
+	   ============================================================================ */
+
+	.stuic-accordion-chevron {
+		flex-shrink: 0;
+		transition: transform var(--stuic-accordion-transition);
+	}
+
+	[data-open="true"] > .stuic-accordion-trigger > .stuic-accordion-chevron {
+		transform: rotate(180deg);
+	}
+
+	/* ============================================================================
+	   CONTENT PANEL (grid-based height animation)
+	   ============================================================================ */
+
+	.stuic-accordion-content {
+		display: grid;
+		grid-template-rows: 0fr;
+		transition: grid-template-rows var(--stuic-accordion-transition);
+	}
+
+	[data-open="true"] > .stuic-accordion-content {
+		grid-template-rows: 1fr;
+	}
+
+	.stuic-accordion-content-inner {
+		overflow: hidden;
+		min-height: 0;
+		padding-inline: var(--stuic-accordion-content-padding-x);
+	}
+
+	.stuic-accordion-content-body {
+		padding-block: var(--stuic-accordion-content-padding-y);
+	}
+}
