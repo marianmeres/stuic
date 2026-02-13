@@ -1,0 +1,31 @@
+/* ============================================================================
+   SEPARATOR COMPONENT TOKENS
+   Override globally: :root { --stuic-separator-color: red; }
+   Override locally:  <Separator style="--stuic-separator-color: red;" />
+   ============================================================================ */
+
+:root {
+	--stuic-separator-color: var(--stuic-color-border);
+	--stuic-separator-thickness: 1px;
+	--stuic-separator-spacing: calc(var(--spacing) * 4);
+}
+
+@layer components {
+	.stuic-separator {
+		flex-shrink: 0;
+	}
+
+	.stuic-separator[data-orientation="horizontal"] {
+		height: 0;
+		width: 100%;
+		border-top: var(--stuic-separator-thickness) solid var(--stuic-separator-color);
+		margin: var(--stuic-separator-spacing) 0;
+	}
+
+	.stuic-separator[data-orientation="vertical"] {
+		width: 0;
+		height: 100%;
+		border-left: var(--stuic-separator-thickness) solid var(--stuic-separator-color);
+		margin: 0 var(--stuic-separator-spacing);
+	}
+}

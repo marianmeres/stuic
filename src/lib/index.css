@@ -48,6 +48,7 @@ In practice:
 @import "./components/Nav/index.css";
 @import "./components/Notifications/index.css";
 @import "./components/Progress/index.css";
+@import "./components/Separator/index.css";
 @import "./components/Skeleton/index.css";
 @import "./components/Spinner/index.css";
 @import "./components/Switch/index.css";

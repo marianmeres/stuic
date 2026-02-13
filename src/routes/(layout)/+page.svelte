@@ -40,6 +40,7 @@
 		'popover', 
 		'progress',
 		'resizable-width',
+		'separator', 
 		'skeleton', 
 		'sliding-panels',
 		'spotlight',
