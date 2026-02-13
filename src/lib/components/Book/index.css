@@ -94,6 +94,26 @@
 		object-fit: contain;
 	}
 
+	/* ---- Clickable areas SVG overlay ---- */
+	.stuic-book-areas {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+	}
+
+	.stuic-book-area {
+		pointer-events: all;
+		cursor: pointer;
+		fill: transparent;
+		transition: fill 150ms;
+	}
+
+	.stuic-book-area:hover {
+		fill: var(--stuic-book-area-fill-hover, rgba(0, 0, 0, 0.06));
+	}
+
 	/* Placeholder: empty page face with content on the other side */
 	.stuic-book-sheet-front[data-placeholder],
 	.stuic-book-sheet-back[data-placeholder] {

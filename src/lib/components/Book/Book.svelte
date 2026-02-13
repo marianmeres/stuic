@@ -3,12 +3,31 @@
 	import type { HTMLAttributes } from "svelte/elements";
 	import type { Snippet } from "svelte";
 
+	export interface BookPageArea {
+		id: string | number;
+		/** X position in natural image pixels */
+		x: number;
+		/** Y position in natural image pixels */
+		y: number;
+		/** Width in natural image pixels */
+		w: number;
+		/** Height in natural image pixels */
+		h: number;
+		[key: string]: any;
+	}
+
 	export interface BookPage {
 		id: string | number;
 		src: string;
 		srcset?: string;
 		sizes?: string;
 		title?: string;
+		/** Natural image width in px (required when areas are used) */
+		width?: number;
+		/** Natural image height in px (required when areas are used) */
+		height?: number;
+		/** Clickable areas on this page */
+		areas?: BookPageArea[];
 		[key: string]: any;
 	}
 
@@ -54,6 +73,8 @@
 		/** Callback when a page is clicked, with relative x/y coordinates (0–1)
 		 * (0, 0) = top-left corner, (1, 1) = bottom-right corner */
 		onPageClick?: (data: { page: BookPage; x: number; y: number }) => void;
+		/** Callback when a clickable area on a page is clicked */
+		onAreaClick?: (data: { area: BookPageArea; page: BookPage }) => void;
 		/** Custom render snippet for pages */
 		renderPage?: Snippet<[{ page: BookPage; position: "left" | "right" | "cover" }]>;
 		/** Custom class for container */
@@ -166,6 +187,7 @@
 		responsive = true,
 		onSpreadChange,
 		onPageClick,
+		onAreaClick,
 		renderPage,
 		class: classProp,
 		classStage,
@@ -689,6 +711,28 @@
 										draggable="false"
 									/>
 								{/if}
+								{#if onAreaClick && sheet.frontPage.areas?.length && sheet.frontPage.width && sheet.frontPage.height}
+									<svg
+										viewBox="0 0 {sheet.frontPage.width} {sheet.frontPage.height}"
+										preserveAspectRatio="xMidYMid meet"
+										class={!unstyled ? "stuic-book-areas" : undefined}
+									>
+										<!-- svelte-ignore a11y_click_events_have_key_events -->
+									<!-- svelte-ignore a11y_no_static_element_interactions -->
+									{#each sheet.frontPage.areas as area (area.id)}
+											<rect
+												x={area.x} y={area.y}
+												width={area.w} height={area.h}
+												class={!unstyled ? "stuic-book-area" : undefined}
+												onclick={(e: MouseEvent) => {
+													if (_wasDragged) return;
+													e.stopPropagation();
+													onAreaClick({ area, page: sheet.frontPage! });
+												}}
+											/>
+										{/each}
+									</svg>
+								{/if}
 							{/if}
 						</div>
 
@@ -714,6 +758,28 @@
 										alt={sheet.backPage.title ?? ""}
 										draggable="false"
 									/>
+								{/if}
+								{#if onAreaClick && sheet.backPage.areas?.length && sheet.backPage.width && sheet.backPage.height}
+									<svg
+										viewBox="0 0 {sheet.backPage.width} {sheet.backPage.height}"
+										preserveAspectRatio="xMidYMid meet"
+										class={!unstyled ? "stuic-book-areas" : undefined}
+									>
+										<!-- svelte-ignore a11y_click_events_have_key_events -->
+									<!-- svelte-ignore a11y_no_static_element_interactions -->
+									{#each sheet.backPage.areas as area (area.id)}
+											<rect
+												x={area.x} y={area.y}
+												width={area.w} height={area.h}
+												class={!unstyled ? "stuic-book-area" : undefined}
+												onclick={(e: MouseEvent) => {
+													if (_wasDragged) return;
+													e.stopPropagation();
+													onAreaClick({ area, page: sheet.backPage! });
+												}}
+											/>
+										{/each}
+									</svg>
 								{/if}
 							{/if}
 						</div>

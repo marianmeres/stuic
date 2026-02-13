@@ -2,6 +2,7 @@
 	import {
 		Book,
 		type BookPage,
+		type BookPageArea,
 		buildSpreads,
 		buildSinglePageSpreads,
 		Button,
@@ -26,6 +27,25 @@
 
 	let responsiveActiveSpread = $state(0);
 	let responsiveBook: Book;
+
+	// Clickable areas example — simulated product catalog
+	const catalogPages: BookPage[] = Array.from({ length: 5 }, (_, i) => ({
+		id: `catalog-${i}`,
+		src: `https://picsum.photos/seed/catalog-${i}/420/600`,
+		title: i === 0 ? "Catalog Cover" : `Catalog Page ${i}`,
+		width: 420,
+		height: 600,
+		areas:
+			i === 0
+				? [] // no areas on cover
+				: [
+						{ id: `p${i}-product-1`, x: 20, y: 30, w: 180, h: 250, label: "Product A" },
+						{ id: `p${i}-product-2`, x: 220, y: 30, w: 180, h: 250, label: "Product B" },
+						{ id: `p${i}-product-3`, x: 20, y: 310, w: 180, h: 250, label: "Product C" },
+						{ id: `p${i}-product-4`, x: 220, y: 310, w: 180, h: 250, label: "Product D" },
+					],
+	}));
+	let lastClickedArea = $state<{ area: BookPageArea; page: BookPage } | null>(null);
 </script>
 
 <div class="space-y-16 py-8">
@@ -220,6 +240,40 @@
 				</span>
 				<Button size="sm" onclick={() => responsiveBook.next()}>Next</Button>
 			</div>
+		</div>
+	</section>
+
+	<hr class="border-neutral-200 dark:border-neutral-700" />
+
+	<!-- Clickable Areas (product catalog) -->
+	<section>
+		<h2 class="text-xl font-semibold mb-2">Clickable Areas</h2>
+		<p class="text-sm text-neutral-500 mb-4">
+			Pages with SVG overlay areas (e.g. product hotspots). Hover to see highlight, click to
+			trigger <code>onAreaClick</code>. Open a spread to see the areas.
+		</p>
+
+		<div class="flex flex-col items-center gap-6">
+			<div
+				class="w-full"
+				style="--stuic-book-page-width: 280px; --stuic-book-page-height: 400px;"
+			>
+				<Book
+					pages={catalogPages}
+					onAreaClick={(data) => {
+						lastClickedArea = data;
+					}}
+				/>
+			</div>
+
+			{#if lastClickedArea}
+				<div
+					class="text-sm bg-neutral-100 dark:bg-neutral-800 rounded px-4 py-2 text-center"
+				>
+					Clicked: <strong>{lastClickedArea.area.label}</strong>
+					(id: {lastClickedArea.area.id}) on {lastClickedArea.page.title}
+				</div>
+			{/if}
 		</div>
 	</section>
 </div>

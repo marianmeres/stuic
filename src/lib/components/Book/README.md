@@ -52,6 +52,7 @@ Pages are grouped into **spreads**:
 | `singlePage`     | `boolean`                 | `false`          | Force single-page layout (one page per flip)            |
 | `responsive`     | `boolean`                 | `true`           | Auto-switch to single-page when container is too narrow |
 | `onSpreadChange` | `(spread, index) => void` | -                | Callback when active spread changes                     |
+| `onAreaClick`    | `({area, page}) => void`  | -                | Callback when a clickable area is clicked               |
 | `renderPage`     | `Snippet`                 | -                | Custom render snippet for pages                         |
 | `class`          | `string`                  | -                | Custom class for container                              |
 | `classStage`     | `string`                  | -                | Custom class for the 3D stage                           |
@@ -62,10 +63,22 @@ Pages are grouped into **spreads**:
 ## Interfaces
 
 ```typescript
+interface BookPageArea {
+	id: string | number;
+	x: number;       // X position in natural image pixels
+	y: number;       // Y position in natural image pixels
+	w: number;       // Width in natural image pixels
+	h: number;       // Height in natural image pixels
+	[key: string]: any;
+}
+
 interface BookPage {
 	id: string | number;
 	src: string;
 	title?: string;
+	width?: number;        // Natural image width in px (required for areas)
+	height?: number;       // Natural image height in px (required for areas)
+	areas?: BookPageArea[];
 	[key: string]: any;
 }
 
@@ -89,6 +102,32 @@ interface BookSpread {
 | `resetZoom()`       | Reset zoom to 1x                  |
 | `getCollection()`   | Get the underlying ItemCollection |
 
+## Clickable Areas
+
+Pages can define clickable areas (e.g. product hotspots in a catalog). Areas are rendered as an SVG overlay that scales correctly with the page image. Requires `width`/`height` on the page (natural image dimensions) and the `onAreaClick` callback.
+
+```svelte
+<script lang="ts">
+	import { Book, type BookPage } from "@marianmeres/stuic";
+
+	const pages: BookPage[] = [
+		{
+			id: 0,
+			src: "/catalog-page-1.jpg",
+			width: 2480,
+			height: 3508,
+			areas: [
+				{ id: "SKU-001", x: 100, y: 200, w: 400, h: 300 },
+				{ id: "SKU-002", x: 600, y: 200, w: 400, h: 300 },
+			],
+		},
+		// ...
+	];
+</script>
+
+<Book {pages} onAreaClick={({ area, page }) => addToCart(area.id)} />
+```
+
 ## Keyboard Navigation
 
 | Key                    | Action          |
@@ -110,3 +149,4 @@ interface BookSpread {
 | `--stuic-book-page-bg`     | `var(--stuic-color-surface)`  | Page background color     |
 | `--stuic-book-page-shadow` | `0 2px 16px rgba(0,0,0,0.15)` | Book shadow               |
 | `--stuic-book-radius`      | `var(--radius-sm)`            | Page border radius        |
+| `--stuic-book-area-fill-hover` | `rgba(0, 0, 0, 0.06)`    | Area hover highlight fill |
