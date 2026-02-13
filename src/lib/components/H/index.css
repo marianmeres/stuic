@@ -12,13 +12,13 @@
 	--stuic-h-color: inherit;
 	--stuic-h-margin: 0;
 
-	/* Per-level font sizes */
-	--stuic-h1-font-size: 2.25rem;
-	--stuic-h2-font-size: 1.875rem;
-	--stuic-h3-font-size: 1.5rem;
-	--stuic-h4-font-size: 1.25rem;
-	--stuic-h5-font-size: 1.125rem;
-	--stuic-h6-font-size: 1rem;
+	/* Per-level font sizes — fluid scaling, original values at ~1024px viewport */
+	--stuic-h1-font-size: clamp(1.875rem, 1.6rem + 1vw, 2.5rem);
+	--stuic-h2-font-size: clamp(1.5rem, 1.3rem + 0.9vw, 2.125rem);
+	--stuic-h3-font-size: clamp(1.25rem, 1.1rem + 0.65vw, 1.625rem);
+	--stuic-h4-font-size: clamp(1.125rem, 1.05rem + 0.4vw, 1.375rem);
+	--stuic-h5-font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+	--stuic-h6-font-size: clamp(0.9375rem, 0.925rem + 0.15vw, 1.0625rem);
 }
 
 @layer components {

@@ -56,20 +56,20 @@ Render a semantic `h2` but style it like an `h4`:
 
 ## CSS Variables
 
-| Variable                   | Default                        | Description    |
-| -------------------------- | ------------------------------ | -------------- |
-| `--stuic-h-font-family`    | `inherit`                      | Font family    |
-| `--stuic-h-font-weight`    | `var(--font-weight-bold, 700)` | Font weight    |
-| `--stuic-h-line-height`    | `1.2`                          | Line height    |
-| `--stuic-h-letter-spacing` | `normal`                       | Letter spacing |
-| `--stuic-h-color`          | `inherit`                      | Text color     |
-| `--stuic-h-margin`         | `0`                            | Margin         |
-| `--stuic-h1-font-size`     | `2.25rem`                      | H1 font size   |
-| `--stuic-h2-font-size`     | `1.875rem`                     | H2 font size   |
-| `--stuic-h3-font-size`     | `1.5rem`                       | H3 font size   |
-| `--stuic-h4-font-size`     | `1.25rem`                      | H4 font size   |
-| `--stuic-h5-font-size`     | `1.125rem`                     | H5 font size   |
-| `--stuic-h6-font-size`     | `1rem`                         | H6 font size   |
+| Variable                   | Default                                          | Description          |
+| -------------------------- | ------------------------------------------------ | -------------------- |
+| `--stuic-h-font-family`    | `inherit`                                        | Font family          |
+| `--stuic-h-font-weight`    | `var(--font-weight-bold, 700)`                   | Font weight          |
+| `--stuic-h-line-height`    | `1.2`                                            | Line height          |
+| `--stuic-h-letter-spacing` | `normal`                                         | Letter spacing       |
+| `--stuic-h-color`          | `inherit`                                        | Text color           |
+| `--stuic-h-margin`         | `0`                                              | Margin               |
+| `--stuic-h1-font-size`     | `clamp(1.875rem, 1.6rem + 1vw, 2.5rem)`          | H1 font size (fluid) |
+| `--stuic-h2-font-size`     | `clamp(1.5rem, 1.3rem + 0.9vw, 2.125rem)`        | H2 font size (fluid) |
+| `--stuic-h3-font-size`     | `clamp(1.25rem, 1.1rem + 0.65vw, 1.625rem)`      | H3 font size (fluid) |
+| `--stuic-h4-font-size`     | `clamp(1.125rem, 1.05rem + 0.4vw, 1.375rem)`     | H4 font size (fluid) |
+| `--stuic-h5-font-size`     | `clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem)`     | H5 font size (fluid) |
+| `--stuic-h6-font-size`     | `clamp(0.9375rem, 0.925rem + 0.15vw, 1.0625rem)` | H6 font size (fluid) |
 
 ## Data Attributes
 
