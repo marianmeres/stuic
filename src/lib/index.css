@@ -27,6 +27,7 @@ In practice:
 @import "./components/AssetsPreview/index.css";
 @import "./components/Avatar/index.css";
 @import "./components/Backdrop/index.css";
+@import "./components/Book/index.css";
 @import "./components/Button/index.css";
 @import "./components/ButtonGroupRadio/index.css";
 @import "./components/Collapsible/index.css";

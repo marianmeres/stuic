@@ -1,0 +1,123 @@
+/* Book Component Tokens */
+@theme inline {
+	--stuic-book-perspective: 1200px;
+	--stuic-book-duration: 600ms;
+	--stuic-book-timing: ease-in-out;
+	--stuic-book-page-bg: transparent; /*var(--stuic-color-surface, #fff);*/
+	--stuic-book-page-shadow: none; /*0 2px 16px rgba(0, 0, 0, 0.15);*/
+	--stuic-book-radius: var(--radius-sm, 2px);
+	--stuic-book-page-width: 300px;
+	--stuic-book-page-height: 400px;
+	--stuic-book-placeholder-bg: color-mix(in srgb, currentColor 5%, transparent);
+}
+
+@layer components {
+	/*
+	 * Wrapper — owns the visual "book" surface: background, shadow, radius.
+	 * NO overflow hidden — that would kill CSS 3D perspective rendering.
+	 * Overflow is applied dynamically (inline) only when zoomed in.
+	 * Width toggles between 1× and 2× page-width via inline style.
+	 * The stage overflows during cover/back-cover states but is transparent,
+	 * so nothing leaks visually.
+	 */
+	.stuic-book {
+		position: relative;
+		display: inline-block;
+		vertical-align: top;
+		text-align: initial;
+		background: var(--stuic-book-page-bg);
+		border-radius: var(--stuic-book-radius);
+		box-shadow: var(--stuic-book-page-shadow);
+		transition: width var(--stuic-book-duration) var(--stuic-book-timing);
+	}
+
+	/*
+	 * Stage — always full double-page width, positioned via margin-left.
+	 * When the cover is shown (spread 0), margin-left shifts the stage left
+	 * so only the right half (the cover sheet) is visible in the wrapper.
+	 * Transparent — the wrapper provides the page background.
+	 */
+	.stuic-book-stage {
+		position: relative;
+		perspective: var(--stuic-book-perspective);
+		width: calc(var(--stuic-book-page-width) * 2);
+		height: var(--stuic-book-page-height);
+		transition: margin-left var(--stuic-book-duration) var(--stuic-book-timing);
+	}
+
+	/* ---- Sheet (the flippable paper) ---- */
+	.stuic-book-sheet {
+		position: absolute;
+		top: 0;
+		left: 50%;
+		width: 50%;
+		height: 100%;
+		transform-style: preserve-3d;
+		transform-origin: left center;
+		transition: transform var(--stuic-book-duration) var(--stuic-book-timing);
+		will-change: transform;
+	}
+
+	/* Front face (visible when not flipped — right side of the book) */
+	.stuic-book-sheet-front {
+		position: absolute;
+		inset: 0;
+		backface-visibility: hidden;
+		-webkit-backface-visibility: hidden;
+		background: var(--stuic-book-page-bg);
+		border-radius: 0 var(--stuic-book-radius) var(--stuic-book-radius) 0;
+		overflow: hidden;
+		clip-path: inset(0);
+	}
+
+	.stuic-book-sheet-front img {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+	}
+
+	/* Back face (visible when flipped — left side of the book) */
+	.stuic-book-sheet-back {
+		position: absolute;
+		inset: 0;
+		backface-visibility: hidden;
+		-webkit-backface-visibility: hidden;
+		transform: rotateY(180deg);
+		background: var(--stuic-book-page-bg);
+		border-radius: var(--stuic-book-radius) 0 0 var(--stuic-book-radius);
+		overflow: hidden;
+		clip-path: inset(0);
+	}
+
+	.stuic-book-sheet-back img {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+	}
+
+	/* Placeholder: empty page face with content on the other side */
+	.stuic-book-sheet-front[data-placeholder],
+	.stuic-book-sheet-back[data-placeholder] {
+		background: var(--stuic-book-placeholder-bg);
+	}
+
+	/* Flipped state */
+	.stuic-book-sheet[data-flipped="true"] {
+		transform: rotateY(-180deg);
+	}
+
+	/* ---- Reduced motion ---- */
+	@media (prefers-reduced-motion: reduce) {
+		.stuic-book-sheet {
+			transition-duration: 0ms !important;
+		}
+
+		.stuic-book-stage {
+			transition-duration: 0ms !important;
+		}
+
+		.stuic-book {
+			transition-duration: 0ms !important;
+		}
+	}
+}
