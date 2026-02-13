@@ -32,14 +32,14 @@ Layer 3: Internal Vars (--_bg, --_text, --_border)
 
 ```
 src/lib/
-├── components/           # 37 UI components
+├── components/           # 44 UI components
 │   └── {Name}/
 │       ├── {Name}.svelte     # Main component
 │       ├── index.ts          # Exports
 │       ├── index.css         # CSS tokens (if styled)
 │       └── README.md         # Documentation
 │
-├── actions/              # 12 Svelte actions
+├── actions/              # 14 Svelte actions
 │   ├── *.svelte.ts           # Reactive actions
 │   ├── *.ts                  # Traditional actions
 │   └── index.ts              # Barrel export
@@ -50,8 +50,8 @@ src/lib/
 │   └── index.ts              # Barrel export
 │
 ├── themes/
-│   ├── *.ts              # 26 theme definitions (TokenSchema)
-│   └── css/              # 26 generated CSS files
+│   ├── *.ts              # 29 theme definitions (TokenSchema)
+│   └── css/              # 29 generated CSS files
 │       └── stone.css         # Default theme
 │
 ├── icons/                # Icon re-exports

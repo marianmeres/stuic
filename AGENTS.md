@@ -23,10 +23,10 @@
 
 ```
 src/lib/
-├── components/     # 39 UI components
+├── components/     # 44 UI components
 ├── actions/        # 14 Svelte actions
 ├── utils/          # 42 utility functions
-├── themes/         # 26 theme definitions (.ts) + generated CSS (css/)
+├── themes/         # 29 theme definitions (.ts) + generated CSS (css/)
 ├── icons/          # Icon re-exports
 ├── index.css       # Centralized CSS imports
 └── index.ts        # Main exports
@@ -74,7 +74,7 @@ src/lib/
 
 ### Domain Docs
 
-- [Components](./docs/domains/components.md) — 38 components, Props pattern, snippets
+- [Components](./docs/domains/components.md) — 44 components, Props pattern, snippets
 - [Theming](./docs/domains/theming.md) — CSS tokens, dark mode, themes
 - [Actions](./docs/domains/actions.md) — 14 Svelte directives
 - [Utils](./docs/domains/utils.md) — 42 utility functions
@@ -93,7 +93,7 @@ src/lib/
 | `src/lib/index.css`              | CSS entry point                                                        |
 | `src/lib/index.ts`               | JS entry point                                                         |
 | `src/lib/utils/design-tokens.ts` | Theme types + CSS generation (`ThemeSchema`, `generateThemeCss`, etc.) |
-| `src/lib/themes/*.ts`            | Theme definitions (26 themes, `TokenSchema`-typed)                     |
+| `src/lib/themes/*.ts`            | Theme definitions (29 themes, `TokenSchema`-typed)                     |
 | `src/lib/themes/css/stone.css`   | Default theme (generated)                                              |
 | `src/lib/components/Button/`     | Reference component                                                    |
 | `scripts/generate-theme.ts`      | CLI: `pnpm run build:theme:all`                                        |

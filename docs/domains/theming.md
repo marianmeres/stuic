@@ -2,7 +2,7 @@
 
 ## Overview
 
-Centralized design token system using CSS custom properties. 26 pre-built themes available.
+Centralized design token system using CSS custom properties. 29 pre-built themes available.
 
 See also: [Design Tokens Manual](../DESIGN_TOKENS_MANUAL.md) for token philosophy.
 
@@ -127,7 +127,7 @@ Consumer-facing theme API from `@marianmeres/stuic`:
 
 ## Theme Files
 
-**Definition files:** `src/lib/themes/*.ts` — TypeScript theme definitions (26 themes)
+**Definition files:** `src/lib/themes/*.ts` — TypeScript theme definitions (29 themes)
 
 **Generated CSS:** `src/lib/themes/css/*.css` — CSS output from `pnpm run build:theme:all`
 
@@ -215,7 +215,7 @@ Override locally:
 | File                              | Purpose                                                                          |
 | --------------------------------- | -------------------------------------------------------------------------------- |
 | src/lib/utils/design-tokens.ts    | Types (`TokenSchema`, `ThemeSchema`, `ColorPair`, etc.) and generation functions |
-| src/lib/themes/\*.ts              | Theme definition files (26 themes, `TokenSchema`-typed)                          |
+| src/lib/themes/\*.ts              | Theme definition files (29 themes, `TokenSchema`-typed)                          |
 | src/lib/themes/css/\*.css         | Generated CSS output                                                             |
 | src/lib/index.css                 | Theme import location (loads `stone.css` by default)                             |
 | scripts/generate-theme.ts         | CLI script: `pnpm run build:theme:all`                                           |

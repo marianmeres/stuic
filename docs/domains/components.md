@@ -2,7 +2,7 @@
 
 ## Overview
 
-39 Svelte 5 components with consistent API patterns. All use runes-based reactivity.
+44 Svelte 5 components with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
@@ -10,25 +10,30 @@
 
 | Component                | Purpose                                  |
 | ------------------------ | ---------------------------------------- |
-| AppShell, AppShellSimple | Page layouts with header/sidebar/content |
-| Modal, ModalDialog       | Overlay containers                       |
-| Drawer                   | Side panel overlay                       |
-| Collapsible              | Expandable sections                      |
-| SlidingPanels            | Panel transitions                        |
-| TabbedMenu               | Tab navigation                           |
-| Nav                      | Navigation wrapper                       |
+| AppShell, AppShellSimple | Page layouts with header/sidebar/content           |
+| Modal, ModalDialog       | Overlay containers                                  |
+| Drawer                   | Side panel overlay                                  |
+| Backdrop                 | Semi-transparent overlay with escape/focus trap     |
+| Collapsible              | Expandable sections                                 |
+| Accordion                | Exclusive/multi-open expandable sections            |
+| SlidingPanels            | Panel transitions                                   |
+| TabbedMenu               | Tab navigation                                      |
+| Nav                      | Navigation wrapper                                  |
+| WithSidePanel            | Two-column layout with collapsible/resizable panel  |
 
 ### Interactive
 
 | Component        | Purpose                           |
 | ---------------- | --------------------------------- |
-| Button           | Actions with intent/variant/size  |
-| ButtonGroupRadio | Toggle group (single selection)   |
-| Switch           | Boolean toggle                    |
-| TwCheck          | Styled checkbox/radio             |
-| DropdownMenu     | Popover menu                      |
-| CommandMenu      | Command palette (keyboard-driven) |
-| TypeaheadInput   | Autocomplete input                |
+| Button               | Actions with intent/variant/size            |
+| ButtonGroupRadio     | Toggle group (single selection)             |
+| Switch               | Boolean toggle                              |
+| TwCheck              | Styled checkbox/radio                       |
+| DropdownMenu         | Popover menu                                |
+| CommandMenu          | Command palette (keyboard-driven)           |
+| TypeaheadInput       | Autocomplete input                          |
+| ColorScheme          | Dark/light mode management with persistence |
+| HoverExpandableWidth | Width-expanding container on hover          |
 
 ### Feedback
 
@@ -62,6 +67,13 @@
 | IconSwap        | N-state visibility swap with opacity transitions (e.g. hamburger/X) |
 | DataTable       | Responsive data table with paging, selection, batch actions         |
 | ThemePreview    | Theme color swatches                                                |
+| AssetsPreview   | Modal-based asset/file preview with zoom, pan, download             |
+| Book            | Interactive book/flipbook reader with 3D page-flip animation        |
+| Circle          | SVG circular progress indicator                                     |
+| H               | Semantic heading (h1-h6) with separate visual/semantic levels       |
+| Separator       | Horizontal/vertical separator line                                  |
+| Thc             | Flexible renderer for text, HTML, components, or snippets           |
+| X               | Styled close/multiply SVG icon                                      |
 
 ### E-commerce
 

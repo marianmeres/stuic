@@ -89,7 +89,19 @@ Side panel overlay (left or right).
 
 #### `Backdrop`
 
-Semi-transparent overlay background.
+Semi-transparent overlay with escape key handling, focus trap, and body scroll locking.
+
+#### `Accordion`
+
+Expandable sections with exclusive or multi-open modes.
+
+| Prop   | Type      | Default | Description                       |
+| ------ | --------- | ------- | --------------------------------- |
+| `open`  | `boolean` | `false` | Bindable open state               |
+
+#### `WithSidePanel`
+
+Responsive two-column layout with collapsible side panel, resizable width, and mobile-aware slide transitions.
 
 #### `Collapsible`
 
@@ -685,25 +697,55 @@ Theme color swatch preview.
 
 ### Utility Components
 
+#### `Book`
+
+Interactive book/flipbook reader with 3D CSS page flip animation, zoom, pan, swipe, and responsive single-page mode.
+
+#### `Circle`
+
+SVG-based circular progress indicator with configurable stroke width and rotation.
+
+| Prop          | Type     | Default | Description                     |
+| ------------- | -------- | ------- | ------------------------------- |
+| `value`       | `number` | `0`     | Progress value (0-100)          |
+| `strokeWidth` | `number` | `8`     | Stroke width                    |
+
+#### `H`
+
+Semantic heading element (h1-h6) with separate visual and semantic levels.
+
+| Prop          | Type     | Default     | Description                          |
+| ------------- | -------- | ----------- | ------------------------------------ |
+| `level`       | `1-6`   | `2`         | Semantic heading level               |
+| `renderLevel` | `1-6`   | `undefined` | Visual heading level (overrides visual size) |
+
+#### `Separator`
+
+Horizontal or vertical separator line with optional decorative `aria-hidden` mode.
+
+| Prop          | Type                           | Default        | Description           |
+| ------------- | ------------------------------ | -------------- | --------------------- |
+| `orientation` | `"horizontal" \| "vertical"`   | `"horizontal"` | Separator orientation |
+
 #### `ColorScheme`
 
-Dark/light mode toggle management.
+Dark/light mode toggle management. Includes `ColorSchemeLocal` (localStorage-based) and `ColorSchemeSystemAware` (system preference sync).
 
 #### `Thc`
 
-Theme-aware container component.
+Flexible content renderer that accepts text, HTML, components, or snippets (THC = Text/Html/Component).
 
 #### `HoverExpandableWidth`
 
-Element that expands width on hover.
+Element that expands width on hover with delayed transitions and shadow effects.
 
 #### `AssetsPreview`
 
-Asset/file preview grid.
+Modal-based asset/file preview gallery with zoom, pan, pinch-zoom, and download controls.
 
 #### `X`
 
-Close button (X icon).
+Styled SVG close/multiply icon with configurable stroke width.
 
 ---
 
@@ -756,6 +798,21 @@ Auto-scroll a container to the bottom on content changes.
 ```svelte
 <div use:autoscroll>
 	{#each messages as msg}<p>{msg}</p>{/each}
+</div>
+```
+
+### `dimBehind`
+
+Dim everything behind a target element (simplified spotlight alternative).
+
+```svelte
+<div
+	use:dimBehind={() => ({
+		open: isDimmed,
+		onHide: () => (isDimmed = false),
+	})}
+>
+	Highlighted Element
 </div>
 ```
 
@@ -1375,7 +1432,7 @@ Each component defines customization tokens. Override globally in `:root {}` or 
 | property  | `bg`, `text`, `border`, `ring`, `shadow`, `radius`, `padding`        |
 | state     | `hover`, `active`, `focus`, `disabled`, `error`                      |
 
-### Available Themes (26)
+### Available Themes (29)
 
 Default theme: `stone`.
 
@@ -1387,7 +1444,7 @@ import "@marianmeres/stuic/themes/css/blue-orange.css";
 import stone from "@marianmeres/stuic/themes/stone";
 ```
 
-stone, gray, blue-orange, cyan-red, cyan-slate, emerald-amber-forest, emerald-pink, fuchsia-emerald, indigo-amber, lime-fuchsia-neon, orange-pink-sunset, pink-emerald, pink-teal, purple-yellow, rainbow, red-blue, red-cyan, red-sky, rose-teal, sky-amber, slate-cyan, slate-teal-ocean, stone-orange-earth, teal-rose, violet-lime, violet-rose-dusk
+stone, gray, zinc, dds, blue-orange, cyan-red, cyan-slate, emerald-amber-forest, emerald-pink, fuchsia-emerald, indigo-amber, lime-fuchsia-neon, orange-pink-sunset, pink-emerald, pink-teal, purple-yellow, rainbow, red-blue, red-cyan, red-sky, red-sky-slate, rose-teal, sky-amber, slate-cyan, slate-teal-ocean, stone-orange-earth, teal-rose, violet-lime, violet-rose-dusk
 
 ### Dark Mode
 

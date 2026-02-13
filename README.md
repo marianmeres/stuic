@@ -82,7 +82,7 @@ Add `class="dark"` to the `<html>` element. All tokens switch automatically — 
 
 ### Themes
 
-26 pre-built themes available. Default: `stone`.
+29 pre-built themes available. Default: `stone`.
 
 ```css
 /* Use a different pre-built theme */
@@ -123,7 +123,7 @@ See [API.md](API.md) for the full list of exported theme types (`ThemeSchema`, `
 
 ### Layout & Overlays
 
-AppShell, Backdrop, Modal, ModalDialog, Drawer, Collapsible, SlidingPanels, Nav
+AppShell, Accordion, Backdrop, Modal, ModalDialog, Drawer, Collapsible, SlidingPanels, Nav, WithSidePanel
 
 ### Forms & Inputs
 
@@ -143,7 +143,7 @@ CommandMenu, DropdownMenu, TabbedMenu, TypeaheadInput, KbdShortcut
 
 ### Display & Utility
 
-Avatar, Carousel, AnimatedElipsis, ThemePreview, ColorScheme, Thc, HoverExpandableWidth, AssetsPreview, DataTable
+Avatar, Book, Carousel, Circle, AnimatedElipsis, H, IconSwap, Separator, ThemePreview, ColorScheme, Thc, HoverExpandableWidth, AssetsPreview, DataTable
 
 ### E-commerce
 
@@ -160,7 +160,7 @@ Cart, Checkout (CheckoutProgress, CheckoutOrderSummary, CheckoutCartReview, Chec
 <div use:fileDropzone={() => ({ onDrop: handleFiles })}>Drop here</div>
 ```
 
-`autogrow` · `validate` · `focusTrap` · `autoscroll` · `fileDropzone` · `highlightDragover` · `resizableWidth` · `trim` · `typeahead` · `onSubmitValidityCheck` · `popover` · `tooltip`
+`autogrow` · `validate` · `focusTrap` · `autoscroll` · `dimBehind` · `fileDropzone` · `highlightDragover` · `resizableWidth` · `spotlight` · `trim` · `typeahead` · `onSubmitValidityCheck` · `popover` · `tooltip`
 
 ## TypeScript
 
