@@ -6,6 +6,8 @@
 	export interface BookPage {
 		id: string | number;
 		src: string;
+		srcset?: string;
+		sizes?: string;
 		title?: string;
 		[key: string]: any;
 	}
@@ -49,6 +51,9 @@
 		responsive?: boolean;
 		/** Callback when active spread changes */
 		onSpreadChange?: (spread: BookSpread, index: number) => void;
+		/** Callback when a page is clicked, with relative x/y coordinates (0–1)
+		 * (0, 0) = top-left corner, (1, 1) = bottom-right corner */
+		onPageClick?: (data: { page: BookPage; x: number; y: number }) => void;
 		/** Custom render snippet for pages */
 		renderPage?: Snippet<[{ page: BookPage; position: "left" | "right" | "cover" }]>;
 		/** Custom class for container */
@@ -146,7 +151,7 @@
 <script lang="ts">
 	import { ItemCollection } from "@marianmeres/item-collection";
 	import { twMerge } from "../../utils/tw-merge.js";
-	import { preloadImgs } from "../../utils/preload-img.js";
+	import { preloadImgs, type PreloadImgOptions } from "../../utils/preload-img.js";
 
 	let {
 		pages,
@@ -160,6 +165,7 @@
 		singlePage = false,
 		responsive = true,
 		onSpreadChange,
+		onPageClick,
 		renderPage,
 		class: classProp,
 		classStage,
@@ -252,14 +258,16 @@
 
 	$effect(() => {
 		const current = activeSpread;
-		const toPreload: string[] = [];
+		const toPreload: PreloadImgOptions[] = [];
 		for (
 			let i = Math.max(0, current - 1);
 			i <= Math.min(spreads.length - 1, current + 1);
 			i++
 		) {
-			if (spreads[i]?.leftPage) toPreload.push(spreads[i].leftPage!.src);
-			if (spreads[i]?.rightPage) toPreload.push(spreads[i].rightPage!.src);
+			for (const page of [spreads[i]?.leftPage, spreads[i]?.rightPage]) {
+				if (page)
+					toPreload.push({ src: page.src, srcset: page.srcset, sizes: page.sizes });
+			}
 		}
 		if (toPreload.length) preloadImgs(toPreload);
 	});
@@ -333,6 +341,12 @@
 	let swipeStartY = 0;
 	let swipeStartTime = 0;
 	let isSwiping = false;
+
+	// ---- Drag detection (for page click vs drag/swipe discrimination) ----
+
+	let _wasDragged = false;
+	let _dragStartClientX = 0;
+	let _dragStartClientY = 0;
 
 	// ---- Zoom helpers ----
 
@@ -475,6 +489,10 @@
 			const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
 			const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
 
+			_wasDragged = false;
+			_dragStartClientX = clientX;
+			_dragStartClientY = clientY;
+
 			if (zoomLevel > 1) {
 				// Pan mode
 				e.preventDefault();
@@ -500,6 +518,18 @@
 				const scale = dist / initialPinchDistance;
 				continuousZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, initialPinchZoom * scale));
 				return;
+			}
+
+			// Track drag for page click detection
+			if (!_wasDragged) {
+				const cx = "touches" in e ? (e.touches[0]?.clientX ?? 0) : e.clientX;
+				const cy = "touches" in e ? (e.touches[0]?.clientY ?? 0) : e.clientY;
+				if (
+					Math.abs(cx - _dragStartClientX) > 5 ||
+					Math.abs(cy - _dragStartClientY) > 5
+				) {
+					_wasDragged = true;
+				}
 			}
 
 			// Pan
@@ -579,6 +609,16 @@
 			},
 		};
 	}
+
+	// ---- Page click ----
+
+	function handlePageClick(e: MouseEvent, page: BookPage | undefined) {
+		if (!onPageClick || !page || _wasDragged) return;
+		const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+		const x = (e.clientX - rect.left) / rect.width;
+		const y = (e.clientY - rect.top) / rect.height;
+		onPageClick({ page, x, y });
+	}
 </script>
 
 {#if spreads.length}
@@ -626,10 +666,13 @@
 						style:z-index={getSheetZIndex(sheet.id, flipped)}
 						style:transition-duration="{duration}ms"
 					>
+						<!-- svelte-ignore a11y_click_events_have_key_events -->
+						<!-- svelte-ignore a11y_no_static_element_interactions -->
 						<!-- Front face: right page of spread[sheetIndex] -->
 						<div
 							class={twMerge(!unstyled && "stuic-book-sheet-front", classPage)}
 							data-placeholder={!sheet.frontPage && sheet.backPage ? "" : undefined}
+							onclick={(e) => handlePageClick(e, sheet.frontPage)}
 						>
 							{#if sheet.frontPage}
 								{#if renderPage}
@@ -644,6 +687,8 @@
 								{:else}
 									<img
 										src={sheet.frontPage.src}
+										srcset={sheet.frontPage.srcset}
+										sizes={sheet.frontPage.sizes}
 										alt={sheet.frontPage.title ?? ""}
 										draggable="false"
 									/>
@@ -651,10 +696,13 @@
 							{/if}
 						</div>
 
+						<!-- svelte-ignore a11y_click_events_have_key_events -->
+						<!-- svelte-ignore a11y_no_static_element_interactions -->
 						<!-- Back face: left page of spread[sheetIndex + 1] -->
 						<div
 							class={twMerge(!unstyled && "stuic-book-sheet-back", classPage)}
 							data-placeholder={!sheet.backPage && sheet.frontPage ? "" : undefined}
+							onclick={(e) => handlePageClick(e, sheet.backPage)}
 						>
 							{#if sheet.backPage}
 								{#if renderPage}
@@ -665,6 +713,8 @@
 								{:else}
 									<img
 										src={sheet.backPage.src}
+										srcset={sheet.backPage.srcset}
+										sizes={sheet.backPage.sizes}
 										alt={sheet.backPage.title ?? ""}
 										draggable="false"
 									/>

@@ -240,7 +240,7 @@
 				.filter(Boolean);
 
 			clog.debug("going to (maybe) preload", toPreload);
-			preloadImgs(toPreload);
+			preloadImgs(toPreload.map((src) => ({ src })));
 		} else {
 			// Reset zoom when modal closes
 			resetZoom();

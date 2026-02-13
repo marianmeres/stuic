@@ -1,39 +1,45 @@
+export interface PreloadImgOptions {
+	src: string;
+	srcset?: string;
+	sizes?: string;
+	debug?: boolean;
+}
+
 /**
  * Preloads a single image by creating an Image element and loading the URL.
  *
- * @param url - The image URL to preload
- * @param debug - If true, logs debug messages to console
+ * @param options - Image options including src, and optionally srcset, sizes, debug
  * @returns A Promise that resolves with the loaded Image element, or rejects on error
  *
  * @example
  * ```ts
- * await preloadImg('/hero.jpg');
- * // Image is now cached by the browser
+ * await preloadImg({ src: '/hero.jpg' });
+ * await preloadImg({ src: '/hero.jpg', srcset: '/hero-2x.jpg 2x', sizes: '100vw' });
  * ```
  */
-export function preloadImg(url: string, debug = false) {
-	if (debug) console.debug(`preloading: ${url}`);
+export function preloadImg(options: PreloadImgOptions): Promise<HTMLImageElement> {
+	if (options.debug) console.debug(`preloading: ${options.src}`);
 	return new Promise((resolve, reject) => {
 		const img = new Image();
 		img.onload = () => resolve(img);
 		img.onerror = reject;
-		img.src = url;
+		if (options.srcset) img.srcset = options.srcset;
+		if (options.sizes) img.sizes = options.sizes;
+		img.src = options.src; // must be set AFTER srcset
 	});
 }
 
 /**
  * Preloads multiple images in parallel.
  *
- * @param urls - Array of image URLs to preload
- * @param debug - If true, logs debug messages to console
+ * @param options - Array of image options to preload
  * @returns A Promise that resolves when all images are loaded
  *
  * @example
  * ```ts
- * await preloadImgs(['/img1.jpg', '/img2.jpg', '/img3.jpg']);
- * // All images are now cached
+ * await preloadImgs([{ src: '/img1.jpg' }, { src: '/img2.jpg', srcset: '/img2-2x.jpg 2x' }]);
  * ```
  */
-export function preloadImgs(urls: string[], debug = false) {
-	return Promise.all(urls.map((url) => preloadImg(url, debug)));
+export function preloadImgs(options: PreloadImgOptions[]): Promise<HTMLImageElement[]> {
+	return Promise.all(options.map((o) => preloadImg(o)));
 }
