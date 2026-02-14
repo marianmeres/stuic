@@ -114,7 +114,7 @@
 		</p>
 	{/if}
 
-	<div class="max-w-lg">
+	<div class="max-w-full">
 		<CheckoutGuestForm
 			bind:formData
 			onSubmit={handleSubmit}
@@ -245,7 +245,7 @@
 	<div class="max-w-lg">
 		<CheckoutGuestForm onSubmit={(data) => alert("Submitted: " + data.email)}>
 			{#snippet submitButton({ isSubmitting: submitting, disabled })}
-				<div class="flex gap-2 pt-2">
+				<div class="flex gap-2">
 					<Button type="submit" intent="primary" {disabled} class="flex-1">
 						{submitting ? "Please wait..." : "Create Account & Continue"}
 					</Button>

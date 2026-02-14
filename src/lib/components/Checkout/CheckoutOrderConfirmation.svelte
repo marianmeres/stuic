@@ -55,6 +55,7 @@
 	import Button from "../Button/Button.svelte";
 	import { t_default } from "./_internal/checkout-i18n-defaults.js";
 	import { defaultFormatPrice } from "./_internal/checkout-utils.js";
+	import H from "../H/H.svelte";
 
 	let {
 		order,
@@ -96,9 +97,9 @@
 			<div class={unstyled ? undefined : "stuic-checkout-confirmation-icon"}>
 				{@html successIconHtml}
 			</div>
-			<h2 class={unstyled ? undefined : "stuic-checkout-confirmation-title"}>
+			<H level={2} class={unstyled ? undefined : "stuic-checkout-confirmation-title"}>
 				{t("checkout.complete.title")}
-			</h2>
+			</H>
 			<p class={unstyled ? undefined : "stuic-checkout-confirmation-subtitle"}>
 				{t("checkout.complete.subtitle")}
 			</p>
@@ -124,9 +125,12 @@
 
 	<!-- Items -->
 	<section class={unstyled ? undefined : "stuic-checkout-card"}>
-		<h3 class={unstyled ? undefined : "stuic-checkout-confirmation-section-title"}>
+		<H
+			level={3}
+			class={unstyled ? undefined : "stuic-checkout-confirmation-section-title"}
+		>
 			{t("checkout.complete.items_title")}
-		</h3>
+		</H>
 		<div class={unstyled ? undefined : "stuic-checkout-confirmation-items"}>
 			{#each order.items as item (item.product_id)}
 				<div class={unstyled ? undefined : "stuic-checkout-confirmation-item"}>
@@ -147,19 +151,23 @@
 	<!-- Shipping Details -->
 	{#if order.shipping_address || order.delivery_option}
 		<section class={unstyled ? undefined : "stuic-checkout-card"}>
-			<h3 class={unstyled ? undefined : "stuic-checkout-confirmation-section-title"}>
+			<H
+				level={3}
+				class={unstyled ? undefined : "stuic-checkout-confirmation-section-title"}
+			>
 				{t("checkout.complete.shipping_title")}
-			</h3>
+			</H>
 			<div class={unstyled ? undefined : "stuic-checkout-confirmation-shipping-grid"}>
 				{#if order.shipping_address}
 					<div>
-						<h4
+						<H
+							level={4}
 							class={unstyled
 								? undefined
 								: "stuic-checkout-confirmation-subsection-label"}
 						>
 							{t("checkout.complete.address_label")}
-						</h4>
+						</H>
 						<div class={unstyled ? undefined : "stuic-checkout-confirmation-address"}>
 							<div>{order.shipping_address.name}</div>
 							<div>{order.shipping_address.street}</div>
@@ -172,13 +180,14 @@
 				{/if}
 				{#if order.delivery_option}
 					<div>
-						<h4
+						<H
+							level={4}
 							class={unstyled
 								? undefined
 								: "stuic-checkout-confirmation-subsection-label"}
 						>
 							{t("checkout.complete.delivery_label")}
-						</h4>
+						</H>
 						<div>{order.delivery_option.name}</div>
 						<div
 							class={unstyled ? undefined : "stuic-checkout-confirmation-delivery-detail"}
@@ -200,9 +209,12 @@
 
 	<!-- Order Totals -->
 	<section class={unstyled ? undefined : "stuic-checkout-card"}>
-		<h3 class={unstyled ? undefined : "stuic-checkout-confirmation-section-title"}>
+		<H
+			level={3}
+			class={unstyled ? undefined : "stuic-checkout-confirmation-section-title"}
+		>
 			{t("checkout.complete.totals_title")}
-		</h3>
+		</H>
 		<div class={unstyled ? undefined : "stuic-checkout-confirmation-totals"}>
 			<!-- Subtotal -->
 			<div class={unstyled ? undefined : "stuic-checkout-summary-row"}>

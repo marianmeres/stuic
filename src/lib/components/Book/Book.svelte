@@ -711,18 +711,20 @@
 										draggable="false"
 									/>
 								{/if}
-								{#if onAreaClick && sheet.frontPage.areas?.length && sheet.frontPage.width && sheet.frontPage.height}
+								{#if onAreaClick && Math.abs(sheet.id - activeSpread) <= 1 && sheet.frontPage.areas?.length && sheet.frontPage.width && sheet.frontPage.height}
 									<svg
 										viewBox="0 0 {sheet.frontPage.width} {sheet.frontPage.height}"
 										preserveAspectRatio="xMidYMid meet"
 										class={!unstyled ? "stuic-book-areas" : undefined}
 									>
 										<!-- svelte-ignore a11y_click_events_have_key_events -->
-									<!-- svelte-ignore a11y_no_static_element_interactions -->
-									{#each sheet.frontPage.areas as area (area.id)}
+										<!-- svelte-ignore a11y_no_static_element_interactions -->
+										{#each sheet.frontPage.areas as area (area.id)}
 											<rect
-												x={area.x} y={area.y}
-												width={area.w} height={area.h}
+												x={area.x}
+												y={area.y}
+												width={area.w}
+												height={area.h}
 												class={!unstyled ? "stuic-book-area" : undefined}
 												onclick={(e: MouseEvent) => {
 													if (_wasDragged) return;
@@ -759,18 +761,20 @@
 										draggable="false"
 									/>
 								{/if}
-								{#if onAreaClick && sheet.backPage.areas?.length && sheet.backPage.width && sheet.backPage.height}
+								{#if onAreaClick && Math.abs(sheet.id - activeSpread) <= 1 && sheet.backPage.areas?.length && sheet.backPage.width && sheet.backPage.height}
 									<svg
 										viewBox="0 0 {sheet.backPage.width} {sheet.backPage.height}"
 										preserveAspectRatio="xMidYMid meet"
 										class={!unstyled ? "stuic-book-areas" : undefined}
 									>
 										<!-- svelte-ignore a11y_click_events_have_key_events -->
-									<!-- svelte-ignore a11y_no_static_element_interactions -->
-									{#each sheet.backPage.areas as area (area.id)}
+										<!-- svelte-ignore a11y_no_static_element_interactions -->
+										{#each sheet.backPage.areas as area (area.id)}
 											<rect
-												x={area.x} y={area.y}
-												width={area.w} height={area.h}
+												x={area.x}
+												y={area.y}
+												width={area.w}
+												height={area.h}
 												class={!unstyled ? "stuic-book-area" : undefined}
 												onclick={(e: MouseEvent) => {
 													if (_wasDragged) return;

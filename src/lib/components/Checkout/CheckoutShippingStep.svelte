@@ -114,6 +114,7 @@
 	import CheckoutProgress from "./CheckoutProgress.svelte";
 	import { t_default } from "./_internal/checkout-i18n-defaults.js";
 	import { createEmptyAddress } from "./_internal/checkout-utils.js";
+	import H from "../H/H.svelte";
 
 	let {
 		order,
@@ -204,13 +205,14 @@
 
 					<!-- Shipping Address -->
 					<section>
-						<h3
+						<H
+							level={3}
 							class={unstyled
 								? undefined
 								: "stuic-checkout-shipping-step-section-heading"}
 						>
 							{t("checkout.step.shipping_address_title")}
-						</h3>
+						</H>
 						<CheckoutAddressForm
 							bind:address={shippingAddress}
 							label="shipping"
@@ -231,13 +233,14 @@
 					<!-- Billing Address (conditional) -->
 					{#if !billingSameAsShipping}
 						<section>
-							<h3
+							<H
+								level={3}
 								class={unstyled
 									? undefined
 									: "stuic-checkout-shipping-step-section-heading"}
 							>
 								{t("checkout.step.billing_address_title")}
-							</h3>
+							</H>
 							<CheckoutAddressForm
 								bind:address={billingAddress}
 								label="billing"
@@ -251,13 +254,14 @@
 
 					<!-- Delivery Options -->
 					<section>
-						<h3
+						<H
+							level={3}
 							class={unstyled
 								? undefined
 								: "stuic-checkout-shipping-step-section-heading"}
 						>
 							{t("checkout.step.delivery_title")}
-						</h3>
+						</H>
 						<CheckoutDeliveryOptions
 							options={deliveryOptions}
 							bind:selectedId={selectedDeliveryId}
@@ -278,13 +282,14 @@
 					{@render rightColumn()}
 				{:else}
 					<div class={unstyled ? undefined : "stuic-checkout-shipping-step-sidebar"}>
-						<h3
+						<H
+							level={3}
 							class={unstyled
 								? undefined
 								: "stuic-checkout-shipping-step-section-heading"}
 						>
 							{t("checkout.step.summary_title")}
-						</h3>
+						</H>
 						<CheckoutOrderSummary
 							totals={order.totals}
 							hasShipping={!!order.delivery_option_id}

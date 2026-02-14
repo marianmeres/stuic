@@ -100,7 +100,7 @@
 		</p>
 	{/if}
 
-	<div class="max-w-lg">
+	<div class="max-w-full">
 		<CheckoutCartReview
 			items={sampleItems}
 			onEditCart={showEditButton ? handleEditCart : undefined}

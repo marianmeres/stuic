@@ -105,6 +105,7 @@
 	import CheckoutLoginForm from "./CheckoutLoginForm.svelte";
 	import Skeleton from "../Skeleton/Skeleton.svelte";
 	import TabbedMenu from "../TabbedMenu/TabbedMenu.svelte";
+	import { H } from "../H/index.js";
 
 	let {
 		items,
@@ -200,9 +201,12 @@
 				{#if rightColumn}
 					{@render rightColumn()}
 				{:else}
-					<h3 class={unstyled ? undefined : "stuic-checkout-review-step-heading"}>
+					<H
+						level={3}
+						class={unstyled ? undefined : "stuic-checkout-review-step-heading"}
+					>
 						{t("checkout.step.contact_title")}
-					</h3>
+					</H>
 
 					{#if formMode === "guest-only" || formMode === undefined}
 						{#if guestForm}

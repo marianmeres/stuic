@@ -98,12 +98,21 @@
 		return requiredFields.includes(field);
 	}
 
+	let containerWidth = $state(0);
+	let isSmall = $derived(containerWidth > 0 && containerWidth < 480);
+
 	let _class = $derived(
 		unstyled ? classProp : twMerge("stuic-checkout-address", classProp)
 	);
 </script>
 
-<fieldset bind:this={el} class={_class} {...rest}>
+<fieldset
+	bind:this={el}
+	bind:offsetWidth={containerWidth}
+	class={_class}
+	data-small={!unstyled && isSmall ? "" : undefined}
+	{...rest}
+>
 	<!-- Name (full width, block label) -->
 	{#if fields?.name !== false}
 		<FieldInput

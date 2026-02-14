@@ -206,7 +206,7 @@
 	<div class="max-w-lg">
 		<CheckoutLoginForm onSubmit={(data) => alert("Submitted: " + data.email)}>
 			{#snippet submitButton({ isSubmitting: submitting, disabled })}
-				<div class="flex gap-2 pt-2">
+				<div class="flex gap-2">
 					<Button type="submit" intent="primary" {disabled} class="flex-1">
 						{submitting ? "Please wait..." : "Sign In with Email"}
 					</Button>

@@ -49,11 +49,11 @@
 	}
 
 	const checkoutSubs = [
-		"checkout-progress",
+		"00-checkout-progress",
+		"01-checkout-cart-review",
+		"02-checkout-guest-form",
+		"03-checkout-login-form",
 		"checkout-order-summary",
-		"checkout-cart-review",
-		"checkout-guest-form",
-		"checkout-login-form",
 		"checkout-address-form",
 		"checkout-delivery-options",
 		"checkout-order-review",

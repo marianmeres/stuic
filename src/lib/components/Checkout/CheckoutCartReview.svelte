@@ -60,6 +60,7 @@
 	import { defaultFormatPrice } from "./_internal/checkout-utils.js";
 	import Cart from "../Cart/Cart.svelte";
 	import Button from "../Button/Button.svelte";
+	import { H } from "../H/index.js";
 
 	let {
 		items,
@@ -93,9 +94,9 @@
 		{#if typeof titleProp === "function"}
 			{@render titleProp()}
 		{:else}
-			<h3 class={unstyled ? undefined : "stuic-checkout-cart-review-title"}>
+			<H level={3} class={unstyled ? undefined : "stuic-checkout-cart-review-title"}>
 				{typeof titleProp === "string" ? titleProp : t("checkout.cart.title")}
-			</h3>
+			</H>
 		{/if}
 
 		{#if editAction}

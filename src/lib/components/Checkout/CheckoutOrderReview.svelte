@@ -92,6 +92,7 @@
 	import Button from "../Button/Button.svelte";
 	import { t_default } from "./_internal/checkout-i18n-defaults.js";
 	import { defaultFormatPrice } from "./_internal/checkout-utils.js";
+	import H from "../H/H.svelte";
 
 	let {
 		order,
@@ -143,9 +144,9 @@
 			class={unstyled ? undefined : "stuic-checkout-review-section stuic-checkout-card"}
 		>
 			<div class={unstyled ? undefined : "stuic-checkout-review-section-header"}>
-				<h4 class={unstyled ? undefined : "stuic-checkout-review-heading"}>
+				<H level={4} class={unstyled ? undefined : "stuic-checkout-review-heading"}>
 					{t("checkout.review.items_title")}
-				</h4>
+				</H>
 				{#if onEditItems}
 					<Button variant="ghost" size="sm" onclick={onEditItems}>
 						{#if editIcon}{@html editIcon}{/if}
@@ -181,9 +182,9 @@
 				class={unstyled ? undefined : "stuic-checkout-review-section stuic-checkout-card"}
 			>
 				<div class={unstyled ? undefined : "stuic-checkout-review-section-header"}>
-					<h4 class={unstyled ? undefined : "stuic-checkout-review-heading"}>
+					<H level={4} class={unstyled ? undefined : "stuic-checkout-review-heading"}>
 						{t("checkout.review.shipping_title")}
-					</h4>
+					</H>
 					{#if onEditShippingAddress}
 						<Button variant="ghost" size="sm" onclick={onEditShippingAddress}>
 							{#if editIcon}{@html editIcon}{/if}
@@ -217,9 +218,9 @@
 			class={unstyled ? undefined : "stuic-checkout-review-section stuic-checkout-card"}
 		>
 			<div class={unstyled ? undefined : "stuic-checkout-review-section-header"}>
-				<h4 class={unstyled ? undefined : "stuic-checkout-review-heading"}>
+				<H level={4} class={unstyled ? undefined : "stuic-checkout-review-heading"}>
 					{t("checkout.review.billing_title")}
-				</h4>
+				</H>
 				{#if onEditBillingAddress}
 					<Button variant="ghost" size="sm" onclick={onEditBillingAddress}>
 						{#if editIcon}{@html editIcon}{/if}
@@ -258,9 +259,9 @@
 				class={unstyled ? undefined : "stuic-checkout-review-section stuic-checkout-card"}
 			>
 				<div class={unstyled ? undefined : "stuic-checkout-review-section-header"}>
-					<h4 class={unstyled ? undefined : "stuic-checkout-review-heading"}>
+					<H level={4} class={unstyled ? undefined : "stuic-checkout-review-heading"}>
 						{t("checkout.review.delivery_title")}
-					</h4>
+					</H>
 					{#if onEditDelivery}
 						<Button variant="ghost" size="sm" onclick={onEditDelivery}>
 							{#if editIcon}{@html editIcon}{/if}

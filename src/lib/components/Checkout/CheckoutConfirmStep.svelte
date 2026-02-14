@@ -85,6 +85,7 @@
 	import CheckoutOrderSummary from "./CheckoutOrderSummary.svelte";
 	import CheckoutProgress from "./CheckoutProgress.svelte";
 	import { t_default } from "./_internal/checkout-i18n-defaults.js";
+	import H from "../H/H.svelte";
 
 	let {
 		order,
@@ -188,11 +189,12 @@
 					{@render rightColumn()}
 				{:else}
 					<div class={unstyled ? undefined : "stuic-checkout-confirm-step-sidebar"}>
-						<h3
+						<H
+							level={3}
 							class={unstyled ? undefined : "stuic-checkout-confirm-step-section-heading"}
 						>
 							{t("checkout.step.summary_title")}
-						</h3>
+						</H>
 						<CheckoutOrderSummary
 							totals={order.totals}
 							hasShipping={!!order.delivery_option_id}
