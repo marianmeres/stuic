@@ -47,6 +47,9 @@
 		unstyled?: boolean;
 		class?: string;
 		el?: HTMLDivElement;
+
+		hLevel?: HLevel;
+		hRenderLevel?: HLevel;
 	}
 </script>
 
@@ -55,7 +58,7 @@
 	import Button from "../Button/Button.svelte";
 	import { t_default } from "./_internal/checkout-i18n-defaults.js";
 	import { defaultFormatPrice } from "./_internal/checkout-utils.js";
-	import H from "../H/H.svelte";
+	import H, { type HLevel } from "../H/H.svelte";
 
 	let {
 		order,
@@ -71,6 +74,8 @@
 		unstyled = false,
 		class: classProp,
 		el = $bindable(),
+		hLevel = 2,
+		hRenderLevel = 2,
 		...rest
 	}: Props = $props();
 
@@ -97,7 +102,11 @@
 			<div class={unstyled ? undefined : "stuic-checkout-confirmation-icon"}>
 				{@html successIconHtml}
 			</div>
-			<H level={2} class={unstyled ? undefined : "stuic-checkout-confirmation-title"}>
+			<H
+				level={hLevel}
+				renderLevel={hRenderLevel}
+				class={unstyled ? undefined : "stuic-checkout-confirmation-title"}
+			>
 				{t("checkout.complete.title")}
 			</H>
 			<p class={unstyled ? undefined : "stuic-checkout-confirmation-subtitle"}>

@@ -104,6 +104,10 @@ const DEFAULTS: Record<string, string> = {
 	"checkout.complete.totals_title": "Order Total",
 	"checkout.complete.continue_shopping": "Continue Shopping",
 
+	// -- CheckoutGuestOrLoginForm (composite) --
+	"checkout.guest_or_login.guest_tab": "Guest",
+	"checkout.guest_or_login.login_tab": "Log In",
+
 	// -- Composite Steps (10–13) --
 	"checkout.step.contact_title": "Contact Information",
 	"checkout.step.or_divider": "or",

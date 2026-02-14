@@ -51,6 +51,9 @@
 		unstyled?: boolean;
 		class?: string;
 		el?: HTMLDivElement;
+
+		hLevel?: HLevel;
+		hRenderLevel?: HLevel;
 	}
 </script>
 
@@ -60,7 +63,8 @@
 	import { defaultFormatPrice } from "./_internal/checkout-utils.js";
 	import Cart from "../Cart/Cart.svelte";
 	import Button from "../Button/Button.svelte";
-	import { H } from "../H/index.js";
+	import { H, type HLevel } from "../H/index.js";
+	import CheckoutSectionHeader from "./CheckoutSectionHeader.svelte";
 
 	let {
 		items,
@@ -74,6 +78,8 @@
 		unstyled = false,
 		class: classProp,
 		el = $bindable(),
+		hLevel = 3,
+		hRenderLevel = 3,
 		...rest
 	}: Props = $props();
 
@@ -90,23 +96,29 @@
 
 <div bind:this={el} class={_class} {...rest}>
 	<!-- Header bar -->
-	<div class={unstyled ? undefined : "stuic-checkout-cart-review-header"}>
+	<CheckoutSectionHeader>
 		{#if typeof titleProp === "function"}
 			{@render titleProp()}
 		{:else}
-			<H level={3} class={unstyled ? undefined : "stuic-checkout-cart-review-title"}>
+			<H
+				level={hLevel}
+				renderLevel={hRenderLevel}
+				class={unstyled ? undefined : "stuic-checkout-cart-review-title"}
+			>
 				{typeof titleProp === "string" ? titleProp : t("checkout.cart.title")}
 			</H>
 		{/if}
 
-		{#if editAction}
-			{@render editAction({ onEditCart })}
-		{:else if onEditCart}
-			<Button variant="outline" size="sm" onclick={onEditCart}>
-				{t("checkout.cart.edit")}
-			</Button>
-		{/if}
-	</div>
+		{#snippet right()}
+			{#if editAction}
+				{@render editAction({ onEditCart })}
+			{:else if onEditCart}
+				<Button variant="outline" size="sm" onclick={onEditCart}>
+					{t("checkout.cart.edit")}
+				</Button>
+			{/if}
+		{/snippet}
+	</CheckoutSectionHeader>
 
 	<!-- Cart (readonly) -->
 	<Cart {items} readonly formatPrice={fp} {thumbnail} t={tProp} {unstyled}>

@@ -25,6 +25,12 @@ export {
 } from "./CheckoutLoginForm.svelte";
 
 export {
+	default as CheckoutGuestOrLoginForm,
+	type Props as CheckoutGuestOrLoginFormProps,
+	type FormMode as CheckoutFormMode,
+} from "./CheckoutGuestOrLoginForm.svelte";
+
+export {
 	default as CheckoutAddressForm,
 	type Props as CheckoutAddressFormProps,
 } from "./CheckoutAddressForm.svelte";

@@ -129,7 +129,7 @@
 	Full cart with quantity controls, inline editing (click qty number), remove, and async
 	update simulation.
 </p>
-<div class="max-w-3xl">
+<div class="max-w-full">
 	<div class="mb-4">
 		<Button size="sm" variant="outline" onclick={resetItems}>Reset Cart</Button>
 	</div>

@@ -69,6 +69,16 @@
 	--stuic-checkout-step-grid-columns: 3fr 2fr;
 	--stuic-checkout-step-sidebar-top: 2rem;
 
+	/* CheckoutSectionHeader */
+	--stuic-checkout-section-header-gap: 0.5rem;
+	--stuic-checkout-section-header-margin-bottom: 1rem;
+	/* --stuic-checkout-section-header-header-margin-bottom: 1rem; */
+	/* --stuic-checkout-section-header-title-font-size: 1.125rem; */
+	/* --stuic-checkout-section-header-title-font-weight: 600; */
+	/* --stuic-checkout-section-header-summary-font-size: 1.125rem; */
+	/* --stuic-checkout-section-header-summary-total-font-weight: 700; */
+	/* --stuic-checkout-section-header-summary-total-font-size: 1.25rem; */
+
 	/* CheckoutOrderSummary */
 	--stuic-checkout-summary-gap: 0.75rem;
 	--stuic-checkout-summary-label-color: var(--stuic-color-muted-foreground);
@@ -80,7 +90,7 @@
 	--stuic-checkout-summary-discount-color: #16a34a;
 
 	/* CheckoutCartReview */
-	--stuic-checkout-cart-review-header-gap: 0.5rem;
+	/* --stuic-checkout-cart-review-header-gap: 0.5rem; */
 	--stuic-checkout-cart-review-header-margin-bottom: 1rem;
 	--stuic-checkout-cart-review-title-font-size: 1.125rem;
 	--stuic-checkout-cart-review-title-font-weight: 600;
@@ -100,9 +110,8 @@
 	/* CheckoutLoginForm */
 	--stuic-checkout-login-gap: 0rem;
 	--stuic-checkout-login-gap-row: 1rem;
-	--stuic-checkout-login-forgot-color: var(--stuic-color-muted-foreground);
-	--stuic-checkout-login-forgot-hover-color: var(--stuic-color-foreground);
-	--stuic-checkout-login-forgot-font-size: 0.875rem;
+	--stuic-checkout-login-forgot-margin-y: 0.5rem;
+	--stuic-checkout-login-forgot-margin-x: 0.5rem;
 
 	/* CheckoutAddressForm */
 	--stuic-checkout-address-gap: 0rem;
@@ -162,6 +171,18 @@
 		--stuic-color-muted-foreground
 	);
 	--stuic-checkout-confirmation-delivery-detail-color: var(
+		--stuic-color-muted-foreground
+	);
+
+	/* CheckoutGuestOrLoginForm (composite) */
+	--stuic-checkout-guest-or-login-gap: 0.25rem;
+	--stuic-checkout-guest-or-login-heading-font-size: 1.125rem;
+	--stuic-checkout-guest-or-login-heading-font-weight: 600;
+	--stuic-checkout-guest-or-login-heading-margin-bottom: 0.75rem;
+	--stuic-checkout-guest-or-login-divider-color: var(--stuic-color-border);
+	--stuic-checkout-guest-or-login-tabs-margin-bottom: 0.75rem;
+	--stuic-checkout-guest-or-login-tabs-background-color: var(--stuic-color-muted);
+	--stuic-checkout-guest-or-login-tabs-active-background-color: var(
 		--stuic-color-muted-foreground
 	);
 
@@ -300,6 +321,18 @@
 	}
 
 	/* ============================================================================
+	   CHECKOUT SHARED SECTION HEADER
+	   ============================================================================ */
+
+	.stuic-checkout-section-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--stuic-checkout-section-header-gap);
+		margin-bottom: var(--stuic-checkout-section-header-margin-bottom);
+	}
+
+	/* ============================================================================
 	   CHECKOUT ORDER SUMMARY
 	   ============================================================================ */
 
@@ -348,13 +381,13 @@
 	   CHECKOUT CART REVIEW
 	   ============================================================================ */
 
-	.stuic-checkout-cart-review-header {
+	/* .stuic-checkout-cart-review-header {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		gap: var(--stuic-checkout-cart-review-header-gap);
 		margin-bottom: var(--stuic-checkout-cart-review-header-margin-bottom);
-	}
+	} */
 
 	.stuic-checkout-cart-review-title {
 		font-size: var(--stuic-checkout-cart-review-title-font-size);
@@ -367,8 +400,10 @@
 		justify-content: space-between;
 		align-items: center;
 		padding-top: var(--stuic-checkout-cart-review-header-gap);
-		border-top: 1px solid var(--stuic-color-border);
+		/* border-top: 1px solid var(--stuic-color-border); */
 		font-size: var(--stuic-checkout-cart-review-summary-font-size);
+		padding-left: 1rem;
+		padding-right: 1rem;
 	}
 
 	.stuic-checkout-cart-review-summary-total {
@@ -439,20 +474,10 @@
 	}
 
 	.stuic-checkout-login-forgot {
-		all: unset;
-		cursor: pointer;
-		font-size: var(--stuic-checkout-login-forgot-font-size);
-		color: var(--stuic-checkout-login-forgot-color);
-		transition: color var(--stuic-checkout-transition);
-	}
-
-	.stuic-checkout-login-forgot:hover {
-		color: var(--stuic-checkout-login-forgot-hover-color);
-	}
-
-	.stuic-checkout-login-forgot:focus-visible {
-		outline: 2px solid var(--stuic-checkout-input-focus-ring);
-		outline-offset: 2px;
+		margin: var(--stuic-checkout-login-forgot-margin-y)
+			var(--stuic-checkout-login-forgot-margin-x)
+			var(--stuic-checkout-login-forgot-margin-y)
+			var(--stuic-checkout-login-forgot-margin-x);
 	}
 
 	.stuic-checkout-login-submit {
@@ -856,6 +881,67 @@
 	}
 
 	/* ============================================================================
+	   CHECKOUT GUEST OR LOGIN FORM (composite)
+	   ============================================================================ */
+
+	.stuic-checkout-guest-or-login-form {
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-checkout-guest-or-login-gap);
+	}
+
+	.stuic-checkout-guest-or-login-heading {
+		font-size: var(--stuic-checkout-guest-or-login-heading-font-size);
+		font-weight: var(--stuic-checkout-guest-or-login-heading-font-weight);
+		margin: 0 0 var(--stuic-checkout-guest-or-login-heading-margin-bottom);
+	}
+
+	/* Pill-styled tabs via TabbedMenu CSS variable overrides */
+	.stuic-checkout-guest-or-login-tabs {
+		--stuic-tabbed-menu-radius: 9999px;
+		--stuic-tabbed-menu-item-max-width: none;
+		--stuic-tabbed-menu-gap: 0.25rem;
+		background-color: var(--stuic-checkout-guest-or-login-tabs-background-color);
+	}
+
+	.stuic-checkout-guest-or-login-tabs.stuic-tabbed-menu {
+		padding: 3px;
+		border: 1px solid var(--stuic-checkout-guest-or-login-divider-color);
+		border-radius: 9999px;
+		margin-bottom: var(--stuic-checkout-guest-or-login-tabs-margin-bottom);
+	}
+
+	/* Override TabbedMenu's top-only border-radius to full pill shape */
+	.stuic-checkout-guest-or-login-tabs .stuic-tabbed-menu-tab {
+		border-radius: 9999px;
+		background-color: var(--stuic-checkout-guest-or-login-tabs-background-color);
+		border: 0;
+	}
+
+	.stuic-checkout-guest-or-login-tabs .stuic-tabbed-menu-tab[aria-selected="true"] {
+		border-color: var(--stuic-tabbed-menu-border-active);
+		background-color: var(--stuic-checkout-guest-or-login-tabs-active-background-color);
+	}
+
+	/* Divider (stacked mode) */
+	.stuic-checkout-guest-or-login-divider {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		margin: 1rem 0;
+		color: var(--stuic-checkout-guest-or-login-divider-color);
+		font-size: 0.875rem;
+	}
+
+	.stuic-checkout-guest-or-login-divider::before,
+	.stuic-checkout-guest-or-login-divider::after {
+		content: "";
+		flex: 1;
+		height: 1px;
+		background: var(--stuic-checkout-guest-or-login-divider-color);
+	}
+
+	/* ============================================================================
 	   CHECKOUT SHIPPING STEP (composite)
 	   ============================================================================ */
 
@@ -1059,6 +1145,7 @@
 .stuic-checkout-guest-form .stuic-input,
 .stuic-checkout-login-form .stuic-input,
 .stuic-checkout-address .stuic-input,
-.stuic-checkout-guest-b2b .stuic-input {
+.stuic-checkout-guest-b2b .stuic-input,
+.stuic-checkout-guest-or-login-form .stuic-input {
 	margin-bottom: 1rem;
 }

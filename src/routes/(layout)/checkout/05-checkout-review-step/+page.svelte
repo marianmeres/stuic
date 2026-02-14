@@ -84,7 +84,7 @@
 <h1 class="text-2xl font-bold mb-8">CheckoutReviewStep</h1>
 
 <!-- ============== DEFAULT (guest-only) ============== -->
-<section class="mb-12">
+<section class="mb-12 mx-4">
 	<h2 class="text-lg font-bold mb-2">Default (guest-only)</h2>
 	<p class="text-sm opacity-60 mb-4">
 		Two-column layout with cart review on the left and guest form on the right. Progress
@@ -145,7 +145,6 @@
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Tabbed mode</h2>
 	<p class="text-sm opacity-60 mb-4">Guest and login forms in switchable tabs.</p>
-
 	<CheckoutReviewStep
 		items={sampleItems}
 		formatPrice={dollarFormat}

@@ -153,17 +153,6 @@
 		}}
 	/>
 
-	<!-- Forgot password -->
-	{#if onForgotPassword}
-		<button
-			type="button"
-			class={unstyled ? undefined : "stuic-checkout-login-forgot"}
-			onclick={onForgotPassword}
-		>
-			{t("checkout.login.forgot_password")}
-		</button>
-	{/if}
-
 	<!-- CTA -->
 	{#if submitButton}
 		{@render submitButton({ isSubmitting, disabled: isSubmitting })}
@@ -173,6 +162,21 @@
 				{isSubmitting
 					? (submittingLabel ?? t("checkout.login.submitting"))
 					: (submitLabel ?? t("checkout.login.submit"))}
+			</Button>
+		</div>
+	{/if}
+
+	<!-- Forgot password -->
+	{#if onForgotPassword}
+		<div class={unstyled ? undefined : "stuic-checkout-login-forgot"}>
+			<Button
+				variant="link"
+				type="button"
+				class="text-muted"
+				size="sm"
+				onclick={onForgotPassword}
+			>
+				{t("checkout.login.forgot_password")}
 			</Button>
 		</div>
 	{/if}

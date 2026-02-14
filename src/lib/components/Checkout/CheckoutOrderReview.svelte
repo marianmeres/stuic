@@ -84,6 +84,9 @@
 		unstyled?: boolean;
 		class?: string;
 		el?: HTMLDivElement;
+
+		hLevel?: HLevel;
+		hRenderLevel?: HLevel;
 	}
 </script>
 
@@ -92,7 +95,7 @@
 	import Button from "../Button/Button.svelte";
 	import { t_default } from "./_internal/checkout-i18n-defaults.js";
 	import { defaultFormatPrice } from "./_internal/checkout-utils.js";
-	import H from "../H/H.svelte";
+	import H, { type HLevel } from "../H/H.svelte";
 
 	let {
 		order,
@@ -110,6 +113,8 @@
 		unstyled = false,
 		class: classProp,
 		el = $bindable(),
+		hLevel = 4,
+		hRenderLevel = 4,
 		...rest
 	}: Props = $props();
 
@@ -144,7 +149,11 @@
 			class={unstyled ? undefined : "stuic-checkout-review-section stuic-checkout-card"}
 		>
 			<div class={unstyled ? undefined : "stuic-checkout-review-section-header"}>
-				<H level={4} class={unstyled ? undefined : "stuic-checkout-review-heading"}>
+				<H
+					level={hLevel}
+					renderLevel={hRenderLevel}
+					class={unstyled ? undefined : "stuic-checkout-review-heading"}
+				>
 					{t("checkout.review.items_title")}
 				</H>
 				{#if onEditItems}
@@ -182,7 +191,11 @@
 				class={unstyled ? undefined : "stuic-checkout-review-section stuic-checkout-card"}
 			>
 				<div class={unstyled ? undefined : "stuic-checkout-review-section-header"}>
-					<H level={4} class={unstyled ? undefined : "stuic-checkout-review-heading"}>
+					<H
+						level={hLevel}
+						renderLevel={hRenderLevel}
+						class={unstyled ? undefined : "stuic-checkout-review-heading"}
+					>
 						{t("checkout.review.shipping_title")}
 					</H>
 					{#if onEditShippingAddress}
@@ -218,7 +231,11 @@
 			class={unstyled ? undefined : "stuic-checkout-review-section stuic-checkout-card"}
 		>
 			<div class={unstyled ? undefined : "stuic-checkout-review-section-header"}>
-				<H level={4} class={unstyled ? undefined : "stuic-checkout-review-heading"}>
+				<H
+					level={hLevel}
+					renderLevel={hRenderLevel}
+					class={unstyled ? undefined : "stuic-checkout-review-heading"}
+				>
 					{t("checkout.review.billing_title")}
 				</H>
 				{#if onEditBillingAddress}
@@ -259,7 +276,11 @@
 				class={unstyled ? undefined : "stuic-checkout-review-section stuic-checkout-card"}
 			>
 				<div class={unstyled ? undefined : "stuic-checkout-review-section-header"}>
-					<H level={4} class={unstyled ? undefined : "stuic-checkout-review-heading"}>
+					<H
+						level={hLevel}
+						renderLevel={hRenderLevel}
+						class={unstyled ? undefined : "stuic-checkout-review-heading"}
+					>
 						{t("checkout.review.delivery_title")}
 					</H>
 					{#if onEditDelivery}
