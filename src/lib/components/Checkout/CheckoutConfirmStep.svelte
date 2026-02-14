@@ -80,6 +80,7 @@
 <script lang="ts">
 	import { twMerge } from "../../utils/tw-merge.js";
 	import Button from "../Button/Button.svelte";
+	import DismissibleMessage from "../DismissibleMessage/DismissibleMessage.svelte";
 	import Skeleton from "../Skeleton/Skeleton.svelte";
 	import CheckoutOrderReview from "./CheckoutOrderReview.svelte";
 	import CheckoutOrderSummary from "./CheckoutOrderSummary.svelte";
@@ -147,11 +148,7 @@
 			</div>
 		</div>
 	{:else}
-		{#if error}
-			<div class={unstyled ? undefined : "stuic-checkout-alert"} role="alert">
-				{error}
-			</div>
-		{/if}
+		<DismissibleMessage message={error} intent="destructive" onDismiss={false} />
 
 		<div class={unstyled ? undefined : "stuic-checkout-confirm-step-grid"}>
 			<!-- Left Column: Order Review -->

@@ -103,6 +103,7 @@
 	import CheckoutCartReview from "./CheckoutCartReview.svelte";
 	import CheckoutGuestForm from "./CheckoutGuestForm.svelte";
 	import CheckoutLoginForm from "./CheckoutLoginForm.svelte";
+	import DismissibleMessage from "../DismissibleMessage/DismissibleMessage.svelte";
 	import Skeleton from "../Skeleton/Skeleton.svelte";
 	import TabbedMenu from "../TabbedMenu/TabbedMenu.svelte";
 	import { H } from "../H/index.js";
@@ -171,13 +172,9 @@
 			</div>
 		</div>
 	{:else if error && items.length === 0}
-		<div class={unstyled ? undefined : "stuic-checkout-alert"} role="alert">{error}</div>
+		<DismissibleMessage message={error} intent="destructive" onDismiss={false} />
 	{:else}
-		{#if error}
-			<div class={unstyled ? undefined : "stuic-checkout-alert"} role="alert">
-				{error}
-			</div>
-		{/if}
+		<DismissibleMessage message={error} intent="destructive" onDismiss={false} />
 
 		<div class={unstyled ? undefined : "stuic-checkout-review-step-grid"}>
 			<!-- Left: Cart Review -->

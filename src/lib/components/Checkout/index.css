@@ -299,14 +299,6 @@
 		margin-top: 0.25rem;
 	}
 
-	.stuic-checkout-alert {
-		padding: 0.75rem 1rem;
-		border-radius: var(--stuic-checkout-card-radius);
-		border: 1px solid var(--stuic-checkout-error-border-color);
-		background: var(--stuic-checkout-error-bg);
-		color: var(--stuic-checkout-error-color);
-	}
-
 	/* ============================================================================
 	   CHECKOUT ORDER SUMMARY
 	   ============================================================================ */

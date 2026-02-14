@@ -64,6 +64,7 @@
 	<div
 		class={twMerge("stuic-dismissible-message", "mb-4", classProps)}
 		data-intent={intent}
+		role="alert"
 		transition:slide={{ duration }}
 	>
 		{#if _iconHtml}

@@ -114,6 +114,7 @@
 	import CheckoutProgress from "./CheckoutProgress.svelte";
 	import { t_default } from "./_internal/checkout-i18n-defaults.js";
 	import { createEmptyAddress } from "./_internal/checkout-utils.js";
+	import DismissibleMessage from "../DismissibleMessage/DismissibleMessage.svelte";
 	import H from "../H/H.svelte";
 
 	let {
@@ -180,11 +181,7 @@
 			</div>
 		</div>
 	{:else}
-		{#if error}
-			<div class={unstyled ? undefined : "stuic-checkout-alert"} role="alert">
-				{error}
-			</div>
-		{/if}
+		<DismissibleMessage message={error} intent="destructive" onDismiss={false} />
 
 		<div class={unstyled ? undefined : "stuic-checkout-shipping-step-grid"}>
 			<!-- Left Column -->

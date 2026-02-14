@@ -64,6 +64,7 @@
 <script lang="ts">
 	import { twMerge } from "../../utils/tw-merge.js";
 	import Button from "../Button/Button.svelte";
+	import DismissibleMessage from "../DismissibleMessage/DismissibleMessage.svelte";
 	import Skeleton from "../Skeleton/Skeleton.svelte";
 	import CheckoutOrderConfirmation from "./CheckoutOrderConfirmation.svelte";
 	import CheckoutProgress from "./CheckoutProgress.svelte";
@@ -118,9 +119,7 @@
 		</div>
 	{:else if error}
 		<div class={unstyled ? undefined : "stuic-checkout-complete-step-error"}>
-			<div class={unstyled ? undefined : "stuic-checkout-alert"} role="alert">
-				{error}
-			</div>
+			<DismissibleMessage message={error} intent="destructive" onDismiss={false} />
 			<div class={unstyled ? undefined : "stuic-checkout-complete-step-error-actions"}>
 				{#if onReturnToCheckout}
 					<Button variant="outline" onclick={onReturnToCheckout}>

@@ -63,6 +63,7 @@
 		validateLoginForm,
 	} from "./_internal/checkout-utils.js";
 	import Button from "../Button/Button.svelte";
+	import DismissibleMessage from "../DismissibleMessage/DismissibleMessage.svelte";
 	import FieldInput from "../Input/FieldInput.svelte";
 
 	let {
@@ -118,11 +119,7 @@
 
 <form bind:this={el} class={_class} onsubmit={handleSubmit} novalidate {...rest}>
 	<!-- General error alert -->
-	{#if error}
-		<div class={unstyled ? undefined : "stuic-checkout-alert"} role="alert">
-			{error}
-		</div>
-	{/if}
+	<DismissibleMessage message={error} intent="destructive" onDismiss={false} />
 
 	<!-- Email -->
 	<FieldInput
