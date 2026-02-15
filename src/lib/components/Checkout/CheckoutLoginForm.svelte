@@ -43,8 +43,22 @@
 		submitButton?: Snippet<[{ isSubmitting: boolean; disabled: boolean }]>;
 
 		/**
+		 * Social/OAuth login buttons rendered below the primary form.
+		 * When provided, a styled "or continue with" divider is shown above.
+		 * Consumer renders the buttons — the library provides layout + divider.
+		 */
+		socialLogins?: Snippet;
+
+		/**
+		 * Override the divider label above social login buttons.
+		 * Default: i18n key "checkout.login.social_divider" ("or continue with").
+		 * Set to `false` to hide the divider while still rendering socialLogins.
+		 */
+		socialDividerLabel?: string | false;
+
+		/**
 		 * Content below the form.
-		 * Use for "Or continue as guest" links, OAuth buttons, etc.
+		 * Use for "Or continue as guest" links, sign-up links, etc.
 		 */
 		footer?: Snippet;
 
@@ -76,6 +90,8 @@
 		submitLabel,
 		submittingLabel,
 		submitButton,
+		socialLogins,
+		socialDividerLabel,
 		footer,
 		t: tProp,
 		unstyled = false,
@@ -121,7 +137,13 @@
 	<!-- General error alert -->
 	<DismissibleMessage message={error} intent="destructive" onDismiss={false} />
 
+	<!--
+		svelte-ignore binding_property_non_reactive:
+		formData is a $bindable prop — deep reactivity depends on the consumer
+		passing a $state() object. The bindings work correctly regardless.
+	-->
 	<!-- Email -->
+	<!-- svelte-ignore binding_property_non_reactive -->
 	<FieldInput
 		bind:value={formData.email}
 		label={t("checkout.login.email_label")}
@@ -138,6 +160,7 @@
 	/>
 
 	<!-- Password -->
+	<!-- svelte-ignore binding_property_non_reactive -->
 	<FieldInput
 		bind:value={formData.password}
 		label={t("checkout.login.password_label")}
@@ -178,6 +201,24 @@
 			>
 				{t("checkout.login.forgot_password")}
 			</Button>
+		</div>
+	{/if}
+
+	<!-- Social logins -->
+	{#if socialLogins}
+		<div class={unstyled ? undefined : "stuic-checkout-login-social"}>
+			{#if socialDividerLabel !== false}
+				<div class={unstyled ? undefined : "stuic-checkout-login-social-divider"}>
+					<span>
+						{typeof socialDividerLabel === "string"
+							? socialDividerLabel
+							: t("checkout.login.social_divider")}
+					</span>
+				</div>
+			{/if}
+			<div class={unstyled ? undefined : "stuic-checkout-login-social-buttons"}>
+				{@render socialLogins()}
+			</div>
 		</div>
 	{/if}
 

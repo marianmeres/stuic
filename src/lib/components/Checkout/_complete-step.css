@@ -1,0 +1,35 @@
+:root {
+	/* CheckoutCompleteStep (composite) */
+	--stuic-checkout-complete-step-max-width: 42rem;
+	--stuic-checkout-complete-step-error-gap: 1rem;
+}
+
+@layer components {
+	.stuic-checkout-complete-step {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+		max-width: var(--stuic-checkout-complete-step-max-width);
+		margin-inline: auto;
+	}
+
+	.stuic-checkout-complete-step-loading {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.stuic-checkout-complete-step-error {
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-checkout-complete-step-error-gap);
+	}
+
+	.stuic-checkout-complete-step-error-actions {
+		display: flex;
+		justify-content: center;
+		gap: var(--stuic-checkout-complete-step-error-gap);
+		flex-wrap: wrap;
+	}
+}

@@ -53,6 +53,7 @@
 	import CheckoutLoginForm from "./CheckoutLoginForm.svelte";
 	import TabbedMenu from "../TabbedMenu/TabbedMenu.svelte";
 	import { H, type HLevel } from "../H/index.js";
+	import CheckoutSectionHeader from "./CheckoutSectionHeader.svelte";
 
 	let {
 		guestForm,
@@ -86,7 +87,8 @@
 <div bind:this={el} class={_class} {...rest}>
 	<!-- Optional heading -->
 	{#if heading}
-		<div class={unstyled ? undefined : "stuic-checkout-guest-or-login-heading"}>
+		<!-- <div class={unstyled ? undefined : "stuic-checkout-guest-or-login-heading"}> -->
+		<CheckoutSectionHeader>
 			{#if typeof heading === "string"}
 				<H level={hLevel} renderLevel={hRenderLevel}>
 					{heading}
@@ -94,7 +96,8 @@
 			{:else}
 				{@render heading()}
 			{/if}
-		</div>
+		</CheckoutSectionHeader>
+		<!-- </div> -->
 	{/if}
 
 	{#if formMode === "guest-only"}

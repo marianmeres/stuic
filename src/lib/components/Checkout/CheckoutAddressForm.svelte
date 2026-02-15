@@ -114,7 +114,13 @@
 	{...rest}
 >
 	<!-- Name (full width, block label) -->
+	<!--
+		svelte-ignore binding_property_non_reactive:
+		address is a $bindable prop — deep reactivity depends on the consumer
+		passing a $state() object. The bindings work correctly regardless.
+	-->
 	{#if fields?.name !== false}
+		<!-- svelte-ignore binding_property_non_reactive -->
 		<FieldInput
 			bind:value={address.name}
 			label={t("checkout.address.name_label")}
@@ -133,6 +139,7 @@
 
 	<!-- Street (full width, block label) -->
 	{#if fields?.street !== false}
+		<!-- svelte-ignore binding_property_non_reactive -->
 		<FieldInput
 			bind:value={address.street}
 			label={t("checkout.address.street_label")}
@@ -153,6 +160,7 @@
 	{#if fields?.city !== false || fields?.postal_code !== false}
 		<div class={unstyled ? undefined : "stuic-checkout-address-row"}>
 			{#if fields?.city !== false}
+				<!-- svelte-ignore binding_property_non_reactive -->
 				<FieldInput
 					bind:value={address.city}
 					label={t("checkout.address.city_label")}
@@ -168,6 +176,7 @@
 				/>
 			{/if}
 			{#if fields?.postal_code !== false}
+				<!-- svelte-ignore binding_property_non_reactive -->
 				<FieldInput
 					bind:value={address.postal_code}
 					label={t("checkout.address.postal_code_label")}
@@ -198,6 +207,7 @@
 				id: `${label}-country`,
 			})}
 		{:else}
+			<!-- svelte-ignore binding_property_non_reactive -->
 			<FieldInput
 				bind:value={address.country}
 				label={t("checkout.address.country_label")}
@@ -217,6 +227,7 @@
 
 	<!-- Phone (full width, block label) -->
 	{#if fields?.phone !== false}
+		<!-- svelte-ignore binding_property_non_reactive -->
 		<FieldInput
 			bind:value={address.phone}
 			label={t("checkout.address.phone_label")}

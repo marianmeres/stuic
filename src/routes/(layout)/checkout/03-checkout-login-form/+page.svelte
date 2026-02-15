@@ -6,6 +6,7 @@
 	} from "$lib/index.js";
 	import Button from "$lib/components/Button/Button.svelte";
 	import FieldSwitch from "$lib/components/Input/FieldSwitch.svelte";
+	import { iconGoogle, iconFacebook, iconApple } from "$lib/icons/index.js";
 
 	// --- Interactive demo state ---
 	let formData = $state<CheckoutLoginFormData>(createEmptyLoginFormData());
@@ -25,6 +26,7 @@
 	// --- Controls ---
 	let showForgotPassword = $state(true);
 	let showFooter = $state(true);
+	let showSocialLogins = $state(true);
 	let showExternalErrors = $state(false);
 	let showGeneralError = $state(false);
 
@@ -62,6 +64,12 @@
 			renderSize="sm"
 		/>
 		<FieldSwitch
+			bind:checked={showSocialLogins}
+			label="Show social logins"
+			name="show-social"
+			renderSize="sm"
+		/>
+		<FieldSwitch
 			bind:checked={showExternalErrors}
 			label="Inject field error"
 			name="show-external-errors"
@@ -89,6 +97,7 @@
 			errors={externalErrorsComputed}
 			error={generalError}
 			onForgotPassword={showForgotPassword ? handleForgotPassword : undefined}
+			socialLogins={showSocialLogins ? socialButtons : undefined}
 		>
 			{#snippet footer()}
 				{#if showFooter}
@@ -250,6 +259,56 @@
 	</div>
 </section>
 
+<!-- ============== WITH SOCIAL LOGINS ============== -->
+<section class="mb-12">
+	<h2 class="text-lg font-bold mb-2">With social logins</h2>
+	<p class="text-sm opacity-60 mb-4">
+		The <code>socialLogins</code> snippet renders OAuth/social buttons with an auto-generated
+		divider. Override the divider label via <code>socialDividerLabel</code>, or hide it with
+		<code>socialDividerLabel=&#123;false&#125;</code>.
+	</p>
+
+	<div class="max-w-lg">
+		<CheckoutLoginForm
+			onSubmit={(data) => alert("Submitted: " + data.email)}
+			onForgotPassword={() => alert("Forgot password!")}
+			socialLogins={socialButtons}
+		/>
+	</div>
+</section>
+
+<!-- ============== SOCIAL LOGINS (CUSTOM DIVIDER) ============== -->
+<section class="mb-12">
+	<h2 class="text-lg font-bold mb-2">Social logins (custom divider label)</h2>
+	<p class="text-sm opacity-60 mb-4">
+		<code>socialDividerLabel="or sign in with"</code>
+	</p>
+
+	<div class="max-w-lg">
+		<CheckoutLoginForm
+			onSubmit={(data) => alert("Submitted: " + data.email)}
+			socialLogins={socialButtons}
+			socialDividerLabel="or sign in with"
+		/>
+	</div>
+</section>
+
+<!-- ============== SOCIAL LOGINS (NO DIVIDER) ============== -->
+<section class="mb-12">
+	<h2 class="text-lg font-bold mb-2">Social logins (no divider)</h2>
+	<p class="text-sm opacity-60 mb-4">
+		<code>socialDividerLabel=&#123;false&#125;</code> hides the divider.
+	</p>
+
+	<div class="max-w-lg">
+		<CheckoutLoginForm
+			onSubmit={(data) => alert("Submitted: " + data.email)}
+			socialLogins={socialButtons}
+			socialDividerLabel={false}
+		/>
+	</div>
+</section>
+
 <!-- ============== UNSTYLED ============== -->
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Unstyled</h2>
@@ -266,6 +325,18 @@
 		/>
 	</div>
 </section>
+
+{#snippet socialButtons()}
+	<Button variant="outline" class="w-full" onclick={() => alert("Google login")}>
+		{@html iconGoogle()} Continue with Google
+	</Button>
+	<Button variant="outline" class="w-full" onclick={() => alert("Facebook login")}>
+		{@html iconFacebook()} Continue with Facebook
+	</Button>
+	<Button variant="outline" class="w-full" onclick={() => alert("Apple login")}>
+		{@html iconApple()} Continue with Apple
+	</Button>
+{/snippet}
 
 <!-- ============== CSS VARIABLE OVERRIDE ============== -->
 <section class="mb-12">

@@ -1,0 +1,30 @@
+:root {
+	/* CheckoutAddressForm */
+	--stuic-checkout-address-gap: 0rem;
+	--stuic-checkout-address-row-gap: 1rem;
+}
+
+@layer components {
+	.stuic-checkout-address {
+		all: unset;
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-checkout-address-gap);
+	}
+
+	.stuic-checkout-address-row {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: var(--stuic-checkout-address-row-gap, 1rem);
+	}
+
+	.stuic-checkout-address-row:has(> :only-child) {
+		grid-template-columns: 1fr;
+	}
+
+	.stuic-checkout-guest-form[data-small] .stuic-checkout-guest-row,
+	.stuic-checkout-address[data-small] .stuic-checkout-address-row {
+		grid-template-columns: 1fr;
+		gap: 0;
+	}
+}

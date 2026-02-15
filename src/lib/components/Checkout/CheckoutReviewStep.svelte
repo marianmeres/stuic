@@ -55,6 +55,8 @@
 			onForgotPassword?: () => void;
 			submitLabel?: string;
 			submittingLabel?: string;
+			socialLogins?: Snippet;
+			socialDividerLabel?: string | false;
 		};
 
 		/**

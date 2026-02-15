@@ -1,0 +1,146 @@
+/* ============================================================================
+   CHECKOUT SHARED TOKENS & STYLES
+   Tokens and styles used across multiple checkout sub-components.
+   ============================================================================ */
+
+:root {
+	/* Input styling (shared by GuestForm, LoginForm, AddressForm) */
+	--stuic-checkout-input-border-color: var(--stuic-color-border);
+	--stuic-checkout-input-border-color-error: var(--stuic-color-destructive);
+	--stuic-checkout-input-bg: var(--stuic-color-input);
+	--stuic-checkout-input-fg: var(--stuic-color-foreground);
+	--stuic-checkout-input-placeholder: var(--stuic-color-muted-foreground);
+	--stuic-checkout-input-radius: 0.375rem;
+	--stuic-checkout-input-padding-x: 0.75rem;
+	--stuic-checkout-input-padding-y: 0.5rem;
+	--stuic-checkout-input-focus-ring: var(--stuic-color-ring);
+
+	/* Label styling */
+	--stuic-checkout-label-font-size: 0.875rem;
+	--stuic-checkout-label-font-weight: 500;
+	--stuic-checkout-label-margin-bottom: 0.25rem;
+
+	/* Error styling */
+	--stuic-checkout-error-color: var(--stuic-color-destructive);
+	--stuic-checkout-error-font-size: 0.875rem;
+	--stuic-checkout-error-bg: color-mix(
+		in srgb,
+		var(--stuic-color-destructive) 5%,
+		transparent
+	);
+	--stuic-checkout-error-border-color: color-mix(
+		in srgb,
+		var(--stuic-color-destructive) 30%,
+		transparent
+	);
+
+	/* Card sections (used in ReviewStep, OrderReview, etc.) */
+	--stuic-checkout-card-border-color: var(--stuic-color-border);
+	--stuic-checkout-card-bg: var(--stuic-color-background);
+	--stuic-checkout-card-radius: 0.5rem;
+	--stuic-checkout-card-padding: 1rem;
+
+	/* Step layout (shared by composite steps) */
+	--stuic-checkout-step-grid-gap: 2rem;
+	--stuic-checkout-step-grid-columns: 3fr 2fr;
+	--stuic-checkout-step-sidebar-top: 2rem;
+
+	/* CheckoutSectionHeader */
+	--stuic-checkout-section-header-gap: 0.5rem;
+	--stuic-checkout-section-header-margin-bottom: 1rem;
+	--stuic-checkout-section-header-bg-color: transparent;
+	--stuic-checkout-section-header-text-color: inherit;
+	--stuic-checkout-section-header-padding: 0;
+	--stuic-checkout-section-header-border-radius: 0;
+
+	/* Transitions */
+	--stuic-checkout-transition: 150ms;
+}
+
+@layer components {
+	/* ============================================================================
+	   SHARED INPUT STYLES
+	   ============================================================================ */
+
+	.stuic-checkout-input {
+		width: 100%;
+		padding: var(--stuic-checkout-input-padding-y) var(--stuic-checkout-input-padding-x);
+		border-radius: var(--stuic-checkout-input-radius);
+		border: 1px solid var(--stuic-checkout-input-border-color);
+		background: var(--stuic-checkout-input-bg);
+		color: var(--stuic-checkout-input-fg);
+	}
+
+	.stuic-checkout-input::placeholder {
+		color: var(--stuic-checkout-input-placeholder);
+	}
+
+	.stuic-checkout-input:focus {
+		outline: none;
+		box-shadow: 0 0 0 2px var(--stuic-checkout-input-focus-ring);
+	}
+
+	.stuic-checkout-input-error {
+		border-color: var(--stuic-checkout-input-border-color-error);
+	}
+
+	/* ============================================================================
+	   SHARED LABEL STYLES
+	   ============================================================================ */
+
+	.stuic-checkout-label {
+		display: block;
+		font-size: var(--stuic-checkout-label-font-size);
+		font-weight: var(--stuic-checkout-label-font-weight);
+		margin-bottom: var(--stuic-checkout-label-margin-bottom);
+	}
+
+	/* ============================================================================
+	   SHARED ERROR STYLES
+	   ============================================================================ */
+
+	.stuic-checkout-field-error {
+		color: var(--stuic-checkout-error-color);
+		font-size: var(--stuic-checkout-error-font-size);
+		margin-top: 0.25rem;
+	}
+
+	/* ============================================================================
+	   CHECKOUT SHARED SECTION HEADER
+	   ============================================================================ */
+
+	.stuic-checkout-section-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--stuic-checkout-section-header-gap);
+		margin-bottom: var(--stuic-checkout-section-header-margin-bottom);
+		/* idea here is, that some have button inside (which is min-heigh 44), and we
+        want to have equal height across all */
+		min-height: 44px;
+		background-color: var(--stuic-checkout-section-header-bg-color);
+		color: var(--stuic-checkout-section-header-text-color);
+		padding: var(--stuic-checkout-section-header-padding);
+		border-radius: var(--stuic-checkout-section-header-border-radius);
+	}
+
+	/* ============================================================================
+	   SHARED CARD SECTION
+	   ============================================================================ */
+
+	.stuic-checkout-card {
+		border: 1px solid var(--stuic-checkout-card-border-color);
+		border-radius: var(--stuic-checkout-card-radius);
+		background: var(--stuic-checkout-card-bg);
+		padding: var(--stuic-checkout-card-padding);
+	}
+}
+
+/* Override default stuic-input mb-8 → mb-4 within checkout forms */
+.stuic-checkout-guest-form .stuic-input,
+.stuic-checkout-login-form .stuic-input,
+.stuic-checkout-address .stuic-input,
+.stuic-checkout-guest-b2b .stuic-input,
+.stuic-checkout-guest-or-login-form .stuic-input {
+	margin-bottom: 1rem;
+}

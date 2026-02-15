@@ -96,6 +96,7 @@
 	import { t_default } from "./_internal/checkout-i18n-defaults.js";
 	import { defaultFormatPrice } from "./_internal/checkout-utils.js";
 	import H, { type HLevel } from "../H/H.svelte";
+	import CheckoutSectionHeader from "./CheckoutSectionHeader.svelte";
 
 	let {
 		order,
@@ -148,7 +149,7 @@
 		<section
 			class={unstyled ? undefined : "stuic-checkout-review-section stuic-checkout-card"}
 		>
-			<div class={unstyled ? undefined : "stuic-checkout-review-section-header"}>
+			<CheckoutSectionHeader>
 				<H
 					level={hLevel}
 					renderLevel={hRenderLevel}
@@ -156,24 +157,31 @@
 				>
 					{t("checkout.review.items_title")}
 				</H>
-				{#if onEditItems}
-					<Button variant="ghost" size="sm" onclick={onEditItems}>
-						{#if editIcon}{@html editIcon}{/if}
-						{t("checkout.review.edit")}
-					</Button>
-				{/if}
-			</div>
+				{#snippet right()}
+					{#if onEditItems}
+						<Button variant="soft" size="sm" onclick={onEditItems}>
+							{#if editIcon}{@html editIcon}{/if}
+							{t("checkout.review.edit")}
+						</Button>
+					{/if}
+				{/snippet}
+			</CheckoutSectionHeader>
+
+			<!-- <div class={unstyled ? undefined : "stuic-checkout-review-section-header"}></div> -->
 			<div class={unstyled ? undefined : "stuic-checkout-review-items"}>
 				{#each order.items as item (item.product_id)}
-					<div class={unstyled ? undefined : "stuic-checkout-review-item"}>
-						<span>{item.quantity} &times; {item.name}</span>
-						<span>{fp(item.price * item.quantity)}</span>
+					<div>
+						<div class={unstyled ? undefined : "stuic-checkout-review-item"}>
+							<span>{item.quantity} &times; {item.name}</span>
+							<span>{fp(item.price * item.quantity)}</span>
+						</div>
+						{#if item.quantity > 1}
+							<span class={unstyled ? undefined : "stuic-checkout-review-item-each"}>
+								<spam class="opacity-50">&rarr;</spam>
+								{t("checkout.review.each", { price: fp(item.price) })}
+							</span>
+						{/if}
 					</div>
-					{#if item.quantity > 1}
-						<span class={unstyled ? undefined : "stuic-checkout-review-item-each"}>
-							{t("checkout.review.each", { price: fp(item.price) })}
-						</span>
-					{/if}
 				{/each}
 			</div>
 		</section>
@@ -190,7 +198,7 @@
 			<section
 				class={unstyled ? undefined : "stuic-checkout-review-section stuic-checkout-card"}
 			>
-				<div class={unstyled ? undefined : "stuic-checkout-review-section-header"}>
+				<CheckoutSectionHeader>
 					<H
 						level={hLevel}
 						renderLevel={hRenderLevel}
@@ -198,13 +206,16 @@
 					>
 						{t("checkout.review.shipping_title")}
 					</H>
-					{#if onEditShippingAddress}
-						<Button variant="ghost" size="sm" onclick={onEditShippingAddress}>
-							{#if editIcon}{@html editIcon}{/if}
-							{t("checkout.review.edit")}
-						</Button>
-					{/if}
-				</div>
+					{#snippet right()}
+						{#if onEditShippingAddress}
+							<Button variant="soft" size="sm" onclick={onEditShippingAddress}>
+								{#if editIcon}{@html editIcon}{/if}
+								{t("checkout.review.edit")}
+							</Button>
+						{/if}
+					{/snippet}
+				</CheckoutSectionHeader>
+
 				<div class={unstyled ? undefined : "stuic-checkout-review-address"}>
 					<div>{order.shipping_address.name}</div>
 					<div>{order.shipping_address.street}</div>
@@ -230,7 +241,7 @@
 		<section
 			class={unstyled ? undefined : "stuic-checkout-review-section stuic-checkout-card"}
 		>
-			<div class={unstyled ? undefined : "stuic-checkout-review-section-header"}>
+			<CheckoutSectionHeader>
 				<H
 					level={hLevel}
 					renderLevel={hRenderLevel}
@@ -238,13 +249,16 @@
 				>
 					{t("checkout.review.billing_title")}
 				</H>
-				{#if onEditBillingAddress}
-					<Button variant="ghost" size="sm" onclick={onEditBillingAddress}>
-						{#if editIcon}{@html editIcon}{/if}
-						{t("checkout.review.edit")}
-					</Button>
-				{/if}
-			</div>
+				{#snippet right()}
+					{#if onEditBillingAddress}
+						<Button variant="soft" size="sm" onclick={onEditBillingAddress}>
+							{#if editIcon}{@html editIcon}{/if}
+							{t("checkout.review.edit")}
+						</Button>
+					{/if}
+				{/snippet}
+			</CheckoutSectionHeader>
+
 			{#if isBillingSameAsShipping}
 				<p class={unstyled ? undefined : "stuic-checkout-review-billing-same"}>
 					{t("checkout.review.billing_same")}
@@ -275,7 +289,7 @@
 			<section
 				class={unstyled ? undefined : "stuic-checkout-review-section stuic-checkout-card"}
 			>
-				<div class={unstyled ? undefined : "stuic-checkout-review-section-header"}>
+				<CheckoutSectionHeader>
 					<H
 						level={hLevel}
 						renderLevel={hRenderLevel}
@@ -283,13 +297,16 @@
 					>
 						{t("checkout.review.delivery_title")}
 					</H>
-					{#if onEditDelivery}
-						<Button variant="ghost" size="sm" onclick={onEditDelivery}>
-							{#if editIcon}{@html editIcon}{/if}
-							{t("checkout.review.edit")}
-						</Button>
-					{/if}
-				</div>
+					{#snippet right()}
+						{#if onEditDelivery}
+							<Button variant="soft" size="sm" onclick={onEditDelivery}>
+								{#if editIcon}{@html editIcon}{/if}
+								{t("checkout.review.edit")}
+							</Button>
+						{/if}
+					{/snippet}
+				</CheckoutSectionHeader>
+
 				<div class={unstyled ? undefined : "stuic-checkout-review-delivery"}>
 					<span>{order.delivery_option.name}</span>
 					<span>

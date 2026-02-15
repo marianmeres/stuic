@@ -41,6 +41,9 @@ export { iconLucideCircle as iconCircle } from "@marianmeres/icons-fns/lucide/ic
 export { iconLucideCircleCheckBig as iconCircleCheckBig } from "@marianmeres/icons-fns/lucide/iconLucideCircleCheckBig.js";
 export { iconLucideDot as iconDot } from "@marianmeres/icons-fns/lucide/iconLucideDot.js";
 export { iconLucideEllipsisVertical as iconEllipsisVertical } from "@marianmeres/icons-fns/lucide/iconLucideEllipsisVertical.js";
+export { iconLucideGrip as iconGrip } from "@marianmeres/icons-fns/lucide/iconLucideGrip.js";
+export { iconLucideGripHorizontal as iconGripHorizontal } from "@marianmeres/icons-fns/lucide/iconLucideGripHorizontal.js";
+export { iconLucideGripVertical as iconGripVertical } from "@marianmeres/icons-fns/lucide/iconLucideGripVertical.js";
 export { iconLucideLanguages as iconLanguages } from "@marianmeres/icons-fns/lucide/iconLucideLanguages.js";
 export { iconLucideMenu as iconMenu } from "@marianmeres/icons-fns/lucide/iconLucideMenu.js";
 export { iconLucideSearch as iconSearch } from "@marianmeres/icons-fns/lucide/iconLucideSearch.js";
@@ -48,6 +51,14 @@ export { iconLucideSettings as iconSettings } from "@marianmeres/icons-fns/lucid
 export { iconLucideSquare as iconSquare } from "@marianmeres/icons-fns/lucide/iconLucideSquare.js";
 export { iconLucideUser as iconUser } from "@marianmeres/icons-fns/lucide/iconLucideUser.js";
 export { iconLucideX as iconX } from "@marianmeres/icons-fns/lucide/iconLucideX.js";
-export { iconLucideGripHorizontal as iconGripHorizontal } from "@marianmeres/icons-fns/lucide/iconLucideGripHorizontal.js";
-export { iconLucideGripVertical as iconGripVertical } from "@marianmeres/icons-fns/lucide/iconLucideGripVertical.js";
-export { iconLucideGrip as iconGrip } from "@marianmeres/icons-fns/lucide/iconLucideGrip.js";
+
+// Brand Icons (OAuth and more...)
+export { iconBsApple as iconApple } from "@marianmeres/icons-fns/bootstrap/iconBsApple.js";
+export { iconBsFacebook as iconFacebook } from "@marianmeres/icons-fns/bootstrap/iconBsFacebook.js";
+export { iconBsGithub as iconGithub } from "@marianmeres/icons-fns/bootstrap/iconBsGithub.js";
+export { iconBsGoogle as iconGoogle } from "@marianmeres/icons-fns/bootstrap/iconBsGoogle.js";
+export { iconBsInstagram as iconInstagram } from "@marianmeres/icons-fns/bootstrap/iconBsInstagram.js";
+export { iconBsMicrosoft as iconMicrosoft } from "@marianmeres/icons-fns/bootstrap/iconBsMicrosoft.js";
+export { iconBsTwitterX as iconTwitterX } from "@marianmeres/icons-fns/bootstrap/iconBsTwitterX.js";
+export { iconBsXbox as iconXbox } from "@marianmeres/icons-fns/bootstrap/iconBsXbox.js";
+export { iconBsYoutube as iconYoutube } from "@marianmeres/icons-fns/bootstrap/iconBsYoutube.js";

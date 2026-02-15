@@ -113,7 +113,7 @@
 			{#if editAction}
 				{@render editAction({ onEditCart })}
 			{:else if onEditCart}
-				<Button variant="outline" size="sm" onclick={onEditCart}>
+				<Button variant="soft" size="sm" onclick={onEditCart}>
 					{t("checkout.cart.edit")}
 				</Button>
 			{/if}

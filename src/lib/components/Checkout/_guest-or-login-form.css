@@ -1,0 +1,72 @@
+:root {
+	/* CheckoutGuestOrLoginForm (composite) */
+	--stuic-checkout-guest-or-login-gap: 0.25rem;
+	/* --stuic-checkout-guest-or-login-heading-font-size: 1.125rem;
+	--stuic-checkout-guest-or-login-heading-font-weight: 600;
+	--stuic-checkout-guest-or-login-heading-margin-bottom: 0.75rem; */
+	--stuic-checkout-guest-or-login-divider-color: var(--stuic-color-border);
+	--stuic-checkout-guest-or-login-tabs-margin-bottom: 1.5rem;
+	--stuic-checkout-guest-or-login-tabs-background-color: var(--stuic-color-muted);
+	--stuic-checkout-guest-or-login-tabs-active-background-color: var(
+		--stuic-color-muted-foreground
+	);
+}
+
+@layer components {
+	.stuic-checkout-guest-or-login-form {
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-checkout-guest-or-login-gap);
+	}
+	/* 
+	.stuic-checkout-guest-or-login-heading {
+		font-size: var(--stuic-checkout-guest-or-login-heading-font-size);
+		font-weight: var(--stuic-checkout-guest-or-login-heading-font-weight);
+		margin: 0 0 var(--stuic-checkout-guest-or-login-heading-margin-bottom);
+	} */
+
+	/* Pill-styled tabs via TabbedMenu CSS variable overrides */
+	.stuic-checkout-guest-or-login-tabs {
+		--stuic-tabbed-menu-radius: 9999px;
+		--stuic-tabbed-menu-item-max-width: none;
+		/* --stuic-tabbed-menu-gap: 0.25rem; */
+		background-color: var(--stuic-checkout-guest-or-login-tabs-background-color);
+	}
+
+	.stuic-checkout-guest-or-login-tabs.stuic-tabbed-menu {
+		padding: 3px;
+		border: 1px solid var(--stuic-checkout-guest-or-login-divider-color);
+		border-radius: 9999px;
+		margin-bottom: var(--stuic-checkout-guest-or-login-tabs-margin-bottom);
+	}
+
+	/* Override TabbedMenu's top-only border-radius to full pill shape */
+	.stuic-checkout-guest-or-login-tabs .stuic-tabbed-menu-tab {
+		border-radius: 9999px;
+		background-color: var(--stuic-checkout-guest-or-login-tabs-background-color);
+		border: 0;
+	}
+
+	.stuic-checkout-guest-or-login-tabs .stuic-tabbed-menu-tab[aria-selected="true"] {
+		border-color: var(--stuic-tabbed-menu-border-active);
+		background-color: var(--stuic-checkout-guest-or-login-tabs-active-background-color);
+	}
+
+	/* Divider (stacked mode) */
+	.stuic-checkout-guest-or-login-divider {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		margin: 1rem 0;
+		color: var(--stuic-checkout-guest-or-login-divider-color);
+		font-size: 0.875rem;
+	}
+
+	.stuic-checkout-guest-or-login-divider::before,
+	.stuic-checkout-guest-or-login-divider::after {
+		content: "";
+		flex: 1;
+		height: 1px;
+		background: var(--stuic-checkout-guest-or-login-divider-color);
+	}
+}

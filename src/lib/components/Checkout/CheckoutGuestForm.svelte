@@ -139,7 +139,13 @@
 	novalidate
 	{...rest}
 >
+	<!--
+		svelte-ignore binding_property_non_reactive:
+		formData is a $bindable prop — deep reactivity depends on the consumer
+		passing a $state() object. The bindings work correctly regardless.
+	-->
 	<!-- Email (always shown, always required) -->
+	<!-- svelte-ignore binding_property_non_reactive -->
 	<FieldInput
 		bind:value={formData.email}
 		label={t("checkout.guest.email_label")}
@@ -159,6 +165,7 @@
 	{#if fields?.first_name !== false || fields?.last_name !== false}
 		<div class={unstyled ? undefined : "stuic-checkout-guest-row"}>
 			{#if fields?.first_name !== false}
+				<!-- svelte-ignore binding_property_non_reactive -->
 				<FieldInput
 					bind:value={formData.first_name}
 					label={t("checkout.guest.first_name_label")}
@@ -167,6 +174,7 @@
 				/>
 			{/if}
 			{#if fields?.last_name !== false}
+				<!-- svelte-ignore binding_property_non_reactive -->
 				<FieldInput
 					bind:value={formData.last_name}
 					label={t("checkout.guest.last_name_label")}
@@ -179,6 +187,7 @@
 
 	<!-- Phone -->
 	{#if fields?.phone !== false}
+		<!-- svelte-ignore binding_property_non_reactive -->
 		<FieldInput
 			bind:value={formData.phone}
 			label={t("checkout.guest.phone_label")}
@@ -197,6 +206,7 @@
 			</summary>
 			<div class={unstyled ? undefined : "stuic-checkout-guest-b2b-content"}>
 				{#if fields?.company_name !== false}
+					<!-- svelte-ignore binding_property_non_reactive -->
 					<FieldInput
 						bind:value={formData.company_name}
 						label={t("checkout.guest.company_name_label")}
@@ -207,6 +217,7 @@
 				{#if fields?.tax_id !== false || fields?.vat_number !== false}
 					<div class={unstyled ? undefined : "stuic-checkout-guest-row"}>
 						{#if fields?.tax_id !== false}
+							<!-- svelte-ignore binding_property_non_reactive -->
 							<FieldInput
 								bind:value={formData.tax_id}
 								label={t("checkout.guest.tax_id_label")}
@@ -214,6 +225,7 @@
 							/>
 						{/if}
 						{#if fields?.vat_number !== false}
+							<!-- svelte-ignore binding_property_non_reactive -->
 							<FieldInput
 								bind:value={formData.vat_number}
 								label={t("checkout.guest.vat_number_label")}

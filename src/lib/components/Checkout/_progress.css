@@ -1,0 +1,72 @@
+:root {
+	/* CheckoutProgress */
+	--stuic-checkout-progress-gap: 0.25rem;
+	--stuic-checkout-progress-font-size: 0.875rem;
+	--stuic-checkout-progress-current-color: var(--stuic-color-foreground);
+	--stuic-checkout-progress-current-font-weight: 700;
+	--stuic-checkout-progress-past-color: var(--stuic-color-muted-foreground);
+	--stuic-checkout-progress-future-color: color-mix(
+		in srgb,
+		var(--stuic-color-muted-foreground) 50%,
+		transparent
+	);
+	--stuic-checkout-progress-separator-color: color-mix(
+		in srgb,
+		var(--stuic-color-muted-foreground) 30%,
+		transparent
+	);
+	--stuic-checkout-progress-button-hover-bg: color-mix(
+		in srgb,
+		var(--stuic-color-muted) 20%,
+		transparent
+	);
+	--stuic-checkout-progress-button-radius: 0.25rem;
+}
+
+@layer components {
+	.stuic-checkout-progress {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--stuic-checkout-progress-gap);
+		font-size: var(--stuic-checkout-progress-font-size);
+	}
+
+	.stuic-checkout-progress-separator {
+		color: var(--stuic-checkout-progress-separator-color);
+	}
+
+	.stuic-checkout-progress-step {
+		padding: 0.125rem 0.25rem;
+	}
+
+	.stuic-checkout-progress-step--current {
+		color: var(--stuic-checkout-progress-current-color);
+		font-weight: var(--stuic-checkout-progress-current-font-weight);
+	}
+
+	.stuic-checkout-progress-step--past {
+		color: var(--stuic-checkout-progress-past-color);
+	}
+
+	.stuic-checkout-progress-step--future {
+		color: var(--stuic-checkout-progress-future-color);
+	}
+
+	button.stuic-checkout-progress-step {
+		all: unset;
+		cursor: pointer;
+		border-radius: var(--stuic-checkout-progress-button-radius);
+		padding: 0.125rem 0.25rem;
+		transition: background-color var(--stuic-checkout-transition);
+	}
+
+	button.stuic-checkout-progress-step:hover {
+		background-color: var(--stuic-checkout-progress-button-hover-bg);
+	}
+
+	button.stuic-checkout-progress-step:focus-visible {
+		outline: 2px solid var(--stuic-checkout-input-focus-ring);
+		outline-offset: 2px;
+	}
+}
