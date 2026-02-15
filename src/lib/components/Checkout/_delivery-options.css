@@ -6,10 +6,13 @@
 	--stuic-checkout-delivery-option-border-color: var(--stuic-color-border);
 	--stuic-checkout-delivery-option-border-color-selected: var(--stuic-color-ring);
 	--stuic-checkout-delivery-option-bg: var(--stuic-color-background);
-	--stuic-checkout-delivery-option-bg-selected: var(--stuic-color-surface-primary);
+	--stuic-checkout-delivery-option-bg-selected: var(--stuic-color-surface);
 	--stuic-checkout-delivery-option-bg-hover: var(--stuic-color-muted);
 	--stuic-checkout-delivery-free-color: #16a34a;
 	--stuic-checkout-delivery-description-color: var(--stuic-color-muted-foreground);
+	--stuic-checkout-delivery-description-color-selected: var(
+		--stuic-color-surface-foreground
+	);
 	--stuic-checkout-delivery-description-font-size: var(--text-base);
 	--stuic-checkout-delivery-updating-opacity: 0.6;
 }
@@ -57,6 +60,12 @@
 
 	.stuic-checkout-delivery-option--selected:hover {
 		background: var(--stuic-checkout-delivery-option-bg-selected);
+	}
+
+	.stuic-checkout-delivery-option--selected .stuic-checkout-delivery-option-description,
+	.stuic-checkout-delivery-option--selected .stuic-checkout-delivery-option-estimate,
+	.stuic-checkout-delivery-option--selected .stuic-checkout-delivery-option-threshold {
+		color: var(--stuic-checkout-delivery-description-color-selected);
 	}
 
 	.stuic-checkout-delivery-option-header {
