@@ -87,7 +87,6 @@
 <div bind:this={el} class={_class} {...rest}>
 	<!-- Optional heading -->
 	{#if heading}
-		<!-- <div class={unstyled ? undefined : "stuic-checkout-guest-or-login-heading"}> -->
 		<CheckoutSectionHeader>
 			{#if typeof heading === "string"}
 				<H level={hLevel} renderLevel={hRenderLevel}>
@@ -97,7 +96,6 @@
 				{@render heading()}
 			{/if}
 		</CheckoutSectionHeader>
-		<!-- </div> -->
 	{/if}
 
 	{#if formMode === "guest-only"}

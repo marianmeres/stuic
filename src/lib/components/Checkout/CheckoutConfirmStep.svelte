@@ -159,7 +159,7 @@
 
 		<!-- Back link -->
 		{#if onBack}
-			<div class={unstyled ? undefined : "stuic-checkout-confirm-step-back"}>
+			<div class={unstyled ? undefined : "stuic-checkout-step-back"}>
 				<Button type="button" variant="link" size="sm" onclick={onBack}>
 					{t("checkout.step.back_to_shipping")}
 				</Button>
@@ -192,13 +192,7 @@
 				{:else}
 					<div class={unstyled ? undefined : "stuic-checkout-confirm-step-sidebar"}>
 						<CheckoutSectionHeader noMinHeight>
-							<H
-								level={hLevel}
-								renderLevel={hRenderLevel}
-								class={unstyled
-									? undefined
-									: "stuic-checkout-confirm-step-section-heading"}
-							>
+							<H level={hLevel} renderLevel={hRenderLevel}>
 								{t("checkout.step.summary_title")}
 							</H>
 						</CheckoutSectionHeader>

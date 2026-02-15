@@ -5,10 +5,8 @@
 	--stuic-checkout-shipping-step-sidebar-top: var(--stuic-checkout-step-sidebar-top);
 	--stuic-checkout-shipping-step-section-gap: 2rem;
 	--stuic-checkout-shipping-step-checkbox-gap: 0.5rem;
-	--stuic-checkout-shipping-step-back-color: var(--stuic-color-muted-foreground);
-	--stuic-checkout-shipping-step-back-hover-color: var(--stuic-color-foreground);
-	/* --stuic-checkout-shipping-step-heading-font-size: 1.125rem; */
-	/* --stuic-checkout-shipping-step-heading-font-weight: 600; */
+	--stuic-checkout-shipping-step-heading-font-size: 1.125rem;
+	--stuic-checkout-shipping-step-heading-font-weight: 600;
 }
 
 @layer components {

@@ -1,9 +1,6 @@
 :root {
 	/* CheckoutGuestOrLoginForm (composite) */
 	--stuic-checkout-guest-or-login-gap: 0.25rem;
-	/* --stuic-checkout-guest-or-login-heading-font-size: 1.125rem;
-	--stuic-checkout-guest-or-login-heading-font-weight: 600;
-	--stuic-checkout-guest-or-login-heading-margin-bottom: 0.75rem; */
 	--stuic-checkout-guest-or-login-divider-color: var(--stuic-color-border);
 	--stuic-checkout-guest-or-login-tabs-margin-bottom: 1.5rem;
 	--stuic-checkout-guest-or-login-tabs-background-color: var(--stuic-color-muted);
@@ -18,12 +15,6 @@
 		flex-direction: column;
 		gap: var(--stuic-checkout-guest-or-login-gap);
 	}
-	/* 
-	.stuic-checkout-guest-or-login-heading {
-		font-size: var(--stuic-checkout-guest-or-login-heading-font-size);
-		font-weight: var(--stuic-checkout-guest-or-login-heading-font-weight);
-		margin: 0 0 var(--stuic-checkout-guest-or-login-heading-margin-bottom);
-	} */
 
 	/* Pill-styled tabs via TabbedMenu CSS variable overrides */
 	.stuic-checkout-guest-or-login-tabs {

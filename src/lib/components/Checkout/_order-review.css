@@ -20,14 +20,6 @@
 		gap: var(--stuic-checkout-review-section-gap);
 	}
 
-	.stuic-checkout-review-section-header {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 0.5rem;
-		margin-bottom: 0.75rem;
-	}
-
 	.stuic-checkout-review-heading {
 		font-size: var(--stuic-checkout-review-header-font-size);
 		font-weight: var(--stuic-checkout-review-header-font-weight);

@@ -191,7 +191,7 @@
 
 		<!-- Back link -->
 		{#if onBack}
-			<div class={unstyled ? undefined : "stuic-checkout-shipping-step-back"}>
+			<div class={unstyled ? undefined : "stuic-checkout-step-back"}>
 				<Button type="button" variant="link" size="sm" onclick={onBack}>
 					{t("checkout.step.back_to_review")}
 				</Button>
@@ -207,13 +207,7 @@
 					<!-- Shipping Address -->
 					<section>
 						<CheckoutSectionHeader noMinHeight>
-							<H
-								level={hLevel}
-								renderLevel={hRenderLevel}
-								class={unstyled
-									? undefined
-									: "stuic-checkout-shipping-step-section-heading"}
-							>
+							<H level={hLevel} renderLevel={hRenderLevel}>
 								{t("checkout.step.shipping_address_title")}
 							</H>
 						</CheckoutSectionHeader>
@@ -238,13 +232,7 @@
 					{#if !billingSameAsShipping}
 						<section>
 							<CheckoutSectionHeader noMinHeight>
-								<H
-									level={hLevel}
-									renderLevel={hRenderLevel}
-									class={unstyled
-										? undefined
-										: "stuic-checkout-shipping-step-section-heading"}
-								>
+								<H level={hLevel} renderLevel={hRenderLevel}>
 									{t("checkout.step.billing_address_title")}
 								</H>
 							</CheckoutSectionHeader>
@@ -262,13 +250,7 @@
 					<!-- Delivery Options -->
 					<section>
 						<CheckoutSectionHeader noMinHeight>
-							<H
-								level={hLevel}
-								renderLevel={hRenderLevel}
-								class={unstyled
-									? undefined
-									: "stuic-checkout-shipping-step-section-heading"}
-							>
+							<H level={hLevel} renderLevel={hRenderLevel}>
 								{t("checkout.step.delivery_title")}
 							</H>
 						</CheckoutSectionHeader>
@@ -293,13 +275,7 @@
 				{:else}
 					<div class={unstyled ? undefined : "stuic-checkout-shipping-step-sidebar"}>
 						<CheckoutSectionHeader noMinHeight>
-							<H
-								level={hLevel}
-								renderLevel={hRenderLevel}
-								class={unstyled
-									? undefined
-									: "stuic-checkout-shipping-step-section-heading"}
-							>
+							<H level={hLevel} renderLevel={hRenderLevel}>
 								{t("checkout.step.summary_title")}
 							</H>
 						</CheckoutSectionHeader>

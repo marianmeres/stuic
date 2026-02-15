@@ -91,11 +91,10 @@
 <script lang="ts">
 	import { twMerge } from "../../utils/tw-merge.js";
 	import Button from "../Button/Button.svelte";
+	import H, { type HLevel } from "../H/H.svelte";
 	import { t_default } from "./_internal/checkout-i18n-defaults.js";
 	import { defaultFormatPrice } from "./_internal/checkout-utils.js";
-	import H, { type HLevel } from "../H/H.svelte";
 	import CheckoutSectionHeader from "./CheckoutSectionHeader.svelte";
-	import { iconPencil } from "../../icons/index.js";
 
 	let {
 		order,
@@ -166,7 +165,6 @@
 				{/snippet}
 			</CheckoutSectionHeader>
 
-			<!-- <div class={unstyled ? undefined : "stuic-checkout-review-section-header"}></div> -->
 			<div class={unstyled ? undefined : "stuic-checkout-review-items"}>
 				{#each order.items as item (item.product_id)}
 					<div>
