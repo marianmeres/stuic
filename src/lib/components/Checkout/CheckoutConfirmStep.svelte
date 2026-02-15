@@ -7,6 +7,7 @@
 		CheckoutStep,
 		CheckoutValidationError,
 	} from "./_internal/checkout-types.js";
+	import type { NotificationsStack } from "../Notifications/notifications-stack.svelte.js";
 
 	export interface Props extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
 		/** Order data to review and display totals */
@@ -73,6 +74,9 @@
 		/** Override entire right column */
 		rightColumn?: Snippet;
 
+		/** Optional notifications instance — errors will be sent via notifications.error() */
+		notifications?: NotificationsStack;
+
 		t?: TranslateFn;
 		unstyled?: boolean;
 		class?: string;
@@ -100,6 +104,7 @@
 		isLoading = false,
 		error,
 		validationErrors,
+		notifications,
 		isValid = true,
 		isSubmitting = false,
 		hideProgress = false,
@@ -128,6 +133,16 @@
 	}: Props = $props();
 
 	let t = $derived(tProp ?? t_default);
+
+	$effect(() => {
+		if (error && notifications) notifications.error(error);
+	});
+
+	$effect(() => {
+		if (validationErrors && validationErrors.length > 0 && notifications) {
+			notifications.error(validationErrors.map((e) => e.message).join(", "));
+		}
+	});
 
 	let _class = $derived(
 		unstyled ? classProp : twMerge("stuic-checkout-confirm-step", classProp)

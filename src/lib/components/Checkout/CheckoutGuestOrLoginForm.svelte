@@ -4,6 +4,7 @@
 	import type { TranslateFn } from "../../types.js";
 	import type { Props as GuestFormProps } from "./CheckoutGuestForm.svelte";
 	import type { Props as LoginFormProps } from "./CheckoutLoginForm.svelte";
+	import type { NotificationsStack } from "../Notifications/notifications-stack.svelte.js";
 
 	export type FormMode = "guest-only" | "login-only" | "tabbed" | "stacked";
 
@@ -35,6 +36,9 @@
 		/** Optional heading rendered above the switcher/forms */
 		heading?: Snippet | string;
 
+		/** Optional notifications instance — forwarded to child forms */
+		notifications?: NotificationsStack;
+
 		t?: TranslateFn;
 		unstyled?: boolean;
 		class?: string;
@@ -59,6 +63,7 @@
 		guestForm,
 		loginForm,
 		formMode = "tabbed",
+		notifications,
 		guestTabLabel,
 		loginTabLabel,
 		activeTab = $bindable("guest"),
@@ -100,11 +105,11 @@
 
 	{#if formMode === "guest-only"}
 		{#if guestForm}
-			<CheckoutGuestForm {...guestForm} t={tProp} {unstyled} />
+			<CheckoutGuestForm {...guestForm} {notifications} t={tProp} {unstyled} />
 		{/if}
 	{:else if formMode === "login-only"}
 		{#if loginForm}
-			<CheckoutLoginForm {...loginForm} t={tProp} {unstyled} />
+			<CheckoutLoginForm {...loginForm} {notifications} t={tProp} {unstyled} />
 		{/if}
 	{:else if formMode === "tabbed"}
 		<TabbedMenu
@@ -118,22 +123,22 @@
 		/>
 		{#if activeTab === "guest" && guestForm}
 			<div role="tabpanel">
-				<CheckoutGuestForm {...guestForm} t={tProp} {unstyled} />
+				<CheckoutGuestForm {...guestForm} {notifications} t={tProp} {unstyled} />
 			</div>
 		{:else if activeTab === "login" && loginForm}
 			<div role="tabpanel">
-				<CheckoutLoginForm {...loginForm} t={tProp} {unstyled} />
+				<CheckoutLoginForm {...loginForm} {notifications} t={tProp} {unstyled} />
 			</div>
 		{/if}
 	{:else if formMode === "stacked"}
 		{#if loginForm}
-			<CheckoutLoginForm {...loginForm} t={tProp} {unstyled} />
+			<CheckoutLoginForm {...loginForm} {notifications} t={tProp} {unstyled} />
 		{/if}
 		<div class={unstyled ? undefined : "stuic-checkout-guest-or-login-divider"}>
 			<span>{t("checkout.step.or_divider")}</span>
 		</div>
 		{#if guestForm}
-			<CheckoutGuestForm {...guestForm} t={tProp} {unstyled} />
+			<CheckoutGuestForm {...guestForm} {notifications} t={tProp} {unstyled} />
 		{/if}
 	{/if}
 </div>

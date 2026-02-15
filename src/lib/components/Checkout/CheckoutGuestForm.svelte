@@ -6,6 +6,7 @@
 		CheckoutCustomerFormData,
 		CheckoutValidationError,
 	} from "./_internal/checkout-types.js";
+	import type { NotificationsStack } from "../Notifications/notifications-stack.svelte.js";
 
 	export interface Props extends Omit<HTMLAttributes<HTMLFormElement>, "children"> {
 		/** Bindable form data. Default: createEmptyCustomerFormData() */
@@ -54,6 +55,9 @@
 		 */
 		validate?: (data: CheckoutCustomerFormData) => CheckoutValidationError[];
 
+		/** Optional notifications instance */
+		notifications?: NotificationsStack;
+
 		t?: TranslateFn;
 		unstyled?: boolean;
 		class?: string;
@@ -76,6 +80,7 @@
 		onSubmit,
 		isSubmitting = false,
 		errors: externalErrors = [],
+		notifications,
 		showB2bFields = true,
 		b2bExpanded = false,
 		fields,

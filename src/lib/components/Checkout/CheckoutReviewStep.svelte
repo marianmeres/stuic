@@ -9,6 +9,7 @@
 		CheckoutStep,
 		CheckoutValidationError,
 	} from "./_internal/checkout-types.js";
+	import type { NotificationsStack } from "../Notifications/notifications-stack.svelte.js";
 
 	export interface Props extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
 		/** Cart items to display in the cart review */
@@ -94,6 +95,9 @@
 		/** Override the right column entirely */
 		rightColumn?: Snippet;
 
+		/** Optional notifications instance — errors will be sent via notifications.error() */
+		notifications?: NotificationsStack;
+
 		t?: TranslateFn;
 		unstyled?: boolean;
 		class?: string;
@@ -114,6 +118,7 @@
 		items,
 		isLoading = false,
 		error,
+		notifications,
 		hideProgress = false,
 		currentStep = "review",
 		steps,
@@ -136,6 +141,10 @@
 	}: Props = $props();
 
 	let t = $derived(tProp ?? t_default);
+
+	$effect(() => {
+		if (error && notifications) notifications.error(error);
+	});
 
 	let _class = $derived(
 		unstyled ? classProp : twMerge("stuic-checkout-review-step", classProp)
@@ -202,6 +211,7 @@
 						{guestTabLabel}
 						{loginTabLabel}
 						heading={t("checkout.step.contact_title")}
+						{notifications}
 						t={tProp}
 						{unstyled}
 					/>

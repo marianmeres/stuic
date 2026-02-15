@@ -6,6 +6,7 @@
 		CheckoutLoginFormData,
 		CheckoutValidationError,
 	} from "./_internal/checkout-types.js";
+	import type { NotificationsStack } from "../Notifications/notifications-stack.svelte.js";
 
 	export interface Props extends Omit<HTMLAttributes<HTMLFormElement>, "children"> {
 		/** Bindable login data. Default: createEmptyLoginFormData() */
@@ -62,6 +63,9 @@
 		 */
 		footer?: Snippet;
 
+		/** Optional notifications instance — errors will be sent via notifications.error() */
+		notifications?: NotificationsStack;
+
 		t?: TranslateFn;
 		unstyled?: boolean;
 		class?: string;
@@ -86,6 +90,7 @@
 		isSubmitting = false,
 		errors: externalErrors = [],
 		error,
+		notifications,
 		onForgotPassword,
 		submitLabel,
 		submittingLabel,
@@ -127,6 +132,10 @@
 			onSubmit(formData);
 		}
 	}
+
+	$effect(() => {
+		if (error && notifications) notifications.error(error);
+	});
 
 	let _class = $derived(
 		unstyled ? classProp : twMerge("stuic-checkout-login-form", classProp)

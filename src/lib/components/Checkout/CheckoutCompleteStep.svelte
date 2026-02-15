@@ -3,6 +3,7 @@
 	import type { HTMLAttributes } from "svelte/elements";
 	import type { TranslateFn } from "../../types.js";
 	import type { CheckoutOrderData, CheckoutStep } from "./_internal/checkout-types.js";
+	import type { NotificationsStack } from "../Notifications/notifications-stack.svelte.js";
 
 	export interface Props extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
 		/** Completed order data */
@@ -57,6 +58,9 @@
 		/** Additional content after the confirmation */
 		confirmationFooter?: Snippet<[{ orderId: string; order: CheckoutOrderData }]>;
 
+		/** Optional notifications instance — errors will be sent via notifications.error() */
+		notifications?: NotificationsStack;
+
 		t?: TranslateFn;
 		unstyled?: boolean;
 		class?: string;
@@ -79,6 +83,7 @@
 		emailSent,
 		isLoading = false,
 		error,
+		notifications,
 		hideProgress = false,
 		currentStep = "complete",
 		steps,
@@ -98,6 +103,10 @@
 	}: Props = $props();
 
 	let t = $derived(tProp ?? t_default);
+
+	$effect(() => {
+		if (error && notifications) notifications.error(error);
+	});
 
 	let _class = $derived(
 		unstyled ? classProp : twMerge("stuic-checkout-complete-step", classProp)
