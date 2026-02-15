@@ -169,15 +169,24 @@
 				{#each order.items as item (item.product_id)}
 					<div>
 						<div class={unstyled ? undefined : "stuic-checkout-review-item"}>
-							<span>{item.quantity} &times; {item.name}</span>
-							<span>{fp(item.price * item.quantity)}</span>
+							<span>
+								{item.quantity} &times; {item.name}
+								{#if item.quantity > 1}
+									<span class="opacity-50">
+										({t("checkout.review.each", { price: fp(item.price) })})
+									</span>
+								{/if}
+							</span>
+							<span>
+								{fp(item.price * item.quantity)}
+							</span>
 						</div>
-						{#if item.quantity > 1}
+						<!-- {#if item.quantity > 1}
 							<span class={unstyled ? undefined : "stuic-checkout-review-item-each"}>
 								<spam class="opacity-50">&rarr;</spam>
 								{t("checkout.review.each", { price: fp(item.price) })}
 							</span>
-						{/if}
+						{/if} -->
 					</div>
 				{/each}
 			</div>

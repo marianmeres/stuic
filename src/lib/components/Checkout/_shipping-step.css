@@ -5,7 +5,7 @@
 	--stuic-checkout-shipping-step-sidebar-top: var(--stuic-checkout-step-sidebar-top);
 	--stuic-checkout-shipping-step-section-gap: 2rem;
 	--stuic-checkout-shipping-step-checkbox-gap: 0.5rem;
-	--stuic-checkout-shipping-step-heading-font-size: 1.125rem;
+	--stuic-checkout-shipping-step-heading-font-size: var(--text-lg);
 	--stuic-checkout-shipping-step-heading-font-weight: 600;
 }
 

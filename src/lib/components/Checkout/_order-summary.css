@@ -2,9 +2,9 @@
 	/* CheckoutOrderSummary */
 	--stuic-checkout-summary-gap: 0.25rem;
 	--stuic-checkout-summary-label-color: inherit;
-	--stuic-checkout-summary-label-font-size: 0.875rem;
-	--stuic-checkout-summary-value-font-size: 0.875rem;
-	--stuic-checkout-summary-total-font-size: 1.125rem;
+	--stuic-checkout-summary-label-font-size: var(--text-base);
+	--stuic-checkout-summary-value-font-size: var(--text-base);
+	--stuic-checkout-summary-total-font-size: var(--text-lg);
 	--stuic-checkout-summary-total-font-weight: 700;
 	--stuic-checkout-summary-border-color: var(--stuic-color-border);
 	--stuic-checkout-summary-discount-color: #16a34a;

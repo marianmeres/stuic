@@ -18,7 +18,7 @@
 	);
 	--stuic-checkout-delivery-free-color: #16a34a;
 	--stuic-checkout-delivery-description-color: var(--stuic-color-muted-foreground);
-	--stuic-checkout-delivery-description-font-size: 0.875rem;
+	--stuic-checkout-delivery-description-font-size: var(--text-base);
 	--stuic-checkout-delivery-updating-opacity: 0.6;
 }
 

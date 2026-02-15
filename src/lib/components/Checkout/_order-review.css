@@ -1,15 +1,15 @@
 :root {
 	/* CheckoutOrderReview */
 	--stuic-checkout-review-section-gap: 1.5rem;
-	--stuic-checkout-review-header-font-size: 1rem;
+	--stuic-checkout-review-header-font-size: var(--text-base);
 	--stuic-checkout-review-header-font-weight: 500;
 	--stuic-checkout-review-item-gap: 0.5rem;
 	--stuic-checkout-review-address-color: var(--stuic-color-muted-foreground);
-	--stuic-checkout-review-address-font-size: 0.875rem;
+	--stuic-checkout-review-address-font-size: var(--text-base);
 	--stuic-checkout-review-delivery-estimate-color: var(--stuic-color-muted-foreground);
-	--stuic-checkout-review-delivery-estimate-font-size: 0.875rem;
+	--stuic-checkout-review-delivery-estimate-font-size: var(--text-base);
 	--stuic-checkout-review-item-each-color: var(--stuic-color-muted-foreground);
-	--stuic-checkout-review-item-each-font-size: 0.8125rem;
+	--stuic-checkout-review-item-each-font-size: var(--text-base);
 	--stuic-checkout-review-billing-same-color: var(--stuic-color-muted-foreground);
 }
 

@@ -16,13 +16,13 @@
 	--stuic-checkout-input-focus-ring: var(--stuic-color-ring);
 
 	/* Label styling */
-	--stuic-checkout-label-font-size: 0.875rem;
+	--stuic-checkout-label-font-size: var(--text-base);
 	--stuic-checkout-label-font-weight: 500;
 	--stuic-checkout-label-margin-bottom: 0.25rem;
 
 	/* Error styling */
 	--stuic-checkout-error-color: var(--stuic-color-destructive);
-	--stuic-checkout-error-font-size: 0.875rem;
+	--stuic-checkout-error-font-size: var(--text-base);
 	--stuic-checkout-error-bg: color-mix(
 		in srgb,
 		var(--stuic-color-destructive) 5%,

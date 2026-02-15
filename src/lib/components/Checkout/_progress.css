@@ -1,7 +1,7 @@
 :root {
 	/* CheckoutProgress */
 	--stuic-checkout-progress-gap: 0.25rem;
-	--stuic-checkout-progress-font-size: 0.875rem;
+	--stuic-checkout-progress-font-size: var(--text-base);
 	--stuic-checkout-progress-current-color: var(--stuic-color-foreground);
 	--stuic-checkout-progress-current-font-weight: 700;
 	--stuic-checkout-progress-past-color: var(--stuic-color-muted-foreground);

@@ -9,7 +9,7 @@
 	--stuic-checkout-login-social-margin-top: 1.5rem;
 	--stuic-checkout-login-social-gap: 0.75rem;
 	--stuic-checkout-login-social-divider-color: var(--stuic-color-border);
-	--stuic-checkout-login-social-divider-font-size: 0.875rem;
+	--stuic-checkout-login-social-divider-font-size: var(--text-sm);
 	--stuic-checkout-login-social-divider-margin-bottom: 0.75rem;
 }
 

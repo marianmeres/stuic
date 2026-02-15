@@ -217,6 +217,21 @@ export {
 - Use `twMerge()` for class prop merging
 - Prefer `bg-linear-to-r` over `bg-gradient-to-r` (v4 canonical)
 
+### Font Size Tokens
+
+Use Tailwind v4 `--text-*` variables instead of hardcoded `rem` values for `font-size`:
+
+| Token            | Value     | Usage                                     |
+| ---------------- | --------- | ----------------------------------------- |
+| `var(--text-xs)` | 0.75rem   | Badges, avatar initials, section titles   |
+| `var(--text-sm)` | 0.875rem  | Dividers, decorative text (use sparingly) |
+| `var(--text-base)` | 1rem    | Body text, labels, descriptions           |
+| `var(--text-lg)` | 1.125rem  | Headings, totals, summary text            |
+| `var(--text-xl)` | 1.25rem   | Large totals, prominent values            |
+| `var(--text-2xl)` | 1.5rem   | Hero text, large avatars                  |
+
+**`--text-sm` guideline:** Only use for truly secondary, non-essential text (e.g. divider labels like "or continue with"). Avoid for content that users need to read comfortably (labels, descriptions, error messages).
+
 ---
 
 ## Documentation
