@@ -30,6 +30,9 @@
 
 		// -- Progress --
 
+		/** Hide the built-in progress indicator (e.g. when rendered externally) */
+		hideProgress?: boolean;
+
 		currentStep?: string;
 		steps?: CheckoutStep[];
 		onStepNavigate?: (step: CheckoutStep) => void;
@@ -127,6 +130,7 @@
 		isLoading = false,
 		error,
 		isSubmitting = false,
+		hideProgress = false,
 		currentStep = "shipping",
 		steps,
 		onStepNavigate,
@@ -164,13 +168,15 @@
 
 <div bind:this={el} class={_class} {...rest}>
 	<!-- Progress -->
-	<CheckoutProgress
-		{steps}
-		{currentStep}
-		onNavigate={onStepNavigate}
-		t={tProp}
-		{unstyled}
-	/>
+	{#if !hideProgress}
+		<CheckoutProgress
+			{steps}
+			{currentStep}
+			onNavigate={onStepNavigate}
+			t={tProp}
+			{unstyled}
+		/>
+	{/if}
 
 	{#if isLoading}
 		<!-- Skeleton grid -->

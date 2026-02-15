@@ -2,7 +2,7 @@
 
 ## Overview
 
-44 Svelte 5 components with consistent API patterns. All use runes-based reactivity.
+44 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
@@ -79,37 +79,58 @@
 
 | Component | Purpose                                                                                   |
 | --------- | ----------------------------------------------------------------------------------------- |
-| Cart      | Shopping cart with quantity controls, pricing, summary; default/compact/readonly variants |
-| Checkout  | Multi-step checkout flow (13 sub-components: atomic + composite steps)                    |
+| Cart      | Shopping cart with quantity controls, pricing, summary; default/compact/summary variants |
+| Checkout  | Multi-step checkout flow (14 exported sub-components: atomic + composite steps)            |
 
 ---
 
 ## Checkout Components
 
-13 sub-components organized as atomic building blocks + composite step pages.
+14 exported sub-components organized as atomic building blocks + composite step pages.
+CSS is split into modular partials (`_*.css`) imported by `index.css`.
 
 ### Atomic Components
 
-| Component                 | Purpose                                                         | Key Props                                            |
-| ------------------------- | --------------------------------------------------------------- | ---------------------------------------------------- |
-| CheckoutProgress          | Step indicator with navigation                                  | `currentStep`, `steps`, `onNavigate`, `separator`    |
-| CheckoutOrderSummary      | Price totals display (subtotal, shipping, tax, discount, total) | `totals`, `formatPrice`, `row`, `extraRows`          |
-| CheckoutCartReview        | Readonly cart display with summary                              | `items`, `onEditCart`, `thumbnail`, `title`          |
-| CheckoutGuestForm         | Guest checkout form (email, name, phone, B2B fields)            | `formData`, `onSubmit`, `showB2bFields`, `fields`    |
-| CheckoutLoginForm         | Login form (email + password)                                   | `formData`, `onSubmit`, `onForgotPassword`, `footer` |
-| CheckoutAddressForm       | Address input fieldset                                          | `address`, `label`, `requiredFields`, `countryField` |
-| CheckoutDeliveryOptions   | Delivery method radio selection with free shipping logic        | `options`, `selectedId`, `onSelect`, `subtotal`      |
-| CheckoutOrderReview       | Full order review with edit callbacks per section               | `order`, `onEditItems`, `onEditShippingAddress`      |
-| CheckoutOrderConfirmation | Order success screen with details                               | `order`, `orderId`, `onContinueShopping`             |
+| Component                  | Purpose                                                         | Key Props                                                  |
+| -------------------------- | --------------------------------------------------------------- | ---------------------------------------------------------- |
+| CheckoutProgress           | Step indicator with navigation                                  | `currentStep`, `steps`, `onNavigate`, `separator`          |
+| CheckoutOrderSummary       | Price totals display (subtotal, shipping, tax, discount, total) | `totals`, `formatPrice`, `row`, `extraRows`                |
+| CheckoutCartReview         | Readonly cart display with summary                              | `items`, `onEditCart`, `thumbnail`, `title`                 |
+| CheckoutGuestForm          | Guest checkout form (email, name, phone, B2B fields)            | `formData`, `onSubmit`, `showB2bFields`, `fields`          |
+| CheckoutLoginForm          | Login form (email + password)                                   | `formData`, `onSubmit`, `onForgotPassword`, `footer`       |
+| CheckoutGuestOrLoginForm   | Composite guest/login with tabbed/stacked/single modes          | `guestForm`, `loginForm`, `formMode`, `activeTab`          |
+| CheckoutAddressForm        | Address input fieldset                                          | `address`, `label`, `requiredFields`, `countryField`       |
+| CheckoutDeliveryOptions    | Delivery method radio selection with free shipping logic        | `options`, `selectedId`, `onSelect`, `subtotal`            |
+| CheckoutOrderReview        | Full order review with edit callbacks per section               | `order`, `onEditItems`, `onEditShippingAddress`            |
+| CheckoutOrderConfirmation  | Order success screen with details                               | `order`, `orderId`, `onContinueShopping`                   |
+
+**Internal (not exported):** `CheckoutSectionHeader` — reusable section header with left/right layout.
 
 ### Composite Step Components
 
+All step components support `hideProgress?: boolean` to hide the built-in progress indicator (e.g. when rendered externally).
+
 | Component            | Purpose                                           | Combines                                                      |
 | -------------------- | ------------------------------------------------- | ------------------------------------------------------------- |
-| CheckoutReviewStep   | Cart review + guest/login forms (2-column layout) | CartReview + GuestForm/LoginForm (tabbed/stacked/single mode) |
+| CheckoutReviewStep   | Cart review + guest/login forms (2-column layout) | CartReview + GuestOrLoginForm (tabbed/stacked/single mode)    |
 | CheckoutShippingStep | Shipping + billing addresses + delivery selection | AddressForm (×2) + DeliveryOptions + OrderSummary sidebar     |
 | CheckoutConfirmStep  | Order review + place order CTA                    | OrderReview + OrderSummary sidebar + validation errors        |
 | CheckoutCompleteStep | Order confirmation with loading/error states      | Progress + OrderConfirmation (or error/loading fallback)      |
+
+### CheckoutGuestOrLoginForm
+
+Composite component combining guest and login forms with multiple display modes:
+
+| FormMode       | Behavior                                                     |
+| -------------- | ------------------------------------------------------------ |
+| `"tabbed"`     | Pill-style tab switcher between guest/login (default)        |
+| `"stacked"`    | Both forms vertically stacked with "or" divider              |
+| `"guest-only"` | Only guest form                                              |
+| `"login-only"` | Only login form                                              |
+
+Key props: `guestForm`, `loginForm` (pass-through config objects), `activeTab` (bindable: `"guest"` | `"login"`), `formMode`, `heading`, `hLevel`.
+
+Exported type: `CheckoutFormMode` (`"guest-only" | "login-only" | "tabbed" | "stacked"`).
 
 ### Checkout Architecture
 
@@ -117,7 +138,7 @@
 - **Validation**: Built-in validators (`validateEmail`, `validateAddress`, `validateCustomerForm`, `validateLoginForm`)
 - **Factory helpers**: `createEmptyAddress()`, `createEmptyCustomerFormData()`, `createEmptyLoginFormData()`
 - **Price formatting**: `defaultFormatPrice(cents)` — all prices in smallest currency unit (cents)
-- **CSS tokens**: `--stuic-checkout-*` prefix; extensive design tokens in `Checkout/index.css`
+- **CSS tokens**: `--stuic-checkout-*` prefix; modular CSS partials (`_shared.css`, `_*.css`) in `Checkout/`
 - **Data types**: `CheckoutOrderData`, `CheckoutAddressData`, `CheckoutDeliveryOption`, `CheckoutOrderTotals`, etc.
 - **Snippet overrides**: Every component offers snippet props to replace default sections
 
@@ -270,5 +291,5 @@ Components use private CSS vars (`--_*`) set by intent/variant:
 | src/lib/components/Button/   | Reference implementation                     |
 | src/lib/components/Modal/    | Complex component example                    |
 | src/lib/components/Input/    | Form field patterns                          |
-| src/lib/components/Checkout/ | E-commerce checkout flow (13 sub-components) |
+| src/lib/components/Checkout/ | E-commerce checkout flow (14 exported sub-components) |
 | src/lib/index.ts             | All component exports                        |

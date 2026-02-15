@@ -24,6 +24,9 @@
 
 		// -- Progress --
 
+		/** Hide the built-in progress indicator (e.g. when rendered externally) */
+		hideProgress?: boolean;
+
 		currentStep?: string;
 		steps?: CheckoutStep[];
 		onStepNavigate?: (step: CheckoutStep) => void;
@@ -76,6 +79,7 @@
 		emailSent,
 		isLoading = false,
 		error,
+		hideProgress = false,
 		currentStep = "complete",
 		steps,
 		onStepNavigate,
@@ -102,13 +106,15 @@
 
 <div bind:this={el} class={_class} {...rest}>
 	<!-- Progress -->
-	<CheckoutProgress
-		{steps}
-		{currentStep}
-		onNavigate={onStepNavigate}
-		t={tProp}
-		{unstyled}
-	/>
+	{#if !hideProgress}
+		<CheckoutProgress
+			{steps}
+			{currentStep}
+			onNavigate={onStepNavigate}
+			t={tProp}
+			{unstyled}
+		/>
+	{/if}
 
 	{#if isLoading}
 		<div class={unstyled ? undefined : "stuic-checkout-complete-step-loading"}>

@@ -2,7 +2,7 @@
 
 ## Overview
 
-42 utility functions for common tasks. Organized by category.
+42 utility modules for common tasks. Organized by category.
 
 ---
 
@@ -35,12 +35,11 @@ theme.value = "dark";
 
 ## DOM Utilities
 
-| Util               | Purpose                               |
-| ------------------ | ------------------------------------- |
-| `qsa`              | querySelectorAll wrapper              |
-| `bodyScrollLocker` | Lock/unlock body scroll               |
-| `anchorName`       | Generate CSS anchor-positioning names |
-| `getId`            | Generate unique IDs                   |
+| Util               | Purpose                  |
+| ------------------ | ------------------------ |
+| `qsa`              | querySelectorAll wrapper |
+| `bodyScrollLocker` | Lock/unlock body scroll  |
+| `getId`            | Generate unique IDs      |
 
 ---
 
@@ -83,26 +82,23 @@ const search = debounce((query: string) => {
 
 ## Type Checks
 
-| Util            | Purpose                   |
-| --------------- | ------------------------- |
-| `isNullish`     | Check null/undefined      |
-| `isPlainObject` | Check plain object        |
-| `isImage`       | Check if file is image    |
-| `isBrowser`     | Check browser environment |
-| `isMac`         | Check macOS               |
+| Util        | Purpose                   |
+| ----------- | ------------------------- |
+| `isNullish` | Check null/undefined      |
+| `isImage`   | Check if file is image    |
+| `isBrowser` | Check browser environment |
+| `isMac`     | Check macOS               |
 
 ---
 
 ## Data Handling
 
-| Util                 | Purpose                 |
-| -------------------- | ----------------------- |
-| `maybeJsonParse`     | Safe JSON.parse         |
-| `maybeJsonStringify` | Safe JSON.stringify     |
-| `toInteger`          | Safe integer conversion |
-| `omit`               | Omit object keys        |
-| `pick`               | Pick object keys        |
-| `moveArrayItem`      | Reorder array items     |
+| Util                 | Purpose             |
+| -------------------- | ------------------- |
+| `maybeJsonParse`     | Safe JSON.parse     |
+| `maybeJsonStringify` | Safe JSON.stringify |
+| `omit`               | Omit object keys    |
+| `pick`               | Pick object keys    |
 
 ---
 
@@ -139,6 +135,28 @@ twMerge("px-4 py-2", "px-6"); // => "py-2 px-6"
 
 ---
 
+## Storage
+
+| Util                  | Purpose                                                    |
+| --------------------- | ---------------------------------------------------------- |
+| `StorageAbstraction`  | Unified class over localStorage/sessionStorage/memory      |
+| `MemoryStorage`       | In-memory storage fallback (SSR-safe)                      |
+| `localStorageValue`   | Non-reactive value backed by localStorage (get/set/remove) |
+| `sessionStorageValue` | Non-reactive value backed by sessionStorage                |
+| `memoryStorageValue`  | Non-reactive value backed by in-memory storage             |
+
+### Example: Storage Abstraction
+
+```ts
+import { StorageAbstraction } from "@marianmeres/stuic";
+
+const storage = new StorageAbstraction("local");
+storage.set("user", { name: "John" });
+storage.get("user"); // { name: 'John' }
+```
+
+---
+
 ## Design Tokens
 
 | Util                 | Purpose                      |
@@ -151,9 +169,10 @@ twMerge("px-4 py-2", "px-6"); // => "py-2 px-6"
 
 ## Key Files
 
-| File                                     | Purpose                    |
-| ---------------------------------------- | -------------------------- |
-| src/lib/utils/index.ts                   | All utility exports        |
-| src/lib/utils/tw-merge.ts                | Critical for class merging |
-| src/lib/utils/persistent-state.svelte.ts | Reactive storage pattern   |
-| src/lib/utils/design-tokens.ts           | Theme token types          |
+| File                                     | Purpose                                   |
+| ---------------------------------------- | ----------------------------------------- |
+| src/lib/utils/index.ts                   | All utility exports                       |
+| src/lib/utils/tw-merge.ts                | Critical for class merging                |
+| src/lib/utils/persistent-state.svelte.ts | Reactive storage pattern (runes-based)    |
+| src/lib/utils/storage-abstraction.ts     | Non-reactive storage (localStorage, etc.) |
+| src/lib/utils/design-tokens.ts           | Theme token types                         |

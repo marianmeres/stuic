@@ -22,6 +22,9 @@
 
 		// -- Progress --
 
+		/** Hide the built-in progress indicator (e.g. when rendered externally) */
+		hideProgress?: boolean;
+
 		/** Current step ID for the progress indicator. Default: "review" */
 		currentStep?: string;
 
@@ -111,6 +114,7 @@
 		items,
 		isLoading = false,
 		error,
+		hideProgress = false,
 		currentStep = "review",
 		steps,
 		onStepNavigate,
@@ -140,13 +144,15 @@
 
 <div bind:this={el} class={_class} {...rest}>
 	<!-- Progress -->
-	<CheckoutProgress
-		{steps}
-		{currentStep}
-		onNavigate={onStepNavigate}
-		t={tProp}
-		{unstyled}
-	/>
+	{#if !hideProgress}
+		<CheckoutProgress
+			{steps}
+			{currentStep}
+			onNavigate={onStepNavigate}
+			t={tProp}
+			{unstyled}
+		/>
+	{/if}
 
 	{#if isLoading}
 		<!-- Skeleton grid -->

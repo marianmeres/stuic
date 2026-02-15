@@ -25,7 +25,7 @@
 src/lib/
 ├── components/     # 44 UI components
 ├── actions/        # 14 Svelte actions
-├── utils/          # 42 utility functions
+├── utils/          # 42 utility modules
 ├── themes/         # 29 theme definitions (.ts) + generated CSS (css/)
 ├── icons/          # Icon re-exports
 ├── index.css       # Centralized CSS imports
@@ -74,10 +74,10 @@ src/lib/
 
 ### Domain Docs
 
-- [Components](./docs/domains/components.md) — 44 components, Props pattern, snippets
+- [Components](./docs/domains/components.md) — 44 component directories, Props pattern, snippets
 - [Theming](./docs/domains/theming.md) — CSS tokens, dark mode, themes
 - [Actions](./docs/domains/actions.md) — 14 Svelte directives
-- [Utils](./docs/domains/utils.md) — 42 utility functions
+- [Utils](./docs/domains/utils.md) — 42 utility modules
 
 ### Reference
 
