@@ -6,16 +6,8 @@
 	--stuic-checkout-delivery-option-border-color: var(--stuic-color-border);
 	--stuic-checkout-delivery-option-border-color-selected: var(--stuic-color-ring);
 	--stuic-checkout-delivery-option-bg: var(--stuic-color-background);
-	--stuic-checkout-delivery-option-bg-selected: color-mix(
-		in srgb,
-		var(--stuic-color-accent) 10%,
-		transparent
-	);
-	--stuic-checkout-delivery-option-bg-hover: color-mix(
-		in srgb,
-		var(--stuic-color-muted) 10%,
-		transparent
-	);
+	--stuic-checkout-delivery-option-bg-selected: var(--stuic-color-surface-primary);
+	--stuic-checkout-delivery-option-bg-hover: var(--stuic-color-muted);
 	--stuic-checkout-delivery-free-color: #16a34a;
 	--stuic-checkout-delivery-description-color: var(--stuic-color-muted-foreground);
 	--stuic-checkout-delivery-description-font-size: var(--text-base);

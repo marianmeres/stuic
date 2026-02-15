@@ -385,6 +385,24 @@
 	border: 1px solid var(--stuic-color-surface-accent-border);
 }
 
+.stuic-theme-preview .highlight-box.destructive {
+	background: var(--stuic-color-surface-destructive);
+	color: var(--stuic-color-surface-destructive-foreground);
+	border: 1px solid var(--stuic-color-surface-destructive-border);
+}
+
+.stuic-theme-preview .highlight-box.warning {
+	background: var(--stuic-color-surface-warning);
+	color: var(--stuic-color-surface-warning-foreground);
+	border: 1px solid var(--stuic-color-surface-warning-border);
+}
+
+.stuic-theme-preview .highlight-box.success {
+	background: var(--stuic-color-surface-success);
+	color: var(--stuic-color-surface-success-foreground);
+	border: 1px solid var(--stuic-color-surface-success-border);
+}
+
 /* ============================================================================
    TYPOGRAPHY SECTION
    ============================================================================ */

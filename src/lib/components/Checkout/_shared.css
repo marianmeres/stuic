@@ -23,16 +23,8 @@
 	/* Error styling */
 	--stuic-checkout-error-color: var(--stuic-color-destructive);
 	--stuic-checkout-error-font-size: var(--text-base);
-	--stuic-checkout-error-bg: color-mix(
-		in srgb,
-		var(--stuic-color-destructive) 5%,
-		transparent
-	);
-	--stuic-checkout-error-border-color: color-mix(
-		in srgb,
-		var(--stuic-color-destructive) 30%,
-		transparent
-	);
+	--stuic-checkout-error-bg: var(--stuic-color-surface-destructive);
+	--stuic-checkout-error-border-color: var(--stuic-color-surface-destructive-border);
 
 	/* Card sections (used in ReviewStep, OrderReview, etc.) */
 	--stuic-checkout-card-border-color: var(--stuic-color-border);

@@ -160,6 +160,21 @@
 					<strong>Accent Highlight</strong>
 					<p>This box uses accent colors to draw attention.</p>
 				</div>
+
+				<div class="highlight-box destructive">
+					<strong>Destructive Highlight</strong>
+					<p>This box uses destructive intent colors for error or danger content.</p>
+				</div>
+
+				<div class="highlight-box warning">
+					<strong>Warning Highlight</strong>
+					<p>This box uses warning intent colors for cautionary content.</p>
+				</div>
+
+				<div class="highlight-box success">
+					<strong>Success Highlight</strong>
+					<p>This box uses success intent colors for positive feedback.</p>
+				</div>
 			</section>
 
 			<!-- INTENT BUTTONS -->
