@@ -128,6 +128,26 @@
 	// Note, that this will also reset if nested... (which is not desired, but ignoring)
 	onDestroy(BodyScroll.unlock);
 
+	async function _onEscapeKeydown(e: KeyboardEvent) {
+		if (e.key === "Escape" && visible) {
+			// do not allow built-in close on escape
+			e.preventDefault();
+			// do not bubble
+			e.stopPropagation();
+			// do not allow additional onkeydown listeners on this dialog
+			e.stopImmediatePropagation();
+
+			if (!noEscapeClose) {
+				// explicit false prevents close
+				let allowed = await preEscapeClose?.();
+				if (allowed !== false) {
+					// `preClose` will be handled next
+					close();
+				}
+			}
+		}
+	}
+
 	// $inspect("Modal dialog mounted, is visible:", visible).with(clog);
 </script>
 
@@ -156,27 +176,7 @@
 				close();
 			}
 		}}
-		onkeydown={async (e) => {
-			if (e.key === "Escape" && visible) {
-				// clog("on Escape keydown, preventing default and stopping propagation");
-
-				// do not allow built-in close on escape
-				e.preventDefault();
-				// do not bubble
-				e.stopPropagation();
-				// ???: do not allow additional onkeydown listeners on this dialog (should there be any...)
-				e.stopImmediatePropagation();
-
-				if (!noEscapeClose) {
-					// explicit false prevents close
-					let allowed = await preEscapeClose?.();
-					if (allowed !== false) {
-						// `preClose` will be handled next
-						close();
-					}
-				}
-			}
-		}}
+		onkeydown={_onEscapeKeydown}
 	>
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
