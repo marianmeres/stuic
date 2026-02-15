@@ -37,6 +37,8 @@
 	/* Compact variant */
 	--stuic-cart-compact-max-height: 12rem;
 	--stuic-cart-compact-item-padding: 0.5rem;
+	--stuic-cart-compact-footer-bg-color: var(--stuic-color-surface);
+	--stuic-cart-compact-footer-color: var(--stuic-color-surface-foreground);
 }
 
 @layer components {
@@ -398,6 +400,8 @@
 		padding: var(--stuic-cart-compact-item-padding);
 		padding-top: calc(var(--stuic-cart-compact-item-padding) + 0.25rem);
 		border-top: 1px solid var(--stuic-cart-summary-border-color);
+		background-color: var(--stuic-cart-compact-footer-bg-color);
+		color: var(--stuic-cart-compact-footer-color);
 	}
 
 	.stuic-cart-summary-label {
@@ -429,5 +433,7 @@
 		margin-top: 0;
 		padding: var(--stuic-cart-compact-item-padding);
 		border-top: 1px solid var(--stuic-cart-summary-border-color);
+		background-color: var(--stuic-cart-compact-footer-bg-color);
+		color: var(--stuic-cart-compact-footer-color);
 	}
 }
