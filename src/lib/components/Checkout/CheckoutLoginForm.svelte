@@ -195,7 +195,7 @@
 			<Button
 				variant="link"
 				type="button"
-				class="text-muted"
+				class="text-muted-foreground"
 				size="sm"
 				onclick={onForgotPassword}
 			>
