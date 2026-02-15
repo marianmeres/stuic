@@ -9,8 +9,6 @@
 		CheckoutOrderLineItem,
 	} from "./_internal/checkout-types.js";
 
-	const DEFAULT_EDIT_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>`;
-
 	export interface Props extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
 		/** The order data to display */
 		order: CheckoutOrderData;
@@ -32,7 +30,7 @@
 
 		/**
 		 * HTML string for the edit button icon.
-		 * Default: a small pencil SVG.
+		 * Default: none.
 		 */
 		editIcon?: string;
 
@@ -97,6 +95,7 @@
 	import { defaultFormatPrice } from "./_internal/checkout-utils.js";
 	import H, { type HLevel } from "../H/H.svelte";
 	import CheckoutSectionHeader from "./CheckoutSectionHeader.svelte";
+	import { iconPencil } from "../../icons/index.js";
 
 	let {
 		order,
@@ -105,7 +104,7 @@
 		onEditShippingAddress,
 		onEditBillingAddress,
 		onEditDelivery,
-		editIcon = DEFAULT_EDIT_ICON,
+		editIcon = "", // iconPencil(),
 		itemsSection,
 		shippingSection,
 		billingSection,
@@ -115,7 +114,7 @@
 		class: classProp,
 		el = $bindable(),
 		hLevel = 4,
-		hRenderLevel = 4,
+		hRenderLevel = 5,
 		...rest
 	}: Props = $props();
 
@@ -149,7 +148,7 @@
 		<section
 			class={unstyled ? undefined : "stuic-checkout-review-section stuic-checkout-card"}
 		>
-			<CheckoutSectionHeader>
+			<CheckoutSectionHeader noMinHeight>
 				<H
 					level={hLevel}
 					renderLevel={hRenderLevel}
@@ -159,7 +158,7 @@
 				</H>
 				{#snippet right()}
 					{#if onEditItems}
-						<Button variant="soft" size="sm" onclick={onEditItems}>
+						<Button variant="link" size="sm" onclick={onEditItems}>
 							{#if editIcon}{@html editIcon}{/if}
 							{t("checkout.review.edit")}
 						</Button>
@@ -198,7 +197,7 @@
 			<section
 				class={unstyled ? undefined : "stuic-checkout-review-section stuic-checkout-card"}
 			>
-				<CheckoutSectionHeader>
+				<CheckoutSectionHeader noMinHeight>
 					<H
 						level={hLevel}
 						renderLevel={hRenderLevel}
@@ -208,7 +207,7 @@
 					</H>
 					{#snippet right()}
 						{#if onEditShippingAddress}
-							<Button variant="soft" size="sm" onclick={onEditShippingAddress}>
+							<Button variant="link" size="sm" onclick={onEditShippingAddress}>
 								{#if editIcon}{@html editIcon}{/if}
 								{t("checkout.review.edit")}
 							</Button>
@@ -241,7 +240,7 @@
 		<section
 			class={unstyled ? undefined : "stuic-checkout-review-section stuic-checkout-card"}
 		>
-			<CheckoutSectionHeader>
+			<CheckoutSectionHeader noMinHeight>
 				<H
 					level={hLevel}
 					renderLevel={hRenderLevel}
@@ -251,7 +250,7 @@
 				</H>
 				{#snippet right()}
 					{#if onEditBillingAddress}
-						<Button variant="soft" size="sm" onclick={onEditBillingAddress}>
+						<Button variant="link" size="sm" onclick={onEditBillingAddress}>
 							{#if editIcon}{@html editIcon}{/if}
 							{t("checkout.review.edit")}
 						</Button>
@@ -289,7 +288,7 @@
 			<section
 				class={unstyled ? undefined : "stuic-checkout-review-section stuic-checkout-card"}
 			>
-				<CheckoutSectionHeader>
+				<CheckoutSectionHeader noMinHeight>
 					<H
 						level={hLevel}
 						renderLevel={hRenderLevel}
@@ -299,7 +298,7 @@
 					</H>
 					{#snippet right()}
 						{#if onEditDelivery}
-							<Button variant="soft" size="sm" onclick={onEditDelivery}>
+							<Button variant="link" size="sm" onclick={onEditDelivery}>
 								{#if editIcon}{@html editIcon}{/if}
 								{t("checkout.review.edit")}
 							</Button>

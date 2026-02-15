@@ -164,6 +164,7 @@
 				<FieldInput
 					bind:value={address.city}
 					label={t("checkout.address.city_label")}
+					labelLeftBreakpoint={0}
 					placeholder={t("checkout.address.city_placeholder")}
 					required={isRequired("city")}
 					name="{label}-city"
@@ -180,6 +181,7 @@
 				<FieldInput
 					bind:value={address.postal_code}
 					label={t("checkout.address.postal_code_label")}
+					labelLeftBreakpoint={0}
 					placeholder={t("checkout.address.postal_code_placeholder")}
 					required={isRequired("postal_code")}
 					name="{label}-postal_code"

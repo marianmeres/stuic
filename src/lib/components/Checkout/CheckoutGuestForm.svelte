@@ -169,6 +169,7 @@
 				<FieldInput
 					bind:value={formData.first_name}
 					label={t("checkout.guest.first_name_label")}
+					labelLeftBreakpoint={0}
 					placeholder={t("checkout.guest.first_name_placeholder")}
 					name="checkout-guest-first-name"
 				/>
@@ -178,6 +179,7 @@
 				<FieldInput
 					bind:value={formData.last_name}
 					label={t("checkout.guest.last_name_label")}
+					labelLeftBreakpoint={0}
 					placeholder={t("checkout.guest.last_name_placeholder")}
 					name="checkout-guest-last-name"
 				/>

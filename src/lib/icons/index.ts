@@ -51,6 +51,7 @@ export { iconLucideSettings as iconSettings } from "@marianmeres/icons-fns/lucid
 export { iconLucideSquare as iconSquare } from "@marianmeres/icons-fns/lucide/iconLucideSquare.js";
 export { iconLucideUser as iconUser } from "@marianmeres/icons-fns/lucide/iconLucideUser.js";
 export { iconLucideX as iconX } from "@marianmeres/icons-fns/lucide/iconLucideX.js";
+export { iconLucidePencil as iconPencil } from "@marianmeres/icons-fns/lucide/iconLucidePencil.js";
 
 // Brand Icons (OAuth and more...)
 export { iconBsApple as iconApple } from "@marianmeres/icons-fns/bootstrap/iconBsApple.js";
