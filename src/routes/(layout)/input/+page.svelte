@@ -7,3 +7,5 @@
 <a href="./input/assets" class="underline">Field assets</a>
 <br />
 <a href="./input/keyvalues" class="underline">Key-value pairs</a>
+<br />
+<a href="./input/object" class="underline">Object (pretty view)</a>

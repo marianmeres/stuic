@@ -56,3 +56,8 @@ export {
 	type Props as FieldKeyValuesProps,
 	type KeyValueEntry,
 } from "./FieldKeyValues.svelte";
+
+export {
+	default as FieldObject,
+	type Props as FieldObjectProps,
+} from "./FieldObject.svelte";
