@@ -55,14 +55,14 @@
 		"03-checkout-login-form",
 		"04-checkout-guest-or-login-form",
 		"05-checkout-review-step",
-		"checkout-order-summary",
-		"checkout-address-form",
-		"checkout-delivery-options",
-		"checkout-order-review",
+		"06-checkout-order-summary",
+		"07-checkout-address-form",
+		"08-checkout-delivery-options",
+		"09-checkout-order-review",
+		"10-checkout-shipping-step",
+		"11-checkout-confirm-step",
+		"12-checkout-complete-step",
 		"checkout-order-confirmation",
-		"checkout-shipping-step",
-		"checkout-confirm-step",
-		"checkout-complete-step",
 	];
 </script>
 

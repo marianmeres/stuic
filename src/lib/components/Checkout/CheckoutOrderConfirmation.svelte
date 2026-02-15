@@ -56,9 +56,12 @@
 <script lang="ts">
 	import { twMerge } from "../../utils/tw-merge.js";
 	import Button from "../Button/Button.svelte";
+	import Cart from "../Cart/Cart.svelte";
 	import { t_default } from "./_internal/checkout-i18n-defaults.js";
 	import { defaultFormatPrice } from "./_internal/checkout-utils.js";
 	import H, { type HLevel } from "../H/H.svelte";
+	import CheckoutSectionHeader from "./CheckoutSectionHeader.svelte";
+	import CheckoutOrderSummary from "./CheckoutOrderSummary.svelte";
 
 	let {
 		order,
@@ -83,11 +86,6 @@
 	let fp = $derived(formatPriceProp ?? defaultFormatPrice);
 	let successIconHtml = $derived(successIcon ?? DEFAULT_SUCCESS_ICON);
 
-	let shippingValue = $derived.by(() => {
-		if (order.totals.shipping === 0) return t("checkout.summary.free");
-		return fp(order.totals.shipping);
-	});
-
 	let _class = $derived(
 		unstyled ? classProp : twMerge("stuic-checkout-confirmation", classProp)
 	);
@@ -98,21 +96,23 @@
 	{#if header}
 		{@render header({ orderId })}
 	{:else}
-		<div class={unstyled ? undefined : "stuic-checkout-confirmation-header"}>
-			<div class={unstyled ? undefined : "stuic-checkout-confirmation-icon"}>
-				{@html successIconHtml}
+		<CheckoutSectionHeader>
+			<div class="flex flex-col items-center">
+				<div class={unstyled ? undefined : "stuic-checkout-confirmation-icon"}>
+					{@html successIconHtml}
+				</div>
+				<H
+					level={hLevel}
+					renderLevel={hRenderLevel}
+					class={unstyled ? undefined : "stuic-checkout-confirmation-title"}
+				>
+					{t("checkout.complete.title")}
+				</H>
+				<p class={unstyled ? undefined : "stuic-checkout-confirmation-subtitle"}>
+					{t("checkout.complete.subtitle")}
+				</p>
 			</div>
-			<H
-				level={hLevel}
-				renderLevel={hRenderLevel}
-				class={unstyled ? undefined : "stuic-checkout-confirmation-title"}
-			>
-				{t("checkout.complete.title")}
-			</H>
-			<p class={unstyled ? undefined : "stuic-checkout-confirmation-subtitle"}>
-				{t("checkout.complete.subtitle")}
-			</p>
-		</div>
+		</CheckoutSectionHeader>
 	{/if}
 
 	<!-- Order Number -->
@@ -134,49 +134,52 @@
 
 	<!-- Items -->
 	<section class={unstyled ? undefined : "stuic-checkout-card"}>
-		<H
-			level={3}
-			class={unstyled ? undefined : "stuic-checkout-confirmation-section-title"}
-		>
-			{t("checkout.complete.items_title")}
-		</H>
-		<div class={unstyled ? undefined : "stuic-checkout-confirmation-items"}>
-			{#each order.items as item (item.product_id)}
-				<div class={unstyled ? undefined : "stuic-checkout-confirmation-item"}>
-					<span>
-						<span class={unstyled ? undefined : "stuic-checkout-confirmation-item-name"}>
-							{item.name}
-						</span>
-						<span class={unstyled ? undefined : "stuic-checkout-confirmation-item-qty"}>
-							&times;{item.quantity}
-						</span>
-					</span>
-					<span>{fp(item.price * item.quantity)}</span>
-				</div>
-			{/each}
-		</div>
+		<CheckoutSectionHeader>
+			<H
+				level={3}
+				class={unstyled ? undefined : "stuic-checkout-confirmation-section-title"}
+			>
+				{t("checkout.complete.items_title")}
+			</H>
+		</CheckoutSectionHeader>
+		<Cart
+			variant="summary"
+			items={order.items.map((item) => ({
+				id: item.product_id,
+				name: item.name,
+				unitPrice: item.price,
+				quantity: item.quantity,
+				lineTotal: item.price * item.quantity,
+			}))}
+			formatPrice={formatPriceProp}
+			{unstyled}
+		/>
 	</section>
 
 	<!-- Shipping Details -->
 	{#if order.shipping_address || order.delivery_option}
 		<section class={unstyled ? undefined : "stuic-checkout-card"}>
-			<H
-				level={3}
-				class={unstyled ? undefined : "stuic-checkout-confirmation-section-title"}
-			>
-				{t("checkout.complete.shipping_title")}
-			</H>
+			<CheckoutSectionHeader noMinHeight>
+				<H
+					level={3}
+					class={unstyled ? undefined : "stuic-checkout-confirmation-section-title"}
+				>
+					{t("checkout.complete.shipping_title")}
+				</H>
+			</CheckoutSectionHeader>
 			<div class={unstyled ? undefined : "stuic-checkout-confirmation-shipping-grid"}>
 				{#if order.shipping_address}
 					<div>
-						<H
-							level={4}
-							class={unstyled
-								? undefined
-								: "stuic-checkout-confirmation-subsection-label"}
-						>
-							{t("checkout.complete.address_label")}
-						</H>
+						<CheckoutSectionHeader noMinHeight class="mb-1">
+							<H
+								level={4}
+								class={unstyled
+									? undefined
+									: "stuic-checkout-confirmation-subsection-label"}
+							>
+								{t("checkout.complete.address_label")}
+							</H>
+						</CheckoutSectionHeader>
 						<div class={unstyled ? undefined : "stuic-checkout-confirmation-address"}>
 							<div>{order.shipping_address.name}</div>
 							<div>{order.shipping_address.street}</div>
@@ -189,14 +192,16 @@
 				{/if}
 				{#if order.delivery_option}
 					<div>
-						<H
-							level={4}
-							class={unstyled
-								? undefined
-								: "stuic-checkout-confirmation-subsection-label"}
-						>
-							{t("checkout.complete.delivery_label")}
-						</H>
+						<CheckoutSectionHeader noMinHeight class="mb-1">
+							<H
+								level={4}
+								class={unstyled
+									? undefined
+									: "stuic-checkout-confirmation-subsection-label"}
+							>
+								{t("checkout.complete.delivery_label")}
+							</H>
+						</CheckoutSectionHeader>
 						<div>{order.delivery_option.name}</div>
 						<div
 							class={unstyled ? undefined : "stuic-checkout-confirmation-delivery-detail"}
@@ -218,51 +223,20 @@
 
 	<!-- Order Totals -->
 	<section class={unstyled ? undefined : "stuic-checkout-card"}>
-		<H
-			level={3}
-			class={unstyled ? undefined : "stuic-checkout-confirmation-section-title"}
-		>
-			{t("checkout.complete.totals_title")}
-		</H>
-		<div class={unstyled ? undefined : "stuic-checkout-confirmation-totals"}>
-			<!-- Subtotal -->
-			<div class={unstyled ? undefined : "stuic-checkout-summary-row"}>
-				<span>{t("checkout.summary.subtotal")}</span>
-				<span>{fp(order.totals.subtotal)}</span>
-			</div>
-			<!-- Shipping -->
-			<div class={unstyled ? undefined : "stuic-checkout-summary-row"}>
-				<span>{t("checkout.summary.shipping")}</span>
-				<span>{shippingValue}</span>
-			</div>
-			<!-- Tax -->
-			{#if order.totals.tax > 0}
-				<div class={unstyled ? undefined : "stuic-checkout-summary-row"}>
-					<span>{t("checkout.summary.tax")}</span>
-					<span>{fp(order.totals.tax)}</span>
-				</div>
-			{/if}
-			<!-- Discount -->
-			{#if order.totals.discount > 0}
-				<div
-					class={unstyled
-						? undefined
-						: "stuic-checkout-summary-row stuic-checkout-summary-row--discount"}
-				>
-					<span>{t("checkout.summary.discount")}</span>
-					<span>-{fp(order.totals.discount)}</span>
-				</div>
-			{/if}
-			<!-- Total -->
-			<div
-				class={unstyled
-					? undefined
-					: "stuic-checkout-summary-row stuic-checkout-summary-row--total"}
+		<CheckoutSectionHeader noMinHeight>
+			<H
+				level={3}
+				class={unstyled ? undefined : "stuic-checkout-confirmation-section-title"}
 			>
-				<span>{t("checkout.summary.total")}</span>
-				<span>{fp(order.totals.total)}</span>
-			</div>
-		</div>
+				{t("checkout.complete.totals_title")}
+			</H>
+		</CheckoutSectionHeader>
+		<CheckoutOrderSummary
+			totals={order.totals}
+			formatPrice={formatPriceProp}
+			t={tProp}
+			{unstyled}
+		/>
 	</section>
 
 	<!-- Continue Shopping CTA -->

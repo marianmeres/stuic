@@ -1,7 +1,7 @@
 :root {
 	/* CheckoutOrderSummary */
-	--stuic-checkout-summary-gap: 0.75rem;
-	--stuic-checkout-summary-label-color: var(--stuic-color-muted-foreground);
+	--stuic-checkout-summary-gap: 0.25rem;
+	--stuic-checkout-summary-label-color: inherit;
 	--stuic-checkout-summary-label-font-size: 0.875rem;
 	--stuic-checkout-summary-value-font-size: 0.875rem;
 	--stuic-checkout-summary-total-font-size: 1.125rem;

@@ -205,30 +205,6 @@
 	</CheckoutCompleteStep>
 </section>
 
-<!-- ============== CSS VARIABLE OVERRIDES ============== -->
-<section class="mb-12">
-	<h2 class="text-lg font-bold mb-2">CSS variable overrides</h2>
-	<p class="text-sm opacity-60 mb-4">
-		Customized max width and error gap via CSS variables.
-	</p>
-
-	<div
-		style="
-			--stuic-checkout-complete-step-max-width: 36rem;
-			--stuic-checkout-complete-step-error-gap: 2rem;
-		"
-	>
-		<CheckoutCompleteStep
-			order={sampleOrder}
-			orderId=""
-			error="Custom-styled error state with wider gap."
-			onReturnToCheckout={() => log("Return (CSS vars)")}
-			onContinueShopping={() => log("Continue (CSS vars)")}
-			formatPrice={dollarFormat}
-		/>
-	</div>
-</section>
-
 <!-- ============== UNSTYLED ============== -->
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Unstyled</h2>

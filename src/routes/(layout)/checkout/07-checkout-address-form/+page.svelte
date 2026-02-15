@@ -92,7 +92,7 @@
 		Full address form with configurable fields and validation.
 	</p>
 
-	<div class="max-w-sm mb-4 space-y-2">
+	<div class="max-w-full mb-4 space-y-2">
 		<FieldSwitch
 			bind:checked={showName}
 			label="Show Name"
@@ -137,7 +137,7 @@
 		/>
 	</div>
 
-	<div class="max-w-lg">
+	<div class="max-w-full">
 		{#if useCustomCountry}
 			<CheckoutAddressForm bind:address label="shipping" {errors} fields={fieldsConfig}>
 				{#snippet countryField({ value, onchange, error, label: fieldLabel, id })}

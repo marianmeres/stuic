@@ -29,7 +29,6 @@
 	.stuic-checkout-guest-or-login-tabs {
 		--stuic-tabbed-menu-radius: 9999px;
 		--stuic-tabbed-menu-item-max-width: none;
-		/* --stuic-tabbed-menu-gap: 0.25rem; */
 		background-color: var(--stuic-checkout-guest-or-login-tabs-background-color);
 	}
 

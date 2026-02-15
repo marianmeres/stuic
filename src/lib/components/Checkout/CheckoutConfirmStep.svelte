@@ -74,6 +74,9 @@
 		unstyled?: boolean;
 		class?: string;
 		el?: HTMLDivElement;
+
+		hLevel?: HLevel;
+		hRenderLevel?: HLevel;
 	}
 </script>
 
@@ -86,7 +89,8 @@
 	import CheckoutOrderSummary from "./CheckoutOrderSummary.svelte";
 	import CheckoutProgress from "./CheckoutProgress.svelte";
 	import { t_default } from "./_internal/checkout-i18n-defaults.js";
-	import H from "../H/H.svelte";
+	import H, { type HLevel } from "../H/H.svelte";
+	import CheckoutSectionHeader from "./CheckoutSectionHeader.svelte";
 
 	let {
 		order,
@@ -113,6 +117,9 @@
 		unstyled = false,
 		class: classProp,
 		el = $bindable(),
+
+		hLevel = 3,
+		hRenderLevel = 3,
 		...rest
 	}: Props = $props();
 
@@ -150,23 +157,21 @@
 	{:else}
 		<DismissibleMessage message={error} intent="destructive" onDismiss={false} />
 
+		<!-- Back link -->
+		{#if onBack}
+			<div class={unstyled ? undefined : "stuic-checkout-confirm-step-back"}>
+				<Button type="button" variant="link" size="sm" onclick={onBack}>
+					{t("checkout.step.back_to_shipping")}
+				</Button>
+			</div>
+		{/if}
+
 		<div class={unstyled ? undefined : "stuic-checkout-confirm-step-grid"}>
 			<!-- Left Column: Order Review -->
 			<div class={unstyled ? undefined : "stuic-checkout-confirm-step-left"}>
 				{#if leftColumn}
 					{@render leftColumn()}
 				{:else}
-					<!-- Back link -->
-					{#if onBack}
-						<button
-							type="button"
-							class={unstyled ? undefined : "stuic-checkout-confirm-step-back"}
-							onclick={onBack}
-						>
-							{t("checkout.step.back_to_shipping")}
-						</button>
-					{/if}
-
 					<CheckoutOrderReview
 						{order}
 						{formatPrice}
@@ -186,12 +191,17 @@
 					{@render rightColumn()}
 				{:else}
 					<div class={unstyled ? undefined : "stuic-checkout-confirm-step-sidebar"}>
-						<H
-							level={3}
-							class={unstyled ? undefined : "stuic-checkout-confirm-step-section-heading"}
-						>
-							{t("checkout.step.summary_title")}
-						</H>
+						<CheckoutSectionHeader noMinHeight>
+							<H
+								level={hLevel}
+								renderLevel={hRenderLevel}
+								class={unstyled
+									? undefined
+									: "stuic-checkout-confirm-step-section-heading"}
+							>
+								{t("checkout.step.summary_title")}
+							</H>
+						</CheckoutSectionHeader>
 						<CheckoutOrderSummary
 							totals={order.totals}
 							hasShipping={!!order.delivery_option_id}
@@ -218,7 +228,7 @@
 						<!-- Place Order CTA -->
 						<Button
 							intent="primary"
-							class="w-full"
+							class="w-full mt-4"
 							disabled={!isValid || isSubmitting}
 							onclick={onPlaceOrder}
 							aria-busy={isSubmitting}

@@ -62,13 +62,13 @@
 	}
 
 	/** Layout variant */
-	export type CartVariant = "default" | "compact";
+	export type CartVariant = "default" | "compact" | "summary";
 
 	export interface Props extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
 		/** Cart items to display */
 		items: CartComponentItem[];
 
-		/** Layout variant. "compact" = smaller thumbnails, tighter spacing, scrollable, implicitly readonly */
+		/** Layout variant. "compact" = smaller thumbnails, tighter spacing, scrollable, implicitly readonly. "summary" = minimal receipt-style list (name ×qty, line total), no thumbnails/controls/footer, implicitly readonly */
 		variant?: CartVariant;
 
 		/** Format a numeric price for display. Default: (v) => (v / 100).toFixed(2) */
@@ -168,7 +168,8 @@
 	const bp = Breakpoint.instance;
 	let isDesktop = $derived(bp.md);
 	let isCompact = $derived(variant === "compact");
-	let isReadonly = $derived(readonlyProp || isCompact);
+	let isSummary = $derived(variant === "summary");
+	let isReadonly = $derived(readonlyProp || isCompact || isSummary);
 
 	// --- Derived ---
 	let total = $derived(items.reduce((sum, i) => sum + i.lineTotal, 0));
@@ -263,7 +264,19 @@
 		>
 			{#each items as item (item.id)}
 				{@const isUpdating = updatingItems.has(item.id)}
-				{#if itemRow}
+				{#if isSummary}
+					<div class={!unstyled ? "stuic-cart-item" : undefined} data-variant="summary">
+						<span>
+							<span class={!unstyled ? "stuic-cart-item-name" : undefined}>
+								{item.name}
+							</span>
+							<span class={!unstyled ? "stuic-cart-item-qty" : undefined}>
+								&times;{item.quantity}
+							</span>
+						</span>
+						<span>{formatPrice(item.lineTotal)}</span>
+					</div>
+				{:else if itemRow}
 					{@render itemRow({
 						item,
 						isUpdating,
@@ -429,34 +442,36 @@
 			{/each}
 		</div>
 
-		<!-- Summary -->
-		{#if summary}
-			{@render summary({ items, total, itemCount, formatPrice })}
-		{:else}
-			<div
-				class={!unstyled ? "stuic-cart-summary" : undefined}
-				data-variant={!unstyled ? variant : undefined}
-			>
-				<span class={!unstyled ? "stuic-cart-summary-label" : undefined}>
-					{t("total_label")}
-					({itemCount === 1
-						? t("item_count_1")
-						: t("item_count_n", { count: itemCount })})
-				</span>
-				<span
-					class={!unstyled ? "stuic-cart-summary-total" : undefined}
+		<!-- Summary (hidden in summary variant) -->
+		{#if !isSummary}
+			{#if summary}
+				{@render summary({ items, total, itemCount, formatPrice })}
+			{:else}
+				<div
+					class={!unstyled ? "stuic-cart-summary" : undefined}
 					data-variant={!unstyled ? variant : undefined}
 				>
-					{formatPrice(total)}
-				</span>
-			</div>
-		{/if}
+					<span class={!unstyled ? "stuic-cart-summary-label" : undefined}>
+						{t("total_label")}
+						({itemCount === 1
+							? t("item_count_1")
+							: t("item_count_n", { count: itemCount })})
+					</span>
+					<span
+						class={!unstyled ? "stuic-cart-summary-total" : undefined}
+						data-variant={!unstyled ? variant : undefined}
+					>
+						{formatPrice(total)}
+					</span>
+				</div>
+			{/if}
 
-		<!-- Footer -->
-		{#if footer}
-			<div class={!unstyled ? "stuic-cart-footer" : undefined}>
-				{@render footer({ items, total, itemCount })}
-			</div>
+			<!-- Footer -->
+			{#if footer}
+				<div class={!unstyled ? "stuic-cart-footer" : undefined}>
+					{@render footer({ items, total, itemCount })}
+				</div>
+			{/if}
 		{/if}
 	{/if}
 </div>

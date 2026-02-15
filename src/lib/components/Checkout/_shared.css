@@ -112,16 +112,22 @@
 	.stuic-checkout-section-header {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
 		gap: var(--stuic-checkout-section-header-gap);
 		margin-bottom: var(--stuic-checkout-section-header-margin-bottom);
-		/* idea here is, that some have button inside (which is min-heigh 44), and we
-        want to have equal height across all */
-		min-height: 44px;
 		background-color: var(--stuic-checkout-section-header-bg-color);
 		color: var(--stuic-checkout-section-header-text-color);
 		padding: var(--stuic-checkout-section-header-padding);
 		border-radius: var(--stuic-checkout-section-header-border-radius);
+
+		.left {
+			flex: 1;
+		}
+
+		&[data-min-height] {
+			/* idea here is, that some have button inside (which is min-heigh 44), and we
+			want to have equal height across all */
+			min-height: 44px;
+		}
 	}
 
 	/* ============================================================================

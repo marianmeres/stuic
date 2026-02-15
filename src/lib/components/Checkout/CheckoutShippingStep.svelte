@@ -100,6 +100,9 @@
 		unstyled?: boolean;
 		class?: string;
 		el?: HTMLDivElement;
+
+		hLevel?: HLevel;
+		hRenderLevel?: HLevel;
 	}
 </script>
 
@@ -115,7 +118,8 @@
 	import { t_default } from "./_internal/checkout-i18n-defaults.js";
 	import { createEmptyAddress } from "./_internal/checkout-utils.js";
 	import DismissibleMessage from "../DismissibleMessage/DismissibleMessage.svelte";
-	import H from "../H/H.svelte";
+	import H, { type HLevel } from "../H/H.svelte";
+	import CheckoutSectionHeader from "./CheckoutSectionHeader.svelte";
 
 	let {
 		order,
@@ -146,6 +150,8 @@
 		unstyled = false,
 		class: classProp,
 		el = $bindable(),
+		hLevel = 3,
+		hRenderLevel = 3,
 		...rest
 	}: Props = $props();
 
@@ -183,33 +189,34 @@
 	{:else}
 		<DismissibleMessage message={error} intent="destructive" onDismiss={false} />
 
+		<!-- Back link -->
+		{#if onBack}
+			<div class={unstyled ? undefined : "stuic-checkout-shipping-step-back"}>
+				<Button type="button" variant="link" size="sm" onclick={onBack}>
+					{t("checkout.step.back_to_review")}
+				</Button>
+			</div>
+		{/if}
+
 		<div class={unstyled ? undefined : "stuic-checkout-shipping-step-grid"}>
 			<!-- Left Column -->
 			<div class={unstyled ? undefined : "stuic-checkout-shipping-step-left"}>
 				{#if leftColumn}
 					{@render leftColumn()}
 				{:else}
-					<!-- Back link -->
-					{#if onBack}
-						<button
-							type="button"
-							class={unstyled ? undefined : "stuic-checkout-shipping-step-back"}
-							onclick={onBack}
-						>
-							{t("checkout.step.back_to_review")}
-						</button>
-					{/if}
-
 					<!-- Shipping Address -->
 					<section>
-						<H
-							level={3}
-							class={unstyled
-								? undefined
-								: "stuic-checkout-shipping-step-section-heading"}
-						>
-							{t("checkout.step.shipping_address_title")}
-						</H>
+						<CheckoutSectionHeader noMinHeight>
+							<H
+								level={hLevel}
+								renderLevel={hRenderLevel}
+								class={unstyled
+									? undefined
+									: "stuic-checkout-shipping-step-section-heading"}
+							>
+								{t("checkout.step.shipping_address_title")}
+							</H>
+						</CheckoutSectionHeader>
 						<CheckoutAddressForm
 							bind:address={shippingAddress}
 							label="shipping"
@@ -230,14 +237,17 @@
 					<!-- Billing Address (conditional) -->
 					{#if !billingSameAsShipping}
 						<section>
-							<H
-								level={3}
-								class={unstyled
-									? undefined
-									: "stuic-checkout-shipping-step-section-heading"}
-							>
-								{t("checkout.step.billing_address_title")}
-							</H>
+							<CheckoutSectionHeader noMinHeight>
+								<H
+									level={hLevel}
+									renderLevel={hRenderLevel}
+									class={unstyled
+										? undefined
+										: "stuic-checkout-shipping-step-section-heading"}
+								>
+									{t("checkout.step.billing_address_title")}
+								</H>
+							</CheckoutSectionHeader>
 							<CheckoutAddressForm
 								bind:address={billingAddress}
 								label="billing"
@@ -251,14 +261,17 @@
 
 					<!-- Delivery Options -->
 					<section>
-						<H
-							level={3}
-							class={unstyled
-								? undefined
-								: "stuic-checkout-shipping-step-section-heading"}
-						>
-							{t("checkout.step.delivery_title")}
-						</H>
+						<CheckoutSectionHeader noMinHeight>
+							<H
+								level={hLevel}
+								renderLevel={hRenderLevel}
+								class={unstyled
+									? undefined
+									: "stuic-checkout-shipping-step-section-heading"}
+							>
+								{t("checkout.step.delivery_title")}
+							</H>
+						</CheckoutSectionHeader>
 						<CheckoutDeliveryOptions
 							options={deliveryOptions}
 							bind:selectedId={selectedDeliveryId}
@@ -279,14 +292,18 @@
 					{@render rightColumn()}
 				{:else}
 					<div class={unstyled ? undefined : "stuic-checkout-shipping-step-sidebar"}>
-						<H
-							level={3}
-							class={unstyled
-								? undefined
-								: "stuic-checkout-shipping-step-section-heading"}
-						>
-							{t("checkout.step.summary_title")}
-						</H>
+						<CheckoutSectionHeader noMinHeight>
+							<H
+								level={hLevel}
+								renderLevel={hRenderLevel}
+								class={unstyled
+									? undefined
+									: "stuic-checkout-shipping-step-section-heading"}
+							>
+								{t("checkout.step.summary_title")}
+							</H>
+						</CheckoutSectionHeader>
+
 						<CheckoutOrderSummary
 							totals={order.totals}
 							hasShipping={!!order.delivery_option_id}
@@ -297,7 +314,7 @@
 
 						<Button
 							intent="primary"
-							class="w-full"
+							class="w-full mt-4"
 							disabled={isSubmitting}
 							onclick={onContinue}
 						>

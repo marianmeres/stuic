@@ -9,24 +9,35 @@
 	> {
 		unstyled?: boolean;
 		class?: string;
+		classLeft?: string;
+		classRight?: string;
 		children: Snippet;
 		right?: Snippet;
+		noMinHeight?: boolean;
 	}
 </script>
 
 <script lang="ts">
-	let { unstyled = false, class: classProp, children, right }: Props = $props();
+	let {
+		unstyled = false,
+		class: classProp,
+		classLeft,
+		classRight,
+		children,
+		right,
+		noMinHeight = false,
+	}: Props = $props();
 
 	let _class = $derived(
 		unstyled ? classProp : twMerge("stuic-checkout-section-header", classProp)
 	);
 </script>
 
-<div class={_class}>
-	<div class="left">
+<div class={_class} data-min-height={!noMinHeight ? true : undefined}>
+	<div class="left {classLeft}">
 		{@render children()}
 	</div>
-	<div class="right">
+	<div class="right {classRight}">
 		{@render right?.()}
 	</div>
 </div>
