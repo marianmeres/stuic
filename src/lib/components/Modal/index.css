@@ -21,14 +21,7 @@
 	.stuic-modal {
 		background: var(--stuic-modal-bg);
 		color: var(--stuic-modal-text);
-		border-radius: 0; /* Mobile: fullscreen, no radius */
-	}
-
-	@media (min-width: 48rem) {
-		/* md breakpoint */
-		.stuic-modal {
-			border-radius: var(--stuic-modal-radius);
-		}
+		border-radius: var(--stuic-modal-radius);
 	}
 
 	/* Thin scrollbar for main content area */

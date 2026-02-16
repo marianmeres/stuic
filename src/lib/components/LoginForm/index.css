@@ -1,0 +1,83 @@
+:root {
+	/* LoginForm */
+	--stuic-login-form-gap: 0rem;
+	--stuic-login-form-gap-row: 1rem;
+	--stuic-login-form-forgot-margin-y: 0.5rem;
+	--stuic-login-form-forgot-margin-x: 0.5rem;
+
+	/* Social login section */
+	--stuic-login-form-social-margin-top: 1rem;
+	--stuic-login-form-social-gap: 0.75rem;
+	--stuic-login-form-social-divider-color: var(--stuic-color-border);
+	--stuic-login-form-social-divider-font-size: var(--text-sm);
+	--stuic-login-form-social-divider-margin-bottom: 0.75rem;
+}
+
+@layer components {
+	.stuic-login-form {
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-login-form-gap);
+	}
+
+	.stuic-login-form-forgot {
+		margin: var(--stuic-login-form-forgot-margin-y)
+			var(--stuic-login-form-forgot-margin-x) var(--stuic-login-form-forgot-margin-y)
+			var(--stuic-login-form-forgot-margin-x);
+	}
+
+	.stuic-login-form-remember {
+		margin-top: 0.25rem;
+	}
+
+	.stuic-login-form-submit {
+		margin-top: 1rem;
+	}
+
+	/* Social login container */
+	.stuic-login-form-social {
+		margin-top: var(--stuic-login-form-social-margin-top);
+	}
+
+	/* "or continue with" divider */
+	.stuic-login-form-social-divider {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		margin-bottom: var(--stuic-login-form-social-divider-margin-bottom);
+		color: var(--stuic-login-form-social-divider-color);
+		font-size: var(--stuic-login-form-social-divider-font-size);
+	}
+
+	.stuic-login-form-social-divider::before,
+	.stuic-login-form-social-divider::after {
+		content: "";
+		flex: 1;
+		height: 1px;
+		background: var(--stuic-login-form-social-divider-color);
+	}
+
+	/* Button container */
+	.stuic-login-form-social-buttons {
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-login-form-social-gap);
+	}
+
+	.stuic-login-form-compact-cta {
+		display: flex;
+		align-items: center;
+		/* justify-content: space-between; */
+		margin-top: 0.5rem;
+		gap: 2rem;
+	}
+
+	.stuic-login-form[data-compact] {
+		.stuic-login-form-submit {
+			margin-top: 0.5rem;
+		}
+		.stuic-button {
+			flex: 1;
+		}
+	}
+}

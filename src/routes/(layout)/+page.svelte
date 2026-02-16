@@ -33,6 +33,7 @@
 		'input-history',
 		'kbd-shortcut',
 		'list-item-button',
+		'login-form',
 		'modal-dialog',
 		'modal',
 		'nav',

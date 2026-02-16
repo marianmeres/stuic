@@ -118,5 +118,5 @@ export function createEmptyCustomerFormData(): CheckoutCustomerFormData {
 }
 
 export function createEmptyLoginFormData(): CheckoutLoginFormData {
-	return { email: "", password: "" };
+	return { email: "", password: "", rememberMe: true };
 }

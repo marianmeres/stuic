@@ -56,6 +56,7 @@ export interface CheckoutCustomerFormData {
 export interface CheckoutLoginFormData {
 	email: string;
 	password: string;
+	rememberMe: boolean;
 }
 
 // ====================================================================

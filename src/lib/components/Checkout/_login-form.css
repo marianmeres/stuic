@@ -1,63 +1,24 @@
+/* ============================================================================
+   CheckoutLoginForm CSS compatibility layer
+   Maps legacy --stuic-checkout-login-* variables to --stuic-login-form-* tokens.
+   Consumers using the old variable names continue to work.
+   ============================================================================ */
+
 :root {
-	/* CheckoutLoginForm */
-	--stuic-checkout-login-gap: 0rem;
-	--stuic-checkout-login-gap-row: 1rem;
-	--stuic-checkout-login-forgot-margin-y: 0.5rem;
-	--stuic-checkout-login-forgot-margin-x: 0.5rem;
+	--stuic-checkout-login-gap: var(--stuic-login-form-gap);
+	--stuic-checkout-login-gap-row: var(--stuic-login-form-gap-row);
+	--stuic-checkout-login-forgot-margin-y: var(--stuic-login-form-forgot-margin-y);
+	--stuic-checkout-login-forgot-margin-x: var(--stuic-login-form-forgot-margin-x);
 
-	/* Social login section */
-	--stuic-checkout-login-social-margin-top: 1.5rem;
-	--stuic-checkout-login-social-gap: 0.75rem;
-	--stuic-checkout-login-social-divider-color: var(--stuic-color-border);
-	--stuic-checkout-login-social-divider-font-size: var(--text-sm);
-	--stuic-checkout-login-social-divider-margin-bottom: 0.75rem;
-}
-
-@layer components {
-	.stuic-checkout-login-form {
-		display: flex;
-		flex-direction: column;
-		gap: var(--stuic-checkout-login-gap);
-	}
-
-	.stuic-checkout-login-forgot {
-		margin: var(--stuic-checkout-login-forgot-margin-y)
-			var(--stuic-checkout-login-forgot-margin-x)
-			var(--stuic-checkout-login-forgot-margin-y)
-			var(--stuic-checkout-login-forgot-margin-x);
-	}
-
-	.stuic-checkout-login-submit {
-		margin-top: 1rem;
-	}
-
-	/* Social login container */
-	.stuic-checkout-login-social {
-		margin-top: var(--stuic-checkout-login-social-margin-top);
-	}
-
-	/* "or continue with" divider */
-	.stuic-checkout-login-social-divider {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-		margin-bottom: var(--stuic-checkout-login-social-divider-margin-bottom);
-		color: var(--stuic-checkout-login-social-divider-color);
-		font-size: var(--stuic-checkout-login-social-divider-font-size);
-	}
-
-	.stuic-checkout-login-social-divider::before,
-	.stuic-checkout-login-social-divider::after {
-		content: "";
-		flex: 1;
-		height: 1px;
-		background: var(--stuic-checkout-login-social-divider-color);
-	}
-
-	/* Button container */
-	.stuic-checkout-login-social-buttons {
-		display: flex;
-		flex-direction: column;
-		gap: var(--stuic-checkout-login-social-gap);
-	}
+	--stuic-checkout-login-social-margin-top: var(--stuic-login-form-social-margin-top);
+	--stuic-checkout-login-social-gap: var(--stuic-login-form-social-gap);
+	--stuic-checkout-login-social-divider-color: var(
+		--stuic-login-form-social-divider-color
+	);
+	--stuic-checkout-login-social-divider-font-size: var(
+		--stuic-login-form-social-divider-font-size
+	);
+	--stuic-checkout-login-social-divider-margin-bottom: var(
+		--stuic-login-form-social-divider-margin-bottom
+	);
 }

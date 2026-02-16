@@ -12,6 +12,7 @@
 		classHeader?: string;
 		classMain?: string;
 		classFooter?: string;
+		classDialog?: string;
 		/** ID reference for aria-labelledby */
 		labelledby?: string;
 		/** ID reference for aria-describedby */
@@ -38,6 +39,7 @@
 		classHeader,
 		classMain,
 		classFooter,
+		classDialog,
 		labelledby,
 		describedby,
 		el = $bindable(),
@@ -89,7 +91,10 @@
 	{noScrollLock}
 	preEscapeClose={handlePreEscapeClose}
 	preClose={handlePreClose}
-	class="bg-transparent size-full md:size-auto pointer-events-none"
+	class={twMerge(
+		"bg-transparent size-full md:size-auto pointer-events-none",
+		classDialog
+	)}
 >
 	<div
 		bind:this={el}

@@ -212,7 +212,7 @@
 								isNarrow ? "text-xs" : "min-w-24 text-right"
 							)}>{key}</span
 						>
-						<div class="min-w-0 flex-1">
+						<div class="min-w-0 flex-1 text-base">
 							{#if isNarrow && typeof v === "object" && v !== null}
 								<!-- On narrow, collapse complex nested values -->
 								{#if Array.isArray(v)}
