@@ -132,9 +132,7 @@
 		return allErrors.find((e) => e.field === field)?.message;
 	}
 
-	function handleSubmit(e: SubmitEvent) {
-		e.preventDefault();
-
+	function handleSubmitValid() {
 		const validationErrors = validateLoginForm(formData, t);
 		internalErrors = validationErrors;
 
@@ -147,13 +145,22 @@
 		if (error && notifications) notifications.error(error);
 	});
 
+	// The onSubmitValidityCheck action intercepts native submit (capture phase,
+	// stopImmediatePropagation) and dispatches a custom "submit_valid" event.
+	// Listen for it on the form element as a fallback.
+	$effect(() => {
+		const node = el;
+		if (!node) return;
+		node.addEventListener("submit_valid", handleSubmitValid);
+		return () => node.removeEventListener("submit_valid", handleSubmitValid);
+	});
+
 	let _class = $derived(unstyled ? classProp : twMerge("stuic-login-form", classProp));
 </script>
 
 <form
 	bind:this={el}
 	class={_class}
-	onsubmit={handleSubmit}
 	use:onSubmitValidityCheck
 	{...rest}
 	data-compact={compact ? "" : undefined}
@@ -162,10 +169,10 @@
 	<DismissibleMessage message={error} intent="destructive" onDismiss={false} />
 
 	<!--
-		svelte-ignore binding_property_non_reactive:
-		formData is a $bindable prop — deep reactivity depends on the consumer
-		passing a $state() object. The bindings work correctly regardless.
-	-->
+			svelte-ignore binding_property_non_reactive:
+			formData is a $bindable prop — deep reactivity depends on the consumer
+			passing a $state() object. The bindings work correctly regardless.
+		-->
 	<!-- Email -->
 	<!-- svelte-ignore binding_property_non_reactive -->
 	<FieldInput
