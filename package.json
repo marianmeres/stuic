@@ -49,7 +49,11 @@
 			"types": "./dist/themes/*.d.ts",
 			"default": "./dist/themes/*.js"
 		},
-		"./themes/css/*": "./dist/themes/css/*"
+		"./themes/css/*": "./dist/themes/css/*",
+		"./phone-validation": {
+			"types": "./dist/components/Input/phone-validation.d.ts",
+			"default": "./dist/components/Input/phone-validation.js"
+		}
 	},
 	"peerDependencies": {
 		"svelte": "^5.0.0"
@@ -73,7 +77,7 @@
 		"prettier": "^3.8.1",
 		"prettier-plugin-svelte": "^3.4.1",
 		"publint": "^0.3.17",
-		"svelte": "^5.51.1",
+		"svelte": "^5.51.2",
 		"svelte-check": "^4.4.0",
 		"tailwindcss": "^4.1.18",
 		"tsx": "^4.21.0",
@@ -89,7 +93,8 @@
 		"@marianmeres/parse-boolean": "^2.0.5",
 		"@marianmeres/ticker": "^1.16.5",
 		"esm-env": "^1.2.2",
+		"libphonenumber-js": "^1.12.36",
 		"runed": "^0.23.4",
-		"tailwind-merge": "^3.4.0"
+		"tailwind-merge": "^3.4.1"
 	}
 }

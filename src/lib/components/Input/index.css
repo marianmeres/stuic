@@ -66,6 +66,13 @@
 	--stuic-input-localized-toggle-hover-bg: var(--stuic-color-muted);
 	--stuic-input-localized-label-text: var(--stuic-color-muted-foreground);
 
+	/* FieldPhoneNumber specific */
+	--stuic-field-phone-trigger-text: var(--stuic-color-foreground);
+	--stuic-field-phone-trigger-text-hover: var(--stuic-color-foreground);
+	--stuic-field-phone-trigger-bg: transparent;
+	--stuic-field-phone-trigger-bg-hover: var(--stuic-color-muted);
+	--stuic-field-phone-trigger-border: var(--stuic-color-border);
+
 	/* FieldOptions specific */
 	--stuic-field-options-divider: var(--stuic-color-border);
 	--stuic-field-options-control-text: var(--stuic-color-muted-foreground);
@@ -584,5 +591,40 @@
 	.stuic-input-localized .expanded-wrap {
 		border-right: 1px solid var(--stuic-input-localized-divider);
 		/* border-radius: var(--stuic-input-radius); */
+	}
+
+	/* ============================================================================
+	   FIELD PHONE NUMBER
+	   ============================================================================ */
+
+	.stuic-phone-prefix-trigger {
+		color: var(--stuic-field-phone-trigger-text);
+		background: var(--stuic-field-phone-trigger-bg);
+		border-right: 1px solid var(--stuic-field-phone-trigger-border);
+		border-radius: var(--stuic-input-radius) 0 0 var(--stuic-input-radius);
+		transition:
+			background var(--stuic-input-transition),
+			color var(--stuic-input-transition);
+	}
+
+	.stuic-phone-prefix-trigger:hover:not(:disabled) {
+		color: var(--stuic-field-phone-trigger-text-hover);
+		background: var(--stuic-field-phone-trigger-bg-hover);
+	}
+
+	.stuic-phone-prefix-trigger:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+
+	.stuic-phone-prefix-picker {
+		display: flex;
+		align-items: stretch;
+	}
+
+	/* Reset field input styles leaking into the dropdown's search */
+	.stuic-phone-prefix-picker .stuic-dropdown-menu-search {
+		padding-top: 0;
+		padding-bottom: 0;
 	}
 }

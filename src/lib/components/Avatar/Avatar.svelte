@@ -33,6 +33,7 @@
 		autoColor?: boolean;
 		/** CSS class override */
 		class?: string;
+		classInner?: string;
 		/** Bindable element reference */
 		el?: HTMLDivElement | HTMLButtonElement;
 	}
@@ -57,6 +58,7 @@
 		textColor,
 		autoColor = false,
 		class: classProp,
+		classInner,
 		el = $bindable(),
 	}: Props = $props();
 
@@ -187,6 +189,8 @@
 		)
 	);
 
+	let _classInner = $derived(twMerge("", classInner));
+
 	function handleImageError() {
 		imageError = true;
 	}
@@ -202,13 +206,15 @@
 		data-size={isPresetSize(size) ? size : undefined}
 		data-interactive="true"
 	>
-		{#if renderMode === "photo"}
-			<img {src} {alt} class="size-full object-cover" onerror={handleImageError} />
-		{:else if renderMode === "initials"}
-			{fallbackInitials}
-		{:else}
-			{@html iconToRender({ size: iconSize })}
-		{/if}
+		<span class={_classInner}>
+			{#if renderMode === "photo"}
+				<img {src} {alt} class="size-full object-cover" onerror={handleImageError} />
+			{:else if renderMode === "initials"}
+				{fallbackInitials}
+			{:else}
+				{@html iconToRender({ size: iconSize })}
+			{/if}
+		</span>
 	</button>
 {:else}
 	<div
@@ -217,12 +223,14 @@
 		{style}
 		data-size={isPresetSize(size) ? size : undefined}
 	>
-		{#if renderMode === "photo"}
-			<img {src} {alt} class="size-full object-cover" onerror={handleImageError} />
-		{:else if renderMode === "initials"}
-			{fallbackInitials}
-		{:else}
-			{@html iconToRender({ size: iconSize })}
-		{/if}
+		<span class={_classInner}>
+			{#if renderMode === "photo"}
+				<img {src} {alt} class="size-full object-cover" onerror={handleImageError} />
+			{:else if renderMode === "initials"}
+				{fallbackInitials}
+			{:else}
+				{@html iconToRender({ size: iconSize })}
+			{/if}
+		</span>
 	</div>
 {/if}

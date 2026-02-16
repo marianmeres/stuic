@@ -9,3 +9,5 @@
 <a href="./input/keyvalues" class="underline">Key-value pairs</a>
 <br />
 <a href="./input/object" class="underline">Object (pretty view)</a>
+<br />
+<a href="./input/phone-number" class="underline">Phone number</a>

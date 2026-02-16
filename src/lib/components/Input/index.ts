@@ -61,3 +61,12 @@ export {
 	default as FieldObject,
 	type Props as FieldObjectProps,
 } from "./FieldObject.svelte";
+
+export {
+	default as FieldPhoneNumber,
+	type Props as FieldPhoneNumberProps,
+} from "./FieldPhoneNumber.svelte";
+
+export { validatePhoneNumber } from "./phone-validation.js";
+
+export { type Country } from "./_internal/countries.js";
