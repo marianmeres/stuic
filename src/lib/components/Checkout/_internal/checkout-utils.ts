@@ -5,6 +5,7 @@ import type {
 	CheckoutValidationError,
 } from "./checkout-types.js";
 import type { TranslateFn } from "../../../types.js";
+import { validatePhoneNumber } from "../../Input/phone-validation.js";
 
 // ====================================================================
 // Default price formatter
@@ -42,6 +43,8 @@ export function validateCustomerForm(
 	const errors: CheckoutValidationError[] = [];
 	const emailError = validateEmail(data.email, t);
 	if (emailError) errors.push({ field: "email", message: emailError });
+	const phoneError = validatePhoneNumber(data.phone);
+	if (phoneError) errors.push({ field: "phone", message: phoneError });
 	return errors;
 }
 
@@ -73,6 +76,8 @@ export function validateAddress(
 			});
 		}
 	}
+	const phoneError = validatePhoneNumber(address.phone);
+	if (phoneError) errors.push({ field: `${prefix}.phone`, message: phoneError });
 	return errors;
 }
 

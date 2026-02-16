@@ -201,12 +201,12 @@
 		localNumber = _localNumber;
 	}
 
-	// Compose full value from parts
+	// Compose full value from parts (strip only formatting chars, keep letters so they fail validation)
 	function composeValue(): string {
-		const digits = _localNumber.replace(/\D/g, "");
-		if (!digits) return "";
-		if (selectedCountry) return `+${selectedCountry.dialCode}${digits}`;
-		return digits;
+		const cleaned = _localNumber.replace(/[\s\-().\/]/g, "");
+		if (!cleaned) return "";
+		if (selectedCountry) return `+${selectedCountry.dialCode}${cleaned}`;
+		return cleaned;
 	}
 
 	// Sync internal -> external value
