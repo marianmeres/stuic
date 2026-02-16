@@ -23,7 +23,7 @@
 
 ```
 src/lib/
-├── components/     # 44 UI components
+├── components/     # 45 UI components
 ├── actions/        # 14 Svelte actions
 ├── utils/          # 42 utility modules
 ├── themes/         # 29 theme definitions (.ts) + generated CSS (css/)
@@ -74,7 +74,7 @@ src/lib/
 
 ### Domain Docs
 
-- [Components](./docs/domains/components.md) — 44 component directories, Props pattern, snippets
+- [Components](./docs/domains/components.md) — 45 component directories, Props pattern, snippets
 - [Theming](./docs/domains/theming.md) — CSS tokens, dark mode, themes
 - [Actions](./docs/domains/actions.md) — 14 Svelte directives
 - [Utils](./docs/domains/utils.md) — 42 utility modules

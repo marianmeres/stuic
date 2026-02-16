@@ -127,7 +127,7 @@ AppShell, Accordion, Backdrop, Modal, ModalDialog, Drawer, Collapsible, SlidingP
 
 ### Forms & Inputs
 
-FieldInput, FieldTextarea, FieldSelect, FieldCheckbox, FieldRadios, FieldFile, FieldAssets, FieldOptions, FieldKeyValues, FieldSwitch, FieldInputLocalized, FieldLikeButton, Fieldset
+FieldInput, FieldTextarea, FieldSelect, FieldCheckbox, FieldRadios, FieldFile, FieldAssets, FieldOptions, FieldKeyValues, FieldObject, FieldSwitch, FieldInputLocalized, FieldLikeButton, Fieldset, LoginForm, LoginFormModal
 
 ### Buttons & Controls
 
@@ -147,7 +147,7 @@ Avatar, Book, Carousel, Circle, AnimatedElipsis, H, IconSwap, Separator, ThemePr
 
 ### E-commerce
 
-Cart, Checkout (CheckoutProgress, CheckoutOrderSummary, CheckoutCartReview, CheckoutGuestForm, CheckoutLoginForm, CheckoutAddressForm, CheckoutDeliveryOptions, CheckoutOrderReview, CheckoutOrderConfirmation, CheckoutReviewStep, CheckoutShippingStep, CheckoutConfirmStep, CheckoutCompleteStep)
+Cart, Checkout (CheckoutProgress, CheckoutOrderSummary, CheckoutCartReview, CheckoutGuestForm, CheckoutLoginForm, CheckoutGuestOrLoginForm, CheckoutAddressForm, CheckoutDeliveryOptions, CheckoutOrderReview, CheckoutOrderConfirmation, CheckoutReviewStep, CheckoutShippingStep, CheckoutConfirmStep, CheckoutCompleteStep)
 
 ## Actions
 

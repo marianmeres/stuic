@@ -95,9 +95,9 @@ Semi-transparent overlay with escape key handling, focus trap, and body scroll l
 
 Expandable sections with exclusive or multi-open modes.
 
-| Prop   | Type      | Default | Description                       |
-| ------ | --------- | ------- | --------------------------------- |
-| `open`  | `boolean` | `false` | Bindable open state               |
+| Prop   | Type      | Default | Description         |
+| ------ | --------- | ------- | ------------------- |
+| `open` | `boolean` | `false` | Bindable open state |
 
 #### `WithSidePanel`
 
@@ -269,9 +269,82 @@ Multi-language input field.
 
 Toggle button styled as a "like" action.
 
+#### `FieldObject`
+
+Dual-mode JSON object editor with pretty-print and raw edit modes. Validates JSON syntax, supports recursive depth display, auto-grow textarea, and form submission via hidden input.
+
+| Prop       | Type                         | Default  | Description                    |
+| ---------- | ---------------------------- | -------- | ------------------------------ |
+| `value`    | `string`                     | `""`     | Bindable JSON string           |
+| `name`     | `string`                     | required | Input name for form submission |
+| `label`    | `SnippetWithId \| THC`       | —        | Label content                  |
+| `required` | `boolean`                    | `false`  | Required indicator             |
+| `disabled` | `boolean`                    | `false`  | Disable editing                |
+| `validate` | `boolean \| ValidateOptions` | —        | Enable validation              |
+
+```svelte
+<FieldObject bind:value={jsonStr} name="metadata" label="Metadata" />
+```
+
 #### `Fieldset`
 
 Form field grouping with legend.
+
+#### `LoginForm`
+
+Standalone login form with email/password fields, social login support, forgot password link, remember me checkbox, and client+server validation. Supports i18n via 16 translation keys.
+
+| Prop               | Type                         | Default  | Description                                |
+| ------------------ | ---------------------------- | -------- | ------------------------------------------ |
+| `formData`         | `LoginFormData`              | empty    | Bindable form data                         |
+| `onSubmit`         | `(data) => void`             | required | Submit callback                            |
+| `isSubmitting`     | `boolean`                    | `false`  | Disables CTA during submission             |
+| `errors`           | `LoginFormValidationError[]` | `[]`     | Field-specific server errors               |
+| `error`            | `string`                     | —        | General error (renders alert above form)   |
+| `onForgotPassword` | `() => void`                 | —        | Forgot password link (hidden if undefined) |
+| `showRememberMe`   | `boolean`                    | `true`   | Show remember me checkbox                  |
+| `compact`          | `boolean`                    | `false`  | Compact layout variant                     |
+| `submitButton`     | `Snippet`                    | —        | Custom CTA section                         |
+| `socialLogins`     | `Snippet`                    | —        | Social/OAuth buttons below form            |
+| `footer`           | `Snippet`                    | —        | Content below form (e.g., sign-up links)   |
+| `notifications`    | `NotificationsStack`         | —        | Route errors to notification system        |
+| `t`                | `TranslateFn`                | built-in | Translation function                       |
+
+```svelte
+<LoginForm
+	onSubmit={(data) => login(data)}
+	onForgotPassword={() => goto("/forgot-password")}
+>
+	{#snippet socialLogins()}
+		<Button variant="outline" onclick={loginWithGoogle}>Google</Button>
+	{/snippet}
+	{#snippet footer()}
+		<p>Don't have an account? <a href="/register">Sign up</a></p>
+	{/snippet}
+</LoginForm>
+```
+
+#### `LoginFormModal`
+
+Modal-wrapped login form with trigger support. Inherits all `LoginForm` props plus modal-specific options.
+
+| Prop         | Type                  | Default    | Description               |
+| ------------ | --------------------- | ---------- | ------------------------- |
+| `title`      | `string`              | `"Log In"` | Modal title               |
+| `visible`    | `boolean`             | `false`    | Bindable modal visibility |
+| `trigger`    | `Snippet<[{ open }]>` | —          | Optional trigger element  |
+| `classModal` | `string`              | —          | CSS class for Modal box   |
+| `noXClose`   | `boolean`             | `false`    | Hide close button         |
+
+**Methods:** `open(openerOrEvent?)`, `close()`
+
+```svelte
+<LoginFormModal onSubmit={handleLogin}>
+	{#snippet trigger({ open })}
+		<Button onclick={open}>Log In</Button>
+	{/snippet}
+</LoginFormModal>
+```
 
 ---
 
@@ -379,7 +452,7 @@ Shopping cart component with quantity controls, pricing, and summary. Supports i
 
 #### Checkout
 
-Multi-step checkout flow with 13 sub-components: 9 atomic building blocks and 4 composite step pages.
+Multi-step checkout flow with 14 sub-components: 10 atomic building blocks and 4 composite step pages.
 
 **Atomic Components:**
 
@@ -435,7 +508,7 @@ Guest checkout form with email, name, phone, and optional B2B fields.
 
 ##### `CheckoutLoginForm`
 
-Login form with email and password.
+Login form for checkout context. Wraps the standalone `LoginForm` component with checkout-specific i18n key mapping (`checkout.login.*` prefix).
 
 | Prop               | Type                                    | Default  | Description              |
 | ------------------ | --------------------------------------- | -------- | ------------------------ |
@@ -445,7 +518,24 @@ Login form with email and password.
 | `errors`           | `CheckoutValidationError[]`             | `[]`     | Field errors             |
 | `error`            | `string`                                | —        | General error message    |
 | `onForgotPassword` | `() => void`                            | —        | Forgot password callback |
+| `socialLogins`     | `Snippet`                               | —        | Social/OAuth buttons     |
 | `footer`           | `Snippet`                               | —        | Content below form       |
+
+##### `CheckoutGuestOrLoginForm`
+
+Composite component combining guest and login forms with multiple display modes and optional modal login.
+
+| Prop            | Type                                                    | Default    | Description                                |
+| --------------- | ------------------------------------------------------- | ---------- | ------------------------------------------ |
+| `guestForm`     | `object`                                                | —          | Guest form config (pass-through)           |
+| `loginForm`     | `object`                                                | —          | Login form config (pass-through)           |
+| `formMode`      | `"guest-only" \| "login-only" \| "tabbed" \| "stacked"` | `"tabbed"` | Display mode                               |
+| `activeTab`     | `"guest" \| "login"`                                    | `"guest"`  | Bindable active tab                        |
+| `loginModal`    | `object`                                                | —          | Open LoginFormModal instead of inline form |
+| `heading`       | `Snippet \| string`                                     | —          | Heading above forms                        |
+| `notifications` | `NotificationsStack`                                    | —          | Notifications integration                  |
+
+When `loginModal` is provided, clicking the login tab opens a `LoginFormModal` instead of showing an inline login form. Accepts config: `title`, `classModal`, `classInner`, `classForm`, `noXClose`, `onClose`, `showRememberMe`.
 
 ##### `CheckoutAddressForm`
 
@@ -705,27 +795,27 @@ Interactive book/flipbook reader with 3D CSS page flip animation, zoom, pan, swi
 
 SVG-based circular progress indicator with configurable stroke width and rotation.
 
-| Prop          | Type     | Default | Description                     |
-| ------------- | -------- | ------- | ------------------------------- |
-| `value`       | `number` | `0`     | Progress value (0-100)          |
-| `strokeWidth` | `number` | `8`     | Stroke width                    |
+| Prop          | Type     | Default | Description            |
+| ------------- | -------- | ------- | ---------------------- |
+| `value`       | `number` | `0`     | Progress value (0-100) |
+| `strokeWidth` | `number` | `8`     | Stroke width           |
 
 #### `H`
 
 Semantic heading element (h1-h6) with separate visual and semantic levels.
 
-| Prop          | Type     | Default     | Description                          |
-| ------------- | -------- | ----------- | ------------------------------------ |
-| `level`       | `1-6`   | `2`         | Semantic heading level               |
-| `renderLevel` | `1-6`   | `undefined` | Visual heading level (overrides visual size) |
+| Prop          | Type  | Default     | Description                                  |
+| ------------- | ----- | ----------- | -------------------------------------------- |
+| `level`       | `1-6` | `2`         | Semantic heading level                       |
+| `renderLevel` | `1-6` | `undefined` | Visual heading level (overrides visual size) |
 
 #### `Separator`
 
 Horizontal or vertical separator line with optional decorative `aria-hidden` mode.
 
-| Prop          | Type                           | Default        | Description           |
-| ------------- | ------------------------------ | -------------- | --------------------- |
-| `orientation` | `"horizontal" \| "vertical"`   | `"horizontal"` | Separator orientation |
+| Prop          | Type                         | Default        | Description           |
+| ------------- | ---------------------------- | -------------- | --------------------- |
+| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Separator orientation |
 
 #### `ColorScheme`
 
@@ -1329,8 +1419,9 @@ Naming pattern: `{ComponentName}Props`
 
 Additional exported types include:
 
+- `LoginFormData`, `LoginFormValidationError` — Login form types
 - `CartComponentItem`, `CartVariant` — Cart component types
-- `CheckoutStep`, `CheckoutAddressData`, `CheckoutCustomerFormData`, `CheckoutLoginFormData`, `CheckoutOrderLineItem`, `CheckoutOrderTotals`, `CheckoutDeliveryOption`, `CheckoutDeliverySnapshot`, `CheckoutOrderData`, `CheckoutValidationError` — Checkout types
+- `CheckoutStep`, `CheckoutAddressData`, `CheckoutCustomerFormData`, `CheckoutLoginFormData`, `CheckoutOrderLineItem`, `CheckoutOrderTotals`, `CheckoutDeliveryOption`, `CheckoutDeliverySnapshot`, `CheckoutOrderData`, `CheckoutValidationError`, `CheckoutFormMode` — Checkout types
 - `DataTableColumn` — DataTable column definition type
 - `FieldAsset`, `FieldAssetUrlObj`, `FieldAssetWithBlobUrl` — Asset field types
 - `FieldOption` — Option type for FieldOptions
@@ -1417,6 +1508,7 @@ Each component defines customization tokens. Override globally in `:root {}` or 
 | Skeleton           | `--stuic-skeleton-*`            | `bg`, `bg-highlight`, `duration`                                                                                                                                                                                              |
 | Spotlight          | `--stuic-spotlight-*`           | `backdrop-bg`, `annotation-bg`, `annotation-text`, `annotation-border`                                                                                                                                                        |
 | Cart               | `--stuic-cart-*`                | `gap`, `item-padding`, `item-radius`, `item-border-color`, `item-bg`, `thumbnail-size`, `quantity-border-color`, `remove-color`, `summary-border-color`, `compact-max-height`, `transition`                                   |
+| LoginForm          | `--stuic-login-form-*`          | `gap`, `gap-row`, `forgot-margin-y`, `forgot-margin-x`, `social-margin-top`, `social-gap`, `social-divider-color`, `social-divider-font-size`, `social-divider-margin-bottom`                                                 |
 | Checkout           | `--stuic-checkout-*`            | `input-border`, `input-bg`, `input-focus-ring`, `input-radius`, `card-border`, `card-bg`, `card-radius`, `step-gap`, `progress-*`, `summary-*`, `guest-*`, `login-*`, `address-*`, `delivery-*`, `review-*`, `confirmation-*` |
 
 ### CSS Variable Naming Convention

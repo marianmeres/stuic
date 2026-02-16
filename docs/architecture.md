@@ -32,7 +32,7 @@ Layer 3: Internal Vars (--_bg, --_text, --_border)
 
 ```
 src/lib/
-├── components/           # 44 UI components
+├── components/           # 45 UI components
 │   └── {Name}/
 │       ├── {Name}.svelte     # Main component
 │       ├── index.ts          # Exports

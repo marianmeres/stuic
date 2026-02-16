@@ -2,29 +2,29 @@
 
 ## Overview
 
-44 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
+45 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
 ### Layout
 
-| Component                | Purpose                                  |
-| ------------------------ | ---------------------------------------- |
+| Component                | Purpose                                            |
+| ------------------------ | -------------------------------------------------- |
 | AppShell, AppShellSimple | Page layouts with header/sidebar/content           |
-| Modal, ModalDialog       | Overlay containers                                  |
-| Drawer                   | Side panel overlay                                  |
-| Backdrop                 | Semi-transparent overlay with escape/focus trap     |
-| Collapsible              | Expandable sections                                 |
-| Accordion                | Exclusive/multi-open expandable sections            |
-| SlidingPanels            | Panel transitions                                   |
-| TabbedMenu               | Tab navigation                                      |
-| Nav                      | Navigation wrapper                                  |
-| WithSidePanel            | Two-column layout with collapsible/resizable panel  |
+| Modal, ModalDialog       | Overlay containers                                 |
+| Drawer                   | Side panel overlay                                 |
+| Backdrop                 | Semi-transparent overlay with escape/focus trap    |
+| Collapsible              | Expandable sections                                |
+| Accordion                | Exclusive/multi-open expandable sections           |
+| SlidingPanels            | Panel transitions                                  |
+| TabbedMenu               | Tab navigation                                     |
+| Nav                      | Navigation wrapper                                 |
+| WithSidePanel            | Two-column layout with collapsible/resizable panel |
 
 ### Interactive
 
-| Component        | Purpose                           |
-| ---------------- | --------------------------------- |
+| Component            | Purpose                                     |
+| -------------------- | ------------------------------------------- |
 | Button               | Actions with intent/variant/size            |
 | ButtonGroupRadio     | Toggle group (single selection)             |
 | Switch               | Boolean toggle                              |
@@ -48,12 +48,14 @@
 
 ### Form
 
-| Component                             | Purpose                    |
-| ------------------------------------- | -------------------------- |
-| Input (FieldInput, FieldSelect, etc.) | Form fields                |
-| Fieldset                              | Field grouping with legend |
-| FieldKeyValues                        | Key-value pair editor      |
-| FieldAssets                           | File/asset management      |
+| Component                             | Purpose                                           |
+| ------------------------------------- | ------------------------------------------------- |
+| Input (FieldInput, FieldSelect, etc.) | Form fields                                       |
+| FieldObject                           | Dual-mode JSON object editor (pretty-print/raw)   |
+| Fieldset                              | Field grouping with legend                        |
+| FieldKeyValues                        | Key-value pair editor                             |
+| FieldAssets                           | File/asset management                             |
+| LoginForm, LoginFormModal             | Standalone login form with optional modal variant |
 
 ### Display
 
@@ -77,10 +79,88 @@
 
 ### E-commerce
 
-| Component | Purpose                                                                                   |
-| --------- | ----------------------------------------------------------------------------------------- |
+| Component | Purpose                                                                                  |
+| --------- | ---------------------------------------------------------------------------------------- |
 | Cart      | Shopping cart with quantity controls, pricing, summary; default/compact/summary variants |
-| Checkout  | Multi-step checkout flow (14 exported sub-components: atomic + composite steps)            |
+| Checkout  | Multi-step checkout flow (14 exported sub-components: atomic + composite steps)          |
+
+---
+
+## LoginForm
+
+Standalone login form with optional modal variant. Supports social logins, forgot password, remember me, client+server validation, i18n, and notifications integration.
+
+### Exports
+
+| Export                     | Kind      | Description                                   |
+| -------------------------- | --------- | --------------------------------------------- |
+| `LoginForm`                | component | Main login form                               |
+| `LoginFormModal`           | component | Modal-wrapped login form with trigger support |
+| `LoginFormProps`           | type      | Props for LoginForm                           |
+| `LoginFormModalProps`      | type      | Props for LoginFormModal                      |
+| `LoginFormData`            | type      | `{ email, password, rememberMe }`             |
+| `LoginFormValidationError` | type      | `{ field, message }`                          |
+
+### Key Props (LoginForm)
+
+| Prop               | Type                         | Default  | Description                                |
+| ------------------ | ---------------------------- | -------- | ------------------------------------------ |
+| `formData`         | `LoginFormData`              | empty    | Bindable form data                         |
+| `onSubmit`         | `(data) => void`             | required | Submit callback                            |
+| `isSubmitting`     | `boolean`                    | `false`  | Disables CTA                               |
+| `errors`           | `LoginFormValidationError[]` | `[]`     | Field-specific server errors               |
+| `error`            | `string`                     | —        | General error (renders alert above form)   |
+| `onForgotPassword` | `() => void`                 | —        | Forgot password link (hidden if undefined) |
+| `showRememberMe`   | `boolean`                    | `true`   | Show remember me checkbox                  |
+| `submitButton`     | `Snippet`                    | —        | Custom CTA section                         |
+| `socialLogins`     | `Snippet`                    | —        | Social/OAuth buttons below form            |
+| `footer`           | `Snippet`                    | —        | Content below form (e.g., sign-up links)   |
+| `notifications`    | `NotificationsStack`         | —        | Route errors to notification system        |
+| `compact`          | `boolean`                    | `false`  | Compact layout (remember+submit in 1 row)  |
+| `t`                | `TranslateFn`                | built-in | Translation function                       |
+
+### Key Props (LoginFormModal)
+
+Inherits all LoginForm props, plus:
+
+| Prop         | Type                  | Default    | Description               |
+| ------------ | --------------------- | ---------- | ------------------------- |
+| `title`      | `string`              | `"Log In"` | Modal title               |
+| `visible`    | `boolean`             | `false`    | Bindable modal visibility |
+| `trigger`    | `Snippet<[{ open }]>` | —          | Optional trigger element  |
+| `classModal` | `string`              | —          | CSS class for Modal box   |
+| `noXClose`   | `boolean`             | `false`    | Hide close button         |
+
+### CSS Tokens
+
+Prefix: `--stuic-login-form-*`
+
+`gap`, `gap-row`, `forgot-margin-y`, `forgot-margin-x`, `social-margin-top`, `social-gap`, `social-divider-color`, `social-divider-font-size`, `social-divider-margin-bottom`
+
+### i18n
+
+16 translation keys with `login_form.*` prefix covering labels, placeholders, validation messages, and social divider text.
+
+---
+
+## FieldObject
+
+Dual-mode JSON object editor with pretty-print and raw edit modes.
+
+### Key Props
+
+| Prop       | Type                         | Default  | Description                    |
+| ---------- | ---------------------------- | -------- | ------------------------------ |
+| `value`    | `string`                     | —        | Bindable JSON string           |
+| `name`     | `string`                     | required | Input name for form submission |
+| `label`    | `SnippetWithId \| THC`       | —        | Label content                  |
+| `required` | `boolean`                    | `false`  | Required indicator             |
+| `disabled` | `boolean`                    | `false`  | Disable editing                |
+| `validate` | `boolean \| ValidateOptions` | —        | Enable validation              |
+
+Features: pretty-print display with recursive depth, edit mode with auto-grow textarea, JSON syntax validation on apply, hidden input for form submission, responsive nested rendering.
+
+Exported from Input: `FieldObject`, `FieldObjectProps`.
 
 ---
 
@@ -91,18 +171,18 @@ CSS is split into modular partials (`_*.css`) imported by `index.css`.
 
 ### Atomic Components
 
-| Component                  | Purpose                                                         | Key Props                                                  |
-| -------------------------- | --------------------------------------------------------------- | ---------------------------------------------------------- |
-| CheckoutProgress           | Step indicator with navigation                                  | `currentStep`, `steps`, `onNavigate`, `separator`          |
-| CheckoutOrderSummary       | Price totals display (subtotal, shipping, tax, discount, total) | `totals`, `formatPrice`, `row`, `extraRows`                |
-| CheckoutCartReview         | Readonly cart display with summary                              | `items`, `onEditCart`, `thumbnail`, `title`                 |
-| CheckoutGuestForm          | Guest checkout form (email, name, phone, B2B fields)            | `formData`, `onSubmit`, `showB2bFields`, `fields`          |
-| CheckoutLoginForm          | Login form (email + password)                                   | `formData`, `onSubmit`, `onForgotPassword`, `footer`       |
-| CheckoutGuestOrLoginForm   | Composite guest/login with tabbed/stacked/single modes          | `guestForm`, `loginForm`, `formMode`, `activeTab`          |
-| CheckoutAddressForm        | Address input fieldset                                          | `address`, `label`, `requiredFields`, `countryField`       |
-| CheckoutDeliveryOptions    | Delivery method radio selection with free shipping logic        | `options`, `selectedId`, `onSelect`, `subtotal`            |
-| CheckoutOrderReview        | Full order review with edit callbacks per section               | `order`, `onEditItems`, `onEditShippingAddress`            |
-| CheckoutOrderConfirmation  | Order success screen with details                               | `order`, `orderId`, `onContinueShopping`                   |
+| Component                 | Purpose                                                         | Key Props                                                       |
+| ------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------- |
+| CheckoutProgress          | Step indicator with navigation                                  | `currentStep`, `steps`, `onNavigate`, `separator`               |
+| CheckoutOrderSummary      | Price totals display (subtotal, shipping, tax, discount, total) | `totals`, `formatPrice`, `row`, `extraRows`                     |
+| CheckoutCartReview        | Readonly cart display with summary                              | `items`, `onEditCart`, `thumbnail`, `title`                     |
+| CheckoutGuestForm         | Guest checkout form (email, name, phone, B2B fields)            | `formData`, `onSubmit`, `showB2bFields`, `fields`               |
+| CheckoutLoginForm         | Login form (wraps standalone LoginForm with checkout i18n)      | `formData`, `onSubmit`, `onForgotPassword`, `footer`            |
+| CheckoutGuestOrLoginForm  | Composite guest/login with tabbed/stacked/single modes + modal  | `guestForm`, `loginForm`, `formMode`, `activeTab`, `loginModal` |
+| CheckoutAddressForm       | Address input fieldset                                          | `address`, `label`, `requiredFields`, `countryField`            |
+| CheckoutDeliveryOptions   | Delivery method radio selection with free shipping logic        | `options`, `selectedId`, `onSelect`, `subtotal`                 |
+| CheckoutOrderReview       | Full order review with edit callbacks per section               | `order`, `onEditItems`, `onEditShippingAddress`                 |
+| CheckoutOrderConfirmation | Order success screen with details                               | `order`, `orderId`, `onContinueShopping`                        |
 
 **Internal (not exported):** `CheckoutSectionHeader` — reusable section header with left/right layout.
 
@@ -110,25 +190,27 @@ CSS is split into modular partials (`_*.css`) imported by `index.css`.
 
 All step components support `hideProgress?: boolean` to hide the built-in progress indicator (e.g. when rendered externally).
 
-| Component            | Purpose                                           | Combines                                                      |
-| -------------------- | ------------------------------------------------- | ------------------------------------------------------------- |
-| CheckoutReviewStep   | Cart review + guest/login forms (2-column layout) | CartReview + GuestOrLoginForm (tabbed/stacked/single mode)    |
-| CheckoutShippingStep | Shipping + billing addresses + delivery selection | AddressForm (×2) + DeliveryOptions + OrderSummary sidebar     |
-| CheckoutConfirmStep  | Order review + place order CTA                    | OrderReview + OrderSummary sidebar + validation errors        |
-| CheckoutCompleteStep | Order confirmation with loading/error states      | Progress + OrderConfirmation (or error/loading fallback)      |
+| Component            | Purpose                                           | Combines                                                   |
+| -------------------- | ------------------------------------------------- | ---------------------------------------------------------- |
+| CheckoutReviewStep   | Cart review + guest/login forms (2-column layout) | CartReview + GuestOrLoginForm (tabbed/stacked/single mode) |
+| CheckoutShippingStep | Shipping + billing addresses + delivery selection | AddressForm (×2) + DeliveryOptions + OrderSummary sidebar  |
+| CheckoutConfirmStep  | Order review + place order CTA                    | OrderReview + OrderSummary sidebar + validation errors     |
+| CheckoutCompleteStep | Order confirmation with loading/error states      | Progress + OrderConfirmation (or error/loading fallback)   |
 
 ### CheckoutGuestOrLoginForm
 
 Composite component combining guest and login forms with multiple display modes:
 
-| FormMode       | Behavior                                                     |
-| -------------- | ------------------------------------------------------------ |
-| `"tabbed"`     | Pill-style tab switcher between guest/login (default)        |
-| `"stacked"`    | Both forms vertically stacked with "or" divider              |
-| `"guest-only"` | Only guest form                                              |
-| `"login-only"` | Only login form                                              |
+| FormMode       | Behavior                                              |
+| -------------- | ----------------------------------------------------- |
+| `"tabbed"`     | Pill-style tab switcher between guest/login (default) |
+| `"stacked"`    | Both forms vertically stacked with "or" divider       |
+| `"guest-only"` | Only guest form                                       |
+| `"login-only"` | Only login form                                       |
 
-Key props: `guestForm`, `loginForm` (pass-through config objects), `activeTab` (bindable: `"guest"` | `"login"`), `formMode`, `heading`, `hLevel`.
+Key props: `guestForm`, `loginForm` (pass-through config objects), `activeTab` (bindable: `"guest"` | `"login"`), `formMode`, `heading`, `hLevel`, `loginModal`.
+
+`loginModal` prop: When provided, clicking the login tab opens a `LoginFormModal` instead of showing an inline login form. Accepts modal config: `title`, `classModal`, `classInner`, `classForm`, `noXClose`, `onClose`, `showRememberMe`.
 
 Exported type: `CheckoutFormMode` (`"guest-only" | "login-only" | "tabbed" | "stacked"`).
 
@@ -286,10 +368,11 @@ Components use private CSS vars (`--_*`) set by intent/variant:
 
 ## Key Files
 
-| File                         | Purpose                                      |
-| ---------------------------- | -------------------------------------------- |
-| src/lib/components/Button/   | Reference implementation                     |
-| src/lib/components/Modal/    | Complex component example                    |
-| src/lib/components/Input/    | Form field patterns                          |
-| src/lib/components/Checkout/ | E-commerce checkout flow (14 exported sub-components) |
-| src/lib/index.ts             | All component exports                        |
+| File                          | Purpose                                               |
+| ----------------------------- | ----------------------------------------------------- |
+| src/lib/components/Button/    | Reference implementation                              |
+| src/lib/components/Modal/     | Complex component example                             |
+| src/lib/components/Input/     | Form field patterns (incl. FieldObject)               |
+| src/lib/components/LoginForm/ | Standalone login form + modal variant                 |
+| src/lib/components/Checkout/  | E-commerce checkout flow (14 exported sub-components) |
+| src/lib/index.ts              | All component exports                                 |
