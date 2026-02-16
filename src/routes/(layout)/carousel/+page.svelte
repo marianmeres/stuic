@@ -259,6 +259,50 @@
 
 	<hr class="border-neutral-200 dark:border-neutral-700" />
 
+	<!-- Arrow Navigation -->
+	<section>
+		<h2 class="text-xl font-semibold mb-2">Arrow Navigation</h2>
+		<p class="text-sm text-neutral-500 mb-4">
+			Floating prev/next arrow buttons overlaid on left/right edges. Prev disabled at first
+			item, next disabled at last (no loop).
+		</p>
+		<div
+			class="border rounded-lg p-4"
+			style="--stuic-carousel-item-bg: var(--stuic-color-surface); --stuic-carousel-item-border-width: 1px; --stuic-carousel-item-border: var(--stuic-color-border);"
+		>
+			<Carousel
+				items={basicItems}
+				arrows
+				trackActive
+				classItem="p-8 text-center text-2xl font-bold"
+			/>
+		</div>
+	</section>
+
+	<hr class="border-neutral-200 dark:border-neutral-700" />
+
+	<!-- Arrow Navigation with Loop -->
+	<section>
+		<h2 class="text-xl font-semibold mb-2">Arrow Navigation with Loop</h2>
+		<p class="text-sm text-neutral-500 mb-4">
+			Arrows with loop enabled — both buttons always active, wraps around.
+		</p>
+		<div
+			class="border rounded-lg p-4"
+			style="--stuic-carousel-item-bg: var(--stuic-color-surface); --stuic-carousel-item-border-width: 1px; --stuic-carousel-item-border: var(--stuic-color-border);"
+		>
+			<Carousel
+				items={basicItems}
+				arrows
+				trackActive
+				loop
+				classItem="p-8 text-center text-2xl font-bold"
+			/>
+		</div>
+	</section>
+
+	<hr class="border-neutral-200 dark:border-neutral-700" />
+
 	<!-- HTML Content (THC) -->
 	<section>
 		<h2 class="text-xl font-semibold mb-2">HTML Content (THC)</h2>

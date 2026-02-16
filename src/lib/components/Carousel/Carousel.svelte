@@ -72,6 +72,12 @@
 		/** Custom class for active item */
 		classItemActive?: string;
 
+		/** Show prev/next arrow buttons overlaid on left/right edges */
+		arrows?: boolean;
+
+		/** Custom class for arrow buttons */
+		classArrow?: string;
+
 		/** Skip all default styling */
 		unstyled?: boolean;
 
@@ -90,6 +96,11 @@
 	import { ItemCollection } from "@marianmeres/item-collection";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import Thc from "../Thc/Thc.svelte";
+	import Button from "../Button/Button.svelte";
+	import {
+		iconArrowLeft as iconPrevious,
+		iconArrowRight as iconNext,
+	} from "$lib/icons/index.js";
 
 	let {
 		items,
@@ -111,6 +122,8 @@
 		classTrack,
 		classItem,
 		classItemActive,
+		arrows = false,
+		classArrow,
 		unstyled = false,
 		el = $bindable(),
 		onActiveChange,
@@ -367,5 +380,47 @@
 				</div>
 			{/each}
 		</div>
+
+		{#if arrows && coll.size > 1}
+			<div
+				class="absolute inset-0 flex items-center justify-between pointer-events-none"
+			>
+				<Button
+					class={twMerge(
+						"stuic-carousel-arrow pointer-events-auto p-0! ml-4",
+						classArrow
+					)}
+					onclick={() => {
+						coll.setActivePrevious();
+						scrollActiveIntoView();
+					}}
+					type="button"
+					disabled={!loop && coll.activeIndex === 0}
+					aspect1
+					variant="soft"
+					roundedFull
+				>
+					{@html iconPrevious({ size: 24 })}
+				</Button>
+
+				<Button
+					class={twMerge(
+						"stuic-carousel-arrow pointer-events-auto p-0! mr-4",
+						classArrow
+					)}
+					onclick={() => {
+						coll.setActiveNext();
+						scrollActiveIntoView();
+					}}
+					type="button"
+					disabled={!loop && coll.activeIndex === coll.size - 1}
+					aspect1
+					variant="soft"
+					roundedFull
+				>
+					{@html iconNext({ size: 24 })}
+				</Button>
+			</div>
+		{/if}
 	</div>
 {/if}
