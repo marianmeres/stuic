@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { createClog } from "@marianmeres/clog";
 	import Button from "../../../lib/components/Button/Button.svelte";
 	import { Avatar, iconUser, iconAlertInfo } from "../../../lib/index.js";
 
+	const clog = createClog("Avatar");
 	let clickCount = $state(0);
 
 	// Sample users to demonstrate autoColor with hashSource
@@ -211,6 +213,60 @@
 		onclick={() => clickCount++}
 	/>
 	<Avatar autoColor hashSource="icon-click" onclick={() => clickCount++} />
+</div>
+
+<hr class="my-6" />
+
+<h2 class="text-lg font-semibold mb-4">Padded (Larger Hit Area)</h2>
+<p class="text-sm text-neutral-500 mb-4">
+	The clickable area is larger than the visible circle. Dotted border shows the actual
+	button boundary.
+</p>
+<div class="flex items-center gap-4">
+	<div class="text-center">
+		<Avatar padding="4px" class="border border-dashed border-neutral-400" />
+		<div class="text-xs mt-1">4px</div>
+	</div>
+	<div class="text-center">
+		<Avatar
+			padding="6px"
+			initials="MM"
+			autoColor
+			hashSource="padded-demo"
+			class="border border-dashed border-neutral-400"
+		/>
+		<div class="text-xs mt-1">6px autoColor</div>
+	</div>
+	<div class="text-center">
+		<Avatar
+			padding="8px"
+			src={validPhotoUrl}
+			alt="Padded photo"
+			size="lg"
+			class="border border-dashed border-neutral-400"
+		/>
+		<div class="text-xs mt-1">8px photo</div>
+	</div>
+	<div class="text-center">
+		<Avatar
+			padding="6px"
+			initials="Click"
+			autoColor
+			onclick={() => clickCount++}
+			class="border border-dashed border-neutral-400"
+		/>
+		<div class="text-xs mt-1">6px clickable</div>
+	</div>
+	<div class="text-center">
+		<Avatar
+			padding="4px"
+			initials="BG"
+			bg="bg-blue-500"
+			textColor="text-white"
+			class="border border-dashed border-neutral-400"
+		/>
+		<div class="text-xs mt-1">4px custom bg</div>
+	</div>
 </div>
 
 <hr class="my-6" />

@@ -31,6 +31,8 @@
 		textColor?: string;
 		/** Generate deterministic pastel colors from hashSource/initials */
 		autoColor?: boolean;
+		/** CSS padding value for transparent space around the visual circle (e.g., "4px", "0.25rem") */
+		padding?: string;
 		/** CSS class override */
 		class?: string;
 		classInner?: string;
@@ -56,6 +58,7 @@
 		onclick,
 		bg,
 		textColor,
+		padding,
 		autoColor = false,
 		class: classProp,
 		classInner,
@@ -170,11 +173,17 @@
 		autoColor ? generateAvatarColors(hashSource || initialsProp || "") : null
 	);
 
-	let style = $derived(
+	let colorStyle = $derived(
 		autoColor && colors
 			? `background-color: ${colors.bg}; color: ${colors.text};`
 			: undefined
 	);
+
+	// When padded: colors go on inner element; otherwise on outer
+	let outerStyle = $derived(
+		padding ? `--stuic-avatar-padding: ${padding}` : colorStyle
+	);
+	let innerStyle = $derived(padding ? colorStyle : undefined);
 
 	// Build class string - base class for CSS targeting, allow user overrides via classProp
 	let baseClass = $derived(
@@ -182,14 +191,22 @@
 			"stuic-avatar",
 			// Custom size classes when not using preset (preset sizes handled by data-size in CSS)
 			!isPresetSize(size) && size,
-			// User-provided Tailwind overrides for colors (only when not using autoColor)
-			!autoColor && bg,
-			!autoColor && textColor,
+			// User-provided Tailwind overrides for colors (only on outer when NOT padded)
+			!autoColor && !padding && bg,
+			!autoColor && !padding && textColor,
 			classProp
 		)
 	);
 
-	let _classInner = $derived(twMerge("inline-block", classInner));
+	let _classInner = $derived(
+		twMerge(
+			padding ? "stuic-avatar-inner" : "inline-block",
+			// Color classes move to inner when padded
+			padding && !autoColor && bg,
+			padding && !autoColor && textColor,
+			classInner
+		)
+	);
 
 	function handleImageError() {
 		imageError = true;
@@ -201,12 +218,13 @@
 		bind:this={el}
 		type="button"
 		class={baseClass}
-		{style}
+		style={outerStyle}
 		{onclick}
 		data-size={isPresetSize(size) ? size : undefined}
 		data-interactive="true"
+		data-padded={padding ? "" : undefined}
 	>
-		<span class={_classInner}>
+		<span class={_classInner} style={innerStyle}>
 			{#if renderMode === "photo"}
 				<img {src} {alt} class="size-full object-cover" onerror={handleImageError} />
 			{:else if renderMode === "initials"}
@@ -220,10 +238,11 @@
 	<div
 		bind:this={el}
 		class={baseClass}
-		{style}
+		style={outerStyle}
 		data-size={isPresetSize(size) ? size : undefined}
+		data-padded={padding ? "" : undefined}
 	>
-		<span class={_classInner}>
+		<span class={_classInner} style={innerStyle}>
 			{#if renderMode === "photo"}
 				<img {src} {alt} class="size-full object-cover" onerror={handleImageError} />
 			{:else if renderMode === "initials"}

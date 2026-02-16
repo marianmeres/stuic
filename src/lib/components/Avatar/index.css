@@ -127,4 +127,28 @@
 		outline: var(--stuic-avatar-ring-width) solid var(--stuic-avatar-ring-color);
 		outline-offset: var(--stuic-avatar-ring-offset);
 	}
+
+	/* ============================================================================
+	   PADDED MODE
+	   When data-padded is present, the visual circle shifts to the inner element.
+	   The outer element becomes transparent with padding, creating a larger tap target.
+	   ============================================================================ */
+
+	.stuic-avatar[data-padded] {
+		padding: var(--stuic-avatar-padding);
+		background: transparent;
+		overflow: visible;
+	}
+
+	.stuic-avatar[data-padded] > .stuic-avatar-inner {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		height: 100%;
+		border-radius: var(--stuic-avatar-radius);
+		background: var(--stuic-avatar-bg);
+		color: var(--stuic-avatar-fg);
+		overflow: hidden;
+	}
 }
