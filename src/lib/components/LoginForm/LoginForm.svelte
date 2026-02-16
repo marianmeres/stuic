@@ -173,6 +173,7 @@
 		label={t("login_form.email_label")}
 		type="email"
 		placeholder={t("login_form.email_placeholder")}
+		autocomplete="email"
 		required
 		name="login-email"
 		labelLeftBreakpoint={0}
@@ -189,6 +190,7 @@
 	<FieldInput
 		bind:value={formData.password}
 		label={t("login_form.password_label")}
+		autocomplete="current-password"
 		type="password"
 		placeholder={t("login_form.password_placeholder")}
 		required
