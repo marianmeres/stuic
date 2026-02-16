@@ -189,7 +189,7 @@
 		)
 	);
 
-	let _classInner = $derived(twMerge("", classInner));
+	let _classInner = $derived(twMerge("inline-block", classInner));
 
 	function handleImageError() {
 		imageError = true;

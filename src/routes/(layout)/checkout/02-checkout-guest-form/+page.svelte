@@ -123,6 +123,10 @@
 			{b2bExpanded}
 			fields={fieldsConfig}
 			errors={externalErrorsComputed}
+			phoneFieldProps={{
+				defaultCountry: "SK",
+				preferredCountries: ["SK", "CZ", "AT", "DE"],
+			}}
 		/>
 	</div>
 

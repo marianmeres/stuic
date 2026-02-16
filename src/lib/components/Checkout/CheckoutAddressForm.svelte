@@ -6,6 +6,7 @@
 		CheckoutAddressData,
 		CheckoutValidationError,
 	} from "./_internal/checkout-types.js";
+	import type { Props as FieldPhoneNumberProps } from "../Input/FieldPhoneNumber.svelte";
 
 	export interface Props extends Omit<HTMLAttributes<HTMLFieldSetElement>, "children"> {
 		/** Bindable address data. Default: createEmptyAddress() */
@@ -59,6 +60,9 @@
 			]
 		>;
 
+		/** Extra props forwarded to the internal FieldPhoneNumber component. */
+		phoneFieldProps?: Partial<FieldPhoneNumberProps>;
+
 		t?: TranslateFn;
 		unstyled?: boolean;
 		class?: string;
@@ -71,6 +75,8 @@
 	import { t_default } from "./_internal/checkout-i18n-defaults.js";
 	import { createEmptyAddress } from "./_internal/checkout-utils.js";
 	import FieldInput from "../Input/FieldInput.svelte";
+	import FieldPhoneNumber from "../Input/FieldPhoneNumber.svelte";
+	import { validatePhoneNumber } from "../Input/phone-validation.js";
 
 	const DEFAULT_REQUIRED = ["name", "street", "city", "postal_code", "country"];
 
@@ -81,6 +87,7 @@
 		fields,
 		requiredFields = DEFAULT_REQUIRED,
 		countryField,
+		phoneFieldProps,
 		t: tProp,
 		unstyled = false,
 		class: classProp,
@@ -229,21 +236,20 @@
 
 	<!-- Phone (full width, block label) -->
 	{#if fields?.phone !== false}
-		<!-- svelte-ignore binding_property_non_reactive -->
-		<FieldInput
-			bind:value={address.phone}
+		<FieldPhoneNumber
+			value={address.phone ?? ""}
+			onChange={(v) => { address.phone = v; }}
 			label={t("checkout.address.phone_label")}
-			type="tel"
 			placeholder={t("checkout.address.phone_placeholder")}
 			required={isRequired("phone")}
 			name="{label}-phone"
-			id="{label}-phone"
 			labelLeftBreakpoint={0}
 			validate={{
 				customValidator(val) {
-					return fieldError("phone") || "";
+					return fieldError("phone") || validatePhoneNumber(val) || "";
 				},
 			}}
+			{...phoneFieldProps}
 		/>
 	{/if}
 </fieldset>

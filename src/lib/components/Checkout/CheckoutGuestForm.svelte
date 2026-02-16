@@ -7,6 +7,7 @@
 		CheckoutValidationError,
 	} from "./_internal/checkout-types.js";
 	import type { NotificationsStack } from "../Notifications/notifications-stack.svelte.js";
+	import type { Props as FieldPhoneNumberProps } from "../Input/FieldPhoneNumber.svelte";
 
 	export interface Props extends Omit<HTMLAttributes<HTMLFormElement>, "children"> {
 		/** Bindable form data. Default: createEmptyCustomerFormData() */
@@ -39,6 +40,9 @@
 			tax_id?: boolean;
 			vat_number?: boolean;
 		};
+
+		/** Extra props forwarded to the internal FieldPhoneNumber component. */
+		phoneFieldProps?: Partial<FieldPhoneNumberProps>;
 
 		/** Override the CTA button label. Takes precedence over i18n. */
 		submitLabel?: string;
@@ -74,6 +78,7 @@
 	} from "./_internal/checkout-utils.js";
 	import Button from "../Button/Button.svelte";
 	import FieldInput from "../Input/FieldInput.svelte";
+	import FieldPhoneNumber from "../Input/FieldPhoneNumber.svelte";
 
 	let {
 		formData = $bindable(createEmptyCustomerFormData()),
@@ -84,6 +89,7 @@
 		showB2bFields = true,
 		b2bExpanded = false,
 		fields,
+		phoneFieldProps,
 		submitLabel,
 		submittingLabel,
 		submitButton,
@@ -195,13 +201,13 @@
 	<!-- Phone -->
 	{#if fields?.phone !== false}
 		<!-- svelte-ignore binding_property_non_reactive -->
-		<FieldInput
+		<FieldPhoneNumber
 			bind:value={formData.phone}
 			label={t("checkout.guest.phone_label")}
-			type="tel"
 			placeholder={t("checkout.guest.phone_placeholder")}
 			name="checkout-guest-phone"
 			labelLeftBreakpoint={0}
+			{...phoneFieldProps}
 		/>
 	{/if}
 

@@ -139,7 +139,16 @@
 
 	<div class="max-w-full">
 		{#if useCustomCountry}
-			<CheckoutAddressForm bind:address label="shipping" {errors} fields={fieldsConfig}>
+			<CheckoutAddressForm
+				bind:address
+				label="shipping"
+				{errors}
+				fields={fieldsConfig}
+				phoneFieldProps={{
+					defaultCountry: "SK",
+					preferredCountries: ["SK", "CZ", "AT", "DE"],
+				}}
+			>
 				{#snippet countryField({ value, onchange, error, label: fieldLabel, id })}
 					<FieldSelect
 						options={COUNTRIES}
@@ -153,7 +162,16 @@
 				{/snippet}
 			</CheckoutAddressForm>
 		{:else}
-			<CheckoutAddressForm bind:address label="shipping" {errors} fields={fieldsConfig} />
+			<CheckoutAddressForm
+				bind:address
+				label="shipping"
+				{errors}
+				fields={fieldsConfig}
+				phoneFieldProps={{
+					defaultCountry: "SK",
+					preferredCountries: ["SK", "CZ", "AT", "DE"],
+				}}
+			/>
 		{/if}
 	</div>
 
