@@ -4,6 +4,7 @@
 	import type { TranslateFn } from "../../types.js";
 	import type { Props as GuestFormProps } from "./CheckoutGuestForm.svelte";
 	import type { Props as LoginFormProps } from "./CheckoutLoginForm.svelte";
+	import type { Props as LoginFormModalProps } from "../LoginForm/LoginFormModal.svelte";
 	import type { NotificationsStack } from "../Notifications/notifications-stack.svelte.js";
 
 	export type FormMode = "guest-only" | "login-only" | "tabbed" | "stacked";
@@ -23,6 +24,22 @@
 		 * - "stacked": Show both forms stacked vertically with a divider
 		 */
 		formMode?: FormMode;
+
+		/**
+		 * When provided, clicking the login tab opens a LoginFormModal
+		 * instead of rendering the form inline (tabbed mode only).
+		 * Form-related props are taken from loginForm.
+		 */
+		loginModal?: Pick<
+			LoginFormModalProps,
+			| "title"
+			| "classModal"
+			| "classInner"
+			| "classForm"
+			| "noXClose"
+			| "onClose"
+			| "showRememberMe"
+		>;
 
 		/** Tab label for the guest form tab. Default from i18n. */
 		guestTabLabel?: string;
@@ -55,14 +72,34 @@
 	import { t_default } from "./_internal/checkout-i18n-defaults.js";
 	import CheckoutGuestForm from "./CheckoutGuestForm.svelte";
 	import CheckoutLoginForm from "./CheckoutLoginForm.svelte";
+	import LoginFormModal from "../LoginForm/LoginFormModal.svelte";
 	import TabbedMenu from "../TabbedMenu/TabbedMenu.svelte";
 	import { H, type HLevel } from "../H/index.js";
 	import CheckoutSectionHeader from "./CheckoutSectionHeader.svelte";
+
+	// Map login_form.* keys → checkout.login.* keys (same as CheckoutLoginForm)
+	const LOGIN_FORM_KEY_MAP: Record<string, string> = {
+		"login_form.email_label": "checkout.login.email_label",
+		"login_form.email_placeholder": "checkout.login.email_placeholder",
+		"login_form.password_label": "checkout.login.password_label",
+		"login_form.password_placeholder": "checkout.login.password_placeholder",
+		"login_form.submit": "checkout.login.submit",
+		"login_form.submitting": "checkout.login.submitting",
+		"login_form.forgot_password": "checkout.login.forgot_password",
+		"login_form.email_required": "checkout.login.email_required",
+		"login_form.email_invalid": "checkout.login.email_invalid",
+		"login_form.password_required": "checkout.login.password_required",
+		"login_form.social_divider": "checkout.login.social_divider",
+		"login_form.remember_me": "checkout.login.remember_me",
+		"login_form.remember_me_tooltip": "checkout.login.remember_me_tooltip",
+		"login_form.modal_title": "checkout.login.modal_title",
+	};
 
 	let {
 		guestForm,
 		loginForm,
 		formMode = "tabbed",
+		loginModal,
 		notifications,
 		guestTabLabel,
 		loginTabLabel,
@@ -79,9 +116,33 @@
 
 	let t = $derived(tProp ?? t_default);
 
+	let loginModalRef: LoginFormModal = $state()!;
+
+	// Adapted t for LoginFormModal (maps login_form.* → checkout.login.*)
+	let modalT = $derived(
+		loginModal
+			? (
+					key: string,
+					values?: false | null | undefined | Record<string, string | number>,
+					fallback?: string | boolean
+				) => t(LOGIN_FORM_KEY_MAP[key] ?? key, values, fallback)
+			: undefined
+	);
+
 	let tabItems = $derived([
 		{ id: "guest", label: guestTabLabel ?? t("checkout.guest_or_login.guest_tab") },
-		{ id: "login", label: loginTabLabel ?? t("checkout.guest_or_login.login_tab") },
+		{
+			id: "login",
+			label: loginTabLabel ?? t("checkout.guest_or_login.login_tab"),
+			...(loginModal
+				? {
+						onSelect: () => {
+							loginModalRef?.open();
+							return false;
+						},
+					}
+				: {}),
+		},
 	]);
 
 	let _class = $derived(
@@ -140,5 +201,28 @@
 		{#if guestForm}
 			<CheckoutGuestForm {...guestForm} {notifications} t={tProp} {unstyled} />
 		{/if}
+	{/if}
+
+	{#if loginModal && loginForm}
+		<LoginFormModal
+			bind:this={loginModalRef}
+			formData={loginForm.formData}
+			onSubmit={loginForm.onSubmit}
+			isSubmitting={loginForm.isSubmitting}
+			errors={loginForm.errors}
+			error={loginForm.error}
+			onForgotPassword={loginForm.onForgotPassword}
+			submitLabel={loginForm.submitLabel}
+			submittingLabel={loginForm.submittingLabel}
+			submitButton={loginForm.submitButton}
+			socialLogins={loginForm.socialLogins}
+			socialDividerLabel={loginForm.socialDividerLabel}
+			footer={loginForm.footer}
+			{notifications}
+			title={loginTabLabel ?? t("checkout.guest_or_login.login_tab")}
+			t={modalT}
+			{unstyled}
+			{...loginModal}
+		/>
 	{/if}
 </div>

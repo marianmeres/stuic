@@ -59,6 +59,9 @@ const DEFAULTS: Record<string, string> = {
 	"checkout.login.email_invalid": "Please enter a valid email address",
 	"checkout.login.password_required": "Password is required",
 	"checkout.login.social_divider": "or continue with",
+	"checkout.login.remember_me": "Remember me",
+	"checkout.login.remember_me_tooltip": "Stay signed in on this device",
+	"checkout.login.modal_title": "Log In",
 
 	// -- CheckoutAddressForm (06) --
 	"checkout.address.name_label": "Full Name",

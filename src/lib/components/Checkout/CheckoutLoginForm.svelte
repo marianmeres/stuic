@@ -92,6 +92,8 @@
 		"login_form.email_invalid": "checkout.login.email_invalid",
 		"login_form.password_required": "checkout.login.password_required",
 		"login_form.social_divider": "checkout.login.social_divider",
+		"login_form.remember_me": "checkout.login.remember_me",
+		"login_form.remember_me_tooltip": "checkout.login.remember_me_tooltip",
 	};
 
 	let {

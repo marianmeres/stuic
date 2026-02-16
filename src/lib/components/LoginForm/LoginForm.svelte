@@ -90,6 +90,7 @@
 	import DismissibleMessage from "../DismissibleMessage/DismissibleMessage.svelte";
 	import FieldCheckbox from "../Input/FieldCheckbox.svelte";
 	import FieldInput from "../Input/FieldInput.svelte";
+	import { onSubmitValidityCheck } from "../../actions/on-submit-validity-check.svelte.js";
 
 	let {
 		formData = $bindable(createEmptyLoginFormData()),
@@ -153,7 +154,7 @@
 	bind:this={el}
 	class={_class}
 	onsubmit={handleSubmit}
-	novalidate
+	use:onSubmitValidityCheck
 	{...rest}
 	data-compact={compact ? "" : undefined}
 >

@@ -231,9 +231,7 @@
 <!-- ============== CSS VARIABLE OVERRIDES ============== -->
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">CSS variable overrides</h2>
-	<p class="text-sm opacity-60 mb-4">
-		Customized styling via CSS variables.
-	</p>
+	<p class="text-sm opacity-60 mb-4">Customized styling via CSS variables.</p>
 
 	<div
 		class="max-w-md"
@@ -256,6 +254,59 @@
 				formData: createEmptyLoginFormData(),
 				onSubmit: (data) => log(`Login: ${data.email}`),
 			}}
+		/>
+	</div>
+</section>
+
+<!-- ============== LOGIN AS MODAL (tabbed) ============== -->
+<section class="mb-12">
+	<h2 class="text-lg font-bold mb-2">Login as modal (tabbed)</h2>
+	<p class="text-sm opacity-60 mb-4">
+		With <code>loginModal</code> prop, clicking the login tab opens a
+		<code>LoginFormModal</code> instead of rendering the form inline. The guest form stays visible.
+		The modal title defaults to the login tab label.
+	</p>
+
+	<div class="max-w-md">
+		<CheckoutGuestOrLoginForm
+			guestForm={{
+				formData: createEmptyCustomerFormData(),
+				onSubmit: (data) => log(`Guest: ${data.email}`),
+			}}
+			loginForm={{
+				formData: loginData,
+				onSubmit: handleLoginSubmit,
+				isSubmitting: loginSubmitting,
+				error: loginError || undefined,
+				onForgotPassword: () => log("Forgot password clicked"),
+			}}
+			loginModal={{}}
+		/>
+	</div>
+</section>
+
+<!-- ============== LOGIN AS MODAL (custom tab + title override) ============== -->
+<section class="mb-12">
+	<h2 class="text-lg font-bold mb-2">Login as modal (custom tab label + title override)</h2>
+	<p class="text-sm opacity-60 mb-4">
+		Custom <code>loginTabLabel</code> auto-forwards to modal title. Or override with explicit
+		<code>loginModal.title</code>.
+	</p>
+
+	<div class="max-w-md">
+		<CheckoutGuestOrLoginForm
+			heading="Contact Information"
+			loginTabLabel="Sign In"
+			guestForm={{
+				formData: createEmptyCustomerFormData(),
+				onSubmit: (data) => log(`Guest: ${data.email}`),
+			}}
+			loginForm={{
+				formData: createEmptyLoginFormData(),
+				onSubmit: (data) => log(`Login: ${data.email}`),
+				onForgotPassword: () => log("Forgot password clicked"),
+			}}
+			loginModal={{}}
 		/>
 	</div>
 </section>
