@@ -817,7 +817,7 @@
 									>
 										<!-- svelte-ignore a11y_click_events_have_key_events -->
 										<!-- svelte-ignore a11y_no_static_element_interactions -->
-										{#each sheet.frontPage.areas as area (area.id)}
+										{#each sheet.frontPage.areas as area, i (`${area.id}-${i}`)}
 											<rect
 												x={area.x}
 												y={area.y}
@@ -902,7 +902,7 @@
 									>
 										<!-- svelte-ignore a11y_click_events_have_key_events -->
 										<!-- svelte-ignore a11y_no_static_element_interactions -->
-										{#each sheet.backPage.areas as area (area.id)}
+										{#each sheet.backPage.areas as area, i (`${area.id}-${i}`)}
 											<rect
 												x={area.x}
 												y={area.y}
