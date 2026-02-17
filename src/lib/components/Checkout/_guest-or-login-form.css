@@ -56,7 +56,6 @@
 	.stuic-checkout-guest-or-login-divider::after {
 		content: "";
 		flex: 1;
-		height: 1px;
-		background: var(--stuic-checkout-guest-or-login-divider-color);
+		border-top: 1px solid var(--stuic-checkout-guest-or-login-divider-color);
 	}
 }

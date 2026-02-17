@@ -8,7 +8,8 @@
 	/* Social login section */
 	--stuic-login-form-social-margin-top: 1rem;
 	--stuic-login-form-social-gap: 0.75rem;
-	--stuic-login-form-social-divider-color: var(--stuic-color-border);
+	--stuic-login-form-social-divider-color: var(--stuic-color-muted-foreground);
+	--stuic-login-form-social-divider-line-color: var(--stuic-color-border);
 	--stuic-login-form-social-divider-font-size: var(--text-sm);
 	--stuic-login-form-social-divider-margin-bottom: 0.75rem;
 }
@@ -53,8 +54,7 @@
 	.stuic-login-form-social-divider::after {
 		content: "";
 		flex: 1;
-		height: 1px;
-		background: var(--stuic-login-form-social-divider-color);
+		border-top: 1px solid var(--stuic-login-form-social-divider-line-color);
 	}
 
 	/* Button container */
