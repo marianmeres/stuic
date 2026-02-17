@@ -462,7 +462,7 @@
 
 	export function goToPage(pageId: BookPage["id"]) {
 		const idx = spreads.findIndex(
-			(s) => s.leftPage?.id === pageId || s.rightPage?.id === pageId
+			(s) => s.leftPage?.id == pageId || s.rightPage?.id == pageId
 		);
 		if (idx < 0) {
 			clog.warn(`goToPage: page "${pageId}" not found`);
