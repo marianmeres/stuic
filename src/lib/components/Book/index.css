@@ -8,7 +8,6 @@
 	--stuic-book-radius: var(--radius-sm, 2px);
 	--stuic-book-page-width: 300px;
 	--stuic-book-page-height: 400px;
-	--stuic-book-placeholder-bg: color-mix(in srgb, currentColor 5%, transparent);
 }
 
 @layer components {
@@ -117,7 +116,23 @@
 	/* Placeholder: empty page face with content on the other side */
 	.stuic-book-sheet-front[data-placeholder],
 	.stuic-book-sheet-back[data-placeholder] {
-		background: var(--stuic-book-placeholder-bg);
+		background: var(--stuic-color-muted);
+	}
+
+	/* Error placeholder: broken image */
+	.stuic-book-page-error {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: var(--stuic-color-muted);
+		color: var(--stuic-color-muted-foreground);
+	}
+
+	.stuic-book-page-error svg {
+		width: 48px;
+		height: 48px;
 	}
 
 	/* Flipped state */

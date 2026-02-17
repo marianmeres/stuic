@@ -46,6 +46,15 @@
 					],
 	}));
 	let lastClickedArea = $state<{ area: BookPageArea; page: BookPage } | null>(null);
+
+	// Broken image example — mix of valid and broken URLs
+	const brokenPages: BookPage[] = [
+		{ id: "b0", src: "https://picsum.photos/seed/ok-cover/420/600", title: "Cover (OK)" },
+		{ id: "b1", src: "https://broken.invalid/missing.jpg", title: "Page 1 (broken)" },
+		{ id: "b2", src: "https://picsum.photos/seed/ok-page2/420/600", title: "Page 2 (OK)" },
+		{ id: "b3", src: "https://broken.invalid/404.png", title: "Page 3 (broken)" },
+		{ id: "b4", src: "https://picsum.photos/seed/ok-back/420/600", title: "Back Cover (OK)" },
+	];
 </script>
 
 <div class="space-y-16 py-8">
@@ -274,6 +283,26 @@
 					(id: {lastClickedArea.area.id}) on {lastClickedArea.page.title}
 				</div>
 			{/if}
+		</div>
+	</section>
+
+	<hr class="border-neutral-200 dark:border-neutral-700" />
+
+	<!-- Broken Images -->
+	<section>
+		<h2 class="text-xl font-semibold mb-2">Broken Images</h2>
+		<p class="text-sm text-neutral-500 mb-4">
+			Mix of valid and broken image URLs. Broken pages show a placeholder icon instead of
+			the browser's broken image.
+		</p>
+
+		<div class="flex flex-col items-center gap-6">
+			<div
+				class="w-full"
+				style="--stuic-book-page-width: 240px; --stuic-book-page-height: 340px;"
+			>
+				<Book pages={brokenPages} />
+			</div>
 		</div>
 	</section>
 </div>

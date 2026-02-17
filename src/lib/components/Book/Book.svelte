@@ -294,7 +294,7 @@
 					toPreload.push({ src: page.src, srcset: page.srcset, sizes: page.sizes });
 			}
 		}
-		if (toPreload.length) preloadImgs(toPreload);
+		if (toPreload.length) preloadImgs(toPreload).catch(() => {});
 	});
 
 	// ---- Z-index: track currently transitioning sheet ----
@@ -651,6 +651,19 @@
 		const y = (e.clientY - rect.top) / rect.height;
 		onPageClick({ page, x, y });
 	}
+
+	// ---- Image error tracking ----
+
+	let erroredSrcs = $state(new Set<string>());
+
+	$effect(() => {
+		pages; // reset errors when pages change
+		erroredSrcs = new Set();
+	});
+
+	function handleImgError(src: string) {
+		erroredSrcs = new Set([...erroredSrcs, src]);
+	}
 </script>
 
 {#if spreads.length}
@@ -716,6 +729,10 @@
 												? "cover"
 												: "right",
 									})}
+								{:else if erroredSrcs.has(sheet.frontPage.src)}
+									<div class={!unstyled ? "stuic-book-page-error" : undefined}>
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+									</div>
 								{:else}
 									<img
 										src={sheet.frontPage.src}
@@ -723,6 +740,7 @@
 										sizes={sheet.frontPage.sizes}
 										alt={sheet.frontPage.title ?? ""}
 										draggable="false"
+										onerror={() => handleImgError(sheet.frontPage!.src)}
 									/>
 								{/if}
 								{#if onAreaClick && Math.abs(sheet.id - activeSpread) <= 1 && sheet.frontPage.areas?.length && sheet.frontPage.width && sheet.frontPage.height}
@@ -766,6 +784,10 @@
 										page: sheet.backPage,
 										position: isSinglePageMode ? "right" : "left",
 									})}
+								{:else if erroredSrcs.has(sheet.backPage.src)}
+									<div class={!unstyled ? "stuic-book-page-error" : undefined}>
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+									</div>
 								{:else}
 									<img
 										src={sheet.backPage.src}
@@ -773,6 +795,7 @@
 										sizes={sheet.backPage.sizes}
 										alt={sheet.backPage.title ?? ""}
 										draggable="false"
+										onerror={() => handleImgError(sheet.backPage!.src)}
 									/>
 								{/if}
 								{#if onAreaClick && Math.abs(sheet.id - activeSpread) <= 1 && sheet.backPage.areas?.length && sheet.backPage.width && sheet.backPage.height}
