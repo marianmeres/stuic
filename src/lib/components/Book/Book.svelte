@@ -310,10 +310,31 @@
 		});
 	});
 
-	// ---- Image preloading ----
+	// ---- Debounced "settled" spread — prevents mass image downloads during rapid slider drags ----
+
+	let settledSpread = $state(0);
+	let _settleTimer: ReturnType<typeof setTimeout> | undefined;
 
 	$effect(() => {
 		const current = activeSpread;
+		clearTimeout(_settleTimer);
+		// Small jump (±1): settle immediately (normal next/prev navigation)
+		if (Math.abs(current - settledSpread) <= 1) {
+			settledSpread = current;
+		} else {
+			// Large jump (slider drag): debounce to avoid intermediate downloads
+			_settleTimer = setTimeout(() => {
+				settledSpread = current;
+			}, 120);
+		}
+	});
+
+	$effect(() => () => clearTimeout(_settleTimer));
+
+	// ---- Image preloading ----
+
+	$effect(() => {
+		const current = settledSpread;
 		const toPreload: PreloadImgOptions[] = [];
 		for (
 			let i = Math.max(0, current - 1);
@@ -741,7 +762,7 @@
 				<!-- Sheets (3D flippable elements) — no static pages needed -->
 				{#each sheets as sheet (sheet.id)}
 					{@const flipped = sheet.id < activeSpread}
-					{@const isNearby = Math.abs(sheet.id - activeSpread) <= 2}
+					{@const isNearby = Math.abs(sheet.id - settledSpread) <= 2}
 					<div
 						class={twMerge(!unstyled && "stuic-book-sheet")}
 						data-flipped={flipped ? "true" : undefined}
