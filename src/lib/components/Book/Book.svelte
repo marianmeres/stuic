@@ -28,6 +28,8 @@
 		height: number;
 		/** Clickable areas on this page */
 		areas?: BookPageArea[];
+		/** Optional base url to be resolved if src is relative */
+		baseUrl?: string;
 		[key: string]: any;
 	}
 
@@ -50,6 +52,8 @@
 	export interface Props extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
 		/** Ordered array of book pages */
 		pages: BookPage[];
+		/** Fallback base URL for pages that don't define their own */
+		baseUrl?: string;
 		/** Currently active spread index (bindable) */
 		activeSpread?: number;
 		/** Enable keyboard navigation (default: true) */
@@ -177,18 +181,44 @@
 		pages: BookPage[],
 		targetHeight = 400
 	): { width: number; height: number } {
-		if (!pages.length) return { width: Math.round(targetHeight * 0.7), height: targetHeight };
+		if (!pages.length)
+			return { width: Math.round(targetHeight * 0.7), height: targetHeight };
 		let maxW = 0;
 		let maxH = 0;
 		for (const p of pages) {
 			if (p.width > maxW) maxW = p.width;
 			if (p.height > maxH) maxH = p.height;
 		}
-		if (maxH === 0) return { width: Math.round(targetHeight * 0.7), height: targetHeight };
+		if (maxH === 0)
+			return { width: Math.round(targetHeight * 0.7), height: targetHeight };
 		return {
 			width: Math.round(targetHeight * (maxW / maxH)),
 			height: targetHeight,
 		};
+	}
+
+	/** Resolve a possibly relative URL against an optional base URL. */
+	export function resolveUrl(url: string, baseUrl?: string): string {
+		if (!baseUrl || !url) return url;
+		try {
+			return new URL(url, baseUrl).href;
+		} catch {
+			return url;
+		}
+	}
+
+	/** Resolve all URLs inside a srcset string against an optional base URL. */
+	export function resolveSrcset(srcset: string, baseUrl?: string): string {
+		if (!baseUrl || !srcset) return srcset;
+		return srcset
+			.split(",")
+			.map((entry) => {
+				const parts = entry.trim().split(/\s+/);
+				if (parts.length === 0) return entry;
+				parts[0] = resolveUrl(parts[0], baseUrl);
+				return parts.join(" ");
+			})
+			.join(", ");
 	}
 </script>
 
@@ -202,6 +232,7 @@
 
 	let {
 		pages,
+		baseUrl,
 		activeSpread = $bindable(0),
 		keyboard = true,
 		swipe = true,
@@ -314,7 +345,11 @@
 		) {
 			for (const page of [spreads[i]?.leftPage, spreads[i]?.rightPage]) {
 				if (page)
-					toPreload.push({ src: page.src, srcset: page.srcset, sizes: page.sizes });
+					toPreload.push({
+						src: resolveUrl(page.src, page.baseUrl || baseUrl),
+						srcset: resolveSrcset(page.srcset ?? "", page.baseUrl || baseUrl) || undefined,
+						sizes: page.sizes,
+					});
 			}
 		}
 		if (toPreload.length) preloadImgs(toPreload).catch(() => {});
@@ -752,18 +787,36 @@
 												? "cover"
 												: "right",
 									})}
-								{:else if erroredSrcs.has(sheet.frontPage.src)}
+								{:else if erroredSrcs.has(resolveUrl(sheet.frontPage.src, sheet.frontPage.baseUrl || baseUrl))}
 									<div class={!unstyled ? "stuic-book-page-error" : undefined}>
-										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="1.5"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											><rect x="3" y="3" width="18" height="18" rx="2" /><circle
+												cx="8.5"
+												cy="8.5"
+												r="1.5"
+											/><path d="m21 15-5-5L5 21" /><line
+												x1="2"
+												y1="2"
+												x2="22"
+												y2="22"
+											/></svg
+										>
 									</div>
 								{:else}
 									<img
-										src={sheet.frontPage.src}
-										srcset={sheet.frontPage.srcset}
+										src={resolveUrl(sheet.frontPage.src, sheet.frontPage.baseUrl || baseUrl)}
+										srcset={resolveSrcset(sheet.frontPage.srcset ?? "", sheet.frontPage.baseUrl || baseUrl) || undefined}
 										sizes={sheet.frontPage.sizes}
 										alt={sheet.frontPage.title ?? ""}
 										draggable="false"
-										onerror={() => handleImgError(sheet.frontPage!.src)}
+										onerror={() => handleImgError(resolveUrl(sheet.frontPage!.src, sheet.frontPage!.baseUrl || baseUrl))}
 									/>
 								{/if}
 								{#if onAreaClick && Math.abs(sheet.id - activeSpread) <= 1 && sheet.frontPage.areas?.length && sheet.frontPage.width && sheet.frontPage.height}
@@ -807,18 +860,36 @@
 										page: sheet.backPage,
 										position: isSinglePageMode ? "right" : "left",
 									})}
-								{:else if erroredSrcs.has(sheet.backPage.src)}
+								{:else if erroredSrcs.has(resolveUrl(sheet.backPage.src, sheet.backPage.baseUrl || baseUrl))}
 									<div class={!unstyled ? "stuic-book-page-error" : undefined}>
-										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="1.5"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											><rect x="3" y="3" width="18" height="18" rx="2" /><circle
+												cx="8.5"
+												cy="8.5"
+												r="1.5"
+											/><path d="m21 15-5-5L5 21" /><line
+												x1="2"
+												y1="2"
+												x2="22"
+												y2="22"
+											/></svg
+										>
 									</div>
 								{:else}
 									<img
-										src={sheet.backPage.src}
-										srcset={sheet.backPage.srcset}
+										src={resolveUrl(sheet.backPage.src, sheet.backPage.baseUrl || baseUrl)}
+										srcset={resolveSrcset(sheet.backPage.srcset ?? "", sheet.backPage.baseUrl || baseUrl) || undefined}
 										sizes={sheet.backPage.sizes}
 										alt={sheet.backPage.title ?? ""}
 										draggable="false"
-										onerror={() => handleImgError(sheet.backPage!.src)}
+										onerror={() => handleImgError(resolveUrl(sheet.backPage!.src, sheet.backPage!.baseUrl || baseUrl))}
 									/>
 								{/if}
 								{#if onAreaClick && Math.abs(sheet.id - activeSpread) <= 1 && sheet.backPage.areas?.length && sheet.backPage.width && sheet.backPage.height}
