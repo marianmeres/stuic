@@ -173,6 +173,9 @@
 	import { ItemCollection } from "@marianmeres/item-collection";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import { preloadImgs, type PreloadImgOptions } from "../../utils/preload-img.js";
+	import { createClog } from "@marianmeres/clog";
+
+	const clog = createClog("Book", { color: "auto" });
 
 	let {
 		pages,
@@ -455,6 +458,17 @@
 			coll.setActiveIndex(spreadIndex);
 			resetZoom();
 		}
+	}
+
+	export function goToPage(pageId: BookPage["id"]) {
+		const idx = spreads.findIndex(
+			(s) => s.leftPage?.id === pageId || s.rightPage?.id === pageId
+		);
+		if (idx < 0) {
+			clog.warn(`goToPage: page "${pageId}" not found`);
+			return;
+		}
+		goTo(idx);
 	}
 
 	export function getCollection() {
