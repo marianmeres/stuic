@@ -29,6 +29,7 @@ export * from "./prefers-reduced-motion.svelte.js";
 export * from "./preload-img.js";
 export * from "./qsa.js";
 export * from "./replace-map.js";
+export * from "./resolve-url.js";
 export * from "./seconds.js";
 export * from "./sleep.js";
 export * from "./storage-abstraction.js";

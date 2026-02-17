@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import type { ItemCollection as ItemCollectionBase } from "@marianmeres/item-collection";
-	import type { HTMLAttributes } from "svelte/elements";
 	import type { Snippet } from "svelte";
+	import type { HTMLAttributes } from "svelte/elements";
 
 	export interface BookPageArea {
 		id: string | number;
@@ -196,37 +196,14 @@
 			height: targetHeight,
 		};
 	}
-
-	/** Resolve a possibly relative URL against an optional base URL. */
-	export function resolveUrl(url: string, baseUrl?: string): string {
-		if (!baseUrl || !url) return url;
-		try {
-			return new URL(url, baseUrl).href;
-		} catch {
-			return url;
-		}
-	}
-
-	/** Resolve all URLs inside a srcset string against an optional base URL. */
-	export function resolveSrcset(srcset: string, baseUrl?: string): string {
-		if (!baseUrl || !srcset) return srcset;
-		return srcset
-			.split(",")
-			.map((entry) => {
-				const parts = entry.trim().split(/\s+/);
-				if (parts.length === 0) return entry;
-				parts[0] = resolveUrl(parts[0], baseUrl);
-				return parts.join(" ");
-			})
-			.join(", ");
-	}
 </script>
 
 <script lang="ts">
-	import { ItemCollection } from "@marianmeres/item-collection";
-	import { twMerge } from "../../utils/tw-merge.js";
-	import { preloadImgs, type PreloadImgOptions } from "../../utils/preload-img.js";
 	import { createClog } from "@marianmeres/clog";
+	import { ItemCollection } from "@marianmeres/item-collection";
+	import { preloadImgs, type PreloadImgOptions } from "../../utils/preload-img.js";
+	import { resolveSrcset, resolveUrl } from "../../utils/resolve-url.js";
+	import { twMerge } from "../../utils/tw-merge.js";
 
 	const clog = createClog("Book", { color: "auto" });
 
@@ -347,7 +324,8 @@
 				if (page)
 					toPreload.push({
 						src: resolveUrl(page.src, page.baseUrl || baseUrl),
-						srcset: resolveSrcset(page.srcset ?? "", page.baseUrl || baseUrl) || undefined,
+						srcset:
+							resolveSrcset(page.srcset ?? "", page.baseUrl || baseUrl) || undefined,
 						sizes: page.sizes,
 					});
 			}
@@ -811,12 +789,24 @@
 									</div>
 								{:else}
 									<img
-										src={resolveUrl(sheet.frontPage.src, sheet.frontPage.baseUrl || baseUrl)}
-										srcset={resolveSrcset(sheet.frontPage.srcset ?? "", sheet.frontPage.baseUrl || baseUrl) || undefined}
+										src={resolveUrl(
+											sheet.frontPage.src,
+											sheet.frontPage.baseUrl || baseUrl
+										)}
+										srcset={resolveSrcset(
+											sheet.frontPage.srcset ?? "",
+											sheet.frontPage.baseUrl || baseUrl
+										) || undefined}
 										sizes={sheet.frontPage.sizes}
 										alt={sheet.frontPage.title ?? ""}
 										draggable="false"
-										onerror={() => handleImgError(resolveUrl(sheet.frontPage!.src, sheet.frontPage!.baseUrl || baseUrl))}
+										onerror={() =>
+											handleImgError(
+												resolveUrl(
+													sheet.frontPage!.src,
+													sheet.frontPage!.baseUrl || baseUrl
+												)
+											)}
 									/>
 								{/if}
 								{#if onAreaClick && Math.abs(sheet.id - activeSpread) <= 1 && sheet.frontPage.areas?.length && sheet.frontPage.width && sheet.frontPage.height}
@@ -884,12 +874,24 @@
 									</div>
 								{:else}
 									<img
-										src={resolveUrl(sheet.backPage.src, sheet.backPage.baseUrl || baseUrl)}
-										srcset={resolveSrcset(sheet.backPage.srcset ?? "", sheet.backPage.baseUrl || baseUrl) || undefined}
+										src={resolveUrl(
+											sheet.backPage.src,
+											sheet.backPage.baseUrl || baseUrl
+										)}
+										srcset={resolveSrcset(
+											sheet.backPage.srcset ?? "",
+											sheet.backPage.baseUrl || baseUrl
+										) || undefined}
 										sizes={sheet.backPage.sizes}
 										alt={sheet.backPage.title ?? ""}
 										draggable="false"
-										onerror={() => handleImgError(resolveUrl(sheet.backPage!.src, sheet.backPage!.baseUrl || baseUrl))}
+										onerror={() =>
+											handleImgError(
+												resolveUrl(
+													sheet.backPage!.src,
+													sheet.backPage!.baseUrl || baseUrl
+												)
+											)}
 									/>
 								{/if}
 								{#if onAreaClick && Math.abs(sheet.id - activeSpread) <= 1 && sheet.backPage.areas?.length && sheet.backPage.width && sheet.backPage.height}
