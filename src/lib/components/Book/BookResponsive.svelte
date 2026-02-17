@@ -51,15 +51,36 @@
 	// We own the single/dual page decision (responsive={false}) to avoid feedback loops —
 	// the Book's internal responsive detection uses bind:clientWidth which conflicts with
 	// our external sizing and can oscillate during flip animations.
-	// Uses window resize event instead of ResizeObserver for the same reason.
 	$effect(() => {
 		if (!containerEl) return;
 		let timer: ReturnType<typeof setTimeout>;
+		let lastCW = 0;
+		let lastCH = 0;
 
 		const apply = () => {
-			const cw = containerEl!.clientWidth;
-			const ch = containerEl!.clientHeight;
+			// use getBoundingClientRect() for subpixel precision — clientWidth/clientHeight
+			// return integers which can round UP, causing the page to exceed available
+			// space by a fraction of a pixel (enough to trigger scrollbars in min-h-screen
+			// layouts). The later Math.floor() on page dimensions rounds DOWN from the
+			// precise float, guaranteeing the page never exceeds the container.
+			const rect = containerEl!.getBoundingClientRect();
+			const style = getComputedStyle(containerEl!);
+			const cw = rect.width
+				- parseFloat(style.paddingLeft)
+				- parseFloat(style.paddingRight)
+				- parseFloat(style.borderLeftWidth)
+				- parseFloat(style.borderRightWidth);
+			const ch = rect.height
+				- parseFloat(style.paddingTop)
+				- parseFloat(style.paddingBottom)
+				- parseFloat(style.borderTopWidth)
+				- parseFloat(style.borderBottomWidth);
 			if (!cw || !ch) return;
+
+			// skip if dimensions unchanged (prevents ResizeObserver oscillation)
+			if (cw === lastCW && ch === lastCH) return;
+			lastCW = cw;
+			lastCH = ch;
 
 			// suppress width/translate transitions during dimension changes,
 			// then restore so flip animations (stage translate) work normally
@@ -94,7 +115,16 @@
 		// initial measurement
 		apply();
 
-		// subsequent resizes — debounced to avoid flickering during drag
+		// observe container resizes (layout-driven changes like sidebar toggle)
+		const ro = new ResizeObserver(() => {
+			clearTimeout(timer);
+			timer = setTimeout(apply, debounceMs);
+		});
+		ro.observe(containerEl!);
+
+		// also listen to window resize — ResizeObserver may not fire in
+		// min-h-screen layouts where viewport changes don't immediately
+		// propagate to the container's border box
 		const onResize = () => {
 			clearTimeout(timer);
 			timer = setTimeout(apply, debounceMs);
@@ -103,6 +133,7 @@
 
 		return () => {
 			clearTimeout(timer);
+			ro.disconnect();
 			window.removeEventListener("resize", onResize);
 		};
 	});
@@ -130,6 +161,7 @@
 <style>
 	.stuic-book-responsive {
 		flex: 1;
+		min-height: 0;
 		display: flex;
 		align-items: center;
 		justify-content: center;
