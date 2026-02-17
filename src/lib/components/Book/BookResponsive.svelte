@@ -10,8 +10,10 @@
 </script>
 
 <script lang="ts">
-	import Book, { computeBookPageSize } from "./Book.svelte";
+	import Book, { computeBookPageSize, type BookPage } from "./Book.svelte";
 	import { waitForTwoRepaints } from "$lib/utils/paint.js";
+
+	let bookRef: ReturnType<typeof Book> | undefined = $state();
 
 	let {
 		pages,
@@ -33,6 +35,17 @@
 	let forceSingle = $state(false);
 	let resizing = $state(false);
 	let measured = $state(false);
+
+	// ---- Proxy API (safe no-ops during remount) ----
+
+	export function next() { bookRef?.next(); }
+	export function previous() { bookRef?.previous(); }
+	export function goTo(spreadIndex: number) { bookRef?.goTo(spreadIndex); }
+	export function goToPage(pageId: BookPage["id"]) { bookRef?.goToPage(pageId); }
+	export function zoomIn() { bookRef?.zoomIn(); }
+	export function zoomOut() { bookRef?.zoomOut(); }
+	export function resetZoom() { bookRef?.resetZoom(); }
+	export function getCollection() { return bookRef?.getCollection(); }
 
 	// Dynamically size the book to fill available container space.
 	// We own the single/dual page decision (responsive={false}) to avoid feedback loops —
@@ -104,6 +117,7 @@
 >
 	{#if measured}
 		<Book
+			bind:this={bookRef}
 			{pages}
 			responsive={false}
 			singlePage={forceSingle}
