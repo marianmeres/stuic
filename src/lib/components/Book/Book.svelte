@@ -22,10 +22,10 @@
 		srcset?: string;
 		sizes?: string;
 		title?: string;
-		/** Natural image width in px (required when areas are used) */
-		width?: number;
-		/** Natural image height in px (required when areas are used) */
-		height?: number;
+		/** Natural image width in px */
+		width: number;
+		/** Natural image height in px */
+		height: number;
 		/** Clickable areas on this page */
 		areas?: BookPageArea[];
 		[key: string]: any;
@@ -166,6 +166,29 @@
 			});
 		}
 		return sheets;
+	}
+
+	/**
+	 * Compute display dimensions from page image metadata.
+	 * Finds the largest width/height across all pages, preserves aspect ratio,
+	 * and scales to a target height (default 400px).
+	 */
+	export function computeBookPageSize(
+		pages: BookPage[],
+		targetHeight = 400
+	): { width: number; height: number } {
+		if (!pages.length) return { width: Math.round(targetHeight * 0.7), height: targetHeight };
+		let maxW = 0;
+		let maxH = 0;
+		for (const p of pages) {
+			if (p.width > maxW) maxW = p.width;
+			if (p.height > maxH) maxH = p.height;
+		}
+		if (maxH === 0) return { width: Math.round(targetHeight * 0.7), height: targetHeight };
+		return {
+			width: Math.round(targetHeight * (maxW / maxH)),
+			height: targetHeight,
+		};
 	}
 </script>
 

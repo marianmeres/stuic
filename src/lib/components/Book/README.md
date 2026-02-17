@@ -8,18 +8,21 @@ A physical book visualization with CSS 3D page-flipping animation. Displays an o
 <script lang="ts">
 	import { Book, type BookPage } from "@marianmeres/stuic";
 
+	import { Book, computeBookPageSize, type BookPage } from "@marianmeres/stuic";
+
 	const pages: BookPage[] = [
-		{ id: 0, src: "/cover.jpg", title: "Cover" },
-		{ id: 1, src: "/page1.jpg", title: "Page 1" },
-		{ id: 2, src: "/page2.jpg", title: "Page 2" },
+		{ id: 0, src: "/cover.jpg", title: "Cover", width: 2480, height: 3508 },
+		{ id: 1, src: "/page1.jpg", title: "Page 1", width: 2480, height: 3508 },
+		{ id: 2, src: "/page2.jpg", title: "Page 2", width: 2480, height: 3508 },
 		// ...
 	];
 
+	const size = computeBookPageSize(pages);
 	let book: Book;
 	let activeSpread = $state(0);
 </script>
 
-<div style="--stuic-book-page-width: 300px; --stuic-book-page-height: 420px;">
+<div style="--stuic-book-page-width: {size.width}px; --stuic-book-page-height: {size.height}px;">
 	<Book bind:this={book} {pages} bind:activeSpread />
 </div>
 
@@ -76,8 +79,8 @@ interface BookPage {
 	id: string | number;
 	src: string;
 	title?: string;
-	width?: number;        // Natural image width in px (required for areas)
-	height?: number;       // Natural image height in px (required for areas)
+	width: number;         // Natural image width in px
+	height: number;        // Natural image height in px
 	areas?: BookPageArea[];
 	[key: string]: any;
 }
@@ -101,6 +104,19 @@ interface BookSpread {
 | `zoomOut()`         | Zoom out one level                |
 | `resetZoom()`       | Reset zoom to 1x                  |
 | `getCollection()`   | Get the underlying ItemCollection |
+
+## Utility Functions
+
+### `computeBookPageSize(pages, targetHeight?)`
+
+Computes display dimensions from page image metadata. Finds the largest width/height across all pages, preserves aspect ratio, and scales to a target height (default `400`).
+
+```ts
+import { computeBookPageSize } from "@marianmeres/stuic";
+
+const size = computeBookPageSize(pages);       // { width: 283, height: 400 }
+const size = computeBookPageSize(pages, 300);  // { width: 212, height: 300 }
+```
 
 ## Clickable Areas
 

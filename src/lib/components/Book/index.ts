@@ -9,4 +9,5 @@ export {
 	buildSpreads,
 	buildSinglePageSpreads,
 	buildSheets,
+	computeBookPageSize,
 } from "./Book.svelte";

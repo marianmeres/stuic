@@ -5,6 +5,7 @@
 		type BookPageArea,
 		buildSpreads,
 		buildSinglePageSpreads,
+		computeBookPageSize,
 		Button,
 	} from "$lib/index.js";
 
@@ -13,7 +14,11 @@
 		id: i,
 		src: `https://picsum.photos/seed/book-page-${i}/420/600`,
 		title: i === 0 ? "Cover" : `Page ${i}`,
+		width: 420,
+		height: 600,
 	}));
+
+	const pageSize = computeBookPageSize(pages);
 
 	const evenPages = pages.slice(0, 6);
 	const totalSpreads = buildSpreads(pages).length;
@@ -49,11 +54,11 @@
 
 	// Broken image example — mix of valid and broken URLs
 	const brokenPages: BookPage[] = [
-		{ id: "b0", src: "https://picsum.photos/seed/ok-cover/420/600", title: "Cover (OK)" },
-		{ id: "b1", src: "https://broken.invalid/missing.jpg", title: "Page 1 (broken)" },
-		{ id: "b2", src: "https://picsum.photos/seed/ok-page2/420/600", title: "Page 2 (OK)" },
-		{ id: "b3", src: "https://broken.invalid/404.png", title: "Page 3 (broken)" },
-		{ id: "b4", src: "https://picsum.photos/seed/ok-back/420/600", title: "Back Cover (OK)" },
+		{ id: "b0", src: "https://picsum.photos/seed/ok-cover/420/600", title: "Cover (OK)", width: 420, height: 600 },
+		{ id: "b1", src: "https://broken.invalid/missing.jpg", title: "Page 1 (broken)", width: 420, height: 600 },
+		{ id: "b2", src: "https://picsum.photos/seed/ok-page2/420/600", title: "Page 2 (OK)", width: 420, height: 600 },
+		{ id: "b3", src: "https://broken.invalid/404.png", title: "Page 3 (broken)", width: 420, height: 600 },
+		{ id: "b4", src: "https://picsum.photos/seed/ok-back/420/600", title: "Back Cover (OK)", width: 420, height: 600 },
 	];
 </script>
 
@@ -69,7 +74,7 @@
 		<div class="flex flex-col items-center gap-6">
 			<div
 				class="w-full"
-				style="--stuic-book-page-width: 280px; --stuic-book-page-height: 400px;"
+				style="--stuic-book-page-width: {pageSize.width}px; --stuic-book-page-height: {pageSize.height}px;"
 			>
 				<Book bind:this={book} {pages} bind:activeSpread />
 			</div>
