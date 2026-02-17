@@ -741,6 +741,7 @@
 				<!-- Sheets (3D flippable elements) — no static pages needed -->
 				{#each sheets as sheet (sheet.id)}
 					{@const flipped = sheet.id < activeSpread}
+					{@const isNearby = Math.abs(sheet.id - activeSpread) <= 2}
 					<div
 						class={twMerge(!unstyled && "stuic-book-sheet")}
 						data-flipped={flipped ? "true" : undefined}
@@ -755,7 +756,7 @@
 							data-placeholder={!sheet.frontPage && sheet.backPage ? "" : undefined}
 							onclick={(e) => handlePageClick(e, sheet.frontPage)}
 						>
-							{#if sheet.frontPage}
+							{#if isNearby && sheet.frontPage}
 								{#if renderPage}
 									{@render renderPage({
 										page: sheet.frontPage,
@@ -844,7 +845,7 @@
 							data-placeholder={!sheet.backPage && sheet.frontPage ? "" : undefined}
 							onclick={(e) => handlePageClick(e, sheet.backPage)}
 						>
-							{#if sheet.backPage}
+							{#if isNearby && sheet.backPage}
 								{#if renderPage}
 									{@render renderPage({
 										page: sheet.backPage,

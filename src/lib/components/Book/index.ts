@@ -11,3 +11,8 @@ export {
 	buildSheets,
 	computeBookPageSize,
 } from "./Book.svelte";
+
+export {
+	default as BookResponsive,
+	type Props as BookResponsiveProps,
+} from "./BookResponsive.svelte";
