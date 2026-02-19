@@ -203,4 +203,10 @@
 			(100% - 5 * var(--stuic-carousel-gap) - var(--stuic-carousel-peek-percent, 0%)) / 6
 		);
 	}
+
+	/* When all items fit in view: stretch to fill, ignore peek */
+	.stuic-carousel[data-fit="true"] .stuic-carousel-item {
+		flex: 1 1 auto;
+		width: auto;
+	}
 }

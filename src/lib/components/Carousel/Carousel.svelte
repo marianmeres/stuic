@@ -78,6 +78,9 @@
 		/** Custom class for arrow buttons */
 		classArrow?: string;
 
+		/** Minimum item width (px) for auto-fit; if items would be narrower, fall back to scroll */
+		minItemWidth?: number;
+
 		/** Skip all default styling */
 		unstyled?: boolean;
 
@@ -122,6 +125,7 @@
 		classTrack,
 		classItem,
 		classItemActive,
+		minItemWidth = 150,
 		arrows = false,
 		classArrow,
 		unstyled = false,
@@ -315,13 +319,16 @@
 		return coll;
 	}
 
+	// Detect when all items fit within the view (no overflow)
+	let allItemsFit = $derived(items.length <= itemsPerView);
+
 	// Compute inline styles for gap and peek
 	let trackStyle = $derived.by(() => {
 		const styles: string[] = [];
 		if (gap !== undefined) {
 			styles.push(`--stuic-carousel-gap: ${typeof gap === "number" ? `${gap}px` : gap}`);
 		}
-		if (peekPercent > 0) {
+		if (peekPercent > 0 && !allItemsFit) {
 			styles.push(`--stuic-carousel-peek-percent: ${peekPercent}%`);
 		}
 		return styles.join("; ");
@@ -338,6 +345,7 @@
 		bind:this={el}
 		class={twMerge(!unstyled && "stuic-carousel", classProp)}
 		data-items-per-view={!unstyled ? itemsPerView : undefined}
+		data-fit={!unstyled && allItemsFit ? "true" : undefined}
 		{...rest}
 	>
 		<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
@@ -366,6 +374,7 @@
 						classItem,
 						active && classItemActive
 					)}
+					style={minItemWidth ? `min-width: ${minItemWidth}px` : undefined}
 					role="group"
 					aria-roledescription="slide"
 					aria-label={`Slide ${i + 1} of ${coll.size}`}

@@ -391,6 +391,51 @@
 
 	<hr class="border-neutral-200 dark:border-neutral-700" />
 
+	<!-- Auto-Fit: Items stretch when all fit in view -->
+	<section>
+		<h2 class="text-xl font-semibold mb-2">Auto-Fit (Fewer Items Than Per View)</h2>
+		<p class="text-sm text-neutral-500 mb-4">
+			When items count &le; itemsPerView, peek is ignored and items stretch to fill available
+			space. Here: 3 items with itemsPerView=5 and peekPercent=10.
+		</p>
+		<div class="border rounded-lg p-4">
+			<Carousel
+				items={basicItems.slice(0, 3)}
+				itemsPerView={5}
+				peekPercent={10}
+				gap={16}
+				classItem="p-6 text-center font-bold bg-teal-100 dark:bg-teal-900 rounded-lg"
+			/>
+		</div>
+		<p class="text-sm text-neutral-500 mt-2">
+			Compare with 6 items (overflows) — peek applies:
+		</p>
+		<div class="border rounded-lg p-4 mt-2">
+			<Carousel
+				items={[...basicItems, { id: 6, content: "Slide 6" }]}
+				itemsPerView={5}
+				peekPercent={10}
+				gap={16}
+				classItem="p-6 text-center font-bold bg-teal-100 dark:bg-teal-900 rounded-lg"
+			/>
+		</div>
+		<p class="text-sm text-neutral-500 mt-2">
+			With minItemWidth=300 — items stretch only if each gets &ge;300px, otherwise scroll:
+		</p>
+		<div class="border rounded-lg p-4 mt-2">
+			<Carousel
+				items={basicItems.slice(0, 3)}
+				itemsPerView={5}
+				peekPercent={10}
+				gap={16}
+				minItemWidth={300}
+				classItem="p-6 text-center font-bold bg-teal-100 dark:bg-teal-900 rounded-lg"
+			/>
+		</div>
+	</section>
+
+	<hr class="border-neutral-200 dark:border-neutral-700" />
+
 	<!-- Custom Styling via CSS Variables -->
 	<section>
 		<h2 class="text-xl font-semibold mb-2">Custom Styling via CSS Variables</h2>
