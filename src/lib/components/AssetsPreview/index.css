@@ -8,8 +8,8 @@
 	/* Control buttons (zoom, download, close, prev/next) */
 
 	/* Labels (filename, tooltip) */
-	--stuic-assets-preview-label-bg: var(--stuic-color-surface);
-	--stuic-assets-preview-label-text: var(--stuic-color-surface-foreground);
+	--stuic-assets-preview-label-bg: rgba(0 0 0 / 0.6);
+	--stuic-assets-preview-label-text: white;
 	--stuic-assets-preview-label-radius: var(--radius-sm);
 
 	/* Dot indicators */
