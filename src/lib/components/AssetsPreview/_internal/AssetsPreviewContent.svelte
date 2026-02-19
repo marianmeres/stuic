@@ -11,6 +11,7 @@
 	import type { TranslateFn } from "../../../types.js";
 	import { twMerge } from "../../../utils/tw-merge.js";
 	import { forceDownload } from "../../../utils/force-download.js";
+	import { preloadImgs } from "../../../utils/preload-img.js";
 	import { fade } from "svelte/transition";
 	import Button from "../../Button/Button.svelte";
 	import type { AssetPreview, AssetPreviewNormalized } from "./assets-preview-types.js";
@@ -110,7 +111,7 @@
 		}
 	}
 
-	// Svelte action for pan event listeners - guaranteed to run when element is created
+	// Svelte action for pan/swipe event listeners on images
 	function pannable(node: HTMLImageElement) {
 		imgEl = node;
 		node.addEventListener("mousedown", panStart);
@@ -132,6 +133,21 @@
 				document.removeEventListener("mousemove", panMove);
 				document.removeEventListener("mouseup", panEnd);
 				document.removeEventListener("touchmove", panMove);
+				document.removeEventListener("touchend", panEnd);
+				document.removeEventListener("touchcancel", panEnd);
+			},
+		};
+	}
+
+	// Svelte action for swipe-only on non-image content
+	function swipeable(node: HTMLElement) {
+		node.addEventListener("touchstart", panStart, { passive: false });
+		document.addEventListener("touchend", panEnd);
+		document.addEventListener("touchcancel", panEnd);
+
+		return {
+			destroy() {
+				node.removeEventListener("touchstart", panStart);
 				document.removeEventListener("touchend", panEnd);
 				document.removeEventListener("touchcancel", panEnd);
 			},
@@ -214,18 +230,29 @@
 			e.preventDefault();
 			isPinching = true;
 			isPanning = false;
+			isSwiping = false;
 			initialPinchDistance = getDistance(e.touches[0], e.touches[1]);
 			initialPinchZoom = continuousZoom;
 			return;
 		}
 
-		// Single-finger pan (only when zoomed in)
-		if (zoomLevel <= 1) return;
-		e.preventDefault();
-		isPanning = true;
-
 		const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
 		const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
+
+		// Single-finger swipe for navigation (when not zoomed)
+		if (zoomLevel <= 1) {
+			if ("touches" in e && assets.length > 1) {
+				isSwiping = true;
+				swipeStartX = clientX;
+				swipeStartY = clientY;
+				swipeStartTime = Date.now();
+			}
+			return;
+		}
+
+		// Single-finger pan (only when zoomed in)
+		e.preventDefault();
+		isPanning = true;
 
 		startMouseX = clientX;
 		startMouseY = clientY;
@@ -263,7 +290,7 @@
 		}
 	}
 
-	function panEnd() {
+	function panEnd(e: MouseEvent | TouchEvent) {
 		// Handle pinch end - snap to nearest discrete level
 		if (isPinching) {
 			isPinching = false;
@@ -276,6 +303,30 @@
 			}
 			return;
 		}
+
+		// Handle swipe end
+		if (isSwiping) {
+			isSwiping = false;
+			const clientX =
+				"changedTouches" in e ? e.changedTouches[0].clientX : (e as MouseEvent).clientX;
+			const clientY =
+				"changedTouches" in e ? e.changedTouches[0].clientY : (e as MouseEvent).clientY;
+			const deltaX = clientX - swipeStartX;
+			const deltaY = clientY - swipeStartY;
+			const elapsed = Date.now() - swipeStartTime;
+
+			// Only swipe if horizontal movement dominates vertical
+			if (
+				Math.abs(deltaX) > SWIPE_THRESHOLD &&
+				Math.abs(deltaX) > Math.abs(deltaY) &&
+				elapsed < SWIPE_MAX_TIME
+			) {
+				if (deltaX < 0) next();
+				else previous();
+			}
+			return;
+		}
+
 		isPanning = false;
 	}
 
@@ -295,6 +346,33 @@
 	}
 
 	let previewAsset = $derived(assets?.[previewIdx]);
+
+	// Preload nearest 2 assets in each direction
+	$effect(() => {
+		const idx = previewIdx;
+		const len = assets.length;
+		if (len <= 1) return;
+
+		const toPreload: string[] = [];
+		for (let offset = 1; offset <= 2; offset++) {
+			const prevAsset = assets[(idx - offset + len) % len];
+			const nextAsset = assets[(idx + offset) % len];
+			if (prevAsset?.isImage) toPreload.push(String(prevAsset.url.full));
+			if (nextAsset?.isImage) toPreload.push(String(nextAsset.url.full));
+		}
+
+		if (toPreload.length) {
+			preloadImgs(toPreload.map((src) => ({ src }))).catch(() => {});
+		}
+	});
+
+	// Swipe state for prev/next navigation
+	let swipeStartX = 0;
+	let swipeStartY = 0;
+	let swipeStartTime = 0;
+	let isSwiping = false;
+	const SWIPE_THRESHOLD = 50; // px
+	const SWIPE_MAX_TIME = 400; // ms
 </script>
 
 {#if previewAsset}
@@ -317,7 +395,7 @@
 			/>
 		</div>
 	{:else}
-		<div class="w-full h-full flex flex-col items-center justify-center">
+		<div use:swipeable class="w-full h-full flex flex-col items-center justify-center">
 			<div>
 				{@html getAssetIcon(previewAsset.ext)({
 					size: 32,
