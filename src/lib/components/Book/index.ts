@@ -16,3 +16,5 @@ export {
 	default as BookResponsive,
 	type Props as BookResponsiveProps,
 } from "./BookResponsive.svelte";
+
+export { bookPagesToAssets } from "./_internal/book-pages-to-assets.js";

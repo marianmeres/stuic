@@ -108,7 +108,7 @@ export function normalizeInput(input: string | AssetPreview): AssetPreviewNormal
 	}
 
 	asset.ext = ext(asset.name);
-	asset.isImage = isImage(asset.ext);
+	asset.isImage = isImage(asset.ext) || asset.type === "image";
 
 	return asset;
 }

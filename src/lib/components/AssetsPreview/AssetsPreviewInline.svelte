@@ -42,6 +42,8 @@
 		onAreaClick?: (data: { area: AssetArea; asset: AssetPreviewNormalized }) => void;
 		/** Initial asset index to display (default 0) */
 		initialIndex?: number;
+		/** Current asset index (bindable). Defaults to initialIndex. */
+		currentIndex?: number;
 	}
 </script>
 
@@ -69,13 +71,13 @@
 		noDots = false,
 		noCurrentOfTotal = false,
 		initialIndex = 0,
+		currentIndex = $bindable(initialIndex),
 	}: Props = $props();
 
 	let assets: AssetPreviewNormalized[] = $derived(
 		(_assets ?? []).map(normalizeInput).filter(Boolean) as AssetPreviewNormalized[]
 	);
 
-	let previewIdx = $state<number>(initialIndex);
 	let content: AssetsPreviewContent | undefined = $state();
 
 	// Preload images when assets change
@@ -93,7 +95,7 @@
 	});
 
 	export function goTo(index: number) {
-		previewIdx = index % assets.length;
+		currentIndex = index % assets.length;
 		content?.resetZoom();
 	}
 
@@ -131,7 +133,7 @@
 	>
 		<AssetsPreviewContent
 			bind:this={content}
-			bind:previewIdx
+			bind:previewIdx={currentIndex}
 			{assets}
 			{baseUrl}
 			{classControls}

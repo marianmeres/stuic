@@ -137,13 +137,9 @@
 		}
 	}
 
-	// Svelte action for pan/swipe event listeners on images
+	// Svelte action for img element reference and document-level pan listeners
 	function pannable(node: HTMLImageElement) {
 		imgEl = node;
-		node.addEventListener("mousedown", panStart);
-		node.addEventListener("touchstart", panStart, { passive: false });
-		node.addEventListener("wheel", handleWheel, { passive: false });
-
 		document.addEventListener("mousemove", panMove);
 		document.addEventListener("mouseup", panEnd);
 		document.addEventListener("touchmove", panMove, { passive: false });
@@ -153,14 +149,25 @@
 		return {
 			destroy() {
 				imgEl = null;
-				node.removeEventListener("mousedown", panStart);
-				node.removeEventListener("touchstart", panStart);
-				node.removeEventListener("wheel", handleWheel);
 				document.removeEventListener("mousemove", panMove);
 				document.removeEventListener("mouseup", panEnd);
 				document.removeEventListener("touchmove", panMove);
 				document.removeEventListener("touchend", panEnd);
 				document.removeEventListener("touchcancel", panEnd);
+			},
+		};
+	}
+
+	// Svelte action for wheel/pan/touch on the container (so it works over SVG area overlays too)
+	function interactable(node: HTMLElement) {
+		node.addEventListener("wheel", handleWheel, { passive: false });
+		node.addEventListener("mousedown", panStart);
+		node.addEventListener("touchstart", panStart, { passive: false });
+		return {
+			destroy() {
+				node.removeEventListener("wheel", handleWheel);
+				node.removeEventListener("mousedown", panStart);
+				node.removeEventListener("touchstart", panStart);
 			},
 		};
 	}
@@ -442,6 +449,7 @@
 {#if previewAsset}
 	{#if previewAsset.isImage}
 		<div
+			use:interactable
 			bind:this={containerEl}
 			class="w-full h-full overflow-hidden flex items-center justify-center relative"
 		>
