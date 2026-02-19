@@ -9,6 +9,8 @@
 		/** Container width (px) below which the component switches to a
 		 *  mobile-friendly inline asset preview. Set 0 to disable. (default: 480) */
 		inlineThreshold?: number;
+		/** Force inline asset-preview mode regardless of container width (default: false) */
+		forceInline?: boolean;
 	}
 </script>
 
@@ -34,6 +36,7 @@
 		debounce: debounceMs = 150,
 		activeSpread = $bindable(0),
 		inlineThreshold = 480,
+		forceInline = false,
 		// Extract props needed for inline mode forwarding
 		baseUrl,
 		onAreaClick,
@@ -60,7 +63,8 @@
 	// ---- Inline mode ----
 
 	let useInline = $derived(
-		inlineThreshold > 0 && containerWidth > 0 && containerWidth < inlineThreshold
+		forceInline ||
+			(inlineThreshold > 0 && containerWidth > 0 && containerWidth < inlineThreshold)
 	);
 
 	let inlineAssets = $derived(useInline ? bookPagesToAssets(pages, baseUrl) : []);

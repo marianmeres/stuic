@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { BookResponsive, type BookPage } from "$lib/index.js";
+	import { BookResponsive, Button, type BookPage } from "$lib/index.js";
+
+	let forceInline = $state(false);
 
 	const pages: BookPage[] = Array.from({ length: 9 }, (_, i) => ({
 		id: i,
@@ -14,8 +16,15 @@
 	}));
 </script>
 
+<div class="absolute top-2 right-2 z-10">
+	<Button size="sm" variant="outline" onclick={() => (forceInline = !forceInline)}>
+		{forceInline ? "Book mode" : "Inline mode"}
+	</Button>
+</div>
+
 <BookResponsive
 	{pages}
+	{forceInline}
 	onAreaClick={({ area, page }) => {
 		console.log("onAreaClick", { area, page });
 	}}
