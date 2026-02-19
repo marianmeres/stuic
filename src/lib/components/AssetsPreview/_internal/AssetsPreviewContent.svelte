@@ -23,6 +23,12 @@
 		noName?: boolean;
 		noDownload?: boolean;
 		noClose?: boolean;
+		/** Hide prev/next arrow buttons */
+		noPrevNext?: boolean;
+		/** Disable all zooming (buttons + gestures) */
+		noZoom?: boolean;
+		/** Hide zoom buttons only (gestures still work) */
+		noZoomButtons?: boolean;
 		classControls?: string;
 		t?: TranslateFn;
 		onDelete?: (
@@ -44,6 +50,9 @@
 		noName,
 		noDownload = false,
 		noClose = false,
+		noPrevNext = false,
+		noZoom = false,
+		noZoomButtons = false,
 		classControls = "",
 		t = t_default,
 		onDelete,
@@ -92,6 +101,7 @@
 
 	// Wheel zoom handler
 	function handleWheel(e: WheelEvent) {
+		if (noZoom) return;
 		e.preventDefault();
 		if (e.deltaY > 0) {
 			zoomOut();
@@ -200,6 +210,7 @@
 	function panStart(e: MouseEvent | TouchEvent) {
 		// Detect two-finger pinch gesture
 		if ("touches" in e && e.touches.length === 2) {
+			if (noZoom) return;
 			e.preventDefault();
 			isPinching = true;
 			isPanning = false;
@@ -319,7 +330,7 @@
 		</div>
 	{/if}
 
-	{#if assets?.length > 1}
+	{#if assets?.length > 1 && !noPrevNext}
 		<div
 			class="absolute inset-0 flex items-center justify-between pointer-events-none"
 		>
@@ -352,7 +363,7 @@
 			<span></span>
 		{/if}
 		<div class="flex items-center space-x-3 shrink-0">
-			{#if previewAsset.isImage}
+			{#if previewAsset.isImage && !noZoom && !noZoomButtons}
 				<Button
 					class={twMerge(BUTTON_CLS, classControls)}
 					type="button"
@@ -425,38 +436,46 @@
 	</div>
 
 	{#if assets.length > 1}
-		{#if !noName && dotTooltip}
-			<div
-				class="absolute bottom-10 left-0 right-0 text-center"
-				transition:fade={{ duration: 100 }}
-			>
-				<span class="stuic-assets-preview-label p-1">
-					{dotTooltip}
+		{#if assets.length <= 10}
+			{#if !noName && dotTooltip}
+				<div
+					class="absolute bottom-10 left-0 right-0 text-center"
+					transition:fade={{ duration: 100 }}
+				>
+					<span class="stuic-assets-preview-label p-1">
+						{dotTooltip}
+					</span>
+				</div>
+			{/if}
+			<div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3">
+				{#each assets as _, i}
+					<!-- svelte-ignore a11y_mouse_events_have_key_events -->
+					<button
+						type="button"
+						class={twMerge(
+							"stuic-assets-preview-dot",
+							i === previewIdx ? "active" : ""
+						)}
+						onclick={() => {
+							previewIdx = i;
+							resetZoom();
+						}}
+						aria-label={assets[i]?.name}
+						onmouseover={() => {
+							dotTooltip = assets[i]?.name;
+						}}
+						onmouseout={() => {
+							dotTooltip = undefined;
+						}}
+					></button>
+				{/each}
+			</div>
+		{:else}
+			<div class="absolute bottom-4 left-1/2 -translate-x-1/2">
+				<span class="stuic-assets-preview-label px-2 py-1 text-sm">
+					{previewIdx + 1} / {assets.length}
 				</span>
 			</div>
 		{/if}
-		<div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3">
-			{#each assets as _, i}
-				<!-- svelte-ignore a11y_mouse_events_have_key_events -->
-				<button
-					type="button"
-					class={twMerge(
-						"stuic-assets-preview-dot",
-						i === previewIdx ? "active" : ""
-					)}
-					onclick={() => {
-						previewIdx = i;
-						resetZoom();
-					}}
-					aria-label={assets[i]?.name}
-					onmouseover={() => {
-						dotTooltip = assets[i]?.name;
-					}}
-					onmouseout={() => {
-						dotTooltip = undefined;
-					}}
-				></button>
-			{/each}
-		</div>
 	{/if}
 {/if}

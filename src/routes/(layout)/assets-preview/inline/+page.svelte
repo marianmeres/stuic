@@ -31,4 +31,22 @@
 	/>
 </div>
 
+<h3 class="mt-8 mb-2 font-semibold">No prev/next, no zoom buttons</h3>
+<div class="w-full h-125 border border-(--stuic-color-border) rounded-lg overflow-hidden">
+	<AssetsPreviewInline
+		{assets}
+		noPrevNext
+		noZoomButtons
+		noName
+	/>
+</div>
+
+<h3 class="mt-8 mb-2 font-semibold">No zoom at all</h3>
+<div class="w-full h-125 border border-(--stuic-color-border) rounded-lg overflow-hidden">
+	<AssetsPreviewInline
+		{assets}
+		noZoom
+	/>
+</div>
+
 <AlertConfirmPrompt {acp} />

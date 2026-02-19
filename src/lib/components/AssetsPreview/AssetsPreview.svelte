@@ -36,6 +36,12 @@
 		clampPan?: boolean;
 		/** Do not offer download if truthy (default false) */
 		noDownload?: boolean;
+		/** Hide prev/next arrow buttons */
+		noPrevNext?: boolean;
+		/** Disable all zooming (buttons + gestures) */
+		noZoom?: boolean;
+		/** Hide zoom buttons only (gestures still work) */
+		noZoomButtons?: boolean;
 	}
 </script>
 
@@ -53,20 +59,25 @@
 		noName,
 		clampPan = false,
 		noDownload = false,
+		noPrevNext = false,
+		noZoom = false,
+		noZoomButtons = false,
 	}: Props = $props();
 
 	let assets: AssetPreviewNormalized[] = $derived(
 		(_assets ?? []).map(normalizeInput).filter(Boolean) as AssetPreviewNormalized[]
 	);
 	let previewIdx = $state<number>(0);
+	let _openIdx: number | undefined = $state();
 	let modal: ModalDialog | undefined = $state();
 	let content: AssetsPreviewContent | undefined = $state();
 
 	$effect(() => {
 		const visible = modal?.visibility().visible;
 		if (visible) {
-			// Reset preview index on modal open
-			previewIdx = 0;
+			// Use the index from open(index) if provided, otherwise reset to 0
+			previewIdx = _openIdx ?? 0;
+			_openIdx = undefined;
 
 			// perhaps we should have some upper limit here...
 			const toPreload = (assets ?? [])
@@ -82,9 +93,7 @@
 	});
 
 	export function open(index?: number) {
-		if (typeof index === "number") {
-			previewIdx = index;
-		}
+		_openIdx = typeof index === "number" ? index : undefined;
 		modal?.open();
 	}
 
@@ -110,7 +119,7 @@
 <!-- this must be on window as we're catching any typing anywhere -->
 <svelte:window
 	onkeydown={(e) => {
-		if (modal?.visibility().visible) {
+		if (modal?.visibility().visible && !noPrevNext) {
 			if (["ArrowRight"].includes(e.key)) {
 				content?.next();
 			} else if (["ArrowLeft"].includes(e.key)) {
@@ -141,6 +150,9 @@
 			{noName}
 			{clampPan}
 			{noDownload}
+			{noPrevNext}
+			{noZoom}
+			{noZoomButtons}
 			onClose={() => modal?.close()}
 		/>
 	</ModalDialog>

@@ -22,6 +22,12 @@
 		clampPan?: boolean;
 		/** Do not offer download if truthy (default false) */
 		noDownload?: boolean;
+		/** Hide prev/next arrow buttons */
+		noPrevNext?: boolean;
+		/** Disable all zooming (buttons + gestures) */
+		noZoom?: boolean;
+		/** Hide zoom buttons only (gestures still work) */
+		noZoomButtons?: boolean;
 	}
 </script>
 
@@ -41,6 +47,9 @@
 		noName,
 		clampPan = false,
 		noDownload = false,
+		noPrevNext = false,
+		noZoom = false,
+		noZoomButtons = false,
 	}: Props = $props();
 
 	let assets: AssetPreviewNormalized[] = $derived(
@@ -85,12 +94,14 @@
 			classProp
 		)}
 		onkeydown={(e) => {
-			if (e.key === "ArrowRight") {
-				e.preventDefault();
-				content?.next();
-			} else if (e.key === "ArrowLeft") {
-				e.preventDefault();
-				content?.previous();
+			if (!noPrevNext) {
+				if (e.key === "ArrowRight") {
+					e.preventDefault();
+					content?.next();
+				} else if (e.key === "ArrowLeft") {
+					e.preventDefault();
+					content?.previous();
+				}
 			}
 		}}
 	>
@@ -104,6 +115,9 @@
 			{noName}
 			{clampPan}
 			{noDownload}
+			{noPrevNext}
+			{noZoom}
+			{noZoomButtons}
 			noClose
 		/>
 	</div>
