@@ -56,4 +56,12 @@
 			opacity: 1;
 		}
 	}
+
+	/* Tighter edge offset on small screens (override browser default ~2em inset) */
+	@media (max-width: 640px) {
+		.stuic-modal-dialog {
+			max-width: calc(100% - 1rem);
+			max-height: calc(100% - 1rem);
+		}
+	}
 }

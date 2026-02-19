@@ -162,8 +162,8 @@
 		class={twMerge(
 			"stuic-modal-dialog",
 			"fixed m-auto size-auto",
-			// Note that the default browser styling is (so we are not touching the edge):
-			// max-width/height: calc((100% - 6px) - 2em);
+			// Browser default max-width/height is calc((100% - 6px) - 2em).
+			// Overridden on small screens in index.css.
 			"p-0 inset-0",
 			"flex justify-center items-center",
 			"focus:outline-none focus-visible:outline-none",
