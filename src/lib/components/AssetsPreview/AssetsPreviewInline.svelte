@@ -8,6 +8,8 @@
 
 	export interface Props {
 		assets: string[] | AssetPreview[];
+		/** Fallback base URL for resolving relative asset URLs */
+		baseUrl?: string;
 		classControls?: string;
 		class?: string;
 		/** Optional translate function */
@@ -46,11 +48,13 @@
 <script lang="ts">
 	import { twMerge } from "../../utils/tw-merge.js";
 	import { preloadImgs, type PreloadImgOptions } from "../../utils/preload-img.js";
+	import { resolveUrl, resolveSrcset } from "../../utils/resolve-url.js";
 	import { normalizeInput, t_default } from "./_internal/assets-preview-utils.js";
 	import AssetsPreviewContent from "./_internal/AssetsPreviewContent.svelte";
 
 	let {
 		assets: _assets,
+		baseUrl,
 		t = t_default,
 		class: classProp = "",
 		classControls = "",
@@ -79,8 +83,8 @@
 		const toPreload: PreloadImgOptions[] = (assets ?? [])
 			.filter((asset) => asset.isImage)
 			.map((asset) => ({
-				src: String(asset.url.full),
-				srcset: asset.srcset,
+				src: resolveUrl(String(asset.url.full), baseUrl),
+				srcset: resolveSrcset(asset.srcset ?? "", baseUrl) || undefined,
 				sizes: asset.sizes,
 			}));
 		if (toPreload.length) {
@@ -129,6 +133,7 @@
 			bind:this={content}
 			bind:previewIdx
 			{assets}
+			{baseUrl}
 			{classControls}
 			{t}
 			{onDelete}

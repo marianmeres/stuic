@@ -4,6 +4,7 @@
 	import type { TranslateFn } from "../../types.js";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import { preloadImgs, type PreloadImgOptions } from "../../utils/preload-img.js";
+	import { resolveUrl, resolveSrcset } from "../../utils/resolve-url.js";
 
 	export type {
 		AssetPreviewUrlObj,
@@ -19,6 +20,8 @@
 
 	export interface Props {
 		assets: string[] | AssetPreview[];
+		/** Fallback base URL for resolving relative asset URLs */
+		baseUrl?: string;
 		classControls?: string;
 		//
 		modalClassDialog?: string;
@@ -63,6 +66,7 @@
 		modalClassDialog = "",
 		modalClass = "",
 		assets: _assets,
+		baseUrl,
 		t = t_default,
 		classControls = "",
 		onDelete,
@@ -96,8 +100,8 @@
 			const toPreload: PreloadImgOptions[] = (assets ?? [])
 				.filter((asset) => asset.isImage)
 				.map((asset) => ({
-					src: String(asset.url.full),
-					srcset: asset.srcset,
+					src: resolveUrl(String(asset.url.full), baseUrl),
+					srcset: resolveSrcset(asset.srcset ?? "", baseUrl) || undefined,
 					sizes: asset.sizes,
 				}));
 
@@ -161,6 +165,7 @@
 			bind:this={content}
 			bind:previewIdx
 			{assets}
+			{baseUrl}
 			{classControls}
 			{t}
 			{onDelete}

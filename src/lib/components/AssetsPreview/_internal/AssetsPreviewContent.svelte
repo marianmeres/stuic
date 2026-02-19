@@ -12,6 +12,7 @@
 	import { twMerge } from "../../../utils/tw-merge.js";
 	import { forceDownload } from "../../../utils/force-download.js";
 	import { preloadImgs, type PreloadImgOptions } from "../../../utils/preload-img.js";
+	import { resolveUrl, resolveSrcset } from "../../../utils/resolve-url.js";
 	import { fade } from "svelte/transition";
 	import Button from "../../Button/Button.svelte";
 	import SpinnerCircleOscillate from "../../Spinner/SpinnerCircleOscillate.svelte";
@@ -25,6 +26,8 @@
 	interface Props {
 		assets: AssetPreviewNormalized[];
 		previewIdx: number;
+		/** Fallback base URL for resolving relative asset URLs */
+		baseUrl?: string;
 		clampPan?: boolean;
 		noName?: boolean;
 		noDownload?: boolean;
@@ -58,6 +61,7 @@
 	let {
 		assets,
 		previewIdx = $bindable(0),
+		baseUrl,
 		clampPan = false,
 		noName,
 		noDownload = false,
@@ -391,15 +395,15 @@
 			const nextAsset = assets[(idx + offset) % len];
 			if (prevAsset?.isImage) {
 				toPreload.push({
-					src: String(prevAsset.url.full),
-					srcset: prevAsset.srcset,
+					src: resolveUrl(String(prevAsset.url.full), baseUrl),
+					srcset: resolveSrcset(prevAsset.srcset ?? "", baseUrl) || undefined,
 					sizes: prevAsset.sizes,
 				});
 			}
 			if (nextAsset?.isImage) {
 				toPreload.push({
-					src: String(nextAsset.url.full),
-					srcset: nextAsset.srcset,
+					src: resolveUrl(String(nextAsset.url.full), baseUrl),
+					srcset: resolveSrcset(nextAsset.srcset ?? "", baseUrl) || undefined,
 					sizes: nextAsset.sizes,
 				});
 			}
@@ -443,8 +447,8 @@
 		>
 			<img
 				use:pannable
-				src={String(previewAsset.url.full)}
-				srcset={previewAsset.srcset || undefined}
+				src={resolveUrl(String(previewAsset.url.full), baseUrl)}
+				srcset={resolveSrcset(previewAsset.srcset ?? "", baseUrl) || undefined}
 				sizes={previewAsset.sizes || undefined}
 				class="max-w-full max-h-full object-scale-down select-none"
 				class:cursor-grab={zoomLevel > 1 && !isPanning}
@@ -592,7 +596,7 @@
 					type="button"
 					onclick={(e) => {
 						e.preventDefault();
-						forceDownload(String(previewAsset.url.original), previewAsset?.name || "");
+						forceDownload(resolveUrl(String(previewAsset.url.original), baseUrl), previewAsset?.name || "");
 					}}
 					aria-label={t("download")}
 					tooltip={t("download")}
