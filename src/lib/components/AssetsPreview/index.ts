@@ -3,6 +3,7 @@ export {
 	type Props as AssetsPreviewProps,
 	type AssetPreview,
 	type AssetPreviewUrlObj,
+	type AssetArea,
 	getAssetIcon,
 } from "./AssetsPreview.svelte";
 

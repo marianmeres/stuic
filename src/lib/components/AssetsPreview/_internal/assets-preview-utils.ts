@@ -77,6 +77,11 @@ export function normalizeInput(input: string | AssetPreview): AssetPreviewNormal
 		asset.url = { ...input.url };
 		asset.name = input.name ?? "";
 		asset.type = input.type ?? "";
+		asset.srcset = input.srcset;
+		asset.sizes = input.sizes;
+		asset.width = input.width;
+		asset.height = input.height;
+		asset.areas = input.areas;
 	}
 
 	if (!asset.url.full) {

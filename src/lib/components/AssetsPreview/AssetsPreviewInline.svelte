@@ -1,6 +1,10 @@
 <script lang="ts" module>
 	import type { TranslateFn } from "../../types.js";
-	import type { AssetPreview } from "./_internal/assets-preview-types.js";
+	import type {
+		AssetArea,
+		AssetPreview,
+		AssetPreviewNormalized,
+	} from "./_internal/assets-preview-types.js";
 
 	export interface Props {
 		assets: string[] | AssetPreview[];
@@ -28,13 +32,20 @@
 		noZoom?: boolean;
 		/** Hide zoom buttons only (gestures still work) */
 		noZoomButtons?: boolean;
+		/** Never show dots (even if less than 10) */
+		noDots?: boolean;
+		/** Never show "x / y" meta */
+		noCurrentOfTotal?: boolean;
+		/** Callback when a clickable area on an image is clicked */
+		onAreaClick?: (data: { area: AssetArea; asset: AssetPreviewNormalized }) => void;
+		/** Initial asset index to display (default 0) */
+		initialIndex?: number;
 	}
 </script>
 
 <script lang="ts">
 	import { twMerge } from "../../utils/tw-merge.js";
-	import { preloadImgs } from "../../utils/preload-img.js";
-	import type { AssetPreviewNormalized } from "./_internal/assets-preview-types.js";
+	import { preloadImgs, type PreloadImgOptions } from "../../utils/preload-img.js";
 	import { normalizeInput, t_default } from "./_internal/assets-preview-utils.js";
 	import AssetsPreviewContent from "./_internal/AssetsPreviewContent.svelte";
 
@@ -44,28 +55,36 @@
 		class: classProp = "",
 		classControls = "",
 		onDelete,
+		onAreaClick,
 		noName,
 		clampPan = false,
 		noDownload = false,
 		noPrevNext = false,
 		noZoom = false,
 		noZoomButtons = false,
+		noDots = false,
+		noCurrentOfTotal = false,
+		initialIndex = 0,
 	}: Props = $props();
 
 	let assets: AssetPreviewNormalized[] = $derived(
 		(_assets ?? []).map(normalizeInput).filter(Boolean) as AssetPreviewNormalized[]
 	);
 
-	let previewIdx = $state<number>(0);
+	let previewIdx = $state<number>(initialIndex);
 	let content: AssetsPreviewContent | undefined = $state();
 
 	// Preload images when assets change
 	$effect(() => {
-		const toPreload = (assets ?? [])
-			.map((asset) => (asset.isImage ? String(asset.url.full) : ""))
-			.filter(Boolean);
+		const toPreload: PreloadImgOptions[] = (assets ?? [])
+			.filter((asset) => asset.isImage)
+			.map((asset) => ({
+				src: String(asset.url.full),
+				srcset: asset.srcset,
+				sizes: asset.sizes,
+			}));
 		if (toPreload.length) {
-			preloadImgs(toPreload.map((src) => ({ src })));
+			preloadImgs(toPreload);
 		}
 	});
 
@@ -84,7 +103,8 @@
 </script>
 
 {#if assets.length}
-	<!-- svelte-ignore a11y_no_noninteractive_tabindex a11y_no_noninteractive_element_interactions -->
+	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+	<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 	<div
 		tabindex="0"
 		role="region"
@@ -118,6 +138,9 @@
 			{noPrevNext}
 			{noZoom}
 			{noZoomButtons}
+			{noDots}
+			{noCurrentOfTotal}
+			{onAreaClick}
 			noClose
 		/>
 	</div>

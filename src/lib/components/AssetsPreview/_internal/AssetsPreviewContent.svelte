@@ -11,10 +11,15 @@
 	import type { TranslateFn } from "../../../types.js";
 	import { twMerge } from "../../../utils/tw-merge.js";
 	import { forceDownload } from "../../../utils/force-download.js";
-	import { preloadImgs } from "../../../utils/preload-img.js";
+	import { preloadImgs, type PreloadImgOptions } from "../../../utils/preload-img.js";
 	import { fade } from "svelte/transition";
 	import Button from "../../Button/Button.svelte";
-	import type { AssetPreview, AssetPreviewNormalized } from "./assets-preview-types.js";
+	import SpinnerCircleOscillate from "../../Spinner/SpinnerCircleOscillate.svelte";
+	import type {
+		AssetArea,
+		AssetPreview,
+		AssetPreviewNormalized,
+	} from "./assets-preview-types.js";
 	import { getAssetIcon, t_default } from "./assets-preview-utils.js";
 
 	interface Props {
@@ -30,6 +35,10 @@
 		noZoom?: boolean;
 		/** Hide zoom buttons only (gestures still work) */
 		noZoomButtons?: boolean;
+		/** Never show dots (even if less than 10) */
+		noDots?: boolean;
+		/** Never show "x / y" meta */
+		noCurrentOfTotal?: boolean;
 		classControls?: string;
 		t?: TranslateFn;
 		onDelete?: (
@@ -39,6 +48,8 @@
 				close: () => void;
 			}
 		) => void;
+		/** Callback when a clickable area on an image is clicked */
+		onAreaClick?: (data: { area: AssetArea; asset: AssetPreviewNormalized }) => void;
 		onClose?: () => void;
 	}
 
@@ -54,9 +65,12 @@
 		noPrevNext = false,
 		noZoom = false,
 		noZoomButtons = false,
+		noDots = false,
+		noCurrentOfTotal = false,
 		classControls = "",
 		t = t_default,
 		onDelete,
+		onAreaClick,
 		onClose,
 	}: Props = $props();
 
@@ -89,6 +103,14 @@
 	// Image and container dimensions for pan clamping
 	let imgEl: HTMLImageElement | null = null;
 	let containerEl: HTMLDivElement | null = $state(null);
+
+	// Loading state
+	let isLoading = $state(false);
+	let loadingTimer: ReturnType<typeof setTimeout> | undefined;
+	let showSpinner = $state(false);
+
+	// Drag guard for area clicks (prevent click after drag/pan)
+	let _wasDragged = false;
 
 	const BUTTON_CLS = "stuic-assets-preview-control pointer-events-auto p-0!";
 
@@ -224,6 +246,7 @@
 
 	// Pan/drag handlers
 	function panStart(e: MouseEvent | TouchEvent) {
+		_wasDragged = false;
 		// Detect two-finger pinch gesture
 		if ("touches" in e && e.touches.length === 2) {
 			if (noZoom) return;
@@ -280,6 +303,11 @@
 		const newPanX = startPanX + (clientX - startMouseX);
 		const newPanY = startPanY + (clientY - startMouseY);
 
+		// Track drag for area click guard
+		if (Math.abs(clientX - startMouseX) > 3 || Math.abs(clientY - startMouseY) > 3) {
+			_wasDragged = true;
+		}
+
 		if (clampPan) {
 			const clamped = getClampedPan(newPanX, newPanY);
 			panX = clamped.x;
@@ -328,6 +356,10 @@
 		}
 
 		isPanning = false;
+		// Reset _wasDragged after a microtask so onclick handlers can check it first
+		requestAnimationFrame(() => {
+			_wasDragged = false;
+		});
 	}
 
 	export function next() {
@@ -353,16 +385,44 @@
 		const len = assets.length;
 		if (len <= 1) return;
 
-		const toPreload: string[] = [];
+		const toPreload: PreloadImgOptions[] = [];
 		for (let offset = 1; offset <= 2; offset++) {
 			const prevAsset = assets[(idx - offset + len) % len];
 			const nextAsset = assets[(idx + offset) % len];
-			if (prevAsset?.isImage) toPreload.push(String(prevAsset.url.full));
-			if (nextAsset?.isImage) toPreload.push(String(nextAsset.url.full));
+			if (prevAsset?.isImage) {
+				toPreload.push({
+					src: String(prevAsset.url.full),
+					srcset: prevAsset.srcset,
+					sizes: prevAsset.sizes,
+				});
+			}
+			if (nextAsset?.isImage) {
+				toPreload.push({
+					src: String(nextAsset.url.full),
+					srcset: nextAsset.srcset,
+					sizes: nextAsset.sizes,
+				});
+			}
 		}
 
 		if (toPreload.length) {
-			preloadImgs(toPreload.map((src) => ({ src }))).catch(() => {});
+			preloadImgs(toPreload).catch(() => {});
+		}
+	});
+
+	// Loading state management
+	$effect(() => {
+		const asset = assets?.[previewIdx];
+		clearTimeout(loadingTimer);
+		showSpinner = false;
+		if (asset?.isImage) {
+			isLoading = true;
+			// Delay showing spinner to avoid flash on cached images
+			loadingTimer = setTimeout(() => {
+				if (isLoading) showSpinner = true;
+			}, 150);
+		} else {
+			isLoading = false;
 		}
 	});
 
@@ -379,11 +439,13 @@
 	{#if previewAsset.isImage}
 		<div
 			bind:this={containerEl}
-			class="w-full h-full overflow-hidden flex items-center justify-center"
+			class="w-full h-full overflow-hidden flex items-center justify-center relative"
 		>
 			<img
 				use:pannable
 				src={String(previewAsset.url.full)}
+				srcset={previewAsset.srcset || undefined}
+				sizes={previewAsset.sizes || undefined}
 				class="max-w-full max-h-full object-scale-down select-none"
 				class:cursor-grab={zoomLevel > 1 && !isPanning}
 				class:cursor-grabbing={isPanning}
@@ -392,7 +454,52 @@
 					zoomLevel}px)"
 				style:transform-origin="center center"
 				draggable="false"
+				onload={() => {
+					isLoading = false;
+					showSpinner = false;
+					clearTimeout(loadingTimer);
+				}}
+				onerror={() => {
+					isLoading = false;
+					showSpinner = false;
+					clearTimeout(loadingTimer);
+				}}
 			/>
+			{#if onAreaClick && previewAsset.areas?.length && previewAsset.width && previewAsset.height}
+				<svg
+					viewBox="0 0 {previewAsset.width} {previewAsset.height}"
+					preserveAspectRatio="xMidYMid meet"
+					class="stuic-assets-preview-areas"
+					style:transform="scale({zoomLevel}) translate({panX / zoomLevel}px, {panY /
+						zoomLevel}px)"
+					style:transform-origin="center center"
+				>
+					{#each previewAsset.areas as area, i (`${area.id}-${i}`)}
+						<!-- svelte-ignore a11y_click_events_have_key_events -->
+						<!-- svelte-ignore a11y_no_static_element_interactions -->
+						<rect
+							x={area.x}
+							y={area.y}
+							width={area.w}
+							height={area.h}
+							class="stuic-assets-preview-area"
+							onclick={(e: MouseEvent) => {
+								if (_wasDragged) return;
+								e.stopPropagation();
+								onAreaClick({ area, asset: previewAsset });
+							}}
+						/>
+					{/each}
+				</svg>
+			{/if}
+			{#if showSpinner}
+				<div
+					class="absolute inset-0 flex items-center justify-center pointer-events-none"
+					transition:fade={{ duration: 150 }}
+				>
+					<SpinnerCircleOscillate class="size-10 text-(--stuic-color-muted-foreground)" />
+				</div>
+			{/if}
 		</div>
 	{:else}
 		<div use:swipeable class="w-full h-full flex flex-col items-center justify-center">
@@ -409,9 +516,7 @@
 	{/if}
 
 	{#if assets?.length > 1 && !noPrevNext}
-		<div
-			class="absolute inset-0 flex items-center justify-between pointer-events-none"
-		>
+		<div class="absolute inset-0 flex items-center justify-between pointer-events-none">
 			<Button
 				class={twMerge(BUTTON_CLS, "ml-4", classControls)}
 				onclick={previous}
@@ -471,7 +576,8 @@
 				<Button
 					class={twMerge(BUTTON_CLS, classControls)}
 					type="button"
-					onclick={() => onDelete(previewAsset, previewIdx, { close: onClose ?? (() => {}) })}
+					onclick={() =>
+						onDelete(previewAsset, previewIdx, { close: onClose ?? (() => {}) })}
 					aria-label={t("delete")}
 					tooltip={t("delete")}
 					{...BUTTON_PROPS}
@@ -486,10 +592,7 @@
 					type="button"
 					onclick={(e) => {
 						e.preventDefault();
-						forceDownload(
-							String(previewAsset.url.original),
-							previewAsset?.name || ""
-						);
+						forceDownload(String(previewAsset.url.original), previewAsset?.name || "");
 					}}
 					aria-label={t("download")}
 					tooltip={t("download")}
@@ -514,7 +617,7 @@
 	</div>
 
 	{#if assets.length > 1}
-		{#if assets.length <= 10}
+		{#if !noDots && assets.length <= 10}
 			{#if !noName && dotTooltip}
 				<div
 					class="absolute bottom-10 left-0 right-0 text-center"
@@ -530,10 +633,7 @@
 					<!-- svelte-ignore a11y_mouse_events_have_key_events -->
 					<button
 						type="button"
-						class={twMerge(
-							"stuic-assets-preview-dot",
-							i === previewIdx ? "active" : ""
-						)}
+						class={twMerge("stuic-assets-preview-dot", i === previewIdx ? "active" : "")}
 						onclick={() => {
 							previewIdx = i;
 							resetZoom();
@@ -548,9 +648,9 @@
 					></button>
 				{/each}
 			</div>
-		{:else}
+		{:else if !noCurrentOfTotal}
 			<div class="absolute bottom-4 left-1/2 -translate-x-1/2">
-				<span class="stuic-assets-preview-label px-2 py-1 text-sm">
+				<span class="stuic-assets-preview-label px-2 py-1 text-sm opacity-60">
 					{previewIdx + 1} / {assets.length}
 				</span>
 			</div>

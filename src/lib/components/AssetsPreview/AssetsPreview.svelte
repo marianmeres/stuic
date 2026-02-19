@@ -3,13 +3,17 @@
 	import { createClog } from "@marianmeres/clog";
 	import type { TranslateFn } from "../../types.js";
 	import { twMerge } from "../../utils/tw-merge.js";
-	import { preloadImgs } from "../../utils/preload-img.js";
+	import { preloadImgs, type PreloadImgOptions } from "../../utils/preload-img.js";
 
-	export type { AssetPreviewUrlObj, AssetPreview } from "./_internal/assets-preview-types.js";
+	export type {
+		AssetPreviewUrlObj,
+		AssetPreview,
+		AssetArea,
+	} from "./_internal/assets-preview-types.js";
 	export { getAssetIcon } from "./_internal/assets-preview-utils.js";
 
 	// re-import for local use
-	import type { AssetPreview } from "./_internal/assets-preview-types.js";
+	import type { AssetArea, AssetPreview } from "./_internal/assets-preview-types.js";
 	import type { AssetPreviewNormalized } from "./_internal/assets-preview-types.js";
 	import { normalizeInput, t_default } from "./_internal/assets-preview-utils.js";
 
@@ -42,6 +46,12 @@
 		noZoom?: boolean;
 		/** Hide zoom buttons only (gestures still work) */
 		noZoomButtons?: boolean;
+		/** Never show dots (even if less than 10) */
+		noDots?: boolean;
+		/** Never show "x / y" meta */
+		noCurrentOfTotal?: boolean;
+		/** Callback when a clickable area on an image is clicked */
+		onAreaClick?: (data: { area: AssetArea; asset: AssetPreviewNormalized }) => void;
 	}
 </script>
 
@@ -56,12 +66,15 @@
 		t = t_default,
 		classControls = "",
 		onDelete,
+		onAreaClick,
 		noName,
 		clampPan = false,
 		noDownload = false,
 		noPrevNext = false,
 		noZoom = false,
 		noZoomButtons = false,
+		noDots = false,
+		noCurrentOfTotal = false,
 	}: Props = $props();
 
 	let assets: AssetPreviewNormalized[] = $derived(
@@ -80,12 +93,16 @@
 			_openIdx = undefined;
 
 			// perhaps we should have some upper limit here...
-			const toPreload = (assets ?? [])
-				.map((asset) => (asset.isImage ? String(asset.url.full) : ""))
-				.filter(Boolean);
+			const toPreload: PreloadImgOptions[] = (assets ?? [])
+				.filter((asset) => asset.isImage)
+				.map((asset) => ({
+					src: String(asset.url.full),
+					srcset: asset.srcset,
+					sizes: asset.sizes,
+				}));
 
 			clog.debug("going to (maybe) preload", toPreload);
-			preloadImgs(toPreload.map((src) => ({ src })));
+			if (toPreload.length) preloadImgs(toPreload);
 		} else {
 			// Reset zoom when modal closes
 			content?.resetZoom();
@@ -153,6 +170,9 @@
 			{noPrevNext}
 			{noZoom}
 			{noZoomButtons}
+			{noDots}
+			{noCurrentOfTotal}
+			{onAreaClick}
 			onClose={() => modal?.close()}
 		/>
 	</ModalDialog>

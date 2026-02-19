@@ -23,6 +23,9 @@
 	--stuic-assets-preview-dot-bg-hover: var(--stuic-color-surface-hover);
 	--stuic-assets-preview-dot-border: var(--stuic-color-border);
 
+	/* Area overlay */
+	--stuic-assets-preview-area-fill-hover: rgba(0 0 0 / 0.06);
+
 	/* Transition */
 	--stuic-assets-preview-transition: 150ms;
 }
@@ -57,5 +60,28 @@
 
 	.stuic-assets-preview-dot.active {
 		background: var(--stuic-assets-preview-dot-bg-active);
+	}
+
+	/* ============================================================================
+	   CLICKABLE AREAS (SVG overlay)
+	   ============================================================================ */
+
+	.stuic-assets-preview-areas {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+	}
+
+	.stuic-assets-preview-area {
+		pointer-events: all;
+		cursor: pointer;
+		fill: transparent;
+		transition: fill var(--stuic-assets-preview-transition);
+	}
+
+	.stuic-assets-preview-area:hover {
+		fill: var(--stuic-assets-preview-area-fill-hover);
 	}
 }
