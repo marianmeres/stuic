@@ -12,6 +12,9 @@ export { iconBsFileEarmarkText as iconFileText } from "@marianmeres/icons-fns/bo
 export { iconBsFileEarmarkWord as iconFileWord } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkWord.js";
 export { iconBsFileEarmarkZip as iconFileZip } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmarkZip.js";
 
+// Book Icons (Feather)
+export { iconFeatherBookOpen as iconBookOpen } from "@marianmeres/icons-fns/feather/iconFeatherBookOpen.js";
+
 // Alert/Notification Icons (Lucide)
 export { iconLucideCircleCheck as iconAlertSuccess } from "@marianmeres/icons-fns/lucide/iconLucideCircleCheck.js";
 export { iconLucideInfo as iconAlertInfo } from "@marianmeres/icons-fns/lucide/iconLucideInfo.js";

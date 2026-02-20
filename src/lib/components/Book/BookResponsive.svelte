@@ -11,21 +11,44 @@
 		inlineThreshold?: number;
 		/** Force inline asset-preview mode regardless of container width (default: false) */
 		forceInline?: boolean;
+		/** Hide prev/next arrow buttons (default: false) */
+		noPrevNext?: boolean;
+		/** Custom class for prev/next control buttons */
+		classControls?: string;
+		/** Hide the mode switch toggle button (default: false) */
+		noModeSwitch?: boolean;
+		/** Initial display mode. When set, overrides the automatic threshold-based
+		 *  detection on mount but still allows switching via the toggle button.
+		 *  (default: undefined — auto-detect from container width) */
+		initialMode?: "book" | "inline";
 	}
 </script>
 
 <script lang="ts">
+	import {
+		iconBookOpen,
+		iconArrowRight as iconNext,
+		iconArrowLeft as iconPrevious,
+	} from "$lib/icons/index.js";
+	import { waitForTwoRepaints } from "$lib/utils/paint.js";
+	import { resolveUrl } from "$lib/utils/resolve-url.js";
+	import { twMerge } from "$lib/utils/tw-merge.js";
+	import { iconLucideFileImage as iconFileImage } from "@marianmeres/icons-fns/lucide/iconLucideFileImage.js";
+	import type { AssetPreviewNormalized } from "../AssetsPreview/_internal/assets-preview-types.js";
+	import AssetsPreviewInline from "../AssetsPreview/AssetsPreviewInline.svelte";
+	import Button from "../Button/Button.svelte";
+	import IconSwap from "../IconSwap/IconSwap.svelte";
+	import { bookPagesToAssets } from "./_internal/book-pages-to-assets.js";
 	import Book, {
 		buildSpreads,
 		computeBookPageSize,
 		type BookPage,
 		type BookSpread,
 	} from "./Book.svelte";
-	import { waitForTwoRepaints } from "$lib/utils/paint.js";
-	import AssetsPreviewInline from "../AssetsPreview/AssetsPreviewInline.svelte";
-	import { bookPagesToAssets } from "./_internal/book-pages-to-assets.js";
-	import { resolveUrl } from "$lib/utils/resolve-url.js";
-	import type { AssetPreviewNormalized } from "../AssetsPreview/_internal/assets-preview-types.js";
+
+	const BUTTON_CLS = "stuic-book-control pointer-events-auto p-0!";
+	const BUTTON_PROPS = { aspect1: true, variant: "soft" as const, roundedFull: true };
+	const ICON_SIZE = 24;
 
 	let bookRef: ReturnType<typeof Book> | undefined = $state();
 	let inlineRef: ReturnType<typeof AssetsPreviewInline> | undefined = $state();
@@ -37,6 +60,10 @@
 		activeSpread = $bindable(0),
 		inlineThreshold = 480,
 		forceInline = false,
+		noPrevNext = false,
+		noModeSwitch = false,
+		initialMode,
+		classControls = "",
 		// Extract props needed for inline mode forwarding
 		baseUrl,
 		onAreaClick,
@@ -60,12 +87,32 @@
 	let measured = $state(false);
 	let containerWidth = $state(0);
 
+	// ---- Manual mode override ----
+
+	let manualMode: "book" | "inline" | null = $state(initialMode ?? null);
+
 	// ---- Inline mode ----
+
+	let belowThreshold = $derived(
+		inlineThreshold > 0 && containerWidth > 0 && containerWidth < inlineThreshold
+	);
 
 	let useInline = $derived(
 		forceInline ||
-			(inlineThreshold > 0 && containerWidth > 0 && containerWidth < inlineThreshold)
+			belowThreshold ||
+			(manualMode !== null ? manualMode === "inline" : false)
 	);
+
+	const MODE_SWITCH_ICON_SIZE = 19;
+	const modeSwitchStates = [
+		iconBookOpen({ size: MODE_SWITCH_ICON_SIZE, strokeWidth: 2 }),
+		iconFileImage({ size: MODE_SWITCH_ICON_SIZE, strokeWidth: 2 }),
+	];
+	let modeSwitchActive = $derived(useInline ? 1 : 0);
+
+	function toggleMode() {
+		manualMode = useInline ? "book" : "inline";
+	}
 
 	let inlineAssets = $derived(useInline ? bookPagesToAssets(pages, baseUrl) : []);
 
@@ -302,6 +349,8 @@
 			noDownload
 			noDots
 			noZoomButtons
+			{noPrevNext}
+			{classControls}
 			class="absolute inset-0"
 		/>
 	{:else if measured}
@@ -318,11 +367,49 @@
 			{zoom}
 			{...rest}
 		/>
+		{#if pages.length > 1 && !noPrevNext}
+			<div
+				class="absolute inset-0 flex items-center justify-between pointer-events-none"
+				style:z-index={100}
+			>
+				<Button
+					class={twMerge(BUTTON_CLS, "ml-4", classControls)}
+					onclick={() => previous()}
+					type="button"
+					{...BUTTON_PROPS}
+				>
+					{@html iconPrevious({ size: ICON_SIZE })}
+				</Button>
+				<Button
+					class={twMerge(BUTTON_CLS, "mr-4", classControls)}
+					onclick={() => next()}
+					type="button"
+					{...BUTTON_PROPS}
+				>
+					{@html iconNext({ size: ICON_SIZE })}
+				</Button>
+			</div>
+		{/if}
+	{/if}
+	{#if !noModeSwitch && !forceInline && !belowThreshold && pages.length > 0}
+		<Button
+			type="button"
+			aspect1
+			roundedFull
+			class="absolute bottom-4 right-4 border-0"
+			onclick={toggleMode}
+			tooltip={() => ({
+				content: useInline ? "Switch to book view" : "Switch to inline view",
+			})}
+		>
+			<IconSwap states={modeSwitchStates} active={modeSwitchActive} duration={200} />
+		</Button>
 	{/if}
 </div>
 
 <style>
 	.stuic-book-responsive {
+		position: relative;
 		flex: 1;
 		min-height: 0;
 		display: flex;
