@@ -2,7 +2,7 @@
 
 ## Overview
 
-42 utility modules for common tasks. Organized by category.
+43 utility modules for common tasks. Organized by category.
 
 ---
 
@@ -121,6 +121,15 @@ import { twMerge } from "@marianmeres/stuic";
 // Handles Tailwind class conflicts
 twMerge("px-4 py-2", "px-6"); // => "py-2 px-6"
 ```
+
+---
+
+## URL
+
+| Util            | Purpose                                      |
+| --------------- | -------------------------------------------- |
+| `resolveUrl`    | Resolve relative URL against base URL        |
+| `resolveSrcset` | Resolve all URLs within a srcset string      |
 
 ---
 

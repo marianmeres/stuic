@@ -63,14 +63,16 @@
 | --------------- | ------------------------------------------------------------------- |
 | Avatar          | User avatars with fallback                                          |
 | KbdShortcut     | Keyboard shortcut hints                                             |
-| Carousel        | Image/content slider                                                |
+| Carousel        | Image/content slider with snap, keyboard nav, wheel scroll, arrows  |
 | ListItemButton  | List item with actions                                              |
 | AnimatedElipsis | Loading dots animation                                              |
 | IconSwap        | N-state visibility swap with opacity transitions (e.g. hamburger/X) |
 | DataTable       | Responsive data table with paging, selection, batch actions         |
 | ThemePreview    | Theme color swatches                                                |
-| AssetsPreview   | Modal-based asset/file preview with zoom, pan, download             |
-| Book            | Interactive book/flipbook reader with 3D page-flip animation        |
+| AssetsPreview       | Modal-based asset/file preview with zoom, pan, swipe, area clicking |
+| AssetsPreviewInline | Always-visible (non-modal) asset preview with same feature set      |
+| Book                | Interactive book/flipbook with 3D page-flip, zoom, pan, areas      |
+| BookResponsive      | Responsive Book wrapper: auto single/dual-page + inline mode       |
 | Circle          | SVG circular progress indicator                                     |
 | H               | Semantic heading (h1-h6) with separate visual/semantic levels       |
 | Separator       | Horizontal/vertical separator line                                  |

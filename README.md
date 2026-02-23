@@ -143,7 +143,7 @@ CommandMenu, DropdownMenu, TabbedMenu, TypeaheadInput, KbdShortcut
 
 ### Display & Utility
 
-Avatar, Book, Carousel, Circle, AnimatedElipsis, H, IconSwap, Separator, ThemePreview, ColorScheme, Thc, HoverExpandableWidth, AssetsPreview, DataTable
+Avatar, Book, BookResponsive, Carousel, Circle, AnimatedElipsis, H, IconSwap, Separator, ThemePreview, ColorScheme, Thc, HoverExpandableWidth, AssetsPreview, AssetsPreviewInline, DataTable
 
 ### E-commerce
 

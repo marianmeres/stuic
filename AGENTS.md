@@ -25,7 +25,7 @@
 src/lib/
 ├── components/     # 45 UI components
 ├── actions/        # 14 Svelte actions
-├── utils/          # 42 utility modules
+├── utils/          # 43 utility modules
 ├── themes/         # 29 theme definitions (.ts) + generated CSS (css/)
 ├── icons/          # Icon re-exports
 ├── index.css       # Centralized CSS imports

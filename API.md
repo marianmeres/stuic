@@ -76,7 +76,18 @@ Overlay container with backdrop. Controlled programmatically.
 
 #### `ModalDialog`
 
-Pre-styled modal dialog with title and action buttons.
+Pre-styled modal dialog with title and action buttons. Uses native `<dialog>` element with focus trap and backdrop.
+
+| Prop               | Type       | Default     | Description                                           |
+| ------------------ | ---------- | ----------- | ----------------------------------------------------- |
+| `classDialog`      | `string`   | `undefined` | CSS class for the dialog element                      |
+| `noClickOutsideClose` | `boolean` | `false`  | Disable close on outside click                        |
+| `noEscapeClose`    | `boolean`  | `false`     | Disable close on Escape key                           |
+| `noScrollLock`     | `boolean`  | `false`     | Disable body scroll lock when open                    |
+| `preEscapeClose`   | `() => any` | —          | Pre-close hook for Escape. Return false to prevent.   |
+| `preClose`         | `() => any` | —          | Pre-close hook. Return false to prevent.              |
+
+**Methods:** `open(openerOrEvent?)`, `close()`
 
 #### `Drawer`
 
@@ -714,7 +725,46 @@ Keyboard shortcut display.
 
 #### `Carousel`
 
-Image/content slider with navigation.
+Image/content slider with scroll snap, keyboard navigation, wheel scroll, optional arrows, and active item tracking via IntersectionObserver.
+
+| Prop                | Type                                              | Default     | Description                                        |
+| ------------------- | ------------------------------------------------- | ----------- | -------------------------------------------------- |
+| `items`             | `CarouselItem[]`                                  | required    | Array of carousel items                            |
+| `itemsPerView`      | `number`                                          | `1`         | Number of items visible per view                   |
+| `peekPercent`       | `number`                                          | `0`         | Percentage of next item to show as peek (0-50)     |
+| `gap`               | `number \| string`                                | `undefined` | Gap between items                                  |
+| `trackActive`       | `boolean`                                         | `false`     | Enable active item tracking                        |
+| `syncActiveOnScroll`| `boolean`                                         | `false`     | Sync active item based on scroll position          |
+| `activeIndex`       | `number`                                          | `0`         | Currently active item index (bindable)             |
+| `value`             | `string \| number`                                | `undefined` | Currently active item ID (bindable)                |
+| `snap`              | `boolean`                                         | `true`      | Enable scroll snap behavior                        |
+| `snapAlign`         | `"start" \| "center" \| "end"`                    | `"start"`   | Snap alignment                                     |
+| `keyboard`          | `boolean`                                         | `true`      | Enable keyboard navigation (arrows, Home, End)     |
+| `loop`              | `boolean`                                         | `false`     | Allow cycling from last to first and vice versa    |
+| `scrollBehavior`    | `ScrollBehavior`                                  | `"smooth"`  | Scroll behavior for programmatic navigation        |
+| `scrollbar`         | `boolean`                                         | `true`      | Show scrollbar on hover                            |
+| `wheelScroll`       | `boolean`                                         | `true`      | Enable horizontal scrolling via mouse wheel        |
+| `arrows`            | `boolean`                                         | `false`     | Show prev/next arrow buttons                       |
+| `minItemWidth`      | `number`                                          | `undefined` | Minimum item width (px) for auto-fit               |
+| `onActiveChange`    | `(item: CarouselItem, index: number) => void`     | —           | Callback when active item changes                  |
+| `renderItem`        | `Snippet<[{ item, index, active }]>`              | —           | Custom render snippet for items                    |
+
+**Methods:** `goTo(index)`, `goToId(id)`, `next()`, `previous()`
+
+```svelte
+<Carousel
+	items={slides}
+	itemsPerView={3}
+	gap={16}
+	arrows
+	trackActive
+	syncActiveOnScroll
+>
+	{#snippet renderItem({ item, index, active })}
+		<img src={item.data.src} alt={item.data.alt} />
+	{/snippet}
+</Carousel>
+```
 
 #### `AnimatedElipsis`
 
@@ -789,7 +839,65 @@ Theme color swatch preview.
 
 #### `Book`
 
-Interactive book/flipbook reader with 3D CSS page flip animation, zoom, pan, swipe, and responsive single-page mode.
+Interactive book/flipbook reader with 3D CSS page flip animation, zoom, pan, swipe, clickable areas, and responsive single-page mode.
+
+| Prop             | Type                                                          | Default        | Description                                   |
+| ---------------- | ------------------------------------------------------------- | -------------- | --------------------------------------------- |
+| `pages`          | `BookPage[]`                                                  | required       | Ordered array of book pages                   |
+| `baseUrl`        | `string`                                                      | `undefined`    | Fallback base URL for relative page src       |
+| `activeSpread`   | `number`                                                      | `0`            | Currently active spread index (bindable)      |
+| `keyboard`       | `boolean`                                                     | `true`         | Enable keyboard navigation                    |
+| `swipe`          | `boolean`                                                     | `true`         | Enable swipe gesture navigation               |
+| `duration`       | `number`                                                      | `500`          | Flip animation duration in ms                 |
+| `zoom`           | `boolean`                                                     | `true`         | Enable zoom capability                        |
+| `zoomLevels`     | `readonly number[]`                                           | `[1,1.5,2,3]`  | Discrete zoom levels                          |
+| `clampPan`       | `boolean`                                                     | `false`        | Clamp panning within bounds                   |
+| `singlePage`     | `boolean`                                                     | `false`        | Force single-page layout                      |
+| `responsive`     | `boolean`                                                     | `true`         | Auto-switch to single-page when narrow        |
+| `onSpreadChange` | `(spread: BookSpread, index: number) => void`                 | —              | Callback when active spread changes           |
+| `onPageClick`    | `(data: { page: BookPage; x: number; y: number }) => void`   | —              | Callback on page click (coordinates 0–1)      |
+| `onAreaClick`    | `(data: { area: BookPageArea; page: BookPage }) => void`      | —              | Callback when clickable area is clicked       |
+| `renderPage`     | `Snippet<[{ page, position }]>`                               | —              | Custom page render snippet                    |
+
+**Exported helpers:** `buildSpreads(pages)`, `buildSinglePageSpreads(pages)`, `buildSheets(spreads)`, `computeBookPageSize(pages)`
+
+**Types:** `BookPage`, `BookPageArea`, `BookSpread`, `BookSheet`, `BookCollection`
+
+```svelte
+<Book
+	pages={[
+		{ id: 1, src: "/cover.jpg", width: 800, height: 1100 },
+		{ id: 2, src: "/page1.jpg", width: 800, height: 1100 },
+		{ id: 3, src: "/page2.jpg", width: 800, height: 1100 },
+	]}
+	bind:activeSpread
+/>
+```
+
+#### `BookResponsive`
+
+Responsive wrapper around Book that intelligently switches between book mode (dual/single-page) and an inline asset preview mode based on container width. Inherits all Book props except `responsive` and `singlePage` (managed internally).
+
+| Prop              | Type                  | Default     | Description                                             |
+| ----------------- | --------------------- | ----------- | ------------------------------------------------------- |
+| `minPageWidth`    | `number`              | `150`       | Min page width (px) before switching to single-page     |
+| `debounce`        | `number`              | `150`       | Resize debounce delay in ms                             |
+| `inlineThreshold` | `number`              | `480`       | Container width (px) below which switches to inline (0 = disabled) |
+| `forceInline`     | `boolean`             | `false`     | Force inline asset preview mode                         |
+| `noPrevNext`      | `boolean`             | `false`     | Hide prev/next arrow buttons                            |
+| `classControls`   | `string`              | `undefined` | Custom class for prev/next buttons                      |
+| `noModeSwitch`    | `boolean`             | `false`     | Hide the book/inline toggle button                      |
+| `initialMode`     | `"book" \| "inline"`  | `undefined` | Override auto-detection on mount                        |
+
+**Exported utility:** `bookPagesToAssets(pages)` — Converts `BookPage[]` to `AssetPreview[]` for inline mode.
+
+```svelte
+<BookResponsive
+	pages={bookPages}
+	inlineThreshold={600}
+	onAreaClick={handleAreaClick}
+/>
+```
 
 #### `Circle`
 
@@ -831,7 +939,75 @@ Element that expands width on hover with delayed transitions and shadow effects.
 
 #### `AssetsPreview`
 
-Modal-based asset/file preview gallery with zoom, pan, pinch-zoom, and download controls.
+Modal-based asset/file preview gallery with zoom, pan, pinch-zoom, swipe navigation, clickable area overlays, and download controls. Opens in a full-screen ModalDialog.
+
+| Prop              | Type                                                              | Default     | Description                                  |
+| ----------------- | ----------------------------------------------------------------- | ----------- | -------------------------------------------- |
+| `assets`          | `string[] \| AssetPreview[]`                                      | required    | Asset URLs or asset objects                  |
+| `baseUrl`         | `string`                                                          | `undefined` | Fallback base URL for relative asset URLs    |
+| `modalClassDialog`| `string`                                                          | `undefined` | CSS class for the modal dialog               |
+| `modalClass`      | `string`                                                          | `undefined` | CSS class for the modal container            |
+| `classControls`   | `string`                                                          | `undefined` | CSS class for control buttons                |
+| `t`               | `TranslateFn`                                                     | built-in    | Translation function                         |
+| `onDelete`        | `(asset: AssetPreview, index: number, { close }) => void`         | —           | Delete handler (shows delete button)         |
+| `onAreaClick`     | `(data: { area: AssetArea; asset: AssetPreviewNormalized }) => void` | —        | Callback for clickable area on image         |
+| `noName`          | `boolean`                                                         | `false`     | Hide file name display                       |
+| `clampPan`        | `boolean`                                                         | `true`      | Clamp panning within image bounds            |
+| `noDownload`      | `boolean`                                                         | `false`     | Hide download button                         |
+| `noPrevNext`      | `boolean`                                                         | `false`     | Hide prev/next arrows                        |
+| `noZoom`          | `boolean`                                                         | `false`     | Disable all zooming                          |
+| `noZoomButtons`   | `boolean`                                                         | `false`     | Hide zoom buttons (gestures still work)      |
+| `noDots`          | `boolean`                                                         | `false`     | Never show pagination dots                   |
+| `noCurrentOfTotal`| `boolean`                                                         | `false`     | Never show "x / y" counter                   |
+
+**Methods:** `open(index?)`, `close()`
+
+**Types:** `AssetPreview`, `AssetPreviewUrlObj`, `AssetArea`
+
+**Utility:** `getAssetIcon(ext)` — Returns icon function for file extension.
+
+```svelte
+<AssetsPreview
+	assets={[
+		{ url: { full: "/photo.jpg", thumb: "/photo-thumb.jpg" }, name: "Photo", type: "image/jpeg" },
+		"/document.pdf",
+	]}
+	onDelete={(asset, i, { close }) => { deleteAsset(i); close(); }}
+/>
+```
+
+#### `AssetsPreviewInline`
+
+Always-visible (non-modal) variant of AssetsPreview with the same zoom, pan, swipe, and area clicking features. For embedding asset galleries directly in layouts.
+
+| Prop              | Type                                                              | Default     | Description                                  |
+| ----------------- | ----------------------------------------------------------------- | ----------- | -------------------------------------------- |
+| `assets`          | `string[] \| AssetPreview[]`                                      | required    | Asset URLs or asset objects                  |
+| `baseUrl`         | `string`                                                          | `undefined` | Fallback base URL for relative asset URLs    |
+| `initialIndex`    | `number`                                                          | `0`         | Starting asset index                         |
+| `currentIndex`    | `number`                                                          | `0`         | Current display index (bindable)             |
+| `class`           | `string`                                                          | `undefined` | Container CSS class                          |
+| `classControls`   | `string`                                                          | `undefined` | CSS class for control buttons                |
+| `t`               | `TranslateFn`                                                     | built-in    | Translation function                         |
+| `onDelete`        | `(asset, index, { close }) => void`                               | —           | Delete handler                               |
+| `onAreaClick`     | `(data: { area: AssetArea; asset: AssetPreviewNormalized }) => void` | —        | Callback for clickable area on image         |
+| `noName`          | `boolean`                                                         | `false`     | Hide file name display                       |
+| `clampPan`        | `boolean`                                                         | `true`      | Clamp panning within bounds                  |
+| `noDownload`      | `boolean`                                                         | `false`     | Hide download button                         |
+| `noPrevNext`      | `boolean`                                                         | `false`     | Hide prev/next arrows                        |
+| `noZoom`          | `boolean`                                                         | `false`     | Disable all zooming                          |
+| `noZoomButtons`   | `boolean`                                                         | `false`     | Hide zoom buttons (gestures still work)      |
+| `noDots`          | `boolean`                                                         | `false`     | Never show pagination dots                   |
+| `noCurrentOfTotal`| `boolean`                                                         | `false`     | Never show "x / y" counter                   |
+
+**Methods:** `goTo(index)`, `next()`, `previous()`
+
+```svelte
+<AssetsPreviewInline
+	assets={imageUrls}
+	bind:currentIndex
+/>
+```
 
 #### `X`
 
@@ -1289,6 +1465,36 @@ Generate SVG circle path data.
 
 Value oscillation for animations.
 
+### URL
+
+#### `resolveUrl(url, baseUrl?)`
+
+Resolve a possibly relative URL against an optional base URL. Returns the original URL if no baseUrl or on error.
+
+**Parameters:**
+
+- `url` (string) — URL to resolve
+- `baseUrl` (string, optional) — Base URL to resolve against
+
+**Returns:** `string`
+
+```ts
+import { resolveUrl } from "@marianmeres/stuic";
+resolveUrl("images/photo.jpg", "https://example.com/books/1/");
+// => "https://example.com/books/1/images/photo.jpg"
+```
+
+#### `resolveSrcset(srcset, baseUrl?)`
+
+Resolve all URLs within a srcset string against an optional base URL.
+
+**Parameters:**
+
+- `srcset` (string) — Srcset string with relative URLs
+- `baseUrl` (string, optional) — Base URL to resolve against
+
+**Returns:** `string`
+
 ### Files
 
 #### `fileFromBlobUrl(blobUrl, filename)`
@@ -1388,6 +1594,10 @@ Re-exported icon render functions from `@marianmeres/icons-fns`. Import from `@m
 
 `iconFile`, `iconFileBinary`, `iconFileCode`, `iconFileImage`, `iconFileMusic`, `iconFilePdf`, `iconFileRichtext`, `iconFileSlides`, `iconFileSpreadsheet`, `iconFileText`, `iconFileWord`, `iconFileZip`
 
+### Book Icons
+
+`iconBookOpen`
+
 ### Alert Icons
 
 `iconAlertSuccess`, `iconAlertInfo`, `iconAlertError`, `iconAlertWarning`, `iconRefresh`
@@ -1398,7 +1608,11 @@ Re-exported icon render functions from `@marianmeres/icons-fns`. Import from `@m
 
 ### UI Control Icons
 
-`iconCheck`, `iconChevronDown`, `iconChevronLeft`, `iconChevronRight`, `iconChevronUp`, `iconCircle`, `iconDot`, `iconEllipsisVertical`, `iconLanguages`, `iconMenu`, `iconSearch`, `iconSettings`, `iconSquare`, `iconUser`, `iconX`
+`iconCheck`, `iconChevronDown`, `iconChevronLeft`, `iconChevronRight`, `iconChevronUp`, `iconCircle`, `iconCircleCheckBig`, `iconDot`, `iconEllipsisVertical`, `iconGrip`, `iconGripHorizontal`, `iconGripVertical`, `iconLanguages`, `iconMenu`, `iconPencil`, `iconSearch`, `iconSettings`, `iconSquare`, `iconUser`, `iconX`
+
+### Brand Icons
+
+`iconApple`, `iconFacebook`, `iconGithub`, `iconGoogle`, `iconInstagram`, `iconMicrosoft`, `iconTwitterX`, `iconXbox`, `iconYoutube`
 
 ---
 
@@ -1419,6 +1633,9 @@ Naming pattern: `{ComponentName}Props`
 
 Additional exported types include:
 
+- `BookPage`, `BookPageArea`, `BookSpread`, `BookSheet`, `BookCollection` — Book component types
+- `AssetPreview`, `AssetPreviewUrlObj`, `AssetArea` — AssetPreview types
+- `CarouselItem` — Carousel item type
 - `LoginFormData`, `LoginFormValidationError` — Login form types
 - `CartComponentItem`, `CartVariant` — Cart component types
 - `CheckoutStep`, `CheckoutAddressData`, `CheckoutCustomerFormData`, `CheckoutLoginFormData`, `CheckoutOrderLineItem`, `CheckoutOrderTotals`, `CheckoutDeliveryOption`, `CheckoutDeliverySnapshot`, `CheckoutOrderData`, `CheckoutValidationError`, `CheckoutFormMode` — Checkout types
