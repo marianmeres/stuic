@@ -59,7 +59,7 @@ export interface TourShellContext {
 	isLast: boolean;
 	next: () => void;
 	prev: () => void;
-	skip: () => void;
+	skip: () => void | Promise<void>;
 }
 
 /**
@@ -81,6 +81,16 @@ export interface TourOptions {
 	onEnd?: () => void;
 	/** Called when tour is skipped by the user */
 	onSkip?: () => void;
+	/**
+	 * If provided, called before skipping. Return (or resolve) `false` to cancel the skip.
+	 * Works for both the Skip button and Escape key.
+	 * @example
+	 * ```ts
+	 * // with createConfirm helper
+	 * confirmSkip: () => confirm("Are you sure you want to skip the tutorial?")
+	 * ```
+	 */
+	confirmSkip?: () => boolean | Promise<boolean>;
 	/** Called on every step change */
 	onStepChange?: (step: TourStepDef, index: number) => void;
 	/**
@@ -149,12 +159,12 @@ export function createTour(options: TourOptions) {
 	// Escape key listener — active only while tour is running
 	$effect(() => {
 		if (active && options.closeOnEscape !== false) {
-			const handler = (e: KeyboardEvent) => {
+			const handler = async (e: KeyboardEvent) => {
 				if (e.key === "Escape") {
 					e.preventDefault();
 					e.stopPropagation();
 					e.stopImmediatePropagation();
-					skip();
+					await skip();
 				}
 			};
 			document.addEventListener("keydown", handler);
@@ -292,7 +302,8 @@ export function createTour(options: TourOptions) {
 		if (currentIndex > 0) advanceTo(currentIndex - 1);
 	}
 
-	function skip() {
+	async function skip() {
+		if (options.confirmSkip && !(await options.confirmSkip())) return;
 		currentIndex = -1;
 		store?.set(options.storageKey!, "skipped");
 		options.onSkip?.();

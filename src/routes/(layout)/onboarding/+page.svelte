@@ -1,5 +1,12 @@
 <script lang="ts">
-	import { createTour, tourStep, type TourShellContext } from "$lib/index.js";
+	import {
+		createTour,
+		tourStep,
+		type TourShellContext,
+		AlertConfirmPrompt,
+		AlertConfirmPromptStack,
+		createConfirm,
+	} from "$lib/index.js";
 	import CustomShellDemo from "./CustomShellDemo.svelte";
 
 	// ── Tour 1: Basic 3-step tour ─────────────────────────────────────────
@@ -84,7 +91,35 @@
 		onSkip: () => console.log("[persistedTour] skipped — persisted to sessionStorage"),
 	});
 
-	// ── Tour 4: Multiple independent tours ────────────────────────────────
+	// ── Tour 4: Confirm on skip ───────────────────────────────────────────
+	const acp = new AlertConfirmPromptStack();
+	const confirmDialog = createConfirm(acp);
+
+	const confirmSkipTour = createTour({
+		steps: [
+			{
+				id: "cs-step1",
+				title: "Step 1 — Try to skip",
+				content:
+					"Press Escape or click the Skip button. A confirmation dialog will appear before the tour exits.",
+				position: "bottom",
+			},
+			{
+				id: "cs-step2",
+				title: "Step 2 — Almost there",
+				content:
+					"Cancelling the confirm keeps the tour active. Confirming exits it.",
+				position: "right",
+			},
+		],
+		confirmSkip: () =>
+			confirmDialog("Are you sure you want to skip the tutorial?", {
+				variant: "warn",
+			}),
+		onSkip: () => console.log("[confirmSkipTour] skipped"),
+	});
+
+	// ── Tour 5: Multiple independent tours ────────────────────────────────
 	const tour3 = createTour({
 		steps: [
 			{
@@ -102,6 +137,8 @@
 		],
 	});
 </script>
+
+<AlertConfirmPrompt {acp} />
 
 <div class="space-y-10 p-4">
 	<h1
@@ -276,7 +313,48 @@
 
 	<hr class="my-4" />
 
-	<!-- ── Example 4: Multiple independent tours ──────────────────────── -->
+	<!-- ── Example 4: Confirm on skip ─────────────────────────────────── -->
+	<section class="space-y-4">
+		<h2 class="text-xl font-semibold">Confirm on Skip</h2>
+		<p class="text-sm text-neutral-600 dark:text-neutral-400">
+			Pass a <code>confirmSkip</code> function to intercept both the Skip
+			button and Escape key before the tour exits. Return (or resolve)
+			<code>false</code> to cancel. Wiring it to
+			<code>createConfirm(acp)</code> gives a native-style confirm dialog with
+			zero extra plumbing.
+		</p>
+
+		<div class="flex gap-3 flex-wrap items-center">
+			<button
+				class="px-4 py-2 bg-purple-500 text-white rounded text-sm"
+				onclick={confirmSkipTour.start}
+				disabled={confirmSkipTour.active}
+			>
+				{confirmSkipTour.active
+					? `Step ${confirmSkipTour.currentIndex + 1} / 2…`
+					: "Start Tour"}
+			</button>
+		</div>
+
+		<div class="flex gap-6 flex-wrap mt-2">
+			<div
+				class="px-6 py-4 bg-purple-100 dark:bg-purple-900 rounded-lg border border-purple-300 dark:border-purple-700"
+				use:tourStep={[confirmSkipTour, "cs-step1"]}
+			>
+				Element A (step 1)
+			</div>
+			<div
+				class="px-6 py-4 bg-fuchsia-100 dark:bg-fuchsia-900 rounded-lg border border-fuchsia-300 dark:border-fuchsia-700"
+				use:tourStep={[confirmSkipTour, "cs-step2"]}
+			>
+				Element B (step 2)
+			</div>
+		</div>
+	</section>
+
+	<hr class="my-4" />
+
+	<!-- ── Example 5: Multiple independent tours ──────────────────────── -->
 	<section class="space-y-4">
 		<h2 class="text-xl font-semibold">Multiple Independent Tours</h2>
 		<p class="text-sm text-neutral-600 dark:text-neutral-400">
