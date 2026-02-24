@@ -3,6 +3,7 @@ import { spotlight } from "../spotlight/spotlight.svelte.js";
 import type { SpotlightPosition } from "../spotlight/spotlight.svelte.js";
 import type { THC } from "../../components/Thc/Thc.svelte";
 import OnboardingShell from "./OnboardingShell.svelte";
+import { StorageAbstraction } from "../../utils/storage-abstraction.js";
 
 //
 
@@ -82,6 +83,14 @@ export interface TourOptions {
 	onSkip?: () => void;
 	/** Called on every step change */
 	onStepChange?: (step: TourStepDef, index: number) => void;
+	/**
+	 * If set, the tour result ('completed' or 'skipped') is persisted under this key.
+	 * On subsequent `start()` calls, the tour will silently skip if the key exists.
+	 * Use `tour.reset()` to clear the persisted state and allow the tour to run again.
+	 */
+	storageKey?: string;
+	/** Storage backend for persistence. Default: 'local' */
+	storage?: "local" | "session";
 }
 
 /**
@@ -113,6 +122,11 @@ export function createTour(options: TourOptions) {
 	let currentIndex = $state(-1);
 	const active = $derived(currentIndex >= 0);
 	const currentStep = $derived(options.steps[currentIndex] ?? null);
+
+	// Optional persistence store
+	const store = options.storageKey
+		? new StorageAbstraction(options.storage ?? "local")
+		: null;
 
 	// Element registry: stepId -> HTMLElement
 	const registry = new Map<string, HTMLElement>();
@@ -148,7 +162,7 @@ export function createTour(options: TourOptions) {
 		}
 	});
 
-	// ── Internal API (used by tourStep action) ─────────────────────────────
+	// -- Internal API (used by tourStep action) -----------------------------------------
 
 	function _register(id: string, el: HTMLElement) {
 		registry.set(id, el);
@@ -164,9 +178,7 @@ export function createTour(options: TourOptions) {
 		registry.delete(id);
 		// If the active step's element unmounts mid-tour, end gracefully
 		if (active && currentStep?.id === id) {
-			console.warn(
-				`[createTour] Active step "${id}" element unmounted — ending tour`
-			);
+			console.warn(`[createTour] Active step "${id}" element unmounted — ending tour`);
 			_end();
 		}
 	}
@@ -196,7 +208,7 @@ export function createTour(options: TourOptions) {
 		};
 	}
 
-	// ── Navigation ─────────────────────────────────────────────────────────
+	// -- Navigation ---------------------------------------------------------------------
 
 	function waitForElement(id: string): Promise<boolean> {
 		// Cancel any previous pending wait
@@ -260,12 +272,14 @@ export function createTour(options: TourOptions) {
 
 	function _end() {
 		currentIndex = -1;
+		store?.set(options.storageKey!, "completed");
 		options.onEnd?.();
 	}
 
-	// ── Public API ─────────────────────────────────────────────────────────
+	// -- Public API ---------------------------------------------------------------------
 
 	function start() {
+		if (store && store.has(options.storageKey!)) return;
 		options.onStart?.();
 		advanceTo(0);
 	}
@@ -280,7 +294,12 @@ export function createTour(options: TourOptions) {
 
 	function skip() {
 		currentIndex = -1;
+		store?.set(options.storageKey!, "skipped");
 		options.onSkip?.();
+	}
+
+	function reset() {
+		store?.remove(options.storageKey!);
 	}
 
 	return {
@@ -293,10 +312,14 @@ export function createTour(options: TourOptions) {
 		get currentIndex() {
 			return currentIndex;
 		},
+		get seen() {
+			return store ? store.has(options.storageKey!) : false;
+		},
 		start,
 		next,
 		prev,
 		skip,
+		reset,
 		// Internal — used by tourStep action
 		_register,
 		_unregister,

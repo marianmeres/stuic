@@ -60,7 +60,31 @@
 		waitForElement: 500,
 	});
 
-	// ── Tour 3: Multiple independent tours ────────────────────────────────
+	// ── Tour 3: Persisted (session storage) ───────────────────────────────
+	const persistedTour = createTour({
+		steps: [
+			{
+				id: "persisted-a",
+				title: "Persistence demo — Step 1",
+				content:
+					"This tour uses storageKey + storage: 'session'. Complete or skip it, then reload — it won't appear again this session.",
+				position: "bottom",
+			},
+			{
+				id: "persisted-b",
+				title: "Persistence demo — Step 2",
+				content:
+					"The result ('completed' or 'skipped') is stored in sessionStorage. Call tour.reset() to clear it.",
+				position: "top",
+			},
+		],
+		storageKey: "stuic-demo:onboarding-persisted",
+		storage: "session",
+		onEnd: () => console.log("[persistedTour] completed — persisted to sessionStorage"),
+		onSkip: () => console.log("[persistedTour] skipped — persisted to sessionStorage"),
+	});
+
+	// ── Tour 4: Multiple independent tours ────────────────────────────────
 	const tour3 = createTour({
 		steps: [
 			{
@@ -198,7 +222,61 @@
 
 	<hr class="my-4" />
 
-	<!-- ── Example 3: Multiple independent tours ───────────────────────── -->
+	<!-- ── Example 3: Persisted tour (session storage) ─────────────────── -->
+	<section class="space-y-4">
+		<h2 class="text-xl font-semibold">Persisted Tour (sessionStorage)</h2>
+		<p class="text-sm text-neutral-600 dark:text-neutral-400">
+			Pass <code>storageKey</code> to persist the tour result. Once completed
+			or skipped, <code>start()</code> silently does nothing on subsequent
+			calls — even after a page reload (within the same session). Use
+			<code>tour.reset()</code> to clear the stored result and allow it to run
+			again.
+		</p>
+
+		<div class="flex gap-3 flex-wrap items-center">
+			<button
+				class="px-4 py-2 bg-emerald-500 text-white rounded text-sm disabled:opacity-50"
+				onclick={persistedTour.start}
+				disabled={persistedTour.active}
+			>
+				{persistedTour.active
+					? `Step ${persistedTour.currentIndex + 1} / 2…`
+					: persistedTour.seen
+						? "Already seen (start blocked)"
+						: "Start Tour"}
+			</button>
+			{#if persistedTour.seen}
+				<button
+					class="px-4 py-2 bg-neutral-200 dark:bg-neutral-700 rounded text-sm"
+					onclick={persistedTour.reset}
+				>
+					Reset (clear sessionStorage)
+				</button>
+			{/if}
+			<span class="text-xs text-neutral-500 font-mono">
+				seen: {persistedTour.seen}
+			</span>
+		</div>
+
+		<div class="flex gap-6 flex-wrap mt-2">
+			<div
+				class="px-6 py-4 bg-emerald-100 dark:bg-emerald-900 rounded-lg border border-emerald-300 dark:border-emerald-700"
+				use:tourStep={[persistedTour, "persisted-a"]}
+			>
+				Persisted — Element A
+			</div>
+			<div
+				class="px-6 py-4 bg-cyan-100 dark:bg-cyan-900 rounded-lg border border-cyan-300 dark:border-cyan-700"
+				use:tourStep={[persistedTour, "persisted-b"]}
+			>
+				Persisted — Element B
+			</div>
+		</div>
+	</section>
+
+	<hr class="my-4" />
+
+	<!-- ── Example 4: Multiple independent tours ──────────────────────── -->
 	<section class="space-y-4">
 		<h2 class="text-xl font-semibold">Multiple Independent Tours</h2>
 		<p class="text-sm text-neutral-600 dark:text-neutral-400">
