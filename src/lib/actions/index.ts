@@ -1,4 +1,5 @@
 export * from "./autogrow.svelte.js";
+export * from "./onboarding/onboarding.svelte.js";
 export * from "./autoscroll.js";
 export * from "./dim-behind/dim-behind.svelte.js";
 export * from "./file-dropzone.svelte.js";

@@ -38,6 +38,7 @@
 		'modal',
 		'nav',
 		'notifications',
+		'onboarding',
 		// 'on-outside',
 		'popover', 
 		'progress',

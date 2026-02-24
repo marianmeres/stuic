@@ -62,6 +62,7 @@ In practice:
 
 /* Action CSS */
 @import "./actions/dim-behind/index.css";
+@import "./actions/onboarding/index.css";
 @import "./actions/popover/index.css";
 @import "./actions/spotlight/index.css";
 @import "./actions/tooltip/index.css";
