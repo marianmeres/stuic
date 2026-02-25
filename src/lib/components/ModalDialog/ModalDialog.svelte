@@ -186,6 +186,7 @@
 	>
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
+		<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 		<!-- 
 			The `onpointerdown={stopPropagation()}` is for cases where we have
 			multiple dialogs on top of each other (which is questionable by itself) and we
@@ -198,7 +199,11 @@
 			onpointerdown={stopPropagation()}
 			onclick={stopPropagation()}
 			data-type={type}
-			class={twMerge("box relative size-full overflow-auto", classProp)}
+			class={twMerge(
+				"box relative size-full overflow-auto",
+				"focus:outline-none focus-visible:outline-none",
+				classProp
+			)}
 		>
 			{@render children?.()}
 		</div>
