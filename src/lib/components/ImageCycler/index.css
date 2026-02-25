@@ -1,0 +1,28 @@
+:root {
+  --stuic-image-cycler-transition-duration: 500ms;
+}
+
+@layer components {
+  .stuic-image-cycler {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .stuic-image-cycler-bg {
+    position: absolute;
+    inset: 0;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .stuic-image-cycler-bg[data-fit="cover"]   { background-size: cover; }
+  .stuic-image-cycler-bg[data-fit="contain"] { background-size: contain; }
+  .stuic-image-cycler-bg[data-fit="fill"]    { background-size: 100% 100%; }
+
+  .stuic-image-cycler-meta {
+    position: absolute;
+    inset: 0;
+  }
+}

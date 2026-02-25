@@ -27,6 +27,7 @@
 		'file-dropzone',
 		'h',
 		'hover-expandable-width',
+		'image-cycler',
 		'icons',
 		'icon-swap',
 		'input',
