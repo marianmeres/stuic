@@ -16,7 +16,7 @@
 	// const auto = $derived(dp.isCoarse ? 3 : 2);
 
 	// if sw not provided use thicker on mobile
-	const _strokeWidth = $derived(strokeWidth ?? 2);
+	const _strokeWidth = $derived(strokeWidth ?? 1.5);
 
 	const _strokeLinecap = $derived(linecapRound ? "round" : "square");
 
