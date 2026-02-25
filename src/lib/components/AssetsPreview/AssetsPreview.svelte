@@ -57,6 +57,8 @@
 		prevNextBottom?: boolean;
 		/** Callback when a clickable area on an image is clicked */
 		onAreaClick?: (data: { area: AssetArea; asset: AssetPreviewNormalized }) => void;
+		/** Max number of images to preload in each direction from current (0 = all). Default 3. */
+		preloadWindow?: number;
 	}
 </script>
 
@@ -82,6 +84,7 @@
 		noDots = false,
 		noCurrentOfTotal = false,
 		prevNextBottom = false,
+		preloadWindow = 3,
 	}: Props = $props();
 
 	let assets: AssetPreviewNormalized[] = $derived(
@@ -96,17 +99,26 @@
 		const visible = modal?.visibility().visible;
 		if (visible) {
 			// Use the index from open(index) if provided, otherwise reset to 0
-			previewIdx = _openIdx ?? 0;
+			const idx = _openIdx ?? 0;
+			previewIdx = idx;
 			_openIdx = undefined;
 
-			// perhaps we should have some upper limit here...
-			const toPreload: PreloadImgOptions[] = (assets ?? [])
-				.filter((asset) => asset.isImage)
-				.map((asset) => ({
-					src: resolveUrl(String(asset.url.full), baseUrl),
-					srcset: resolveSrcset(asset.srcset ?? "", baseUrl) || undefined,
-					sizes: asset.sizes,
-				}));
+			const toPreload: PreloadImgOptions[] = [];
+			const len = assets.length;
+			const pw = preloadWindow > 0 ? preloadWindow : len;
+
+			for (let offset = -pw; offset <= pw; offset++) {
+				const i = idx + offset;
+				if (i < 0 || i >= len) continue;
+				const asset = assets[i];
+				if (asset?.isImage) {
+					toPreload.push({
+						src: resolveUrl(String(asset.url.full), baseUrl),
+						srcset: resolveSrcset(asset.srcset ?? "", baseUrl) || undefined,
+						sizes: asset.sizes,
+					});
+				}
+			}
 
 			clog.debug("going to (maybe) preload", toPreload);
 			if (toPreload.length) preloadImgs(toPreload);
@@ -156,6 +168,7 @@
 {#if assets.length}
 	<ModalDialog
 		bind:this={modal}
+		noAutoFocus
 		classDialog={modalClassDialog}
 		class={twMerge(
 			"max-w-full max-h-full h-full rounded-lg",

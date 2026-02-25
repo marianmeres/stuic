@@ -19,6 +19,8 @@
 		ariaDescribedby?: string;
 		/** Disable body scroll lock when dialog is open */
 		noScrollLock?: boolean;
+		/** Do not auto-focus the first focusable element when dialog opens */
+		noAutoFocus?: boolean;
 	}
 </script>
 
@@ -46,6 +48,7 @@
 		ariaLabelledby,
 		ariaDescribedby,
 		noScrollLock,
+		noAutoFocus,
 	}: Props = $props();
 
 	// important to start as undefined (because of scroll save/restore)
@@ -155,7 +158,7 @@
 {#if visible}
 	<dialog
 		bind:this={dialog}
-		use:focusTrap
+		use:focusTrap={{ autoFocusFirst: !noAutoFocus }}
 		data-type={type}
 		aria-labelledby={ariaLabelledby}
 		aria-describedby={ariaDescribedby}
