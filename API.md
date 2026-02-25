@@ -1038,6 +1038,7 @@ Modal-based asset/file preview gallery with zoom, pan, pinch-zoom, swipe navigat
 | `noZoomButtons`   | `boolean`                                                         | `false`     | Hide zoom buttons (gestures still work)      |
 | `noDots`          | `boolean`                                                         | `false`     | Never show pagination dots                   |
 | `noCurrentOfTotal`| `boolean`                                                         | `false`     | Never show "x / y" counter                   |
+| `prevNextBottom`  | `boolean`                                                         | `false`     | Render prev/next arrows at bottom            |
 
 **Methods:** `open(index?)`, `close()`
 
@@ -1078,6 +1079,7 @@ Always-visible (non-modal) variant of AssetsPreview with the same zoom, pan, swi
 | `noZoomButtons`   | `boolean`                                                         | `false`     | Hide zoom buttons (gestures still work)      |
 | `noDots`          | `boolean`                                                         | `false`     | Never show pagination dots                   |
 | `noCurrentOfTotal`| `boolean`                                                         | `false`     | Never show "x / y" counter                   |
+| `prevNextBottom`  | `boolean`                                                         | `false`     | Render prev/next arrows at bottom            |
 
 **Methods:** `goTo(index)`, `next()`, `previous()`
 

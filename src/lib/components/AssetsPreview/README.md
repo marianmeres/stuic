@@ -10,6 +10,7 @@ A modal-based asset preview component for displaying images and files. Supports 
 | `classControls` | `string`                     | -        | CSS for control buttons       |
 | `t`             | `TranslateFn`                | built-in | Translation function for i18n |
 | `onDelete`      | `(asset, index) => void`     | -        | Optional delete handler       |
+| `prevNextBottom`| `boolean`                      | `false`  | Render prev/next arrows at bottom |
 
 ## Types
 
