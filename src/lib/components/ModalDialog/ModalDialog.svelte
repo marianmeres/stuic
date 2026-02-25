@@ -71,6 +71,9 @@
 		waitForNextRepaint().then(() => {
 			try {
 				dialog?.showModal();
+				// Move focus from dialog to the box div (which has tabindex="-1")
+				// so it's not an extra tab stop — Tab goes directly to the first button
+				if (noAutoFocus) box?.focus();
 			} catch (e) {
 				console.error("ModalDialog: Failed to open dialog:", e);
 				visible = false;
@@ -191,6 +194,7 @@
 		-->
 		<div
 			bind:this={box}
+			tabindex={noAutoFocus ? -1 : undefined}
 			onpointerdown={stopPropagation()}
 			onclick={stopPropagation()}
 			data-type={type}
