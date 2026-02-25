@@ -42,6 +42,8 @@
 		noDots?: boolean;
 		/** Never show "x / y" meta */
 		noCurrentOfTotal?: boolean;
+		/** Render prev/next arrows at the bottom instead of vertically centered */
+		prevNextBottom?: boolean;
 		classControls?: string;
 		t?: TranslateFn;
 		onDelete?: (
@@ -71,6 +73,7 @@
 		noZoomButtons = false,
 		noDots = false,
 		noCurrentOfTotal = false,
+		prevNextBottom = false,
 		classControls = "",
 		t = t_default,
 		onDelete,
@@ -528,7 +531,7 @@
 	{/if}
 
 	{#if assets?.length > 1 && !noPrevNext}
-		<div class="absolute inset-0 flex items-center justify-between pointer-events-none">
+		<div class={twMerge("absolute inset-0 flex justify-between pointer-events-none", prevNextBottom ? "items-end pb-4" : "items-center")}>
 			<Button
 				class={twMerge(BUTTON_CLS, "ml-4", classControls)}
 				onclick={previous}

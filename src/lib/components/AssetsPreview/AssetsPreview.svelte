@@ -53,6 +53,8 @@
 		noDots?: boolean;
 		/** Never show "x / y" meta */
 		noCurrentOfTotal?: boolean;
+		/** Render prev/next arrows at the bottom instead of vertically centered */
+		prevNextBottom?: boolean;
 		/** Callback when a clickable area on an image is clicked */
 		onAreaClick?: (data: { area: AssetArea; asset: AssetPreviewNormalized }) => void;
 	}
@@ -79,6 +81,7 @@
 		noZoomButtons = false,
 		noDots = false,
 		noCurrentOfTotal = false,
+		prevNextBottom = false,
 	}: Props = $props();
 
 	let assets: AssetPreviewNormalized[] = $derived(
@@ -177,6 +180,7 @@
 			{noZoomButtons}
 			{noDots}
 			{noCurrentOfTotal}
+			{prevNextBottom}
 			{onAreaClick}
 			onClose={() => modal?.close()}
 		/>

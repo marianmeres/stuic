@@ -38,6 +38,8 @@
 		noDots?: boolean;
 		/** Never show "x / y" meta */
 		noCurrentOfTotal?: boolean;
+		/** Render prev/next arrows at the bottom instead of vertically centered */
+		prevNextBottom?: boolean;
 		/** Callback when a clickable area on an image is clicked */
 		onAreaClick?: (data: { area: AssetArea; asset: AssetPreviewNormalized }) => void;
 		/** Initial asset index to display (default 0) */
@@ -70,6 +72,7 @@
 		noZoomButtons = false,
 		noDots = false,
 		noCurrentOfTotal = false,
+		prevNextBottom = false,
 		initialIndex = 0,
 		currentIndex = $bindable(initialIndex),
 	}: Props = $props();
@@ -147,6 +150,7 @@
 			{noZoomButtons}
 			{noDots}
 			{noCurrentOfTotal}
+			{prevNextBottom}
 			{onAreaClick}
 			noClose
 		/>
