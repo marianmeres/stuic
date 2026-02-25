@@ -32,19 +32,19 @@ Layer 3: Internal Vars (--_bg, --_text, --_border)
 
 ```
 src/lib/
-├── components/           # 45 UI components
+├── components/           # 46 UI components
 │   └── {Name}/
 │       ├── {Name}.svelte     # Main component
 │       ├── index.ts          # Exports
 │       ├── index.css         # CSS tokens (if styled)
 │       └── README.md         # Documentation
 │
-├── actions/              # 14 Svelte actions
+├── actions/              # 15 Svelte actions
 │   ├── *.svelte.ts           # Reactive actions
 │   ├── *.ts                  # Traditional actions
 │   └── index.ts              # Barrel export
 │
-├── utils/                # 42 utility modules
+├── utils/                # 43 utility modules
 │   ├── *.svelte.ts           # Reactive utilities
 │   ├── *.ts                  # Pure functions
 │   └── index.ts              # Barrel export

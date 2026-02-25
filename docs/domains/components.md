@@ -2,7 +2,7 @@
 
 ## Overview
 
-45 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
+46 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
@@ -39,18 +39,22 @@
 
 | Component          | Purpose                               |
 | ------------------ | ------------------------------------- |
-| Notifications      | Toast notification system             |
-| AlertConfirmPrompt | Dialog factory (alert/confirm/prompt) |
-| DismissibleMessage | Closeable message banner              |
-| Progress           | Progress bar                          |
-| Spinner            | Loading indicator                     |
-| Skeleton           | Loading placeholder                   |
+| Notifications              | Toast notification system                                     |
+| AlertConfirmPrompt         | Dialog factory (alert/confirm/prompt)                         |
+| DismissibleMessage         | Closeable message banner                                      |
+| Progress                   | Progress bar                                                  |
+| Spinner                    | Loading indicator (default SVG spinner)                       |
+| SpinnerCircle              | CSS-only circular spinner with thickness/direction options     |
+| SpinnerCircleOscillate     | Animated Circle-based spinner with oscillating completeness   |
+| SpinnerUnicode             | Unicode character frame animation (17 variants)               |
+| Skeleton                   | Loading placeholder                                           |
 
 ### Form
 
 | Component                             | Purpose                                           |
 | ------------------------------------- | ------------------------------------------------- |
 | Input (FieldInput, FieldSelect, etc.) | Form fields                                       |
+| FieldPhoneNumber                      | International phone input with country picker      |
 | FieldObject                           | Dual-mode JSON object editor (pretty-print/raw)   |
 | Fieldset                              | Field grouping with legend                        |
 | FieldKeyValues                        | Key-value pair editor                             |
@@ -78,6 +82,7 @@
 | Separator       | Horizontal/vertical separator line                                  |
 | Thc             | Flexible renderer for text, HTML, components, or snippets           |
 | X               | Styled close/multiply SVG icon                                      |
+| ImageCycler     | Auto-cycling image carousel with fade transitions and preloading    |
 
 ### E-commerce
 

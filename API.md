@@ -280,6 +280,25 @@ Multi-language input field.
 
 Toggle button styled as a "like" action.
 
+#### `FieldPhoneNumber`
+
+International phone number input with country dial code picker. Parses and composes full phone numbers (e.g. `+421905123456`), handles paste with international prefix detection, supports country filtering and preferred countries.
+
+| Prop                 | Type                                | Default     | Description                                        |
+| -------------------- | ----------------------------------- | ----------- | -------------------------------------------------- |
+| `value`              | `string`                            | `""`        | Bindable full phone number (e.g. `"+421905123456"`) |
+| `country`            | `string`                            | `""`        | Bindable selected country ISO code (e.g. `"SK"`)   |
+| `dialCode`           | `string`                            | `""`        | Bindable dial code with `+` (e.g. `"+421"`)        |
+| `localNumber`        | `string`                            | `""`        | Bindable local number part                         |
+| `defaultCountry`     | `string`                            | —           | ISO code for initial country selection             |
+| `flags`              | `boolean`                           | `true`      | Show country flag emoji                            |
+| `countries`          | `string[]`                          | all         | Filtered list of country ISO codes to show         |
+| `preferredCountries` | `string[]`                          | —           | ISO codes pinned at top of dropdown                |
+| `name`               | `string`                            | —           | Hidden input name for form submission              |
+| `validate`           | `boolean \| ValidateOptions`        | —           | Enable phone validation                            |
+
+Exports: `FieldPhoneNumber`, `FieldPhoneNumberProps`, `validatePhoneNumber`, `Country`.
+
 #### `FieldObject`
 
 Dual-mode JSON object editor with pretty-print and raw edit modes. Validates JSON syntax, supports recursive depth display, auto-grow textarea, and form submission via hidden input.
@@ -405,7 +424,43 @@ Progress bar.
 
 #### `Spinner`
 
-Loading spinner indicator.
+Loading spinner indicator (default SVG spinner).
+
+#### `SpinnerCircle`
+
+CSS-only circular spinner.
+
+| Prop        | Type                              | Default    | Description                |
+| ----------- | --------------------------------- | ---------- | -------------------------- |
+| `duration`  | `number`                          | `750`      | One loop duration in ms    |
+| `thickness` | `"normal" \| "thin" \| "thick"`   | `"normal"` | Border thickness preset    |
+| `direction` | `"cw" \| "ccw"`                   | `"cw"`     | Rotation direction         |
+
+#### `SpinnerCircleOscillate`
+
+Animated Circle-based spinner with oscillating arc completeness.
+
+| Prop             | Type      | Default | Description                   |
+| ---------------- | --------- | ------- | ----------------------------- |
+| `bgStrokeColor`  | `string`  | —       | Background circle stroke      |
+| `strokeWidth`    | `number`  | —       | SVG stroke width              |
+| `noOscillate`    | `boolean` | —       | Fixed completeness (no anim)  |
+| `rotateDuration` | `string`  | —       | CSS animation duration        |
+
+#### `SpinnerUnicode`
+
+Unicode character frame animation with 17 built-in variants.
+
+| Prop       | Type                     | Default             | Description                  |
+| ---------- | ------------------------ | ------------------- | ---------------------------- |
+| `speed`    | `number`                 | `100`               | Frame interval in ms         |
+| `variant`  | `SpinnerUnicodeVariant`  | `"braille_bar_dot"` | Built-in animation variant   |
+| `reversed` | `boolean`                | `false`             | Reverse frame order          |
+| `frames`   | `string[]`               | —                   | Custom animation frames      |
+
+Variants: `braille_bar`, `braille_bar_dot`, `braille_dot_circle`, `braille_dot_bounce`, `half_circle`, `quarter_circle`, `ascii`, `bar_v`, `bar_h`, `shade`, `arrows`, `arrows2`, `asterix`, `asterix2`, `asterix3`, `asterix4`, `asterix5`.
+
+Helper: `spinnerCreateBackAndForthCharFrames(width, hiChar, loChar, glue?)` — create custom back-and-forth animation frames.
 
 #### `Skeleton`
 
@@ -829,6 +884,30 @@ Responsive data table with paging, row selection, batch actions, and mobile card
 />
 ```
 
+#### `ImageCycler`
+
+Auto-cycling image carousel with fade transitions. Preloads next image before displaying. Supports custom title/description snippets.
+
+| Prop                 | Type                | Default   | Description                              |
+| -------------------- | ------------------- | --------- | ---------------------------------------- |
+| `images`             | `ImageCyclerImage[]`| required  | Array of images to cycle through         |
+| `fit`                | `ImageCyclerFit`    | `"cover"` | CSS object-fit: `"cover"`, `"contain"`, `"fill"` |
+| `minWait`            | `number`            | `3000`    | Minimum wait (ms) before next image      |
+| `transitionDuration` | `number`            | `500`     | Fade transition duration (ms)            |
+| `onclick`            | `(image, index) => void` | —    | Click handler                            |
+| `title`              | `Snippet`           | —         | Custom title snippet `({ image, index, onclick })` |
+| `description`        | `Snippet`           | —         | Custom description snippet               |
+
+```ts
+interface ImageCyclerImage {
+	src: string;
+	alt?: string;
+	title?: string;
+	description?: string;
+	[key: string]: unknown;
+}
+```
+
 #### `ThemePreview`
 
 Theme color swatch preview.
@@ -1213,6 +1292,63 @@ Tooltip display from `aria-label`.
 
 ```svelte
 <button use:tooltip aria-label="Save changes"> Save </button>
+```
+
+### `createTour` / `tourStep` (onboarding)
+
+Multi-step onboarding tour built on the spotlight primitive. Define steps centrally, attach targets via `use:tourStep`.
+
+**`createTour(options)`**
+
+| Option            | Type                          | Default   | Description                                          |
+| ----------------- | ----------------------------- | --------- | ---------------------------------------------------- |
+| `steps`           | `TourStepDef[]`               | required  | Tour step definitions                                |
+| `waitForElement`  | `number`                      | `500`     | Max wait (ms) for step element to appear             |
+| `labels`          | `TourLabels`                  | defaults  | Default button labels (Next, Back, Skip, Finish)     |
+| `shell`           | `Snippet<[TourShellContext]>` | —         | Custom shell snippet replacing default UI            |
+| `closeOnEscape`   | `boolean`                     | `true`    | Press Escape to skip                                 |
+| `confirmSkip`     | `() => boolean \| Promise<boolean>` | —  | Guard before skipping (return `false` to cancel)     |
+| `storageKey`      | `string`                      | —         | Persist tour completion (skips on re-run)            |
+| `storage`         | `"local" \| "session"`        | `"local"` | Storage backend for persistence                      |
+| `onStart`         | `() => void`                  | —         | Called when tour starts                              |
+| `onEnd`           | `() => void`                  | —         | Called when tour completes                           |
+| `onSkip`          | `() => void`                  | —         | Called when tour is skipped                          |
+| `onStepChange`    | `(step, index) => void`       | —         | Called on every step change                          |
+
+**Returns:** `{ start(), stop(), next(), prev(), skip(), reset(), active, currentStep, currentIndex }`
+
+**`TourStepDef`:**
+
+| Field         | Type                | Description                               |
+| ------------- | ------------------- | ----------------------------------------- |
+| `id`          | `string`            | Unique ID (must match `use:tourStep`)     |
+| `title`       | `string`            | Step title                                |
+| `content`     | `THC`               | Step description (string/html/component)  |
+| `position`    | `SpotlightPosition` | Annotation placement                      |
+| `padding`     | `number`            | Cutout padding (px)                       |
+| `borderRadius`| `number`            | Cutout border radius (px)                 |
+| `onEnter`     | `() => void`        | Called when entering step                  |
+| `onLeave`     | `() => void`        | Called when leaving step                   |
+
+**`tourStep` action:** `use:tourStep={[tour, stepId]}`
+
+```svelte
+<script>
+	import { createTour, tourStep } from "@marianmeres/stuic";
+
+	const tour = createTour({
+		steps: [
+			{ id: "header", title: "Welcome", content: "This is the top." },
+			{ id: "save-btn", title: "Save", content: "Click here to save." },
+		],
+		storageKey: "intro-tour",
+		onEnd: () => console.log("Tour complete!"),
+	});
+</script>
+
+<header use:tourStep={[tour, "header"]}>...</header>
+<button use:tourStep={[tour, "save-btn"]}>Save</button>
+<button onclick={tour.start}>Start Tour</button>
 ```
 
 ---

@@ -127,7 +127,7 @@ AppShell, Accordion, Backdrop, Modal, ModalDialog, Drawer, Collapsible, SlidingP
 
 ### Forms & Inputs
 
-FieldInput, FieldTextarea, FieldSelect, FieldCheckbox, FieldRadios, FieldFile, FieldAssets, FieldOptions, FieldKeyValues, FieldObject, FieldSwitch, FieldInputLocalized, FieldLikeButton, Fieldset, LoginForm, LoginFormModal
+FieldInput, FieldTextarea, FieldSelect, FieldCheckbox, FieldRadios, FieldFile, FieldAssets, FieldOptions, FieldKeyValues, FieldObject, FieldSwitch, FieldInputLocalized, FieldLikeButton, FieldPhoneNumber, Fieldset, LoginForm, LoginFormModal
 
 ### Buttons & Controls
 
@@ -135,7 +135,7 @@ Button, ButtonGroupRadio, Switch, TwCheck, ListItemButton, X
 
 ### Feedback & Notifications
 
-Notifications, AlertConfirmPrompt, DismissibleMessage, Progress, Spinner, Skeleton
+Notifications, AlertConfirmPrompt, DismissibleMessage, Progress, Spinner (SpinnerCircle, SpinnerCircleOscillate, SpinnerUnicode), Skeleton
 
 ### Navigation & Menus
 
@@ -143,7 +143,7 @@ CommandMenu, DropdownMenu, TabbedMenu, TypeaheadInput, KbdShortcut
 
 ### Display & Utility
 
-Avatar, Book, BookResponsive, Carousel, Circle, AnimatedElipsis, H, IconSwap, Separator, ThemePreview, ColorScheme, Thc, HoverExpandableWidth, AssetsPreview, AssetsPreviewInline, DataTable
+Avatar, Book, BookResponsive, Carousel, Circle, AnimatedElipsis, H, IconSwap, ImageCycler, Separator, ThemePreview, ColorScheme, Thc, HoverExpandableWidth, AssetsPreview, AssetsPreviewInline, DataTable
 
 ### E-commerce
 
@@ -160,7 +160,7 @@ Cart, Checkout (CheckoutProgress, CheckoutOrderSummary, CheckoutCartReview, Chec
 <div use:fileDropzone={() => ({ onDrop: handleFiles })}>Drop here</div>
 ```
 
-`autogrow` · `validate` · `focusTrap` · `autoscroll` · `dimBehind` · `fileDropzone` · `highlightDragover` · `resizableWidth` · `spotlight` · `trim` · `typeahead` · `onSubmitValidityCheck` · `popover` · `tooltip`
+`autogrow` · `validate` · `focusTrap` · `autoscroll` · `dimBehind` · `fileDropzone` · `highlightDragover` · `resizableWidth` · `spotlight` · `trim` · `typeahead` · `onSubmitValidityCheck` · `popover` · `tooltip` · `createTour` / `tourStep` (onboarding)
 
 ## TypeScript
 

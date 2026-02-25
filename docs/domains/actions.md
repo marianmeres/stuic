@@ -2,7 +2,7 @@
 
 ## Overview
 
-14 Svelte actions (directives) for reusable DOM behavior.
+15 Svelte actions (directives) for reusable DOM behavior.
 
 ---
 
@@ -24,6 +24,7 @@
 | `popover`               | Popover positioning                                           | `popover/`                           |
 | `spotlight`             | Spotlight/coach mark overlay with cutout hole                 | `spotlight/`                         |
 | `tooltip`               | Tooltip positioning and display                               | `tooltip/`                           |
+| `createTour` / `tourStep` | Multi-step onboarding tour (built on spotlight)             | `onboarding/`                        |
 
 ---
 
@@ -115,6 +116,28 @@ Actions using `$effect()` accept a function returning options:
 <button use:tooltip={{ content: "Save changes", position: "top" }}> Save </button>
 ```
 
+### Onboarding Tour
+
+```svelte
+<script>
+	import { createTour, tourStep } from "@marianmeres/stuic";
+
+	const tour = createTour({
+		steps: [
+			{ id: "header", title: "Welcome", content: "This is the top." },
+			{ id: "save-btn", title: "Save", content: "Click here to save." },
+		],
+		onEnd: () => console.log("Tour complete!"),
+	});
+</script>
+
+<header use:tourStep={[tour, "header"]}>...</header>
+<button use:tourStep={[tour, "save-btn"]}>Save</button>
+<button onclick={tour.start}>Start Tour</button>
+```
+
+Features: step navigation (next/prev/skip), persistent state via `storageKey`, custom shell snippets, `confirmSkip` callback, wait-for-element mechanism, Escape key support, step lifecycle callbacks (`onEnter`/`onLeave`).
+
 ---
 
 ## Action File Patterns
@@ -163,3 +186,4 @@ export function focusTrap(el: HTMLElement, options?: Options) {
 | src/lib/actions/dim-behind/        | Simplified spotlight alternative |
 | src/lib/actions/spotlight/         | Spotlight/coach mark action      |
 | src/lib/actions/tooltip/           | Multi-file action example        |
+| src/lib/actions/onboarding/        | Multi-step onboarding tour       |
