@@ -28,6 +28,11 @@ import slateTealOceanCss from "$lib/themes/css/slate-teal-ocean.css?raw";
 import stoneOrangeEarthCss from "$lib/themes/css/stone-orange-earth.css?raw";
 import violetRoseDuskCss from "$lib/themes/css/violet-rose-dusk.css?raw";
 
+// monokai
+import monokaiPinkCss from "$lib/themes/css/monokai-pink.css?raw";
+import monokaiGreenCss from "$lib/themes/css/monokai-green.css?raw";
+import monokaiCyanCss from "$lib/themes/css/monokai-cyan.css?raw";
+
 // custom
 import ddsCss from "$lib/themes/css/dds.css?raw";
 
@@ -60,6 +65,10 @@ const themes: Record<string, string> = {
 	"slate-teal-ocean": slateTealOceanCss,
 	"stone-orange-earth": stoneOrangeEarthCss,
 	"violet-rose-dusk": violetRoseDuskCss,
+	// monokai
+	"monokai-pink": monokaiPinkCss,
+	"monokai-green": monokaiGreenCss,
+	"monokai-cyan": monokaiCyanCss,
 	//
 	dds: ddsCss,
 };
