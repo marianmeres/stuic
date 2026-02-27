@@ -21,6 +21,9 @@
 
 <Button onclick={() => preview.open()}>open</Button>
 
+<hr class="my-4" />
+<a href="/assets-preview/inline">inline</a>
+
 <AssetsPreview
 	bind:this={preview}
 	{assets}

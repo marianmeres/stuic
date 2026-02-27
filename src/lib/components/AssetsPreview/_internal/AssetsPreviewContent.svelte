@@ -14,6 +14,8 @@
 	import { preloadImgs, type PreloadImgOptions } from "../../../utils/preload-img.js";
 	import { resolveUrl, resolveSrcset } from "../../../utils/resolve-url.js";
 	import { fade } from "svelte/transition";
+	import { waitForNextRepaint } from "../../../utils/paint.js";
+	import { sleep } from "../../../utils/sleep.js";
 	import Button from "../../Button/Button.svelte";
 	import SpinnerCircleOscillate from "../../Spinner/SpinnerCircleOscillate.svelte";
 	import type {
@@ -56,6 +58,8 @@
 		/** Callback when a clickable area on an image is clicked */
 		onAreaClick?: (data: { area: AssetArea; asset: AssetPreviewNormalized }) => void;
 		onClose?: () => void;
+		/** Duration of prev/next slide transition in ms (0 to disable) */
+		slideDuration?: number;
 	}
 
 	const clog = createClog("AssetsPreview", { color: "auto" });
@@ -79,6 +83,7 @@
 		onDelete,
 		onAreaClick,
 		onClose,
+		slideDuration = 300,
 	}: Props = $props();
 
 	let dotTooltip: string | undefined = $state();
@@ -376,19 +381,51 @@
 		});
 	}
 
-	export function next() {
-		previewIdx = (previewIdx + 1) % assets.length;
+	async function slideToIndex(targetIdx: number, direction: "next" | "prev") {
+		if (slidePhase !== "idle") return;
+		targetIdx = ((targetIdx % assets.length) + assets.length) % assets.length;
+		if (targetIdx === previewIdx) return;
+
+		if (!slideDuration) {
+			// No animation — instant swap
+			previewIdx = targetIdx;
+			resetZoom();
+			return;
+		}
+
+		// Phase 1: setup — position incoming panel off-screen, outgoing at center
+		slidePhase = "setup";
+		slideDirection = direction;
+		outgoingIdx = previewIdx;
+		previewIdx = targetIdx;
 		resetZoom();
+
+		// Wait for both panels to be rendered in their initial positions
+		await waitForNextRepaint();
+
+		// Phase 2: sliding — trigger CSS transition on both panels
+		slidePhase = "sliding";
+
+		await sleep(slideDuration);
+
+		// Phase 3: clean up
+		outgoingIdx = null;
+		slideDirection = null;
+		slidePhase = "idle";
+	}
+
+	export function next() {
+		slideToIndex((previewIdx + 1) % assets.length, "next");
 	}
 
 	export function previous() {
-		previewIdx = (previewIdx - 1 + assets.length) % assets.length;
-		resetZoom();
+		slideToIndex((previewIdx - 1 + assets.length) % assets.length, "prev");
 	}
 
 	export function goTo(idx: number) {
-		previewIdx = idx % assets.length;
-		resetZoom();
+		const targetIdx = ((idx % assets.length) + assets.length) % assets.length;
+		if (targetIdx === previewIdx) return;
+		slideToIndex(targetIdx, targetIdx > previewIdx ? "next" : "prev");
 	}
 
 	let previewAsset = $derived(assets?.[previewIdx]);
@@ -447,79 +484,33 @@
 	let isSwiping = false;
 	const SWIPE_THRESHOLD = 50; // px
 	const SWIPE_MAX_TIME = 400; // ms
+
+	// Slide transition state
+	type SlidePhase = "idle" | "setup" | "sliding";
+	let slidePhase: SlidePhase = $state("idle");
+	let slideDirection: "next" | "prev" | null = $state(null);
+	let outgoingIdx: number | null = $state(null);
+	let outgoingAsset = $derived(outgoingIdx !== null ? assets?.[outgoingIdx] : null);
+
+	const SLIDE_PANEL_CLASS = "absolute inset-0 transition-transform ease-in-out";
 </script>
 
-{#if previewAsset}
-	{#if previewAsset.isImage}
-		<div
-			use:interactable
-			bind:this={containerEl}
-			class="w-full h-full overflow-hidden flex items-center justify-center relative"
-		>
+{#snippet staticAssetPanel(asset: AssetPreviewNormalized)}
+	{#if asset.isImage}
+		<div class="w-full h-full overflow-hidden flex items-center justify-center">
 			<img
-				use:pannable
-				src={resolveUrl(String(previewAsset.url.full), baseUrl)}
-				srcset={resolveSrcset(previewAsset.srcset ?? "", baseUrl) || undefined}
-				sizes={previewAsset.sizes || undefined}
+				src={resolveUrl(String(asset.url.full), baseUrl)}
+				srcset={resolveSrcset(asset.srcset ?? "", baseUrl) || undefined}
+				sizes={asset.sizes || undefined}
 				class="max-w-full max-h-full object-scale-down select-none"
-				class:cursor-grab={zoomLevel > 1 && !isPanning}
-				class:cursor-grabbing={isPanning}
-				alt={previewAsset?.name}
-				style:transform="scale({zoomLevel}) translate({panX / zoomLevel}px, {panY /
-					zoomLevel}px)"
-				style:transform-origin="center center"
+				alt={asset.name}
 				draggable="false"
-				onload={() => {
-					isLoading = false;
-					showSpinner = false;
-					clearTimeout(loadingTimer);
-				}}
-				onerror={() => {
-					isLoading = false;
-					showSpinner = false;
-					clearTimeout(loadingTimer);
-				}}
 			/>
-			{#if onAreaClick && previewAsset.areas?.length && previewAsset.width && previewAsset.height}
-				<svg
-					viewBox="0 0 {previewAsset.width} {previewAsset.height}"
-					preserveAspectRatio="xMidYMid meet"
-					class="stuic-assets-preview-areas"
-					style:transform="scale({zoomLevel}) translate({panX / zoomLevel}px, {panY /
-						zoomLevel}px)"
-					style:transform-origin="center center"
-				>
-					{#each previewAsset.areas as area, i (`${area.id}-${i}`)}
-						<!-- svelte-ignore a11y_click_events_have_key_events -->
-						<!-- svelte-ignore a11y_no_static_element_interactions -->
-						<rect
-							x={area.x}
-							y={area.y}
-							width={area.w}
-							height={area.h}
-							class="stuic-assets-preview-area"
-							onclick={(e: MouseEvent) => {
-								if (_wasDragged) return;
-								e.stopPropagation();
-								onAreaClick({ area, asset: previewAsset });
-							}}
-						/>
-					{/each}
-				</svg>
-			{/if}
-			{#if showSpinner}
-				<div
-					class="absolute inset-0 flex items-center justify-center pointer-events-none"
-					transition:fade={{ duration: 150 }}
-				>
-					<SpinnerCircleOscillate class="size-10 text-(--stuic-color-muted-foreground)" />
-				</div>
-			{/if}
 		</div>
 	{:else}
-		<div use:swipeable class="w-full h-full flex flex-col items-center justify-center">
+		<div class="w-full h-full flex flex-col items-center justify-center">
 			<div>
-				{@html getAssetIcon(previewAsset.ext)({
+				{@html getAssetIcon(asset.ext)({
 					size: 32,
 					class: "mx-auto",
 				})}
@@ -529,6 +520,113 @@
 			</div>
 		</div>
 	{/if}
+{/snippet}
+
+{#if previewAsset}
+	<!-- Sliding content container -->
+	<div class="relative w-full h-full overflow-hidden">
+		<!-- Outgoing panel (visible during slide transition only) -->
+		{#if outgoingAsset}
+			<div
+				class={SLIDE_PANEL_CLASS}
+				style="transition-duration: {slidePhase === 'sliding' ? slideDuration : 0}ms;"
+				class:translate-x-0={slidePhase === 'setup'}
+				class:-translate-x-full={slidePhase === 'sliding' && slideDirection === 'next'}
+				class:translate-x-full={slidePhase === 'sliding' && slideDirection === 'prev'}
+			>
+				{@render staticAssetPanel(outgoingAsset)}
+			</div>
+		{/if}
+
+		<!-- Active panel -->
+		<div
+			class={SLIDE_PANEL_CLASS}
+			style="transition-duration: {slidePhase === 'sliding' ? slideDuration : 0}ms;"
+			class:translate-x-0={slidePhase === 'idle' || slidePhase === 'sliding'}
+			class:translate-x-full={slidePhase === 'setup' && slideDirection === 'next'}
+			class:-translate-x-full={slidePhase === 'setup' && slideDirection === 'prev'}
+		>
+			{#if previewAsset.isImage}
+				<div
+					use:interactable
+					bind:this={containerEl}
+					class="w-full h-full overflow-hidden flex items-center justify-center relative"
+				>
+					<img
+						use:pannable
+						src={resolveUrl(String(previewAsset.url.full), baseUrl)}
+						srcset={resolveSrcset(previewAsset.srcset ?? "", baseUrl) || undefined}
+						sizes={previewAsset.sizes || undefined}
+						class="max-w-full max-h-full object-scale-down select-none"
+						class:cursor-grab={zoomLevel > 1 && !isPanning}
+						class:cursor-grabbing={isPanning}
+						alt={previewAsset?.name}
+						style:transform="scale({zoomLevel}) translate({panX / zoomLevel}px, {panY /
+							zoomLevel}px)"
+						style:transform-origin="center center"
+						draggable="false"
+						onload={() => {
+							isLoading = false;
+							showSpinner = false;
+							clearTimeout(loadingTimer);
+						}}
+						onerror={() => {
+							isLoading = false;
+							showSpinner = false;
+							clearTimeout(loadingTimer);
+						}}
+					/>
+					{#if onAreaClick && previewAsset.areas?.length && previewAsset.width && previewAsset.height}
+						<svg
+							viewBox="0 0 {previewAsset.width} {previewAsset.height}"
+							preserveAspectRatio="xMidYMid meet"
+							class="stuic-assets-preview-areas"
+							style:transform="scale({zoomLevel}) translate({panX / zoomLevel}px, {panY /
+								zoomLevel}px)"
+							style:transform-origin="center center"
+						>
+							{#each previewAsset.areas as area, i (`${area.id}-${i}`)}
+								<!-- svelte-ignore a11y_click_events_have_key_events -->
+								<!-- svelte-ignore a11y_no_static_element_interactions -->
+								<rect
+									x={area.x}
+									y={area.y}
+									width={area.w}
+									height={area.h}
+									class="stuic-assets-preview-area"
+									onclick={(e: MouseEvent) => {
+										if (_wasDragged) return;
+										e.stopPropagation();
+										onAreaClick({ area, asset: previewAsset });
+									}}
+								/>
+							{/each}
+						</svg>
+					{/if}
+					{#if showSpinner}
+						<div
+							class="absolute inset-0 flex items-center justify-center pointer-events-none"
+							transition:fade={{ duration: 150 }}
+						>
+							<SpinnerCircleOscillate class="size-10 text-(--stuic-color-muted-foreground)" />
+						</div>
+					{/if}
+				</div>
+			{:else}
+				<div use:swipeable class="w-full h-full flex flex-col items-center justify-center">
+					<div>
+						{@html getAssetIcon(previewAsset.ext)({
+							size: 32,
+							class: "mx-auto",
+						})}
+					</div>
+					<div class="text-(--stuic-color-muted-foreground) mt-4">
+						{t("unable_to_preview")}
+					</div>
+				</div>
+			{/if}
+		</div>
+	</div>
 
 	{#if assets?.length > 1 && !noPrevNext}
 		<div class={twMerge("absolute inset-0 flex justify-between pointer-events-none", prevNextBottom ? "items-end pb-4" : "items-center")}>
@@ -649,10 +747,7 @@
 					<button
 						type="button"
 						class={twMerge("stuic-assets-preview-dot", i === previewIdx ? "active" : "")}
-						onclick={() => {
-							previewIdx = i;
-							resetZoom();
-						}}
+						onclick={() => goTo(i)}
 						aria-label={assets[i]?.name}
 						onmouseover={() => {
 							dotTooltip = assets[i]?.name;

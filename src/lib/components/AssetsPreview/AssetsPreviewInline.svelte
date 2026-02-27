@@ -98,8 +98,7 @@
 	});
 
 	export function goTo(index: number) {
-		currentIndex = index % assets.length;
-		content?.resetZoom();
+		content?.goTo(index);
 	}
 
 	export function next() {
