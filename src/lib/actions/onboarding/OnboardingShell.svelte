@@ -15,13 +15,30 @@
 		next: () => void;
 		prev: () => void;
 		skip: () => void;
+		//
+		classControls?: string;
 	}
 </script>
 
 <script lang="ts">
 	import Thc from "../../components/Thc/Thc.svelte";
+	import Button from "../../components/Button/Button.svelte";
+	import { iconChevronLeft, iconChevronRight, iconCheck } from "$lib/icons/index.js";
+	import { twMerge } from "../../utils/tw-merge.js";
 
-	let { step, index, total, isFirst, isLast, labels, shell, next, prev, skip }: Props = $props();
+	let {
+		step,
+		index,
+		total,
+		isFirst,
+		isLast,
+		labels,
+		shell,
+		next,
+		prev,
+		skip,
+		classControls,
+	}: Props = $props();
 
 	const context: TourShellContext = $derived({
 		step,
@@ -33,6 +50,16 @@
 		prev,
 		skip,
 	});
+
+	const BUTTON_CLS = "p-0";
+
+	const BUTTON_PROPS = {
+		aspect1: true,
+		variant: "soft",
+		roundedFull: true,
+	};
+
+	const ICON_SIZE = 24;
 </script>
 
 {#if shell}
@@ -56,15 +83,25 @@
 					</button>
 				{/if}
 				{#if !isFirst}
-					<button class="stuic-onboarding-btn-prev" onclick={prev}>
-						{step.prevLabel ?? labels.prev}
-					</button>
+					<Button
+						onclick={prev}
+						class={twMerge(BUTTON_CLS, classControls)}
+						{...BUTTON_PROPS}
+					>
+						{@html iconChevronLeft({ size: ICON_SIZE })}
+					</Button>
 				{/if}
-				<button class="stuic-onboarding-btn-next" onclick={next}>
-					{isLast
-						? (step.finishLabel ?? labels.finish)
-						: (step.nextLabel ?? labels.next)}
-				</button>
+				<Button
+					onclick={next}
+					class={twMerge(BUTTON_CLS, classControls)}
+					{...BUTTON_PROPS}
+					intent="primary"
+					variant="solid"
+				>
+					{@html isLast
+						? iconCheck({ size: ICON_SIZE })
+						: iconChevronRight({ size: ICON_SIZE })}
+				</Button>
 			</div>
 		</div>
 	</div>

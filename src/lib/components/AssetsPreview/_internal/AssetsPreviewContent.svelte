@@ -530,9 +530,9 @@
 			<div
 				class={SLIDE_PANEL_CLASS}
 				style="transition-duration: {slidePhase === 'sliding' ? slideDuration : 0}ms;"
-				class:translate-x-0={slidePhase === 'setup'}
-				class:-translate-x-full={slidePhase === 'sliding' && slideDirection === 'next'}
-				class:translate-x-full={slidePhase === 'sliding' && slideDirection === 'prev'}
+				class:translate-x-0={slidePhase === "setup"}
+				class:-translate-x-full={slidePhase === "sliding" && slideDirection === "next"}
+				class:translate-x-full={slidePhase === "sliding" && slideDirection === "prev"}
 			>
 				{@render staticAssetPanel(outgoingAsset)}
 			</div>
@@ -542,9 +542,9 @@
 		<div
 			class={SLIDE_PANEL_CLASS}
 			style="transition-duration: {slidePhase === 'sliding' ? slideDuration : 0}ms;"
-			class:translate-x-0={slidePhase === 'idle' || slidePhase === 'sliding'}
-			class:translate-x-full={slidePhase === 'setup' && slideDirection === 'next'}
-			class:-translate-x-full={slidePhase === 'setup' && slideDirection === 'prev'}
+			class:translate-x-0={slidePhase === "idle" || slidePhase === "sliding"}
+			class:translate-x-full={slidePhase === "setup" && slideDirection === "next"}
+			class:-translate-x-full={slidePhase === "setup" && slideDirection === "prev"}
 		>
 			{#if previewAsset.isImage}
 				<div
@@ -608,12 +608,17 @@
 							class="absolute inset-0 flex items-center justify-center pointer-events-none"
 							transition:fade={{ duration: 150 }}
 						>
-							<SpinnerCircleOscillate class="size-10 text-(--stuic-color-muted-foreground)" />
+							<SpinnerCircleOscillate
+								class="size-10 text-(--stuic-color-muted-foreground)"
+							/>
 						</div>
 					{/if}
 				</div>
 			{:else}
-				<div use:swipeable class="w-full h-full flex flex-col items-center justify-center">
+				<div
+					use:swipeable
+					class="w-full h-full flex flex-col items-center justify-center"
+				>
 					<div>
 						{@html getAssetIcon(previewAsset.ext)({
 							size: 32,
@@ -629,7 +634,12 @@
 	</div>
 
 	{#if assets?.length > 1 && !noPrevNext}
-		<div class={twMerge("absolute inset-0 flex justify-between pointer-events-none", prevNextBottom ? "items-end pb-4" : "items-center")}>
+		<div
+			class={twMerge(
+				"absolute inset-0 flex justify-between pointer-events-none",
+				prevNextBottom ? "items-end pb-4" : "items-center"
+			)}
+		>
 			<Button
 				class={twMerge(BUTTON_CLS, "ml-4", classControls)}
 				onclick={previous}
@@ -705,7 +715,10 @@
 					type="button"
 					onclick={(e) => {
 						e.preventDefault();
-						forceDownload(resolveUrl(String(previewAsset.url.original), baseUrl), previewAsset?.name || "");
+						forceDownload(
+							resolveUrl(String(previewAsset.url.original), baseUrl),
+							previewAsset?.name || ""
+						);
 					}}
 					aria-label={t("download")}
 					tooltip={t("download")}

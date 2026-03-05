@@ -1,23 +1,19 @@
 /* Onboarding shell tokens */
 :root {
+	--stuic-onboarding-shell-bg: var(--stuic-color-background, #fff);
 	--stuic-onboarding-shell-padding: calc(var(--spacing) * 3);
 	--stuic-onboarding-shell-gap: calc(var(--spacing) * 2);
 	--stuic-onboarding-shell-min-width: 200px;
 	--stuic-onboarding-shell-max-width: 320px;
 	--stuic-onboarding-title-size: var(--text-base);
 	--stuic-onboarding-content-size: var(--text-sm);
-	--stuic-onboarding-footer-gap: calc(var(--spacing) * 1.5);
+	--stuic-onboarding-footer-gap: calc(var(--spacing) * 3);
 	--stuic-onboarding-steps-size: var(--text-xs);
-	--stuic-onboarding-btn-padding-x: calc(var(--spacing) * 2.5);
-	--stuic-onboarding-btn-padding-y: calc(var(--spacing) * 1);
-	--stuic-onboarding-btn-radius: calc(var(--spacing) * 1);
 	--stuic-onboarding-btn-font-size: var(--text-xs);
-	--stuic-onboarding-btn-primary-bg: var(--stuic-color-primary, #737373);
-	--stuic-onboarding-btn-primary-fg: var(--stuic-color-primary-foreground, #fff);
-	--stuic-onboarding-btn-secondary-bg: oklch(from currentColor l c h / 0.08);
 }
 
 .stuic-onboarding-shell {
+	background: var(--stuic-onboarding-shell-bg);
 	display: flex;
 	flex-direction: column;
 	gap: var(--stuic-onboarding-shell-gap);
@@ -41,9 +37,7 @@
 	align-items: center;
 	justify-content: space-between;
 	gap: calc(var(--spacing) * 2);
-	padding-top: calc(var(--spacing) * 2);
-	margin-top: calc(var(--spacing) * 1);
-	border-top: 1px solid var(--stuic-spotlight-annotation-border, rgba(0, 0, 0, 0.1));
+	margin-top: calc(var(--spacing) * 2);
 }
 
 .stuic-onboarding-steps {
@@ -57,37 +51,14 @@
 	gap: var(--stuic-onboarding-footer-gap);
 }
 
-/* Shared button base */
-.stuic-onboarding-btn-skip,
-.stuic-onboarding-btn-prev,
-.stuic-onboarding-btn-next {
+.stuic-onboarding-btn-skip {
 	font-size: var(--stuic-onboarding-btn-font-size);
-	padding: var(--stuic-onboarding-btn-padding-y) var(--stuic-onboarding-btn-padding-x);
-	border-radius: var(--stuic-onboarding-btn-radius);
 	line-height: 1.5;
+	opacity: 0.45;
 	transition:
 		opacity 0.15s,
 		filter 0.15s;
-}
-
-.stuic-onboarding-btn-skip {
-	opacity: 0.45;
 	&:hover {
 		opacity: 0.85;
-	}
-}
-
-.stuic-onboarding-btn-prev {
-	background: var(--stuic-onboarding-btn-secondary-bg);
-	&:hover {
-		filter: brightness(0.9);
-	}
-}
-
-.stuic-onboarding-btn-next {
-	background: var(--stuic-onboarding-btn-primary-bg);
-	color: var(--stuic-onboarding-btn-primary-fg);
-	&:hover {
-		filter: brightness(0.9);
 	}
 }
