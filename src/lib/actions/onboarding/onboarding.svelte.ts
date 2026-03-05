@@ -289,6 +289,7 @@ export function createTour(options: TourOptions) {
 	// -- Public API ---------------------------------------------------------------------
 
 	function start() {
+		if (active) return;
 		if (store && store.has(options.storageKey!)) return;
 		options.onStart?.();
 		advanceTo(0);
