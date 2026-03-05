@@ -352,8 +352,9 @@ export type TourInstance = ReturnType<typeof createTour>;
  * <button use:tourStep={[tour, 'save-btn']}>Save</button>
  * ```
  */
-export function tourStep(el: HTMLElement, args: [TourInstance, string]) {
+export function tourStep(el: HTMLElement, args: [TourInstance | null | undefined, string]) {
 	const [tour, id] = args;
+	if (!tour) return;
 	tour._register(id, el);
 
 	spotlight(el, () => {
