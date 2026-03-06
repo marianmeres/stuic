@@ -95,6 +95,63 @@
 	function dollarFormat(cents: number): string {
 		return "$" + (cents / 100).toFixed(2);
 	}
+
+	// --- Dynamic pricing demo ---
+	// Simulates a consuming app that calculates shipping based on zip code / cart contents.
+	let dynamicZip = $state("");
+	let dynamicSelectedId = $state<string | undefined>();
+	let dynamicUpdating = $state(false);
+	let dynamicOptions = $state<CheckoutDeliveryOption[]>([
+		{
+			id: "standard",
+			name: "Standard Shipping",
+			description: "Delivered by national postal service",
+			price: 499,
+			estimated_time: "5-7 business days",
+			is_active: true,
+			sort_order: 1,
+		},
+		{
+			id: "express",
+			name: "Express Shipping",
+			description: "Fast delivery with tracking",
+			price: 1299,
+			estimated_time: "2-3 business days",
+			is_active: true,
+			sort_order: 2,
+		},
+	]);
+
+	/**
+	 * Simulates an async business-logic API call that returns shipping prices
+	 * based on destination zip code (and could also factor in cart weight, dimensions, etc.)
+	 */
+	async function calculateShippingPrices(
+		zip: string
+	): Promise<{ standard: number; express: number }> {
+		await new Promise((r) => setTimeout(r, 800));
+		// Simulate zone-based pricing: zip starting with "9" = west coast = more expensive
+		const zone = zip.startsWith("9") ? "west" : zip.startsWith("1") ? "east" : "central";
+		const multiplier = zone === "west" ? 1.8 : zone === "east" ? 1.3 : 1;
+		return {
+			standard: Math.round(499 * multiplier),
+			express: Math.round(1299 * multiplier),
+		};
+	}
+
+	$effect(() => {
+		const zip = dynamicZip.trim();
+		if (zip.length >= 5) {
+			dynamicUpdating = true;
+			calculateShippingPrices(zip).then((prices) => {
+				dynamicOptions = dynamicOptions.map((opt) => ({
+					...opt,
+					price: prices[opt.id as keyof typeof prices] ?? opt.price,
+				}));
+				dynamicUpdating = false;
+			});
+		}
+	});
 </script>
 
 <h1 class="text-2xl font-bold mb-8">CheckoutDeliveryOptions</h1>
@@ -145,6 +202,43 @@
 		class="text-xs mt-4 p-3 bg-neutral-100 dark:bg-neutral-900 rounded">selectedId: {JSON.stringify(
 			selectedId
 		)}, subtotal: {subtotal}</pre>
+</section>
+
+<!-- ============== DYNAMIC PRICING ============== -->
+<section class="mb-12">
+	<h2 class="text-lg font-bold mb-2">Dynamic pricing (simulated)</h2>
+	<p class="text-sm opacity-60 mb-4">
+		Demonstrates how a consuming app can recalculate shipping prices at runtime based on
+		business rules (zip code zone in this example). Enter a 5+ digit zip code — prices
+		update after a simulated API call. Try zips starting with "9" (west coast, expensive),
+		"1" (east coast, moderate), or other (central, cheapest).
+	</p>
+
+	<div class="max-w-sm mb-4">
+		<FieldInput
+			bind:value={dynamicZip}
+			label="Delivery zip code"
+			name="dynamic-zip"
+			placeholder="e.g. 90210, 10001, 60601"
+			renderSize="sm"
+		/>
+	</div>
+
+	<div class="max-w-lg">
+		<CheckoutDeliveryOptions
+			options={dynamicOptions}
+			bind:selectedId={dynamicSelectedId}
+			isUpdating={dynamicUpdating}
+			formatPrice={dollarFormat}
+		/>
+	</div>
+
+	<pre
+		class="text-xs mt-4 p-3 bg-neutral-100 dark:bg-neutral-900 rounded">zip: {JSON.stringify(
+			dynamicZip
+		)}, selectedId: {JSON.stringify(dynamicSelectedId)}, prices: [{dynamicOptions
+			.map((o) => `${o.id}: ${dollarFormat(o.price)}`)
+			.join(", ")}]</pre>
 </section>
 
 <!-- ============== BASIC (MINIMAL PROPS) ============== -->
