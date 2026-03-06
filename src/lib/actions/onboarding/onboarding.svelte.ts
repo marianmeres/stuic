@@ -101,6 +101,10 @@ export interface TourOptions {
 	storageKey?: string;
 	/** Storage backend for persistence. Default: 'local' */
 	storage?: "local" | "session";
+	/** Added to the current step index for display purposes. Default: 0 */
+	indexOffset?: number;
+	/** Overrides steps.length for display purposes (the `total` value passed to the shell) */
+	totalSteps?: number;
 }
 
 /**
@@ -200,15 +204,16 @@ export function createTour(options: TourOptions) {
 	function _getShellContent(id: string): THC {
 		const step = options.steps.find((s) => s.id === id)!;
 		const index = options.steps.indexOf(step);
-		const total = options.steps.length;
+		const displayIndex = index + (options.indexOffset ?? 0);
+		const displayTotal = options.totalSteps ?? options.steps.length;
 		return {
 			component: OnboardingShell,
 			props: {
 				step,
-				index,
-				total,
+				index: displayIndex,
+				total: displayTotal,
 				isFirst: index === 0,
-				isLast: index === total - 1,
+				isLast: displayIndex === displayTotal - 1,
 				labels: resolvedLabels,
 				shell: options.shell,
 				next,
