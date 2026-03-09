@@ -147,6 +147,7 @@
 		/* Layout */
 		min-width: var(--stuic-dropdown-menu-min-width);
 		overflow-y: auto;
+		scrollbar-gutter: stable;
 		scrollbar-width: thin;
 
 		/* Stacking */
