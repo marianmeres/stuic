@@ -190,6 +190,9 @@
 		onClose?: () => void;
 		/** Called when any action item is selected (fallback if item has no onSelect) */
 		onSelect?: (item: DropdownMenuActionItem) => void | boolean | Promise<void | boolean>;
+		/** Reserve scrollbar space to prevent layout shift on open (useful for long lists).
+		 *  When undefined, auto-enables if items count >= 7. */
+		scrollbarGutter?: boolean;
 		/** Reference to trigger element */
 		triggerEl?: HTMLButtonElement;
 		/** Reference to dropdown element */
@@ -291,6 +294,7 @@
 		onSelect,
 		triggerEl = $bindable(),
 		dropdownEl = $bindable(),
+		scrollbarGutter,
 		noScrollLock,
 		...rest
 	}: Props = $props();
@@ -683,6 +687,8 @@
 
 	// Position styles for CSS Anchor Positioning
 	let dropdownStyle = $derived.by(() => {
+		const useGutter = scrollbarGutter ?? items.length >= 7;
+		const gutterStyle = useGutter ? "scrollbar-gutter: stable;" : "";
 		if (isSupported) {
 			// Use fixed height when search is enabled AND position is a "top" variant
 			// to prevent jarring resize during filtering (dropdown grows upward)
@@ -697,6 +703,7 @@
 				position-area: ${POSITION_MAP[position] || "bottom"};
 				margin: ${offset};
 				${heightStyle}
+				${gutterStyle}
 			`;
 		} else {
 			// Fallback: centered modal overlay
@@ -711,6 +718,7 @@
 				transform: translate(-50%, -50%);
 				max-width: 90vw;
 				${heightStyle}
+				${gutterStyle}
 				z-index: 50;
 			`;
 		}
