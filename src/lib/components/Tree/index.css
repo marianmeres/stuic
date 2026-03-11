@@ -26,6 +26,12 @@
 	/* Icon */
 	--stuic-tree-icon-opacity: 0.7;
 
+	/* Drag and drop */
+	--stuic-tree-item-opacity-dragging: 0.4;
+	--stuic-tree-drop-indicator-color: var(--stuic-color-primary);
+	--stuic-tree-drop-indicator-height: 2px;
+	--stuic-tree-item-bg-dragover: rgb(0 0 0 / 0.04);
+
 	/* Color tokens: Base */
 	--stuic-tree-item-bg: transparent;
 	--stuic-tree-item-text: inherit;
@@ -46,6 +52,7 @@
 :root.dark {
 	--stuic-tree-item-bg-hover: rgb(255 255 255 / 0.08);
 	--stuic-tree-item-bg-focus: rgb(255 255 255 / 0.08);
+	--stuic-tree-item-bg-dragover: rgb(255 255 255 / 0.04);
 }
 
 @layer components {
@@ -148,5 +155,32 @@
 	.stuic-tree-item[data-focused]:not([data-active]) {
 		background: var(--stuic-tree-item-bg-focus);
 		color: var(--stuic-tree-item-text-focus);
+	}
+
+	/* =============================================================================
+	   DRAG AND DROP
+	   ============================================================================= */
+
+	.stuic-tree-item[data-dragging] {
+		opacity: var(--stuic-tree-item-opacity-dragging);
+	}
+
+	[role="treeitem"][data-drop-position="before"] > .stuic-tree-item,
+	[role="treeitem"][data-drop-position="after"] > .stuic-tree-item {
+		border-radius: 0;
+	}
+
+	[role="treeitem"][data-drop-position="before"] > .stuic-tree-item {
+		box-shadow: 0 var(--stuic-tree-drop-indicator-height) 0 0
+			var(--stuic-tree-drop-indicator-color) inset;
+	}
+
+	[role="treeitem"][data-drop-position="after"] > .stuic-tree-item {
+		box-shadow: 0 calc(-1 * var(--stuic-tree-drop-indicator-height)) 0 0
+			var(--stuic-tree-drop-indicator-color) inset;
+	}
+
+	[role="treeitem"][data-drop-position="inside"] > .stuic-tree-item {
+		background: var(--stuic-tree-item-bg-dragover);
 	}
 }

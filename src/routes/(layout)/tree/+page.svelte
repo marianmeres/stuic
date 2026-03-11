@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Tree } from "$lib/index.js";
-	import type { TreeNodeDTO } from "@marianmeres/tree";
+	import type { TreeNodeDTO, TreeMoveEvent } from "$lib/index.js";
 	import { iconLucideFolder } from "@marianmeres/icons-fns/lucide/iconLucideFolder.js";
 	import { iconLucideFolderOpen } from "@marianmeres/icons-fns/lucide/iconLucideFolderOpen.js";
 	import { iconBsFileEarmark } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmark.js";
@@ -85,6 +85,118 @@
 	let activeCategory = $state<string>("");
 	let activeFile = $state<string>("");
 	let lastSelected = $state<string>("");
+
+	// Example 3: Drag and drop
+	let dndItems = $state<TreeNodeDTO<string>[]>([
+		{
+			id: "fruits",
+			value: "Fruits",
+			children: [
+				{ id: "apple", value: "Apple", children: [] },
+				{ id: "banana", value: "Banana", children: [] },
+				{ id: "cherry", value: "Cherry", children: [] },
+			],
+		},
+		{
+			id: "vegetables",
+			value: "Vegetables",
+			children: [
+				{ id: "carrot", value: "Carrot", children: [] },
+				{ id: "broccoli", value: "Broccoli", children: [] },
+			],
+		},
+		{ id: "bread", value: "Bread", children: [] },
+	]);
+	let dndLog = $state<string>("");
+
+	// Deep clone helper
+	function cloneItems<V>(items: TreeNodeDTO<V>[]): TreeNodeDTO<V>[] {
+		return items.map((item) => ({
+			...item,
+			children: cloneItems(item.children),
+		}));
+	}
+
+	// Remove a node by id from the tree, returns the removed node or null
+	function removeNode<V>(
+		items: TreeNodeDTO<V>[],
+		id: string
+	): TreeNodeDTO<V> | null {
+		for (let i = 0; i < items.length; i++) {
+			if (items[i].id === id) {
+				return items.splice(i, 1)[0];
+			}
+			const found = removeNode(items[i].children, id);
+			if (found) return found;
+		}
+		return null;
+	}
+
+	// Find the parent array and index for a given node id
+	function findParentArray<V>(
+		items: TreeNodeDTO<V>[],
+		id: string
+	): { arr: TreeNodeDTO<V>[]; index: number } | null {
+		for (let i = 0; i < items.length; i++) {
+			if (items[i].id === id) return { arr: items, index: i };
+			const found = findParentArray(items[i].children, id);
+			if (found) return found;
+		}
+		return null;
+	}
+
+	function findNode<V>(items: TreeNodeDTO<V>[], id: string): TreeNodeDTO<V> | null {
+		for (const item of items) {
+			if (item.id === id) return item;
+			const found = findNode(item.children, id);
+			if (found) return found;
+		}
+		return null;
+	}
+
+	// Check if a node is a top-level item (not nested inside a group)
+	function isTopLevel(items: TreeNodeDTO<string>[], id: string): boolean {
+		return items.some((item) => item.id === id);
+	}
+
+	function handleMove(event: TreeMoveEvent<string>): void | false {
+		const { source, target, position } = event;
+
+		// Example business rule: "Bread" cannot be moved into a group.
+		// This triggers when dropping directly "inside" a group, OR when dropping
+		// before/after an item that is already nested inside a group.
+		if (source.id === "bread") {
+			const wouldNest =
+				position === "inside" || !isTopLevel(dndItems, target.id);
+			if (wouldNest) {
+				throw new Error(
+					`"${source.value}" cannot be placed inside a group`
+				);
+			}
+		}
+
+		const clone = cloneItems(dndItems);
+		const node = removeNode(clone, source.id);
+		if (!node) return false;
+
+		if (position === "inside") {
+			const t = findNode(clone, target.id);
+			if (t) t.children.push(node);
+		} else {
+			const ref = findParentArray(clone, target.id);
+			if (ref) {
+				const idx = position === "before" ? ref.index : ref.index + 1;
+				ref.arr.splice(idx, 0, node);
+			}
+		}
+
+		dndItems = clone;
+		dndLog = `Moved "${source.value}" ${position} "${target.value}"`;
+	}
+
+	function handleMoveError(error: unknown) {
+		dndLog = `Error: ${error instanceof Error ? error.message : String(error)}`;
+	}
 </script>
 
 <h1 class="text-2xl font-bold mb-8">Tree</h1>
@@ -137,6 +249,27 @@
 				{/snippet}
 			</Tree>
 		</div>
+	</section>
+
+	<!-- Drag and drop -->
+	<section>
+		<h2 class="text-lg font-semibold mb-2">Drag and drop</h2>
+		<p class="text-sm opacity-60 mb-4">
+			Drag items to reorder. Business rule: "Bread" cannot be placed <em>inside</em>
+			a group (throws error).
+		</p>
+		<div class="p-4 bg-neutral-100 dark:bg-neutral-800 rounded">
+			<Tree
+				items={dndItems}
+				draggable
+				defaultExpanded
+				onMove={handleMove}
+				onError={handleMoveError}
+			/>
+		</div>
+		{#if dndLog}
+			<p class="text-sm mt-2 opacity-70">{dndLog}</p>
+		{/if}
 	</section>
 
 	<!-- Unstyled -->

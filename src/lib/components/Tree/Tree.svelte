@@ -3,8 +3,21 @@
 	import type { TreeNodeDTO } from "@marianmeres/tree";
 	import type { Snippet } from "svelte";
 
-	export interface Props<T = unknown>
-		extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
+	export type TreeDropPosition = "before" | "after" | "inside";
+
+	export interface TreeMoveEvent<T = unknown> {
+		/** The node being dragged */
+		source: TreeNodeDTO<T>;
+		/** The node being dropped onto/near */
+		target: TreeNodeDTO<T>;
+		/** Where relative to target: 'before' (sibling above), 'after' (sibling below), 'inside' (child) */
+		position: TreeDropPosition;
+	}
+
+	export interface Props<T = unknown> extends Omit<
+		HTMLAttributes<HTMLDivElement>,
+		"children"
+	> {
 		/** The tree data (use tree.toJSON().children or raw TreeNodeDTO[]) */
 		items: TreeNodeDTO<T>[];
 
@@ -40,6 +53,24 @@
 
 		/** Storage key prefix for localStorage (default: 'stuic-tree') */
 		storageKeyPrefix?: string;
+
+		/** Enable drag-and-drop node reordering (default: false) */
+		draggable?: boolean;
+
+		/** Per-item drag control: return false to prevent dragging a specific item */
+		isDraggable?: (item: TreeNodeDTO<T>) => boolean;
+
+		/** Per-item drop target control: return false to prevent dropping onto a specific item */
+		isDropTarget?: (item: TreeNodeDTO<T>) => boolean;
+
+		/** Called on drop. Return false or throw to reject the move. */
+		onMove?: (event: TreeMoveEvent<T>) => void | false | Promise<void | false>;
+
+		/** Called when onMove throws an error */
+		onError?: (error: unknown) => void;
+
+		/** Delay in ms before auto-expanding a collapsed branch on drag-over (default: 800) */
+		dragExpandDelay?: number;
 
 		/** Skip all default styling */
 		unstyled?: boolean;
@@ -91,6 +122,12 @@
 		expandedIds,
 		persistState = false,
 		storageKeyPrefix = "stuic-tree",
+		draggable = false,
+		isDraggable,
+		isDropTarget,
+		onMove,
+		onError,
+		dragExpandDelay = 800,
 		unstyled = false,
 		class: classProp,
 		el = $bindable(),
@@ -115,10 +152,7 @@
 
 	function loadState(itemId: string): boolean | undefined {
 		if (!persistState) return undefined;
-		return localStorageValue<boolean | undefined>(
-			getStorageKey(itemId),
-			undefined
-		).get();
+		return localStorageValue<boolean | undefined>(getStorageKey(itemId), undefined).get();
 	}
 
 	function saveState(itemId: string, expanded: boolean): void {
@@ -285,9 +319,7 @@
 		const visible = flattenVisible(items);
 		if (!visible.length) return;
 
-		const currentIndex = focusedId
-			? visible.findIndex((n) => n.id === focusedId)
-			: -1;
+		const currentIndex = focusedId ? visible.findIndex((n) => n.id === focusedId) : -1;
 		const current = currentIndex >= 0 ? visible[currentIndex] : null;
 
 		switch (e.key) {
@@ -368,6 +400,160 @@
 	// ---------------------------------------------------------------------------
 
 	let transitionDuration = $derived(reducedMotion.current ? 0 : 150);
+
+	// ---------------------------------------------------------------------------
+	// Drag and drop
+	// ---------------------------------------------------------------------------
+
+	let dragSourceId = $state<string | null>(null);
+	let dropTargetId = $state<string | null>(null);
+	let dropPos = $state<TreeDropPosition | null>(null);
+	let dragExpandTimer: ReturnType<typeof setTimeout> | null = null;
+
+	function findNodeById(nodeItems: TreeNode<T>[], id: string): TreeNode<T> | null {
+		for (const item of nodeItems) {
+			if (item.id === id) return item;
+			if (item.children.length) {
+				const found = findNodeById(item.children, id);
+				if (found) return found;
+			}
+		}
+		return null;
+	}
+
+	function isDescendantOf(ancestorId: string, nodeId: string): boolean {
+		const ancestor = findNodeById(items, ancestorId);
+		if (!ancestor) return false;
+		return getDescendantIds(ancestor).includes(nodeId);
+	}
+
+	function calcDropPosition(
+		e: DragEvent,
+		targetEl: HTMLElement,
+		targetIsBranch: boolean
+	): TreeDropPosition {
+		const rect = targetEl.getBoundingClientRect();
+		const y = e.clientY - rect.top;
+		const third = rect.height / 3;
+
+		if (y < third) return "before";
+		if (y > third * 2) return "after";
+		return targetIsBranch ? "inside" : y < rect.height / 2 ? "before" : "after";
+	}
+
+	function clearDragExpandTimer() {
+		if (dragExpandTimer) {
+			clearTimeout(dragExpandTimer);
+			dragExpandTimer = null;
+		}
+	}
+
+	function resetDragState() {
+		dragSourceId = null;
+		dropTargetId = null;
+		dropPos = null;
+		clearDragExpandTimer();
+	}
+
+	function handleDragStart(e: DragEvent, item: TreeNode<T>) {
+		if (!draggable || isDraggable?.(item) === false) {
+			e.preventDefault();
+			return;
+		}
+		e.dataTransfer!.effectAllowed = "move";
+		e.dataTransfer!.setData("text/plain", item.id);
+		dragSourceId = item.id;
+	}
+
+	function handleDragOver(e: DragEvent, item: TreeNode<T>) {
+		if (!draggable || !dragSourceId) return;
+
+		// Can't drop on self
+		if (item.id === dragSourceId) return;
+
+		// Can't drop ancestor into its own subtree
+		if (isDescendantOf(dragSourceId, item.id)) return;
+
+		// Consumer-level drop target check
+		if (isDropTarget?.(item) === false) return;
+
+		e.preventDefault();
+		e.stopPropagation();
+		e.dataTransfer!.dropEffect = "move";
+
+		const targetEl = (e.currentTarget as HTMLElement).querySelector(
+			":scope > button"
+		) as HTMLElement;
+		if (!targetEl) return;
+
+		const pos = calcDropPosition(e, targetEl, isBranch(item));
+		dropTargetId = item.id;
+		dropPos = pos;
+
+		// Auto-expand collapsed branches
+		if (pos === "inside" && isBranch(item) && !isExpanded(item.id)) {
+			if (!dragExpandTimer) {
+				dragExpandTimer = setTimeout(() => {
+					toggleExpanded(item);
+					dragExpandTimer = null;
+				}, dragExpandDelay);
+			}
+		} else {
+			clearDragExpandTimer();
+		}
+	}
+
+	function handleDragLeave(e: DragEvent) {
+		if (!draggable) return;
+		e.stopPropagation();
+		const currentTarget = e.currentTarget as HTMLElement;
+		const relatedTarget = e.relatedTarget as Node | null;
+		// Only clear if actually leaving the treeitem (not entering a child)
+		if (relatedTarget && currentTarget.contains(relatedTarget)) return;
+		if (dropTargetId) {
+			dropTargetId = null;
+			dropPos = null;
+		}
+		clearDragExpandTimer();
+	}
+
+	async function handleDrop(e: DragEvent, _item: TreeNode<T>) {
+		e.preventDefault();
+		e.stopPropagation();
+		if (!draggable || !dragSourceId || !dropPos || !dropTargetId) {
+			resetDragState();
+			return;
+		}
+
+		// Use tracked drop target from state, not the event target (may differ due to bubbling)
+		const source = findNodeById(items, dragSourceId);
+		const target = findNodeById(items, dropTargetId);
+		if (!source || !target || source.id === target.id) {
+			resetDragState();
+			return;
+		}
+
+		const event: TreeMoveEvent<T> = {
+			source,
+			target,
+			position: dropPos,
+		};
+
+		resetDragState();
+
+		if (onMove) {
+			try {
+				const result = await onMove(event);
+				if (result === false) return;
+			} catch (err) {
+				onError?.(err);
+			}
+		}
+	}
+
+	function handleDragEnd() {
+		resetDragState();
+	}
 </script>
 
 <div
@@ -383,7 +569,17 @@
 		{@const active = checkItemActive(item)}
 		{@const focused = focusedId === item.id}
 
-		<div role="treeitem" aria-expanded={branch ? expanded : undefined} aria-selected={active} aria-level={depth + 1}>
+		<!-- svelte-ignore a11y_interactive_supports_focus -->
+		<div
+			role="treeitem"
+			aria-expanded={branch ? expanded : undefined}
+			aria-selected={active}
+			aria-level={depth + 1}
+			ondragover={draggable ? (e) => handleDragOver(e, item) : undefined}
+			ondragleave={draggable ? handleDragLeave : undefined}
+			ondrop={draggable ? (e) => handleDrop(e, item) : undefined}
+			data-drop-position={dropTargetId === item.id && dropPos ? dropPos : undefined}
+		>
 			<!-- The clickable row -->
 			<button
 				type="button"
@@ -397,10 +593,16 @@
 				data-focused={!unstyled && focused ? "" : undefined}
 				data-branch={!unstyled && branch ? "" : undefined}
 				data-depth={depth}
-				style={!unstyled ? `padding-left: calc(${depth} * var(--stuic-tree-indent) + var(--stuic-tree-item-padding-x))` : undefined}
+				data-dragging={dragSourceId === item.id ? "" : undefined}
+				draggable={draggable && isDraggable?.(item) !== false ? true : undefined}
+				style={!unstyled
+					? `padding-left: calc(${depth} * var(--stuic-tree-indent) + var(--stuic-tree-item-padding-x))`
+					: undefined}
 				tabindex={focused ? 0 : -1}
 				onclick={() => handleItemClick(item)}
 				onfocus={() => (focusedId = item.id)}
+				ondragstart={draggable ? (e) => handleDragStart(e, item) : undefined}
+				ondragend={draggable ? handleDragEnd : undefined}
 			>
 				<!-- Chevron for branches -->
 				{#if branch}
@@ -415,7 +617,10 @@
 					</span>
 				{:else}
 					<!-- Spacer to align leaf items with branches -->
-					<span class={twMerge("inline-block shrink-0", classChevron)} style="width: 14px;"></span>
+					<span
+						class={twMerge("inline-block shrink-0", classChevron)}
+						style="width: 14px;"
+					></span>
 				{/if}
 
 				<!-- Custom or default icon -->
