@@ -1,0 +1,152 @@
+/* =============================================================================
+   TREE COMPONENT TOKENS
+   Override globally: :root { --stuic-tree-indent: 1.5rem; }
+   Override locally:  <Tree style="--stuic-tree-indent: 2rem;">
+   ============================================================================= */
+
+:root {
+	/* Structure tokens */
+	--stuic-tree-transition: 150ms;
+
+	/* Indentation per depth level */
+	--stuic-tree-indent: 1.25rem;
+
+	/* Item sizing */
+	--stuic-tree-item-padding-x: 0.375rem;
+	--stuic-tree-item-padding-y: 0.125rem;
+	--stuic-tree-item-height: 1.75rem;
+	--stuic-tree-item-font-size: var(--text-sm);
+	--stuic-tree-item-radius: var(--radius-sm);
+	--stuic-tree-item-gap: 0.25rem;
+
+	/* Chevron */
+	--stuic-tree-chevron-size: 14px;
+	--stuic-tree-chevron-opacity: 0.5;
+
+	/* Icon */
+	--stuic-tree-icon-opacity: 0.7;
+
+	/* Color tokens: Base */
+	--stuic-tree-item-bg: transparent;
+	--stuic-tree-item-text: inherit;
+
+	/* Color tokens: Hover */
+	--stuic-tree-item-bg-hover: rgb(0 0 0 / 0.06);
+	--stuic-tree-item-text-hover: inherit;
+
+	/* Color tokens: Active/Selected */
+	--stuic-tree-item-bg-active: var(--stuic-color-primary);
+	--stuic-tree-item-text-active: var(--stuic-color-primary-foreground);
+
+	/* Color tokens: Focused (keyboard) */
+	--stuic-tree-item-bg-focus: rgb(0 0 0 / 0.06);
+	--stuic-tree-item-text-focus: inherit;
+}
+
+:root.dark {
+	--stuic-tree-item-bg-hover: rgb(255 255 255 / 0.08);
+	--stuic-tree-item-bg-focus: rgb(255 255 255 / 0.08);
+}
+
+@layer components {
+	/* =============================================================================
+	   BASE CONTAINER
+	   ============================================================================= */
+
+	.stuic-tree {
+		display: flex;
+		flex-direction: column;
+	}
+
+	/* =============================================================================
+	   CHILDREN CONTAINER
+	   ============================================================================= */
+
+	.stuic-tree-children {
+		display: flex;
+		flex-direction: column;
+	}
+
+	/* =============================================================================
+	   ITEM STYLES
+	   ============================================================================= */
+
+	.stuic-tree-item {
+		/* Layout */
+		display: flex;
+		align-items: center;
+		gap: var(--stuic-tree-item-gap);
+		width: 100%;
+		min-height: var(--stuic-tree-item-height);
+
+		/* Padding */
+		padding: var(--stuic-tree-item-padding-y) var(--stuic-tree-item-padding-x);
+
+		/* Typography */
+		font-size: var(--stuic-tree-item-font-size);
+		text-align: left;
+		line-height: 1.2;
+
+		/* Visual */
+		border-radius: var(--stuic-tree-item-radius);
+		background: var(--stuic-tree-item-bg);
+		color: var(--stuic-tree-item-text);
+		border: none;
+
+		/* Interaction */
+		cursor: pointer;
+		user-select: none;
+		-webkit-tap-highlight-color: transparent;
+		transition:
+			background var(--stuic-tree-transition),
+			color var(--stuic-tree-transition);
+	}
+
+	/* Chevron opacity */
+	.stuic-tree-item > span:first-child {
+		opacity: var(--stuic-tree-chevron-opacity);
+	}
+
+	/* Icon opacity (second span when present) */
+	.stuic-tree-item > span:nth-child(2) {
+		opacity: var(--stuic-tree-icon-opacity);
+	}
+
+	/* =============================================================================
+	   ITEM STATE STYLES
+	   ============================================================================= */
+
+	/* Hover state */
+	.stuic-tree-item:hover:not([data-active]) {
+		background: var(--stuic-tree-item-bg-hover);
+		color: var(--stuic-tree-item-text-hover);
+	}
+
+	/* Focus styles */
+	.stuic-tree-item:focus {
+		outline: none;
+	}
+
+	.stuic-tree-item:focus-visible:not([data-active]) {
+		background: var(--stuic-tree-item-bg-focus);
+		color: var(--stuic-tree-item-text-focus);
+	}
+
+	/* Active/Selected state */
+	.stuic-tree-item[data-active] {
+		background: var(--stuic-tree-item-bg-active);
+		color: var(--stuic-tree-item-text-active);
+	}
+
+	/* Active state: full opacity on chevron and icon */
+	.stuic-tree-item[data-active] > span:first-child,
+	.stuic-tree-item[data-active] > span:nth-child(2) {
+		opacity: 1;
+	}
+
+	/* Focused state (keyboard navigation) */
+	.stuic-tree-item[data-focused]:not([data-active]) {
+		background: var(--stuic-tree-item-bg-focus);
+		color: var(--stuic-tree-item-text-focus);
+	}
+}

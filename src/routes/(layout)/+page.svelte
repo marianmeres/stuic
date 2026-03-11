@@ -55,6 +55,7 @@
         'thc', 
         'theme-preview', 
         'tooltip',
+        'tree',
         'tw-check',
 		'with-side-panel',
 		// 'viewport',
