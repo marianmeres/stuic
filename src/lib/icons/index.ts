@@ -48,8 +48,10 @@ export { iconLucideGrip as iconGrip } from "@marianmeres/icons-fns/lucide/iconLu
 export { iconLucideGripHorizontal as iconGripHorizontal } from "@marianmeres/icons-fns/lucide/iconLucideGripHorizontal.js";
 export { iconLucideGripVertical as iconGripVertical } from "@marianmeres/icons-fns/lucide/iconLucideGripVertical.js";
 export { iconLucideLanguages as iconLanguages } from "@marianmeres/icons-fns/lucide/iconLucideLanguages.js";
+export { iconLucideList as iconList } from "@marianmeres/icons-fns/lucide/iconLucideList.js";
 export { iconLucideMenu as iconMenu } from "@marianmeres/icons-fns/lucide/iconLucideMenu.js";
 export { iconLucideSearch as iconSearch } from "@marianmeres/icons-fns/lucide/iconLucideSearch.js";
+export { iconLucideSlidersHorizontal as iconSlidersHorizontal } from "@marianmeres/icons-fns/lucide/iconLucideSlidersHorizontal.js";
 export { iconLucideSettings as iconSettings } from "@marianmeres/icons-fns/lucide/iconLucideSettings.js";
 export { iconLucideSquare as iconSquare } from "@marianmeres/icons-fns/lucide/iconLucideSquare.js";
 export { iconLucideUser as iconUser } from "@marianmeres/icons-fns/lucide/iconLucideUser.js";

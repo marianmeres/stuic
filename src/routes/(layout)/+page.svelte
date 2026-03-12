@@ -18,6 +18,7 @@
 		'collapsible', 
         'color-scheme', 
 		'command-menu',
+		'cron-input',
 		'dim-behind',
 		'dismissible-message',
         'data-table', 

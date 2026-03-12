@@ -1,0 +1,221 @@
+/* ============================================================================
+   CRON INPUT COMPONENT TOKENS
+   Override globally: :root { --stuic-cron-input-fields-gap: 1rem; }
+   Override locally:  <CronInput style="--stuic-cron-input-fields-gap: 1rem;">
+   ============================================================================ */
+
+/* prettier-ignore */
+:root {
+	--stuic-cron-input-fields-gap: 0.375rem;
+	--stuic-cron-input-section-gap: 0.25rem;
+	--stuic-cron-input-field-label-text: var(--stuic-color-muted-foreground);
+	--stuic-cron-input-summary-text: var(--stuic-color-muted-foreground);
+	--stuic-cron-input-error-text: var(--stuic-color-destructive);
+	--stuic-cron-input-field-bg: var(--stuic-color-background);
+	--stuic-cron-input-field-border: var(--stuic-color-border);
+	--stuic-cron-input-field-border-focus: var(--stuic-color-primary);
+}
+
+@layer components {
+	/* Content wrapper inside InputWrap — must fill the flex parent (.input-wrap > .flex) */
+	.stuic-cron-input-content {
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-cron-input-section-gap);
+		flex: 1;
+		min-width: 0;
+		padding: 0.5rem;
+	}
+
+	/* No padding in presets-only mode (the select handles its own) */
+	.stuic-cron-input-content[data-presets-only] {
+		padding: 0;
+	}
+
+	/* Preset select — styled as inner sub-input by default */
+	.stuic-cron-input-preset {
+		display: block;
+		width: 100%;
+		appearance: none;
+		-webkit-appearance: none;
+		border: 1px solid var(--stuic-cron-input-field-border);
+		border-radius: var(--stuic-input-radius);
+		background: var(--stuic-cron-input-field-bg);
+		color: var(--stuic-input-text);
+		font-family: var(--stuic-input-font-family);
+		font-size: var(--stuic-input-font-size-sm);
+		padding: 0.375rem 2rem 0.375rem 0.5rem;
+		cursor: pointer;
+		background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+		background-position: right 0.5rem center;
+		background-repeat: no-repeat;
+		background-size: 1.5em 1.5em;
+		transition: border-color var(--stuic-input-transition);
+	}
+
+	.stuic-cron-input-preset:focus {
+		outline: none;
+		border-color: var(--stuic-cron-input-field-border-focus);
+	}
+
+	.stuic-cron-input-preset:disabled {
+		cursor: not-allowed;
+		opacity: 0.5;
+	}
+
+	/* Presets-only mode: select renders like a native FieldSelect (no inner border) */
+	.stuic-cron-input-content[data-presets-only] .stuic-cron-input-preset {
+		border: 0;
+		border-radius: 0;
+		background-color: transparent;
+		background-position: right 0.5rem center;
+		background-size: 1.5em 1.5em;
+		padding: var(--stuic-input-padding-y-md) var(--stuic-input-padding-x-md);
+		padding-right: 2.5rem;
+		font-size: var(--stuic-input-font-size-md);
+		min-height: var(--stuic-input-min-height-md);
+	}
+
+	.stuic-input[data-size="sm"]
+		.stuic-cron-input-content[data-presets-only]
+		.stuic-cron-input-preset {
+		padding: var(--stuic-input-padding-y-sm) var(--stuic-input-padding-x-sm);
+		padding-right: 2.5rem;
+		font-size: var(--stuic-input-font-size-sm);
+		min-height: var(--stuic-input-min-height-sm);
+	}
+
+	.stuic-input[data-size="lg"]
+		.stuic-cron-input-content[data-presets-only]
+		.stuic-cron-input-preset {
+		padding: var(--stuic-input-padding-y-lg) var(--stuic-input-padding-x-lg);
+		padding-right: 2.5rem;
+		font-size: var(--stuic-input-font-size-lg);
+		min-height: var(--stuic-input-min-height-lg);
+	}
+
+	.stuic-cron-input-content[data-presets-only] .stuic-cron-input-preset:focus {
+		border: 0;
+	}
+
+	/* 5-column grid for fields */
+	.stuic-cron-input-fields {
+		display: grid;
+		grid-template-columns: repeat(5, 1fr);
+		gap: var(--stuic-cron-input-fields-gap);
+	}
+
+	/* Individual field */
+	.stuic-cron-input-field {
+		display: flex;
+		flex-direction: column;
+		gap: 0.125rem;
+	}
+
+	/* Field label */
+	.stuic-cron-input-field-label {
+		font-size: 0.6875rem;
+		color: var(--stuic-cron-input-field-label-text);
+		text-transform: uppercase;
+		text-align: center;
+		letter-spacing: 0.05em;
+	}
+
+	/* Field input — must match base specificity of .stuic-input input:not(…)×4 */
+	.stuic-input
+		input.stuic-cron-input-field-input:not([type="checkbox"]):not([type="radio"]):not(
+			[type="range"]
+		):not([type="file"]) {
+		display: block;
+		width: 100%;
+		border: 1px solid var(--stuic-cron-input-field-border);
+		border-radius: var(--stuic-input-radius);
+		background: var(--stuic-cron-input-field-bg);
+		color: var(--stuic-input-text);
+		font-family: var(--font-mono, monospace);
+		font-size: var(--stuic-input-font-size-sm);
+		padding: 0.25rem;
+		min-height: 0;
+		text-align: center;
+		transition: border-color var(--stuic-input-transition);
+	}
+
+	.stuic-cron-input-field-input:focus {
+		outline: none;
+		border-color: var(--stuic-cron-input-field-border-focus);
+	}
+
+	.stuic-cron-input-field-input:disabled {
+		cursor: not-allowed;
+		opacity: 0.5;
+	}
+
+	.stuic-cron-input-field-input::placeholder {
+		color: var(--stuic-input-placeholder);
+		opacity: 0.5;
+		font-family: var(--stuic-input-font-family);
+	}
+
+	/* Raw expression input */
+	.stuic-cron-input-raw {
+		display: block;
+		width: 100%;
+		border: 1px solid var(--stuic-cron-input-field-border);
+		border-radius: var(--stuic-input-radius);
+		background: var(--stuic-cron-input-field-bg);
+		color: var(--stuic-input-text);
+		font-family: var(--font-mono, monospace);
+		font-size: var(--stuic-input-font-size-sm);
+		padding: 0.375rem 0.5rem;
+		transition: border-color var(--stuic-input-transition);
+	}
+
+	.stuic-cron-input-raw:focus {
+		outline: none;
+		border-color: var(--stuic-cron-input-field-border-focus);
+	}
+
+	.stuic-cron-input-raw:disabled {
+		cursor: not-allowed;
+		opacity: 0.5;
+	}
+
+	.stuic-cron-input-raw::placeholder {
+		color: var(--stuic-input-placeholder);
+		opacity: 0.5;
+	}
+
+	/* Summary / human description */
+	.stuic-cron-input-summary {
+		color: var(--stuic-cron-input-summary-text);
+		font-size: 0.8125rem;
+		line-height: 1.4;
+	}
+
+	/* Error message */
+	.stuic-cron-input-error {
+		color: var(--stuic-cron-input-error-text);
+		font-size: 0.8125rem;
+		line-height: 1.4;
+	}
+
+	/* Mode toggle button */
+	.stuic-cron-input-content + .toggle-btn {
+		color: var(--stuic-input-localized-toggle-text);
+		transition:
+			background var(--stuic-input-transition),
+			color var(--stuic-input-transition);
+	}
+
+	.stuic-cron-input-content + .toggle-btn:hover:not(:disabled) {
+		color: var(--stuic-input-localized-toggle-text-hover);
+		background: var(--stuic-input-localized-toggle-hover-bg);
+	}
+
+	/* Responsive: stack on narrow */
+	@media (max-width: 400px) {
+		.stuic-cron-input-fields {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+}
