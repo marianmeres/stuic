@@ -46,6 +46,8 @@
 		initialIndex?: number;
 		/** Current asset index (bindable). Defaults to initialIndex. */
 		currentIndex?: number;
+		/** Force preloading of all assets on mount, regardless of count (default: false) */
+		preloadAll?: boolean;
 	}
 </script>
 
@@ -75,6 +77,7 @@
 		prevNextBottom = false,
 		initialIndex = 0,
 		currentIndex = $bindable(initialIndex),
+		preloadAll = false,
 	}: Props = $props();
 
 	let assets: AssetPreviewNormalized[] = $derived(
@@ -83,18 +86,28 @@
 
 	let content: AssetsPreviewContent | undefined = $state();
 
-	// Preload images when assets change
+	// On-mount preload: all assets for small galleries or when forced;
+	// a window around the initial index for large collections.
 	$effect(() => {
-		const toPreload: PreloadImgOptions[] = (assets ?? [])
-			.filter((asset) => asset.isImage)
-			.map((asset) => ({
-				src: resolveUrl(String(asset.url.full), baseUrl),
-				srcset: resolveSrcset(asset.srcset ?? "", baseUrl) || undefined,
-				sizes: asset.sizes,
-			}));
-		if (toPreload.length) {
-			preloadImgs(toPreload);
-		}
+		const SMALL_THRESHOLD = 20;
+		const WINDOW = 5;
+
+		const all = (assets ?? []).filter((a) => a.isImage);
+		const subset =
+			preloadAll || all.length <= SMALL_THRESHOLD
+				? all
+				: all.slice(
+						Math.max(0, currentIndex - WINDOW),
+						Math.min(all.length, currentIndex + WINDOW + 1)
+					);
+
+		const toPreload: PreloadImgOptions[] = subset.map((asset) => ({
+			src: resolveUrl(String(asset.url.full), baseUrl),
+			srcset: resolveSrcset(asset.srcset ?? "", baseUrl) || undefined,
+			sizes: asset.sizes,
+		}));
+
+		if (toPreload.length) preloadImgs(toPreload);
 	});
 
 	export function goTo(index: number) {
