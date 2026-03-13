@@ -318,15 +318,9 @@
 	$effect(() => {
 		const current = activeSpread;
 		clearTimeout(_settleTimer);
-		// Small jump (±1): settle immediately (normal next/prev navigation)
-		if (Math.abs(current - settledSpread) <= 1) {
+		_settleTimer = setTimeout(() => {
 			settledSpread = current;
-		} else {
-			// Large jump (slider drag): debounce to avoid intermediate downloads
-			_settleTimer = setTimeout(() => {
-				settledSpread = current;
-			}, 120);
-		}
+		}, 120);
 	});
 
 	$effect(() => () => clearTimeout(_settleTimer));

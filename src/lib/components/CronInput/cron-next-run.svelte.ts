@@ -38,6 +38,7 @@ export class CronNextRun {
 	get nextRunFormatted(): string {
 		const next = this.nextRun;
 		if (!next) return "";
+		// the "sv-SE" is a trick/hack to get ISO 8601-ish local time (not UTC)
 		return next.toLocaleString("sv-SE", {
 			year: "numeric",
 			month: "2-digit",

@@ -10,7 +10,7 @@
 	--stuic-dropdown-menu-padding: calc(var(--spacing) * 1);
 	--stuic-dropdown-menu-gap: calc(var(--spacing) * 0.5);
 	--stuic-dropdown-menu-min-width: 12rem;
-	--stuic-dropdown-menu-transition: 150ms;
+	--stuic-dropdown-menu-transition: 100ms;
 
 	/* Dropdown container colors */
 	--stuic-dropdown-menu-bg: var(--stuic-color-background);
