@@ -121,6 +121,20 @@
 	let loadingTimer: ReturnType<typeof setTimeout> | undefined;
 	let showSpinner = $state(false);
 
+	// Debounced index — prevents mass image downloads during rapid slider drags
+	let settledPreviewIdx = $state(0);
+	let _previewSettleTimer: ReturnType<typeof setTimeout> | undefined;
+
+	$effect(() => {
+		const current = previewIdx;
+		clearTimeout(_previewSettleTimer);
+		_previewSettleTimer = setTimeout(() => {
+			settledPreviewIdx = current;
+		}, 120);
+	});
+
+	$effect(() => () => clearTimeout(_previewSettleTimer));
+
 	// Drag guard for area clicks (prevent click after drag/pan)
 	let _wasDragged = false;
 
@@ -432,7 +446,7 @@
 
 	// Preload nearest 2 assets in each direction
 	$effect(() => {
-		const idx = previewIdx;
+		const idx = settledPreviewIdx;
 		const len = assets.length;
 		if (len <= 1) return;
 
