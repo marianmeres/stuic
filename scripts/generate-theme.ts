@@ -1,31 +1,47 @@
-import { readdirSync, writeFileSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
+import * as themes from "@marianmeres/design-tokens/themes";
 import {
 	type ThemeSchema,
 	generateCssTokens,
 	toCssString,
-} from "../src/lib/utils/design-tokens.ts";
+} from "@marianmeres/design-tokens";
+
+const PREFIX = "stuic-";
+const OUTDIR = "src/lib/themes/css";
+
+/** Convert camelCase to kebab-case */
+function toKebab(str: string): string {
+	return str.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
+}
+
+function generateThemeCss(schema: ThemeSchema): string {
+	let css =
+		"/* prettier-ignore */\n" +
+		toCssString(generateCssTokens(schema.light, PREFIX, "light")) +
+		"\n";
+	if (schema.dark) {
+		css +=
+			"/* prettier-ignore */\n" +
+			toCssString(generateCssTokens(schema.dark, PREFIX, "dark"), ":root.dark");
+	}
+	return css;
+}
 
 type Args =
 	| { mode: "single"; infile: string; outfile: string }
-	| { mode: "directory"; indir: string; outdir: string };
+	| { mode: "batch" };
 
 function parseArgs(): Args {
 	const args = process.argv.slice(2);
 	let infile = "";
 	let outfile = "";
-	let indir = "";
-	let outdir = "";
 
 	for (const arg of args) {
 		if (arg.startsWith("--infile=")) {
 			infile = arg.replace("--infile=", "");
 		} else if (arg.startsWith("--outfile=")) {
 			outfile = arg.replace("--outfile=", "");
-		} else if (arg.startsWith("--indir=")) {
-			indir = arg.replace("--indir=", "");
-		} else if (arg.startsWith("--outdir=")) {
-			outdir = arg.replace("--outdir=", "");
 		}
 	}
 
@@ -33,51 +49,7 @@ function parseArgs(): Args {
 		return { mode: "single", infile, outfile };
 	}
 
-	if (indir) {
-		if (!outdir) {
-			console.error("--outdir is required when using --indir");
-			process.exit(1);
-		}
-		return { mode: "directory", indir, outdir };
-	}
-
-	console.error(
-		"Usage: --infile=<path> [--outfile=<path>]\n       --indir=<path> --outdir=<path>"
-	);
-	process.exit(1);
-}
-
-function isValidThemeModule(mod: unknown): mod is { default: ThemeSchema } {
-	if (!mod || typeof mod !== "object") return false;
-	const def = (mod as Record<string, unknown>).default;
-	if (!def || typeof def !== "object") return false;
-	const schema = def as Record<string, unknown>;
-	if (!schema.light || typeof schema.light !== "object") return false;
-	const light = schema.light as Record<string, unknown>;
-	if (!light.colors || typeof light.colors !== "object") return false;
-	const colors = light.colors as Record<string, unknown>;
-	if (!colors.intent || !colors.role) return false;
-	if (schema.dark) {
-		if (typeof schema.dark !== "object") return false;
-		const dark = schema.dark as Record<string, unknown>;
-		if (!dark.colors || typeof dark.colors !== "object") return false;
-		const darkColors = dark.colors as Record<string, unknown>;
-		if (!darkColors.intent || !darkColors.role) return false;
-	}
-	return true;
-}
-
-function generateThemeCss(schema: ThemeSchema): string {
-	let css =
-		"/* prettier-ignore */\n" +
-		toCssString(generateCssTokens(schema.light, "stuic-", "light")) +
-		"\n";
-	if (schema.dark) {
-		css +=
-			"/* prettier-ignore */\n" +
-			toCssString(generateCssTokens(schema.dark, "stuic-", "dark"), ":root.dark");
-	}
-	return css;
+	return { mode: "batch" };
 }
 
 async function processSingleFile(infile: string, outfile: string) {
@@ -95,32 +67,23 @@ async function processSingleFile(infile: string, outfile: string) {
 	}
 }
 
-async function processDirectory(indir: string, outdir: string) {
-	const indirPath = resolve(process.cwd(), indir);
-	const outdirPath = resolve(process.cwd(), outdir);
-
-	const files = readdirSync(indirPath).filter((f: string) => f.endsWith(".ts"));
+function processBatch() {
+	const outdirPath = resolve(process.cwd(), OUTDIR);
 	let processed = 0;
-	let skipped = 0;
 
-	for (const file of files) {
-		const infilePath = resolve(indirPath, file);
-		try {
-			const mod = await import(infilePath);
-			if (!isValidThemeModule(mod)) {
-				skipped++;
-				continue;
-			}
-			const css = generateThemeCss(mod.default);
-			const outfile = file.replace(/\.ts$/, ".css");
-			writeFileSync(resolve(outdirPath, outfile), css, "utf-8");
-			console.log(`Generated: ${outfile}`);
-			processed++;
-		} catch {
-			skipped++;
-		}
+	for (const [name, value] of Object.entries(themes)) {
+		// Skip type re-exports (ThemeSchema is a type, not a theme object)
+		if (!value || typeof value !== "object" || !("light" in value)) continue;
+
+		const schema = value as ThemeSchema;
+		const css = generateThemeCss(schema);
+		const filename = `${toKebab(name)}.css`;
+		writeFileSync(resolve(outdirPath, filename), css, "utf-8");
+		console.log(`Generated: ${filename}`);
+		processed++;
 	}
-	console.log(`\nProcessed ${processed} theme(s), skipped ${skipped} file(s)`);
+
+	console.log(`\nProcessed ${processed} theme(s)`);
 }
 
 async function main() {
@@ -129,7 +92,7 @@ async function main() {
 	if (args.mode === "single") {
 		await processSingleFile(args.infile, args.outfile);
 	} else {
-		await processDirectory(args.indir, args.outdir);
+		processBatch();
 	}
 }
 

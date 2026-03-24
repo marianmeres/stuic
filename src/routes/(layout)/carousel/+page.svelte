@@ -263,8 +263,8 @@
 	<section>
 		<h2 class="text-xl font-semibold mb-2">Arrow Navigation</h2>
 		<p class="text-sm text-neutral-500 mb-4">
-			Floating prev/next arrow buttons overlaid on left/right edges. Prev disabled at first
-			item, next disabled at last (no loop).
+			Floating prev/next arrow buttons overlaid on left/right edges. Prev disabled at
+			first item, next disabled at last (no loop).
 		</p>
 		<div
 			class="border rounded-lg p-4"
@@ -395,8 +395,8 @@
 	<section>
 		<h2 class="text-xl font-semibold mb-2">Auto-Fit (Fewer Items Than Per View)</h2>
 		<p class="text-sm text-neutral-500 mb-4">
-			When items count &le; itemsPerView, peek is ignored and items stretch to fill available
-			space. Here: 3 items with itemsPerView=5 and peekPercent=10.
+			When items count &le; itemsPerView, peek is ignored and items stretch to fill
+			available space. Here: 3 items with itemsPerView=5 and peekPercent=10.
 		</p>
 		<div class="border rounded-lg p-4">
 			<Carousel

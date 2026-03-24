@@ -2,7 +2,7 @@
 
 ## Overview
 
-Centralized design token system using CSS custom properties. 29 pre-built themes available.
+Centralized design token system using CSS custom properties. 31 pre-built themes available (from `@marianmeres/design-tokens`).
 
 See also: [Design Tokens Manual](../DESIGN_TOKENS_MANUAL.md) for token philosophy.
 
@@ -127,7 +127,7 @@ Consumer-facing theme API from `@marianmeres/stuic`:
 
 ## Theme Files
 
-**Definition files:** `src/lib/themes/*.ts` — TypeScript theme definitions (29 themes)
+**Definitions:** `@marianmeres/design-tokens/themes` — 31 TypeScript theme definitions
 
 **Generated CSS:** `src/lib/themes/css/*.css` — CSS output from `pnpm run build:theme:all`
 
@@ -138,8 +138,8 @@ Consumer-facing theme API from `@marianmeres/stuic`:
 Consumers can import themes directly:
 
 ```ts
-// Import a theme definition object (to customize/extend)
-import stone from "@marianmeres/stuic/themes/stone";
+// Import a theme definition object (from design-tokens package)
+import { stone } from "@marianmeres/design-tokens/themes";
 
 // Import a pre-built CSS theme
 import "@marianmeres/stuic/themes/css/stone.css";
@@ -157,9 +157,9 @@ Replace the default theme import:
 ### Creating a Custom Theme (Programmatic)
 
 ```ts
-import type { ThemeSchema } from "@marianmeres/stuic";
-import { generateThemeCss } from "@marianmeres/stuic";
-import stone from "@marianmeres/stuic/themes/stone";
+import type { ThemeSchema } from "@marianmeres/design-tokens";
+import { generateThemeCss } from "@marianmeres/design-tokens";
+import { stone } from "@marianmeres/design-tokens/themes";
 
 // Extend an existing theme
 const custom: ThemeSchema = {
@@ -176,7 +176,7 @@ const custom: ThemeSchema = {
 	dark: stone.dark,
 };
 
-const css = generateThemeCss(custom);
+const css = generateThemeCss(custom, "stuic-");
 // Write `css` to a file in your build pipeline
 ```
 
@@ -214,8 +214,7 @@ Override locally:
 
 | File                              | Purpose                                                                          |
 | --------------------------------- | -------------------------------------------------------------------------------- |
-| src/lib/utils/design-tokens.ts    | Types (`TokenSchema`, `ThemeSchema`, `ColorPair`, etc.) and generation functions |
-| src/lib/themes/\*.ts              | Theme definition files (29 themes, `TokenSchema`-typed)                          |
+| src/lib/utils/design-tokens.ts    | Re-exports from `@marianmeres/design-tokens`                                    |
 | src/lib/themes/css/\*.css         | Generated CSS output                                                             |
 | src/lib/index.css                 | Theme import location (loads `stone.css` by default)                             |
 | scripts/generate-theme.ts         | CLI script: `pnpm run build:theme:all`                                           |

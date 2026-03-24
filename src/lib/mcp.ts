@@ -12,7 +12,7 @@ export const tools: McpToolDefinition[] = [
 			"Accepts a ThemeSchema JSON with light (required) and dark (optional) TokenSchema objects. " +
 			"Each TokenSchema defines intent colors (primary, accent, destructive, warning, success) " +
 			"and role colors (background, muted, surface, foreground, border, input, ring). " +
-			"Auto-derives hover/active states from Tailwind shade scales and generates surface tints.",
+			"Auto-derives hover/active states via color-mix() and generates surface tints.",
 		params: {
 			schema: z
 				.string()

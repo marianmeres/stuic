@@ -26,7 +26,7 @@ src/lib/
 ├── components/     # 46 UI components
 ├── actions/        # 15 Svelte actions
 ├── utils/          # 43 utility modules
-├── themes/         # 29 theme definitions (.ts) + generated CSS (css/)
+├── themes/         # Generated theme CSS (css/) — definitions from @marianmeres/design-tokens
 ├── icons/          # Icon re-exports
 ├── index.css       # Centralized CSS imports
 └── index.ts        # Main exports
@@ -92,9 +92,8 @@ src/lib/
 | -------------------------------- | ---------------------------------------------------------------------- |
 | `src/lib/index.css`              | CSS entry point                                                        |
 | `src/lib/index.ts`               | JS entry point                                                         |
-| `src/lib/utils/design-tokens.ts` | Theme types + CSS generation (`ThemeSchema`, `generateThemeCss`, etc.) |
-| `src/lib/themes/*.ts`            | Theme definitions (29 themes, `TokenSchema`-typed)                     |
-| `src/lib/themes/css/stone.css`   | Default theme (generated)                                              |
+| `src/lib/utils/design-tokens.ts` | Re-exports from `@marianmeres/design-tokens`                          |
+| `src/lib/themes/css/stone.css`   | Default theme (generated from `@marianmeres/design-tokens/themes`)     |
 | `src/lib/components/Button/`     | Reference component                                                    |
 | `scripts/generate-theme.ts`      | CLI: `pnpm run build:theme:all`                                        |
 

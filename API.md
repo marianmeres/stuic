@@ -1711,17 +1711,6 @@ Format a token record as a CSS selector block.
 
 **Returns:** `string` — CSS block string
 
-#### `createDarkOverride(baseTokens, overrides)`
-
-Create a filtered dark mode token set from base tokens and overrides.
-
-**Parameters:**
-
-- `baseTokens` (GeneratedTokens) — Light mode tokens (used as key filter)
-- `overrides` (Partial\<GeneratedTokens\>) — Dark mode values
-
-**Returns:** `GeneratedTokens`
-
 ---
 
 ## Icons
@@ -1879,19 +1868,19 @@ Each component defines customization tokens. Override globally in `:root {}` or 
 | property  | `bg`, `text`, `border`, `ring`, `shadow`, `radius`, `padding`        |
 | state     | `hover`, `active`, `focus`, `disabled`, `error`                      |
 
-### Available Themes (29)
+### Available Themes (31)
 
-Default theme: `stone`.
+Default theme: `stone`. Theme definitions come from `@marianmeres/design-tokens`.
 
 ```ts
 // Import pre-built CSS
 import "@marianmeres/stuic/themes/css/blue-orange.css";
 
-// Import theme definition object (to extend/customize)
-import stone from "@marianmeres/stuic/themes/stone";
+// Import theme definition object (from design-tokens package)
+import { stone } from "@marianmeres/design-tokens/themes";
 ```
 
-stone, gray, zinc, dds, blue-orange, cyan-red, cyan-slate, emerald-amber-forest, emerald-pink, fuchsia-emerald, indigo-amber, lime-fuchsia-neon, orange-pink-sunset, pink-emerald, pink-teal, purple-yellow, rainbow, red-blue, red-cyan, red-sky, red-sky-slate, rose-teal, sky-amber, slate-cyan, slate-teal-ocean, stone-orange-earth, teal-rose, violet-lime, violet-rose-dusk
+stone, gray, zinc, blue-orange, cyan-red, cyan-slate, emerald-amber-forest, emerald-pink, fuchsia-emerald, indigo-amber, lime-fuchsia-neon, monokai-cyan, monokai-green, monokai-pink, orange-pink-sunset, pink-emerald, pink-teal, purple-yellow, rainbow, red-blue, red-cyan, red-sky, red-sky-slate, rose-teal, sky-amber, slate-cyan, slate-teal-ocean, stone-orange-earth, teal-rose, violet-lime, violet-rose-dusk
 
 ### Dark Mode
 

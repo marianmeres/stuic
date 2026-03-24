@@ -33,9 +33,6 @@ import monokaiPinkCss from "$lib/themes/css/monokai-pink.css?raw";
 import monokaiGreenCss from "$lib/themes/css/monokai-green.css?raw";
 import monokaiCyanCss from "$lib/themes/css/monokai-cyan.css?raw";
 
-// custom
-import ddsCss from "$lib/themes/css/dds.css?raw";
-
 const themes: Record<string, string> = {
 	stone: stoneCss,
 	gray: grayCss,
@@ -69,8 +66,6 @@ const themes: Record<string, string> = {
 	"monokai-pink": monokaiPinkCss,
 	"monokai-green": monokaiGreenCss,
 	"monokai-cyan": monokaiCyanCss,
-	//
-	dds: ddsCss,
 };
 
 const themeNames = Object.keys(themes);

@@ -172,7 +172,7 @@ storage.get("user"); // { name: 'John' }
 | -------------------- | ---------------------------- |
 | `generateCssTokens`  | Convert token schema to CSS  |
 | `toCssString`        | Format tokens as CSS string  |
-| `createDarkOverride` | Generate dark mode overrides |
+
 
 ---
 
@@ -184,4 +184,4 @@ storage.get("user"); // { name: 'John' }
 | src/lib/utils/tw-merge.ts                | Critical for class merging                |
 | src/lib/utils/persistent-state.svelte.ts | Reactive storage pattern (runes-based)    |
 | src/lib/utils/storage-abstraction.ts     | Non-reactive storage (localStorage, etc.) |
-| src/lib/utils/design-tokens.ts           | Theme token types                         |
+| src/lib/utils/design-tokens.ts           | Re-exports from `@marianmeres/design-tokens` |
