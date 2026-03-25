@@ -1,0 +1,189 @@
+/* ============================================================================
+   CARD COMPONENT TOKENS
+   Override globally: :root { --stuic-card-radius: 0; }
+   Override locally:  <Card style="--stuic-card-radius: 9999px;">
+   ============================================================================ */
+
+:root {
+	--stuic-card-bg: var(--stuic-color-card, var(--stuic-color-background));
+	--stuic-card-bg-hover: var(--stuic-color-card-hover, var(--stuic-color-muted));
+	--stuic-card-border-width: 1px;
+	--stuic-card-border: var(--stuic-color-border);
+	--stuic-card-border-hover: var(--stuic-color-border-hover);
+	--stuic-card-radius: var(--radius-lg);
+	--stuic-card-shadow: var(--shadow-sm);
+	--stuic-card-shadow-hover: var(--shadow-md);
+	--stuic-card-transition: 150ms;
+
+	/* Content area */
+	--stuic-card-padding: 1rem;
+	--stuic-card-content-gap: 0.5rem;
+
+	/* Image */
+	--stuic-card-image-aspect-ratio: 16 / 9;
+	--stuic-card-image-object-fit: cover;
+
+	/* Horizontal variant */
+	--stuic-card-image-width-horizontal: 40%;
+
+	/* Typography */
+	--stuic-card-eyebrow-font-size: var(--text-xs);
+	--stuic-card-eyebrow-text: var(--stuic-color-muted-foreground);
+	--stuic-card-title-font-size: var(--text-lg);
+	--stuic-card-title-font-weight: var(--font-weight-semibold);
+	--stuic-card-title-text: var(--stuic-color-foreground);
+	--stuic-card-description-font-size: var(--text-sm);
+	--stuic-card-description-text: var(--stuic-color-muted-foreground);
+
+	/* Focus ring */
+	--stuic-card-ring-width: 3px;
+	--stuic-card-ring-color: var(--stuic-color-ring);
+
+	/* Disabled */
+	--stuic-card-opacity-disabled: 0.5;
+}
+
+@layer components {
+	/* ============================================================================
+	   BASE STYLES
+	   ============================================================================ */
+
+	.stuic-card {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+		background: var(--stuic-card-bg);
+		border: var(--stuic-card-border-width) solid var(--stuic-card-border);
+		border-radius: var(--stuic-card-radius);
+		box-shadow: var(--stuic-card-shadow);
+		transition:
+			background var(--stuic-card-transition),
+			border-color var(--stuic-card-transition),
+			box-shadow var(--stuic-card-transition);
+		text-decoration: none;
+		color: inherit;
+		text-align: start;
+	}
+
+	/* Reset button styling */
+	button.stuic-card {
+		font: inherit;
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	/* ============================================================================
+	   INTERACTIVE HOVER (only when href or onclick)
+	   ============================================================================ */
+
+	.stuic-card[data-interactive]:hover:not([data-disabled]) {
+		background: var(--stuic-card-bg-hover);
+		border-color: var(--stuic-card-border-hover);
+		box-shadow: var(--stuic-card-shadow-hover);
+		cursor: pointer;
+	}
+
+	/* ============================================================================
+	   FOCUS
+	   ============================================================================ */
+
+	.stuic-card:focus-visible {
+		outline: var(--stuic-card-ring-width) solid var(--stuic-card-ring-color);
+		outline-offset: 0px;
+	}
+
+	/* ============================================================================
+	   DISABLED
+	   ============================================================================ */
+
+	.stuic-card[data-disabled] {
+		opacity: var(--stuic-card-opacity-disabled);
+		cursor: not-allowed;
+		pointer-events: none;
+	}
+
+	/* ============================================================================
+	   HORIZONTAL VARIANT
+	   ============================================================================ */
+
+	.stuic-card[data-variant="horizontal"] {
+		flex-direction: row;
+	}
+
+	/* ============================================================================
+	   IMAGE AREA
+	   ============================================================================ */
+
+	.stuic-card-image {
+		position: relative;
+		overflow: hidden;
+		flex-shrink: 0;
+	}
+
+	.stuic-card:not([data-variant="horizontal"]) .stuic-card-image {
+		aspect-ratio: var(--stuic-card-image-aspect-ratio);
+	}
+
+	.stuic-card[data-variant="horizontal"] .stuic-card-image {
+		width: var(--stuic-card-image-width-horizontal);
+	}
+
+	.stuic-card-image img {
+		width: 100%;
+		height: 100%;
+		object-fit: var(--stuic-card-image-object-fit);
+	}
+
+	/* ============================================================================
+	   BADGE OVERLAY
+	   ============================================================================ */
+
+	.stuic-card-badge {
+		position: absolute;
+		top: 0.5rem;
+		right: 0.5rem;
+		z-index: 1;
+	}
+
+	/* ============================================================================
+	   CONTENT AREA
+	   ============================================================================ */
+
+	.stuic-card-content {
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-card-content-gap);
+		padding: var(--stuic-card-padding);
+		flex: 1;
+		min-height: 0;
+	}
+
+	.stuic-card-eyebrow {
+		font-size: var(--stuic-card-eyebrow-font-size);
+		color: var(--stuic-card-eyebrow-text);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.stuic-card-title {
+		font-size: var(--stuic-card-title-font-size);
+		font-weight: var(--stuic-card-title-font-weight);
+		color: var(--stuic-card-title-text);
+	}
+
+	.stuic-card-description {
+		font-size: var(--stuic-card-description-font-size);
+		color: var(--stuic-card-description-text);
+	}
+
+	/* ============================================================================
+	   FOOTER
+	   ============================================================================ */
+
+	.stuic-card-footer {
+		padding: 0 var(--stuic-card-padding) var(--stuic-card-padding);
+		margin-top: auto;
+	}
+}

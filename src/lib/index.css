@@ -33,6 +33,7 @@ In practice:
 @import "./components/ButtonGroupRadio/index.css";
 @import "./components/Collapsible/index.css";
 @import "./components/Cart/index.css";
+@import "./components/Card/index.css";
 @import "./components/Carousel/index.css";
 @import "./components/LoginForm/index.css";
 @import "./components/Checkout/index.css";

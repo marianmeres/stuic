@@ -34,6 +34,7 @@ export * from "./components/Book/index.js";
 export * from "./components/Button/index.js";
 export * from "./components/ButtonGroupRadio/index.js";
 export * from "./components/Cart/index.js";
+export * from "./components/Card/index.js";
 export * from "./components/Carousel/index.js";
 export * from "./components/Checkout/index.js";
 export * from "./components/Collapsible/index.js";

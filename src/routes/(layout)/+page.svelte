@@ -13,6 +13,7 @@
         'button', 
         'button-group-radio', 
 		'carousel', 
+		'card',
 		'cart',
 		'checkout',
 		'collapsible', 
