@@ -1,0 +1,135 @@
+/* ============================================================================
+   HEADER COMPONENT TOKENS
+   Override globally: :root { --stuic-header-bg: red; }
+   Override locally:  <Header style="--stuic-header-bg: red;">
+   ============================================================================ */
+
+:root {
+	/* Structure */
+	--stuic-header-padding-x: 1rem;
+	--stuic-header-padding-y: 0.75rem;
+	--stuic-header-gap: 1rem;
+	--stuic-header-min-height: 3.5rem;
+
+	/* Nav items */
+	--stuic-header-nav-gap: 0.25rem;
+
+	/* Project name */
+	--stuic-header-project-name-font-weight: var(--font-weight-semibold, 600);
+
+	/* Fixed mode */
+	--stuic-header-z-index: 40;
+}
+
+@layer components {
+	/* ============================================================================
+	   BASE
+	   ============================================================================ */
+
+	.stuic-header {
+		display: flex;
+		align-items: center;
+		width: 100%;
+		min-height: var(--stuic-header-min-height);
+		padding: var(--stuic-header-padding-y) var(--stuic-header-padding-x);
+		gap: var(--stuic-header-gap);
+		background: var(--stuic-header-bg, var(--color-background, inherit));
+		color: var(--stuic-header-text, inherit);
+		border-bottom: var(--stuic-header-border-width, var(--stuic-border-width)) solid
+			var(--stuic-header-border-color, var(--color-border, transparent));
+	}
+
+	/* ============================================================================
+	   FIXED
+	   ============================================================================ */
+
+	.stuic-header[data-fixed] {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		z-index: var(--stuic-header-z-index);
+	}
+
+	/* ============================================================================
+	   LOGO
+	   ============================================================================ */
+
+	.stuic-header-logo {
+		display: flex;
+		align-items: center;
+		flex-shrink: 0;
+	}
+
+	.stuic-header-project-name {
+		font-size: var(--stuic-header-project-name-font-size, var(--text-lg, 1.125rem));
+		font-weight: var(--stuic-header-project-name-font-weight);
+		white-space: nowrap;
+	}
+
+	/* ============================================================================
+	   NAV (expanded mode) — items are ghost Buttons
+	   ============================================================================ */
+
+	.stuic-header-nav {
+		display: flex;
+		align-items: center;
+		gap: var(--stuic-header-nav-gap);
+	}
+
+	/* Active state highlight for nav Buttons */
+	.stuic-header-nav-item[data-active] {
+		color: var(--stuic-header-nav-item-text-active, var(--color-foreground, inherit));
+		background: var(--stuic-header-nav-item-bg-active, var(--color-muted, transparent));
+	}
+
+	/* ============================================================================
+	   NAV ICON (inline icon before label)
+	   ============================================================================ */
+
+	.stuic-header-nav-icon {
+		display: inline-flex;
+		align-items: center;
+		flex-shrink: 0;
+	}
+
+	/* ============================================================================
+	   SPACER
+	   ============================================================================ */
+
+	.stuic-header-spacer {
+		flex: 1;
+	}
+
+	/* ============================================================================
+	   END AREA (avatar + hamburger)
+	   ============================================================================ */
+
+	.stuic-header-end {
+		display: flex;
+		align-items: center;
+		gap: var(--stuic-header-gap);
+		flex-shrink: 0;
+	}
+
+	.stuic-header-avatar {
+		display: flex;
+		align-items: center;
+	}
+
+	button.stuic-header-avatar {
+		border: none;
+		background: none;
+		padding: 0;
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	/* ============================================================================
+	   HAMBURGER
+	   ============================================================================ */
+
+	.stuic-header-hamburger {
+		/* Ghost Button handles hover/focus — only override sizing */
+	}
+}

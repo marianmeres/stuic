@@ -28,6 +28,7 @@
         'dropdown-menu',
 		'file-dropzone',
 		'h',
+		'header',
 		'hover-expandable-width',
 		'image-cycler',
 		'icons',
