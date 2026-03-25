@@ -63,6 +63,7 @@ A flexible card component for displaying content in a contained, visually distin
 | `title` | `THC` | - | Card title |
 | `description` | `THC` | - | Short description below the title |
 | `variant` | `"vertical" \| "horizontal"` | `"vertical"` | Layout variant |
+| `horizontalThreshold` | `number` | `480` | Width (px) below which horizontal auto-switches to vertical. Set 0 to disable. |
 | `href` | `string` | - | Renders card as `<a>` |
 | `onclick` | `(e: MouseEvent) => void` | - | Renders card as `<button>` |
 | `disabled` | `boolean` | `false` | Disabled state (reduced opacity, no interaction) |
@@ -118,3 +119,4 @@ A flexible card component for displaying content in a contained, visually distin
 - Footer sticks to the bottom of the card via `margin-top: auto`.
 - When using `href` or `onclick`, the entire card becomes interactive with hover effects. Avoid placing interactive elements (buttons, links) inside `renderFooter` in this case, as it creates invalid nested interactive HTML.
 - All content props (`title`, `description`, `eyebrow`) accept the THC type (plain string, HTML, component, or snippet).
+- When `variant="horizontal"`, the card measures its own width and automatically switches to vertical layout when narrower than `horizontalThreshold` (default 480px). Set `horizontalThreshold={0}` to disable this behavior.

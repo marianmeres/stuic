@@ -42,6 +42,8 @@
 		classContent?: string;
 		/** Class for the footer area */
 		classFooter?: string;
+		/** Width (px) below which horizontal auto-switches to vertical. Set 0 to disable. */
+		horizontalThreshold?: number;
 		/** Bindable element reference */
 		el?: HTMLElement;
 	}
@@ -70,14 +72,23 @@
 		classImage: classImageProp,
 		classContent: classContentProp,
 		classFooter: classFooterProp,
+		horizontalThreshold = 480,
 		el = $bindable(),
 		onclick,
 		...rest
 	}: Props = $props();
 
+	let _offsetWidth = $state(0);
+
+	let _effectiveVariant = $derived.by(() => {
+		if (variant !== "horizontal" || !horizontalThreshold) return variant;
+		return _offsetWidth > 0 && _offsetWidth < horizontalThreshold ? "vertical" : "horizontal";
+	});
+
 	let _class = $derived(unstyled ? classProp : twMerge("stuic-card", classProp));
 	let _classImage = $derived(unstyled ? classImageProp : twMerge("stuic-card-image", classImageProp));
 	let _classContent = $derived(unstyled ? classContentProp : twMerge("stuic-card-content", classContentProp));
+	let _classBody = $derived(unstyled ? undefined : "stuic-card-body");
 	let _classFooter = $derived(unstyled ? classFooterProp : twMerge("stuic-card-footer", classFooterProp));
 
 	let _isInteractive = $derived(!!(href || onclick));
@@ -103,26 +114,30 @@
 				{/if}
 			</div>
 		{/if}
-		{#if renderContent}
-			<div class={_classContent}>
-				{@render renderContent({ eyebrow, title, description })}
-			</div>
-		{:else if _hasContent}
-			<div class={_classContent}>
-				{#if eyebrow}
-					<div class={unstyled ? undefined : "stuic-card-eyebrow"}><Thc thc={eyebrow} /></div>
+		{#if _hasContent || renderContent || renderFooter}
+			<div class={_classBody}>
+				{#if renderContent}
+					<div class={_classContent}>
+						{@render renderContent({ eyebrow, title, description })}
+					</div>
+				{:else if _hasContent}
+					<div class={_classContent}>
+						{#if eyebrow}
+							<div class={unstyled ? undefined : "stuic-card-eyebrow"}><Thc thc={eyebrow} /></div>
+						{/if}
+						{#if title}
+							<div class={unstyled ? undefined : "stuic-card-title"}><Thc thc={title} /></div>
+						{/if}
+						{#if description}
+							<div class={unstyled ? undefined : "stuic-card-description"}><Thc thc={description} /></div>
+						{/if}
+					</div>
 				{/if}
-				{#if title}
-					<div class={unstyled ? undefined : "stuic-card-title"}><Thc thc={title} /></div>
+				{#if renderFooter}
+					<div class={_classFooter}>
+						{@render renderFooter()}
+					</div>
 				{/if}
-				{#if description}
-					<div class={unstyled ? undefined : "stuic-card-description"}><Thc thc={description} /></div>
-				{/if}
-			</div>
-		{/if}
-		{#if renderFooter}
-			<div class={_classFooter}>
-				{@render renderFooter()}
 			</div>
 		{/if}
 	{/if}
@@ -132,8 +147,9 @@
 	<a
 		{href}
 		bind:this={el}
+		bind:offsetWidth={_offsetWidth}
 		class={_class}
-		data-variant={!unstyled ? variant : undefined}
+		data-variant={!unstyled ? _effectiveVariant : undefined}
 		data-interactive={!unstyled ? "" : undefined}
 		data-disabled={!unstyled && disabled ? "" : undefined}
 		aria-disabled={disabled ? "true" : undefined}
@@ -145,8 +161,9 @@
 	<button
 		type="button"
 		bind:this={el}
+		bind:offsetWidth={_offsetWidth}
 		class={_class}
-		data-variant={!unstyled ? variant : undefined}
+		data-variant={!unstyled ? _effectiveVariant : undefined}
 		data-interactive={!unstyled ? "" : undefined}
 		data-disabled={!unstyled && disabled ? "" : undefined}
 		{disabled}
@@ -158,8 +175,9 @@
 {:else}
 	<div
 		bind:this={el}
+		bind:offsetWidth={_offsetWidth}
 		class={_class}
-		data-variant={!unstyled ? variant : undefined}
+		data-variant={!unstyled ? _effectiveVariant : undefined}
 		data-disabled={!unstyled && disabled ? "" : undefined}
 		{...rest}
 	>

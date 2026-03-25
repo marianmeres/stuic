@@ -104,6 +104,46 @@
 
 	<hr class="border-neutral-200 dark:border-neutral-700" />
 
+	<!-- Responsive Horizontal (auto-switch) -->
+	<section>
+		<h2 class="text-xl font-semibold mb-2">Responsive Horizontal</h2>
+		<p class="text-sm text-neutral-500 mb-4">
+			Horizontal card auto-switches to vertical when its width drops below the threshold
+			(default 480px). Resize the browser to see it in action.
+		</p>
+		<div class="max-w-2xl">
+			<Card
+				variant="horizontal"
+				image="https://picsum.photos/seed/card5r/400/400"
+				eyebrow="Responsive"
+				title="Auto-switching Layout"
+				description="This card is horizontal when wide enough, but collapses to vertical on narrow containers."
+			>
+				{#snippet renderFooter()}
+					<div class="flex justify-end gap-2">
+						<Button variant="ghost" size="sm">Cancel</Button>
+						<Button intent="primary" size="sm">Action</Button>
+					</div>
+				{/snippet}
+			</Card>
+		</div>
+		<p class="text-sm text-neutral-500 mt-4">
+			Same card with auto-switch disabled (<code>horizontalThreshold=&#123;0&#125;</code>):
+		</p>
+		<div class="max-w-xs mt-2">
+			<Card
+				variant="horizontal"
+				horizontalThreshold={0}
+				image="https://picsum.photos/seed/card5r/400/400"
+				eyebrow="Forced"
+				title="Always Horizontal"
+				description="This stays horizontal even when narrow."
+			/>
+		</div>
+	</section>
+
+	<hr class="border-neutral-200 dark:border-neutral-700" />
+
 	<!-- Card with Badge -->
 	<section>
 		<h2 class="text-xl font-semibold mb-2">Card with Badge</h2>
