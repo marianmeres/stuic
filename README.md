@@ -144,11 +144,11 @@ See [API.md](API.md) for the full list of exported theme types (`ThemeSchema`, `
 
 ### Layout & Overlays
 
-AppShell, Accordion, Backdrop, Modal, ModalDialog, Drawer, Collapsible, SlidingPanels, Nav, WithSidePanel
+AppShell, Accordion, Backdrop, Modal, ModalDialog, Drawer, Collapsible, Header, SlidingPanels, Nav, WithSidePanel
 
 ### Forms & Inputs
 
-FieldInput, FieldTextarea, FieldSelect, FieldCheckbox, FieldRadios, FieldFile, FieldAssets, FieldOptions, FieldKeyValues, FieldObject, FieldSwitch, FieldInputLocalized, FieldLikeButton, FieldPhoneNumber, Fieldset, LoginForm, LoginFormModal
+FieldInput, FieldTextarea, FieldSelect, FieldCheckbox, FieldRadios, FieldFile, FieldAssets, FieldOptions, FieldKeyValues, FieldObject, FieldSwitch, FieldInputLocalized, FieldLikeButton, FieldPhoneNumber, CronInput, Fieldset, LoginForm, LoginFormModal
 
 ### Buttons & Controls
 
@@ -164,7 +164,7 @@ CommandMenu, DropdownMenu, TabbedMenu, TypeaheadInput, KbdShortcut
 
 ### Display & Utility
 
-Avatar, Book, BookResponsive, Carousel, Circle, AnimatedElipsis, H, IconSwap, ImageCycler, Separator, ThemePreview, ColorScheme, Thc, HoverExpandableWidth, AssetsPreview, AssetsPreviewInline, DataTable
+Avatar, Book, BookResponsive, Card, Carousel, Circle, AnimatedElipsis, H, IconSwap, ImageCycler, Separator, ThemePreview, Tree, ColorScheme, Thc, HoverExpandableWidth, AssetsPreview, AssetsPreviewInline, DataTable
 
 ### E-commerce
 

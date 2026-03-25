@@ -2,24 +2,25 @@
 
 ## Overview
 
-46 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
+50 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
 ### Layout
 
-| Component                | Purpose                                            |
-| ------------------------ | -------------------------------------------------- |
-| AppShell, AppShellSimple | Page layouts with header/sidebar/content           |
-| Modal, ModalDialog       | Overlay containers                                 |
-| Drawer                   | Side panel overlay                                 |
-| Backdrop                 | Semi-transparent overlay with escape/focus trap    |
-| Collapsible              | Expandable sections                                |
-| Accordion                | Exclusive/multi-open expandable sections           |
-| SlidingPanels            | Panel transitions                                  |
-| TabbedMenu               | Tab navigation                                     |
-| Nav                      | Navigation wrapper                                 |
-| WithSidePanel            | Two-column layout with collapsible/resizable panel |
+| Component                | Purpose                                              |
+| ------------------------ | ---------------------------------------------------- |
+| AppShell, AppShellSimple | Page layouts with header/sidebar/content             |
+| Header                   | Responsive nav header with hamburger collapse        |
+| Modal, ModalDialog       | Overlay containers                                   |
+| Drawer                   | Side panel overlay                                   |
+| Backdrop                 | Semi-transparent overlay with escape/focus trap      |
+| Collapsible              | Expandable sections                                  |
+| Accordion                | Exclusive/multi-open expandable sections             |
+| SlidingPanels            | Panel transitions                                    |
+| TabbedMenu               | Tab navigation                                       |
+| Nav                      | Navigation wrapper                                   |
+| WithSidePanel            | Two-column layout with collapsible/resizable panel   |
 
 ### Interactive
 
@@ -56,6 +57,7 @@
 | Input (FieldInput, FieldSelect, etc.) | Form fields                                       |
 | FieldPhoneNumber                      | International phone input with country picker      |
 | FieldObject                           | Dual-mode JSON object editor (pretty-print/raw)   |
+| CronInput                             | Cron expression editor with presets and validation |
 | Fieldset                              | Field grouping with legend                        |
 | FieldKeyValues                        | Key-value pair editor                             |
 | FieldAssets                           | File/asset management                             |
@@ -81,6 +83,8 @@
 | H               | Semantic heading (h1-h6) with separate visual/semantic levels       |
 | Separator       | Horizontal/vertical separator line                                  |
 | Thc             | Flexible renderer for text, HTML, components, or snippets           |
+| Card            | Flexible card with image, title, footer; vertical/horizontal layout |
+| Tree            | Hierarchical tree view with keyboard nav and drag-and-drop          |
 | X               | Styled close/multiply SVG icon                                      |
 | ImageCycler     | Auto-cycling image carousel with fade transitions and preloading    |
 
@@ -373,6 +377,199 @@ Components use private CSS vars (`--_*`) set by intent/variant:
 
 ---
 
+## Card
+
+Flexible, responsive card for displaying content in a contained box. Supports images (top or side), titles, descriptions, footers, and interactive states.
+
+### Exports
+
+| Export        | Kind      | Description                          |
+| ------------- | --------- | ------------------------------------ |
+| `Card`        | component | Main card component                  |
+| `CardProps`   | type      | Props type                           |
+| `CardVariant` | type      | `"vertical" \| "horizontal"`        |
+
+### Key Props
+
+| Prop                   | Type                     | Default      | Description                                  |
+| ---------------------- | ------------------------ | ------------ | -------------------------------------------- |
+| `image`                | `string`                 | —            | Image URL                                    |
+| `eyebrow`              | `THC`                    | —            | Small label above title                      |
+| `title`                | `THC`                    | —            | Card title                                   |
+| `description`          | `THC`                    | —            | Short description                            |
+| `variant`              | `CardVariant`            | `"vertical"` | Layout direction                             |
+| `href`                 | `string`                 | —            | Renders as `<a>`                             |
+| `onclick`              | `(e) => void`            | —            | Renders as `<button>`                        |
+| `disabled`             | `boolean`                | `false`      | Disable interaction                          |
+| `horizontalThreshold`  | `number`                 | `480`        | Width (px) to auto-switch to vertical; 0 disables |
+
+Snippets: `children`, `renderImage`, `renderBadge`, `renderContent`, `renderFooter`.
+
+### CSS Tokens
+
+Prefix: `--stuic-card-*`
+
+`bg`, `bg-hover`, `border`, `border-hover`, `padding`, `content-gap`, `image-aspect-ratio`, `image-object-fit`, `image-width-horizontal`, `radius`, `shadow`, `shadow-hover`, `ring-width`, `ring-color`, `eyebrow-font-size`, `eyebrow-text`, `title-font-size`, `title-font-weight`, `title-text`, `description-font-size`, `description-text`, `opacity-disabled`
+
+---
+
+## CronInput
+
+Cron expression editor with preset selector, manual 5-field editor, raw expression input, human-readable descriptions, and next-run calculation.
+
+### Exports
+
+| Export                 | Kind      | Description                              |
+| ---------------------- | --------- | ---------------------------------------- |
+| `CronInput`            | component | Main cron editor                         |
+| `CronInputProps`       | type      | Props type                               |
+| `CronPreset`           | type      | Preset interface `{ label, value }`      |
+| `CronInputMode`        | type      | `"predefined" \| "manual"`              |
+| `CRON_DEFAULT_PRESETS`  | constant  | Default preset array (11 common schedules) |
+| `CronNextRun`          | class     | Reactive helper for standalone cron calculations |
+
+### Key Props
+
+| Prop              | Type              | Default       | Description                       |
+| ----------------- | ----------------- | ------------- | --------------------------------- |
+| `value`           | `string`          | `"* * * * *"` | Bindable cron expression          |
+| `mode`            | `CronInputMode`   | —             | Bindable; predefined or manual    |
+| `showPresets`     | `boolean`         | `true`        | Show preset selector              |
+| `showFields`      | `boolean`         | `true`        | Show 5-column field editor        |
+| `showRawInput`    | `boolean`         | `true`        | Show raw expression input         |
+| `showDescription` | `boolean`         | `true`        | Show human-readable description   |
+| `showNextRun`     | `boolean`         | `true`        | Show next run time                |
+| `presets`         | `CronPreset[]`    | default set   | Custom presets                    |
+| `onchange`        | `(expr, valid) => void` | —       | Change callback                   |
+
+Integrates with `InputWrap` — supports `label`, `description`, `renderSize`, `required`, `disabled`, `validate`, `labelLeft`, `below`.
+
+### CronNextRun Class
+
+Reactive helper for standalone cron calculations:
+
+```ts
+const next = new CronNextRun("0 9 * * 1-5");
+next.nextRun;          // Date | null
+next.nextRunFormatted; // "YYYY-MM-DD HH:MM"
+next.valid;            // boolean
+next.destroy();        // cleanup timer
+```
+
+### CSS Tokens
+
+Prefix: `--stuic-cron-input-*`
+
+`fields-gap`, `section-gap`, `field-label-text`, `summary-text`, `error-text`, `field-bg`, `field-border`, `field-border-focus`
+
+---
+
+## Header
+
+Responsive navigation header with logo, nav items, avatar, and automatic hamburger collapse.
+
+### Exports
+
+| Export                     | Kind     | Description               |
+| -------------------------- | -------- | ------------------------- |
+| `Header`                   | component | Main header component    |
+| `HeaderProps`              | type     | Props type                |
+| `HeaderNavItem`            | type     | Nav item interface        |
+| `HEADER_BASE_CLASSES`      | constant | `"stuic-header"`          |
+| `HEADER_LOGO_CLASSES`      | constant | `"stuic-header-logo"`     |
+| `HEADER_NAV_CLASSES`       | constant | `"stuic-header-nav"`      |
+| `HEADER_NAV_ITEM_CLASSES`  | constant | `"stuic-header-nav-item"` |
+| `HEADER_END_CLASSES`       | constant | `"stuic-header-end"`      |
+| `HEADER_HAMBURGER_CLASSES` | constant | `"stuic-header-hamburger"` |
+
+### HeaderNavItem
+
+```ts
+interface HeaderNavItem {
+  id: string | number;
+  label: THC;
+  href?: string;
+  onclick?: () => void;
+  icon?: THC;
+  active?: boolean;
+  disabled?: boolean;
+  class?: string;
+}
+```
+
+### Key Props
+
+| Prop                | Type                  | Default                 | Description                          |
+| ------------------- | --------------------- | ----------------------- | ------------------------------------ |
+| `logo`              | `Snippet`             | —                       | Logo/brand snippet                   |
+| `projectName`       | `string`              | —                       | Simple text logo alternative         |
+| `items`             | `HeaderNavItem[]`     | `[]`                    | Navigation items                     |
+| `avatar`            | `Snippet`             | —                       | Avatar snippet (far right)           |
+| `avatarOnClick`     | `() => void`          | —                       | Avatar click handler                 |
+| `collapseThreshold` | `number`              | `768`                   | Width (px) to collapse; 0 disables   |
+| `fixed`             | `boolean`             | `false`                 | Fixed positioning at top             |
+| `isCollapsed`       | `boolean`             | —                       | Bindable: collapsed state            |
+| `isMenuOpen`        | `boolean`             | —                       | Bindable: hamburger menu open        |
+| `onSelect`          | `(item) => void`      | —                       | Item selection callback              |
+
+Snippets: `logo`, `avatar`, `children({ isCollapsed, items, offsetWidth })`.
+
+### CSS Tokens
+
+Prefix: `--stuic-header-*`
+
+`padding-x`, `padding-y`, `gap`, `min-height`, `nav-gap`, `project-name-font-weight`, `z-index`, `bg`, `text`, `border-width`, `border-color`, `nav-item-bg-active`, `nav-item-text-active`
+
+---
+
+## Tree
+
+Accessible, keyboard-navigable hierarchical tree view with optional drag-and-drop reordering and localStorage persistence.
+
+### Exports
+
+| Export              | Kind      | Description                                |
+| ------------------- | --------- | ------------------------------------------ |
+| `Tree`              | component | Main tree component                        |
+| `TreeProps`         | type      | Props type                                 |
+| `TreeMoveEvent`     | type      | Drag-drop event interface                  |
+| `TreeDropPosition`  | type      | `"before" \| "after" \| "inside"`         |
+| `TREE_BASE_CLASSES` | constant  | `"stuic-tree"`                             |
+| `TREE_ITEM_CLASSES` | constant  | `"stuic-tree-item"`                        |
+| `TREE_CHILDREN_CLASSES` | constant | `"stuic-tree-children"`                 |
+| `TreeNodeDTO`       | type      | Re-exported from `@marianmeres/tree`       |
+
+### Key Props
+
+| Prop              | Type                       | Default        | Description                             |
+| ----------------- | -------------------------- | -------------- | --------------------------------------- |
+| `items`           | `TreeNodeDTO<T>[]`         | required       | Tree data                               |
+| `renderItem`      | `Snippet<[item, depth, isExpanded]>` | —   | Custom item content                     |
+| `renderIcon`      | `Snippet<[item, depth, isExpanded]>` | —   | Custom item icon                        |
+| `activeId`        | `string`                   | —              | Selected item ID                        |
+| `isActive`        | `(item) => boolean`        | —              | Custom active check                     |
+| `onSelect`        | `(item) => void`           | —              | Item selection callback                 |
+| `onToggle`        | `(item, expanded) => void` | —              | Branch toggle callback                  |
+| `sort`            | `(a, b) => number`         | —              | Sort comparator (per-level)             |
+| `defaultExpanded` | `boolean`                  | `false`        | Default expand state                    |
+| `expandedIds`     | `Set<string>`              | —              | Initially expanded IDs                  |
+| `persistState`    | `boolean`                  | `false`        | Save expand state to localStorage       |
+| `draggable`       | `boolean`                  | `false`        | Enable drag-and-drop                    |
+| `isDraggable`     | `(item) => boolean`        | —              | Per-item drag control                   |
+| `isDropTarget`    | `(item) => boolean`        | —              | Per-item drop target control            |
+| `onMove`          | `(event) => void \| false` | —              | Drop handler; return false to reject    |
+| `dragExpandDelay` | `number`                   | `800`          | Auto-expand delay (ms) on drag hover   |
+
+Features: arrow-key navigation, Home/End, Enter/Space, roving tabindex, slide transitions (respects `prefers-reduced-motion`).
+
+### CSS Tokens
+
+Prefix: `--stuic-tree-*`
+
+`indent`, `item-padding-x`, `item-padding-y`, `item-height`, `item-font-size`, `item-gap`, `chevron-opacity`, `icon-opacity`, `item-opacity-dragging`, `item-bg`, `item-text`, `item-bg-hover`, `item-text-hover`, `item-bg-active`, `item-text-active`, `item-bg-focus`, `item-text-focus`, `drop-indicator-color`, `drop-indicator-height`, `item-bg-dragover`
+
+---
+
 ## Key Files
 
 | File                          | Purpose                                               |
@@ -382,4 +579,6 @@ Components use private CSS vars (`--_*`) set by intent/variant:
 | src/lib/components/Input/     | Form field patterns (incl. FieldObject)               |
 | src/lib/components/LoginForm/ | Standalone login form + modal variant                 |
 | src/lib/components/Checkout/  | E-commerce checkout flow (14 exported sub-components) |
+| src/lib/components/Card/      | Card with image/title/footer variants                 |
+| src/lib/components/Tree/      | Hierarchical tree with drag-and-drop                  |
 | src/lib/index.ts              | All component exports                                 |

@@ -130,6 +130,41 @@ Panel-based navigation with slide transitions.
 
 Navigation wrapper component.
 
+#### `Header`
+
+Responsive navigation header with logo, nav items, avatar, and automatic hamburger collapse. Renders as `<header>`.
+
+| Prop                | Type              | Default               | Description                        |
+| ------------------- | ----------------- | --------------------- | ---------------------------------- |
+| `logo`              | `Snippet`         | —                     | Logo/brand snippet                 |
+| `projectName`       | `string`          | —                     | Simple text logo alternative       |
+| `items`             | `HeaderNavItem[]` | `[]`                  | Navigation items                   |
+| `avatar`            | `Snippet`         | —                     | Avatar snippet (far right)         |
+| `avatarOnClick`     | `() => void`      | —                     | Avatar click handler               |
+| `collapseThreshold` | `number`          | `768`                 | Width (px) to collapse; 0 disables |
+| `fixed`             | `boolean`         | `false`               | Fixed positioning at top           |
+| `isCollapsed`       | `boolean`         | —                     | Bindable: collapsed state          |
+| `isMenuOpen`        | `boolean`         | —                     | Bindable: hamburger menu open      |
+| `onSelect`          | `(item) => void`  | —                     | Item selection callback            |
+
+```svelte
+<Header
+	projectName="My App"
+	items={[
+		{ id: "home", label: "Home", href: "/", active: true },
+		{ id: "about", label: "About", href: "/about" },
+	]}
+>
+	{#snippet avatar()}
+		<Avatar src="/me.jpg" alt="User" />
+	{/snippet}
+</Header>
+```
+
+**HeaderNavItem:** `{ id, label, href?, onclick?, icon?, active?, disabled?, class? }`
+
+CSS tokens: `--stuic-header-padding-x`, `--stuic-header-padding-y`, `--stuic-header-gap`, `--stuic-header-min-height`, `--stuic-header-nav-gap`, `--stuic-header-bg`, `--stuic-header-text`, `--stuic-header-border-width`, `--stuic-header-border-color`, `--stuic-header-nav-item-bg-active`, `--stuic-header-nav-item-text-active`, `--stuic-header-z-index`.
+
 ---
 
 ### Interactive
@@ -315,6 +350,42 @@ Dual-mode JSON object editor with pretty-print and raw edit modes. Validates JSO
 ```svelte
 <FieldObject bind:value={jsonStr} name="metadata" label="Metadata" />
 ```
+
+#### `CronInput`
+
+Cron expression editor with preset selector, manual 5-field editor, raw expression input, human-readable descriptions, and next-run calculation.
+
+| Prop              | Type                          | Default       | Description                     |
+| ----------------- | ----------------------------- | ------------- | ------------------------------- |
+| `value`           | `string`                      | `"* * * * *"` | Bindable cron expression        |
+| `mode`            | `CronInputMode`               | —             | Bindable; predefined or manual  |
+| `showPresets`     | `boolean`                     | `true`        | Show preset selector            |
+| `showFields`      | `boolean`                     | `true`        | Show 5-column field editor      |
+| `showRawInput`    | `boolean`                     | `true`        | Show raw expression input       |
+| `showDescription` | `boolean`                     | `true`        | Show human-readable description |
+| `showNextRun`     | `boolean`                     | `true`        | Show next run time              |
+| `presets`         | `CronPreset[]`                | default set   | Custom presets                  |
+| `onchange`        | `(expr: string, valid: boolean) => void` | — | Change callback                 |
+
+Integrates with `InputWrap` — supports `label`, `description`, `renderSize`, `required`, `disabled`, `validate`, `labelLeft`, `below`.
+
+```svelte
+<CronInput bind:value={cronExpr} label="Schedule" showNextRun />
+```
+
+Exports: `CronInput`, `CronInputProps`, `CronPreset`, `CronInputMode`, `CRON_DEFAULT_PRESETS`, `CronNextRun`.
+
+**CronNextRun** — reactive helper class for standalone next-run calculations:
+
+```ts
+const next = new CronNextRun("0 9 * * 1-5");
+next.nextRun;          // Date | null
+next.nextRunFormatted; // "YYYY-MM-DD HH:MM"
+next.valid;            // boolean
+next.destroy();        // cleanup timer
+```
+
+CSS tokens: `--stuic-cron-input-fields-gap`, `--stuic-cron-input-section-gap`, `--stuic-cron-input-field-label-text`, `--stuic-cron-input-summary-text`, `--stuic-cron-input-error-text`, `--stuic-cron-input-field-bg`, `--stuic-cron-input-field-border`, `--stuic-cron-input-field-border-focus`.
 
 #### `Fieldset`
 
@@ -1089,6 +1160,86 @@ Always-visible (non-modal) variant of AssetsPreview with the same zoom, pan, swi
 	bind:currentIndex
 />
 ```
+
+#### `Card`
+
+Flexible, responsive card with image, title, description, footer, and interactive states. Renders as `<a>`, `<button>`, or `<div>` depending on props.
+
+| Prop                  | Type          | Default      | Description                                       |
+| --------------------- | ------------- | ------------ | ------------------------------------------------- |
+| `image`               | `string`      | —            | Image URL                                         |
+| `imageAlt`            | `string`      | `""`         | Alt text                                          |
+| `eyebrow`             | `THC`         | —            | Small label above title                           |
+| `title`               | `THC`         | —            | Card title                                        |
+| `description`         | `THC`         | —            | Short description                                 |
+| `variant`             | `CardVariant` | `"vertical"` | `"vertical"` or `"horizontal"` layout             |
+| `href`                | `string`      | —            | Renders as `<a>`                                  |
+| `onclick`             | `(e) => void` | —            | Renders as `<button>`                             |
+| `disabled`            | `boolean`     | `false`      | Disable interaction                               |
+| `horizontalThreshold` | `number`      | `480`        | Width (px) to auto-switch to vertical; 0 disables |
+
+```svelte
+<Card
+	image="/photo.jpg"
+	eyebrow="New"
+	title="Product Name"
+	description="A brief description."
+	href="/products/1"
+>
+	{#snippet renderFooter()}
+		<Button variant="ghost" size="sm">Details</Button>
+	{/snippet}
+</Card>
+```
+
+Snippets: `children`, `renderImage({ image, imageAlt })`, `renderBadge`, `renderContent({ eyebrow?, title?, description? })`, `renderFooter`.
+
+Exports: `Card`, `CardProps`, `CardVariant`.
+
+CSS tokens: `--stuic-card-bg`, `--stuic-card-bg-hover`, `--stuic-card-border`, `--stuic-card-border-hover`, `--stuic-card-padding`, `--stuic-card-content-gap`, `--stuic-card-image-aspect-ratio`, `--stuic-card-image-object-fit`, `--stuic-card-image-width-horizontal`, `--stuic-card-radius`, `--stuic-card-shadow`, `--stuic-card-shadow-hover`, `--stuic-card-ring-width`, `--stuic-card-ring-color`, `--stuic-card-eyebrow-font-size`, `--stuic-card-title-font-size`, `--stuic-card-title-font-weight`, `--stuic-card-description-font-size`, `--stuic-card-opacity-disabled`.
+
+#### `Tree`
+
+Accessible, keyboard-navigable hierarchical tree view with optional drag-and-drop reordering, expand/collapse, and localStorage persistence.
+
+| Prop              | Type                                     | Default      | Description                          |
+| ----------------- | ---------------------------------------- | ------------ | ------------------------------------ |
+| `items`           | `TreeNodeDTO<T>[]`                       | required     | Tree data                            |
+| `renderItem`      | `Snippet<[item, depth, isExpanded]>`     | —            | Custom item content                  |
+| `renderIcon`      | `Snippet<[item, depth, isExpanded]>`     | —            | Custom item icon                     |
+| `activeId`        | `string`                                 | —            | Selected item ID                     |
+| `isActive`        | `(item) => boolean`                      | —            | Custom active check                  |
+| `onSelect`        | `(item) => void`                         | —            | Item selection callback              |
+| `onToggle`        | `(item, expanded) => void`               | —            | Branch toggle callback               |
+| `sort`            | `(a, b) => number`                       | —            | Sort comparator (per-level)          |
+| `defaultExpanded` | `boolean`                                | `false`      | Default expand state                 |
+| `expandedIds`     | `Set<string>`                            | —            | Initially expanded IDs               |
+| `persistState`    | `boolean`                                | `false`      | Save expand state to localStorage    |
+| `draggable`       | `boolean`                                | `false`      | Enable drag-and-drop                 |
+| `isDraggable`     | `(item) => boolean`                      | —            | Per-item drag control                |
+| `isDropTarget`    | `(item) => boolean`                      | —            | Per-item drop target control         |
+| `onMove`          | `(event: TreeMoveEvent) => void \| false`| —            | Drop handler; return false to reject |
+| `dragExpandDelay` | `number`                                 | `800`        | Auto-expand delay (ms) on drag hover |
+
+```svelte
+<Tree
+	items={treeData}
+	activeId={selectedId}
+	onSelect={(item) => (selectedId = item.id)}
+	draggable
+	onMove={handleMove}
+>
+	{#snippet renderItem(item, depth, isExpanded)}
+		<span>{item.value}</span>
+	{/snippet}
+</Tree>
+```
+
+Keyboard: Arrow keys (up/down/left/right), Enter/Space, Home/End.
+
+Exports: `Tree`, `TreeProps`, `TreeMoveEvent`, `TreeDropPosition`, `TreeNodeDTO`, `TREE_BASE_CLASSES`, `TREE_ITEM_CLASSES`, `TREE_CHILDREN_CLASSES`.
+
+CSS tokens: `--stuic-tree-indent`, `--stuic-tree-item-padding-x`, `--stuic-tree-item-padding-y`, `--stuic-tree-item-height`, `--stuic-tree-item-font-size`, `--stuic-tree-item-gap`, `--stuic-tree-chevron-opacity`, `--stuic-tree-icon-opacity`, `--stuic-tree-item-opacity-dragging`, `--stuic-tree-item-bg`, `--stuic-tree-item-text`, `--stuic-tree-item-bg-hover`, `--stuic-tree-item-text-hover`, `--stuic-tree-item-bg-active`, `--stuic-tree-item-text-active`, `--stuic-tree-item-bg-focus`, `--stuic-tree-item-text-focus`, `--stuic-tree-drop-indicator-color`, `--stuic-tree-drop-indicator-height`, `--stuic-tree-item-bg-dragover`.
 
 #### `X`
 

@@ -23,7 +23,7 @@
 
 ```
 src/lib/
-├── components/     # 46 UI components
+├── components/     # 50 UI components
 ├── actions/        # 15 Svelte actions
 ├── utils/          # 43 utility modules
 ├── themes/         # Generated theme CSS (css/) — definitions from @marianmeres/design-tokens
