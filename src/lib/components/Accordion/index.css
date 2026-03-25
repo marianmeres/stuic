@@ -7,11 +7,11 @@
 :root {
 	/* Border & shape */
 	--stuic-accordion-border-color: var(--stuic-color-border);
-	--stuic-accordion-border-width: 1px;
-	--stuic-accordion-radius: var(--radius-md);
+	--stuic-accordion-border-width: var(--stuic-border-width);
+	--stuic-accordion-radius: var(--stuic-radius);
 
 	/* Animation */
-	--stuic-accordion-transition: 200ms;
+	--stuic-accordion-transition: var(--stuic-transition);
 
 	/* Trigger */
 	--stuic-accordion-trigger-padding-x: 1rem;

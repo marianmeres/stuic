@@ -6,7 +6,7 @@
 
 :root {
 	/* Structure tokens */
-	--stuic-dropdown-menu-radius: var(--radius-md);
+	--stuic-dropdown-menu-radius: var(--stuic-radius-container);
 	--stuic-dropdown-menu-padding: calc(var(--spacing) * 1);
 	--stuic-dropdown-menu-gap: calc(var(--spacing) * 0.5);
 	--stuic-dropdown-menu-min-width: 12rem;
@@ -16,7 +16,7 @@
 	--stuic-dropdown-menu-bg: var(--stuic-color-background);
 	--stuic-dropdown-menu-text: var(--stuic-color-foreground);
 	--stuic-dropdown-menu-border: var(--stuic-color-border);
-	--stuic-dropdown-menu-shadow: var(--shadow-lg);
+	--stuic-dropdown-menu-shadow: var(--stuic-shadow-overlay);
 
 	/* Trigger button colors */
 	--stuic-dropdown-menu-trigger-bg: var(--stuic-color-surface);

@@ -6,11 +6,11 @@
 
 :root {
 	/* Structure - reference Tailwind vars where applicable */
-	--stuic-button-group-radius: var(--radius-md);
+	--stuic-button-group-radius: var(--stuic-radius);
 	--stuic-button-group-padding: 0.1rem;
 	--stuic-button-group-gap: 0.25rem;
-	--stuic-button-group-border-width: 1px;
-	--stuic-button-group-transition: 150ms;
+	--stuic-button-group-border-width: var(--stuic-border-width);
+	--stuic-button-group-transition: var(--stuic-transition);
 
 	/* Button sizing - 44px is Apple HIG minimum touch target */
 	--stuic-button-group-button-padding-x: 0.75rem;

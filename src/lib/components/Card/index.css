@@ -7,13 +7,13 @@
 :root {
 	--stuic-card-bg: var(--stuic-color-card, var(--stuic-color-background));
 	--stuic-card-bg-hover: var(--stuic-color-card-hover, var(--stuic-color-muted));
-	--stuic-card-border-width: 1px;
+	--stuic-card-border-width: var(--stuic-border-width);
 	--stuic-card-border: var(--stuic-color-border);
 	--stuic-card-border-hover: var(--stuic-color-border-hover);
-	--stuic-card-radius: var(--radius-lg);
-	--stuic-card-shadow: var(--shadow-sm);
-	--stuic-card-shadow-hover: var(--shadow-md);
-	--stuic-card-transition: 150ms;
+	--stuic-card-radius: var(--stuic-radius-container);
+	--stuic-card-shadow: var(--stuic-shadow);
+	--stuic-card-shadow-hover: var(--stuic-shadow-hover);
+	--stuic-card-transition: var(--stuic-transition);
 
 	/* Content area */
 	--stuic-card-padding: 1rem;

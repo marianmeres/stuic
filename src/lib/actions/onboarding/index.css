@@ -5,7 +5,7 @@
 	--stuic-onboarding-shell-gap: calc(var(--spacing) * 2);
 	--stuic-onboarding-shell-min-width: 200px;
 	--stuic-onboarding-shell-max-width: 320px;
-	--stuic-onboarding-shell-radius: var(--radius-md, 0.375rem);
+	--stuic-onboarding-shell-radius: var(--stuic-radius);
 	--stuic-onboarding-title-size: var(--text-base);
 	--stuic-onboarding-content-size: var(--text-sm);
 	--stuic-onboarding-footer-gap: calc(var(--spacing) * 3);

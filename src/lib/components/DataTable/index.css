@@ -8,10 +8,10 @@
 :root {
 	/* Structure */
 	--stuic-data-table-layout: fixed;
-	--stuic-data-table-radius: var(--radius-md);
-	--stuic-data-table-border-width: 1px;
+	--stuic-data-table-radius: var(--stuic-radius);
+	--stuic-data-table-border-width: var(--stuic-border-width);
 	--stuic-data-table-border-color: var(--stuic-color-border);
-	--stuic-data-table-transition: 150ms;
+	--stuic-data-table-transition: var(--stuic-transition);
 
 	/* Header */
 	--stuic-data-table-header-bg: var(--stuic-color-muted);
@@ -50,7 +50,7 @@
 	/* Mobile card */
 	--stuic-data-table-card-bg: var(--stuic-color-background);
 	--stuic-data-table-card-border-color: var(--stuic-color-border);
-	--stuic-data-table-card-radius: var(--radius-md);
+	--stuic-data-table-card-radius: var(--stuic-radius-container);
 	--stuic-data-table-card-padding: 0.75rem;
 	--stuic-data-table-card-gap: 0.5rem;
 	--stuic-data-table-card-bg-selected: color-mix(in srgb, var(--stuic-color-primary) 10%, var(--stuic-color-background));

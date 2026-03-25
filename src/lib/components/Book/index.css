@@ -5,7 +5,7 @@
 	--stuic-book-timing: ease-out;
 	--stuic-book-page-bg: transparent; /*var(--stuic-color-surface, #fff);*/
 	--stuic-book-page-shadow: none; /*0 2px 16px rgba(0, 0, 0, 0.15);*/
-	--stuic-book-radius: var(--radius-sm, 2px);
+	--stuic-book-radius: var(--stuic-radius);
 	--stuic-book-page-width: 300px;
 	--stuic-book-page-height: 400px;
 }

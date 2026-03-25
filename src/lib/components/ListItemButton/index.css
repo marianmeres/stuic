@@ -6,8 +6,8 @@
 
 :root {
 	/* Structure tokens */
-	--stuic-list-item-button-radius: var(--radius-md);
-	--stuic-list-item-button-transition: 150ms;
+	--stuic-list-item-button-radius: var(--stuic-radius);
+	--stuic-list-item-button-transition: var(--stuic-transition);
 	--stuic-list-item-button-gap: 0.5rem;
 
 	/* Focus ring */

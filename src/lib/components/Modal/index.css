@@ -10,7 +10,7 @@
 	--stuic-modal-text: var(--stuic-color-foreground);
 
 	/* Border radius (desktop only - mobile is fullscreen) */
-	--stuic-modal-radius: var(--radius-md);
+	--stuic-modal-radius: var(--stuic-radius-container);
 }
 
 @layer components {

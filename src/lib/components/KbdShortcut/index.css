@@ -15,8 +15,8 @@
 	--stuic-kbd-gap: calc(var(--spacing) * 0.5);
 
 	/* Border */
-	--stuic-kbd-radius: var(--radius-sm);
-	--stuic-kbd-border-width: 1px;
+	--stuic-kbd-radius: var(--stuic-radius);
+	--stuic-kbd-border-width: var(--stuic-border-width);
 	--stuic-kbd-border-color: var(--stuic-color-border);
 }
 

@@ -8,7 +8,7 @@
 	/* Component-level customization tokens */
 	--stuic-avatar-radius: 9999px;
 	--stuic-avatar-font-weight: var(--font-weight-medium);
-	--stuic-avatar-transition: 150ms;
+	--stuic-avatar-transition: var(--stuic-transition);
 
 	/* Default colors (uses muted role colors) */
 	--stuic-avatar-bg: var(--stuic-color-muted);

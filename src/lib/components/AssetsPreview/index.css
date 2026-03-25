@@ -10,7 +10,7 @@
 	/* Labels (filename, tooltip) */
 	--stuic-assets-preview-label-bg: rgba(0 0 0 / 0.6);
 	--stuic-assets-preview-label-text: white;
-	--stuic-assets-preview-label-radius: var(--radius-sm);
+	--stuic-assets-preview-label-radius: var(--stuic-radius);
 
 	/* Dot indicators */
 	--stuic-assets-preview-dot-size: 0.75rem;
@@ -27,7 +27,7 @@
 	--stuic-assets-preview-area-fill-hover: rgba(0 0 0 / 0.06);
 
 	/* Transition */
-	--stuic-assets-preview-transition: 150ms;
+	--stuic-assets-preview-transition: var(--stuic-transition);
 }
 
 @layer components {

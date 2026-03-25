@@ -6,8 +6,8 @@
 
 :root {
 	/* Core customization */
-	--stuic-modal-dialog-radius: var(--radius-lg);
-	--stuic-modal-dialog-transition: 150ms;
+	--stuic-modal-dialog-radius: var(--stuic-radius-container);
+	--stuic-modal-dialog-transition: var(--stuic-transition);
 
 	/* Backdrop */
 	--stuic-modal-dialog-backdrop: rgb(0 0 0 / 0.4);
@@ -17,7 +17,7 @@
 	--stuic-modal-dialog-text: var(--stuic-color-foreground);
 
 	/* Optional shadow for elevation */
-	--stuic-modal-dialog-shadow: var(--shadow-xl);
+	--stuic-modal-dialog-shadow: var(--stuic-shadow-dialog);
 }
 
 @layer components {

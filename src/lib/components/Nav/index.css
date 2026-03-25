@@ -6,8 +6,8 @@
 
 :root {
 	/* Structure tokens */
-	--stuic-nav-radius: var(--radius-md);
-	--stuic-nav-transition: 150ms;
+	--stuic-nav-radius: var(--stuic-radius);
+	--stuic-nav-transition: var(--stuic-transition);
 	--stuic-nav-gap: 0.5rem;
 
 	/* Children indent */

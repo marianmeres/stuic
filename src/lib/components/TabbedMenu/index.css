@@ -15,10 +15,10 @@
 
 	/* Layout tokens */
 	--stuic-tabbed-menu-gap: calc(var(--spacing) * 1);
-	--stuic-tabbed-menu-radius: var(--radius-md);
+	--stuic-tabbed-menu-radius: var(--stuic-radius);
 	--stuic-tabbed-menu-padding-x: calc(var(--spacing) * 4);
 	--stuic-tabbed-menu-padding-y: calc(var(--spacing) * 2);
-	--stuic-tabbed-menu-transition: 150ms;
+	--stuic-tabbed-menu-transition: var(--stuic-transition);
 	--stuic-tabbed-menu-font-weight-active: var(--font-weight-medium);
 	--stuic-tabbed-menu-item-max-width: 10rem;
 }

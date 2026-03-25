@@ -7,10 +7,10 @@
 /* prettier-ignore */
 :root {
 	/* Component-level customization tokens */
-	--stuic-button-radius: var(--radius-md);
+	--stuic-button-radius: var(--stuic-radius);
 	--stuic-button-font-family: var(--font-sans);
 	--stuic-button-font-weight: var(--font-weight-medium);
-	--stuic-button-transition: 150ms;
+	--stuic-button-transition: var(--stuic-transition);
 
 	/* Focus ring */
 	--stuic-button-ring-width: 3px;

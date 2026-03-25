@@ -13,7 +13,7 @@
 	/* Dimensions */
 	--stuic-skeleton-height: 1rem;
 	--stuic-skeleton-gap: 0.5rem;
-	--stuic-skeleton-radius: var(--radius-sm);
+	--stuic-skeleton-radius: var(--stuic-radius);
 
 	/* Animation */
 	--stuic-skeleton-duration: 1.5s;

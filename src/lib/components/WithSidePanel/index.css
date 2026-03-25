@@ -6,7 +6,7 @@
 
 @theme inline {
 	--stuic-with-side-panel-border-color: var(--color-gray-200);
-	--stuic-with-side-panel-border-width: 1px;
+	--stuic-with-side-panel-border-width: var(--stuic-border-width);
 }
 
 :root.dark {

@@ -11,7 +11,7 @@
 
 	/* Bar dimensions */
 	--stuic-progress-height: calc(var(--spacing) * 2); /* 0.5rem */
-	--stuic-progress-radius: var(--radius-sm);
+	--stuic-progress-radius: var(--stuic-radius);
 	--stuic-progress-transition: 100ms;
 
 	/* Circle dimensions */

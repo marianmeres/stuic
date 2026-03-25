@@ -7,11 +7,11 @@
 :root {
 	/* Layout */
 	--stuic-cart-gap: 1rem;
-	--stuic-cart-transition: 150ms;
+	--stuic-cart-transition: var(--stuic-transition);
 
 	/* Item card */
 	--stuic-cart-item-padding: 1rem;
-	--stuic-cart-item-radius: var(--radius-lg);
+	--stuic-cart-item-radius: var(--stuic-radius-container);
 	--stuic-cart-item-border-color: var(--stuic-color-border);
 	--stuic-cart-item-bg: var(--stuic-color-background);
 

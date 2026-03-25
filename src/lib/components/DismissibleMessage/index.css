@@ -5,11 +5,11 @@
    ============================================================================= */
 
 :root {
-	--stuic-dismissible-message-radius: var(--radius-md);
+	--stuic-dismissible-message-radius: var(--stuic-radius);
 	--stuic-dismissible-message-padding-x: calc(var(--spacing) * 4);
 	--stuic-dismissible-message-padding-y: calc(var(--spacing) * 3);
-	--stuic-dismissible-message-border-width: 1px;
-	--stuic-dismissible-message-transition: 150ms;
+	--stuic-dismissible-message-border-width: var(--stuic-border-width);
+	--stuic-dismissible-message-transition: var(--stuic-transition);
 }
 
 @layer components {

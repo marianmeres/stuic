@@ -6,7 +6,7 @@
 
 :root {
 	/* Structure tokens */
-	--stuic-tree-transition: 150ms;
+	--stuic-tree-transition: var(--stuic-transition);
 
 	/* Indentation per depth level */
 	--stuic-tree-indent: 1.25rem;
@@ -16,7 +16,7 @@
 	--stuic-tree-item-padding-y: 0.125rem;
 	--stuic-tree-item-height: 1.75rem;
 	--stuic-tree-item-font-size: var(--text-sm);
-	--stuic-tree-item-radius: var(--radius-sm);
+	--stuic-tree-item-radius: var(--stuic-radius);
 	--stuic-tree-item-gap: 0.25rem;
 
 	/* Chevron */

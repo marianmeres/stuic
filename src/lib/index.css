@@ -23,6 +23,31 @@ In practice:
     - ❌ import "./index.css" inside each component
 
 *****************************************************************************************/
+
+/* ============================================================================
+   SHARED STRUCTURAL DEFAULTS
+   These tokens provide a single point of control for cross-component properties.
+   Override globally:  :root { --stuic-radius: 0; }
+   Override per-component: --stuic-button-radius: 9999px; (takes precedence)
+   ============================================================================ */
+:root {
+	/* Radius: two tiers */
+	--stuic-radius: var(--radius-md);           /* elements: buttons, inputs, badges, list items */
+	--stuic-radius-container: var(--radius-lg); /* containers: cards, modals, dropdowns, notifications */
+
+	/* Shadows */
+	--stuic-shadow: var(--shadow-sm);           /* default resting shadow */
+	--stuic-shadow-hover: var(--shadow-md);     /* hover/elevated shadow */
+	--stuic-shadow-overlay: var(--shadow-lg);   /* overlays: dropdowns, notifications */
+	--stuic-shadow-dialog: var(--shadow-xl);    /* dialogs/modals */
+
+	/* Border */
+	--stuic-border-width: 1px;
+
+	/* Transition */
+	--stuic-transition: 150ms;
+}
+
 @import "./components/Accordion/index.css";
 @import "./components/AlertConfirmPrompt/index.css";
 @import "./components/AssetsPreview/index.css";

@@ -7,7 +7,7 @@
 	--stuic-dim-behind-backdrop-bg: rgb(0 0 0 / 0.5);
 	--stuic-dim-behind-backdrop-z-index: 40;
 	--stuic-dim-behind-element-z-index: 41;
-	--stuic-dim-behind-transition-duration: 150ms;
+	--stuic-dim-behind-transition-duration: var(--stuic-transition);
 }
 
 .stuic-dim-behind-backdrop {

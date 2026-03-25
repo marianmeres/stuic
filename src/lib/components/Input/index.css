@@ -7,9 +7,9 @@
 /* prettier-ignore */
 :root {
 	/* Core customization */
-	--stuic-input-radius: var(--radius-md);
+	--stuic-input-radius: var(--stuic-radius);
 	--stuic-input-font-family: var(--font-sans);
-	--stuic-input-transition: 150ms;
+	--stuic-input-transition: var(--stuic-transition);
 
 	/* Focus ring */
 	--stuic-input-ring-width: 4px;
@@ -52,7 +52,7 @@
 
 	/* Checkbox/Radio specific */
 	--stuic-checkbox-size: 1.25rem;
-	--stuic-checkbox-radius: var(--radius-sm);
+	--stuic-checkbox-radius: var(--stuic-radius);
 	--stuic-radio-size: 1rem;
 	--stuic-checkbox-bg: var(--stuic-color-muted);
 	--stuic-checkbox-border: var(--stuic-color-border);

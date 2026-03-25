@@ -10,7 +10,7 @@
 	--stuic-collapsible-toggle-opacity-hover: 1;
 	--stuic-collapsible-toggle-padding-x: calc(var(--spacing) * 2);
 	--stuic-collapsible-toggle-padding-y: calc(var(--spacing) * 1);
-	--stuic-collapsible-transition: 150ms;
+	--stuic-collapsible-transition: var(--stuic-transition);
 
 	/* Focus ring (uses theme token) */
 	--stuic-collapsible-ring-width: 2px;

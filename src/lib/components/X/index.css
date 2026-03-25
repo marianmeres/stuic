@@ -12,7 +12,7 @@
 	--stuic-close-button-radius: 9999px;
 	--stuic-close-button-padding: calc(var(--spacing) * 2);
 	--stuic-close-button-min-size: 44px;
-	--stuic-close-button-transition: 150ms;
+	--stuic-close-button-transition: var(--stuic-transition);
 	--stuic-close-button-icon-size: 1.75rem;
 }
 

@@ -20,9 +20,9 @@
 
 /* prettier-ignore */
 :root {
-	--stuic-theme-preview-radius:          var(--radius-md);
+	--stuic-theme-preview-radius:          var(--stuic-radius);
 	--stuic-theme-preview-gap:             1rem;
-	--stuic-theme-preview-transition:      150ms;
+	--stuic-theme-preview-transition:      var(--stuic-transition);
 
 	/* Section-specific tokens that consume theme colors */
 	--stuic-theme-preview-header-bg:       var(--stuic-color-surface);

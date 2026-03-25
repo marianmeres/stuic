@@ -6,7 +6,7 @@
 
 :root {
 	/* Structure */
-	--stuic-command-menu-transition: 150ms;
+	--stuic-command-menu-transition: var(--stuic-transition);
 	--stuic-command-menu-options-max-height: 15rem;
 
 	/* Colors */

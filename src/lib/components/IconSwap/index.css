@@ -5,7 +5,7 @@
    ============================================================================ */
 
 :root {
-	--stuic-icon-swap-duration: 150ms;
+	--stuic-icon-swap-duration: var(--stuic-transition);
 	--stuic-icon-swap-easing: ease;
 }
 

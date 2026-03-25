@@ -11,12 +11,12 @@
 	--stuic-carousel-peek-percent: 0%;
 
 	/* Item tokens */
-	--stuic-carousel-item-radius: var(--radius-md);
+	--stuic-carousel-item-radius: var(--stuic-radius-container);
 	--stuic-carousel-item-bg: transparent;
 	--stuic-carousel-item-bg-active: transparent;
 	--stuic-carousel-item-border: transparent;
 	--stuic-carousel-item-border-active: var(--stuic-color-primary);
-	--stuic-carousel-item-border-width: 1px;
+	--stuic-carousel-item-border-width: var(--stuic-border-width);
 	--stuic-carousel-item-border-width-active: 1px;
 
 	/* Scroll behavior */
@@ -28,7 +28,7 @@
 	--stuic-carousel-ring-color: var(--stuic-color-ring);
 
 	/* Transition */
-	--stuic-carousel-transition: 150ms;
+	--stuic-carousel-transition: var(--stuic-transition);
 }
 
 @layer components {
