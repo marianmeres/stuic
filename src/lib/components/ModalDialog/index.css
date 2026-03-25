@@ -6,8 +6,6 @@
 
 :root {
 	/* Core customization */
-	--stuic-modal-dialog-radius: var(--stuic-radius-container);
-	--stuic-modal-dialog-transition: var(--stuic-transition);
 
 	/* Backdrop */
 	--stuic-modal-dialog-backdrop: rgb(0 0 0 / 0.4);
@@ -17,7 +15,6 @@
 	--stuic-modal-dialog-text: var(--stuic-color-foreground);
 
 	/* Optional shadow for elevation */
-	--stuic-modal-dialog-shadow: var(--stuic-shadow-dialog);
 }
 
 @layer components {
@@ -36,8 +33,8 @@
 	.stuic-modal-dialog .box {
 		background: var(--stuic-modal-dialog-bg);
 		color: var(--stuic-modal-dialog-text);
-		border-radius: var(--stuic-modal-dialog-radius);
-		box-shadow: var(--stuic-modal-dialog-shadow);
+		border-radius: var(--stuic-modal-dialog-radius, var(--stuic-radius-container));
+		box-shadow: var(--stuic-modal-dialog-shadow, var(--stuic-shadow-dialog));
 	}
 
 	/* ============================================================================
@@ -45,7 +42,7 @@
 	   ============================================================================ */
 
 	.stuic-modal-dialog[open]::backdrop {
-		animation: stuic-modal-dialog-fadeIn var(--stuic-modal-dialog-transition) ease-out;
+		animation: stuic-modal-dialog-fadeIn var(--stuic-modal-dialog-transition, var(--stuic-transition)) ease-out;
 	}
 
 	@keyframes stuic-modal-dialog-fadeIn {

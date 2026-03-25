@@ -6,11 +6,8 @@
 
 :root {
 	/* Structure - reference Tailwind vars where applicable */
-	--stuic-button-group-radius: var(--stuic-radius);
 	--stuic-button-group-padding: 0.1rem;
 	--stuic-button-group-gap: 0.25rem;
-	--stuic-button-group-border-width: var(--stuic-border-width);
-	--stuic-button-group-transition: var(--stuic-transition);
 
 	/* Button sizing - 44px is Apple HIG minimum touch target */
 	--stuic-button-group-button-padding-x: 0.75rem;
@@ -56,9 +53,9 @@
 
 		/* Box model */
 		padding: var(--stuic-button-group-padding);
-		border-width: var(--stuic-button-group-border-width);
+		border-width: var(--stuic-button-group-border-width, var(--stuic-border-width));
 		border-style: solid;
-		border-radius: var(--stuic-button-group-radius);
+		border-radius: var(--stuic-button-group-radius, var(--stuic-radius));
 
 		/* Colors */
 		background: var(--stuic-button-group-bg);
@@ -109,7 +106,7 @@
 			var(--stuic-button-group-button-padding-x);
 		min-height: var(--stuic-button-group-button-min-height);
 		border: none;
-		border-radius: var(--stuic-button-group-radius);
+		border-radius: var(--stuic-button-group-radius, var(--stuic-radius));
 
 		/* Typography */
 		white-space: nowrap;
@@ -128,8 +125,8 @@
 
 		/* Transition */
 		transition:
-			background var(--stuic-button-group-transition),
-			color var(--stuic-button-group-transition);
+			background var(--stuic-button-group-transition, var(--stuic-transition)),
+			color var(--stuic-button-group-transition, var(--stuic-transition));
 
 		/* Focus */
 		outline: none;

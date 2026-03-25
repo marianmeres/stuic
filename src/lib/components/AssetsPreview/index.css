@@ -10,7 +10,6 @@
 	/* Labels (filename, tooltip) */
 	--stuic-assets-preview-label-bg: rgba(0 0 0 / 0.6);
 	--stuic-assets-preview-label-text: white;
-	--stuic-assets-preview-label-radius: var(--stuic-radius);
 
 	/* Dot indicators */
 	--stuic-assets-preview-dot-size: 0.75rem;
@@ -27,7 +26,6 @@
 	--stuic-assets-preview-area-fill-hover: rgba(0 0 0 / 0.06);
 
 	/* Transition */
-	--stuic-assets-preview-transition: var(--stuic-transition);
 }
 
 @layer components {
@@ -38,7 +36,7 @@
 	.stuic-assets-preview-label {
 		background: var(--stuic-assets-preview-label-bg);
 		color: var(--stuic-assets-preview-label-text);
-		border-radius: var(--stuic-assets-preview-label-radius);
+		border-radius: var(--stuic-assets-preview-label-radius, var(--stuic-radius));
 	}
 
 	/* ============================================================================
@@ -51,7 +49,7 @@
 		border-radius: 9999px;
 		background: var(--stuic-assets-preview-dot-bg);
 		border: 1px solid var(--stuic-assets-preview-dot-border);
-		transition: background var(--stuic-assets-preview-transition);
+		transition: background var(--stuic-assets-preview-transition, var(--stuic-transition));
 	}
 
 	.stuic-assets-preview-dot:hover {
@@ -78,7 +76,7 @@
 		pointer-events: all;
 		cursor: pointer;
 		fill: transparent;
-		transition: fill var(--stuic-assets-preview-transition);
+		transition: fill var(--stuic-assets-preview-transition, var(--stuic-transition));
 	}
 
 	.stuic-assets-preview-area:hover {

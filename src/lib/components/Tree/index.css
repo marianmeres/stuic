@@ -6,7 +6,6 @@
 
 :root {
 	/* Structure tokens */
-	--stuic-tree-transition: var(--stuic-transition);
 
 	/* Indentation per depth level */
 	--stuic-tree-indent: 1.25rem;
@@ -16,7 +15,6 @@
 	--stuic-tree-item-padding-y: 0.125rem;
 	--stuic-tree-item-height: 1.75rem;
 	--stuic-tree-item-font-size: var(--text-sm);
-	--stuic-tree-item-radius: var(--stuic-radius);
 	--stuic-tree-item-gap: 0.25rem;
 
 	/* Chevron */
@@ -95,7 +93,7 @@
 		line-height: 1.2;
 
 		/* Visual */
-		border-radius: var(--stuic-tree-item-radius);
+		border-radius: var(--stuic-tree-item-radius, var(--stuic-radius));
 		background: var(--stuic-tree-item-bg);
 		color: var(--stuic-tree-item-text);
 		border: none;
@@ -105,8 +103,8 @@
 		user-select: none;
 		-webkit-tap-highlight-color: transparent;
 		transition:
-			background var(--stuic-tree-transition),
-			color var(--stuic-tree-transition);
+			background var(--stuic-tree-transition, var(--stuic-transition)),
+			color var(--stuic-tree-transition, var(--stuic-transition));
 	}
 
 	/* Chevron opacity */

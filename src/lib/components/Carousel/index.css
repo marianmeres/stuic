@@ -11,12 +11,10 @@
 	--stuic-carousel-peek-percent: 0%;
 
 	/* Item tokens */
-	--stuic-carousel-item-radius: var(--stuic-radius-container);
 	--stuic-carousel-item-bg: transparent;
 	--stuic-carousel-item-bg-active: transparent;
 	--stuic-carousel-item-border: transparent;
 	--stuic-carousel-item-border-active: var(--stuic-color-primary);
-	--stuic-carousel-item-border-width: var(--stuic-border-width);
 	--stuic-carousel-item-border-width-active: 1px;
 
 	/* Scroll behavior */
@@ -28,7 +26,6 @@
 	--stuic-carousel-ring-color: var(--stuic-color-ring);
 
 	/* Transition */
-	--stuic-carousel-transition: var(--stuic-transition);
 }
 
 @layer components {
@@ -122,15 +119,15 @@
 		width: var(--_item-width, 100%);
 		min-width: 0;
 
-		border-radius: var(--stuic-carousel-item-radius);
+		border-radius: var(--stuic-carousel-item-radius, var(--stuic-radius-container));
 		background: var(--stuic-carousel-item-bg);
-		border: var(--stuic-carousel-item-border-width) solid
+		border: var(--stuic-carousel-item-border-width, var(--stuic-border-width)) solid
 			var(--stuic-carousel-item-border);
 
 		transition:
-			border-color var(--stuic-carousel-transition),
-			background var(--stuic-carousel-transition),
-			border-width var(--stuic-carousel-transition);
+			border-color var(--stuic-carousel-transition, var(--stuic-transition)),
+			background var(--stuic-carousel-transition, var(--stuic-transition)),
+			border-width var(--stuic-carousel-transition, var(--stuic-transition));
 	}
 
 	/* Snap alignment */

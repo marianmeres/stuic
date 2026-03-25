@@ -15,7 +15,6 @@
 
 	/* Layout tokens */
 	--stuic-tabbed-menu-gap: calc(var(--spacing) * 1);
-	--stuic-tabbed-menu-radius: var(--stuic-radius);
 	--stuic-tabbed-menu-padding-x: calc(var(--spacing) * 4);
 	--stuic-tabbed-menu-padding-y: calc(var(--spacing) * 2);
 	--stuic-tabbed-menu-transition: var(--stuic-transition);
@@ -47,7 +46,7 @@
 		display: block;
 		width: 100%;
 		padding: var(--stuic-tabbed-menu-padding-y) var(--stuic-tabbed-menu-padding-x);
-		border-radius: var(--stuic-tabbed-menu-radius) var(--stuic-tabbed-menu-radius) 0 0;
+		border-radius: var(--stuic-tabbed-menu-radius, var(--stuic-radius)) var(--stuic-tabbed-menu-radius, var(--stuic-radius)) 0 0;
 		border: 1px solid var(--stuic-tabbed-menu-border);
 		border-bottom: 0;
 		background: var(--stuic-tabbed-menu-tab-bg);

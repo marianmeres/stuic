@@ -97,7 +97,7 @@
 		noClickOutsideClose
 		type={acp?.current?.type}
 		class={twMerge(
-			"max-w-xl justify-end max-h-[62vh] h-auto border p-4 rounded-lg",
+			"max-w-xl justify-end max-h-[62vh] h-auto border p-4",
 			// different max-h based on not/existing content
 			// isTHCNotEmpty(acp?.current?.content) ? "sm:max-h-[200px]" : "sm:max-h-[150px]",
 			// acp?.current?.type === PROMPT && "sm:max-h-[250px]",

@@ -6,7 +6,6 @@
 
 :root {
 	/* Structure tokens */
-	--stuic-dropdown-menu-radius: var(--stuic-radius-container);
 	--stuic-dropdown-menu-padding: calc(var(--spacing) * 1);
 	--stuic-dropdown-menu-gap: calc(var(--spacing) * 0.5);
 	--stuic-dropdown-menu-min-width: 12rem;
@@ -16,7 +15,6 @@
 	--stuic-dropdown-menu-bg: var(--stuic-color-background);
 	--stuic-dropdown-menu-text: var(--stuic-color-foreground);
 	--stuic-dropdown-menu-border: var(--stuic-color-border);
-	--stuic-dropdown-menu-shadow: var(--stuic-shadow-overlay);
 
 	/* Trigger button colors */
 	--stuic-dropdown-menu-trigger-bg: var(--stuic-color-surface);
@@ -93,7 +91,7 @@
 		/* Box model */
 		border-width: 1px;
 		border-style: solid;
-		border-radius: var(--stuic-dropdown-menu-radius);
+		border-radius: var(--stuic-dropdown-menu-radius, var(--stuic-radius-container));
 
 		/* Colors */
 		background: var(--stuic-dropdown-menu-trigger-bg);
@@ -138,10 +136,10 @@
 		background: var(--stuic-dropdown-menu-bg);
 		color: var(--stuic-dropdown-menu-text);
 		border: 1px solid var(--stuic-dropdown-menu-border);
-		box-shadow: var(--stuic-dropdown-menu-shadow);
+		box-shadow: var(--stuic-dropdown-menu-shadow, var(--stuic-shadow-overlay));
 
 		/* Box model */
-		border-radius: var(--stuic-dropdown-menu-radius);
+		border-radius: var(--stuic-dropdown-menu-radius, var(--stuic-radius-container));
 		padding: var(--stuic-dropdown-menu-padding);
 
 		/* Layout */
@@ -293,7 +291,7 @@
 		cursor: pointer;
 		padding: calc(var(--spacing) * 0.5);
 		display: flex;
-		border-radius: var(--stuic-dropdown-menu-radius);
+		border-radius: var(--stuic-dropdown-menu-radius, var(--stuic-radius-container));
 		transition: color var(--stuic-dropdown-menu-transition);
 	}
 

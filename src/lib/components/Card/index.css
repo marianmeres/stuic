@@ -7,13 +7,8 @@
 :root {
 	--stuic-card-bg: var(--stuic-color-card, var(--stuic-color-background));
 	--stuic-card-bg-hover: var(--stuic-color-card-hover, var(--stuic-color-muted));
-	--stuic-card-border-width: var(--stuic-border-width);
 	--stuic-card-border: var(--stuic-color-border);
 	--stuic-card-border-hover: var(--stuic-color-border-hover);
-	--stuic-card-radius: var(--stuic-radius-container);
-	--stuic-card-shadow: var(--stuic-shadow);
-	--stuic-card-shadow-hover: var(--stuic-shadow-hover);
-	--stuic-card-transition: var(--stuic-transition);
 
 	/* Content area */
 	--stuic-card-padding: 1rem;
@@ -55,13 +50,13 @@
 		height: 100%;
 		overflow: hidden;
 		background: var(--stuic-card-bg);
-		border: var(--stuic-card-border-width) solid var(--stuic-card-border);
-		border-radius: var(--stuic-card-radius);
-		box-shadow: var(--stuic-card-shadow);
+		border: var(--stuic-card-border-width, var(--stuic-border-width)) solid var(--stuic-card-border);
+		border-radius: var(--stuic-card-radius, var(--stuic-radius-container));
+		box-shadow: var(--stuic-card-shadow, var(--stuic-shadow));
 		transition:
-			background var(--stuic-card-transition),
-			border-color var(--stuic-card-transition),
-			box-shadow var(--stuic-card-transition);
+			background var(--stuic-card-transition, var(--stuic-transition)),
+			border-color var(--stuic-card-transition, var(--stuic-transition)),
+			box-shadow var(--stuic-card-transition, var(--stuic-transition));
 		text-decoration: none;
 		color: inherit;
 		text-align: start;
@@ -81,7 +76,7 @@
 	.stuic-card[data-interactive]:hover:not([data-disabled]) {
 		background: var(--stuic-card-bg-hover);
 		border-color: var(--stuic-card-border-hover);
-		box-shadow: var(--stuic-card-shadow-hover);
+		box-shadow: var(--stuic-card-shadow-hover, var(--stuic-shadow-hover));
 		cursor: pointer;
 	}
 

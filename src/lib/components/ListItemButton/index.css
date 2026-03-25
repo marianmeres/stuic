@@ -6,8 +6,6 @@
 
 :root {
 	/* Structure tokens */
-	--stuic-list-item-button-radius: var(--stuic-radius);
-	--stuic-list-item-button-transition: var(--stuic-transition);
 	--stuic-list-item-button-gap: 0.5rem;
 
 	/* Focus ring */
@@ -77,7 +75,7 @@
 		/* Box model */
 		border-width: 1px;
 		border-style: solid;
-		border-radius: var(--stuic-list-item-button-radius);
+		border-radius: var(--stuic-list-item-button-radius, var(--stuic-radius));
 
 		/* Colors */
 		background: var(--stuic-list-item-button-bg);
@@ -90,9 +88,9 @@
 		-webkit-tap-highlight-color: transparent;
 		touch-action: manipulation;
 		transition:
-			background var(--stuic-list-item-button-transition),
-			color var(--stuic-list-item-button-transition),
-			border-color var(--stuic-list-item-button-transition);
+			background var(--stuic-list-item-button-transition, var(--stuic-transition)),
+			color var(--stuic-list-item-button-transition, var(--stuic-transition)),
+			border-color var(--stuic-list-item-button-transition, var(--stuic-transition));
 	}
 
 	/* =============================================================================

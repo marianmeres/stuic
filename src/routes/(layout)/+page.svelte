@@ -51,6 +51,7 @@
 		'sliding-panels',
 		'spotlight',
 		'spinner',
+		'style-presets',
         'switch', 
 		// 'table', 
 		'tabbed-menu',

@@ -5,7 +5,6 @@
 	--stuic-book-timing: ease-out;
 	--stuic-book-page-bg: transparent; /*var(--stuic-color-surface, #fff);*/
 	--stuic-book-page-shadow: none; /*0 2px 16px rgba(0, 0, 0, 0.15);*/
-	--stuic-book-radius: var(--stuic-radius);
 	--stuic-book-page-width: 300px;
 	--stuic-book-page-height: 400px;
 }
@@ -25,7 +24,7 @@
 		vertical-align: top;
 		text-align: initial;
 		background: var(--stuic-book-page-bg);
-		border-radius: var(--stuic-book-radius);
+		border-radius: var(--stuic-book-radius, var(--stuic-radius));
 		box-shadow: var(--stuic-book-page-shadow);
 		transition: width var(--stuic-book-duration) var(--stuic-book-timing);
 	}
@@ -65,7 +64,7 @@
 		backface-visibility: hidden;
 		-webkit-backface-visibility: hidden;
 		background: var(--stuic-book-page-bg);
-		border-radius: 0 var(--stuic-book-radius) var(--stuic-book-radius) 0;
+		border-radius: 0 var(--stuic-book-radius, var(--stuic-radius)) var(--stuic-book-radius, var(--stuic-radius)) 0;
 		overflow: hidden;
 	}
 
@@ -83,7 +82,7 @@
 		-webkit-backface-visibility: hidden;
 		transform: rotateY(180deg);
 		background: var(--stuic-book-page-bg);
-		border-radius: var(--stuic-book-radius) 0 0 var(--stuic-book-radius);
+		border-radius: var(--stuic-book-radius, var(--stuic-radius)) 0 0 var(--stuic-book-radius, var(--stuic-radius));
 		overflow: hidden;
 	}
 

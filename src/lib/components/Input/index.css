@@ -7,9 +7,7 @@
 /* prettier-ignore */
 :root {
 	/* Core customization */
-	--stuic-input-radius: var(--stuic-radius);
 	--stuic-input-font-family: var(--font-sans);
-	--stuic-input-transition: var(--stuic-transition);
 
 	/* Focus ring */
 	--stuic-input-ring-width: 4px;
@@ -52,7 +50,6 @@
 
 	/* Checkbox/Radio specific */
 	--stuic-checkbox-size: 1.25rem;
-	--stuic-checkbox-radius: var(--stuic-radius);
 	--stuic-radio-size: 1rem;
 	--stuic-checkbox-bg: var(--stuic-color-muted);
 	--stuic-checkbox-border: var(--stuic-color-border);
@@ -210,10 +207,10 @@
 	.stuic-input .input-wrap {
 		background: var(--stuic-input-bg);
 		border: 1px solid var(--stuic-input-border);
-		border-radius: var(--stuic-input-radius);
+		border-radius: var(--stuic-input-radius, var(--stuic-radius));
 		transition:
-			border-color var(--stuic-input-transition),
-			box-shadow var(--stuic-input-transition);
+			border-color var(--stuic-input-transition, var(--stuic-transition)),
+			box-shadow var(--stuic-input-transition, var(--stuic-transition));
 	}
 
 	.stuic-input .input-wrap:focus-within {
@@ -310,10 +307,10 @@
 		background: var(--stuic-color-muted);
 		color: var(--stuic-color-foreground);
 		border: 0;
-		border-radius: var(--stuic-input-radius);
+		border-radius: var(--stuic-input-radius, var(--stuic-radius));
 		cursor: pointer;
 		font-family: var(--stuic-input-font-family);
-		transition: background var(--stuic-input-transition);
+		transition: background var(--stuic-input-transition, var(--stuic-transition));
 	}
 
 	.stuic-input input[type="file"]::file-selector-button:hover {
@@ -422,14 +419,14 @@
 		-webkit-appearance: none;
 		width: var(--stuic-checkbox-size);
 		height: var(--stuic-checkbox-size);
-		border-radius: var(--stuic-checkbox-radius);
+		border-radius: var(--stuic-checkbox-radius, var(--stuic-radius));
 		background: var(--stuic-checkbox-bg);
 		border: 1px solid var(--stuic-checkbox-border);
 		cursor: pointer;
 		transition:
-			background var(--stuic-input-transition),
-			border-color var(--stuic-input-transition),
-			box-shadow var(--stuic-input-transition);
+			background var(--stuic-input-transition, var(--stuic-transition)),
+			border-color var(--stuic-input-transition, var(--stuic-transition)),
+			box-shadow var(--stuic-input-transition, var(--stuic-transition));
 	}
 
 	.stuic-checkbox input[type="checkbox"]:checked {
@@ -463,7 +460,7 @@
 	.stuic-radios .radios-box {
 		background: var(--stuic-input-bg);
 		border: 1px solid var(--stuic-input-border);
-		border-radius: var(--stuic-input-radius);
+		border-radius: var(--stuic-input-radius, var(--stuic-radius));
 	}
 
 	.stuic-radios.invalid .radios-box {
@@ -484,9 +481,9 @@
 		border: 1px solid var(--stuic-checkbox-border);
 		cursor: pointer;
 		transition:
-			background var(--stuic-input-transition),
-			border-color var(--stuic-input-transition),
-			box-shadow var(--stuic-input-transition);
+			background var(--stuic-input-transition, var(--stuic-transition)),
+			border-color var(--stuic-input-transition, var(--stuic-transition)),
+			box-shadow var(--stuic-input-transition, var(--stuic-transition));
 	}
 
 	.stuic-radios input[type="radio"]:checked {
@@ -571,8 +568,8 @@
 	.stuic-input-localized .toggle-btn {
 		color: var(--stuic-input-localized-toggle-text);
 		transition:
-			background var(--stuic-input-transition),
-			color var(--stuic-input-transition);
+			background var(--stuic-input-transition, var(--stuic-transition)),
+			color var(--stuic-input-transition, var(--stuic-transition));
 	}
 
 	.stuic-input-localized .toggle-btn:hover:not(:disabled) {
@@ -590,7 +587,7 @@
 
 	.stuic-input-localized .expanded-wrap {
 		border-right: 1px solid var(--stuic-input-localized-divider);
-		/* border-radius: var(--stuic-input-radius); */
+		/* border-radius: var(--stuic-input-radius, var(--stuic-radius)); */
 	}
 
 	/* ============================================================================
@@ -601,10 +598,10 @@
 		color: var(--stuic-field-phone-trigger-text);
 		background: var(--stuic-field-phone-trigger-bg);
 		border-right: 1px solid var(--stuic-field-phone-trigger-border);
-		border-radius: var(--stuic-input-radius) 0 0 var(--stuic-input-radius);
+		border-radius: var(--stuic-input-radius, var(--stuic-radius)) 0 0 var(--stuic-input-radius, var(--stuic-radius));
 		transition:
-			background var(--stuic-input-transition),
-			color var(--stuic-input-transition);
+			background var(--stuic-input-transition, var(--stuic-transition)),
+			color var(--stuic-input-transition, var(--stuic-transition));
 	}
 
 	.stuic-phone-prefix-trigger:hover:not(:disabled) {

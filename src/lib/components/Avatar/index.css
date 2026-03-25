@@ -8,7 +8,6 @@
 	/* Component-level customization tokens */
 	--stuic-avatar-radius: 9999px;
 	--stuic-avatar-font-weight: var(--font-weight-medium);
-	--stuic-avatar-transition: var(--stuic-transition);
 
 	/* Default colors (uses muted role colors) */
 	--stuic-avatar-bg: var(--stuic-color-muted);
@@ -65,9 +64,9 @@
 
 		/* Transition for interactive mode */
 		transition:
-			background var(--stuic-avatar-transition),
-			color var(--stuic-avatar-transition),
-			opacity var(--stuic-avatar-transition);
+			background var(--stuic-avatar-transition, var(--stuic-transition)),
+			color var(--stuic-avatar-transition, var(--stuic-transition)),
+			opacity var(--stuic-avatar-transition, var(--stuic-transition));
 	}
 
 	/* ============================================================================

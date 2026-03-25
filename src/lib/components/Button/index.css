@@ -7,10 +7,8 @@
 /* prettier-ignore */
 :root {
 	/* Component-level customization tokens */
-	--stuic-button-radius: var(--stuic-radius);
 	--stuic-button-font-family: var(--font-sans);
 	--stuic-button-font-weight: var(--font-weight-medium);
-	--stuic-button-transition: var(--stuic-transition);
 
 	/* Focus ring */
 	--stuic-button-ring-width: 3px;
@@ -69,7 +67,7 @@
 		/* Box model */
 		border-width: 1px;
 		border-style: solid;
-		border-radius: var(--stuic-button-radius);
+		border-radius: var(--stuic-button-radius, var(--stuic-radius));
 
 		/* Interaction */
 		cursor: pointer;
@@ -77,10 +75,10 @@
 		-webkit-tap-highlight-color: transparent; /* Remove iOS tap highlight */
 		touch-action: manipulation; /* Disable double-tap zoom for faster response */
 		transition:
-			background var(--stuic-button-transition),
-			color var(--stuic-button-transition),
-			border-color var(--stuic-button-transition),
-			opacity var(--stuic-button-transition);
+			background var(--stuic-button-transition, var(--stuic-transition)),
+			color var(--stuic-button-transition, var(--stuic-transition)),
+			border-color var(--stuic-button-transition, var(--stuic-transition)),
+			opacity var(--stuic-button-transition, var(--stuic-transition));
 
 		/* Colors - use internal vars set by intent/variant */
 		background: var(--_bg);
@@ -355,12 +353,12 @@
 		box-shadow: var(--stuic-button-raised-offset) var(--stuic-button-raised-offset) 0 0
 			var(--stuic-button-raised-color);
 		transition:
-			background var(--stuic-button-transition),
-			color var(--stuic-button-transition),
-			border-color var(--stuic-button-transition),
-			opacity var(--stuic-button-transition),
-			box-shadow var(--stuic-button-transition),
-			transform var(--stuic-button-transition);
+			background var(--stuic-button-transition, var(--stuic-transition)),
+			color var(--stuic-button-transition, var(--stuic-transition)),
+			border-color var(--stuic-button-transition, var(--stuic-transition)),
+			opacity var(--stuic-button-transition, var(--stuic-transition)),
+			box-shadow var(--stuic-button-transition, var(--stuic-transition)),
+			transform var(--stuic-button-transition, var(--stuic-transition));
 	}
 
 	.stuic-button[data-raised]:active:not(:disabled) {

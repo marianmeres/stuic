@@ -8,10 +8,7 @@
 :root {
 	/* Structure */
 	--stuic-data-table-layout: fixed;
-	--stuic-data-table-radius: var(--stuic-radius);
-	--stuic-data-table-border-width: var(--stuic-border-width);
 	--stuic-data-table-border-color: var(--stuic-color-border);
-	--stuic-data-table-transition: var(--stuic-transition);
 
 	/* Header */
 	--stuic-data-table-header-bg: var(--stuic-color-muted);
@@ -50,7 +47,6 @@
 	/* Mobile card */
 	--stuic-data-table-card-bg: var(--stuic-color-background);
 	--stuic-data-table-card-border-color: var(--stuic-color-border);
-	--stuic-data-table-card-radius: var(--stuic-radius-container);
 	--stuic-data-table-card-padding: 0.75rem;
 	--stuic-data-table-card-gap: 0.5rem;
 	--stuic-data-table-card-bg-selected: color-mix(in srgb, var(--stuic-color-primary) 10%, var(--stuic-color-background));
@@ -72,10 +68,10 @@
 
 	.stuic-data-table-wrapper {
 		overflow-x: auto;
-		border-radius: var(--stuic-data-table-radius);
-		border: var(--stuic-data-table-border-width) solid
+		border-radius: var(--stuic-data-table-radius, var(--stuic-radius));
+		border: var(--stuic-data-table-border-width, var(--stuic-border-width)) solid
 			var(--stuic-data-table-border-color);
-		transition: opacity var(--stuic-data-table-transition);
+		transition: opacity var(--stuic-data-table-transition, var(--stuic-transition));
 	}
 
 	.stuic-data-table-wrapper[data-loading="true"] {
@@ -104,7 +100,7 @@
 		color: var(--stuic-data-table-header-color);
 		text-align: left;
 		white-space: nowrap;
-		border-bottom: var(--stuic-data-table-border-width) solid
+		border-bottom: var(--stuic-data-table-border-width, var(--stuic-border-width)) solid
 			var(--stuic-data-table-border-color);
 	}
 
@@ -122,9 +118,9 @@
 
 	.stuic-data-table tbody tr {
 		background: var(--stuic-data-table-row-bg);
-		border-bottom: var(--stuic-data-table-border-width) solid
+		border-bottom: var(--stuic-data-table-border-width, var(--stuic-border-width)) solid
 			var(--stuic-data-table-row-border-color);
-		transition: background var(--stuic-data-table-transition);
+		transition: background var(--stuic-data-table-transition, var(--stuic-transition));
 	}
 
 	.stuic-data-table tbody tr:last-child {
@@ -210,7 +206,7 @@
 		padding: var(--stuic-data-table-batch-padding-y)
 			var(--stuic-data-table-batch-padding-x);
 		background: var(--stuic-data-table-batch-bg);
-		border-radius: var(--stuic-data-table-radius);
+		border-radius: var(--stuic-data-table-radius, var(--stuic-radius));
 		margin-bottom: 0.5rem;
 	}
 
@@ -254,7 +250,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--stuic-data-table-card-gap);
-		transition: opacity var(--stuic-data-table-transition);
+		transition: opacity var(--stuic-data-table-transition, var(--stuic-transition));
 	}
 
 	.stuic-data-table-cards[data-loading="true"] {
@@ -263,11 +259,11 @@
 
 	.stuic-data-table-card {
 		background: var(--stuic-data-table-card-bg);
-		border: var(--stuic-data-table-border-width) solid
+		border: var(--stuic-data-table-border-width, var(--stuic-border-width)) solid
 			var(--stuic-data-table-card-border-color);
-		border-radius: var(--stuic-data-table-card-radius);
+		border-radius: var(--stuic-data-table-card-radius, var(--stuic-radius-container));
 		padding: var(--stuic-data-table-card-padding);
-		transition: background var(--stuic-data-table-transition);
+		transition: background var(--stuic-data-table-transition, var(--stuic-transition));
 	}
 
 	.stuic-data-table-card[data-clickable="true"] {

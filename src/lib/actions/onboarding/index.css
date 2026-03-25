@@ -5,7 +5,6 @@
 	--stuic-onboarding-shell-gap: calc(var(--spacing) * 2);
 	--stuic-onboarding-shell-min-width: 200px;
 	--stuic-onboarding-shell-max-width: 320px;
-	--stuic-onboarding-shell-radius: var(--stuic-radius);
 	--stuic-onboarding-title-size: var(--text-base);
 	--stuic-onboarding-content-size: var(--text-sm);
 	--stuic-onboarding-footer-gap: calc(var(--spacing) * 3);
@@ -21,7 +20,7 @@
 	padding: var(--stuic-onboarding-shell-padding);
 	min-width: var(--stuic-onboarding-shell-min-width);
 	max-width: var(--stuic-onboarding-shell-max-width);
-	border-radius: var(--stuic-onboarding-shell-radius);
+	border-radius: var(--stuic-onboarding-shell-radius, var(--stuic-radius));
 }
 
 .stuic-onboarding-title {

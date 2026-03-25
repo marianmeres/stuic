@@ -44,7 +44,7 @@
 	display: flex;
 	flex-direction: column;
 	min-height: 400px;
-	border-radius: var(--stuic-theme-preview-radius);
+	border-radius: var(--stuic-theme-preview-radius, var(--stuic-radius));
 	border: 1px solid var(--stuic-color-border);
 	overflow: hidden;
 	background: var(--stuic-theme-preview-main-bg);
@@ -125,11 +125,11 @@
 
 .stuic-theme-preview-sidebar .nav-item {
 	padding: 0.5rem 0.75rem;
-	border-radius: calc(var(--stuic-theme-preview-radius) / 2);
+	border-radius: calc(var(--stuic-theme-preview-radius, var(--stuic-radius)) / 2);
 	cursor: pointer;
 	transition:
-		background var(--stuic-theme-preview-transition),
-		color var(--stuic-theme-preview-transition);
+		background var(--stuic-theme-preview-transition, var(--stuic-transition)),
+		color var(--stuic-theme-preview-transition, var(--stuic-transition));
 	color: var(--stuic-color-foreground);
 }
 
@@ -214,7 +214,7 @@
 
 .stuic-theme-preview .role-color-nested {
 	padding: 1rem;
-	border-radius: var(--stuic-theme-preview-radius);
+	border-radius: var(--stuic-theme-preview-radius, var(--stuic-radius));
 }
 
 .stuic-theme-preview .role-color-label {
@@ -277,9 +277,9 @@
 
 .stuic-theme-preview .border-box {
 	padding: 1rem;
-	border-radius: var(--stuic-theme-preview-radius);
+	border-radius: var(--stuic-theme-preview-radius, var(--stuic-radius));
 	background: var(--stuic-color-surface);
-	transition: border-color var(--stuic-theme-preview-transition);
+	transition: border-color var(--stuic-theme-preview-transition, var(--stuic-transition));
 }
 
 .stuic-theme-preview .border-box.default {
@@ -319,13 +319,13 @@
 	width: 100%;
 	padding: 0.625rem 0.75rem;
 	font-size: 1rem;
-	border-radius: var(--stuic-theme-preview-radius);
+	border-radius: var(--stuic-theme-preview-radius, var(--stuic-radius));
 	border: 1px solid var(--stuic-color-border);
 	background: var(--stuic-color-input);
 	color: var(--stuic-color-foreground);
 	transition:
-		border-color var(--stuic-theme-preview-transition),
-		background var(--stuic-theme-preview-transition);
+		border-color var(--stuic-theme-preview-transition, var(--stuic-transition)),
+		background var(--stuic-theme-preview-transition, var(--stuic-transition));
 }
 
 .stuic-theme-preview .preview-input::placeholder {
@@ -353,7 +353,7 @@
 
 .stuic-theme-preview .highlight-box {
 	padding: 1rem;
-	border-radius: var(--stuic-theme-preview-radius);
+	border-radius: var(--stuic-theme-preview-radius, var(--stuic-radius));
 	margin-bottom: 0.75rem;
 }
 

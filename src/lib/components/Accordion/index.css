@@ -7,11 +7,8 @@
 :root {
 	/* Border & shape */
 	--stuic-accordion-border-color: var(--stuic-color-border);
-	--stuic-accordion-border-width: var(--stuic-border-width);
-	--stuic-accordion-radius: var(--stuic-radius);
 
 	/* Animation */
-	--stuic-accordion-transition: var(--stuic-transition);
 
 	/* Trigger */
 	--stuic-accordion-trigger-padding-x: 1rem;
@@ -39,8 +36,8 @@
 	   ============================================================================ */
 
 	.stuic-accordion {
-		border: var(--stuic-accordion-border-width) solid var(--stuic-accordion-border-color);
-		border-radius: var(--stuic-accordion-radius);
+		border: var(--stuic-accordion-border-width, var(--stuic-border-width)) solid var(--stuic-accordion-border-color);
+		border-radius: var(--stuic-accordion-radius, var(--stuic-radius-container));
 		overflow: hidden;
 	}
 
@@ -49,7 +46,7 @@
 	   ============================================================================ */
 
 	.stuic-accordion-item + .stuic-accordion-item {
-		border-top: var(--stuic-accordion-border-width) solid
+		border-top: var(--stuic-accordion-border-width, var(--stuic-border-width)) solid
 			var(--stuic-accordion-border-color);
 	}
 
@@ -69,7 +66,7 @@
 		border: none;
 		cursor: pointer;
 		text-align: left;
-		transition: background var(--stuic-accordion-transition);
+		transition: background var(--stuic-accordion-transition, var(--stuic-transition));
 	}
 
 	.stuic-accordion-trigger:hover:not(:disabled) {
@@ -92,7 +89,7 @@
 
 	.stuic-accordion-chevron {
 		flex-shrink: 0;
-		transition: transform var(--stuic-accordion-transition);
+		transition: transform var(--stuic-accordion-transition, var(--stuic-transition));
 	}
 
 	[data-open="true"] > .stuic-accordion-trigger > .stuic-accordion-chevron {
@@ -106,7 +103,7 @@
 	.stuic-accordion-content {
 		display: grid;
 		grid-template-rows: 0fr;
-		transition: grid-template-rows var(--stuic-accordion-transition);
+		transition: grid-template-rows var(--stuic-accordion-transition, var(--stuic-transition));
 	}
 
 	[data-open="true"] > .stuic-accordion-content {

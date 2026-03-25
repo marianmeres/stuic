@@ -7,7 +7,6 @@
 :root {
 	/* Layout */
 	--stuic-notification-max-width: var(--container-sm); /* 24rem */
-	--stuic-notification-radius: var(--stuic-radius-container);
 	--stuic-notification-padding-x: calc(var(--spacing) * 4); /* 1rem */
 	--stuic-notification-padding-y: calc(var(--spacing) * 3); /* 0.75rem */
 	--stuic-notification-gap: calc(
@@ -18,10 +17,8 @@
 	--stuic-notification-font-size: var(--text-base);
 
 	/* Animation */
-	--stuic-notification-transition: var(--stuic-transition);
 
 	/* Shadow */
-	--stuic-notification-shadow: var(--stuic-shadow-overlay);
 
 	/* Icon */
 	--stuic-notification-icon-size: calc(var(--spacing) * 6); /* 1.5rem */
@@ -84,10 +81,10 @@
 		/* Box model */
 		border-width: 1px;
 		border-style: solid;
-		border-radius: var(--stuic-notification-radius);
+		border-radius: var(--stuic-notification-radius, var(--stuic-radius-container));
 
 		/* Shadow */
-		box-shadow: var(--stuic-notification-shadow);
+		box-shadow: var(--stuic-notification-shadow, var(--stuic-shadow-overlay));
 
 		/* Colors - use internal vars set by type */
 		background: var(--_bg);
@@ -155,11 +152,11 @@
 		align-items: center;
 		justify-content: center;
 		padding: 0 calc(var(--spacing) * 3);
-		border-top-right-radius: var(--stuic-notification-radius);
-		border-bottom-right-radius: var(--stuic-notification-radius);
+		border-top-right-radius: var(--stuic-notification-radius, var(--stuic-radius-container));
+		border-bottom-right-radius: var(--stuic-notification-radius, var(--stuic-radius-container));
 		color: var(--_text);
 		opacity: 0.75;
-		transition: opacity var(--stuic-notification-transition);
+		transition: opacity var(--stuic-notification-transition, var(--stuic-transition));
 	}
 
 	.stuic-notification .close-button:hover {
@@ -201,8 +198,8 @@
 		position: absolute;
 		inset: 0;
 		background: transparent;
-		border-bottom-left-radius: var(--stuic-notification-radius);
-		border-bottom-right-radius: var(--stuic-notification-radius);
+		border-bottom-left-radius: var(--stuic-notification-radius, var(--stuic-radius-container));
+		border-bottom-right-radius: var(--stuic-notification-radius, var(--stuic-radius-container));
 		overflow: hidden;
 		pointer-events: none;
 	}
@@ -211,7 +208,7 @@
 		width: 100%;
 		height: 100%;
 		/* background: rgb(255 255 255 / 0.5); */
-		border-bottom-left-radius: var(--stuic-notification-radius);
-		border-bottom-right-radius: var(--stuic-notification-radius);
+		border-bottom-left-radius: var(--stuic-notification-radius, var(--stuic-radius-container));
+		border-bottom-right-radius: var(--stuic-notification-radius, var(--stuic-radius-container));
 	}
 }

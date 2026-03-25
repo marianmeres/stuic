@@ -10,7 +10,6 @@
 	--stuic-modal-text: var(--stuic-color-foreground);
 
 	/* Border radius (desktop only - mobile is fullscreen) */
-	--stuic-modal-radius: var(--stuic-radius-container);
 }
 
 @layer components {
@@ -21,7 +20,7 @@
 	.stuic-modal {
 		background: var(--stuic-modal-bg);
 		color: var(--stuic-modal-text);
-		border-radius: var(--stuic-modal-radius);
+		border-radius: var(--stuic-modal-radius, var(--stuic-radius-container));
 	}
 
 	/* Thin scrollbar for main content area */

@@ -12,7 +12,6 @@
 	--stuic-close-button-radius: 9999px;
 	--stuic-close-button-padding: calc(var(--spacing) * 2);
 	--stuic-close-button-min-size: 44px;
-	--stuic-close-button-transition: var(--stuic-transition);
 	--stuic-close-button-icon-size: 1.75rem;
 }
 
@@ -31,7 +30,7 @@
 		line-height: 1;
 		min-height: var(--stuic-close-button-min-size);
 		min-width: var(--stuic-close-button-min-size);
-		transition: opacity var(--stuic-close-button-transition);
+		transition: opacity var(--stuic-close-button-transition, var(--stuic-transition));
 	}
 
 	.stuic-close-button:hover {

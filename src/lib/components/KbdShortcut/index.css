@@ -15,8 +15,6 @@
 	--stuic-kbd-gap: calc(var(--spacing) * 0.5);
 
 	/* Border */
-	--stuic-kbd-radius: var(--stuic-radius);
-	--stuic-kbd-border-width: var(--stuic-border-width);
 	--stuic-kbd-border-color: var(--stuic-color-border);
 }
 
@@ -38,8 +36,8 @@
 
 		/* Box model */
 		padding: var(--stuic-kbd-padding-y) var(--stuic-kbd-padding-x);
-		border-radius: var(--stuic-kbd-radius);
-		border: var(--stuic-kbd-border-width) solid var(--stuic-kbd-border-color);
+		border-radius: var(--stuic-kbd-radius, var(--stuic-radius));
+		border: var(--stuic-kbd-border-width, var(--stuic-border-width)) solid var(--stuic-kbd-border-color);
 	}
 
 	/* Symbol styling (⌘, ⇧, ⌥, ⌃, ⊞) */

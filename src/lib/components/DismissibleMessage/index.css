@@ -5,11 +5,8 @@
    ============================================================================= */
 
 :root {
-	--stuic-dismissible-message-radius: var(--stuic-radius);
 	--stuic-dismissible-message-padding-x: calc(var(--spacing) * 4);
 	--stuic-dismissible-message-padding-y: calc(var(--spacing) * 3);
-	--stuic-dismissible-message-border-width: var(--stuic-border-width);
-	--stuic-dismissible-message-transition: var(--stuic-transition);
 }
 
 @layer components {
@@ -20,12 +17,12 @@
 	.stuic-dismissible-message {
 		display: flex;
 		align-items: center;
-		border-width: var(--stuic-dismissible-message-border-width);
+		border-width: var(--stuic-dismissible-message-border-width, var(--stuic-border-width));
 		border-style: solid;
-		border-radius: var(--stuic-dismissible-message-radius);
+		border-radius: var(--stuic-dismissible-message-radius, var(--stuic-radius));
 		transition:
-			background var(--stuic-dismissible-message-transition),
-			border-color var(--stuic-dismissible-message-transition);
+			background var(--stuic-dismissible-message-transition, var(--stuic-transition)),
+			border-color var(--stuic-dismissible-message-transition, var(--stuic-transition));
 
 		/* Colors via internal vars set by intent */
 		background: var(--_bg);
