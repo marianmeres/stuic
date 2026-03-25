@@ -35,8 +35,6 @@
 		gap: var(--stuic-header-gap);
 		background: var(--stuic-header-bg, var(--color-background, inherit));
 		color: var(--stuic-header-text, inherit);
-		border-bottom: var(--stuic-header-border-width, var(--stuic-border-width)) solid
-			var(--stuic-header-border-color, var(--color-border, transparent));
 	}
 
 	/* ============================================================================
