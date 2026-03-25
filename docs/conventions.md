@@ -35,6 +35,63 @@ Code standards and patterns for STUIC development.
 
 ---
 
+## Shared Structural Tokens
+
+Global tokens in `src/lib/index.css` that control cross-component visual properties (radius, shadow, border-width, transition). Override them to change the entire library's look:
+
+```css
+/* Brutalist example — 7 lines to transform everything */
+:root {
+    --stuic-radius: 0;
+    --stuic-radius-container: 0;
+    --stuic-shadow: none;
+    --stuic-shadow-hover: none;
+    --stuic-shadow-overlay: none;
+    --stuic-shadow-dialog: none;
+    --stuic-border-width: 0;
+}
+```
+
+### Fallback Pattern (for new components)
+
+Component CSS must reference shared tokens as **fallbacks at usage sites**, not as `:root` declarations:
+
+```css
+/* CORRECT — fallback resolved at element level, scoped overrides work */
+.stuic-widget {
+    border-radius: var(--stuic-widget-radius, var(--stuic-radius));
+    box-shadow: var(--stuic-widget-shadow, var(--stuic-shadow));
+    border-width: var(--stuic-widget-border-width, var(--stuic-border-width));
+    transition: background var(--stuic-widget-transition, var(--stuic-transition));
+}
+```
+
+```css
+/* WRONG — CSS vars resolve eagerly at :root, so overriding --stuic-radius on a
+   descendant element has no effect on --stuic-widget-radius */
+:root {
+    --stuic-widget-radius: var(--stuic-radius);
+}
+.stuic-widget {
+    border-radius: var(--stuic-widget-radius);
+}
+```
+
+Per-component overrides (`--stuic-widget-radius: 0`) still take precedence over the shared fallback.
+
+### Element vs Container
+
+Two tiers of radius for natural visual hierarchy:
+
+| Tier | Token | Default | Use for |
+| ---- | ----- | ------- | ------- |
+| Element | `--stuic-radius` | `var(--radius-md)` | Buttons, inputs, badges, list items, checkboxes, tabs |
+| Container | `--stuic-radius-container` | `var(--radius-lg)` | Cards, modals, dropdowns, notifications, accordions |
+
+**Rule of thumb:** if it wraps other interactive elements, it's a container.
+
+---
+
 ## Svelte 5 Patterns
 
 ### Props Declaration

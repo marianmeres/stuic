@@ -45,12 +45,51 @@ src/lib/
 5. Create components without `unstyled`, `class`, `el` props
 6. Use `dark:` Tailwind prefix when CSS vars handle dark mode
 7. Import CSS inside components — centralize in `src/lib/index.css`
+8. Declare component tokens at `:root` that reference shared structural tokens (use fallback pattern instead)
 
 ### CSS Variable Pattern
 
 ```
 --stuic-{component}-{element?}-{property}-{state?}
 ```
+
+### Shared Structural Tokens
+
+Global tokens that control cross-component visual properties. Defined in `src/lib/index.css`:
+
+| Token                      | Default              | Purpose                                       |
+| -------------------------- | -------------------- | --------------------------------------------- |
+| `--stuic-radius`           | `var(--radius-md)`   | Element-level radius (buttons, inputs, badges) |
+| `--stuic-radius-container` | `var(--radius-lg)`   | Container-level radius (cards, modals, dropdowns) |
+| `--stuic-shadow`           | `var(--shadow-sm)`   | Default resting shadow                        |
+| `--stuic-shadow-hover`     | `var(--shadow-md)`   | Hover/elevated shadow                         |
+| `--stuic-shadow-overlay`   | `var(--shadow-lg)`   | Overlays (dropdowns, notifications)           |
+| `--stuic-shadow-dialog`    | `var(--shadow-xl)`   | Dialogs/modals                                |
+| `--stuic-border-width`     | `1px`                | Default border width                          |
+| `--stuic-transition`       | `150ms`              | Default transition duration                   |
+
+**When creating new components**, use the fallback pattern at CSS usage sites:
+
+```css
+/* CORRECT: fallback resolved at element level — scoped overrides work */
+.stuic-my-component {
+    border-radius: var(--stuic-my-component-radius, var(--stuic-radius));
+    box-shadow: var(--stuic-my-component-shadow, var(--stuic-shadow));
+    border-width: var(--stuic-my-component-border-width, var(--stuic-border-width));
+    transition: background var(--stuic-my-component-transition, var(--stuic-transition));
+}
+```
+
+```css
+/* WRONG: :root declarations resolve eagerly — scoped overrides on child elements are ignored */
+:root {
+    --stuic-my-component-radius: var(--stuic-radius); /* DO NOT DO THIS */
+}
+```
+
+**Element vs Container classification:**
+- **Element** (`--stuic-radius`): buttons, inputs, badges, list items, checkboxes, tabs — interactive controls
+- **Container** (`--stuic-radius-container`): cards, modals, dropdowns, notifications, accordions — content wrappers
 
 ---
 

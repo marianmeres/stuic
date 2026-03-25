@@ -29,14 +29,16 @@ npm install @marianmeres/stuic
 
 ## Theming System
 
-STUIC uses a 3-layer CSS variable token system:
+STUIC uses a 4-layer CSS variable token system:
 
 ```
 Layer 1: Theme Tokens (--stuic-color-*)
+    ↓
+Layer 2: Structural Tokens (--stuic-radius, --stuic-shadow, --stuic-border-width, --stuic-transition)
     ↓ (used as fallback defaults)
-Layer 2: Component Tokens (--stuic-button-bg, --stuic-input-accent, etc.)
+Layer 3: Component Tokens (--stuic-button-radius, --stuic-input-accent, etc.)
     ↓ (Tailwind utility class references)
-Layer 3: Instance Overrides (inline styles, class props)
+Layer 4: Instance Overrides (inline styles, class props)
 ```
 
 ### Global Theming
@@ -54,13 +56,32 @@ Override theme tokens in your app's CSS:
 }
 ```
 
+### Structural Tokens
+
+Override shared structural tokens to change the entire library's visual character:
+
+```css
+/* Brutalist — sharp, flat, borderless */
+:root {
+	--stuic-radius: 0;
+	--stuic-radius-container: 0;
+	--stuic-shadow: none;
+	--stuic-shadow-hover: none;
+	--stuic-shadow-overlay: none;
+	--stuic-shadow-dialog: none;
+	--stuic-border-width: 0;
+}
+```
+
+Available tokens: `--stuic-radius`, `--stuic-radius-container`, `--stuic-shadow`, `--stuic-shadow-hover`, `--stuic-shadow-overlay`, `--stuic-shadow-dialog`, `--stuic-border-width`, `--stuic-transition`.
+
 ### Per-Component Customization
 
 Override specific component tokens:
 
 ```css
 :root {
-	--stuic-button-radius: 9999px; /* Pill buttons */
+	--stuic-button-radius: 9999px; /* Pill buttons — overrides the shared --stuic-radius */
 	--stuic-switch-accent: #10b981; /* Green switches */
 }
 ```
