@@ -31,8 +31,9 @@ In practice:
    Override per-component: --stuic-button-radius: 9999px; (takes precedence)
    ============================================================================ */
 :root {
-	/* Radius: two tiers */
-	--stuic-radius: var(--radius-md);           /* elements: buttons, inputs, badges, list items */
+	/* Radius: three tiers */
+	--stuic-radius: var(--radius-md);           /* elements: inputs, badges, list items */
+	--stuic-radius-button: var(--radius-md);    /* buttons: independent from general elements */
 	--stuic-radius-container: var(--radius-lg); /* containers: cards, modals, dropdowns, notifications */
 
 	/* Shadows */

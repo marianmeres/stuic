@@ -55,7 +55,7 @@
 		padding: var(--stuic-button-group-padding);
 		border-width: var(--stuic-button-group-border-width, var(--stuic-border-width));
 		border-style: solid;
-		border-radius: var(--stuic-button-group-radius, var(--stuic-radius));
+		border-radius: var(--stuic-button-group-radius, var(--stuic-radius-button));
 
 		/* Colors */
 		background: var(--stuic-button-group-bg);
@@ -106,7 +106,7 @@
 			var(--stuic-button-group-button-padding-x);
 		min-height: var(--stuic-button-group-button-min-height);
 		border: none;
-		border-radius: var(--stuic-button-group-radius, var(--stuic-radius));
+		border-radius: var(--stuic-button-group-radius, var(--stuic-radius-button));
 
 		/* Typography */
 		white-space: nowrap;

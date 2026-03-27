@@ -59,7 +59,8 @@ Global tokens that control cross-component visual properties. Defined in `src/li
 
 | Token                      | Default              | Purpose                                       |
 | -------------------------- | -------------------- | --------------------------------------------- |
-| `--stuic-radius`           | `var(--radius-md)`   | Element-level radius (buttons, inputs, badges) |
+| `--stuic-radius`           | `var(--radius-md)`   | Element-level radius (inputs, badges, list items) |
+| `--stuic-radius-button`    | `var(--radius-md)`   | Button-specific radius (independent from general elements) |
 | `--stuic-radius-container` | `var(--radius-lg)`   | Container-level radius (cards, modals, dropdowns) |
 | `--stuic-shadow`           | `var(--shadow-sm)`   | Default resting shadow                        |
 | `--stuic-shadow-hover`     | `var(--shadow-md)`   | Hover/elevated shadow                         |
@@ -88,7 +89,8 @@ Global tokens that control cross-component visual properties. Defined in `src/li
 ```
 
 **Element vs Container classification:**
-- **Element** (`--stuic-radius`): buttons, inputs, badges, list items, checkboxes, tabs — interactive controls
+- **Element** (`--stuic-radius`): inputs, badges, list items, checkboxes, tabs — interactive controls
+- **Button** (`--stuic-radius-button`): buttons, button groups — allows rounded buttons even with flat elements
 - **Container** (`--stuic-radius-container`): cards, modals, dropdowns, notifications, accordions — content wrappers
 
 ---

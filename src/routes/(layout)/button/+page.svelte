@@ -1,6 +1,7 @@
 <script lang="ts">
 	import {
 		Button,
+		FieldInput,
 		type IntentColorKey,
 		type ButtonVariant,
 		iconPlus,
@@ -123,6 +124,68 @@
 		>
 			Gradient Button
 		</Button>
+	</div>
+</div>
+
+<hr class="my-8" />
+
+<h2 class="text-xl font-semibold mb-4">Button Radius Token</h2>
+<p class="text-sm text-neutral-500 mb-4">
+	The <code>--stuic-radius-button</code> token allows buttons to have independent radius
+	from other elements. Set <code>--stuic-radius: 0</code> for flat UI, while keeping buttons
+	rounded.
+</p>
+
+<div class="space-y-6">
+	<div>
+		<p class="text-sm text-neutral-500 mb-2">
+			Default (both tokens use <code>--radius-md</code>):
+		</p>
+		<div class="flex flex-wrap gap-3 items-end">
+			<Button intent="primary">Primary</Button>
+			<Button variant="outline">Outline</Button>
+			<Button intent="accent" variant="soft">Soft</Button>
+			<FieldInput value="Input" class="w-40 mb-0" />
+		</div>
+	</div>
+
+	<div style="--stuic-radius: 0; --stuic-radius-button: 0;">
+		<p class="text-sm text-neutral-500 mb-2">
+			Flat everything (<code>--stuic-radius: 0; --stuic-radius-button: 0</code>):
+		</p>
+		<div class="flex flex-wrap gap-3 items-end">
+			<Button intent="primary">Primary</Button>
+			<Button variant="outline">Outline</Button>
+			<Button intent="accent" variant="soft">Soft</Button>
+			<FieldInput value="Input" class="w-40 mb-0" />
+		</div>
+	</div>
+
+	<div style="--stuic-radius: 0;">
+		<p class="text-sm text-neutral-500 mb-2">
+			Flat elements, rounded buttons (<code>--stuic-radius: 0</code>,
+			<code>--stuic-radius-button</code> untouched):
+		</p>
+		<div class="flex flex-wrap gap-3 items-end">
+			<Button intent="primary">Primary</Button>
+			<Button variant="outline">Outline</Button>
+			<Button intent="accent" variant="soft">Soft</Button>
+			<FieldInput value="Input" class="w-40 mb-0" />
+		</div>
+	</div>
+
+	<div style="--stuic-radius: 0; --stuic-radius-button: 9999px;">
+		<p class="text-sm text-neutral-500 mb-2">
+			Flat elements, pill buttons (<code
+				>--stuic-radius: 0; --stuic-radius-button: 9999px</code
+			>):
+		</p>
+		<div class="flex flex-wrap gap-3 items-end">
+			<Button intent="primary">Primary</Button>
+			<Button variant="outline">Outline</Button>
+			<Button intent="accent" variant="soft">Soft</Button>
+			<FieldInput value="Input" class="w-40 mb-0" />
+		</div>
 	</div>
 </div>
 

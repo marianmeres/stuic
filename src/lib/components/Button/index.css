@@ -67,7 +67,7 @@
 		/* Box model */
 		border-width: 1px;
 		border-style: solid;
-		border-radius: var(--stuic-button-radius, var(--stuic-radius));
+		border-radius: var(--stuic-button-radius, var(--stuic-radius-button));
 
 		/* Interaction */
 		cursor: pointer;
