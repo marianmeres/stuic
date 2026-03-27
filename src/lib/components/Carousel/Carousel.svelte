@@ -273,7 +273,7 @@
 		}
 	}
 
-	// Mouse wheel horizontal scroll handler
+	// Mouse wheel horizontal scroll handler (never cycles/loops — confusing UX)
 	function handleWheel(e: WheelEvent) {
 		if (!wheelScroll || e.deltaY === 0) return;
 		e.preventDefault();
@@ -281,11 +281,16 @@
 		// With snap enabled, navigate by item; otherwise scroll by pixels
 		if (snap) {
 			if (e.deltaY > 0) {
-				coll.setActiveNext();
+				if (coll.activeIndex !== coll.size - 1) {
+					coll.setActiveNext();
+					scrollActiveIntoView();
+				}
 			} else {
-				coll.setActivePrevious();
+				if (coll.activeIndex !== 0) {
+					coll.setActivePrevious();
+					scrollActiveIntoView();
+				}
 			}
-			scrollActiveIntoView();
 		} else {
 			trackEl!.scrollLeft += e.deltaY;
 		}

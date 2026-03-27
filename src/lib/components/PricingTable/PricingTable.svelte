@@ -114,6 +114,7 @@
 	import { twMerge } from "../../utils/tw-merge.js";
 	import Thc, { getTHCStringContent } from "../Thc/Thc.svelte";
 	import Button from "../Button/Button.svelte";
+	import ButtonGroupRadio from "../ButtonGroupRadio/ButtonGroupRadio.svelte";
 
 	let {
 		tiers,
@@ -179,28 +180,29 @@
 		{#if renderToggle}
 			{@render renderToggle({ billingPeriod, toggle })}
 		{:else}
-			<div
-				class={unstyled ? undefined : "stuic-pricing-table-toggle"}
-				role="radiogroup"
-				aria-label="Billing period"
-			>
-				<button
-					type="button"
-					class={unstyled ? undefined : "stuic-pricing-table-toggle-option"}
-					data-active={billingPeriod === "monthly" ? "" : undefined}
-					role="radio"
-					aria-checked={billingPeriod === "monthly"}
-					onclick={() => (billingPeriod = "monthly")}
-				>{monthlyLabel}</button>
-				<button
-					type="button"
-					class={unstyled ? undefined : "stuic-pricing-table-toggle-option"}
-					data-active={billingPeriod === "annual" ? "" : undefined}
-					role="radio"
-					aria-checked={billingPeriod === "annual"}
-					onclick={() => (billingPeriod = "annual")}
-				>{annualLabel}</button>
-			</div>
+			<ButtonGroupRadio
+				value={billingPeriod}
+				options={[
+					{ label: monthlyLabel, value: "monthly" },
+					{ label: annualLabel, value: "annual" },
+				]}
+				onButtonClick={(i) => {
+					billingPeriod = i === 0 ? "monthly" : "annual";
+				}}
+				{unstyled}
+				style="
+					width: auto;
+					--stuic-button-group-radius: 9999px;
+					--stuic-button-group-padding: 0.25rem;
+					--stuic-button-group-bg: var(--stuic-color-muted);
+					--stuic-button-group-border-width: 0;
+					--stuic-button-group-button-bg-active: var(--stuic-color-background);
+					--stuic-button-group-button-text-active: var(--stuic-color-foreground);
+					--stuic-button-group-button-bg-active-hover: var(--stuic-color-background);
+					--stuic-button-group-button-text-active-hover: var(--stuic-color-foreground);
+				"
+				classButtonActive="shadow"
+			/>
 		{/if}
 	{/if}
 

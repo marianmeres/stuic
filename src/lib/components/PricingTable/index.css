@@ -18,41 +18,6 @@
 	}
 
 	/* ============================================================================
-	   BILLING TOGGLE
-	   ============================================================================ */
-
-	.stuic-pricing-table-toggle {
-		display: inline-flex;
-		border-radius: 9999px;
-		background: var(--stuic-pricing-table-toggle-bg, var(--stuic-color-muted));
-		padding: var(--stuic-pricing-table-toggle-padding, 0.25rem);
-		gap: 0;
-	}
-
-	.stuic-pricing-table-toggle-option {
-		padding: 0.5rem 1.25rem;
-		border-radius: 9999px;
-		border: none;
-		background: transparent;
-		font-size: var(--stuic-pricing-table-toggle-font-size, var(--text-sm));
-		font-weight: var(--font-weight-medium, 500);
-		color: var(--stuic-pricing-table-toggle-color, var(--stuic-color-muted-foreground));
-		transition:
-			background var(--stuic-pricing-table-transition, var(--stuic-transition)),
-			color var(--stuic-pricing-table-transition, var(--stuic-transition)),
-			box-shadow var(--stuic-pricing-table-transition, var(--stuic-transition));
-	}
-
-	.stuic-pricing-table-toggle-option[data-active] {
-		background: var(
-			--stuic-pricing-table-toggle-bg-active,
-			var(--stuic-color-background)
-		);
-		color: var(--stuic-pricing-table-toggle-color-active, var(--stuic-color-foreground));
-		box-shadow: var(--stuic-pricing-table-toggle-shadow-active, var(--stuic-shadow));
-	}
-
-	/* ============================================================================
 	   TIERS GRID
 	   ============================================================================ */
 
