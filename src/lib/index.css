@@ -78,6 +78,7 @@ In practice:
 @import "./components/ModalDialog/index.css";
 @import "./components/Nav/index.css";
 @import "./components/Notifications/index.css";
+@import "./components/PricingTable/index.css";
 @import "./components/Progress/index.css";
 @import "./components/Separator/index.css";
 @import "./components/Skeleton/index.css";

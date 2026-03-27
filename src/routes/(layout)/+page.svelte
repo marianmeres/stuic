@@ -45,6 +45,7 @@
 		'onboarding',
 		// 'on-outside',
 		'popover', 
+		'pricing-table',
 		'progress',
 		'resizable-width',
 		'separator', 
