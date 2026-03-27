@@ -5,11 +5,14 @@
 		type IntentColorKey,
 		type ButtonVariant,
 		iconPlus,
+		iconMinus,
 		iconArrowRight,
 		iconDownload,
 		iconCheck,
 		iconTrash,
 		iconSettings,
+		iconChevronUp,
+		iconChevronDown,
 		Spinner,
 		SpinnerCircle,
 		SpinnerUnicode,
@@ -235,42 +238,23 @@
 	<div>
 		<p class="text-sm text-neutral-500 mb-2">Icon Only (square):</p>
 		<div class="flex flex-wrap gap-3 items-end">
-			<Button intent="primary" size="sm" class="aspect-square px-0!"
-				>{@html iconPlus()}</Button
-			>
-			<Button intent="primary" size="md" class="aspect-square px-0!"
-				>{@html iconPlus()}</Button
-			>
-			<Button intent="primary" size="lg" class="aspect-square px-0!"
-				>{@html iconPlus()}</Button
-			>
-			<Button variant="outline" class="aspect-square px-0!">{@html iconSettings()}</Button
-			>
-			<Button variant="ghost" class="aspect-square px-0!">{@html iconTrash()}</Button>
-			<Button intent="destructive" variant="soft" class="aspect-square px-0!"
-				>{@html iconTrash()}</Button
-			>
+			<Button intent="primary" size="sm" iconButton>{@html iconPlus()}</Button>
+			<Button intent="primary" size="md" iconButton>{@html iconPlus()}</Button>
+			<Button intent="primary" size="lg" iconButton>{@html iconPlus()}</Button>
+			<Button variant="outline" iconButton>{@html iconSettings()}</Button>
+			<Button variant="ghost" iconButton>{@html iconTrash()}</Button>
+			<Button intent="destructive" variant="soft" iconButton>{@html iconTrash()}</Button>
 		</div>
 	</div>
 
 	<div>
 		<p class="text-sm text-neutral-500 mb-2">Icon Only (circular):</p>
 		<div class="flex flex-wrap gap-3 items-end">
-			<Button intent="primary" size="sm" class="aspect-square px-0! rounded-full!"
-				>{@html iconPlus()}</Button
-			>
-			<Button intent="accent" size="md" class="aspect-square px-0! rounded-full!"
-				>{@html iconPlus()}</Button
-			>
-			<Button intent="success" size="lg" class="aspect-square px-0! rounded-full!"
-				>{@html iconCheck()}</Button
-			>
-			<Button variant="outline" class="aspect-square px-0! rounded-full!"
-				>{@html iconSettings()}</Button
-			>
-			<Button variant="ghost" class="aspect-square px-0! rounded-full!"
-				>{@html iconDownload()}</Button
-			>
+			<Button intent="primary" size="sm" iconButton roundedFull>{@html iconPlus()}</Button>
+			<Button intent="accent" size="md" iconButton roundedFull>{@html iconPlus()}</Button>
+			<Button intent="success" size="lg" iconButton roundedFull>{@html iconCheck()}</Button>
+			<Button variant="outline" iconButton roundedFull>{@html iconSettings()}</Button>
+			<Button variant="ghost" iconButton roundedFull>{@html iconDownload()}</Button>
 		</div>
 	</div>
 </div>
@@ -286,6 +270,29 @@
 	<div class="text-sm text-neutral-500">
 		checked: {checked}
 	</div>
+</div>
+
+<hr class="my-8" />
+
+<h2 class="text-xl font-semibold mb-4">Icon Swap</h2>
+
+<div class="flex flex-wrap gap-4 items-center">
+	<Button
+		iconSwap={[iconPlus(), iconMinus()]}
+		roleSwitch
+		bind:checked
+		roundedFull
+		variant="outline"
+		intent="primary"
+	/>
+	<Button
+		iconSwap={[iconChevronDown(), iconChevronUp()]}
+		roleSwitch
+		bind:checked
+		iconButton
+		variant="ghost"
+	/>
+	<span class="text-sm text-neutral-500">checked: {checked}</span>
 </div>
 
 <hr class="my-8" />

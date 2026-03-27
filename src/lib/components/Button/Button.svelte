@@ -23,6 +23,8 @@
 		roundedFull?: boolean;
 		/** Render as aspect ratio 1 */
 		aspect1?: boolean;
+		/** Icon-only button (implies aspect1, adds data-icon-button for global CSS targeting) */
+		iconButton?: boolean;
 		/** Additional CSS classes */
 		class?: string;
 		/** Render as anchor tag instead of button */
@@ -47,6 +49,8 @@
 		 * For that look, use: `<Button x unstyled class="stuic-close-button" />`
 		 */
 		x?: boolean | XProps;
+		/** Two icon states for swap animation (implies iconButton). Uses `checked` for active state. */
+		iconSwap?: [string | Snippet, string | Snippet];
 		/** Optional out-of-the-box spinner support  */
 		spinner?: boolean | THC;
 		/** Show only spinner when spinner? */
@@ -60,6 +64,7 @@
 	import { X, type XProps } from "../X/index.js";
 	import Thc, { type THC } from "../Thc/Thc.svelte";
 	import Spinner from "../Spinner/Spinner.svelte";
+	import { IconSwap } from "../IconSwap/index.js";
 	let {
 		class: classProp,
 		intent,
@@ -75,8 +80,10 @@
 		unstyled = false,
 		roundedFull = false,
 		aspect1 = false,
+		iconButton = false,
 		tooltip: _tooltip,
 		x,
+		iconSwap,
 		spinner,
 		spinnerOnly,
 		...rest
@@ -110,8 +117,11 @@
 		}
 	});
 
-	// "x" implicitly set aspect1
-	let _isAspect1 = $derived(aspect1 || _xProps);
+	// "x" and "iconSwap" are semantically icon buttons
+	let _isIconButton = $derived(iconButton || !!_xProps || !!iconSwap);
+
+	// icon buttons implicitly set aspect1
+	let _isAspect1 = $derived(aspect1 || _isIconButton);
 </script>
 
 {#if href}
@@ -127,11 +137,14 @@
 		data-checked={roleSwitch && checked ? "true" : undefined}
 		data-rounded-full={!unstyled && roundedFull ? "true" : undefined}
 		data-aspect1={!unstyled && _isAspect1 ? "true" : undefined}
+		data-icon-button={!unstyled && _isIconButton ? "true" : undefined}
 		use:tooltip={_tooltipConfig}
 		{...rest as HTMLAnchorAttributes}
 	>
 		{#if _xProps}
 			<X {..._xProps} />
+		{:else if iconSwap}
+			<IconSwap states={iconSwap} active={checked ? 1 : 0} />
 		{:else}
 			{#if spinner}
 				{#if typeof spinner === "boolean"}
@@ -157,11 +170,14 @@
 		data-checked={roleSwitch && checked ? "true" : undefined}
 		data-rounded-full={!unstyled && roundedFull ? "true" : undefined}
 		data-aspect1={!unstyled && _isAspect1 ? "true" : undefined}
+		data-icon-button={!unstyled && _isIconButton ? "true" : undefined}
 		use:tooltip={_tooltipConfig}
 		{...rest}
 	>
 		{#if _xProps}
 			<X {..._xProps} />
+		{:else if iconSwap}
+			<IconSwap states={iconSwap} active={checked ? 1 : 0} />
 		{:else}
 			{#if spinner}
 				{#if typeof spinner === "boolean"}

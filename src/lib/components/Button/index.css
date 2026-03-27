@@ -407,4 +407,10 @@
 		min-height: var(--stuic-button-min-height-xl);
 		padding: var(--stuic-button-padding-y-xl);
 	}
+
+	/* ============================================================================
+	   ICON BUTTON
+	   Semantic marker for icon-only buttons. Layout is handled by [data-aspect1].
+	   Override globally: .stuic-button[data-icon-button] { --stuic-button-radius: 9999px; }
+	   ============================================================================ */
 }

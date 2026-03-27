@@ -16,6 +16,8 @@ A flexible button component with semantic intents, visual variants, sizes, and o
 | `roleSwitch` | `boolean`                                                          | `false`   | Enable toggle/switch behavior                     |
 | `checked`    | `boolean`                                                          | `false`   | Toggle state when `roleSwitch` is true (bindable) |
 | `el`         | `HTMLElement`                                                      | -         | Element reference (bindable)                      |
+| `iconButton` | `boolean`                                                          | `false`   | Icon-only button (implies aspect1, adds CSS hook) |
+| `iconSwap`   | `[string \| Snippet, string \| Snippet]`                           | -         | Two icon states with swap animation (implies iconButton) |
 | `class`      | `string`                                                           | -         | Additional CSS classes                            |
 
 ## Snippet Props
@@ -79,6 +81,28 @@ The `children` snippet receives `{ checked }` when `roleSwitch` is enabled.
 		{checked ? "ON" : "OFF"}
 	{/snippet}
 </Button>
+```
+
+### Icon Button
+
+```svelte
+<!-- Icon-only buttons -->
+<Button iconButton intent="primary">{@html iconPlus()}</Button>
+<Button iconButton roundedFull variant="ghost">{@html iconSettings()}</Button>
+
+<!-- X buttons are icon buttons automatically -->
+<Button x />
+
+<!-- Icon swap: two states driven by checked -->
+<Button iconSwap={[iconPlus(), iconMinus()]} roleSwitch bind:checked roundedFull />
+```
+
+Global CSS targeting for all icon buttons:
+
+```css
+.stuic-button[data-icon-button] {
+	--stuic-button-radius: 9999px;
+}
 ```
 
 ### Custom Styling
@@ -145,3 +169,6 @@ The component uses data attributes for styling:
 - `data-muted` - Present when muted
 - `data-raised` - Present when raised
 - `data-checked` - Present when roleSwitch is enabled and checked
+- `data-rounded-full` - Present when roundedFull
+- `data-aspect1` - Present when aspect1 (or iconButton, or x)
+- `data-icon-button` - Present when iconButton (or x)
