@@ -124,6 +124,37 @@
 	}
 
 	/* ============================================================================
+	   LOCALE SWITCHER (expanded mode)
+	   ============================================================================ */
+
+	.stuic-header-locale {
+		display: flex;
+		align-items: center;
+	}
+
+	.stuic-header-locale-trigger {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
+		font-size: var(--stuic-header-locale-font-size, var(--text-sm, 0.875rem));
+		opacity: var(--stuic-header-locale-opacity, 0.8);
+	}
+
+	.stuic-header-locale-trigger:hover {
+		opacity: 1;
+	}
+
+	.stuic-header-locale-chevron {
+		display: inline-flex;
+		align-items: center;
+		transition: transform var(--stuic-transition, 150ms);
+	}
+
+	.stuic-header-locale-chevron-open {
+		transform: rotate(180deg);
+	}
+
+	/* ============================================================================
 	   HAMBURGER
 	   ============================================================================ */
 

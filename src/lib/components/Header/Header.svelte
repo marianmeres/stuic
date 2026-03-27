@@ -13,8 +13,10 @@
 		id: string | number;
 		/** Display label — supports THC (string, html, component, snippet) */
 		label: THC;
-		/** Navigation URL (renders as <a> in expanded mode) */
+		/** Navigation URL (renders as <a> in both expanded and collapsed modes) */
 		href?: string;
+		/** Link target (e.g., "_blank"). Only relevant when href is set. */
+		target?: string;
 		/** Click handler (alternative to href) */
 		onclick?: () => void;
 		/** Icon before the label — supports THC */
@@ -25,6 +27,13 @@
 		disabled?: boolean;
 		/** Additional CSS classes */
 		class?: string;
+	}
+
+	export interface HeaderLocaleItem {
+		/** Locale identifier (e.g., "en", "sk", "cs") */
+		id: string;
+		/** Display label — supports THC (string, html, component, snippet) */
+		label: THC;
 	}
 
 	export interface Props extends Omit<HTMLAttributes<HTMLElement>, "children"> {
@@ -41,6 +50,14 @@
 		avatarOnClick?: () => void;
 		/** Label for the avatar dropdown item in collapsed mode (defaults to "Account") */
 		avatarLabel?: THC;
+		/** Available locales for the language switcher */
+		locales?: HeaderLocaleItem[];
+		/** Currently active locale ID — should match one of the locales[].id values */
+		activeLocale?: string;
+		/** Called when the user selects a different locale */
+		onLocaleChange?: (localeId: string) => void;
+		/** Section header label for locales in collapsed dropdown (defaults to "Language") */
+		localeLabel?: THC;
 		/** Element width (px) below which nav collapses to hamburger. 0 to disable. */
 		collapseThreshold?: number;
 		/** Fixed positioning (top of viewport) */
@@ -71,6 +88,8 @@
 		classEnd?: string;
 		/** Classes for the avatar container */
 		classAvatar?: string;
+		/** Classes for the locale switcher trigger (expanded mode) */
+		classLocale?: string;
 		/** Classes for the hamburger button */
 		classHamburger?: string;
 		/** Classes for the dropdown wrapper (collapsed mode) */
@@ -89,11 +108,12 @@
 	export const HEADER_NAV_ITEM_CLASSES = "stuic-header-nav-item";
 	export const HEADER_END_CLASSES = "stuic-header-end";
 	export const HEADER_HAMBURGER_CLASSES = "stuic-header-hamburger";
+	export const HEADER_LOCALE_CLASSES = "stuic-header-locale";
 </script>
 
 <script lang="ts">
 	import { twMerge } from "../../utils/tw-merge.js";
-	import { iconMenu, iconX } from "../../icons/index.js";
+	import { iconMenu, iconX, iconCheck, iconChevronDown } from "../../icons/index.js";
 	import Thc from "../Thc/Thc.svelte";
 	import Button from "../Button/Button.svelte";
 	import DropdownMenu from "../DropdownMenu/DropdownMenu.svelte";
@@ -106,6 +126,10 @@
 		avatar,
 		avatarOnClick,
 		avatarLabel = "Account",
+		locales = [],
+		activeLocale,
+		onLocaleChange,
+		localeLabel = "Language",
 		collapseThreshold = 768,
 		fixed = false,
 		isCollapsed = $bindable(false),
@@ -121,6 +145,7 @@
 		classNavItemActive,
 		classEnd,
 		classAvatar,
+		classLocale,
 		classHamburger,
 		classDropdown,
 		children,
@@ -152,6 +177,31 @@
 	// Whether the avatar moves into the dropdown when collapsed
 	let _avatarInDropdown = $derived(!!(avatar && avatarOnClick));
 
+	// Locale switcher: only render when 2+ locales
+	let _hasLocales = $derived(locales.length > 1);
+
+	// Active locale object (for trigger label); fallback to first
+	let _activeLocale = $derived(locales.find((l) => l.id === activeLocale) ?? locales[0]);
+
+	// Locale items for the expanded-mode DropdownMenu
+	let _localeDropdownItems = $derived.by((): DropdownMenuItem[] => {
+		return locales.map(
+			(locale) =>
+				({
+					type: "action" as const,
+					id: locale.id,
+					label: locale.label,
+					contentBefore:
+						locale.id === activeLocale
+							? { html: iconCheck({ size: 14 }) }
+							: {
+									html: `<span style="width:14px;display:inline-block"></span>`,
+								},
+					onSelect: () => onLocaleChange?.(locale.id),
+				}) satisfies DropdownMenuActionItem
+		);
+	});
+
 	// Map HeaderNavItem[] to DropdownMenuItem[] for collapsed mode
 	let _dropdownItems = $derived.by((): DropdownMenuItem[] => {
 		const navItems: DropdownMenuItem[] = items.map(
@@ -163,13 +213,36 @@
 					contentBefore: item.icon,
 					disabled: item.disabled,
 					class: item.class,
+					href: item.href,
+					target: item.target,
 					onSelect: () => {
-						if (item.href) window.location.href = item.href;
 						item.onclick?.();
 						onSelect?.(item);
 					},
 				}) satisfies DropdownMenuActionItem
 		);
+
+		// Append locale section when locales are available
+		if (_hasLocales) {
+			if (navItems.length > 0) {
+				navItems.push({ type: "divider" });
+			}
+			navItems.push({ type: "header", label: localeLabel! });
+			for (const locale of locales) {
+				navItems.push({
+					type: "action",
+					id: `__locale_${locale.id}__`,
+					label: locale.label,
+					contentBefore:
+						locale.id === activeLocale
+							? { html: iconCheck({ size: 14 }) }
+							: {
+									html: `<span style="width:14px;display:inline-block"></span>`,
+								},
+					onSelect: () => onLocaleChange?.(locale.id),
+				} satisfies DropdownMenuActionItem);
+			}
+		}
 
 		// Append avatar as a dropdown item when avatarOnClick is set
 		if (_avatarInDropdown) {
@@ -194,6 +267,9 @@
 	);
 	let _classNav = $derived(unstyled ? classNav : twMerge(HEADER_NAV_CLASSES, classNav));
 	let _classEnd = $derived(unstyled ? classEnd : twMerge(HEADER_END_CLASSES, classEnd));
+	let _classLocale = $derived(
+		unstyled ? classLocale : twMerge(HEADER_LOCALE_CLASSES, classLocale)
+	);
 
 	function handleItemClick(item: HeaderNavItem) {
 		if (item.disabled) return;
@@ -238,6 +314,7 @@
 						variant="ghost"
 						size="sm"
 						href={item.href}
+						target={item.target}
 						disabled={item.disabled}
 						{unstyled}
 						class={twMerge(
@@ -264,8 +341,44 @@
 		<!-- Spacer -->
 		<div class={unstyled ? undefined : "stuic-header-spacer"}></div>
 
-		<!-- End area: avatar + hamburger -->
+		<!-- End area: locale + avatar + hamburger -->
 		<div class={_classEnd}>
+			<!-- Locale switcher (expanded mode only) -->
+			{#if !_isCollapsed && _hasLocales}
+				<DropdownMenu
+					items={_localeDropdownItems}
+					position="bottom-span-right"
+					class={_classLocale}
+				>
+					{#snippet trigger({ isOpen, toggle, triggerProps })}
+						<Button
+							variant="ghost"
+							size="sm"
+							{unstyled}
+							class={twMerge(
+								!unstyled && "stuic-header-locale-trigger",
+								classLocale
+							)}
+							onclick={toggle}
+							aria-label="Change language"
+							{...triggerProps}
+						>
+							{#if _activeLocale}
+								<Thc thc={_activeLocale.label} />
+							{/if}
+							<span
+								class={twMerge(
+									!unstyled && "stuic-header-locale-chevron",
+									isOpen && !unstyled && "stuic-header-locale-chevron-open"
+								)}
+							>
+								{@html iconChevronDown({ size: 14 })}
+							</span>
+						</Button>
+					{/snippet}
+				</DropdownMenu>
+			{/if}
+
 			<!-- Avatar: hidden when collapsed + avatarOnClick (moves into dropdown) -->
 			{#if avatar && !(_isCollapsed && _avatarInDropdown)}
 				{#if avatarOnClick}

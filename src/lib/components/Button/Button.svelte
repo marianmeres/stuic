@@ -29,6 +29,8 @@
 		class?: string;
 		/** Render as anchor tag instead of button */
 		href?: string;
+		/** Link target (e.g., "_blank"). Only relevant when href is set. */
+		target?: string;
 		/** Content snippet */
 		children?: Snippet<[{ checked?: boolean }]>;
 		/** Toggle state for switch behavior */
@@ -71,6 +73,7 @@
 		size = "md",
 		variant = "solid",
 		href,
+		target,
 		children,
 		checked = $bindable(false),
 		roleSwitch = false,
@@ -127,6 +130,7 @@
 {#if href}
 	<a
 		{href}
+		{target}
 		bind:this={el}
 		class={_class}
 		data-intent={!unstyled ? intent : undefined}

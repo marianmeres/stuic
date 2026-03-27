@@ -1,6 +1,19 @@
 <script lang="ts">
-	import { Header, type HeaderNavItem, Avatar } from "$lib/index.js";
+	import {
+		Header,
+		type HeaderNavItem,
+		type HeaderLocaleItem,
+		Avatar,
+	} from "$lib/index.js";
 	import { iconSettings, iconSearch } from "$lib/icons/index.js";
+
+	const locales: HeaderLocaleItem[] = [
+		{ id: "en", label: "EN" },
+		{ id: "sk", label: "SK" },
+		{ id: "cs", label: "CS" },
+	];
+
+	let activeLocale = $state("en");
 
 	const navItems: HeaderNavItem[] = [
 		{ id: "home", label: "Home", href: "#home", active: true },
@@ -84,6 +97,28 @@
 
 	<hr class="border-neutral-200 dark:border-neutral-700" />
 
+	<!-- Locale Switcher -->
+	<section>
+		<h2 class="text-xl font-semibold mb-2">Locale Switcher</h2>
+		<p class="text-sm text-neutral-500 mb-4">
+			Built-in locale dropdown before the avatar. Active: <code
+				class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">{activeLocale}</code
+			>
+		</p>
+		<div class="border rounded-lg overflow-hidden">
+			<Header
+				projectName="Multilang App"
+				items={navItems}
+				{locales}
+				{activeLocale}
+				onLocaleChange={(id) => (activeLocale = id)}
+				avatarOnClick={() => alert("Avatar")}
+			></Header>
+		</div>
+	</section>
+
+	<hr class="border-neutral-200 dark:border-neutral-700" />
+
 	<!-- Responsive Collapse -->
 	<section>
 		<h2 class="text-xl font-semibold mb-2">Responsive Collapse</h2>
@@ -109,6 +144,9 @@
 			<Header
 				projectName="Responsive"
 				items={navItems}
+				{locales}
+				{activeLocale}
+				onLocaleChange={(id) => (activeLocale = id)}
 				avatarOnClick={() => alert("Avatar clicked")}
 				avatarLabel="My Account"
 			>
