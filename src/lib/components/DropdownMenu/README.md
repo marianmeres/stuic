@@ -50,6 +50,8 @@ interface DropdownMenuActionItem {
 	shortcut?: string; // Keyboard shortcut hint
 	disabled?: boolean;
 	onSelect?: () => void | boolean;
+	href?: string; // Render as <a> link instead of <button>
+	target?: string; // Link target (e.g., "_blank")
 	class?: string;
 	data?: Record<string, any>;
 }
@@ -164,6 +166,23 @@ interface DropdownMenuExpandableItem {
 	Actions
 </DropdownMenu>
 ```
+
+### With Links
+
+```svelte
+<DropdownMenu
+	items={[
+		{ type: "action", id: "docs", label: "Documentation", href: "/docs" },
+		{ type: "action", id: "github", label: "GitHub", href: "https://github.com/...", target: "_blank" },
+		{ type: "divider" },
+		{ type: "action", id: "logout", label: "Logout", onSelect: () => handleLogout() },
+	]}
+>
+	Menu
+</DropdownMenu>
+```
+
+When `href` is set, the item renders as an `<a>` element instead of `<button>`. The `onSelect` callback still fires before navigation if provided.
 
 ### With Icons and Shortcuts
 

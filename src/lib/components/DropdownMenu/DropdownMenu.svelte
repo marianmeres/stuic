@@ -43,6 +43,10 @@
 		contentAfter?: THC;
 		/** Callback when item is selected */
 		onSelect?: () => void | boolean | Promise<void | boolean>;
+		/** Render as anchor link instead of button. Navigation URL. */
+		href?: string;
+		/** Link target (e.g., "_blank"). Only relevant when href is set. */
+		target?: string;
 	}
 
 	/** Visual divider/separator */
@@ -678,7 +682,13 @@
 			const first = filteredItems.find(
 				(i): i is DropdownMenuActionItem => i.type === "action" && !i.disabled
 			);
-			if (first) selectItem(first);
+			if (first) {
+				if (first.href) {
+					document.getElementById(itemId(first.id))?.click();
+				} else {
+					selectItem(first);
+				}
+			}
 		}
 	}
 
@@ -751,14 +761,29 @@
 		} else if (["Enter", " "].includes(e.key)) {
 			// Don't intercept space when typing in search input
 			if (e.key === " " && e.target === searchInputEl) return;
-			e.preventDefault();
 			const active = _navItems.active;
 			if (active) {
 				if (active.type === "expandable-header") {
+					e.preventDefault();
 					toggleExpanded(active.id);
 				} else {
-					selectItem(active as DropdownMenuActionItem);
+					const actionItem = active as DropdownMenuActionItem;
+					if (actionItem.href) {
+						if (e.key === "Enter") {
+							// Let native anchor Enter behavior through
+							// (onclick handler fires selectItem, then browser navigates)
+							return;
+						}
+						// Space doesn't natively activate anchors — click programmatically
+						e.preventDefault();
+						document.getElementById(itemId(actionItem.id))?.click();
+					} else {
+						e.preventDefault();
+						selectItem(actionItem);
+					}
 				}
+			} else {
+				e.preventDefault();
 			}
 		} else if (e.key === "ArrowRight") {
 			const active = _navItems.active;
@@ -923,6 +948,8 @@
 							onclick={() => selectItem(item)}
 							onmouseenter={() => navItems.setActive(item)}
 							disabled={item.disabled}
+							href={item.href}
+							target={item.target}
 							tabindex={-1}
 						>
 							<Thc thc={item.label} />
@@ -1004,6 +1031,8 @@
 													onclick={() => selectItem(childItem)}
 													onmouseenter={() => navItems.setActive(childItem)}
 													disabled={childItem.disabled}
+													href={childItem.href}
+													target={childItem.target}
 													tabindex={-1}
 												>
 													<Thc thc={childItem.label} />

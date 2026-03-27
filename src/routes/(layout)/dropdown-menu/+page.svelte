@@ -13,6 +13,8 @@
 	import { iconLucideFile } from "@marianmeres/icons-fns/lucide/iconLucideFile.js";
 	import { iconLucideDownload } from "@marianmeres/icons-fns/lucide/iconLucideDownload.js";
 	import { iconLucideShare } from "@marianmeres/icons-fns/lucide/iconLucideShare.js";
+	import { iconLucideExternalLink } from "@marianmeres/icons-fns/lucide/iconLucideExternalLink.js";
+	import { iconLucideLink } from "@marianmeres/icons-fns/lucide/iconLucideLink.js";
 
 	let lastAction = $state<string | null>(null);
 
@@ -141,6 +143,42 @@
 		},
 	];
 
+	// Menu with links
+	const linkItems: DropdownMenuItem[] = [
+		{
+			type: "action",
+			id: "home",
+			label: "Home",
+			contentBefore: { html: iconLucideLink({}) },
+			href: "/",
+		},
+		{
+			type: "action",
+			id: "dropdown-menu",
+			label: "This page (self link)",
+			contentBefore: { html: iconLucideLink({}) },
+			href: "/dropdown-menu",
+		},
+		{ type: "divider" },
+		{
+			type: "action",
+			id: "github",
+			label: "GitHub (new tab)",
+			contentBefore: { html: iconLucideExternalLink({}) },
+			href: "https://github.com/marianmeres/stuic",
+			target: "_blank",
+		},
+		{ type: "divider" },
+		{
+			type: "action",
+			id: "action-item",
+			label: "Regular action (no href)",
+			onSelect: () => {
+				lastAction = "Regular action clicked";
+			},
+		},
+	];
+
 	// Long list for scrolling
 	const longList: DropdownMenuItem[] = Array.from({ length: 20 }, (_, i) => ({
 		type: "action" as const,
@@ -179,6 +217,21 @@
 
 		<div class="flex gap-4 flex-wrap">
 			<DropdownMenu items={basicItems} onSelect={handleSelect}>Actions</DropdownMenu>
+		</div>
+	</section>
+
+	<hr class="my-4" />
+
+	<section class="space-y-4">
+		<h2 class="text-xl font-semibold">Links (href)</h2>
+		<p class="text-sm text-neutral-600 dark:text-neutral-400">
+			Action items with <code>href</code> render as <code>&lt;a&gt;</code> elements instead
+			of buttons. Supports <code>target="_blank"</code> for external links. Regular action
+			items can be mixed in.
+		</p>
+
+		<div class="flex gap-4 flex-wrap">
+			<DropdownMenu items={linkItems} onSelect={handleSelect}>Navigation</DropdownMenu>
 		</div>
 	</section>
 

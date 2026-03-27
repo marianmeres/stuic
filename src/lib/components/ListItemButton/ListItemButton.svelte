@@ -22,6 +22,8 @@
 		contentAfter?: THC;
 		/** Render as anchor tag instead of button */
 		href?: string;
+		/** Link target (e.g., "_blank"). Only relevant when href is set. */
+		target?: string;
 		/** CSS classes for the button element */
 		class?: string;
 		/** CSS classes for the icon before slot */
@@ -52,6 +54,7 @@
 		contentBefore,
 		contentAfter,
 		href,
+		target,
 		class: classProp,
 		classContentBefore,
 		classContentAfter,
@@ -107,6 +110,7 @@
 {#if href}
 	<a
 		{href}
+		{target}
 		bind:this={el}
 		class={_class}
 		data-size={!unstyled && isPresetSize(size) ? size : undefined}
