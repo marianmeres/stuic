@@ -39,6 +39,8 @@
 	export interface Props extends Omit<HTMLAttributes<HTMLElement>, "children"> {
 		/** Logo/brand snippet — full control over the left branding area */
 		logo?: Snippet;
+		/** Horizontal alignment of the nav items in expanded mode */
+		navAlign?: "left" | "right";
 		/** Simple text alternative to the logo snippet */
 		projectName?: string;
 		/** Navigation items — inline when expanded, DropdownMenu when collapsed */
@@ -122,6 +124,7 @@
 	let {
 		logo,
 		projectName,
+		navAlign = "right",
 		items = [],
 		avatar,
 		avatarOnClick,
@@ -306,6 +309,11 @@
 			</div>
 		{/if}
 
+		<!-- Spacer (before nav when right-aligned) -->
+		{#if navAlign !== "left"}
+			<div class={unstyled ? undefined : "stuic-header-spacer"}></div>
+		{/if}
+
 		<!-- Nav items (expanded mode) -->
 		{#if !_isCollapsed && items.length > 0}
 			<nav class={_classNav}>
@@ -338,8 +346,10 @@
 			</nav>
 		{/if}
 
-		<!-- Spacer -->
-		<div class={unstyled ? undefined : "stuic-header-spacer"}></div>
+		<!-- Spacer (after nav when left-aligned) -->
+		{#if navAlign === "left"}
+			<div class={unstyled ? undefined : "stuic-header-spacer"}></div>
+		{/if}
 
 		<!-- End area: locale + avatar + hamburger -->
 		<div class={_classEnd}>

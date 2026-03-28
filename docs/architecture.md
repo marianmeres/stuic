@@ -20,7 +20,7 @@ Layer 2: Component Tokens (--stuic-{component}-*)
 Layer 3: Internal Vars (--_bg, --_text, --_border)
 ```
 
-**Layer 1 - Theme Tokens:** Global design tokens defining colors, defined in theme files (`src/lib/themes/css/`).
+**Layer 1 - Theme Tokens:** Global design tokens defining colors, provided by `@marianmeres/design-tokens/css/`.
 
 **Layer 2 - Component Tokens:** Component-specific customization points, defined in component `index.css` files.
 
@@ -49,11 +49,6 @@ src/lib/
 │   ├── *.ts                  # Pure functions
 │   └── index.ts              # Barrel export
 │
-├── themes/
-│   ├── *.ts              # 29 theme definitions (TokenSchema)
-│   └── css/              # 29 generated CSS files
-│       └── stone.css         # Default theme
-│
 ├── icons/                # Icon re-exports
 │
 ├── index.css             # CENTRALIZED CSS imports
@@ -69,8 +64,8 @@ src/lib/
 ```css
 /* src/lib/index.css */
 
-/* Theme tokens first */
-@import "./themes/css/stone.css";
+/* Theme tokens first (from @marianmeres/design-tokens) */
+@import "@marianmeres/design-tokens/css/stone.css";
 
 /* Component CSS in deterministic order */
 @import "./components/Button/index.css";
@@ -130,7 +125,7 @@ Props → Component → Data Attributes → CSS Selectors
 | -------------------------------- | --------------------------------------------------------------------------- |
 | `src/lib/index.css`              | CSS entry point (import this)                                               |
 | `src/lib/index.ts`               | JS entry point (barrel export)                                              |
-| `src/lib/themes/css/stone.css`   | Default theme                                                               |
+| `@marianmeres/design-tokens/css/stone.css` | Default theme (42 themes available)                               |
 | `src/lib/utils/tw-merge.ts`      | Tailwind class merging                                                      |
 | `src/lib/utils/design-tokens.ts` | Theme types (`ThemeSchema`, `ColorPair`, etc.) and CSS generation functions |
 
@@ -146,17 +141,14 @@ dist/
 ├── components/           # Individual component modules
 ├── actions/              # Individual action modules
 ├── utils/                # Individual utility modules
-└── themes/
-    ├── *.js + *.d.ts     # Theme definition modules (subpath exported)
-    └── css/              # Theme CSS files (subpath exported)
 ```
+
+Theme CSS files are provided by the `@marianmeres/design-tokens` package (a regular dependency).
 
 ### Package Exports
 
 ```json
 ".":            Main entry (components, utils, actions, icons, theme types)
-"./themes/*":   Theme definition objects (e.g., import stone from '.../themes/stone')
-"./themes/css/*": Pre-built CSS themes (e.g., import '.../themes/css/stone.css')
 ```
 
 ---

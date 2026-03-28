@@ -134,9 +134,8 @@ Global tokens that control cross-component visual properties. Defined in `src/li
 | `src/lib/index.css`              | CSS entry point                                                        |
 | `src/lib/index.ts`               | JS entry point                                                         |
 | `src/lib/utils/design-tokens.ts` | Re-exports from `@marianmeres/design-tokens`                          |
-| `src/lib/themes/css/stone.css`   | Default theme (generated from `@marianmeres/design-tokens/themes`)     |
+| `@marianmeres/design-tokens/css/*.css` | Theme CSS files (42 themes, `--stuic-` prefix)                   |
 | `src/lib/components/Button/`     | Reference component                                                    |
-| `scripts/generate-theme.ts`      | CLI: `pnpm run build:theme:all`                                        |
 
 ---
 

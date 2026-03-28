@@ -1945,7 +1945,7 @@ import type {
 
 ### Global Theme Tokens
 
-Defined in theme CSS files (`src/lib/themes/css/`). Override in `:root {}`.
+Defined in theme CSS files (`@marianmeres/design-tokens/css/`). Override in `:root {}`.
 
 #### Intent Colors
 
@@ -2019,19 +2019,19 @@ Each component defines customization tokens. Override globally in `:root {}` or 
 | property  | `bg`, `text`, `border`, `ring`, `shadow`, `radius`, `padding`        |
 | state     | `hover`, `active`, `focus`, `disabled`, `error`                      |
 
-### Available Themes (31)
+### Available Themes (42)
 
-Default theme: `stone`. Theme definitions come from `@marianmeres/design-tokens`.
+Default theme: `stone`. Theme definitions and pre-built CSS come from `@marianmeres/design-tokens`.
 
 ```ts
 // Import pre-built CSS
-import "@marianmeres/stuic/themes/css/blue-orange.css";
+import "@marianmeres/design-tokens/css/blue-orange.css";
 
-// Import theme definition object (from design-tokens package)
+// Import theme definition object
 import { stone } from "@marianmeres/design-tokens/themes";
 ```
 
-stone, gray, zinc, blue-orange, cyan-red, cyan-slate, emerald-amber-forest, emerald-pink, fuchsia-emerald, indigo-amber, lime-fuchsia-neon, monokai-cyan, monokai-green, monokai-pink, orange-pink-sunset, pink-emerald, pink-teal, purple-yellow, rainbow, red-blue, red-cyan, red-sky, red-sky-slate, rose-teal, sky-amber, slate-cyan, slate-teal-ocean, stone-orange-earth, teal-rose, violet-lime, violet-rose-dusk
+stone, gray, zinc, mauve, mist, olive, taupe, blue-orange, cyan-red, cyan-slate, emerald-amber-forest, emerald-pink, fuchsia-emerald, indigo-amber, lime-fuchsia-neon, mauve-lime-electric, mauve-teal, mist-indigo-fjord, mist-violet-aurora, monokai-cyan, monokai-green, monokai-pink, olive-amber-safari, orange-pink-sunset, pink-emerald, pink-teal, purple-yellow, rainbow, red-blue, red-cyan, red-sky, red-sky-slate, rose-teal, sky-amber, slate-cyan, slate-teal-ocean, stone-orange-earth, taupe-olive-clay, taupe-rose-blush, teal-rose, violet-lime, violet-rose-dusk
 
 ### Dark Mode
 

@@ -1,7 +1,7 @@
 @source "./";
 
 /*  */
-@import "./themes/css/stone.css";
+@import "@marianmeres/design-tokens/css/stone.css";
 
 /*****************************************************************************************
 

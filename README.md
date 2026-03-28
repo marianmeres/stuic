@@ -103,11 +103,11 @@ Add `class="dark"` to the `<html>` element. All tokens switch automatically — 
 
 ### Themes
 
-29 pre-built themes available. Default: `stone`.
+42 pre-built themes available (from `@marianmeres/design-tokens`). Default: `stone`.
 
 ```css
 /* Use a different pre-built theme */
-@import "@marianmeres/stuic/themes/css/blue-orange.css";
+@import "@marianmeres/design-tokens/css/blue-orange.css";
 ```
 
 ### Custom Themes
@@ -117,7 +117,7 @@ Create your own theme programmatically using the exported types and generation f
 ```ts
 import type { ThemeSchema } from "@marianmeres/stuic";
 import { generateThemeCss } from "@marianmeres/stuic";
-import stone from "@marianmeres/stuic/themes/stone";
+import { stone } from "@marianmeres/design-tokens/themes";
 
 // Extend the stone theme with a custom primary color
 const myTheme: ThemeSchema = {

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Centralized design token system using CSS custom properties. 31 pre-built themes available (from `@marianmeres/design-tokens`).
+Centralized design token system using CSS custom properties. 42 pre-built themes available (from `@marianmeres/design-tokens`).
 
 See also: [Design Tokens Manual](../DESIGN_TOKENS_MANUAL.md) for token philosophy.
 
@@ -127,9 +127,9 @@ Consumer-facing theme API from `@marianmeres/stuic`:
 
 ## Theme Files
 
-**Definitions:** `@marianmeres/design-tokens/themes` — 31 TypeScript theme definitions
+**Definitions:** `@marianmeres/design-tokens/themes` — 42 TypeScript theme definitions
 
-**Generated CSS:** `src/lib/themes/css/*.css` — CSS output from `pnpm run build:theme:all`
+**Pre-built CSS:** `@marianmeres/design-tokens/css/*.css` — ready-to-use CSS files with `--stuic-` prefix
 
 **Default:** `stone.css` (imported in `src/lib/index.css`)
 
@@ -142,7 +142,7 @@ Consumers can import themes directly:
 import { stone } from "@marianmeres/design-tokens/themes";
 
 // Import a pre-built CSS theme
-import "@marianmeres/stuic/themes/css/stone.css";
+import "@marianmeres/design-tokens/css/stone.css";
 ```
 
 ### Using a Different Theme
@@ -151,7 +151,7 @@ Replace the default theme import:
 
 ```css
 /* In your app's CSS */
-@import "@marianmeres/stuic/themes/css/blue-orange.css";
+@import "@marianmeres/design-tokens/css/blue-orange.css";
 ```
 
 ### Creating a Custom Theme (Programmatic)
@@ -256,8 +256,6 @@ Override locally:
 | File                              | Purpose                                                                          |
 | --------------------------------- | -------------------------------------------------------------------------------- |
 | src/lib/utils/design-tokens.ts    | Re-exports from `@marianmeres/design-tokens`                                    |
-| src/lib/themes/css/\*.css         | Generated CSS output                                                             |
 | src/lib/index.css                 | Theme import location (loads `stone.css` by default)                             |
-| scripts/generate-theme.ts         | CLI script: `pnpm run build:theme:all`                                           |
 | docs/DESIGN_TOKENS_MANUAL.md      | Token philosophy                                                                 |
 | docs/TAILWIND_V4_CSS_VARIABLES.md | Tailwind v4 variables                                                            |

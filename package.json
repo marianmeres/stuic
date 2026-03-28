@@ -17,9 +17,7 @@
 		"svelte-check": "svelte-check",
 		"svelte-package": "svelte-package",
 		"rp": "pnpm run build && ./release.sh patch",
-		"rpm": "pnpm run build && ./release.sh minor",
-		"build:theme": "tsx scripts/generate-theme.ts",
-		"build:theme:all": "pnpm run build:theme"
+		"rpm": "pnpm run build && ./release.sh minor"
 	},
 	"files": [
 		"dist",
@@ -45,7 +43,6 @@
 			"types": "./dist/utils/index.d.ts",
 			"default": "./dist/utils/index.js"
 		},
-		"./themes/css/*": "./dist/themes/css/*",
 		"./phone-validation": {
 			"types": "./dist/components/Input/phone-validation.d.ts",
 			"default": "./dist/components/Input/phone-validation.js"
@@ -56,15 +53,15 @@
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.39.4",
-		"@marianmeres/random-human-readable": "^1.6.1",
+		"@marianmeres/random-human-readable": "^1.8.2",
 		"@sveltejs/adapter-auto": "^4.0.0",
 		"@sveltejs/kit": "^2.55.0",
 		"@sveltejs/package": "^2.5.7",
 		"@sveltejs/vite-plugin-svelte": "^6.2.4",
-		"@tailwindcss/cli": "^4.2.1",
+		"@tailwindcss/cli": "^4.2.2",
 		"@tailwindcss/forms": "^0.5.11",
 		"@tailwindcss/typography": "^0.5.19",
-		"@tailwindcss/vite": "^4.2.1",
+		"@tailwindcss/vite": "^4.2.2",
 		"@types/node": "^25.5.0",
 		"dotenv": "^16.6.1",
 		"eslint": "^9.39.4",
@@ -72,19 +69,19 @@
 		"prettier": "^3.8.1",
 		"prettier-plugin-svelte": "^3.5.1",
 		"publint": "^0.3.18",
-		"svelte": "^5.53.12",
+		"svelte": "^5.55.0",
 		"svelte-check": "^4.4.5",
-		"tailwindcss": "^4.2.1",
+		"tailwindcss": "^4.2.2",
 		"tsx": "^4.21.0",
 		"typescript": "^5.9.3",
-		"typescript-eslint": "^8.57.0",
+		"typescript-eslint": "^8.57.2",
 		"vite": "^7.3.1",
 		"vitest": "^3.2.4"
 	},
 	"dependencies": {
 		"@marianmeres/clog": "^3.15.2",
 		"@marianmeres/cron": "^1.1.0",
-		"@marianmeres/design-tokens": "^1.0.4",
+		"@marianmeres/design-tokens": "^1.1.4",
 		"@marianmeres/icons-fns": "^5.0.0",
 		"@marianmeres/item-collection": "^1.3.5",
 		"@marianmeres/paging-store": "^2.0.2",
