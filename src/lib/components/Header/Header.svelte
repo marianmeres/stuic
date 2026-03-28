@@ -2,6 +2,7 @@
 	import type { Snippet } from "svelte";
 	import type { HTMLAttributes } from "svelte/elements";
 	import type { THC } from "../Thc/Thc.svelte";
+	import type { ButtonVariant } from "../Button/Button.svelte";
 	import type {
 		DropdownMenuPosition,
 		DropdownMenuItem,
@@ -41,6 +42,8 @@
 		logo?: Snippet;
 		/** Horizontal alignment of the nav items in expanded mode */
 		navAlign?: "left" | "right";
+		/** Button variant for nav items and locale trigger (defaults to "ghost") */
+		navVariant?: ButtonVariant;
 		/** Simple text alternative to the logo snippet */
 		projectName?: string;
 		/** Navigation items — inline when expanded, DropdownMenu when collapsed */
@@ -125,6 +128,7 @@
 		logo,
 		projectName,
 		navAlign = "right",
+		navVariant = "ghost",
 		items = [],
 		avatar,
 		avatarOnClick,
@@ -319,7 +323,7 @@
 			<nav class={_classNav}>
 				{#each items as item (item.id)}
 					<Button
-						variant="ghost"
+						variant={navVariant}
 						size="sm"
 						href={item.href}
 						target={item.target}
@@ -362,7 +366,7 @@
 				>
 					{#snippet trigger({ isOpen, toggle, triggerProps })}
 						<Button
-							variant="ghost"
+							variant={navVariant}
 							size="sm"
 							{unstyled}
 							class={twMerge(
@@ -416,8 +420,7 @@
 					{#snippet trigger({ isOpen, toggle, triggerProps })}
 						<Button
 							variant="ghost"
-							roundedFull
-							aspect1
+							iconButton
 							size="sm"
 							{unstyled}
 							class={twMerge(!unstyled && HEADER_HAMBURGER_CLASSES, classHamburger)}

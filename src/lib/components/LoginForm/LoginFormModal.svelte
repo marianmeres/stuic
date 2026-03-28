@@ -168,8 +168,7 @@
 					}}
 					aria-label="Close"
 					x
-					aspect1
-					roundedFull
+					iconButton
 				/>
 			{/if}
 		</div>

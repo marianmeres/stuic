@@ -394,8 +394,7 @@
 					inputEl.click();
 				}}
 				class={["m-4", classControls].join(" ")}
-				roundedFull
-				aspect1
+				iconButton
 				variant="ghost"
 			>
 				{@html iconAdd({ size: 24 })}

@@ -394,8 +394,7 @@
 	{#if !noModeSwitch && !forceInline && !belowThreshold && pages.length > 0}
 		<Button
 			type="button"
-			aspect1
-			roundedFull
+			iconButton
 			class="absolute bottom-4 right-4 border-0"
 			onclick={toggleMode}
 			tooltip={() => ({

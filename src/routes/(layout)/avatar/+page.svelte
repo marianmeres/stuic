@@ -33,7 +33,7 @@
 	<Avatar autoColor hashSource="user-2" />
 
 	<Avatar icon={iconAlertInfo} class="bg-zinc-400" />
-	<Button x roundedFull aspect1 class="bg-zinc-400" />
+	<Button x iconButton class="bg-zinc-400" />
 	(this is a button - default sizes should match)
 </div>
 

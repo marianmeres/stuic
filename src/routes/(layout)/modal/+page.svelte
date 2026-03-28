@@ -36,7 +36,7 @@
 	<!-- noScrollLock -->
 	{#snippet header()}
 		<span class="flex-1">header</span>
-		<Button onclick={modal.close} x roundedFull aspect1 />
+		<Button onclick={modal.close} x iconButton />
 	{/snippet}
 
 	<input type="text" />

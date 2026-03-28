@@ -411,6 +411,9 @@
 	/* ============================================================================
 	   ICON BUTTON
 	   Semantic marker for icon-only buttons. Layout is handled by [data-aspect1].
-	   Override globally: .stuic-button[data-icon-button] { --stuic-button-radius: 9999px; }
+	   Override globally: .stuic-button[data-icon-button] { --stuic-button-radius: ...; }
 	   ============================================================================ */
+	.stuic-button[data-icon-button] {
+		--stuic-button-radius: 9999px;
+	}
 }

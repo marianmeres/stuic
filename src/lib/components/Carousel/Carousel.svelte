@@ -410,9 +410,8 @@
 					}}
 					type="button"
 					disabled={!loop && coll.activeIndex === 0}
-					aspect1
+					iconButton
 					variant="soft"
-					roundedFull
 				>
 					{@html iconPrevious({ size: 24 })}
 				</Button>
@@ -428,9 +427,8 @@
 					}}
 					type="button"
 					disabled={!loop && coll.activeIndex === coll.size - 1}
-					aspect1
+					iconButton
 					variant="soft"
-					roundedFull
 				>
 					{@html iconNext({ size: 24 })}
 				</Button>
