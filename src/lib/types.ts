@@ -56,7 +56,10 @@ export type TW_COLORS =
 	| "green"
 	| "indigo"
 	| "lime"
+	| "mauve"
+	| "mist"
 	| "neutral"
+	| "olive"
 	| "orange"
 	| "pink"
 	| "purple"
@@ -65,13 +68,14 @@ export type TW_COLORS =
 	| "sky"
 	| "slate"
 	| "stone"
+	| "taupe"
 	| "teal"
 	| "violet"
 	| "yellow"
 	| "zinc";
 
 /**
-DO NOTE REMOVE. FOOD FOR TW COMPILER...
+FOOD FOR TW COMPILER (DO NOT REMOVE).
 
 bg-black
 bg-white
@@ -317,4 +321,48 @@ bg-rose-700
 bg-rose-800
 bg-rose-900
 bg-rose-950
+bg-mauve-50
+bg-mauve-100
+bg-mauve-200
+bg-mauve-300
+bg-mauve-400
+bg-mauve-500
+bg-mauve-600
+bg-mauve-700
+bg-mauve-800
+bg-mauve-900
+bg-mauve-950
+bg-mist-50
+bg-mist-100
+bg-mist-200
+bg-mist-300
+bg-mist-400
+bg-mist-500
+bg-mist-600
+bg-mist-700
+bg-mist-800
+bg-mist-900
+bg-mist-950
+bg-olive-50
+bg-olive-100
+bg-olive-200
+bg-olive-300
+bg-olive-400
+bg-olive-500
+bg-olive-600
+bg-olive-700
+bg-olive-800
+bg-olive-900
+bg-olive-950
+bg-taupe-50
+bg-taupe-100
+bg-taupe-200
+bg-taupe-300
+bg-taupe-400
+bg-taupe-500
+bg-taupe-600
+bg-taupe-700
+bg-taupe-800
+bg-taupe-900
+bg-taupe-950
  */
