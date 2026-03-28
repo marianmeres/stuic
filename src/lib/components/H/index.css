@@ -6,7 +6,7 @@
 
 :root {
 	--stuic-h-font-family: inherit;
-	--stuic-h-font-weight: var(--font-weight-bold, 700);
+	--stuic-h-font-weight: var(--font-weight-bold, 800);
 	--stuic-h-line-height: 1.2;
 	--stuic-h-letter-spacing: normal;
 	--stuic-h-color: inherit;
