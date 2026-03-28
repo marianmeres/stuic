@@ -15,8 +15,8 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0
       '@marianmeres/design-tokens':
-        specifier: ^1.1.4
-        version: 1.1.4
+        specifier: ^1.2.0
+        version: 1.2.0
       '@marianmeres/icons-fns':
         specifier: ^5.0.0
         version: 5.0.0
@@ -361,8 +361,8 @@ packages:
   '@marianmeres/cron@1.1.0':
     resolution: {integrity: sha512-BqKJ/7YMi6Hzr3LBlqSiV9TxYWMjjOOy74myH0wV+X0/Vqr1k1meXGslo8uDeZYZh/cCRPR/Ix0xIrys/j/Ewg==}
 
-  '@marianmeres/design-tokens@1.1.4':
-    resolution: {integrity: sha512-Fxs3SqDp6O/y8wgJspNRojydc+yjtdMWyDC+duwdjsR+z5tV4oQw4gFATFwm4UU6Xdel4x2vNqPpPxPVJZwFZg==}
+  '@marianmeres/design-tokens@1.2.0':
+    resolution: {integrity: sha512-SFGifO1y67eUu7EL51KcssIKCV7JCgUkolt4wI3eQJjICLGPGc+4TRuxyCB+bE5pfepfoFE0VhXQWTxBmFo7pA==}
 
   '@marianmeres/icons-fns@5.0.0':
     resolution: {integrity: sha512-YrspknSz8XYrHzVwsFzJ2BteVpCJhcra3h2IUdeIGoLwya34tXnu+UmDIO9gmmD+5tuhJRomyQVCU64UJUbvBg==}
@@ -1952,7 +1952,7 @@ snapshots:
     transitivePeerDependencies:
       - pg-native
 
-  '@marianmeres/design-tokens@1.1.4': {}
+  '@marianmeres/design-tokens@1.2.0': {}
 
   '@marianmeres/icons-fns@5.0.0': {}
 
