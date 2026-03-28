@@ -67,6 +67,7 @@ Global tokens that control cross-component visual properties. Defined in `src/li
 | `--stuic-shadow-overlay`   | `var(--shadow-lg)`   | Overlays (dropdowns, notifications)           |
 | `--stuic-shadow-dialog`    | `var(--shadow-xl)`   | Dialogs/modals                                |
 | `--stuic-border-width`     | `1px`                | Default border width                          |
+| `--stuic-border-width-button` | `1px`             | Button-specific border width (independent from general elements) |
 | `--stuic-transition`       | `150ms`              | Default transition duration                   |
 
 **When creating new components**, use the fallback pattern at CSS usage sites:

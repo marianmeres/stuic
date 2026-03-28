@@ -65,7 +65,7 @@
 		white-space: nowrap;
 
 		/* Box model */
-		border-width: 1px;
+		border-width: var(--stuic-button-border-width, var(--stuic-border-width-button));
 		border-style: solid;
 		border-radius: var(--stuic-button-radius, var(--stuic-radius-button));
 

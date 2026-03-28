@@ -44,6 +44,7 @@ In practice:
 
 	/* Border */
 	--stuic-border-width: 1px;
+	--stuic-border-width-button: 1px;    /* buttons: independent from general elements */
 
 	/* Transition */
 	--stuic-transition: 150ms;

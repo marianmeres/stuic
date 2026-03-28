@@ -132,13 +132,13 @@
 
 <hr class="my-8" />
 
-<h2 class="text-xl font-semibold mb-4">Button Radius Token</h2>
+<h2 class="text-xl font-semibold mb-4">Button-Specific Structural Tokens</h2>
 <p class="text-sm text-neutral-500 mb-4">
-	The <code>--stuic-radius-button</code> token allows buttons to have independent radius
-	from other elements. Set <code>--stuic-radius: 0</code> for flat UI, while keeping buttons
-	rounded.
+	Buttons have independent <code>--stuic-radius-button</code> and
+	<code>--stuic-border-width-button</code> tokens, allowing them to differ from other elements.
 </p>
 
+<h3 class="text-lg font-medium mb-3">Radius</h3>
 <div class="space-y-6">
 	<div>
 		<p class="text-sm text-neutral-500 mb-2">
@@ -182,6 +182,45 @@
 			Flat elements, pill buttons (<code
 				>--stuic-radius: 0; --stuic-radius-button: 9999px</code
 			>):
+		</p>
+		<div class="flex flex-wrap gap-3 items-end">
+			<Button intent="primary">Primary</Button>
+			<Button variant="outline">Outline</Button>
+			<Button intent="accent" variant="soft">Soft</Button>
+			<FieldInput value="Input" class="w-40 mb-0" />
+		</div>
+	</div>
+</div>
+
+<h3 class="text-lg font-medium mt-6 mb-3">Border Width</h3>
+<div class="space-y-6">
+	<div>
+		<p class="text-sm text-neutral-500 mb-2">
+			Default (<code>--stuic-border-width-button: 1px</code>):
+		</p>
+		<div class="flex flex-wrap gap-3 items-end">
+			<Button intent="primary">Primary</Button>
+			<Button variant="outline">Outline</Button>
+			<Button intent="accent" variant="soft">Soft</Button>
+			<FieldInput value="Input" class="w-40 mb-0" />
+		</div>
+	</div>
+
+	<div style="--stuic-border-width-button: 0;">
+		<p class="text-sm text-neutral-500 mb-2">
+			Borderless buttons (<code>--stuic-border-width-button: 0</code>):
+		</p>
+		<div class="flex flex-wrap gap-3 items-end">
+			<Button intent="primary">Primary</Button>
+			<Button variant="outline">Outline</Button>
+			<Button intent="accent" variant="soft">Soft</Button>
+			<FieldInput value="Input" class="w-40 mb-0" />
+		</div>
+	</div>
+
+	<div style="--stuic-border-width-button: 2px;">
+		<p class="text-sm text-neutral-500 mb-2">
+			Thick button borders (<code>--stuic-border-width-button: 2px</code>):
 		</p>
 		<div class="flex flex-wrap gap-3 items-end">
 			<Button intent="primary">Primary</Button>
