@@ -103,6 +103,10 @@
 		classTiers?: string;
 		/** Additional CSS classes applied to each tier card */
 		classTier?: string;
+		/** Additional CSS classes for the billing toggle ButtonGroupRadio */
+		classToggle?: string;
+		/** Additional inline styles for the billing toggle ButtonGroupRadio */
+		styleToggle?: string;
 		/** Bindable element reference */
 		el?: HTMLElement;
 		/** Inline style */
@@ -134,6 +138,8 @@
 		class: classProp,
 		classTiers: classTiersProp,
 		classTier: classTierProp,
+		classToggle: classToggleProp,
+		styleToggle,
 		el = $bindable(),
 		style,
 		...rest
@@ -190,6 +196,7 @@
 					billingPeriod = i === 0 ? "monthly" : "annual";
 				}}
 				{unstyled}
+				class={classToggleProp}
 				style="
 					width: auto;
 					--stuic-button-group-radius: 9999px;
@@ -200,6 +207,7 @@
 					--stuic-button-group-button-text-active: var(--stuic-color-foreground);
 					--stuic-button-group-button-bg-active-hover: var(--stuic-color-background);
 					--stuic-button-group-button-text-active-hover: var(--stuic-color-foreground);
+					{styleToggle ?? ''}
 				"
 				classButtonActive="shadow"
 			/>
@@ -263,7 +271,7 @@
 						{#if renderCta}
 							{@render renderCta({ tier, billingPeriod })}
 						{:else if tier.disabled && tier.disabledLabel}
-							<Button disabled unstyled={unstyled} class="w-full">
+							<Button disabled {unstyled} class="w-full">
 								{#snippet children()}<Thc thc={tier.disabledLabel!} />{/snippet}
 							</Button>
 						{:else if tier.ctaLabel}
@@ -295,7 +303,9 @@
 									{#if tier.inheritLabel}
 										<Thc thc={tier.inheritLabel} />
 									{:else}
-										Everything in <strong>{getTHCStringContent(inheritedTier.name)}</strong>, plus&hellip;
+										Everything in <strong
+											>{getTHCStringContent(inheritedTier.name)}</strong
+										>, plus&hellip;
 									{/if}
 								</div>
 							{/if}
@@ -322,7 +332,9 @@
 													<Thc thc={feature.icon} />
 												{/if}
 											</span>
-											<span class={unstyled ? undefined : "stuic-pricing-table-feature-label"}>
+											<span
+												class={unstyled ? undefined : "stuic-pricing-table-feature-label"}
+											>
 												<Thc thc={feature.label} />
 											</span>
 										</li>

@@ -83,6 +83,8 @@ A data-driven pricing tiers component for displaying plan comparisons with featu
 | `class` | `string` | - | Additional CSS classes for root |
 | `classTiers` | `string` | - | Additional CSS classes for tiers grid |
 | `classTier` | `string` | - | Additional CSS classes for each tier card |
+| `classToggle` | `string` | - | Additional CSS classes for the billing toggle ButtonGroupRadio |
+| `styleToggle` | `string` | - | Additional inline styles for the billing toggle ButtonGroupRadio |
 | `el` | `HTMLElement` | - | Bindable element reference |
 | `style` | `string` | - | Inline style (useful for CSS variable overrides) |
 
