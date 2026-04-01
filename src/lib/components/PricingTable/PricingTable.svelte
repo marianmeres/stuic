@@ -276,8 +276,8 @@
 							</Button>
 						{:else if tier.ctaLabel}
 							<Button
-								intent={tier.ctaIntent ?? (tier.highlighted ? "primary" : undefined)}
-								variant={tier.ctaVariant ?? (tier.highlighted ? "solid" : "outline")}
+								intent={tier.ctaIntent ?? "primary"}
+								variant={tier.ctaVariant ?? "solid"}
 								href={tier.ctaHref}
 								onclick={tier.ctaOnClick
 									? () => tier.ctaOnClick!(tier, billingPeriod)
