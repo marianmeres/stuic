@@ -3,7 +3,10 @@
 	import type { TourStepDef, TourLabels, TourShellContext } from "./onboarding.svelte.js";
 	import type { Props as ButtonProps } from "../../components/Button/Button.svelte";
 
-	type ButtonOverrides = Pick<ButtonProps, "variant" | "intent" | "size" | "roundedFull">;
+	type ButtonOverrides = Pick<
+		ButtonProps,
+		"variant" | "intent" | "size" | "roundedFull" | "class"
+	>;
 
 	export interface Props {
 		step: TourStepDef;
@@ -34,6 +37,7 @@
 	import Button from "../../components/Button/Button.svelte";
 	import { iconChevronLeft, iconChevronRight, iconCheck } from "$lib/icons/index.js";
 	import { twMerge } from "../../utils/tw-merge.js";
+	import { omit } from "../../utils/omit-pick.js";
 
 	let {
 		step,
@@ -105,21 +109,26 @@
 				{#if !isFirst}
 					<Button
 						onclick={prev}
-						class={twMerge(BUTTON_CLS, classControls)}
+						class={twMerge(BUTTON_CLS, classControls, prevButtonProps?.class)}
 						{...BUTTON_PROPS}
-						{...prevButtonProps}
+						{...omit(prevButtonProps ?? {}, "class")}
 					>
 						{@html iconChevronLeft({ size: ICON_SIZE })}
 					</Button>
 				{/if}
 				<Button
 					onclick={next}
-					class={twMerge(BUTTON_CLS, _finishLabel && "pl-2 pr-3", classControls)}
+					class={twMerge(
+						BUTTON_CLS,
+						_finishLabel && "pl-2 pr-3",
+						classControls,
+						nextButtonProps?.class
+					)}
 					{...BUTTON_PROPS}
 					aspect1={!_finishLabel}
 					intent="primary"
 					variant="solid"
-					{...nextButtonProps}
+					{...omit(nextButtonProps ?? {}, "class")}
 				>
 					{@html isLast
 						? iconCheck({ size: ICON_SIZE })
