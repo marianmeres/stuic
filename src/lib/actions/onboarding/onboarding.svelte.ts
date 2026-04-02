@@ -2,7 +2,7 @@ import type { Snippet } from "svelte";
 import { spotlight } from "../spotlight/spotlight.svelte.js";
 import type { SpotlightPosition } from "../spotlight/spotlight.svelte.js";
 import type { THC } from "../../components/Thc/Thc.svelte";
-import OnboardingShell, { type Props as ShellProps } from "./OnboardingShell.svelte";
+import OnboardingShell, { type Props as ShellProps, type IconFn } from "./OnboardingShell.svelte";
 import { StorageAbstraction } from "../../utils/storage-abstraction.js";
 
 //
@@ -111,6 +111,12 @@ export interface TourOptions {
 	prevButtonProps?: ShellProps["prevButtonProps"];
 	/** Override props (variant, intent, size, roundedFull) for the next/finish button */
 	nextButtonProps?: ShellProps["nextButtonProps"];
+	/** Custom icon for the prev button */
+	iconPrev?: IconFn;
+	/** Custom icon for the next button */
+	iconNext?: IconFn;
+	/** Custom icon for the finish (last step) button */
+	iconFinish?: IconFn;
 }
 
 /**
@@ -225,6 +231,9 @@ export function createTour(options: TourOptions) {
 				showSteps: options.showSteps ?? true,
 				prevButtonProps: options.prevButtonProps,
 				nextButtonProps: options.nextButtonProps,
+				iconPrev: options.iconPrev,
+				iconNext: options.iconNext,
+				iconFinish: options.iconFinish,
 				next,
 				prev,
 				skip,

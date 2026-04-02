@@ -8,6 +8,8 @@
 		"variant" | "intent" | "size" | "roundedFull" | "class"
 	>;
 
+	export type IconFn = (props?: Partial<{ size: number }>) => string;
+
 	export interface Props {
 		step: TourStepDef;
 		/** 0-based index of this step */
@@ -29,6 +31,12 @@
 		prevButtonProps?: ButtonOverrides;
 		/** Override props for the next/finish button */
 		nextButtonProps?: ButtonOverrides;
+		/** Custom icon for the prev button. Default: iconChevronLeft */
+		iconPrev?: IconFn;
+		/** Custom icon for the next button. Default: iconChevronRight */
+		iconNext?: IconFn;
+		/** Custom icon for the finish (last step) button. Default: iconCheck */
+		iconFinish?: IconFn;
 	}
 </script>
 
@@ -54,6 +62,9 @@
 		showSteps = true,
 		prevButtonProps,
 		nextButtonProps,
+		iconPrev = iconChevronLeft,
+		iconNext = iconChevronRight,
+		iconFinish = iconCheck,
 	}: Props = $props();
 
 	const context: TourShellContext = $derived({
@@ -113,7 +124,7 @@
 						{...BUTTON_PROPS}
 						{...omit(prevButtonProps ?? {}, "class")}
 					>
-						{@html iconChevronLeft({ size: ICON_SIZE })}
+						{@html iconPrev({ size: ICON_SIZE })}
 					</Button>
 				{/if}
 				<Button
@@ -131,8 +142,8 @@
 					{...omit(nextButtonProps ?? {}, "class")}
 				>
 					{@html isLast
-						? iconCheck({ size: ICON_SIZE })
-						: iconChevronRight({ size: ICON_SIZE })}
+						? iconFinish({ size: ICON_SIZE })
+						: iconNext({ size: ICON_SIZE })}
 					{#if _finishLabel}{_finishLabel}{/if}
 				</Button>
 			</div>
