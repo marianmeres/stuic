@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import type { Snippet } from "svelte";
-	import type { TourStepDef, TourLabels, TourShellContext } from "./onboarding.svelte.js";
 	import type { Props as ButtonProps } from "../../components/Button/Button.svelte";
+	import type { TourLabels, TourShellContext, TourStepDef } from "./onboarding.svelte.js";
 
 	type ButtonOverrides = Pick<
 		ButtonProps,
@@ -41,11 +41,11 @@
 </script>
 
 <script lang="ts">
-	import Thc from "../../components/Thc/Thc.svelte";
+	import { iconArrowLeft, iconArrowRight, iconCheck } from "$lib/icons/index.js";
 	import Button from "../../components/Button/Button.svelte";
-	import { iconChevronLeft, iconChevronRight, iconCheck } from "$lib/icons/index.js";
-	import { twMerge } from "../../utils/tw-merge.js";
+	import Thc from "../../components/Thc/Thc.svelte";
 	import { omit } from "../../utils/omit-pick.js";
+	import { twMerge } from "../../utils/tw-merge.js";
 
 	let {
 		step,
@@ -62,8 +62,8 @@
 		showSteps = true,
 		prevButtonProps,
 		nextButtonProps,
-		iconPrev = iconChevronLeft,
-		iconNext = iconChevronRight,
+		iconPrev = iconArrowLeft,
+		iconNext = iconArrowRight,
 		iconFinish = iconCheck,
 	}: Props = $props();
 
@@ -141,9 +141,7 @@
 					variant="solid"
 					{...omit(nextButtonProps ?? {}, "class")}
 				>
-					{@html isLast
-						? iconFinish({ size: ICON_SIZE })
-						: iconNext({ size: ICON_SIZE })}
+					{@html isLast ? iconFinish({ size: ICON_SIZE }) : iconNext({ size: ICON_SIZE })}
 					{#if _finishLabel}{_finishLabel}{/if}
 				</Button>
 			</div>
