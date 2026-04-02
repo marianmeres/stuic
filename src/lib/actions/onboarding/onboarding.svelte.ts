@@ -105,6 +105,8 @@ export interface TourOptions {
 	indexOffset?: number;
 	/** Overrides steps.length for display purposes (the `total` value passed to the shell) */
 	totalSteps?: number;
+	/** Whether to show the step counter (e.g. "1 / 3") in the default shell. Default: true */
+	showSteps?: boolean;
 }
 
 /**
@@ -156,7 +158,7 @@ export function createTour(options: TourOptions) {
 		next: "Next",
 		prev: "Back",
 		skip: "Skip",
-		finish: "Finish",
+		finish: "",
 		...options.labels,
 	};
 
@@ -216,6 +218,7 @@ export function createTour(options: TourOptions) {
 				isLast: displayIndex === displayTotal - 1,
 				labels: resolvedLabels,
 				shell: options.shell,
+				showSteps: options.showSteps ?? true,
 				next,
 				prev,
 				skip,

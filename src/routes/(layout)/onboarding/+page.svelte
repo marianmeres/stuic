@@ -39,6 +39,25 @@
 		onStepChange: (step, i) => console.log("[basicTour] step", i, step.id),
 	});
 
+	// ── Tour 1b: No step counter ─────────────────────────────────────────
+	const noCounterTour = createTour({
+		steps: [
+			{
+				id: "nc-a",
+				title: "First thing",
+				content: "The step counter is hidden via showSteps: false.",
+				position: "bottom",
+			},
+			{
+				id: "nc-b",
+				title: "Second thing",
+				content: "Only the title, content, and navigation buttons are shown.",
+				position: "bottom",
+			},
+		],
+		showSteps: false,
+	});
+
 	// ── Tour 2: Conditional step ─────────────────────────────────────────
 	let showAdvanced = $state(false);
 
@@ -197,6 +216,44 @@
 				use:tourStep={[basicTour, "basic-feature-b"]}
 			>
 				Feature B
+			</div>
+		</div>
+	</section>
+
+	<hr class="my-4" />
+
+	<!-- ── Example 1b: No step counter ────────────────────────────────── -->
+	<section class="space-y-4">
+		<h2 class="text-xl font-semibold">No Step Counter</h2>
+		<p class="text-sm text-neutral-600 dark:text-neutral-400">
+			Pass <code>showSteps: false</code> to hide the step progress counter
+			from the default shell.
+		</p>
+
+		<div class="flex gap-3 flex-wrap items-center">
+			<button
+				class="px-4 py-2 bg-blue-500 text-white rounded text-sm"
+				onclick={noCounterTour.start}
+				disabled={noCounterTour.active}
+			>
+				{noCounterTour.active
+					? `Step ${noCounterTour.currentIndex + 1} / 2…`
+					: "Start Tour"}
+			</button>
+		</div>
+
+		<div class="flex gap-6 flex-wrap mt-2">
+			<div
+				class="px-6 py-4 bg-slate-100 dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-700"
+				use:tourStep={[noCounterTour, "nc-a"]}
+			>
+				Element A
+			</div>
+			<div
+				class="px-6 py-4 bg-stone-100 dark:bg-stone-900 rounded-lg border border-stone-300 dark:border-stone-700"
+				use:tourStep={[noCounterTour, "nc-b"]}
+			>
+				Element B
 			</div>
 		</div>
 	</section>

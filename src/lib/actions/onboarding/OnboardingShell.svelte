@@ -17,6 +17,8 @@
 		skip: () => void;
 		//
 		classControls?: string;
+		/** Whether to show the step counter (e.g. "1 / 3"). Default: true */
+		showSteps?: boolean;
 	}
 </script>
 
@@ -38,6 +40,7 @@
 		prev,
 		skip,
 		classControls,
+		showSteps = true,
 	}: Props = $props();
 
 	const context: TourShellContext = $derived({
@@ -60,14 +63,23 @@
 	};
 
 	const ICON_SIZE = 24;
+
+	const _finishLabel = $derived(isLast ? (step.finishLabel ?? labels.finish) : "");
 </script>
 
 {#if shell}
 	{@render shell(context)}
 {:else}
 	<div class="stuic-onboarding-shell">
-		{#if step.title}
-			<div class="stuic-onboarding-title">{step.title}</div>
+		{#if step.title || showSteps}
+			<div class="stuic-onboarding-header">
+				{#if step.title}
+					<div class="stuic-onboarding-title">{step.title}</div>
+				{/if}
+				{#if showSteps}
+					<span class="stuic-onboarding-steps">{index + 1} / {total}</span>
+				{/if}
+			</div>
 		{/if}
 		{#if step.content}
 			<div class="stuic-onboarding-content">
@@ -75,13 +87,12 @@
 			</div>
 		{/if}
 		<div class="stuic-onboarding-footer">
-			<span class="stuic-onboarding-steps">{index + 1} / {total}</span>
+			{#if !isLast}
+				<button class="stuic-onboarding-btn-skip" onclick={skip}>
+					{step.skipLabel ?? labels.skip}
+				</button>
+			{/if}
 			<div class="stuic-onboarding-actions">
-				{#if !isLast}
-					<button class="stuic-onboarding-btn-skip" onclick={skip}>
-						{step.skipLabel ?? labels.skip}
-					</button>
-				{/if}
 				{#if !isFirst}
 					<Button
 						onclick={prev}
@@ -93,14 +104,16 @@
 				{/if}
 				<Button
 					onclick={next}
-					class={twMerge(BUTTON_CLS, classControls)}
+					class={twMerge(BUTTON_CLS, _finishLabel && "pl-2 pr-3", classControls)}
 					{...BUTTON_PROPS}
+					aspect1={!_finishLabel}
 					intent="primary"
 					variant="solid"
 				>
 					{@html isLast
 						? iconCheck({ size: ICON_SIZE })
 						: iconChevronRight({ size: ICON_SIZE })}
+					{#if _finishLabel}{_finishLabel}{/if}
 				</Button>
 			</div>
 		</div>

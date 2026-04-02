@@ -23,6 +23,13 @@
 	border-radius: var(--stuic-onboarding-shell-radius, var(--stuic-radius));
 }
 
+.stuic-onboarding-header {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: calc(var(--spacing) * 2);
+}
+
 .stuic-onboarding-title {
 	font-weight: 600;
 	font-size: var(--stuic-onboarding-title-size);
@@ -50,6 +57,7 @@
 	display: flex;
 	align-items: center;
 	gap: var(--stuic-onboarding-footer-gap);
+	margin-left: auto;
 }
 
 .stuic-onboarding-btn-skip {
