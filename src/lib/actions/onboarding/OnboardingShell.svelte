@@ -1,6 +1,9 @@
 <script lang="ts" module>
 	import type { Snippet } from "svelte";
 	import type { TourStepDef, TourLabels, TourShellContext } from "./onboarding.svelte.js";
+	import type { Props as ButtonProps } from "../../components/Button/Button.svelte";
+
+	type ButtonOverrides = Pick<ButtonProps, "variant" | "intent" | "size" | "roundedFull">;
 
 	export interface Props {
 		step: TourStepDef;
@@ -19,6 +22,10 @@
 		classControls?: string;
 		/** Whether to show the step counter (e.g. "1 / 3"). Default: true */
 		showSteps?: boolean;
+		/** Override props for the prev button */
+		prevButtonProps?: ButtonOverrides;
+		/** Override props for the next/finish button */
+		nextButtonProps?: ButtonOverrides;
 	}
 </script>
 
@@ -41,6 +48,8 @@
 		skip,
 		classControls,
 		showSteps = true,
+		prevButtonProps,
+		nextButtonProps,
 	}: Props = $props();
 
 	const context: TourShellContext = $derived({
@@ -98,6 +107,7 @@
 						onclick={prev}
 						class={twMerge(BUTTON_CLS, classControls)}
 						{...BUTTON_PROPS}
+						{...prevButtonProps}
 					>
 						{@html iconChevronLeft({ size: ICON_SIZE })}
 					</Button>
@@ -109,6 +119,7 @@
 					aspect1={!_finishLabel}
 					intent="primary"
 					variant="solid"
+					{...nextButtonProps}
 				>
 					{@html isLast
 						? iconCheck({ size: ICON_SIZE })

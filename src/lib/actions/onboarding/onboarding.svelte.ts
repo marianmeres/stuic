@@ -2,7 +2,7 @@ import type { Snippet } from "svelte";
 import { spotlight } from "../spotlight/spotlight.svelte.js";
 import type { SpotlightPosition } from "../spotlight/spotlight.svelte.js";
 import type { THC } from "../../components/Thc/Thc.svelte";
-import OnboardingShell from "./OnboardingShell.svelte";
+import OnboardingShell, { type Props as ShellProps } from "./OnboardingShell.svelte";
 import { StorageAbstraction } from "../../utils/storage-abstraction.js";
 
 //
@@ -107,6 +107,10 @@ export interface TourOptions {
 	totalSteps?: number;
 	/** Whether to show the step counter (e.g. "1 / 3") in the default shell. Default: true */
 	showSteps?: boolean;
+	/** Override props (variant, intent, size, roundedFull) for the prev button */
+	prevButtonProps?: ShellProps["prevButtonProps"];
+	/** Override props (variant, intent, size, roundedFull) for the next/finish button */
+	nextButtonProps?: ShellProps["nextButtonProps"];
 }
 
 /**
@@ -219,6 +223,8 @@ export function createTour(options: TourOptions) {
 				labels: resolvedLabels,
 				shell: options.shell,
 				showSteps: options.showSteps ?? true,
+				prevButtonProps: options.prevButtonProps,
+				nextButtonProps: options.nextButtonProps,
 				next,
 				prev,
 				skip,
