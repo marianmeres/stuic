@@ -9,7 +9,7 @@
 	--stuic-onboarding-content-size: var(--text-sm);
 	--stuic-onboarding-footer-gap: calc(var(--spacing) * 3);
 	--stuic-onboarding-steps-size: var(--text-xs);
-	--stuic-onboarding-btn-font-size: var(--text-xs);
+	--stuic-onboarding-btn-font-size: var(--text-sm);
 }
 
 .stuic-onboarding-shell {
