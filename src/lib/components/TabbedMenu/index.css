@@ -86,4 +86,29 @@
 		outline: 2px solid var(--stuic-color-ring);
 		outline-offset: 2px;
 	}
+
+	/* ============================================================================
+	   VERTICAL ORIENTATION
+	   ============================================================================ */
+
+	.stuic-tabbed-menu[data-orientation="vertical"] {
+		flex-direction: column;
+	}
+
+	.stuic-tabbed-menu[data-orientation="vertical"] .stuic-tabbed-menu-item {
+		max-width: none;
+		flex: none;
+		width: var(--stuic-tabbed-menu-item-max-width);
+	}
+
+	.stuic-tabbed-menu[data-orientation="vertical"] .stuic-tabbed-menu-tab {
+		border-radius: var(--stuic-tabbed-menu-radius, var(--stuic-radius)) 0 0 var(--stuic-tabbed-menu-radius, var(--stuic-radius));
+		border: 1px solid var(--stuic-tabbed-menu-border);
+		border-right: 0;
+		text-align: left;
+	}
+
+	.stuic-tabbed-menu[data-orientation="vertical"] .stuic-tabbed-menu-tab[aria-selected="true"] {
+		border-color: var(--stuic-tabbed-menu-border-active);
+	}
 }

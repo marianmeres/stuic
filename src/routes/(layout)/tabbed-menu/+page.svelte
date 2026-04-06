@@ -100,6 +100,18 @@
 	</section>
 
 	<section>
+		<h2 class="text-lg font-semibold mb-4">Vertical Orientation</h2>
+		<div class="flex">
+			<TabbedMenu items={basicItems} bind:value={value1} orientation="vertical" />
+			<div
+				class="flex-1 p-4 border border-(--stuic-color-primary) border-l-0 bg-(--stuic-color-surface)"
+			>
+				Content for: <strong>{value1}</strong>
+			</div>
+		</div>
+	</section>
+
+	<section>
 		<h2 class="text-lg font-semibold mb-4">All Disabled</h2>
 		<TabbedMenu items={basicItems} value="tab1" disabled />
 	</section>

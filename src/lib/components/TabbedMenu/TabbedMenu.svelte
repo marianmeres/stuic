@@ -19,6 +19,7 @@
 		value?: string | number;
 		disabled?: boolean;
 		onSelect?: (item: TabbedMenuItem) => void;
+		orientation?: "horizontal" | "vertical";
 		//
 		class?: string;
 		classItem?: string;
@@ -39,6 +40,7 @@
 		value = $bindable(),
 		disabled,
 		onSelect,
+		orientation = "horizontal",
 		//
 		class: classProp,
 		classItem,
@@ -114,6 +116,8 @@
 		bind:this={el}
 		class={twMerge(!unstyled && "stuic-tabbed-menu", classProp)}
 		role="tablist"
+		aria-orientation={orientation}
+		data-orientation={orientation}
 		{...rest}
 	>
 		{#each items as item (item.id)}
