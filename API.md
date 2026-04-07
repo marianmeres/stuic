@@ -1482,6 +1482,7 @@ Multi-step onboarding tour built on the spotlight primitive. Define steps centra
 | `borderRadius`| `number`            | Cutout border radius (px)                 |
 | `onEnter`     | `() => void`        | Called when entering step                  |
 | `onLeave`     | `() => void`        | Called when leaving step                   |
+| `selector`    | `string`            | CSS selector to find the target element (alternative to `use:tourStep`) |
 
 **`tourStep` action:** `use:tourStep={[tour, stepId]}`
 
@@ -1503,6 +1504,29 @@ Multi-step onboarding tour built on the spotlight primitive. Define steps centra
 <button use:tourStep={[tour, "save-btn"]}>Save</button>
 <button onclick={tour.start}>Start Tour</button>
 ```
+
+**Selector-based targeting:** Steps can target elements by CSS selector instead of `use:tourStep`. Useful when the target lives inside a reusable component that shouldn't know about the tour:
+
+```svelte
+<!-- ReusableComponent.svelte — no tour knowledge -->
+<button data-tour-id="download">Download</button>
+
+<!-- Tour config -->
+<script>
+	const tour = createTour({
+		steps: [
+			{
+				id: "dl-step",
+				title: "Download",
+				content: "Click here to download.",
+				selector: '[data-tour-id="download"]',
+			},
+		],
+	});
+</script>
+```
+
+When a step has `selector`, the tour uses `document.querySelector(selector)` to find the target element. If the element isn't in the DOM yet, the tour polls periodically until `waitForElement` ms elapse (same timeout as `use:tourStep`). Steps without `selector` continue to use `use:tourStep` as before — both mechanisms coexist freely.
 
 ---
 

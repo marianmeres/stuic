@@ -136,7 +136,17 @@ Actions using `$effect()` accept a function returning options:
 <button onclick={tour.start}>Start Tour</button>
 ```
 
-Features: step navigation (next/prev/skip), persistent state via `storageKey`, custom shell snippets, `confirmSkip` callback, wait-for-element mechanism, Escape key support, step lifecycle callbacks (`onEnter`/`onLeave`).
+Steps can also target elements by CSS **selector** instead of `use:tourStep` — useful when the target lives inside a reusable component:
+
+```svelte
+<!-- Component adds a stable data attribute (no tour knowledge) -->
+<button data-tour-id="download">Download</button>
+
+<!-- Tour config references it by selector -->
+{ id: "dl-step", title: "Download", content: "...", selector: '[data-tour-id="download"]' }
+```
+
+Features: step navigation (next/prev/skip), selector-based step targeting, persistent state via `storageKey`, custom shell snippets, `confirmSkip` callback, wait-for-element mechanism, Escape key support, step lifecycle callbacks (`onEnter`/`onLeave`).
 
 ---
 

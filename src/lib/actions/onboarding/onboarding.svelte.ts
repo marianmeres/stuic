@@ -35,6 +35,12 @@ export interface TourStepDef {
 	onEnter?: () => void;
 	/** Called when tour leaves this step */
 	onLeave?: () => void;
+	/**
+	 * CSS selector to find the target element in the DOM.
+	 * If provided, the tour will use `document.querySelector(selector)`
+	 * instead of waiting for a `use:tourStep` registration.
+	 */
+	selector?: string;
 }
 
 /**
@@ -157,6 +163,9 @@ export function createTour(options: TourOptions) {
 	// Element registry: stepId -> HTMLElement
 	const registry = new Map<string, HTMLElement>();
 
+	// Steps registered via use:tourStep action (to prevent double-spotlight with selector)
+	const actionRegistered = new Set<string>();
+
 	// Wait-for-element mechanism (one pending wait at a time)
 	let pendingStepId: string | null = null;
 	let pendingResolve: ((found: boolean) => void) | null = null;
@@ -188,7 +197,35 @@ export function createTour(options: TourOptions) {
 		}
 	});
 
+	// Spotlight for selector-based steps (no use:tourStep action to manage it)
+	$effect(() => {
+		const step = currentStep;
+		if (!active || !step?.selector) return;
+		// If this step was registered via use:tourStep, let the action handle spotlight
+		if (actionRegistered.has(step.id)) return;
+
+		const el = registry.get(step.id);
+		if (!el) return;
+
+		// spotlight() creates inner $effects; Svelte cleans them up
+		// when this outer effect re-runs (step change) or is destroyed (tour end)
+		spotlight(el, () => ({
+			open: true,
+			content: _getShellContent(step.id),
+			position: step.position ?? "bottom",
+			padding: step.padding,
+			borderRadius: step.borderRadius,
+			closeOnEscape: false,
+			closeOnBackdropClick: false,
+			scrollIntoView: true,
+		}));
+	});
+
 	// -- Internal API (used by tourStep action) -----------------------------------------
+
+	function _registerAction(id: string) {
+		actionRegistered.add(id);
+	}
 
 	function _register(id: string, el: HTMLElement) {
 		registry.set(id, el);
@@ -250,10 +287,28 @@ export function createTour(options: TourOptions) {
 			pendingResolve = null;
 			pendingStepId = null;
 		}
+
+		const step = options.steps.find((s) => s.id === id);
+		const selector = step?.selector;
+
 		return new Promise<boolean>((resolve) => {
 			pendingStepId = id;
 			pendingResolve = resolve;
+
+			// For selector-based steps, poll the DOM periodically
+			let pollInterval: ReturnType<typeof setInterval> | null = null;
+			if (selector) {
+				pollInterval = setInterval(() => {
+					const el = document.querySelector<HTMLElement>(selector);
+					if (el && pendingStepId === id) {
+						_register(id, el);
+						// _register() resolves the promise via pendingResolve
+					}
+				}, 50);
+			}
+
 			setTimeout(() => {
+				if (pollInterval) clearInterval(pollInterval);
 				if (pendingStepId === id) {
 					console.warn(
 						`[createTour] Step "${id}" element not found after ${options.waitForElement ?? 500}ms — skipping`
@@ -280,6 +335,14 @@ export function createTour(options: TourOptions) {
 			// Find the nearest available step in the direction of travel
 			while (index >= 0 && index < options.steps.length) {
 				const step = options.steps[index];
+
+				// For selector-based steps, try to find the element in the DOM
+				if (step.selector && !registry.has(step.id)) {
+					const el = document.querySelector<HTMLElement>(step.selector);
+					if (el) {
+						_register(step.id, el);
+					}
+				}
 
 				if (!registry.has(step.id)) {
 					const found = await waitForElement(step.id);
@@ -358,6 +421,7 @@ export function createTour(options: TourOptions) {
 		// Internal — used by tourStep action
 		_register,
 		_unregister,
+		_registerAction,
 		_isCurrentStep,
 		_getShellContent,
 	};
@@ -379,6 +443,7 @@ export type TourInstance = ReturnType<typeof createTour>;
 export function tourStep(el: HTMLElement, args: [TourInstance | null | undefined, string]) {
 	const [tour, id] = args;
 	if (!tour) return;
+	tour._registerAction(id);
 	tour._register(id, el);
 
 	spotlight(el, () => {

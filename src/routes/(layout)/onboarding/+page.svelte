@@ -138,7 +138,34 @@
 		onSkip: () => console.log("[confirmSkipTour] skipped"),
 	});
 
-	// ── Tour 5: Multiple independent tours ────────────────────────────────
+	// ── Tour 5: Selector-based step targeting ─────────────────────────────
+	const selectorTour = createTour({
+		steps: [
+			{
+				id: "sel-intro",
+				title: "Selector Targeting",
+				content:
+					"This step uses a normal use:tourStep directive — nothing new here.",
+				position: "bottom",
+			},
+			{
+				id: "sel-by-selector",
+				title: "Targeted by CSS Selector",
+				content:
+					"This step targets an element via a CSS selector instead of use:tourStep. The component doesn't need to know about the tour.",
+				position: "right",
+				selector: '[data-tour-id="demo-selector-target"]',
+			},
+			{
+				id: "sel-end",
+				title: "Back to Normal",
+				content: "And this step uses use:tourStep again. Both mechanisms coexist.",
+				position: "top",
+			},
+		],
+	});
+
+	// ── Tour 6: Multiple independent tours ────────────────────────────────
 	const tour3 = createTour({
 		steps: [
 			{
@@ -411,7 +438,54 @@
 
 	<hr class="my-4" />
 
-	<!-- ── Example 5: Multiple independent tours ──────────────────────── -->
+	<!-- ── Example 5: Selector-based step targeting ──────────────────── -->
+	<section class="space-y-4">
+		<h2 class="text-xl font-semibold">Selector-Based Step Targeting</h2>
+		<p class="text-sm text-neutral-600 dark:text-neutral-400">
+			Steps can target elements by CSS selector instead of
+			<code>use:tourStep</code>. This is useful when the target lives inside
+			a reusable component that shouldn't know about the tour. The component
+			just adds a stable <code>data-*</code> attribute; the tour config
+			references it via <code>selector</code>.
+		</p>
+
+		<div class="flex gap-3 flex-wrap items-center">
+			<button
+				class="px-4 py-2 bg-lime-600 text-white rounded text-sm"
+				onclick={selectorTour.start}
+				disabled={selectorTour.active}
+			>
+				{selectorTour.active
+					? `Step ${selectorTour.currentIndex + 1} / 3…`
+					: "Start Tour"}
+			</button>
+		</div>
+
+		<div class="flex gap-6 flex-wrap mt-2">
+			<div
+				class="px-6 py-4 bg-lime-100 dark:bg-lime-900 rounded-lg border border-lime-300 dark:border-lime-700"
+				use:tourStep={[selectorTour, "sel-intro"]}
+			>
+				Step 1 — use:tourStep
+			</div>
+			<div
+				class="px-6 py-4 bg-yellow-100 dark:bg-yellow-900 rounded-lg border border-yellow-300 dark:border-yellow-700"
+				data-tour-id="demo-selector-target"
+			>
+				Step 2 — targeted by <code>selector</code> (no use:tourStep)
+			</div>
+			<div
+				class="px-6 py-4 bg-green-100 dark:bg-green-900 rounded-lg border border-green-300 dark:border-green-700"
+				use:tourStep={[selectorTour, "sel-end"]}
+			>
+				Step 3 — use:tourStep
+			</div>
+		</div>
+	</section>
+
+	<hr class="my-4" />
+
+	<!-- ── Example 6: Multiple independent tours ──────────────────────── -->
 	<section class="space-y-4">
 		<h2 class="text-xl font-semibold">Multiple Independent Tours</h2>
 		<p class="text-sm text-neutral-600 dark:text-neutral-400">
