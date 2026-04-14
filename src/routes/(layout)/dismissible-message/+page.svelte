@@ -62,4 +62,50 @@
 			{withIcon}
 		/>
 	</div>
+
+	<div class="mt-8 space-y-2">
+		<h3 class="font-semibold mb-4">With left border (border-l-4)</h3>
+
+		<DismissibleMessage
+			class="border-0 border-l-4"
+			intent="info"
+			message="Info: This is an informational message"
+			{withIcon}
+		/>
+
+		<DismissibleMessage
+			class="border-0 border-l-4"
+			intent="success"
+			message="Success: Operation completed successfully"
+			{withIcon}
+		/>
+
+		<DismissibleMessage
+			class="border-0 border-l-4"
+			intent="warning"
+			message="Warning: Please review before continuing"
+			{withIcon}
+		/>
+
+		<DismissibleMessage
+			class="border-0 border-l-4"
+			intent="destructive"
+			message="Error: Something went wrong"
+			{withIcon}
+		/>
+
+		<div class="mt-4 text-sm opacity-80">
+			<p class="mb-2">
+				To apply this styling globally in a consuming app, override the component's
+				border-width CSS custom property (a multi-value shorthand is accepted):
+			</p>
+			<pre class="p-3 bg-black/5 dark:bg-white/10 rounded text-xs overflow-x-auto"><code
+				>:root &lbrace;
+  --stuic-dismissible-message-border-width: 0 0 0 4px;
+&rbrace;</code></pre>
+			<p class="mt-2">
+				Alternatively, target the <code>.stuic-dismissible-message</code> class directly.
+			</p>
+		</div>
+	</div>
 </div>
