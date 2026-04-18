@@ -8,13 +8,15 @@ A feature-rich dropdown menu component with CSS Anchor Positioning (with fallbac
 | ------------------------ | ---------------------- | -------------------- | ---------------------------------------- |
 | `items`                  | `DropdownMenuItem[]`   | -                    | Menu items to display                    |
 | `isOpen`                 | `boolean`              | `false`              | Controlled open state (bindable)         |
-| `position`               | `DropdownMenuPosition` | `"bottom-span-left"` | Popover position relative to trigger     |
+| `position`               | `DropdownMenuPosition` | `"bottom-span-right"` | Popover position relative to trigger    |
 | `offset`                 | `string`               | `"0.25rem"`          | Offset from trigger element (CSS value)  |
 | `maxHeight`              | `string`               | `"300px"`            | Max height of dropdown                   |
 | `closeOnSelect`          | `boolean`              | `true`               | Close menu when action item is selected  |
 | `closeOnClickOutside`    | `boolean`              | `true`               | Close on click outside                   |
 | `closeOnEscape`          | `boolean`              | `true`               | Close on Escape key                      |
 | `forceFallback`          | `boolean`              | `false`              | Force fallback positioning (for testing) |
+| `search`                 | `boolean \| DropdownMenuSearchConfig` | -     | Enable search/filter input (see [Search](#search)) |
+| `unstyled`               | `boolean`              | `false`              | Opt out of stuic base classes            |
 | `class`                  | `string`               | -                    | Classes for wrapper element              |
 | `classTrigger`           | `string`               | -                    | Classes for trigger button               |
 | `classDropdown`          | `string`               | -                    | Classes for dropdown container           |
@@ -25,6 +27,7 @@ A feature-rich dropdown menu component with CSS Anchor Positioning (with fallbac
 | `classHeader`            | `string`               | -                    | Classes for header items                 |
 | `classExpandable`        | `string`               | -                    | Classes for expandable section header    |
 | `classExpandableContent` | `string`               | -                    | Classes for expandable section content   |
+| `el`                     | `HTMLDivElement`       | -                    | Wrapper element reference (bindable)     |
 | `triggerEl`              | `HTMLButtonElement`    | -                    | Trigger element reference (bindable)     |
 | `dropdownEl`             | `HTMLDivElement`       | -                    | Dropdown element reference (bindable)    |
 
@@ -39,15 +42,15 @@ A feature-rich dropdown menu component with CSS Anchor Positioning (with fallbac
 
 ### Action Item
 
-Clickable menu item with optional icon and shortcut.
+Clickable menu item with optional leading/trailing content.
 
 ```typescript
 interface DropdownMenuActionItem {
 	type: "action";
 	id: string | number;
 	label: THC; // Text, HTML, or component
-	icon?: THC; // Optional leading icon
-	shortcut?: string; // Keyboard shortcut hint
+	contentBefore?: THC; // Optional leading content (icon, etc.)
+	contentAfter?: THC; // Optional trailing content (shortcut hint, etc.)
 	disabled?: boolean;
 	onSelect?: () => void | boolean;
 	href?: string; // Render as <a> link instead of <button>
@@ -104,7 +107,7 @@ interface DropdownMenuExpandableItem {
 	type: "expandable";
 	id: string | number;
 	label: THC;
-	icon?: THC;
+	contentBefore?: THC;
 	items: DropdownMenuFlatItem[]; // Nested items (no nested expandables)
 	defaultExpanded?: boolean;
 	disabled?: boolean;
@@ -130,6 +133,29 @@ interface DropdownMenuExpandableItem {
 | `onOpen`   | -                                | Called when menu opens                      |
 | `onClose`  | -                                | Called when menu closes                     |
 | `onSelect` | `(item: DropdownMenuActionItem)` | Called when action item selected (fallback) |
+
+## Search
+
+Pass `search` to enable an in-menu filter input. Use `true` for defaults or a config object:
+
+```typescript
+interface DropdownMenuSearchConfig {
+	placeholder?: string;
+	/** Match algorithm */
+	strategy?: "prefix" | "exact" | "fuzzy";
+	/** Custom function to extract searchable text from an item */
+	getContent?: (item: DropdownMenuActionItem | DropdownMenuExpandableItem) => string;
+	/** Auto-focus search input when menu opens */
+	autoFocus?: boolean;
+	/** Message shown when no results found */
+	noResultsMessage?: string;
+}
+```
+
+```svelte
+<DropdownMenu {items} search />
+<DropdownMenu {items} search={{ placeholder: "Filter…", strategy: "fuzzy" }} />
+```
 
 ## Keyboard Navigation
 
@@ -186,6 +212,8 @@ When `href` is set, the item renders as an `<a>` element instead of `<button>`. 
 
 ### With Icons and Shortcuts
 
+Use `contentBefore` for leading content (icons) and `contentAfter` for trailing content (shortcut hints). Both accept any `THC` value — string, HTML, or component.
+
 ```svelte
 <script lang="ts">
 	import { DropdownMenu } from "stuic";
@@ -197,8 +225,8 @@ When `href` is set, the item renders as an `<a>` element instead of `<button>`. 
 			type: "action",
 			id: "edit",
 			label: "Edit",
-			icon: iconLucideEdit({ size: 16 }),
-			shortcut: "Cmd+E",
+			contentBefore: { html: iconLucideEdit({ size: 16 }) },
+			contentAfter: "Cmd+E",
 			onSelect: () => handleEdit(),
 		},
 		{ type: "divider" },
@@ -206,8 +234,8 @@ When `href` is set, the item renders as an `<a>` element instead of `<button>`. 
 			type: "action",
 			id: "delete",
 			label: "Delete",
-			icon: iconLucideTrash({ size: 16 }),
-			shortcut: "Cmd+D",
+			contentBefore: { html: iconLucideTrash({ size: 16 }) },
+			contentAfter: "Cmd+D",
 			onSelect: () => handleDelete(),
 		},
 	];

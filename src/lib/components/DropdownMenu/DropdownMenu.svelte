@@ -201,6 +201,10 @@
 		triggerEl?: HTMLButtonElement;
 		/** Reference to dropdown element */
 		dropdownEl?: HTMLDivElement;
+		/** Reference to the wrapper element */
+		el?: HTMLDivElement;
+		/** Opt out of stuic base classes for full styling control */
+		unstyled?: boolean;
 		/** Optional, used only when css positioning not supported (iPhone)*/
 		noScrollLock?: boolean;
 	}
@@ -298,6 +302,8 @@
 		onSelect,
 		triggerEl = $bindable(),
 		dropdownEl = $bindable(),
+		el = $bindable(),
+		unstyled = false,
 		scrollbarGutter,
 		noScrollLock,
 		...rest
@@ -309,7 +315,6 @@
 	const anchorName = `--dropdown-anchor-${triggerId}`;
 
 	// State
-	let wrapperEl: HTMLDivElement = $state()!;
 	let activeItemEl: HTMLButtonElement | undefined = $state();
 	const reducedMotion = prefersReducedMotion();
 
@@ -615,7 +620,7 @@
 
 	// Click outside handler — only active when open (prevents stale refs on destroy)
 	const _clickOutside = onClickOutside(
-		() => wrapperEl,
+		() => el,
 		() => {
 			if (closeOnClickOutside && isOpen) {
 				isOpen = false;
@@ -626,7 +631,7 @@
 	);
 
 	$effect(() => {
-		if (isOpen && wrapperEl) _clickOutside.start();
+		if (isOpen && el) _clickOutside.start();
 		else _clickOutside.stop();
 	});
 
@@ -808,8 +813,8 @@
 />
 
 <div
-	bind:this={wrapperEl}
-	class={twMerge(DROPDOWN_MENU_BASE_CLASSES, classProp)}
+	bind:this={el}
+	class={unstyled ? classProp : twMerge(DROPDOWN_MENU_BASE_CLASSES, classProp)}
 	style:anchor-name={isSupported ? anchorName : undefined}
 >
 	<!-- Trigger -->
@@ -830,7 +835,7 @@
 		<button
 			bind:this={triggerEl}
 			id={triggerId}
-			class={twMerge(DROPDOWN_MENU_TRIGGER_CLASSES, classTrigger)}
+			class={unstyled ? classTrigger : twMerge(DROPDOWN_MENU_TRIGGER_CLASSES, classTrigger)}
 			onclick={() => (isOpen = !isOpen)}
 			aria-haspopup="menu"
 			aria-expanded={isOpen}
@@ -851,15 +856,15 @@
 
 	<!-- Backdrop (fallback mode only) -->
 	{#if isOpen && !isSupported && showBackdrop}
+		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<div
-			class={twMerge(DROPDOWN_MENU_BACKDROP_CLASSES, classBackdrop)}
+			class={unstyled ? classBackdrop : twMerge(DROPDOWN_MENU_BACKDROP_CLASSES, classBackdrop)}
 			onclick={() => {
 				if (closeOnClickOutside) {
 					isOpen = false;
 					triggerEl?.focus();
 				}
 			}}
-			onkeydown={() => {}}
 			role="presentation"
 			transition:fade={{ duration: transitionDuration }}
 		></div>
@@ -872,11 +877,13 @@
 			id={dropdownId}
 			role="menu"
 			aria-labelledby={triggerId}
-			class={twMerge(
-				DROPDOWN_MENU_DROPDOWN_CLASSES,
-				!isSupported && "w-4/5 max-w-32",
-				classDropdown
-			)}
+			class={unstyled
+				? twMerge(!isSupported && "w-4/5 max-w-sm", classDropdown)
+				: twMerge(
+						DROPDOWN_MENU_DROPDOWN_CLASSES,
+						!isSupported && "w-4/5 max-w-sm",
+						classDropdown
+					)}
 			style={dropdownStyle}
 			transition:slide={{ duration: transitionDuration }}
 		>
@@ -886,7 +893,9 @@
 					<button
 						type="button"
 						aria-label="Close"
-						class="stuic-close-button absolute right-0 top-0 pointer-events-auto"
+						class={unstyled
+							? "absolute right-0 top-0 pointer-events-auto"
+							: "stuic-close-button absolute right-0 top-0 pointer-events-auto"}
 						onclick={() => {
 							isOpen = false;
 							triggerEl?.focus();
@@ -957,12 +966,16 @@
 					{:else if item.type === "divider"}
 						<div
 							role="separator"
-							class={twMerge(DROPDOWN_MENU_DIVIDER_CLASSES, classDivider, item.class)}
+							class={unstyled
+								? twMerge(classDivider, item.class)
+								: twMerge(DROPDOWN_MENU_DIVIDER_CLASSES, classDivider, item.class)}
 						></div>
 					{:else if item.type === "header"}
 						<div
 							role="presentation"
-							class={twMerge(DROPDOWN_MENU_HEADER_CLASSES, classHeader, item.class)}
+							class={unstyled
+								? twMerge(classHeader, item.class)
+								: twMerge(DROPDOWN_MENU_HEADER_CLASSES, classHeader, item.class)}
 						>
 							<Thc thc={item.label} />
 						</div>
@@ -1043,20 +1056,24 @@
 											{#if childItem.type === "divider"}
 												<div
 													role="separator"
-													class={twMerge(
-														DROPDOWN_MENU_DIVIDER_CLASSES,
-														classDivider,
-														childItem.class
-													)}
+													class={unstyled
+														? twMerge(classDivider, childItem.class)
+														: twMerge(
+																DROPDOWN_MENU_DIVIDER_CLASSES,
+																classDivider,
+																childItem.class
+															)}
 												></div>
 											{:else if childItem.type === "header"}
 												<div
 													role="presentation"
-													class={twMerge(
-														DROPDOWN_MENU_HEADER_CLASSES,
-														classHeader,
-														childItem.class
-													)}
+													class={unstyled
+														? twMerge(classHeader, childItem.class)
+														: twMerge(
+																DROPDOWN_MENU_HEADER_CLASSES,
+																classHeader,
+																childItem.class
+															)}
 												>
 													<Thc thc={childItem.label} />
 												</div>
