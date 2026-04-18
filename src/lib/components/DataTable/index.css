@@ -278,6 +278,13 @@
 		background: var(--stuic-data-table-card-bg-selected);
 	}
 
+	.stuic-data-table-card-checkbox {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-bottom: 0.25rem;
+	}
+
 	.stuic-data-table-card-row {
 		display: flex;
 		justify-content: space-between;

@@ -19,7 +19,7 @@
 			next_page: "Next",
 			page_x_of_y: "Page {page} of {pageCount}",
 			no_data: "No data",
-			select_all_rows: "Select all rows",
+			select_all_rows: "Select all rows on this page",
 			select_row: "Select row",
 		};
 		let out = m[k] ?? fallback ?? k;
@@ -71,6 +71,8 @@
 		selected?: Set<string | number>;
 		/** Toggle row selection when clicking anywhere on the row */
 		selectOnRowClick?: boolean;
+		/** Return true to disable selection for a specific row */
+		selectDisabledBy?: (row: T, index: number) => boolean;
 
 		/** Callback when a row is clicked */
 		onRowClick?: (row: T, index: number) => void;
@@ -78,9 +80,28 @@
 		/** Show loading state (spinner overlay + reduced opacity) */
 		loading?: boolean;
 
-		/** Custom cell renderer snippet */
+		/** Custom cell renderer snippet (rendered in both desktop table and mobile card layouts; use `variant` to tell them apart) */
 		cell?: Snippet<
-			[{ column: DataTableColumn<T>; row: T; value: any; rowIndex: number }]
+			[
+				{
+					column: DataTableColumn<T>;
+					row: T;
+					value: any;
+					rowIndex: number;
+					variant: "desktop" | "mobile";
+				},
+			]
+		>;
+		/** Custom desktop row renderer — replaces the entire `<tr>` */
+		row?: Snippet<
+			[
+				{
+					row: T;
+					columns: DataTableColumn<T>[];
+					rowIndex: number;
+					isSelected: boolean;
+				},
+			]
 		>;
 		/** Batch actions bar snippet (shown when items are selected) */
 		batchActions?: Snippet<
@@ -96,8 +117,6 @@
 		empty?: Snippet;
 		/** Custom mobile row card snippet */
 		mobileRow?: Snippet<[{ row: T; columns: DataTableColumn<T>[]; rowIndex: number }]>;
-		/** Default children snippet (not used directly) */
-		children?: Snippet;
 
 		/** Optional translate function */
 		t?: TranslateFn;
@@ -130,13 +149,14 @@
 		selectable = false,
 		selected = $bindable(new Set()),
 		selectOnRowClick = false,
+		selectDisabledBy,
 		onRowClick,
 		loading = false,
 		cell,
+		row,
 		batchActions,
 		empty,
 		mobileRow,
-		children,
 		t = t_default,
 		small = false,
 		unstyled = false,
@@ -154,15 +174,21 @@
 
 	// --- Selection ---
 	let allRowIds = $derived(data.map((row, i) => getRowId(row, i)));
+	let selectableRowIds = $derived.by(() => {
+		if (!selectDisabledBy) return allRowIds;
+		return data
+			.map((row, i) => (selectDisabledBy(row, i) ? null : getRowId(row, i)))
+			.filter((id): id is string | number => id !== null);
+	});
 
 	let allOnPageSelected = $derived.by(() => {
-		if (!selectable || allRowIds.length === 0) return false;
-		return allRowIds.every((id) => selected.has(id));
+		if (!selectable || selectableRowIds.length === 0) return false;
+		return selectableRowIds.every((id) => selected.has(id));
 	});
 
 	let someOnPageSelected = $derived.by(() => {
-		if (!selectable || allRowIds.length === 0) return false;
-		return allRowIds.some((id) => selected.has(id)) && !allOnPageSelected;
+		if (!selectable || selectableRowIds.length === 0) return false;
+		return selectableRowIds.some((id) => selected.has(id)) && !allOnPageSelected;
 	});
 
 	let selectedRows = $derived.by(() => {
@@ -173,11 +199,11 @@
 	function toggleSelectAll() {
 		if (allOnPageSelected) {
 			const next = new Set(selected);
-			for (const id of allRowIds) next.delete(id);
+			for (const id of selectableRowIds) next.delete(id);
 			selected = next;
 		} else {
 			const next = new Set(selected);
-			for (const id of allRowIds) next.add(id);
+			for (const id of selectableRowIds) next.add(id);
 			selected = next;
 		}
 	}
@@ -248,7 +274,7 @@
 				<thead>
 					<tr>
 						{#if selectable}
-							<th data-checkbox class="stuic-checkbox">
+							<th scope="col" data-checkbox class="stuic-checkbox">
 								<input
 									type="checkbox"
 									checked={allOnPageSelected}
@@ -260,6 +286,7 @@
 						{/if}
 						{#each columns as col (col.key)}
 							<th
+								scope="col"
 								class={col.classHeader}
 								data-align={!unstyled && col.align ? col.align : undefined}
 								style={col.width ? `width: ${col.width}` : undefined}
@@ -274,46 +301,53 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each data as row, rowIndex (getRowId(row, rowIndex))}
-						{@const rowId = getRowId(row, rowIndex)}
+					{#each data as rowData, rowIndex (getRowId(rowData, rowIndex))}
+						{@const rowId = getRowId(rowData, rowIndex)}
 						{@const isSelected = selectable && selected.has(rowId)}
-						<tr
-							data-hoverable={!unstyled ? "true" : undefined}
-							data-clickable={!unstyled && (onRowClick || selectOnRowClick)
-								? "true"
-								: undefined}
-							data-selected={!unstyled && isSelected ? "true" : undefined}
-							onclick={(e) => handleRowClick(row, rowIndex, e)}
-						>
-							{#if selectable}
-								<td data-checkbox class="stuic-checkbox">
-									<input
-										type="checkbox"
-										checked={isSelected}
-										onchange={() => toggleSelectRow(rowId)}
-										aria-label={t("select_row")}
-									/>
-								</td>
-							{/if}
-							{#each columns as col (col.key)}
-								{@const value = getCellValue(row, col)}
-								<td
-									class={col.class}
-									data-align={!unstyled && col.align ? col.align : undefined}
-								>
-									{#if cell}
-										{@render cell({
-											column: col,
-											row,
-											value,
-											rowIndex,
-										})}
-									{:else}
-										{getCellDisplay(row, col)}
-									{/if}
-								</td>
-							{/each}
-						</tr>
+						{@const selectDisabled = !!selectDisabledBy?.(rowData, rowIndex)}
+						{#if row}
+							{@render row({ row: rowData, columns, rowIndex, isSelected })}
+						{:else}
+							<tr
+								data-hoverable={!unstyled ? "true" : undefined}
+								data-clickable={!unstyled && (onRowClick || selectOnRowClick)
+									? "true"
+									: undefined}
+								data-selected={!unstyled && isSelected ? "true" : undefined}
+								onclick={(e) => handleRowClick(rowData, rowIndex, e)}
+							>
+								{#if selectable}
+									<td data-checkbox class="stuic-checkbox">
+										<input
+											type="checkbox"
+											checked={isSelected}
+											disabled={selectDisabled}
+											onchange={() => toggleSelectRow(rowId)}
+											aria-label={t("select_row")}
+										/>
+									</td>
+								{/if}
+								{#each columns as col (col.key)}
+									{@const value = getCellValue(rowData, col)}
+									<td
+										class={col.class}
+										data-align={!unstyled && col.align ? col.align : undefined}
+									>
+										{#if cell}
+											{@render cell({
+												column: col,
+												row: rowData,
+												value,
+												rowIndex,
+												variant: "desktop",
+											})}
+										{:else}
+											{getCellDisplay(rowData, col)}
+										{/if}
+									</td>
+								{/each}
+							</tr>
+						{/if}
 					{:else}
 						<tr>
 							<td
@@ -337,12 +371,13 @@
 			class={!unstyled ? "stuic-data-table-cards" : undefined}
 			data-loading={!unstyled && loading ? "true" : undefined}
 		>
-			{#each data as row, rowIndex (getRowId(row, rowIndex))}
-				{@const rowId = getRowId(row, rowIndex)}
+			{#each data as rowData, rowIndex (getRowId(rowData, rowIndex))}
+				{@const rowId = getRowId(rowData, rowIndex)}
 				{@const isSelected = selectable && selected.has(rowId)}
+				{@const selectDisabled = !!selectDisabledBy?.(rowData, rowIndex)}
 				{#if mobileRow}
 					{@render mobileRow({
-						row,
+						row: rowData,
 						columns: mobileColumns,
 						rowIndex,
 					})}
@@ -357,7 +392,7 @@
 						data-selected={!unstyled && isSelected ? "true" : undefined}
 						role={onRowClick || selectOnRowClick ? "button" : undefined}
 						tabindex={onRowClick || selectOnRowClick ? 0 : undefined}
-						onclick={(e) => handleRowClick(row, rowIndex, e)}
+						onclick={(e) => handleRowClick(rowData, rowIndex, e)}
 						onkeydown={(e) => {
 							if (
 								(onRowClick || selectOnRowClick) &&
@@ -367,22 +402,23 @@
 								if (selectable && selectOnRowClick) {
 									toggleSelectRow(rowId);
 								}
-								onRowClick?.(row, rowIndex);
+								onRowClick?.(rowData, rowIndex);
 							}
 						}}
 					>
 						{#if selectable}
-							<div class="stuic-checkbox flex items-center gap-2 mb-1">
+							<div class={!unstyled ? "stuic-checkbox stuic-data-table-card-checkbox" : undefined}>
 								<input
 									type="checkbox"
 									checked={isSelected}
+									disabled={selectDisabled}
 									onchange={() => toggleSelectRow(rowId)}
 									aria-label={t("select_row")}
 								/>
 							</div>
 						{/if}
 						{#each mobileColumns as col (col.key)}
-							{@const value = getCellValue(row, col)}
+							{@const value = getCellValue(rowData, col)}
 							<div class={!unstyled ? "stuic-data-table-card-row" : undefined}>
 								<span class={!unstyled ? "stuic-data-table-card-label" : undefined}>
 									{#if isTHCNotEmpty(col.label)}
@@ -395,12 +431,13 @@
 									{#if cell}
 										{@render cell({
 											column: col,
-											row,
+											row: rowData,
 											value,
 											rowIndex,
+											variant: "mobile",
 										})}
 									{:else}
-										{getCellDisplay(row, col)}
+										{getCellDisplay(rowData, col)}
 									{/if}
 								</span>
 							</div>
@@ -412,7 +449,7 @@
 					{#if empty}
 						{@render empty()}
 					{:else}
-						No data
+						{t("no_data")}
 					{/if}
 				</div>
 			{/each}
