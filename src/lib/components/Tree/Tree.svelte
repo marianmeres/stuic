@@ -2,8 +2,30 @@
 	import type { HTMLAttributes } from "svelte/elements";
 	import type { TreeNodeDTO } from "@marianmeres/tree";
 	import type { Snippet } from "svelte";
+	import type { TranslateFn } from "../../types.js";
+	import { isPlainObject } from "../../utils/is-plain-object.js";
+	import { replaceMap } from "../../utils/replace-map.js";
 
 	export type TreeDropPosition = "before" | "after" | "inside";
+
+	function t_default(
+		k: string,
+		values: false | null | undefined | Record<string, string | number> = null,
+		fallback: string | boolean = "",
+		_i18nSpanWrap: boolean = true
+	) {
+		const m: Record<string, string> = {
+			move_before: "Moved {source} above {target}",
+			move_after: "Moved {source} below {target}",
+			move_inside: "Moved {source} into {target}",
+		};
+		let out = m[k] ?? fallback ?? k;
+		return isPlainObject(values)
+			? replaceMap(out, values as any, {
+					preSearchKeyTransform: (k) => `{${k}}`,
+				})
+			: out;
+	}
 
 	export interface TreeMoveEvent<T = unknown> {
 		/** The node being dragged */
@@ -72,6 +94,12 @@
 		/** Delay in ms before auto-expanding a collapsed branch on drag-over (default: 800) */
 		dragExpandDelay?: number;
 
+		/** Optional translate function (used for drag-drop screen reader announcements) */
+		t?: TranslateFn;
+
+		/** Derive a screen-reader label for a node. Defaults to `String(item.value)`. */
+		getNodeLabel?: (item: TreeNodeDTO<T>) => string;
+
 		/** Skip all default styling */
 		unstyled?: boolean;
 
@@ -128,6 +156,8 @@
 		onMove,
 		onError,
 		dragExpandDelay = 800,
+		t = t_default,
+		getNodeLabel = (item) => String(item.value),
 		unstyled = false,
 		class: classProp,
 		el = $bindable(),
@@ -310,8 +340,10 @@
 
 	function focusItem(id: string) {
 		focusedId = id;
-		// Focus the DOM element
-		const itemEl = el?.querySelector(`[data-tree-id="${id}"]`) as HTMLElement | null;
+		// Focus the DOM element. CSS.escape() protects against ids containing quotes/specials.
+		const itemEl = el?.querySelector(
+			`[data-tree-id="${CSS.escape(id)}"]`
+		) as HTMLElement | null;
 		itemEl?.focus();
 	}
 
@@ -409,6 +441,7 @@
 	let dropTargetId = $state<string | null>(null);
 	let dropPos = $state<TreeDropPosition | null>(null);
 	let dragExpandTimer: ReturnType<typeof setTimeout> | null = null;
+	let liveAnnouncement = $state("");
 
 	function findNodeById(nodeItems: TreeNode<T>[], id: string): TreeNode<T> | null {
 		for (const item of nodeItems) {
@@ -545,6 +578,14 @@
 			try {
 				const result = await onMove(event);
 				if (result === false) return;
+				liveAnnouncement = t(
+					`move_${event.position}`,
+					{
+						source: getNodeLabel(event.source),
+						target: getNodeLabel(event.target),
+					},
+					""
+				) as string;
 			} catch (err) {
 				onError?.(err);
 			}
@@ -658,4 +699,7 @@
 	{#each sortedItems(items) as item (item.id)}
 		{@render renderNode(item, 0)}
 	{/each}
+
+	<!-- Screen-reader-only live region for drag-drop move announcements -->
+	<div class="sr-only" aria-live="polite" aria-atomic="true">{liveAnnouncement}</div>
 </div>
