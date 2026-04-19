@@ -17,6 +17,7 @@
 			unit_price_each: "{price} each",
 			quantity_label: "Qty: {quantity}",
 			remove_item: "Remove",
+			remove_item_aria: "Remove {name}",
 			total_label: "Total",
 			item_count_1: "1 item",
 			item_count_n: "{count} items",
@@ -376,6 +377,7 @@
 												step={item.quantityStep ?? 1}
 												class={!unstyled ? "stuic-cart-quantity-input" : undefined}
 												value={item.quantity}
+												aria-label={t("quantity_label", { quantity: item.quantity })}
 												onblur={(e) =>
 													handleQuantityInputCommit(
 														item.id,
@@ -425,6 +427,7 @@
 										type="button"
 										class={!unstyled ? "stuic-cart-remove" : undefined}
 										disabled={isUpdating}
+										aria-label={t("remove_item_aria", { name: item.name }) || t("remove_item")}
 										onclick={() => onRemove?.(item.id)}
 									>
 										{t("remove_item")}

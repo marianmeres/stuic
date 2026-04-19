@@ -46,10 +46,26 @@ summary) modes, plus a compact variant suitable for popover previews.
 />
 ```
 
+### Keeping `lineTotal` in sync
+
+**`lineTotal` is caller-computed**, not derived from `unitPrice × quantity`. This is intentional — it lets you encode per-line discounts, bulk pricing, or any formula you want. But it also means:
+
+> Whenever you respond to `onQuantityChange` or `onRemove`, you must recompute `lineTotal` alongside `quantity` before passing the new `items`. The cart total is summed from `lineTotal` values; if they go stale, the summary is wrong.
+
+Simple rule-of-thumb: in your quantity-change handler, if you have no special pricing, set `lineTotal = unitPrice * newQuantity`.
+
 ### Readonly Mode (checkout summary)
 
 ```svelte
 <Cart {items} readonly formatPrice={(v) => `$${(v / 100).toFixed(2)}`} />
+```
+
+### Summary Variant (receipt-style)
+
+Minimal, dense read-only list for order confirmation screens or invoices. Each line is just `name ×qty` plus the line total — no thumbnails, no +/− controls, no footer.
+
+```svelte
+<Cart {items} variant="summary" formatPrice={(v) => `$${(v / 100).toFixed(2)}`} />
 ```
 
 ### Compact Variant (for popovers)
@@ -105,7 +121,7 @@ summary) modes, plus a compact variant suitable for popover previews.
 | Prop               | Type                                | Default                       | Description                                                         |
 | ------------------ | ----------------------------------- | ----------------------------- | ------------------------------------------------------------------- |
 | `items`            | `CartComponentItem[]`               | required                      | Cart items to display                                               |
-| `variant`          | `"default" \| "compact"`            | `"default"`                   | Layout variant. Compact is smaller, scrollable, implicitly readonly |
+| `variant`          | `"default" \| "compact" \| "summary"` | `"default"`                 | Layout variant. `compact` = smaller/scrollable (implicit readonly); `summary` = receipt-style list with name ×qty + line total, no thumbnails/controls/footer (implicit readonly) |
 | `formatPrice`      | `(value: number) => string`         | `(v) => (v / 100).toFixed(2)` | Format numeric price for display                                    |
 | `onQuantityChange` | `(id: string, qty: number) => void` | —                             | Called when quantity changes                                        |
 | `onRemove`         | `(id: string) => void`              | —                             | Called when remove is clicked                                       |
@@ -174,6 +190,7 @@ summary) modes, plus a compact variant suitable for popover previews.
 | `unit_price_each`   | "{price} each"       | Unit price label          |
 | `quantity_label`    | "Qty: {quantity}"    | Readonly quantity display |
 | `remove_item`       | "Remove"             | Remove button text        |
+| `remove_item_aria`  | "Remove {name}"      | Accessible label on the remove button (announces item name) |
 | `total_label`       | "Total"              | Summary label             |
 | `item_count_1`      | "1 item"             | Singular item count       |
 | `item_count_n`      | "{count} items"      | Plural item count         |
