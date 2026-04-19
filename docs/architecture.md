@@ -112,7 +112,6 @@ Props → Component → Data Attributes → CSS Selectors
 | ------------------------------ | ----------------------------- |
 | `tailwind-merge`               | CSS class conflict resolution |
 | `runed`                        | Svelte 5 reactive utilities   |
-| `esm-env`                      | Environment detection         |
 | `@marianmeres/icons-fns`       | Icon SVG generation           |
 | `@marianmeres/item-collection` | Collection management         |
 | `@marianmeres/ticker`          | Animation timing              |
