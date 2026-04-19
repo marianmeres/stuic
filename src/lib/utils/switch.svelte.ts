@@ -50,6 +50,12 @@ export class SwitchState<T> {
 
 	#storage;
 
+	/**
+	 * One-shot callback fired the next time the switch transitions off (via `off()`,
+	 * `toggle()` to off, or `reset()`). **Cleared after firing** — assign again before
+	 * the next off-transition if you want it to fire repeatedly. Useful for "run X the
+	 * next time this modal closes" patterns.
+	 */
 	onOff: ((data: T, self: SwitchState<T>) => void) | undefined | null = null;
 
 	constructor(
@@ -74,7 +80,12 @@ export class SwitchState<T> {
 		}
 	}
 
-	// still public, but should not be used directly unless necessary for some reason
+	/**
+	 * @internal
+	 * Low-level state setter. Prefer `on()`, `off()`, `toggle()`, or `reset()` — they
+	 * cover every expected case. Kept public only because removing it would be a BC break;
+	 * future code should treat this as private.
+	 */
 	__set(value: boolean | null, data?: T | null | undefined) {
 		if (value !== null && typeof value !== "boolean") value = Boolean(value);
 		this.#current = value;

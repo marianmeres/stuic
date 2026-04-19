@@ -49,15 +49,21 @@ export function observeExists(
 					shouldCheck = true;
 					break;
 				}
+			} else if (mutation.type === "attributes") {
+				// an attribute changed on an existing element (e.g. class toggle) —
+				// may flip whether `selector` matches
+				shouldCheck = true;
+				break;
 			}
 		}
 
 		if (shouldCheck) current = check();
 	});
 
-	// start observing now
+	// start observing now — include attributes so selectors like ".active" or
+	// "[data-busy]" react when classes/attrs toggle on existing elements
 	clogDebug(`connecting...`);
-	observer.observe(rootElement, { childList: true, subtree: true });
+	observer.observe(rootElement, { childList: true, subtree: true, attributes: true });
 
 	return {
 		get current() {
@@ -67,8 +73,9 @@ export function observeExists(
 			clogDebug(`disconnecting...`);
 			observer.disconnect();
 		},
+		/** Re-run the selector check immediately and update `current`. */
 		forceCheck() {
-			check();
+			current = check();
 		},
 	};
 }

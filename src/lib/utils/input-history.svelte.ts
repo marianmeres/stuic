@@ -17,6 +17,15 @@ export interface InputHistoryOptions {
 /**
  * A reactive input history manager with localStorage persistence and arrow key navigation.
  *
+ * @remarks
+ * Every constructed instance registers its storage key in a **process-wide static Set**
+ * (`InputHistory.#registeredKeys`). The Set grows as new instances are created and is
+ * only trimmed by `clearAllMatching(prefix)` / `clearAll()` — there is no per-instance
+ * deregistration. In practice this is fine: each entry is a short string and the cost
+ * is negligible. Typical lifecycle: create instances as users navigate, call
+ * `InputHistory.clearAllMatching("<app-prefix>")` on logout to wipe stored keys and
+ * clear the registry in one shot.
+ *
  * @example
  * ```ts
  * const history = new InputHistory({
@@ -37,6 +46,9 @@ export interface InputHistoryOptions {
  *
  * // Reset navigation when user starts typing
  * history.reset();
+ *
+ * // On logout (wipes localStorage + internal registry for matching keys):
+ * InputHistory.clearAllMatching("joy:");
  * ```
  */
 export class InputHistory {
