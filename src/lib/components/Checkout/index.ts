@@ -94,4 +94,5 @@ export {
 	createEmptyAddress,
 	createEmptyCustomerFormData,
 	createEmptyLoginFormData,
+	addressesEqual,
 } from "./_internal/checkout-utils.js";

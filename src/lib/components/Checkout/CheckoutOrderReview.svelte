@@ -93,7 +93,7 @@
 	import Button from "../Button/Button.svelte";
 	import H, { type HLevel } from "../H/H.svelte";
 	import { t_default } from "./_internal/checkout-i18n-defaults.js";
-	import { defaultFormatPrice } from "./_internal/checkout-utils.js";
+	import { defaultFormatPrice, addressesEqual } from "./_internal/checkout-utils.js";
 	import CheckoutSectionHeader from "./CheckoutSectionHeader.svelte";
 
 	let {
@@ -124,19 +124,9 @@
 		unstyled ? classProp : twMerge("stuic-checkout-review", classProp)
 	);
 
-	let isBillingSameAsShipping = $derived.by(() => {
-		const s = order.shipping_address;
-		const b = order.billing_address;
-		if (!b || !s) return true;
-		return (
-			s.name === b.name &&
-			s.street === b.street &&
-			s.city === b.city &&
-			s.postal_code === b.postal_code &&
-			s.country === b.country &&
-			(s.phone ?? "") === (b.phone ?? "")
-		);
-	});
+	let isBillingSameAsShipping = $derived(
+		addressesEqual(order.shipping_address, order.billing_address)
+	);
 </script>
 
 <div bind:this={el} class={_class} {...rest}>

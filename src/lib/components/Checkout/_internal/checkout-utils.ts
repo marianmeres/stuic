@@ -60,6 +60,33 @@ const REQUIRED_ADDRESS_FIELDS = [
 	"country",
 ] as const;
 
+const ALL_ADDRESS_FIELDS: readonly (keyof CheckoutAddressData)[] = [
+	"name",
+	"street",
+	"city",
+	"postal_code",
+	"country",
+	"phone",
+	"label",
+	"is_default",
+];
+
+/**
+ * Structural equality for two addresses. Nullish values are treated as empty strings.
+ * If either address is missing, returns true (the UI convention is "don't render a
+ * separate billing block").
+ */
+export function addressesEqual(
+	a: CheckoutAddressData | undefined,
+	b: CheckoutAddressData | undefined
+): boolean {
+	if (!a || !b) return true;
+	for (const field of ALL_ADDRESS_FIELDS) {
+		if ((a[field] ?? "") !== (b[field] ?? "")) return false;
+	}
+	return true;
+}
+
 export function validateAddress(
 	address: CheckoutAddressData,
 	prefix: string,
