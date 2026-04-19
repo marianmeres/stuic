@@ -48,8 +48,8 @@ interface NavGroup {
 	items?: NavItem[];
 	/** Group icon (optional) */
 	icon?: THC;
-	/** Whether the group starts collapsed */
-	defaultCollapsed?: boolean;
+	/** Whether the group starts expanded (default: false — groups are collapsed by default) */
+	defaultExpanded?: boolean;
 	/** Navigation URL for groups without items */
 	href?: string;
 	/** Click handler for groups without items */

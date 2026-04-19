@@ -11,9 +11,9 @@
 		id: string;
 		/** Display label (supports localization) */
 		label: MaybeLocalized;
-		/** Navigation URL (use href OR onClick, not both) */
+		/** Navigation URL. If both `href` and `onClick` are provided, `onClick` runs first (useful for analytics) and the browser then follows the href. */
 		href?: string;
-		/** Click handler (alternative to href) */
+		/** Click handler. Alternative to `href`, or runs before navigation if both are set. */
 		onClick?: () => void;
 		/** Icon content (THC for flexibility: string, html, component) */
 		icon?: THC;
@@ -603,7 +603,7 @@
 										class={twMerge(!unstyled && NAV_CHILDREN_CLASSES, classChildren)}
 										transition:slide={{ duration: transitionDuration }}
 									>
-										{#each item.children ?? [] as child}
+										{#each item.children ?? [] as child (child.id)}
 											{@render renderItem(child, depth + 1)}
 										{/each}
 									</ul>
@@ -627,6 +627,7 @@
 									data-expanding={!unstyled && isExpanding ? "" : undefined}
 									data-disabled={!unstyled && item.disabled ? "" : undefined}
 									data-touch-friendly={!unstyled && isTouchFriendly ? "" : undefined}
+									aria-current={active ? "page" : undefined}
 									aria-disabled={item.disabled}
 									tabindex={item.disabled ? -1 : 0}
 									use:tooltip={() => ({
@@ -691,7 +692,7 @@
 						</li>
 					{/snippet}
 
-					{#each group.items ?? [] as item}
+					{#each group.items ?? [] as item (item.id)}
 						{@render renderItem(item, 0)}
 					{/each}
 				</ul>

@@ -66,6 +66,10 @@
 	--stuic-nav-item-text-focus: var(--stuic-color-primary-foreground);
 }
 
+:root.dark {
+	--stuic-nav-item-bg-hover: rgb(255 255 255 / 0.08);
+}
+
 @layer components {
 	/* =============================================================================
 	   BASE CONTAINER
