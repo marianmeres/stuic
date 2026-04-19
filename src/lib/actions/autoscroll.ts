@@ -39,6 +39,13 @@ const DEFAULTS = {
  * - Observes child mutations and resize events
  * - Supports reactive store dependencies for manual trigger
  *
+ * @remarks
+ * This action intentionally uses the Svelte-4-style `(node, options)` signature with a
+ * `{ destroy }` return shape rather than the newer `.svelte.ts` + `$effect` pattern used
+ * by other actions in this library. It's legacy code imported from a pre-Svelte-5 project
+ * and is kept as-is for backwards compatibility. Svelte 5 still supports this pattern as a
+ * first-class API, so there's no rush to convert.
+ *
  * @param node - The scrollable container element
  * @param options - Configuration options
  * @param options.behavior - Scroll behavior: 'smooth' | 'instant' | 'auto' (default: 'smooth')

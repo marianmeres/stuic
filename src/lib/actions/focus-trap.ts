@@ -20,6 +20,13 @@ const defaults: FocusTrapOptions = { enabled: true, autoFocusFirst: true };
  * - Handles dynamically added/removed elements via MutationObserver
  * - Excludes disabled elements and negative tabindexes
  *
+ * @remarks
+ * This action intentionally uses the Svelte-4-style `(node, options)` signature with an
+ * `{ update, destroy }` return shape rather than the newer `.svelte.ts` + `$effect` pattern
+ * used by other actions in this library. It's legacy code imported from a pre-Svelte-5
+ * project and is kept as-is for backwards compatibility. Svelte 5 still supports this
+ * pattern as a first-class API, so there's no rush to convert.
+ *
  * @param node - The container element to trap focus within
  * @param options - Configuration options
  * @param options.enabled - Whether the trap is active (default: true)
@@ -41,9 +48,7 @@ const defaults: FocusTrapOptions = { enabled: true, autoFocusFirst: true };
  * ```
  */
 export function focusTrap(node: HTMLElement, options: FocusTrapOptions = {}) {
-	let enabled: boolean;
-	const { enabled: _enabled, autoFocusFirst } = { ...defaults, ...(options || {}) };
-	enabled = _enabled ?? true;
+	let { enabled = true, autoFocusFirst } = { ...defaults, ...(options ?? {}) };
 
 	const focusableSelectors = [
 		"[contentEditable=true]",
