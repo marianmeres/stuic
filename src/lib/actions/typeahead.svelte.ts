@@ -69,6 +69,12 @@ export function typeahead<T extends Item = Item>(
 	let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 	let previousKey = "";
 	let allowListAll = false;
+	// Monotonic token — used to discard stale async results when a newer search has started.
+	let searchSeq = 0;
+	// Captures parent's inline position value before we mutate it, so cleanup can restore.
+	// `null` means we did not mutate the parent (e.g. it wasn't static to begin with).
+	let parentOriginalPosition: string | null = null;
+	let parentEl: HTMLElement | null = null;
 
 	// Current resolved options
 	let currentOpts: TypeaheadOptions<T> = { getOptions: async () => [] };
@@ -108,11 +114,12 @@ export function typeahead<T extends Item = Item>(
 		return suggestion ? suggestion + hint : "";
 	}
 
-	// Update ghost input value
+	// Update ghost input value + reflect expanded state for assistive tech
 	function updateGhost() {
 		if (ghostEl) {
 			ghostEl.value = getVisibleSuggestion();
 		}
+		el.setAttribute("aria-expanded", options?.active ? "true" : "false");
 	}
 
 	// Create ghost input element
@@ -126,11 +133,13 @@ export function typeahead<T extends Item = Item>(
 		ghostEl.setAttribute("aria-hidden", "true");
 		ghostEl.setAttribute("autocomplete", "off");
 
-		// Ensure parent has relative positioning
-		const parent = el.parentElement;
+		// Ensure parent has relative positioning; remember original so cleanup can restore it
+		const parent = el.parentElement as HTMLElement | null;
 		if (parent) {
+			parentEl = parent;
 			const parentPos = getComputedStyle(parent).position;
 			if (parentPos === "static") {
+				parentOriginalPosition = parent.style.position; // typically "" when not previously set inline
 				parent.style.position = "relative";
 			}
 		}
@@ -186,6 +195,9 @@ export function typeahead<T extends Item = Item>(
 	async function performSearch(query: string) {
 		if (!options || !currentOpts.getOptions) return;
 
+		// Tag this call — if a newer one starts before we finish, we'll drop our result.
+		const mySeq = ++searchSeq;
+
 		options.clear();
 
 		if (!allowListAll && !query) {
@@ -197,6 +209,9 @@ export function typeahead<T extends Item = Item>(
 
 		try {
 			const results = await currentOpts.getOptions(query, []);
+
+			// Stale response — a newer search has started; discard silently.
+			if (mySeq !== searchSeq) return;
 
 			if (!results.length) {
 				updateGhost();
@@ -223,7 +238,10 @@ export function typeahead<T extends Item = Item>(
 		} catch (err) {
 			clog.error(err);
 		} finally {
-			currentOpts.onFetchingChange?.(false);
+			// Only the latest in-flight call should toggle the fetching state back off.
+			if (mySeq === searchSeq) {
+				currentOpts.onFetchingChange?.(false);
+			}
 		}
 	}
 
@@ -292,6 +310,12 @@ export function typeahead<T extends Item = Item>(
 		} else if (e.key === "Enter") {
 			options?.clear();
 			handleSubmit(value);
+		} else if (e.key === "Escape" && options?.active) {
+			// Dismiss suggestion; stop propagation so we don't e.g. close a surrounding Modal
+			options?.clear();
+			updateGhost();
+			e.preventDefault();
+			e.stopPropagation();
 		} else if (e.key === "Backspace" && cursorPos === 0) {
 			currentOpts.onDeleteRequest?.();
 		}
@@ -334,6 +358,13 @@ export function typeahead<T extends Item = Item>(
 		el.style.position = "";
 		el.style.zIndex = "";
 		el.style.background = "";
+
+		// Restore parent's position if we mutated it
+		if (parentEl && parentOriginalPosition !== null) {
+			parentEl.style.position = parentOriginalPosition;
+		}
+		parentEl = null;
+		parentOriginalPosition = null;
 	}
 
 	// Main effect for setup/cleanup
@@ -394,14 +425,21 @@ export function typeahead<T extends Item = Item>(
 		el.addEventListener("input", onInput);
 		el.addEventListener("blur", onBlur);
 
-		// Set autocomplete off
+		// Set autocomplete off + combobox semantics for assistive tech
 		el.setAttribute("autocomplete", "off");
+		el.setAttribute("role", "combobox");
+		el.setAttribute("aria-autocomplete", "inline");
+		el.setAttribute("aria-expanded", "false");
 
 		return () => {
 			// Cleanup
 			el.removeEventListener("keydown", onKeyDown);
 			el.removeEventListener("input", onInput);
 			el.removeEventListener("blur", onBlur);
+
+			el.removeAttribute("role");
+			el.removeAttribute("aria-autocomplete");
+			el.removeAttribute("aria-expanded");
 
 			destroyGhost();
 
