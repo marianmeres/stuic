@@ -11,14 +11,20 @@ keyboard navigation, snap scrolling, and flexible content rendering via THC.
 | `itemsPerView`    | `number`                                                            | `1`        | Number of items visible per view       |
 | `peekPercent`     | `number`                                                            | `0`        | Percentage of next item to show (0-50) |
 | `gap`             | `number \| string`                                                  | -          | Gap between items                      |
+| `minItemWidth`    | `number`                                                            | `150`      | Minimum item width in px (auto-fit floor) |
 | `trackActive`     | `boolean`                                                           | `false`    | Enable active item tracking            |
+| `syncActiveOnScroll` | `boolean`                                                        | `false`    | Update active item based on scroll position (requires `trackActive`) |
 | `activeIndex`     | `number`                                                            | `0`        | Active item index (bindable)           |
 | `value`           | `string \| number`                                                  | -          | Active item id (bindable)              |
 | `snap`            | `boolean`                                                           | `true`     | Enable scroll snap                     |
 | `snapAlign`       | `"start" \| "center" \| "end"`                                      | `"start"`  | Snap alignment                         |
 | `keyboard`        | `boolean`                                                           | `true`     | Enable keyboard navigation             |
-| `loop`            | `boolean`                                                           | `false`    | Loop navigation                        |
-| `scrollBehavior`  | `ScrollBehavior`                                                    | `"smooth"` | Scroll behavior                        |
+| `wheelScroll`     | `boolean`                                                           | `true`     | Enable horizontal scrolling via mouse wheel |
+| `loop`            | `boolean`                                                           | `false`    | Loop navigation (arrows / keyboard only — wheel never loops) |
+| `scrollBehavior`  | `ScrollBehavior`                                                    | `"smooth"` | Scroll behavior (overridden to `"instant"` when `prefers-reduced-motion: reduce`) |
+| `scrollbar`       | `boolean`                                                           | `true`     | Show the scrollbar on hover (set `false` when using nav buttons) |
+| `arrows`          | `boolean`                                                           | `false`    | Show prev/next arrow buttons overlaid on left/right edges |
+| `classArrow`      | `string`                                                            | -          | Custom class for arrow buttons         |
 | `class`           | `string`                                                            | -          | Custom class for container             |
 | `classTrack`      | `string`                                                            | -          | Custom class for scroll track          |
 | `classItem`       | `string`                                                            | -          | Custom class for items                 |

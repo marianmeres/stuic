@@ -98,6 +98,7 @@
 <script lang="ts">
 	import { ItemCollection } from "@marianmeres/item-collection";
 	import { twMerge } from "../../utils/tw-merge.js";
+	import { prefersReducedMotion } from "../../utils/prefers-reduced-motion.svelte.js";
 	import Thc from "../Thc/Thc.svelte";
 	import Button from "../Button/Button.svelte";
 	import {
@@ -138,6 +139,12 @@
 	// Internal refs
 	let trackEl: HTMLDivElement | undefined = $state();
 	let itemEls: Record<string | number, HTMLDivElement> = $state({});
+
+	// Respect user's reduced-motion preference — when set, skip smooth scrolling.
+	const reducedMotion = prefersReducedMotion();
+	const effectiveScrollBehavior = $derived<ScrollBehavior>(
+		reducedMotion.current ? "instant" : scrollBehavior
+	);
 
 	// ItemCollection for managing items and active state
 	const coll: ItemColl = $derived.by(() => {
@@ -233,7 +240,7 @@
 			const activeItem = coll.active;
 			if (activeItem && itemEls[activeItem.id]) {
 				itemEls[activeItem.id]?.scrollIntoView({
-					behavior: scrollBehavior,
+					behavior: effectiveScrollBehavior,
 					block: "nearest",
 					inline:
 						snapAlign === "center" ? "center" : snapAlign === "end" ? "end" : "start",
@@ -245,7 +252,7 @@
 				() => {
 					isScrollingProgrammatically = false;
 				},
-				scrollBehavior === "instant" ? 0 : 300
+				effectiveScrollBehavior === "instant" ? 0 : 300
 			);
 		}, 0);
 	}
