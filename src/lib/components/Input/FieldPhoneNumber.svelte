@@ -3,10 +3,11 @@
 	import type { ValidateOptions } from "../../actions/validate.svelte.js";
 	import type { TranslateFn } from "../../types.js";
 	import type { THC } from "../Thc/Thc.svelte";
+	import type { InputWrapClassProps } from "./types.js";
 
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
-	export interface Props extends Record<string, any> {
+	export interface Props extends InputWrapClassProps, Record<string, any> {
 		input?: HTMLInputElement;
 		/** Full phone number string, e.g. "+421905123456". Bindable. */
 		value?: string;
@@ -46,14 +47,8 @@
 		labelLeftWidth?: "normal" | "wide";
 		labelLeftBreakpoint?: number;
 		//
+		/** Classes for the tel <input> element */
 		classInput?: string;
-		classLabel?: string;
-		classLabelBox?: string;
-		classInputBox?: string;
-		classInputBoxWrap?: string;
-		classInputBoxWrapInvalid?: string;
-		classDescBox?: string;
-		classBelowBox?: string;
 		classPrefixTrigger?: string;
 		classPrefixDropdown?: string;
 		style?: string;
@@ -121,7 +116,9 @@
 		classInputBoxWrap,
 		classInputBoxWrapInvalid,
 		classDescBox,
+		classDescBoxToggle,
 		classBelowBox,
+		classValidationBox,
 		classPrefixTrigger,
 		classPrefixDropdown,
 		style,
@@ -283,7 +280,9 @@
 	{classInputBoxWrap}
 	{classInputBoxWrapInvalid}
 	{classDescBox}
+	{classDescBoxToggle}
 	{classBelowBox}
+	{classValidationBox}
 	{validation}
 	{style}
 >

@@ -5,10 +5,11 @@
 		ValidationResult,
 	} from "../../actions/validate.svelte.js";
 	import type { THC } from "../Thc/Thc.svelte";
+	import type { InputWrapClassProps } from "./types.js";
 
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
-	export interface Props extends Record<string, any> {
+	export interface Props extends InputWrapClassProps, Record<string, any> {
 		value: string;
 		name: string;
 		label?: SnippetWithId | THC;
@@ -25,12 +26,6 @@
 		labelLeft?: boolean;
 		labelLeftWidth?: "normal" | "wide";
 		labelLeftBreakpoint?: number;
-		classLabel?: string;
-		classLabelBox?: string;
-		classInputBox?: string;
-		classInputBoxWrap?: string;
-		classDescBox?: string;
-		classBelowBox?: string;
 		style?: string;
 		onChange?: (value: string) => void;
 	}
@@ -66,8 +61,11 @@
 		classLabelBox,
 		classInputBox,
 		classInputBoxWrap,
+		classInputBoxWrapInvalid,
 		classDescBox,
+		classDescBoxToggle,
 		classBelowBox,
+		classValidationBox,
 		style,
 		onChange,
 	}: Props = $props();
@@ -252,8 +250,11 @@
 	{classLabelBox}
 	{classInputBox}
 	{classInputBoxWrap}
+	{classInputBoxWrapInvalid}
 	{classDescBox}
+	{classDescBoxToggle}
 	{classBelowBox}
+	{classValidationBox}
 	{validation}
 	{style}
 >

@@ -4,10 +4,14 @@
 	import type { TypeaheadOptions } from "../../actions/typeahead.svelte.js";
 	import type { ValidateOptions } from "../../actions/validate.svelte.js";
 	import type { THC } from "../Thc/Thc.svelte";
+	import type { InputWrapClassProps } from "./types.js";
 
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
-	export interface Props extends HTMLInputAttributes, Record<string, any> {
+	export interface Props
+		extends HTMLInputAttributes,
+			InputWrapClassProps,
+			Record<string, any> {
 		input?: HTMLInputElement;
 		value?: string | number;
 		label?: SnippetWithId | THC;
@@ -30,14 +34,8 @@
 		labelLeft?: boolean;
 		labelLeftWidth?: "normal" | "wide";
 		labelLeftBreakpoint?: number;
+		/** Classes for the <input> element */
 		classInput?: string;
-		classLabel?: string;
-		classLabelBox?: string;
-		classInputBox?: string;
-		classInputBoxWrap?: string;
-		classInputBoxWrapInvalid?: string;
-		classDescBox?: string;
-		classBelowBox?: string;
 		style?: string;
 	}
 </script>
@@ -88,7 +86,9 @@
 		classInputBoxWrap,
 		classInputBoxWrapInvalid,
 		classDescBox,
+		classDescBoxToggle,
 		classBelowBox,
+		classValidationBox,
 		style,
 		//
 		...rest
@@ -121,7 +121,9 @@
 	{classInputBoxWrap}
 	{classInputBoxWrapInvalid}
 	{classDescBox}
+	{classDescBoxToggle}
 	{classBelowBox}
+	{classValidationBox}
 	{validation}
 	{style}
 >

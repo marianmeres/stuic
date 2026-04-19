@@ -3,10 +3,14 @@
 	import type { HTMLInputAttributes } from "svelte/elements";
 	import type { ValidateOptions } from "../../actions/validate.svelte.js";
 	import type { THC } from "../Thc/Thc.svelte";
+	import type { InputWrapClassProps } from "./types.js";
 
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
-	export interface Props extends HTMLInputAttributes, Record<string, any> {
+	export interface Props
+		extends HTMLInputAttributes,
+			InputWrapClassProps,
+			Record<string, any> {
 		input?: HTMLInputElement;
 		files?: FileList;
 		multiple?: boolean;
@@ -27,13 +31,9 @@
 		labelLeft?: boolean;
 		labelLeftWidth?: "normal" | "wide";
 		labelLeftBreakpoint?: number;
+		/** Classes for the <input> element */
 		classInput?: string;
-		classLabel?: string;
-		classLabelBox?: string;
-		classInputBox?: string;
-		classInputBoxWrap?: string;
-		classDescBox?: string;
-		classBelowBox?: string;
+		/** Classes for the rendered file list (when multiple files selected) */
 		classFileList?: string;
 		style?: string;
 	}
@@ -81,8 +81,11 @@
 		classLabelBox,
 		classInputBox,
 		classInputBoxWrap,
+		classInputBoxWrapInvalid,
 		classDescBox,
+		classDescBoxToggle,
 		classBelowBox,
+		classValidationBox,
 		classFileList,
 		style,
 		//
@@ -114,8 +117,11 @@
 	{classLabelBox}
 	{classInputBox}
 	{classInputBoxWrap}
+	{classInputBoxWrapInvalid}
 	{classDescBox}
+	{classDescBoxToggle}
 	{classBelowBox}
+	{classValidationBox}
 	{validation}
 	{style}
 >

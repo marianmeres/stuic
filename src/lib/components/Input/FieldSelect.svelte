@@ -3,11 +3,11 @@
 	import type { HTMLSelectAttributes } from "svelte/elements";
 	import type { ValidateOptions } from "../../actions/validate.svelte.js";
 	import type { THC } from "../Thc/Thc.svelte";
-	import type { FieldSelectOption } from "./types.js";
+	import type { FieldSelectOption, InputWrapClassProps } from "./types.js";
 
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
-	export interface Props extends HTMLSelectAttributes {
+	export interface Props extends HTMLSelectAttributes, InputWrapClassProps {
 		input?: HTMLSelectElement;
 		value?: string | number;
 		label?: SnippetWithId | THC;
@@ -28,13 +28,8 @@
 		labelLeft?: boolean;
 		labelLeftWidth?: "normal" | "wide";
 		labelLeftBreakpoint?: number;
+		/** Classes for the <select> element */
 		classInput?: string;
-		classLabel?: string;
-		classLabelBox?: string;
-		classInputBox?: string;
-		classInputBoxWrap?: string;
-		classDescBox?: string;
-		classBelowBox?: string;
 		style?: string;
 	}
 </script>
@@ -82,8 +77,11 @@
 		classLabelBox,
 		classInputBox,
 		classInputBoxWrap,
+		classInputBoxWrapInvalid,
 		classDescBox,
+		classDescBoxToggle,
 		classBelowBox,
+		classValidationBox,
 		style,
 		//
 		...rest
@@ -128,8 +126,11 @@
 	{classLabelBox}
 	{classInputBox}
 	{classInputBoxWrap}
+	{classInputBoxWrapInvalid}
 	{classDescBox}
+	{classDescBoxToggle}
 	{classBelowBox}
+	{classValidationBox}
 	{validation}
 	{style}
 >

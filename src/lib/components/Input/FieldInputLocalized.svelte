@@ -6,10 +6,11 @@
 	} from "../../actions/validate.svelte.js";
 	import type { TranslateFn } from "../../types.js";
 	import type { THC } from "../Thc/Thc.svelte";
+	import type { InputWrapClassProps } from "./types.js";
 
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
-	export interface Props extends Record<string, any> {
+	export interface Props extends InputWrapClassProps, Record<string, any> {
 		value?: string;
 		name: string;
 		label?: SnippetWithId | THC;
@@ -26,12 +27,6 @@
 		labelLeft?: boolean;
 		labelLeftWidth?: "normal" | "wide";
 		labelLeftBreakpoint?: number;
-		classLabel?: string;
-		classLabelBox?: string;
-		classInputBox?: string;
-		classInputBoxWrap?: string;
-		classDescBox?: string;
-		classBelowBox?: string;
 		classEntry?: string;
 		classLanguageLabel?: string;
 		classLanguageInput?: string;
@@ -107,8 +102,11 @@
 		classLabelBox,
 		classInputBox,
 		classInputBoxWrap,
+		classInputBoxWrapInvalid,
 		classDescBox,
+		classDescBoxToggle,
 		classBelowBox,
+		classValidationBox,
 		classEntry,
 		classLanguageLabel,
 		classLanguageInput,
@@ -270,8 +268,11 @@
 	{classLabelBox}
 	{classInputBox}
 	{classInputBoxWrap}
+	{classInputBoxWrapInvalid}
 	{classDescBox}
+	{classDescBoxToggle}
 	{classBelowBox}
+	{classValidationBox}
 	{validation}
 	{style}
 >

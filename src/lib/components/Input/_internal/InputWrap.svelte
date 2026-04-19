@@ -5,10 +5,11 @@
 	import { twMerge } from "../../../utils/tw-merge.js";
 	import { Collapsible } from "../../Collapsible/index.js";
 	import Thc, { isTHCNotEmpty, type THC } from "../../Thc/Thc.svelte";
+	import type { InputWrapClassProps } from "../types.js";
 
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
-	interface Props {
+	interface Props extends InputWrapClassProps {
 		id: string;
 		size?: "sm" | "md" | "lg" | string;
 		class?: string;
@@ -28,15 +29,6 @@
 		labelLeftWidth?: "normal" | "wide";
 		labelLeftBreakpoint?: number;
 		//
-		classLabel?: string;
-		classLabelBox?: string;
-		classInputBox?: string;
-		classInputBoxWrap?: string;
-		classInputBoxWrapInvalid?: string;
-		classDescBox?: string;
-		classDescBoxToggle?: string;
-		classBelowBox?: string;
-		classValidationBox?: string;
 		descriptionCollapsible?: boolean;
 		descriptionDefaultExpanded?: boolean;
 		style?: string;

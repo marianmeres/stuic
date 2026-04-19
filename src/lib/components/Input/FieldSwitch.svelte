@@ -2,10 +2,11 @@
 	import type { Snippet } from "svelte";
 	import type { ValidateOptions } from "../../actions/validate.svelte.js";
 	import type { THC } from "../Thc/Thc.svelte";
+	import type { InputWrapClassProps } from "./types.js";
 
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
-	export interface Props extends Record<string, any> {
+	export interface Props extends InputWrapClassProps, Record<string, any> {
 		input?: HTMLInputElement;
 		checked?: boolean;
 		label?: SnippetWithId | THC;
@@ -27,13 +28,8 @@
 		labelLeft?: boolean;
 		labelLeftWidth?: "normal" | "wide";
 		labelLeftBreakpoint?: number;
+		/** Classes for the underlying <Switch> element */
 		classInput?: string;
-		classLabel?: string;
-		classLabelBox?: string;
-		classInputBox?: string;
-		classInputBoxWrap?: string;
-		classDescBox?: string;
-		classBelowBox?: string;
 		style?: string;
 		renderValue?: (rawValue: any) => string;
 	}
@@ -79,8 +75,11 @@
 		classLabelBox,
 		classInputBox,
 		classInputBoxWrap,
+		classInputBoxWrapInvalid,
 		classDescBox,
+		classDescBoxToggle,
 		classBelowBox,
+		classValidationBox,
 		style = "",
 		//
 		renderValue,
@@ -111,8 +110,11 @@
 	{classLabel}
 	{classLabelBox}
 	{classInputBox}
+	{classInputBoxWrapInvalid}
 	{classDescBox}
+	{classDescBoxToggle}
 	{classBelowBox}
+	{classValidationBox}
 	{validation}
 	classInputBoxWrap={twMerge("input-wrap-transparent", classInputBoxWrap)}
 	{style}

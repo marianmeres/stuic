@@ -24,6 +24,7 @@
 	import InputWrap from "./_internal/InputWrap.svelte";
 	import FieldLikeButton from "./FieldLikeButton.svelte";
 	import ListItemButton from "../ListItemButton/ListItemButton.svelte";
+	import type { InputWrapClassProps } from "./types.js";
 
 	export interface Option {
 		label: string;
@@ -32,7 +33,7 @@
 
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
-	export interface Props extends Record<string, any> {
+	export interface Props extends InputWrapClassProps, Record<string, any> {
 		trigger?: Snippet<[{ value: string; modal: ModalDialog }]>;
 		modal?: ModalDialog;
 		input?: HTMLInputElement;
@@ -53,13 +54,8 @@
 		labelLeft?: boolean;
 		labelLeftWidth?: "normal" | "wide";
 		labelLeftBreakpoint?: number;
+		/** Classes for the inner FieldLikeButton element */
 		classInput?: string;
-		classLabel?: string;
-		classLabelBox?: string;
-		classInputBox?: string;
-		classInputBoxWrap?: string;
-		classDescBox?: string;
-		classBelowBox?: string;
 		classOption?: string;
 		classOptionActive?: string;
 		classOptgroup?: string;
@@ -154,8 +150,11 @@
 		classLabelBox,
 		classInputBox,
 		classInputBoxWrap,
+		classInputBoxWrapInvalid,
 		classDescBox,
+		classDescBoxToggle,
 		classBelowBox,
+		classValidationBox,
 		//
 		classOption,
 		classOptionActive,
@@ -524,8 +523,11 @@
 			{classLabelBox}
 			{classInputBox}
 			{classInputBoxWrap}
+			{classInputBoxWrapInvalid}
 			{classDescBox}
+			{classDescBoxToggle}
 			{classBelowBox}
+			{classValidationBox}
 			{style}
 			validate={wrappedValidate}
 			{required}

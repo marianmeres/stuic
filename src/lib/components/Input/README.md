@@ -48,6 +48,26 @@ A comprehensive form input system with multiple field components, validation sup
 | `inputBelow`  | `Snippet \| THC` | Content below input                   |
 | `below`       | `Snippet \| THC` | Content below entire field            |
 
+## Shared wrapper class props (`InputWrapClassProps`)
+
+Every `Field*` component that uses the shared label/input/description scaffolding accepts **the same 9 class props**, exported as the `InputWrapClassProps` interface from `@marianmeres/stuic`. Each Field extends that interface in its own `Props`, so the shape stays in sync and new wrapper targets are added in one place.
+
+| Prop                        | Target                                                             |
+| --------------------------- | ------------------------------------------------------------------ |
+| `classLabel`                | `<label>` element                                                  |
+| `classLabelBox`             | Wrapper around the label area                                      |
+| `classInputBox`             | Wrapper around the whole input area                                |
+| `classInputBoxWrap`         | Inner input wrap (sibling to description/validation/below)         |
+| `classInputBoxWrapInvalid`  | Added to `classInputBoxWrap` when validation fails                 |
+| `classDescBox`              | Description/help text box                                          |
+| `classDescBoxToggle`        | Collapsible description's toggle button                            |
+| `classBelowBox`             | "Below" slot (rendered under the description)                      |
+| `classValidationBox`        | Validation message box                                             |
+
+Component-specific targets (e.g. `classInput` for the inner `<input>`/`<select>`/`<textarea>`, `classFileList` on `FieldFile`, `classOption`/`classOptgroup` on `FieldOptions`, `classPrefixTrigger` on `FieldPhoneNumber`, etc.) live on the component itself alongside these shared props.
+
+> `FieldCheckbox` and `FieldRadios` have bespoke inline layouts and don't use the shared wrapper — they declare only the class props relevant to their own layout.
+
 ## Usage
 
 ### Basic Text Input

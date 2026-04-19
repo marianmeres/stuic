@@ -37,6 +37,7 @@
 	import SpinnerCircleOscillate from "../Spinner/SpinnerCircleOscillate.svelte";
 	import { isTHCNotEmpty, type THC } from "../Thc/Thc.svelte";
 	import InputWrap from "./_internal/InputWrap.svelte";
+	import type { InputWrapClassProps } from "./types.js";
 	import Button from "../Button/Button.svelte";
 
 	const clog = createClog("FieldAssets");
@@ -126,7 +127,7 @@
 
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
-	export interface Props extends Record<string, any> {
+	export interface Props extends InputWrapClassProps, Record<string, any> {
 		value: string;
 		label?: SnippetWithId | THC;
 		type?: string;
@@ -145,13 +146,8 @@
 		labelLeft?: boolean;
 		labelLeftWidth?: "normal" | "wide";
 		labelLeftBreakpoint?: number;
+		/** Classes for the hidden <input> element */
 		classInput?: string;
-		classLabel?: string;
-		classLabelBox?: string;
-		classInputBox?: string;
-		classInputBoxWrap?: string;
-		classDescBox?: string;
-		classBelowBox?: string;
 		classOption?: string;
 		classOptionActive?: string;
 		classOptgroup?: string;
@@ -205,8 +201,11 @@
 		classLabelBox,
 		classInputBox,
 		classInputBoxWrap,
+		classInputBoxWrapInvalid,
 		classDescBox,
+		classDescBoxToggle,
 		classBelowBox,
+		classValidationBox,
 		//
 		classOption,
 		classOptionActive,
@@ -503,8 +502,11 @@
 		{classLabelBox}
 		{classInputBox}
 		{classInputBoxWrap}
+		{classInputBoxWrapInvalid}
 		{classDescBox}
+		{classDescBoxToggle}
 		{classBelowBox}
+		{classValidationBox}
 		{validation}
 		{style}
 	>
