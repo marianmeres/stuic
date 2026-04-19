@@ -58,6 +58,8 @@
 		classOption?: string;
 		classOptionActive?: string;
 		showAllOnEmptyQ?: boolean;
+		/** Skip stuic base classes (user provides their own styling) */
+		unstyled?: boolean;
 	}
 </script>
 
@@ -81,6 +83,7 @@
 		itemIdPropName = "id",
 		searchPlaceholder,
 		showAllOnEmptyQ,
+		unstyled = false,
 	}: Props = $props();
 
 	function _renderOptionLabel(item: Item): string {
@@ -138,10 +141,16 @@
 				_optionsColl.clear().addMany(res);
 			})
 			.catch((e) => {
+				// Surface errors only for the latest in-flight request
+				if (currentRequest !== fetchRequestId) return;
 				console.error(e);
 				notifications?.error(`${e}`);
 			})
-			.finally(() => (isFetching = false));
+			.finally(() => {
+				// Only the latest request toggles the fetching state back off
+				// so the spinner doesn't flicker when a stale response arrives late.
+				if (currentRequest === fetchRequestId) isFetching = false;
+			});
 	});
 
 	//
@@ -263,14 +272,20 @@
 			>
 				{#snippet inputBefore()}
 					<div
-						class="flex flex-col items-center justify-center pl-3 stuic-command-menu-muted"
+						class={twMerge(
+							"flex flex-col items-center justify-center pl-3",
+							!unstyled && "stuic-command-menu-muted"
+						)}
 					>
 						{@html iconSearch({ size: 19 })}
 					</div>
 				{/snippet}
 				{#snippet inputAfter()}
 					<div
-						class="flex pl-2 items-center justify-center stuic-command-menu-placeholder"
+						class={twMerge(
+							"flex pl-2 items-center justify-center",
+							!unstyled && "stuic-command-menu-placeholder"
+						)}
 					>
 						{#if isFetching}
 							<Spinner class="w-4" />
@@ -302,7 +317,7 @@
 					{#if options.size}
 						<div
 							class={twMerge(
-								"stuic-command-menu-options",
+								!unstyled && "stuic-command-menu-options",
 								"block space-y-1 p-1",
 								"overflow-y-auto overflow-x-hidden mb-1",
 								"border-t"
@@ -314,11 +329,13 @@
 							aria-label="Search results"
 						>
 							{#each _normalize_and_group_options(options.items) as [_optgroup, _opts]}
-								<!-- {console.log(11111, _optgroup, _opts)} -->
 								<div class="p-1">
 									{#if _optgroup}
 										<div
-											class="stuic-command-menu-group-header mb-1 p-1 font-semibold uppercase tracking-wide"
+											class={twMerge(
+												"mb-1 p-1 font-semibold uppercase tracking-wide",
+												!unstyled && "stuic-command-menu-group-header"
+											)}
 										>
 											{_optgroup}
 										</div>
@@ -327,7 +344,6 @@
 										{#each _opts as item (item[itemIdPropName])}
 											{@const active =
 												item[itemIdPropName] === options.active?.[itemIdPropName]}
-											<!-- {@const isSelected = false} -->
 											<li class:active role="presentation">
 												<ListItemButton
 													id={btn_id(item[itemIdPropName])}
