@@ -10,7 +10,6 @@
 	--stuic-cron-input-section-gap: 0.25rem;
 	--stuic-cron-input-field-label-text: var(--stuic-color-muted-foreground);
 	--stuic-cron-input-summary-text: var(--stuic-color-muted-foreground);
-	--stuic-cron-input-error-text: var(--stuic-color-destructive);
 	--stuic-cron-input-field-bg: var(--stuic-color-background);
 	--stuic-cron-input-field-border: var(--stuic-color-border);
 	--stuic-cron-input-field-border-focus: var(--stuic-color-primary);
@@ -188,13 +187,6 @@
 	/* Summary / human description */
 	.stuic-cron-input-summary {
 		color: var(--stuic-cron-input-summary-text);
-		font-size: 0.8125rem;
-		line-height: 1.4;
-	}
-
-	/* Error message */
-	.stuic-cron-input-error {
-		color: var(--stuic-cron-input-error-text);
 		font-size: 0.8125rem;
 		line-height: 1.4;
 	}

@@ -17,6 +17,8 @@
 		value?: string;
 		el?: HTMLElement;
 		id?: string;
+		/** Opt out of stuic base classes for full styling control */
+		unstyled?: boolean;
 
 		// Mode toggle (overrides show* flags when defined)
 		mode?: CronInputMode;
@@ -185,6 +187,7 @@
 		value = $bindable("* * * * *"),
 		el = $bindable(),
 		id = getId(),
+		unstyled = false,
 		//
 		mode = $bindable<CronInputMode | undefined>("predefined"),
 		//
@@ -435,14 +438,21 @@
 	>
 		<div class="w-full flex">
 			<div
-				class={twMerge("stuic-cron-input-content", error && "has-error")}
+				class={unstyled
+					? error
+						? "has-error"
+						: undefined
+					: twMerge("stuic-cron-input-content", error && "has-error")}
 				data-presets-only={presetsOnly ? "" : undefined}
 			>
 				{#if _showPresets}
 					<select
-						class={twMerge("stuic-cron-input-preset", classPreset)}
+						class={unstyled
+							? classPreset
+							: twMerge("stuic-cron-input-preset", classPreset)}
 						bind:value={selectedPreset}
 						onchange={onPresetChange}
+						aria-label="Cron schedule preset"
 						{disabled}
 					>
 						<option value="">Custom</option>
@@ -453,18 +463,33 @@
 				{/if}
 
 				{#if _showFields}
-				<div class={twMerge("stuic-cron-input-fields", classFields)}>
+				<div
+					class={unstyled
+						? classFields
+						: twMerge("stuic-cron-input-fields", classFields)}
+				>
 					{#each FIELD_DEFS as def}
-						<div class={twMerge("stuic-cron-input-field", classField)}>
-							<span class={twMerge("stuic-cron-input-field-label", classFieldLabel)}>
+						<div
+							class={unstyled
+								? classField
+								: twMerge("stuic-cron-input-field", classField)}
+						>
+							<span
+								class={unstyled
+									? classFieldLabel
+									: twMerge("stuic-cron-input-field-label", classFieldLabel)}
+							>
 								{def.label}
 							</span>
 							<input
 								type="text"
-								class={twMerge("stuic-cron-input-field-input", classFieldInput)}
+								class={unstyled
+									? classFieldInput
+									: twMerge("stuic-cron-input-field-input", classFieldInput)}
 								bind:value={fields[def.key]}
 								oninput={onFieldInput}
 								placeholder={def.placeholder}
+								aria-label={`${def.label} (${def.placeholder})`}
 								{disabled}
 								autocomplete="off"
 								spellcheck={false}
@@ -477,10 +502,13 @@
 				{#if _showRawInput}
 					<input
 						type="text"
-						class={twMerge("stuic-cron-input-raw", classRaw)}
+						class={unstyled
+							? classRaw
+							: twMerge("stuic-cron-input-raw", classRaw)}
 						bind:value={rawValue}
 						oninput={onRawInput}
 						placeholder="* * * * *"
+						aria-label="Raw cron expression"
 						{disabled}
 						autocomplete="off"
 						spellcheck={false}
@@ -488,7 +516,11 @@
 				{/if}
 
 				{#if (_showDescription || _showNextRun) && humanDescription}
-					<div class={twMerge("stuic-cron-input-summary", classSummary)}>
+					<div
+						class={unstyled
+							? classSummary
+							: twMerge("stuic-cron-input-summary", classSummary)}
+					>
 						{humanDescription}
 					</div>
 				{/if}
@@ -497,8 +529,11 @@
 			{#if hasModeToggle}
 				<button
 					type="button"
-					class={twMerge(BTN_CLS, classToggleButton)}
+					class={unstyled
+						? classToggleButton
+						: twMerge(BTN_CLS, classToggleButton)}
 					onclick={toggleMode}
+					aria-label={mode === "predefined" ? "Switch to manual input" : "Switch to presets"}
 					{disabled}
 					use:tooltip={() => ({
 						enabled: true,

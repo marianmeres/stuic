@@ -3,6 +3,17 @@ import { CronParser } from "@marianmeres/cron";
 /**
  * A reactive helper that parses a cron expression and computes the next run time,
  * updating automatically every minute.
+ *
+ * ⚠️ **You must call `destroy()` when done** — the internal interval does not
+ * clean itself up. In a Svelte component:
+ *
+ * ```ts
+ * import { onDestroy } from "svelte";
+ * const nr = new CronNextRun("0 9 * * *");
+ * onDestroy(() => nr.destroy());
+ * ```
+ *
+ * Forgetting this will leak a 60s-interval timer for the lifetime of the page.
  */
 export class CronNextRun {
 	#expression: string = $state("");
