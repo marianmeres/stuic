@@ -1,0 +1,184 @@
+<script lang="ts" module>
+	import type { Snippet } from "svelte";
+	import type { TranslateFn } from "../../types.js";
+	import type {
+		LoginOrRegisterFormMode,
+		Props as InnerProps,
+	} from "./LoginOrRegisterForm.svelte";
+	import type { LoginFormData } from "../LoginForm/_internal/login-form-types.js";
+	import type { RegisterFormData } from "../RegisterForm/_internal/register-form-types.js";
+	import type { NotificationsStack } from "../Notifications/notifications-stack.svelte.js";
+
+	export interface Props {
+		/** Bindable active mode. Default: "login" */
+		mode?: LoginOrRegisterFormMode;
+
+		/** Bindable login formData */
+		loginData?: LoginFormData;
+
+		/** Bindable register formData */
+		registerData?: RegisterFormData;
+
+		onLogin: (data: LoginFormData) => void;
+		onRegister: (data: RegisterFormData) => void;
+
+		isSubmitting?: boolean;
+
+		loginProps?: InnerProps["loginProps"];
+		registerProps?: InnerProps["registerProps"];
+
+		modeSwitcher?: InnerProps["modeSwitcher"];
+
+		loginModeLabel?: string;
+		registerModeLabel?: string;
+
+		/** Shared social logins (rendered below the active form). */
+		socialLogins?: Snippet;
+		socialDividerLabel?: string | false;
+
+		/** Footer snippet. Receives mode + setter. */
+		footer?: InnerProps["footer"];
+
+		notifications?: NotificationsStack;
+
+		/**
+		 * Override the modal title. If omitted, a mode-aware default is used
+		 * ("Log In" vs "Create account").
+		 */
+		title?: string;
+
+		/** Bindable modal visibility */
+		visible?: boolean;
+
+		/** Optional trigger element rendered outside the modal. */
+		trigger?: Snippet<[{ open: () => void }]>;
+
+		/** CSS class for the Modal box */
+		classModal?: string;
+
+		/** CSS class for the Modal inner width container */
+		classInner?: string;
+
+		/** CSS class for the LoginOrRegisterForm */
+		classForm?: string;
+
+		t?: TranslateFn;
+		unstyled?: boolean;
+
+		noXClose?: boolean;
+		onClose?: () => false | void;
+	}
+</script>
+
+<script lang="ts">
+	import Modal from "../Modal/Modal.svelte";
+	import LoginOrRegisterForm from "./LoginOrRegisterForm.svelte";
+	import Button from "../Button/Button.svelte";
+	import { t_default } from "./_internal/login-or-register-form-i18n-defaults.js";
+	import { createEmptyLoginFormData } from "../LoginForm/_internal/login-form-utils.js";
+	import { createEmptyRegisterFormData } from "../RegisterForm/_internal/register-form-utils.js";
+	import { twMerge } from "../../utils/tw-merge.js";
+	import H from "../H/H.svelte";
+
+	let {
+		mode = $bindable("login"),
+		loginData = $bindable(createEmptyLoginFormData()),
+		registerData = $bindable(createEmptyRegisterFormData()),
+		onLogin,
+		onRegister,
+		isSubmitting = false,
+		loginProps,
+		registerProps,
+		modeSwitcher,
+		loginModeLabel,
+		registerModeLabel,
+		socialLogins,
+		socialDividerLabel,
+		footer,
+		notifications,
+		title,
+		visible = $bindable(false),
+		trigger,
+		classModal,
+		classInner,
+		classForm,
+		t: tProp,
+		unstyled = false,
+		noXClose = false,
+		onClose,
+	}: Props = $props();
+
+	let t = $derived(tProp ?? t_default);
+
+	let resolvedTitle = $derived(
+		title ??
+			(mode === "login"
+				? t("login_or_register_form.modal_title_login")
+				: t("login_or_register_form.modal_title_register"))
+	);
+
+	let modal: Modal = $state()!;
+
+	export function open(openerOrEvent?: null | HTMLElement | MouseEvent) {
+		modal.open(openerOrEvent);
+	}
+
+	export function close() {
+		modal.close();
+	}
+</script>
+
+{#if trigger}
+	{@render trigger({ open: (e?: MouseEvent) => modal.open(e) })}
+{/if}
+
+<Modal
+	bind:this={modal}
+	bind:visible
+	class={classModal}
+	classInner={twMerge("max-w-sm md:max-w-sm", "h-auto md:h-auto m-auto", classInner)}
+	classDialog="flex items-center justify-center"
+>
+	{#snippet header()}
+		<div class="flex items-center justify-between p-4 pb-0">
+			<H level={1} renderLevel={3} class="pl-2">
+				{resolvedTitle}
+			</H>
+			{#if !noXClose}
+				<Button
+					variant="ghost"
+					onclick={() => {
+						if (onClose?.() === false) return;
+						modal.close();
+					}}
+					aria-label="Close"
+					x
+					iconButton
+				/>
+			{/if}
+		</div>
+	{/snippet}
+
+	<div class="p-6 pt-3">
+		<LoginOrRegisterForm
+			bind:mode
+			bind:loginData
+			bind:registerData
+			{onLogin}
+			{onRegister}
+			{isSubmitting}
+			{loginProps}
+			{registerProps}
+			{modeSwitcher}
+			{loginModeLabel}
+			{registerModeLabel}
+			{socialLogins}
+			{socialDividerLabel}
+			{footer}
+			{notifications}
+			t={tProp}
+			{unstyled}
+			class={classForm}
+		/>
+	</div>
+</Modal>

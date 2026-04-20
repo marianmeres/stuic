@@ -1,0 +1,70 @@
+:root {
+	/* RegisterForm */
+	--stuic-register-form-gap: 0rem;
+	--stuic-register-form-gap-row: 1rem;
+
+	/* Social login section */
+	--stuic-register-form-social-margin-top: 1rem;
+	--stuic-register-form-social-gap: 0.75rem;
+	--stuic-register-form-social-divider-color: var(--stuic-color-muted-foreground);
+	--stuic-register-form-social-divider-line-color: var(--stuic-color-border);
+	--stuic-register-form-social-divider-font-size: var(--text-sm);
+	--stuic-register-form-social-divider-margin-bottom: 0.75rem;
+}
+
+@layer components {
+	.stuic-register-form {
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-register-form-gap);
+	}
+
+	.stuic-register-form-submit {
+		margin-top: 1rem;
+	}
+
+	/* Social login container */
+	.stuic-register-form-social {
+		margin-top: var(--stuic-register-form-social-margin-top);
+	}
+
+	/* "or continue with" divider */
+	.stuic-register-form-social-divider {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		margin-bottom: var(--stuic-register-form-social-divider-margin-bottom);
+		color: var(--stuic-register-form-social-divider-color);
+		font-size: var(--stuic-register-form-social-divider-font-size);
+	}
+
+	.stuic-register-form-social-divider::before,
+	.stuic-register-form-social-divider::after {
+		content: "";
+		flex: 1;
+		border-top: 1px solid var(--stuic-register-form-social-divider-line-color);
+	}
+
+	/* Button container */
+	.stuic-register-form-social-buttons {
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-register-form-social-gap);
+	}
+
+	.stuic-register-form-compact-cta {
+		display: flex;
+		align-items: center;
+		margin-top: 0.5rem;
+		gap: 2rem;
+	}
+
+	.stuic-register-form[data-compact] {
+		.stuic-register-form-submit {
+			margin-top: 0.5rem;
+		}
+		.stuic-button {
+			flex: 1;
+		}
+	}
+}

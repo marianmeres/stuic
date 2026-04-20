@@ -53,6 +53,8 @@ export * from "./components/IconSwap/index.js";
 export * from "./components/Input/index.js";
 export * from "./components/KbdShortcut/index.js";
 export * from "./components/LoginForm/index.js";
+export * from "./components/RegisterForm/index.js";
+export * from "./components/LoginOrRegisterForm/index.js";
 export * from "./components/ListItemButton/index.js";
 export * from "./components/Modal/index.js";
 export * from "./components/ModalDialog/index.js";

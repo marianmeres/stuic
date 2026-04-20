@@ -1,0 +1,66 @@
+:root {
+	/* LoginOrRegisterForm */
+	--stuic-login-or-register-form-gap: 1rem;
+	--stuic-login-or-register-form-switcher-margin-bottom: 1rem;
+
+	/* Social login section (shared, rendered at composite level) */
+	--stuic-login-or-register-form-social-margin-top: 1rem;
+	--stuic-login-or-register-form-social-gap: 0.75rem;
+	--stuic-login-or-register-form-social-divider-color: var(
+		--stuic-color-muted-foreground
+	);
+	--stuic-login-or-register-form-social-divider-line-color: var(--stuic-color-border);
+	--stuic-login-or-register-form-social-divider-font-size: var(--text-sm);
+	--stuic-login-or-register-form-social-divider-margin-bottom: 0.75rem;
+}
+
+@layer components {
+	.stuic-login-or-register-form {
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-login-or-register-form-gap);
+	}
+
+	.stuic-login-or-register-form-switcher {
+		display: flex;
+		justify-content: center;
+		margin-bottom: var(--stuic-login-or-register-form-switcher-margin-bottom);
+
+		.stuic-button-group-radio {
+			width: 100%;
+		}
+	}
+
+	.stuic-login-or-register-form-body {
+		display: contents;
+	}
+
+	/* Social login container */
+	.stuic-login-or-register-form-social {
+		margin-top: var(--stuic-login-or-register-form-social-margin-top);
+	}
+
+	/* "or continue with" divider */
+	.stuic-login-or-register-form-social-divider {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		margin-bottom: var(--stuic-login-or-register-form-social-divider-margin-bottom);
+		color: var(--stuic-login-or-register-form-social-divider-color);
+		font-size: var(--stuic-login-or-register-form-social-divider-font-size);
+	}
+
+	.stuic-login-or-register-form-social-divider::before,
+	.stuic-login-or-register-form-social-divider::after {
+		content: "";
+		flex: 1;
+		border-top: 1px solid var(--stuic-login-or-register-form-social-divider-line-color);
+	}
+
+	/* Button container */
+	.stuic-login-or-register-form-social-buttons {
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-login-or-register-form-social-gap);
+	}
+}

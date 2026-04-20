@@ -63,6 +63,8 @@ In practice:
 @import "./components/Card/index.css";
 @import "./components/Carousel/index.css";
 @import "./components/LoginForm/index.css";
+@import "./components/RegisterForm/index.css";
+@import "./components/LoginOrRegisterForm/index.css";
 @import "./components/Checkout/index.css";
 @import "./components/CommandMenu/index.css";
 @import "./components/CronInput/index.css";
