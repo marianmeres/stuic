@@ -62,6 +62,8 @@ DataTable integrates with [`@marianmeres/paging-store`](https://github.com/maria
 </DataTable>
 ```
 
+Shift+click a checkbox to toggle a range of rows from the last clicked checkbox to the current one. Disabled rows in the range are skipped. The anchor resets when `data` changes (e.g. on page navigation).
+
 ### Custom Cell Rendering
 
 The `cell` snippet is used for both desktop and mobile layouts. Use the `variant` param if rendering differs per layout.

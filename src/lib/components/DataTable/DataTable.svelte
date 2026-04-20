@@ -218,6 +218,36 @@
 		selected = next;
 	}
 
+	// Anchor for shift+click range selection; reset when data reference changes.
+	let lastClickedIndex: number | null = null;
+	$effect(() => {
+		data;
+		lastClickedIndex = null;
+	});
+
+	function handleCheckboxClick(rowIndex: number, e: MouseEvent) {
+		const newChecked = (e.currentTarget as HTMLInputElement).checked;
+		if (e.shiftKey && lastClickedIndex !== null && lastClickedIndex !== rowIndex) {
+			const start = Math.min(lastClickedIndex, rowIndex);
+			const end = Math.max(lastClickedIndex, rowIndex);
+			const next = new Set(selected);
+			for (let i = start; i <= end; i++) {
+				if (selectDisabledBy?.(data[i], i)) continue;
+				const id = getRowId(data[i], i);
+				if (newChecked) next.add(id);
+				else next.delete(id);
+			}
+			selected = next;
+		} else {
+			const id = getRowId(data[rowIndex], rowIndex);
+			const next = new Set(selected);
+			if (newChecked) next.add(id);
+			else next.delete(id);
+			selected = next;
+		}
+		lastClickedIndex = rowIndex;
+	}
+
 	function clearSelection() {
 		selected = new Set();
 	}
@@ -322,7 +352,7 @@
 											type="checkbox"
 											checked={isSelected}
 											disabled={selectDisabled}
-											onchange={() => toggleSelectRow(rowId)}
+											onclick={(e) => handleCheckboxClick(rowIndex, e)}
 											aria-label={t("select_row")}
 										/>
 									</td>
@@ -412,7 +442,7 @@
 									type="checkbox"
 									checked={isSelected}
 									disabled={selectDisabled}
-									onchange={() => toggleSelectRow(rowId)}
+									onclick={(e) => handleCheckboxClick(rowIndex, e)}
 									aria-label={t("select_row")}
 								/>
 							</div>
