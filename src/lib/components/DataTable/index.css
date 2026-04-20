@@ -38,6 +38,11 @@
 	--stuic-data-table-batch-padding-x: 0.75rem;
 	--stuic-data-table-batch-padding-y: 0.5rem;
 
+	/* Select-all-across-pages banner */
+	--stuic-data-table-select-all-bg: color-mix(in srgb, var(--stuic-color-primary) 10%, var(--stuic-color-background));
+	--stuic-data-table-select-all-padding-x: 0.75rem;
+	--stuic-data-table-select-all-padding-y: 0.5rem;
+
 	/* Checkbox column */
 	--stuic-data-table-checkbox-width: 3rem;
 
@@ -208,6 +213,25 @@
 		background: var(--stuic-data-table-batch-bg);
 		border-radius: var(--stuic-data-table-radius, var(--stuic-radius));
 		margin-bottom: 0.5rem;
+	}
+
+	/* ============================================================================
+	   SELECT-ALL-ACROSS-PAGES BANNER
+	   ============================================================================ */
+
+	.stuic-data-table-select-all-banner {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--stuic-data-table-paging-gap);
+		padding: var(--stuic-data-table-select-all-padding-y)
+			var(--stuic-data-table-select-all-padding-x);
+		background: var(--stuic-data-table-select-all-bg);
+		border-radius: var(--stuic-data-table-radius, var(--stuic-radius));
+		margin-bottom: 0.5rem;
+		font-size: var(--stuic-data-table-cell-font-size);
+		color: var(--stuic-data-table-header-color);
+		text-align: center;
 	}
 
 	/* ============================================================================

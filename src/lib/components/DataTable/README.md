@@ -64,6 +64,70 @@ DataTable integrates with [`@marianmeres/paging-store`](https://github.com/maria
 
 Shift+click a checkbox to toggle a range of rows from the last clicked checkbox to the current one. Disabled rows in the range are skipped. The anchor resets when `data` changes (e.g. on page navigation).
 
+### Select All Across Pages
+
+When your data is paged, DataTable can offer a "select all results" affordance that expands selection beyond the current page. Enable it with `allowSelectAllPages`. When the user opts in, selection flips to **all-pages mode**: every row is implicitly selected, and `excluded` holds IDs the user has explicitly deselected.
+
+```svelte
+<script lang="ts">
+	let selected = $state(new Set<string | number>());
+	let selectedAll = $state(false);
+	let excluded = $state(new Set<string | number>());
+</script>
+
+<DataTable
+	{columns}
+	{data}
+	{paging}
+	{onPageChange}
+	selectable
+	allowSelectAllPages
+	bind:selected
+	bind:selectedAll
+	bind:excluded
+	getRowId={(row) => row.id}
+>
+	{#snippet batchActions({ selectedAll, excluded, effectiveCount, totalCount, clearSelection })}
+		<span>{effectiveCount} selected{selectedAll ? ` of ${totalCount}` : ""}</span>
+		<Button onclick={() => deleteSelection({ selectedAll, excluded })}>Delete</Button>
+		<Button variant="ghost" onclick={clearSelection}>Clear</Button>
+	{/snippet}
+</DataTable>
+```
+
+**Important — executing batch operations:** in all-pages mode the off-page rows are not loaded locally, so consumers cannot iterate IDs. Execute operations server-side using the active filter minus `excluded`:
+
+```ts
+function deleteSelection({ selectedAll, excluded }) {
+	if (selectedAll) {
+		// Server-side: DELETE FROM rows WHERE <currentFilter> AND id NOT IN excluded
+		return api.delete({ filter: currentFilter, exclude: [...excluded] });
+	}
+	return api.delete({ ids: [...selected] });
+}
+```
+
+New records inserted while all-pages mode is active are implicitly selected (they aren't in `excluded`). This matches the conventional intent — "delete everything matching X" should include matches that arrive before the operation runs. If you need snapshot-at-click semantics, capture a timestamp or ID list in your consumer.
+
+**Customising the banner:** the default banner uses the built-in `t()` keys `select_all_on_page_x`, `select_all_results`, `all_results_selected`, and `clear_selection`. Override markup entirely with the `selectAllBanner` snippet:
+
+```svelte
+<DataTable {columns} {data} {paging} selectable allowSelectAllPages bind:selected bind:selectedAll bind:excluded>
+	{#snippet selectAllBanner({ selectedAll, totalCount, selectAll, clearSelection })}
+		<div class="my-banner">
+			{#if selectedAll}
+				<span>All {totalCount} selected.</span>
+				<button onclick={clearSelection}>Undo</button>
+			{:else}
+				<button onclick={selectAll}>Select all {totalCount}</button>
+			{/if}
+		</div>
+	{/snippet}
+</DataTable>
+```
+
+**Filter changes:** when filters change in the consumer, reset the bound selection stores (`selected`, `selectedAll`, `excluded`) explicitly — DataTable doesn't track which filter produced the current state.
+
 ### Custom Cell Rendering
 
 The `cell` snippet is used for both desktop and mobile layouts. Use the `variant` param if rendering differs per layout.
@@ -136,6 +200,9 @@ Replace the entire `<tr>` on desktop. When this snippet is provided, DataTable d
 | `selected`          | `Set<string \| number>`                    | `new Set()`   | Selected row IDs (bindable)                                       |
 | `selectOnRowClick`  | `boolean`                                  | `false`       | Clicking anywhere on a row toggles its selection                  |
 | `selectDisabledBy`  | `(row, index) => boolean`                  | -             | Return `true` to disable selection for a specific row             |
+| `allowSelectAllPages` | `boolean`                                | `false`       | Show a banner offering "select all results" across paged data     |
+| `selectedAll`       | `boolean`                                  | `false`       | All-pages mode flag (bindable). In this mode `excluded` drives selection |
+| `excluded`          | `Set<string \| number>`                    | `new Set()`   | Deselected row IDs while in all-pages mode (bindable)             |
 | `onRowClick`        | `(row, index) => void`                     | -             | Row click callback                                                |
 | `loading`           | `boolean`                                  | `false`       | Show loading overlay                                              |
 | `small`             | `boolean`                                  | `false`       | Force mobile/card layout regardless of viewport                   |
@@ -144,6 +211,7 @@ Replace the entire `<tr>` on desktop. When this snippet is provided, DataTable d
 | `row`               | `Snippet`                                  | -             | Custom desktop `<tr>` renderer (overrides default row)            |
 | `mobileRow`         | `Snippet`                                  | -             | Custom mobile card renderer                                       |
 | `batchActions`      | `Snippet`                                  | -             | Batch action bar content                                          |
+| `selectAllBanner`   | `Snippet`                                  | -             | Override default "select all across pages" banner                 |
 | `empty`             | `Snippet`                                  | -             | Custom empty state                                                |
 | `unstyled`          | `boolean`                                  | `false`       | Skip default styling                                              |
 | `class`             | `string`                                   | -             | Additional CSS classes                                            |
@@ -151,15 +219,18 @@ Replace the entire `<tr>` on desktop. When this snippet is provided, DataTable d
 
 ### Snippet signatures
 
-| Snippet        | Props                                                                                            |
-| -------------- | ------------------------------------------------------------------------------------------------ |
-| `cell`         | `{ column, row, value, rowIndex, variant: "desktop" \| "mobile" }`                               |
-| `row`          | `{ row, columns, rowIndex, isSelected }` — desktop only                                          |
-| `mobileRow`    | `{ row, columns, rowIndex }` — mobile only                                                       |
-| `batchActions` | `{ selected, selectedRows, clearSelection }`                                                     |
-| `empty`        | —                                                                                                |
+| Snippet            | Props                                                                                                                |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| `cell`             | `{ column, row, value, rowIndex, variant: "desktop" \| "mobile" }`                                                   |
+| `row`              | `{ row, columns, rowIndex, isSelected }` — desktop only                                                              |
+| `mobileRow`        | `{ row, columns, rowIndex }` — mobile only                                                                           |
+| `batchActions`     | `{ selected, selectedRows, selectedAll, excluded, effectiveCount, totalCount, clearSelection }`                      |
+| `selectAllBanner`  | `{ selectedAll, effectiveCount, totalCount, pageCount, selectAll, clearSelection }`                                  |
+| `empty`            | —                                                                                                                    |
 
-> **Note:** "Select all rows" affects only the rows currently in `data` (i.e. the current page when using external paging). Rows for which `selectDisabledBy` returns `true` are excluded from "select all".
+> **Note:** "Select all rows" affects only the rows currently in `data` (i.e. the current page when using external paging). Rows for which `selectDisabledBy` returns `true` are excluded from "select all". To select across pages, enable `allowSelectAllPages` and use the banner that appears.
+>
+> **Note:** `clearSelection` (exposed by the `batchActions` snippet) resets all selection state — `selected`, `selectedAll`, and `excluded` — including exiting all-pages mode.
 
 ## DataTableColumn
 
@@ -199,3 +270,6 @@ Replace the entire `<tr>` on desktop. When this snippet is provided, DataTable d
 | `--stuic-data-table-card-radius`        | `var(--radius-md)`                    | Mobile card radius        |
 | `--stuic-data-table-card-padding`       | `0.75rem`                             | Mobile card padding       |
 | `--stuic-data-table-card-gap`           | `0.5rem`                              | Gap between mobile cards  |
+| `--stuic-data-table-select-all-bg`      | `color-mix(primary 10%)`              | Select-all banner background |
+| `--stuic-data-table-select-all-padding-x` | `0.75rem`                           | Banner horizontal padding |
+| `--stuic-data-table-select-all-padding-y` | `0.5rem`                            | Banner vertical padding   |

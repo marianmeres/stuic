@@ -155,6 +155,25 @@
 	let selected = $state(new Set<string | number>());
 	let lastAction = $state("");
 
+	// --- Select-all-across-pages example ---
+	const SELECT_ALL_PAGE_SIZE = 4;
+	const selectAllPagingStore = createPagingStore({
+		total: ALL_USERS.length,
+		limit: SELECT_ALL_PAGE_SIZE,
+	});
+	let selectAllPaging = $state<PagingCalcResult>(selectAllPagingStore.get());
+	selectAllPagingStore.subscribe((v) => (selectAllPaging = v));
+	let selectAllPagedData = $derived(
+		ALL_USERS.slice(
+			selectAllPaging.offset,
+			selectAllPaging.offset + selectAllPaging.limit
+		)
+	);
+	let selectedAllExample = $state(new Set<string | number>());
+	let selectAllMode = $state(false);
+	let excludedExample = $state(new Set<string | number>());
+	let selectAllLastAction = $state("");
+
 	// --- Row click example ---
 	let clickedRow = $state<User | null>(null);
 
@@ -300,6 +319,81 @@
 	</DataTable>
 	{#if lastAction}
 		<p class="mt-2 text-sm text-green-600">{lastAction}</p>
+	{/if}
+</div>
+
+<hr class="my-8" />
+
+<!-- ============== SELECT ALL ACROSS PAGES ============== -->
+<h2 class="text-lg font-bold mb-4">Select All Across Pages</h2>
+<p class="text-sm opacity-70 mb-4">
+	Check all rows on a page to reveal the banner offering to select every result.
+	In all-pages mode, unchecking a row adds it to <code>excluded</code> instead of
+	removing it from <code>selected</code>. Off-page rows are implicitly selected —
+	execute batch operations as server-side filter queries, not by iterating IDs.
+</p>
+<div>
+	<DataTable
+		{columns}
+		data={selectAllPagedData}
+		getRowId={(row) => row.id}
+		paging={selectAllPaging}
+		onPageChange={(offset) => selectAllPagingStore.update({ offset })}
+		selectable
+		allowSelectAllPages
+		bind:selected={selectedAllExample}
+		bind:selectedAll={selectAllMode}
+		bind:excluded={excludedExample}
+	>
+		{#snippet cell({ column, value })}
+			{#if column.key === "status"}
+				<span
+					class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium"
+					class:bg-green-100={value === "active"}
+					class:text-green-700={value === "active"}
+					class:bg-red-100={value === "inactive"}
+					class:text-red-700={value === "inactive"}
+					class:bg-yellow-100={value === "pending"}
+					class:text-yellow-700={value === "pending"}
+				>
+					{value}
+				</span>
+			{:else}
+				{value}
+			{/if}
+		{/snippet}
+		{#snippet batchActions({
+			selectedAll,
+			excluded,
+			effectiveCount,
+			totalCount,
+			clearSelection,
+		})}
+			<span class="text-sm font-medium">
+				{effectiveCount} selected{selectedAll && totalCount != null
+					? ` of ${totalCount}`
+					: ""}
+			</span>
+			<Button
+				size="sm"
+				intent="destructive"
+				variant="soft"
+				onclick={() => {
+					if (selectedAll) {
+						selectAllLastAction = `Would delete ALL ${totalCount} results excluding IDs [${[...excluded].join(", ") || "none"}] via server-side query`;
+					} else {
+						selectAllLastAction = `Would delete IDs [${[...selectedAllExample].join(", ")}]`;
+					}
+					clearSelection();
+				}}
+			>
+				Delete
+			</Button>
+			<Button size="sm" variant="ghost" onclick={clearSelection}>Clear</Button>
+		{/snippet}
+	</DataTable>
+	{#if selectAllLastAction}
+		<p class="mt-2 text-sm text-green-600">{selectAllLastAction}</p>
 	{/if}
 </div>
 

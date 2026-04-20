@@ -21,6 +21,10 @@
 			no_data: "No data",
 			select_all_rows: "Select all rows on this page",
 			select_row: "Select row",
+			select_all_on_page_x: "All {count} on this page selected.",
+			select_all_results: "Select all {totalCount} results",
+			all_results_selected: "All {totalCount} results selected.",
+			clear_selection: "Clear selection",
 		};
 		let out = m[k] ?? fallback ?? k;
 		return isPlainObject(values)
@@ -74,6 +78,23 @@
 		/** Return true to disable selection for a specific row */
 		selectDisabledBy?: (row: T, index: number) => boolean;
 
+		/**
+		 * Allow the user to opt into "select all results across all pages" mode.
+		 * When enabled and `paging.total > data.length`, a banner offers to expand
+		 * selection beyond the current page. Consumers must execute batch operations
+		 * as server-side filter queries (not by iterating row IDs) since off-page rows
+		 * are not available locally.
+		 */
+		allowSelectAllPages?: boolean;
+		/**
+		 * All-pages selection mode (bindable). When true, selection semantics invert:
+		 * `excluded` holds deselected IDs, and every row not in `excluded` is selected.
+		 * Newly inserted rows are implicitly selected in this mode.
+		 */
+		selectedAll?: boolean;
+		/** Set of row IDs explicitly deselected while in all-pages mode (bindable) */
+		excluded?: Set<string | number>;
+
 		/** Callback when a row is clicked */
 		onRowClick?: (row: T, index: number) => void;
 
@@ -103,12 +124,40 @@
 				},
 			]
 		>;
-		/** Batch actions bar snippet (shown when items are selected) */
+		/**
+		 * Batch actions bar snippet (shown when items are selected).
+		 *
+		 * Note: in all-pages mode (`selectedAll === true`) `selectedRows` only contains
+		 * rows from the current page that aren't excluded. Off-page rows are not
+		 * materialized — execute batch operations server-side using the active filter
+		 * minus `excluded`.
+		 */
 		batchActions?: Snippet<
 			[
 				{
 					selected: Set<string | number>;
 					selectedRows: T[];
+					selectedAll: boolean;
+					excluded: Set<string | number>;
+					/** `selected.size` in normal mode, or `totalItems - excluded.size` in all-pages mode */
+					effectiveCount: number;
+					totalCount: number | null;
+					clearSelection: () => void;
+				},
+			]
+		>;
+		/**
+		 * Custom "select all results across pages" banner. When omitted, a default
+		 * banner is rendered.
+		 */
+		selectAllBanner?: Snippet<
+			[
+				{
+					selectedAll: boolean;
+					effectiveCount: number;
+					totalCount: number;
+					pageCount: number;
+					selectAll: () => void;
 					clearSelection: () => void;
 				},
 			]
@@ -150,11 +199,15 @@
 		selected = $bindable(new Set()),
 		selectOnRowClick = false,
 		selectDisabledBy,
+		allowSelectAllPages = false,
+		selectedAll = $bindable(false),
+		excluded = $bindable(new Set()),
 		onRowClick,
 		loading = false,
 		cell,
 		row,
 		batchActions,
+		selectAllBanner,
 		empty,
 		mobileRow,
 		t = t_default,
@@ -181,41 +234,81 @@
 			.filter((id): id is string | number => id !== null);
 	});
 
-	let allOnPageSelected = $derived.by(() => {
-		if (!selectable || selectableRowIds.length === 0) return false;
-		return selectableRowIds.every((id) => selected.has(id));
-	});
+	function isRowSelected(id: string | number): boolean {
+		return selectedAll ? !excluded.has(id) : selected.has(id);
+	}
 
-	let someOnPageSelected = $derived.by(() => {
-		if (!selectable || selectableRowIds.length === 0) return false;
-		return selectableRowIds.some((id) => selected.has(id)) && !allOnPageSelected;
-	});
-
-	let selectedRows = $derived.by(() => {
-		if (!selectable || selected.size === 0) return [] as T[];
-		return data.filter((row, i) => selected.has(getRowId(row, i)));
-	});
-
-	function toggleSelectAll() {
-		if (allOnPageSelected) {
-			const next = new Set(selected);
-			for (const id of selectableRowIds) next.delete(id);
-			selected = next;
+	// Batch variant avoids creating one Set per row for shift-range / select-all.
+	function setRowsSelected(ids: Array<string | number>, on: boolean) {
+		if (selectedAll) {
+			const next = new Set(excluded);
+			for (const id of ids) {
+				if (on) next.delete(id);
+				else next.add(id);
+			}
+			excluded = next;
 		} else {
 			const next = new Set(selected);
-			for (const id of selectableRowIds) next.add(id);
+			for (const id of ids) {
+				if (on) next.add(id);
+				else next.delete(id);
+			}
 			selected = next;
 		}
 	}
 
-	function toggleSelectRow(id: string | number) {
-		const next = new Set(selected);
-		if (next.has(id)) {
-			next.delete(id);
-		} else {
-			next.add(id);
+	let allOnPageSelected = $derived.by(() => {
+		if (!selectable || selectableRowIds.length === 0) return false;
+		return selectableRowIds.every((id) => isRowSelected(id));
+	});
+
+	let someOnPageSelected = $derived.by(() => {
+		if (!selectable || selectableRowIds.length === 0) return false;
+		return selectableRowIds.some((id) => isRowSelected(id)) && !allOnPageSelected;
+	});
+
+	let totalCount = $derived(paging?.total ?? null);
+	let effectiveCount = $derived.by(() => {
+		if (selectedAll) {
+			const base = totalCount ?? data.length;
+			return Math.max(0, base - excluded.size);
 		}
-		selected = next;
+		return selected.size;
+	});
+
+	let selectedRows = $derived.by(() => {
+		if (!selectable) return [] as T[];
+		if (selectedAll) {
+			return data.filter((row, i) => !excluded.has(getRowId(row, i)));
+		}
+		if (selected.size === 0) return [] as T[];
+		return data.filter((row, i) => selected.has(getRowId(row, i)));
+	});
+
+	function toggleSelectAll() {
+		// In all-mode the header checkbox exits the mode entirely.
+		if (selectedAll) {
+			clearAllSelection();
+			return;
+		}
+		setRowsSelected(selectableRowIds, !allOnPageSelected);
+	}
+
+	function toggleSelectRow(id: string | number) {
+		setRowsSelected([id], !isRowSelected(id));
+	}
+
+	function enterSelectAll() {
+		selected = new Set();
+		excluded = new Set();
+		selectedAll = true;
+	}
+
+	function clearAllSelection() {
+		selectedAll = false;
+		excluded = new Set();
+		selected = new Set();
+		lastClickedIndex = null;
 	}
 
 	// Anchor for shift+click range selection; reset when data reference changes.
@@ -230,27 +323,24 @@
 		if (e.shiftKey && lastClickedIndex !== null && lastClickedIndex !== rowIndex) {
 			const start = Math.min(lastClickedIndex, rowIndex);
 			const end = Math.max(lastClickedIndex, rowIndex);
-			const next = new Set(selected);
+			const ids: Array<string | number> = [];
 			for (let i = start; i <= end; i++) {
 				if (selectDisabledBy?.(data[i], i)) continue;
-				const id = getRowId(data[i], i);
-				if (newChecked) next.add(id);
-				else next.delete(id);
+				ids.push(getRowId(data[i], i));
 			}
-			selected = next;
+			setRowsSelected(ids, newChecked);
 		} else {
-			const id = getRowId(data[rowIndex], rowIndex);
-			const next = new Set(selected);
-			if (newChecked) next.add(id);
-			else next.delete(id);
-			selected = next;
+			setRowsSelected([getRowId(data[rowIndex], rowIndex)], newChecked);
 		}
 		lastClickedIndex = rowIndex;
 	}
 
-	function clearSelection() {
-		selected = new Set();
-	}
+	let showSelectAllBanner = $derived.by(() => {
+		if (!allowSelectAllPages || !selectable || !paging) return false;
+		if (paging.total <= data.length) return false;
+		if (selectedAll) return true;
+		return allOnPageSelected;
+	});
 
 	// --- Row click ---
 	function handleRowClick(row: T, index: number, e: MouseEvent) {
@@ -286,10 +376,46 @@
 </script>
 
 <!-- Batch action bar -->
-{#if selectable && selected.size > 0 && batchActions}
+{#if selectable && effectiveCount > 0 && batchActions}
 	<div class={!unstyled ? "stuic-data-table-batch" : undefined}>
-		{@render batchActions({ selected, selectedRows, clearSelection })}
+		{@render batchActions({
+			selected,
+			selectedRows,
+			selectedAll,
+			excluded,
+			effectiveCount,
+			totalCount,
+			clearSelection: clearAllSelection,
+		})}
 	</div>
+{/if}
+
+<!-- Select-all-across-pages banner -->
+{#if showSelectAllBanner && paging}
+	{#if selectAllBanner}
+		{@render selectAllBanner({
+			selectedAll,
+			effectiveCount,
+			totalCount: paging.total,
+			pageCount: data.length,
+			selectAll: enterSelectAll,
+			clearSelection: clearAllSelection,
+		})}
+	{:else}
+		<div class={!unstyled ? "stuic-data-table-select-all-banner" : undefined}>
+			{#if selectedAll}
+				<span>{t("all_results_selected", { totalCount: paging.total })}</span>
+				<Button variant="ghost" size="sm" onclick={clearAllSelection}>
+					{t("clear_selection")}
+				</Button>
+			{:else}
+				<span>{t("select_all_on_page_x", { count: data.length })}</span>
+				<Button variant="ghost" size="sm" onclick={enterSelectAll}>
+					{t("select_all_results", { totalCount: paging.total })}
+				</Button>
+			{/if}
+		</div>
+	{/if}
 {/if}
 
 <!-- Root container -->
@@ -333,7 +459,7 @@
 				<tbody>
 					{#each data as rowData, rowIndex (getRowId(rowData, rowIndex))}
 						{@const rowId = getRowId(rowData, rowIndex)}
-						{@const isSelected = selectable && selected.has(rowId)}
+						{@const isSelected = selectable && isRowSelected(rowId)}
 						{@const selectDisabled = !!selectDisabledBy?.(rowData, rowIndex)}
 						{#if row}
 							{@render row({ row: rowData, columns, rowIndex, isSelected })}
@@ -403,7 +529,7 @@
 		>
 			{#each data as rowData, rowIndex (getRowId(rowData, rowIndex))}
 				{@const rowId = getRowId(rowData, rowIndex)}
-				{@const isSelected = selectable && selected.has(rowId)}
+				{@const isSelected = selectable && isRowSelected(rowId)}
 				{@const selectDisabled = !!selectDisabledBy?.(rowData, rowIndex)}
 				{#if mobileRow}
 					{@render mobileRow({
