@@ -1398,6 +1398,7 @@ Spotlight/coach mark overlay that highlights a target element by dimming everyth
 | `scrollIntoView`       | `boolean`           | `true`      | Scroll target into view before showing                           |
 | `open`                 | `boolean`           | `undefined` | Reactive programmatic control                                    |
 | `id`                   | `string`            | `undefined` | ID for registry-based control                                    |
+| `autoTrack`            | `boolean`           | `true`      | Per-frame rAF compare-loop that keeps the spotlight glued to its target through layout shifts caused by sibling/ancestor movement (not just resize/scroll). Set to `false` to opt out. |
 | `onShow`               | `() => void`        | `undefined` | Callback when spotlight opens                                    |
 | `onHide`               | `() => void`        | `undefined` | Callback when spotlight hides                                    |
 
@@ -1405,6 +1406,7 @@ Spotlight/coach mark overlay that highlights a target element by dimming everyth
 
 - `showSpotlight(id)` — Show a spotlight by ID
 - `hideSpotlight(id)` — Hide a spotlight by ID
+- `repositionSpotlight(id)` — Force re-measure and reposition the spotlight (use after layout shifts `autoTrack` can't observe, or when `autoTrack: false`)
 - `isSpotlightOpen(id)` — Check if a spotlight is open
 
 ```svelte
@@ -1468,7 +1470,9 @@ Multi-step onboarding tour built on the spotlight primitive. Define steps centra
 | `onSkip`          | `() => void`                  | —         | Called when tour is skipped                          |
 | `onStepChange`    | `(step, index) => void`       | —         | Called on every step change                          |
 
-**Returns:** `{ start(), stop(), next(), prev(), skip(), reset(), active, currentStep, currentIndex }`
+**Returns:** `{ start(), stop(), next(), prev(), skip(), reset(), reposition(), active, currentStep, currentIndex }`
+
+`reposition()` forces the active step's spotlight to re-measure its target and re-apply the cutout/anchor. Useful after a layout shift the spotlight's auto-tracking can't observe (or when a step opted out of it).
 
 **`TourStepDef`:**
 

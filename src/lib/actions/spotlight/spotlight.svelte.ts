@@ -12,14 +12,17 @@ const TRANSITION = 200;
 // Reactive state tracking which spotlights are open by ID
 const spotlightOpenStates: Record<string, boolean> = $state({});
 
+/**
+ * Imperative handle for a registered spotlight.
+ */
+export interface SpotlightControl {
+	show: () => void;
+	hide: () => void;
+	reposition: () => void;
+}
+
 // Registry of spotlights by ID for programmatic control
-const spotlightRegistry = new Map<
-	string,
-	{
-		show: () => void;
-		hide: () => void;
-	}
->();
+const spotlightRegistry = new Map<string, SpotlightControl>();
 
 /**
  * Show a spotlight by its registered ID.
@@ -42,6 +45,23 @@ export function showSpotlight(id: string) {
  */
 export function hideSpotlight(id: string) {
 	spotlightRegistry.get(id)?.hide();
+}
+
+/**
+ * Force a registered spotlight to re-measure its target and reposition the
+ * clip-path hole, anchor, and annotation. Useful after layout shifts that
+ * auto-tracking cannot observe (or when `autoTrack` is disabled).
+ *
+ * @param id - The spotlight ID to reposition
+ *
+ * @example
+ * ```ts
+ * // after toggling a collapsible sibling
+ * requestAnimationFrame(() => repositionSpotlight('onboarding-step-1'));
+ * ```
+ */
+export function repositionSpotlight(id: string) {
+	spotlightRegistry.get(id)?.reposition();
 }
 
 /**
@@ -139,6 +159,19 @@ export interface SpotlightOptions {
 	open?: boolean;
 	/** Unique ID for registry-based programmatic control */
 	id?: string;
+	/**
+	 * Keep the spotlight glued to its target by running a per-frame
+	 * `requestAnimationFrame` compare-loop while visible. Catches layout
+	 * shifts that `ResizeObserver` + window resize/scroll miss — e.g. a
+	 * sibling collapsing in a flex/grid row and pushing the target sideways.
+	 *
+	 * The loop reads `getBoundingClientRect()` once per frame and only calls
+	 * the internal reposition when the rect actually changed, so cost while
+	 * idle is negligible. Set to `false` to keep the old behavior.
+	 *
+	 * Default: `true`.
+	 */
+	autoTrack?: boolean;
 	/** Debug mode */
 	debug?: boolean;
 }
@@ -245,6 +278,8 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 	let do_debug = false;
 	let prevOpen: boolean | undefined = undefined;
 	let resizeObserver: ResizeObserver | null = null;
+	let rafId: number | null = null;
+	let lastRect: DOMRect | null = null;
 
 	// Unique identifiers
 	const rnd = Math.random().toString(36).slice(2);
@@ -299,6 +334,46 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 		if (annotationEl && !isSupported) {
 			positionAnnotationFallback(rect, padding);
 		}
+	}
+
+	/**
+	 * Per-frame loop that re-measures the target and reposition the hole/anchor
+	 * if the rect diverges from the last-seen rect. This catches movement that
+	 * `ResizeObserver` (size only) and window resize/scroll (viewport only) miss
+	 * — e.g. a sibling element collapsing in a flex/grid row and pushing the
+	 * target sideways.
+	 */
+	function trackFrame() {
+		if (!isVisible) {
+			rafId = null;
+			return;
+		}
+		const r = targetEl.getBoundingClientRect();
+		if (
+			!lastRect ||
+			r.left !== lastRect.left ||
+			r.top !== lastRect.top ||
+			r.width !== lastRect.width ||
+			r.height !== lastRect.height
+		) {
+			lastRect = r;
+			updateHolePosition();
+		}
+		rafId = requestAnimationFrame(trackFrame);
+	}
+
+	function startAutoTrack() {
+		if (rafId != null) return;
+		lastRect = targetEl.getBoundingClientRect();
+		rafId = requestAnimationFrame(trackFrame);
+	}
+
+	function stopAutoTrack() {
+		if (rafId != null) {
+			cancelAnimationFrame(rafId);
+			rafId = null;
+		}
+		lastRect = null;
 	}
 
 	/**
@@ -488,6 +563,12 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 			resizeObserver.observe(targetEl);
 			window.addEventListener("resize", updateHolePosition);
 			window.addEventListener("scroll", updateHolePosition, true);
+
+			// 8. Per-frame compare-loop to catch layout shifts (sibling collapses,
+			//    animated ancestors, etc.) that the observers above don't see.
+			if (currentOptions.autoTrack !== false) {
+				startAutoTrack();
+			}
 		});
 	}
 
@@ -506,6 +587,7 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 		window.removeEventListener("scroll", updateHolePosition, true);
 		resizeObserver?.disconnect();
 		resizeObserver = null;
+		stopAutoTrack();
 
 		// Unlock body scroll
 		BodyScroll.unlock();
@@ -551,6 +633,7 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 			closeOnEscape: opts.closeOnEscape ?? true,
 			closeOnBackdropClick: opts.closeOnBackdropClick ?? true,
 			scrollIntoView: opts.scrollIntoView ?? true,
+			autoTrack: opts.autoTrack ?? true,
 			onShow: opts.onShow,
 			onHide: opts.onHide,
 			debug: opts.debug,
@@ -561,7 +644,11 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 
 		// Register in global registry if id provided
 		if (opts.id) {
-			spotlightRegistry.set(opts.id, { show, hide });
+			spotlightRegistry.set(opts.id, {
+				show,
+				hide,
+				reposition: updateHolePosition,
+			});
 		}
 
 		// Update if visible
@@ -611,6 +698,7 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 			backdropEl?.remove();
 			annotationEl?.remove();
 			resizeObserver?.disconnect();
+			stopAutoTrack();
 
 			document.removeEventListener("keydown", onEscape);
 			window.removeEventListener("resize", updateHolePosition);

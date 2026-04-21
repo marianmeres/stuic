@@ -1,5 +1,5 @@
 import type { Snippet } from "svelte";
-import { spotlight } from "../spotlight/spotlight.svelte.js";
+import { spotlight, repositionSpotlight } from "../spotlight/spotlight.svelte.js";
 import type { SpotlightPosition } from "../spotlight/spotlight.svelte.js";
 import type { THC } from "../../components/Thc/Thc.svelte";
 import OnboardingShell, { type Props as ShellProps, type IconFn } from "./OnboardingShell.svelte";
@@ -155,6 +155,11 @@ export function createTour(options: TourOptions) {
 	const active = $derived(currentIndex >= 0);
 	const currentStep = $derived(options.steps[currentIndex] ?? null);
 
+	// Unique prefix so each tour instance's spotlights are individually
+	// addressable via the spotlight registry (e.g. for `tour.reposition()`).
+	const tourId = Math.random().toString(36).slice(2);
+	const _getSpotlightId = (stepId: string) => `__stuic-tour-${tourId}-${stepId}`;
+
 	// Optional persistence store
 	const store = options.storageKey
 		? new StorageAbstraction(options.storage ?? "local")
@@ -210,6 +215,7 @@ export function createTour(options: TourOptions) {
 		// spotlight() creates inner $effects; Svelte cleans them up
 		// when this outer effect re-runs (step change) or is destroyed (tour end)
 		spotlight(el, () => ({
+			id: _getSpotlightId(step.id),
 			open: true,
 			content: _getShellContent(step.id),
 			position: step.position ?? "bottom",
@@ -400,6 +406,17 @@ export function createTour(options: TourOptions) {
 		store?.remove(options.storageKey!);
 	}
 
+	/**
+	 * Force the current step's spotlight to re-measure its target and
+	 * reposition. Useful after layout shifts that the spotlight's own
+	 * auto-tracking can't observe, or when auto-tracking is disabled.
+	 */
+	function reposition() {
+		const step = currentStep;
+		if (!step) return;
+		repositionSpotlight(_getSpotlightId(step.id));
+	}
+
 	return {
 		get active() {
 			return active;
@@ -418,12 +435,14 @@ export function createTour(options: TourOptions) {
 		prev,
 		skip,
 		reset,
+		reposition,
 		// Internal — used by tourStep action
 		_register,
 		_unregister,
 		_registerAction,
 		_isCurrentStep,
 		_getShellContent,
+		_getSpotlightId,
 	};
 }
 
@@ -446,12 +465,15 @@ export function tourStep(el: HTMLElement, args: [TourInstance | null | undefined
 	tour._registerAction(id);
 	tour._register(id, el);
 
+	const spotlightId = tour._getSpotlightId(id);
+
 	spotlight(el, () => {
 		const isActive = tour._isCurrentStep(id);
 		if (!isActive) {
-			return { open: false };
+			return { id: spotlightId, open: false };
 		}
 		return {
+			id: spotlightId,
 			open: true,
 			content: tour._getShellContent(id),
 			position: tour.currentStep?.position ?? "bottom",
