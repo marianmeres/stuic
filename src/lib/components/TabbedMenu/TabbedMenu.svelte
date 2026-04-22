@@ -1,12 +1,13 @@
 <script lang="ts" module>
 	import type { HTMLAttributes } from "svelte/elements";
 	import type { THC } from "../Thc/index.js";
+	import { tr, type MaybeLocalized } from "../../utils/tr.js";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import Thc from "../Thc/Thc.svelte";
 
 	export interface TabbedMenuItem {
 		id: string | number;
-		label: THC;
+		label: THC | MaybeLocalized;
 		disabled?: boolean;
 		class?: string;
 		data?: Record<string, any>;
@@ -20,6 +21,8 @@
 		disabled?: boolean;
 		onSelect?: (item: TabbedMenuItem) => void;
 		orientation?: "horizontal" | "vertical";
+		/** Current locale for MaybeLocalized resolution */
+		locale?: string;
 		//
 		class?: string;
 		classItem?: string;
@@ -41,6 +44,7 @@
 		disabled,
 		onSelect,
 		orientation = "horizontal",
+		locale,
 		//
 		class: classProp,
 		classItem,
@@ -53,6 +57,26 @@
 		el = $bindable(),
 		...rest
 	}: Props = $props();
+
+	// The `label` accepts both THC and MaybeLocalized. Since MaybeLocalized's
+	// `Record<string, string>` shape has no discriminator key that Thc recognizes
+	// (`text`/`html`/`component`/`snippet`), a locale-keyed object would otherwise
+	// fall through to Thc's string-cast fallback and render as `[object Object]`.
+	// So we detect that case here and resolve it via `tr()` before handing to Thc.
+	function resolveLabel(label: TabbedMenuItem["label"]): THC {
+		if (
+			label &&
+			typeof label === "object" &&
+			typeof label !== "function" &&
+			!("text" in label) &&
+			!("html" in label) &&
+			!("component" in label) &&
+			!("snippet" in label)
+		) {
+			return tr(label as MaybeLocalized, locale);
+		}
+		return label as THC;
+	}
 
 	let buttonEls = $state<Record<string | number, HTMLButtonElement | HTMLAnchorElement>>(
 		{}
@@ -136,11 +160,11 @@
 			>
 				{#if item.href}
 					<a href={item.href} {...props} bind:this={buttonEls[item.id]}>
-						<Thc thc={item.label} />
+						<Thc thc={resolveLabel(item.label)} />
 					</a>
 				{:else}
 					<button type="button" {...props} bind:this={buttonEls[item.id]}>
-						<Thc thc={item.label} />
+						<Thc thc={resolveLabel(item.label)} />
 					</button>
 				{/if}
 			</li>
