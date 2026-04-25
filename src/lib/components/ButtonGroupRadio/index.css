@@ -7,7 +7,8 @@
 :root {
 	/* Default look is a pill switcher. Override radius/bg to get a square group. */
 	--stuic-button-group-radius: 9999px;
-	--stuic-button-group-padding: 3px;
+	--stuic-button-group-padding-x: 4px;
+	--stuic-button-group-padding-y: 3px;
 	--stuic-button-group-gap: 0.25rem;
 
 	/* Button sizing — overall height = min-height + 2×padding + 2×border = 44px (Apple HIG min) */
@@ -53,7 +54,7 @@
 		width: 100%;
 
 		/* Box model */
-		padding: var(--stuic-button-group-padding);
+		padding: var(--stuic-button-group-padding-y) var(--stuic-button-group-padding-x);
 		border-width: var(--stuic-button-group-border-width, var(--stuic-border-width));
 		border-style: solid;
 		border-radius: var(--stuic-button-group-radius, var(--stuic-radius-button));
