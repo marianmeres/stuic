@@ -176,7 +176,7 @@
 			onVerify={handleVerify}
 			onResendCode={handleResendCode}
 			{isSubmitting}
-			loginProps={{ onForgotPassword: () => alert("Forgot password!") }}
+			onForgotPassword={() => alert("Forgot password!")}
 			registerProps={{
 				extraFields: showExtraFields ? sampleExtraFields : undefined,
 			}}

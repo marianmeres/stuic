@@ -20,7 +20,8 @@
 	}
 
 	.stuic-register-form-submit {
-		margin-top: 1rem;
+		margin-top: 1.5rem;
+		margin-bottom: 1.5rem;
 	}
 
 	/* Social login container */
@@ -51,20 +52,9 @@
 		flex-direction: column;
 		gap: var(--stuic-register-form-social-gap);
 	}
+}
 
-	.stuic-register-form-compact-cta {
-		display: flex;
-		align-items: center;
-		margin-top: 0.5rem;
-		gap: 2rem;
-	}
-
-	.stuic-register-form[data-compact] {
-		.stuic-register-form-submit {
-			margin-top: 0.5rem;
-		}
-		.stuic-button {
-			flex: 1;
-		}
-	}
+/* Tighten default FieldInput bottom margin (mb-8 → 1rem) inside the form */
+.stuic-register-form .stuic-input {
+	margin-bottom: 1rem;
 }

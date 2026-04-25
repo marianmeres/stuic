@@ -91,8 +91,6 @@
 		unstyled?: boolean;
 		class?: string;
 		el?: HTMLFormElement;
-
-		compact?: boolean;
 	}
 </script>
 
@@ -129,7 +127,6 @@
 		unstyled = false,
 		class: classProp,
 		el = $bindable(),
-		compact,
 		...rest
 	}: Props = $props();
 
@@ -194,13 +191,7 @@
 	let _class = $derived(unstyled ? classProp : twMerge("stuic-register-form", classProp));
 </script>
 
-<form
-	bind:this={el}
-	class={_class}
-	use:onSubmitValidityCheck
-	{...rest}
-	data-compact={compact ? "" : undefined}
->
+<form bind:this={el} class={_class} use:onSubmitValidityCheck {...rest}>
 	<!-- General error alert -->
 	<DismissibleMessage message={error} intent="destructive" onDismiss={false} />
 
@@ -217,7 +208,6 @@
 			required={cfg.required}
 			name={`register-extra-${cfg.name}`}
 			labelLeftBreakpoint={0}
-			class={compact ? "mb-4" : ""}
 			validate={{
 				customValidator() {
 					return fieldError(cfg.name) || "";
@@ -243,7 +233,6 @@
 		required
 		name="register-email"
 		labelLeftBreakpoint={0}
-		class={compact ? "mb-4" : ""}
 		validate={{
 			customValidator() {
 				return fieldError("email") || "";
@@ -263,7 +252,6 @@
 		minlength={passwordMinLength}
 		name="register-password"
 		labelLeftBreakpoint={0}
-		class={compact ? "mb-4" : ""}
 		validate={{
 			customValidator() {
 				return fieldError("password") || "";
@@ -284,7 +272,6 @@
 			minlength={passwordMinLength}
 			name="register-password-confirm"
 			labelLeftBreakpoint={0}
-			class={compact ? "mb-4" : ""}
 			validate={{
 				customValidator() {
 					return fieldError("passwordConfirm") || "";
@@ -306,7 +293,6 @@
 			required={cfg.required}
 			name={`register-extra-${cfg.name}`}
 			labelLeftBreakpoint={0}
-			class={compact ? "mb-4" : ""}
 			validate={{
 				customValidator() {
 					return fieldError(cfg.name) || "";
@@ -324,14 +310,6 @@
 	<!-- CTA -->
 	{#if submitButton}
 		{@render submitButton({ isSubmitting, disabled: isSubmitting })}
-	{:else if compact}
-		<div class={unstyled ? undefined : "stuic-register-form-compact-cta"}>
-			<Button intent="primary" type="submit" disabled={isSubmitting} class="block">
-				{isSubmitting
-					? (submittingLabel ?? t("register_form.submitting"))
-					: (submitLabel ?? t("register_form.submit"))}
-			</Button>
-		</div>
 	{:else}
 		<div class={unstyled ? undefined : "stuic-register-form-submit"}>
 			<Button intent="primary" type="submit" disabled={isSubmitting} class="w-full">

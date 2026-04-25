@@ -193,7 +193,6 @@
 		required
 		name="login-password"
 		labelLeftBreakpoint={0}
-		class="mb-10"
 		validate={{
 			customValidator(val) {
 				return fieldError("password") || "";

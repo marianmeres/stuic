@@ -40,8 +40,14 @@
 		/** Applied to both inner forms' submit buttons. */
 		isSubmitting?: boolean;
 
+		/**
+		 * Called when "Forgot password?" is clicked in login mode.
+		 * If undefined, the link is not rendered.
+		 */
+		onForgotPassword?: () => void;
+
 		/** Pass-through props for the inner LoginForm (spread). */
-		loginProps?: Omit<LoginFormProps, InnerPropsCommonOmit>;
+		loginProps?: Omit<LoginFormProps, InnerPropsCommonOmit | "onForgotPassword">;
 
 		/** Pass-through props for the inner RegisterForm (spread). */
 		registerProps?: Omit<RegisterFormProps, InnerPropsCommonOmit>;
@@ -137,6 +143,7 @@
 		onVerify,
 		onResendCode,
 		isSubmitting = false,
+		onForgotPassword,
 		loginProps,
 		registerProps,
 		verifyProps,
@@ -221,6 +228,7 @@
 				onSubmit={onLogin}
 				{isSubmitting}
 				{notifications}
+				{onForgotPassword}
 				t={tProp}
 				{...loginProps}
 			/>

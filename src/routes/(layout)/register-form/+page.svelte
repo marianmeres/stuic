@@ -34,7 +34,6 @@
 	let showExternalErrors = $state(false);
 	let showGeneralError = $state(false);
 	let showPasswordConfirm = $state(true);
-	let compact = $state(false);
 
 	const sampleExtraFields: RegisterFieldConfig[] = [
 		{
@@ -127,12 +126,6 @@
 			renderSize="sm"
 		/>
 		<FieldSwitch
-			bind:checked={compact}
-			label="Compact variant"
-			name="compact"
-			renderSize="sm"
-		/>
-		<FieldSwitch
 			bind:checked={showFooter}
 			label="Show footer"
 			name="show-footer"
@@ -170,7 +163,6 @@
 			onSubmit={handleSubmit}
 			{isSubmitting}
 			{showPasswordConfirm}
-			{compact}
 			errors={externalErrorsComputed}
 			error={generalError}
 			extraFields={showExtraFields ? sampleExtraFields : undefined}

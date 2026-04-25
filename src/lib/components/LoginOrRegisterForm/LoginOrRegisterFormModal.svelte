@@ -33,6 +33,12 @@
 
 		isSubmitting?: boolean;
 
+		/**
+		 * Called when "Forgot password?" is clicked in login mode.
+		 * If undefined, the link is not rendered.
+		 */
+		onForgotPassword?: () => void;
+
 		loginProps?: InnerProps["loginProps"];
 		registerProps?: InnerProps["registerProps"];
 		verifyProps?: InnerProps["verifyProps"];
@@ -101,6 +107,7 @@
 		onVerify,
 		onResendCode,
 		isSubmitting = false,
+		onForgotPassword,
 		loginProps,
 		registerProps,
 		verifyProps,
@@ -188,6 +195,7 @@
 			{onVerify}
 			{onResendCode}
 			{isSubmitting}
+			{onForgotPassword}
 			{loginProps}
 			{registerProps}
 			{verifyProps}

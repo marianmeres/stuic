@@ -1,10 +1,10 @@
 :root {
 	/* LoginOrRegisterForm */
-	--stuic-login-or-register-form-gap: 1rem;
-	--stuic-login-or-register-form-switcher-margin-bottom: 1rem;
+	--stuic-login-or-register-form-gap: 0rem;
+	--stuic-login-or-register-form-switcher-margin-bottom: 2rem;
 
 	/* Social login section (shared, rendered at composite level) */
-	--stuic-login-or-register-form-social-margin-top: 1rem;
+	--stuic-login-or-register-form-social-margin-top: 1.5rem;
 	--stuic-login-or-register-form-social-gap: 0.75rem;
 	--stuic-login-or-register-form-social-divider-color: var(
 		--stuic-color-muted-foreground

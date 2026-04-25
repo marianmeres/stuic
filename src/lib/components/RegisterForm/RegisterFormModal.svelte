@@ -206,7 +206,6 @@
 			t={tProp}
 			{unstyled}
 			class={classForm}
-			compact
 		/>
 	</div>
 </Modal>
