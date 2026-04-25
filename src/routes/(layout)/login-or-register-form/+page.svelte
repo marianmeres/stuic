@@ -17,10 +17,13 @@
 	let mode = $state<LoginOrRegisterFormMode>("login");
 	let loginData = $state<LoginFormData>(createEmptyLoginFormData());
 	let registerData = $state<RegisterFormData>(createEmptyRegisterFormData());
+	let verifyEmail = $state("");
+	let verifyError = $state<string | undefined>(undefined);
 	let isSubmitting = $state(false);
 	let lastSubmit = $state<
 		| { kind: "login"; data: LoginFormData }
 		| { kind: "register"; data: RegisterFormData }
+		| { kind: "verify"; code: string }
 		| null
 	>(null);
 
@@ -33,7 +36,31 @@
 	function handleRegister(data: RegisterFormData) {
 		isSubmitting = true;
 		lastSubmit = { kind: "register", data: JSON.parse(JSON.stringify(data)) };
-		setTimeout(() => (isSubmitting = false), 1200);
+		// Simulate backend response: { requiresVerification: true }
+		setTimeout(() => {
+			isSubmitting = false;
+			verifyEmail = data.email || "user@example.com";
+			verifyError = undefined;
+			mode = "verify";
+		}, 1200);
+	}
+
+	function handleVerify(code: string) {
+		isSubmitting = true;
+		lastSubmit = { kind: "verify", code };
+		setTimeout(() => {
+			isSubmitting = false;
+			if (code === "111111") {
+				alert("Verified! Welcome " + verifyEmail);
+				verifyError = undefined;
+			} else {
+				verifyError = `Invalid code: ${code}`;
+			}
+		}, 800);
+	}
+
+	async function handleResendCode() {
+		await new Promise((r) => setTimeout(r, 400));
 	}
 
 	// --- Controls ---
@@ -62,6 +89,8 @@
 	let modalMode = $state<LoginOrRegisterFormMode>("login");
 	let modalLoginData = $state<LoginFormData>(createEmptyLoginFormData());
 	let modalRegisterData = $state<RegisterFormData>(createEmptyRegisterFormData());
+	let modalVerifyEmail = $state("");
+	let modalVerifyError = $state<string | undefined>(undefined);
 	let modalSubmitCount = $state(0);
 
 	function handleModalLogin(data: LoginFormData) {
@@ -74,10 +103,28 @@
 
 	function handleModalRegister(data: RegisterFormData) {
 		modalSubmitCount++;
+		// Simulate "requiresVerification" backend response
 		setTimeout(() => {
-			modalRef.close();
-			alert("Registered as " + data.email);
-		}, 800);
+			modalVerifyEmail = data.email || "user@example.com";
+			modalVerifyError = undefined;
+			modalMode = "verify";
+		}, 600);
+	}
+
+	function handleModalVerify(code: string) {
+		setTimeout(() => {
+			if (code === "111111") {
+				modalRef.close();
+				alert("Verified " + modalVerifyEmail);
+				modalVerifyError = undefined;
+			} else {
+				modalVerifyError = `Invalid code: ${code}`;
+			}
+		}, 400);
+	}
+
+	async function handleModalResendCode() {
+		await new Promise((r) => setTimeout(r, 300));
 	}
 </script>
 
@@ -123,13 +170,17 @@
 			bind:mode
 			bind:loginData
 			bind:registerData
+			bind:verifyEmail
 			onLogin={handleLogin}
 			onRegister={handleRegister}
+			onVerify={handleVerify}
+			onResendCode={handleResendCode}
 			{isSubmitting}
 			loginProps={{ onForgotPassword: () => alert("Forgot password!") }}
 			registerProps={{
 				extraFields: showExtraFields ? sampleExtraFields : undefined,
 			}}
+			verifyProps={{ error: verifyError, resendCooldownSeconds: 5 }}
 			socialLogins={showSocialLogins ? socialButtons : undefined}
 			modeSwitcher={useCustomSwitcher ? customSwitcher : undefined}
 		>
@@ -182,12 +233,39 @@
 				Last submitted ({lastSubmit.kind}):
 			</h3>
 			<pre class="text-xs bg-muted p-3 rounded-md overflow-x-auto">{JSON.stringify(
-					lastSubmit.data,
+					lastSubmit.kind === "verify" ? { code: lastSubmit.code } : lastSubmit.data,
 					null,
 					2
 				)}</pre>
 		</div>
 	{/if}
+</section>
+
+<!-- ============== VERIFY MODE ============== -->
+<section class="mb-12">
+	<h2 class="text-lg font-bold mb-2">Verify mode</h2>
+	<p class="text-sm opacity-60 mb-4">
+		The composite form supports a third <code>"verify"</code> mode for the post-registration
+		email-verify step. The mode switcher and shared social-logins are hidden; the form
+		shows the <code>EmailVerifyForm</code>. Submit a real registration above (or use the
+		button below) to flip into <code>"verify"</code>; then enter <code>111111</code>
+		to "verify".
+	</p>
+	<div class="flex gap-2 items-center">
+		<Button
+			onclick={() => {
+				verifyEmail = registerData.email || loginData.email || "demo@example.com";
+				verifyError = undefined;
+				mode = "verify";
+			}}
+		>
+			Trigger verify mode (mock register response)
+		</Button>
+		<Button variant="outline" onclick={() => (mode = "login")}>Back to login</Button>
+		<span class="text-sm opacity-60">
+			current mode: <code>{mode}</code>
+		</span>
+	</div>
 </section>
 
 <!-- ============== BASIC ============== -->
@@ -217,8 +295,12 @@
 			bind:mode={modalMode}
 			bind:loginData={modalLoginData}
 			bind:registerData={modalRegisterData}
+			bind:verifyEmail={modalVerifyEmail}
 			onLogin={handleModalLogin}
 			onRegister={handleModalRegister}
+			onVerify={handleModalVerify}
+			onResendCode={handleModalResendCode}
+			verifyProps={{ error: modalVerifyError, resendCooldownSeconds: 5 }}
 			socialLogins={socialButtons}
 		>
 			{#snippet trigger({ open })}
@@ -235,6 +317,11 @@
 			{/if}
 		</p>
 	</div>
+	<p class="text-xs opacity-60 mt-2">
+		Submitting a registration in the modal flips the inner mode to <code>"verify"</code>
+		and the modal title updates to "Verify your email". Use code <code>111111</code> to
+		complete verification.
+	</p>
 </section>
 
 <!-- ============== UNSTYLED ============== -->

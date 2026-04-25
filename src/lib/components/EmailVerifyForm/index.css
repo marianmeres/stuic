@@ -1,0 +1,54 @@
+:root {
+	--stuic-email-verify-form-gap: 1rem;
+	--stuic-email-verify-form-subheading-color: var(--stuic-color-muted-foreground);
+	--stuic-email-verify-form-attempts-color: var(--stuic-color-muted-foreground);
+	--stuic-email-verify-form-resend-color: var(--stuic-color-muted-foreground);
+	--stuic-email-verify-form-resend-flash-color: var(--stuic-color-primary);
+}
+
+@layer components {
+	.stuic-email-verify-form {
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-email-verify-form-gap);
+	}
+
+	.stuic-email-verify-form-heading {
+		margin: 0;
+	}
+
+	.stuic-email-verify-form-subheading {
+		margin: 0;
+		color: var(--stuic-email-verify-form-subheading-color);
+		font-size: var(--text-sm);
+	}
+
+	.stuic-email-verify-form-otp {
+		display: flex;
+		justify-content: center;
+		padding: 0.25rem 0;
+	}
+
+	.stuic-email-verify-form-attempts {
+		color: var(--stuic-email-verify-form-attempts-color);
+		font-size: var(--text-xs);
+		text-align: center;
+	}
+
+	.stuic-email-verify-form-submit {
+		margin-top: 0.25rem;
+	}
+
+	.stuic-email-verify-form-resend {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.25rem;
+		font-size: var(--text-sm);
+		color: var(--stuic-email-verify-form-resend-color);
+	}
+
+	.stuic-email-verify-form-resend-flash {
+		color: var(--stuic-email-verify-form-resend-flash-color);
+	}
+}

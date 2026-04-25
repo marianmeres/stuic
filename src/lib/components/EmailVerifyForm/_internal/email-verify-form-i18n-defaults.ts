@@ -2,13 +2,15 @@ import { isPlainObject } from "../../../utils/is-plain-object.js";
 import { replaceMap } from "../../../utils/replace-map.js";
 
 const DEFAULTS: Record<string, string> = {
-	"login_or_register_form.mode_login": "Log in",
-	"login_or_register_form.mode_register": "Sign up",
-	"login_or_register_form.mode_verify": "Verify",
-	"login_or_register_form.social_divider": "or continue with",
-	"login_or_register_form.modal_title_login": "Log In",
-	"login_or_register_form.modal_title_register": "Create account",
-	"login_or_register_form.modal_title_verify": "Verify your email",
+	"email_verify_form.heading": "Check your email",
+	"email_verify_form.subheading": "We sent a 6-digit code to {email}",
+	"email_verify_form.submit": "Verify",
+	"email_verify_form.submitting": "Verifying...",
+	"email_verify_form.resend_prompt": "Didn't receive it?",
+	"email_verify_form.resend": "Resend code",
+	"email_verify_form.resend_cooldown": "Resend available in {seconds}s",
+	"email_verify_form.resent": "New code sent",
+	"email_verify_form.attempts_remaining": "{count} attempts remaining",
 };
 
 export function t_default(

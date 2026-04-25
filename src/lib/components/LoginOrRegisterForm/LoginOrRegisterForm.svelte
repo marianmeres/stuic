@@ -6,9 +6,10 @@
 	import type { LoginFormData } from "../LoginForm/_internal/login-form-types.js";
 	import type { Props as RegisterFormProps } from "../RegisterForm/RegisterForm.svelte";
 	import type { RegisterFormData } from "../RegisterForm/_internal/register-form-types.js";
+	import type { Props as EmailVerifyFormProps } from "../EmailVerifyForm/EmailVerifyForm.svelte";
 	import type { NotificationsStack } from "../Notifications/notifications-stack.svelte.js";
 
-	export type LoginOrRegisterFormMode = "login" | "register";
+	export type LoginOrRegisterFormMode = "login" | "register" | "verify";
 
 	type InnerPropsCommonOmit =
 		| "formData"
@@ -44,6 +45,27 @@
 
 		/** Pass-through props for the inner RegisterForm (spread). */
 		registerProps?: Omit<RegisterFormProps, InnerPropsCommonOmit>;
+
+		/**
+		 * Bindable email used by EmailVerifyForm (typically copied from registerData.email
+		 * when transitioning to "verify" mode).
+		 */
+		verifyEmail?: string;
+
+		/** Called when the user submits a code in the verify view. */
+		onVerify?: (code: string) => void;
+
+		/** Called when the user clicks "Resend code" in the verify view. */
+		onResendCode?: () => Promise<void> | void;
+
+		/** Pass-through props for the inner EmailVerifyForm (spread). */
+		verifyProps?: Omit<
+			EmailVerifyFormProps,
+			"email" | "onSubmit" | "onResend" | "isSubmitting" | "t" | "notifications" | "footer"
+		>;
+
+		/** Reserved for future use (verify mode is not exposed in the default switcher). */
+		verifyModeLabel?: string;
 
 		/** Override the built-in ButtonGroupRadio mode switcher. */
 		modeSwitcher?: Snippet<
@@ -102,17 +124,23 @@
 	import { createEmptyLoginFormData } from "../LoginForm/_internal/login-form-utils.js";
 	import RegisterForm from "../RegisterForm/RegisterForm.svelte";
 	import { createEmptyRegisterFormData } from "../RegisterForm/_internal/register-form-utils.js";
+	import EmailVerifyForm from "../EmailVerifyForm/EmailVerifyForm.svelte";
 	import ButtonGroupRadio from "../ButtonGroupRadio/ButtonGroupRadio.svelte";
 
 	let {
 		mode = $bindable("login"),
 		loginData = $bindable(createEmptyLoginFormData()),
 		registerData = $bindable(createEmptyRegisterFormData()),
+		verifyEmail = $bindable(""),
 		onLogin,
 		onRegister,
+		onVerify,
+		onResendCode,
 		isSubmitting = false,
 		loginProps,
 		registerProps,
+		verifyProps,
+		verifyModeLabel: _verifyModeLabel,
 		modeSwitcher,
 		loginModeLabel,
 		registerModeLabel,
@@ -138,10 +166,19 @@
 	// effect (which would be prone to loops).
 	function setMode(next: LoginOrRegisterFormMode) {
 		if (next === mode) return;
+		const sourceEmail =
+			mode === "verify"
+				? verifyEmail
+				: mode === "register"
+					? registerData.email
+					: loginData.email;
 		if (next === "register") {
-			registerData.email = loginData.email;
+			registerData.email = sourceEmail;
+		} else if (next === "login") {
+			loginData.email = sourceEmail;
 		} else {
-			loginData.email = registerData.email;
+			// next === "verify"
+			verifyEmail = sourceEmail;
 		}
 		mode = next;
 	}
@@ -157,21 +194,23 @@
 </script>
 
 <div class={_class} {...rest}>
-	<!-- Mode switcher -->
-	<div class={unstyled ? undefined : "stuic-login-or-register-form-switcher"}>
-		{#if modeSwitcher}
-			{@render modeSwitcher({ mode, setMode, t })}
-		{:else}
-			<ButtonGroupRadio
-				options={switcherOptions}
-				value={mode}
-				onButtonClick={(idx) => {
-					setMode(idx === 0 ? "login" : "register");
-					return false;
-				}}
-			/>
-		{/if}
-	</div>
+	<!-- Mode switcher (verify mode is never rendered as a tab — it's an outcome state) -->
+	{#if mode !== "verify"}
+		<div class={unstyled ? undefined : "stuic-login-or-register-form-switcher"}>
+			{#if modeSwitcher}
+				{@render modeSwitcher({ mode, setMode, t })}
+			{:else}
+				<ButtonGroupRadio
+					options={switcherOptions}
+					value={mode}
+					onButtonClick={(idx) => {
+						setMode(idx === 0 ? "login" : "register");
+						return false;
+					}}
+				/>
+			{/if}
+		</div>
+	{/if}
 
 	<!-- Active form -->
 	<div class={unstyled ? undefined : "stuic-login-or-register-form-body"}>
@@ -185,7 +224,7 @@
 				t={tProp}
 				{...loginProps}
 			/>
-		{:else}
+		{:else if mode === "register"}
 			<!-- svelte-ignore binding_property_non_reactive -->
 			<RegisterForm
 				bind:formData={registerData}
@@ -195,11 +234,21 @@
 				t={tProp}
 				{...registerProps}
 			/>
+		{:else}
+			<EmailVerifyForm
+				email={verifyEmail || registerData.email || loginData.email}
+				onSubmit={(code) => onVerify?.(code)}
+				onResend={onResendCode}
+				{isSubmitting}
+				{notifications}
+				t={tProp}
+				{...verifyProps}
+			/>
 		{/if}
 	</div>
 
-	<!-- Shared social logins -->
-	{#if socialLogins}
+	<!-- Shared social logins (hidden in verify mode — OAuth doesn't apply mid-verification) -->
+	{#if socialLogins && mode !== "verify"}
 		<div class={unstyled ? undefined : "stuic-login-or-register-form-social"}>
 			{#if socialDividerLabel !== false}
 				<div class={unstyled ? undefined : "stuic-login-or-register-form-social-divider"}>

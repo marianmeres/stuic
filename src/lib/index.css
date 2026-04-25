@@ -71,6 +71,7 @@ In practice:
 @import "./components/DataTable/index.css";
 @import "./components/DismissibleMessage/index.css";
 @import "./components/DropdownMenu/index.css";
+@import "./components/EmailVerifyForm/index.css";
 @import "./components/H/index.css";
 @import "./components/Header/index.css";
 @import "./components/ImageCycler/index.css";
@@ -82,6 +83,7 @@ In practice:
 @import "./components/ModalDialog/index.css";
 @import "./components/Nav/index.css";
 @import "./components/Notifications/index.css";
+@import "./components/OtpInput/index.css";
 @import "./components/PricingTable/index.css";
 @import "./components/Progress/index.css";
 @import "./components/Separator/index.css";

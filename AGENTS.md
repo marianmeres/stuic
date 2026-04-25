@@ -23,7 +23,7 @@
 
 ```
 src/lib/
-├── components/     # 50 UI components
+├── components/     # 55 UI components
 ├── actions/        # 15 Svelte actions
 ├── utils/          # 43 utility modules
 ├── themes/         # Generated theme CSS (css/) — definitions from @marianmeres/design-tokens
@@ -116,7 +116,7 @@ Global tokens that control cross-component visual properties. Defined in `src/li
 
 ### Domain Docs
 
-- [Components](./docs/domains/components.md) — 46 component directories, Props pattern, snippets
+- [Components](./docs/domains/components.md) — 55 component directories, Props pattern, snippets
 - [Theming](./docs/domains/theming.md) — CSS tokens, dark mode, themes
 - [Actions](./docs/domains/actions.md) — 15 Svelte directives
 - [Utils](./docs/domains/utils.md) — 43 utility modules

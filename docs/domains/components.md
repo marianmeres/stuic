@@ -2,7 +2,7 @@
 
 ## Overview
 
-50 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
+55 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
@@ -62,6 +62,10 @@
 | FieldKeyValues                        | Key-value pair editor                             |
 | FieldAssets                           | File/asset management                             |
 | LoginForm, LoginFormModal             | Standalone login form with optional modal variant |
+| RegisterForm                          | Standalone registration form with declarative extra fields |
+| LoginOrRegisterForm, LoginOrRegisterFormModal | Composite login/register/verify form (3 modes, shared social-logins) |
+| EmailVerifyForm                       | Post-registration email-verify form (OtpInput + resend cooldown) |
+| OtpInput                              | Generic N-slot one-time-code input (numeric/alphanumeric, paste-distribute) |
 
 ### Display
 
@@ -151,6 +155,201 @@ Prefix: `--stuic-login-form-*`
 ### i18n
 
 16 translation keys with `login_form.*` prefix covering labels, placeholders, validation messages, and social divider text.
+
+---
+
+## RegisterForm
+
+Standalone registration form. Mirrors `LoginForm` conventions: `formData`, `onSubmit`, validation, errors, i18n, notifications, social-logins. Adds declarative `extraFields` (top/bottom positioning, custom validators) and an `extraFieldsSlot` escape hatch (e.g., terms checkbox).
+
+### Exports
+
+| Export                        | Kind      | Description                            |
+| ----------------------------- | --------- | -------------------------------------- |
+| `RegisterForm`                | component | Main register form                     |
+| `RegisterFormProps`           | type      | Props for RegisterForm                 |
+| `RegisterFormData`            | type      | `{ email, password, passwordConfirm, extra }` |
+| `RegisterFormValidationError` | type      | `{ field, message }`                   |
+| `RegisterFieldConfig`         | type      | Declarative extra-field descriptor     |
+| `createEmptyRegisterFormData` | function  | Factory for an empty `RegisterFormData` |
+
+### Key Props
+
+| Prop                  | Type                              | Default  | Description                                |
+| --------------------- | --------------------------------- | -------- | ------------------------------------------ |
+| `formData`            | `RegisterFormData`                | empty    | Bindable form data                         |
+| `onSubmit`            | `(data) => void`                  | required | Submit callback                            |
+| `isSubmitting`        | `boolean`                         | `false`  | Disables CTA                               |
+| `errors`              | `RegisterFormValidationError[]`   | `[]`     | Field-specific server errors               |
+| `error`               | `string`                          | —        | General error (alert above form)           |
+| `showPasswordConfirm` | `boolean`                         | `true`   | Render password-confirm field              |
+| `passwordMinLength`   | `number`                          | `8`      | Min password length (input + validator)    |
+| `extraFields`         | `RegisterFieldConfig[]`           | `[]`     | Declarative extra fields (top/bottom)      |
+| `extraFieldsSlot`     | `Snippet`                         | —        | Escape-hatch for non-FieldInput extras     |
+| `submitButton`        | `Snippet`                         | —        | Custom CTA section                         |
+| `socialLogins`        | `Snippet`                         | —        | OAuth buttons below form                   |
+| `footer`              | `Snippet`                         | —        | Content below form                         |
+| `notifications`       | `NotificationsStack`              | —        | Route errors to notifications              |
+| `compact`             | `boolean`                         | `false`  | Compact layout                             |
+| `t`                   | `TranslateFn`                     | built-in | Translation function                       |
+
+### CSS Tokens
+
+Prefix: `--stuic-register-form-*`
+
+`gap`, `gap-row`, `social-margin-top`, `social-gap`, `social-divider-color`, `social-divider-line-color`, `social-divider-font-size`, `social-divider-margin-bottom`
+
+---
+
+## LoginOrRegisterForm
+
+Composite form that toggles between `LoginForm`, `RegisterForm`, and (since 3.71) `EmailVerifyForm`. The mode switcher only exposes login/register tabs; verify is an outcome state entered programmatically (typically after a `requiresVerification` register response).
+
+### Exports
+
+| Export                         | Kind      | Description                            |
+| ------------------------------ | --------- | -------------------------------------- |
+| `LoginOrRegisterForm`          | component | Composite form                         |
+| `LoginOrRegisterFormModal`     | component | Modal-wrapped variant                  |
+| `LoginOrRegisterFormProps`     | type      | Props for the composite form           |
+| `LoginOrRegisterFormModalProps`| type      | Props for the modal                    |
+| `LoginOrRegisterFormMode`      | type      | `"login" \| "register" \| "verify"`    |
+
+### Key Props
+
+| Prop                | Type                                                 | Default     | Description                                                                  |
+| ------------------- | ---------------------------------------------------- | ----------- | ---------------------------------------------------------------------------- |
+| `mode`              | `LoginOrRegisterFormMode`                            | `"login"`   | Bindable active mode                                                         |
+| `loginData`         | `LoginFormData`                                      | empty       | Bindable login form data                                                     |
+| `registerData`      | `RegisterFormData`                                   | empty       | Bindable register form data                                                  |
+| `verifyEmail`       | `string`                                             | `""`        | Bindable email used by EmailVerifyForm (auto-seeded on transitions)          |
+| `onLogin`           | `(data) => void`                                     | required    | Login submit callback                                                        |
+| `onRegister`        | `(data) => void`                                     | required    | Register submit callback                                                     |
+| `onVerify`          | `(code: string) => void`                             | —           | Verify submit callback (required only when using verify mode)                |
+| `onResendCode`      | `() => Promise<void> \| void`                        | —           | Resend handler — when set, EmailVerifyForm renders the resend control        |
+| `loginProps`        | `Partial<LoginFormProps>`                            | —           | Pass-through to inner LoginForm                                              |
+| `registerProps`     | `Partial<RegisterFormProps>`                         | —           | Pass-through to inner RegisterForm                                           |
+| `verifyProps`       | `Partial<EmailVerifyFormProps>`                      | —           | Pass-through to inner EmailVerifyForm (e.g., `error`, `attemptsRemaining`)  |
+| `modeSwitcher`      | `Snippet`                                            | —           | Override the built-in ButtonGroupRadio                                       |
+| `socialLogins`      | `Snippet`                                            | —           | Shared OAuth buttons (hidden in verify mode)                                 |
+| `footer`            | `Snippet<[{ mode, setMode }]>`                       | —           | Mode-aware footer                                                            |
+| `isSubmitting`      | `boolean`                                            | `false`     | Forwarded to all three forms                                                 |
+| `notifications`     | `NotificationsStack`                                 | —           | Routes errors to notifications                                               |
+| `t`                 | `TranslateFn`                                        | built-in    | Translation function                                                         |
+
+### Modal additions (`LoginOrRegisterFormModal`)
+
+Inherits all `LoginOrRegisterForm` props, plus:
+
+| Prop         | Type                  | Default   | Description                                                       |
+| ------------ | --------------------- | --------- | ----------------------------------------------------------------- |
+| `title`      | `string`              | mode-aware | Modal title (defaults to "Log In" / "Create account" / "Verify your email") |
+| `visible`    | `boolean`             | `false`   | Bindable visibility                                               |
+| `trigger`    | `Snippet<[{ open }]>` | —         | Optional trigger element                                          |
+| `noXClose`   | `boolean`             | `false`   | Hide close button                                                 |
+
+### CSS Tokens
+
+Prefix: `--stuic-login-or-register-form-*`
+
+`gap`, `switcher-margin-bottom`, `social-margin-top`, `social-gap`, `social-divider-*`
+
+### i18n
+
+| Key                                              | Default              |
+| ------------------------------------------------ | -------------------- |
+| `login_or_register_form.mode_login`              | `Log in`             |
+| `login_or_register_form.mode_register`           | `Sign up`            |
+| `login_or_register_form.mode_verify`             | `Verify`             |
+| `login_or_register_form.modal_title_login`       | `Log In`             |
+| `login_or_register_form.modal_title_register`    | `Create account`     |
+| `login_or_register_form.modal_title_verify`      | `Verify your email`  |
+| `login_or_register_form.social_divider`          | `or continue with`   |
+
+---
+
+## EmailVerifyForm
+
+Post-registration email-verify form. Drop-in peer to `LoginForm` / `RegisterForm`. Renders a heading, a subhead with the bolded email address, a general error banner, an `OtpInput` (default 6 digits, auto-submits on completion), an optional attempts hint, a primary submit button, and an optional resend control with built-in cooldown countdown.
+
+### Exports
+
+| Export                  | Kind      | Description                |
+| ----------------------- | --------- | -------------------------- |
+| `EmailVerifyForm`       | component | Email-verify form          |
+| `EmailVerifyFormProps`  | type      | Props for EmailVerifyForm  |
+
+### Key Props
+
+| Prop                    | Type                                       | Default  | Description                                              |
+| ----------------------- | ------------------------------------------ | -------- | -------------------------------------------------------- |
+| `email`                 | `string`                                   | required | Email shown in the subhead                               |
+| `onSubmit`              | `(code: string) => void`                   | required | Called with the entered code (auto + manual submit)      |
+| `onResend`              | `() => Promise<void> \| void`              | —        | When set, renders the resend control                     |
+| `resendCooldownSeconds` | `number`                                   | `30`     | Cooldown after a successful resend                       |
+| `isSubmitting`          | `boolean`                                  | `false`  | Disables submit + OtpInput                               |
+| `error`                 | `string`                                   | —        | General error (alert + applies error styling to OtpInput)|
+| `attemptsRemaining`     | `number`                                   | —        | Inline "{count} attempts remaining" hint                 |
+| `codeLength`            | `number`                                   | `6`      | Forwarded to OtpInput                                    |
+| `otpInputProps`         | `Partial<OtpInputProps>`                   | —        | Pass-through to inner OtpInput                           |
+| `notifications`         | `NotificationsStack`                       | —        | Route errors to notifications                            |
+| `submitButton`          | `Snippet`                                  | —        | Override submit section                                  |
+| `footer`                | `Snippet`                                  | —        | Content below resend control                             |
+| `t`                     | `TranslateFn`                              | built-in | Translation function                                     |
+
+### CSS Tokens
+
+Prefix: `--stuic-email-verify-form-*`
+
+`gap`, `subheading-color`, `attempts-color`, `resend-color`, `resend-flash-color`
+
+### i18n keys
+
+`email_verify_form.heading`, `subheading`, `submit`, `submitting`, `resend_prompt`, `resend`, `resend_cooldown`, `resent`, `attempts_remaining`
+
+---
+
+## OtpInput
+
+Generic N-slot one-time-code input. 6 numeric digits by default, configurable to 4–8. Building block for email-verify, future 2FA, and password-reset OTP flows.
+
+### Exports
+
+| Export          | Kind      | Description           |
+| --------------- | --------- | --------------------- |
+| `OtpInput`      | component | OTP input             |
+| `OtpInputProps` | type      | Props for OtpInput    |
+
+### Key Props
+
+| Prop           | Type                            | Default            | Description                                                       |
+| -------------- | ------------------------------- | ------------------ | ----------------------------------------------------------------- |
+| `value`        | `string`                        | `""`               | Bindable concatenated value                                       |
+| `length`       | `number`                        | `6`                | Number of slots                                                   |
+| `onComplete`   | `(code: string) => void`        | —                  | Fired when all slots are filled                                   |
+| `oninput`      | `(value: string) => void`       | —                  | Fired on every change                                             |
+| `error`        | `boolean`                       | `false`            | Renders error styling + `aria-invalid`                            |
+| `disabled`     | `boolean`                       | `false`            | Disables all slots                                                |
+| `autoFocus`    | `boolean`                       | `true`             | Auto-focus first empty slot on mount                              |
+| `mode`         | `"numeric" \| "alphanumeric"`   | `"numeric"`        | Restrict input characters                                         |
+| `autocomplete` | `string`                        | `"one-time-code"`  | Pass-through to first slot for browser/iOS auto-fill              |
+
+### Behavior
+
+- Auto-advance on input; backspace clears or jumps back
+- Arrow keys navigate without modifying values
+- Paste anywhere distributes from slot 0 (after sanitization + truncation)
+- iOS / Android SMS auto-fill works via `autocomplete="one-time-code"` on slot 0
+- Each slot announces `aria-label="Digit {n+1} of {length}"`
+- Enter bubbles native submit to surrounding `<form>`
+
+### CSS Tokens
+
+Prefix: `--stuic-otp-input-*`
+
+`gap`, `slot-size`, `font-size`, `bg`, `color`, `radius`, `border-width`, `border-color`, `border-color-focus`, `border-color-error`, `transition`
+
+Falls back to shared structural tokens `--stuic-radius`, `--stuic-border-width`, `--stuic-transition`.
 
 ---
 
@@ -578,6 +777,10 @@ Prefix: `--stuic-tree-*`
 | src/lib/components/Modal/     | Complex component example                             |
 | src/lib/components/Input/     | Form field patterns (incl. FieldObject)               |
 | src/lib/components/LoginForm/ | Standalone login form + modal variant                 |
+| src/lib/components/RegisterForm/         | Standalone registration form                       |
+| src/lib/components/LoginOrRegisterForm/  | Composite login/register/verify form + modal       |
+| src/lib/components/EmailVerifyForm/      | Post-registration email-verify form                |
+| src/lib/components/OtpInput/             | N-slot one-time-code input                         |
 | src/lib/components/Checkout/  | E-commerce checkout flow (14 exported sub-components) |
 | src/lib/components/Card/      | Card with image/title/footer variants                 |
 | src/lib/components/Tree/      | Hierarchical tree with drag-and-drop                  |

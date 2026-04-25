@@ -1,0 +1,41 @@
+@layer components {
+	.stuic-otp-input {
+		display: flex;
+		gap: var(--stuic-otp-input-gap, 0.5rem);
+	}
+
+	.stuic-otp-input-slot {
+		width: var(--stuic-otp-input-slot-size, 2.75rem);
+		height: var(--stuic-otp-input-slot-size, 2.75rem);
+		text-align: center;
+		font-size: var(--stuic-otp-input-font-size, 1.25rem);
+		font-variant-numeric: tabular-nums;
+		background: var(--stuic-otp-input-bg, var(--stuic-color-background));
+		color: var(--stuic-otp-input-color, var(--stuic-color-foreground));
+		border-radius: var(--stuic-otp-input-radius, var(--stuic-radius));
+		border-style: solid;
+		border-width: var(--stuic-otp-input-border-width, var(--stuic-border-width));
+		border-color: var(--stuic-otp-input-border-color, var(--stuic-color-border));
+		transition: border-color var(--stuic-otp-input-transition, var(--stuic-transition));
+	}
+
+	.stuic-otp-input-slot:focus {
+		border-color: var(
+			--stuic-otp-input-border-color-focus,
+			var(--stuic-color-primary)
+		);
+		outline: none;
+	}
+
+	.stuic-otp-input-slot:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+
+	.stuic-otp-input[data-error="true"] .stuic-otp-input-slot {
+		border-color: var(
+			--stuic-otp-input-border-color-error,
+			var(--stuic-color-destructive)
+		);
+	}
+}

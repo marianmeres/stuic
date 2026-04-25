@@ -19,18 +19,29 @@
 		/** Bindable register formData */
 		registerData?: RegisterFormData;
 
+		/** Bindable email used by EmailVerifyForm. */
+		verifyEmail?: string;
+
 		onLogin: (data: LoginFormData) => void;
 		onRegister: (data: RegisterFormData) => void;
+
+		/** Called when the user submits a code in the verify view. */
+		onVerify?: (code: string) => void;
+
+		/** Called when the user clicks "Resend code" in the verify view. */
+		onResendCode?: () => Promise<void> | void;
 
 		isSubmitting?: boolean;
 
 		loginProps?: InnerProps["loginProps"];
 		registerProps?: InnerProps["registerProps"];
+		verifyProps?: InnerProps["verifyProps"];
 
 		modeSwitcher?: InnerProps["modeSwitcher"];
 
 		loginModeLabel?: string;
 		registerModeLabel?: string;
+		verifyModeLabel?: string;
 
 		/** Shared social logins (rendered below the active form). */
 		socialLogins?: Snippet;
@@ -84,14 +95,19 @@
 		mode = $bindable("login"),
 		loginData = $bindable(createEmptyLoginFormData()),
 		registerData = $bindable(createEmptyRegisterFormData()),
+		verifyEmail = $bindable(""),
 		onLogin,
 		onRegister,
+		onVerify,
+		onResendCode,
 		isSubmitting = false,
 		loginProps,
 		registerProps,
+		verifyProps,
 		modeSwitcher,
 		loginModeLabel,
 		registerModeLabel,
+		verifyModeLabel,
 		socialLogins,
 		socialDividerLabel,
 		footer,
@@ -112,9 +128,11 @@
 
 	let resolvedTitle = $derived(
 		title ??
-			(mode === "login"
-				? t("login_or_register_form.modal_title_login")
-				: t("login_or_register_form.modal_title_register"))
+			(mode === "verify"
+				? t("login_or_register_form.modal_title_verify")
+				: mode === "login"
+					? t("login_or_register_form.modal_title_login")
+					: t("login_or_register_form.modal_title_register"))
 	);
 
 	let modal: Modal = $state()!;
@@ -164,14 +182,19 @@
 			bind:mode
 			bind:loginData
 			bind:registerData
+			bind:verifyEmail
 			{onLogin}
 			{onRegister}
+			{onVerify}
+			{onResendCode}
 			{isSubmitting}
 			{loginProps}
 			{registerProps}
+			{verifyProps}
 			{modeSwitcher}
 			{loginModeLabel}
 			{registerModeLabel}
+			{verifyModeLabel}
 			{socialLogins}
 			{socialDividerLabel}
 			{footer}

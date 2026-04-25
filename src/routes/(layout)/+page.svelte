@@ -44,6 +44,7 @@
 		'nav',
 		'notifications',
 		'onboarding',
+		'otp-input',
 		// 'on-outside',
 		'popover', 
 		'pricing-table',
