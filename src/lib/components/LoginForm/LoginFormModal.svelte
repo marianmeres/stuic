@@ -154,7 +154,7 @@
 	classDialog="flex items-center justify-center"
 >
 	{#snippet header()}
-		<div class="flex items-center justify-between p-4 pb-0">
+		<div class="flex items-center justify-between p-4">
 			<H level={1} renderLevel={3} class="pl-2">
 				{title ?? t("login_form.modal_title")}
 			</H>
@@ -193,7 +193,6 @@
 			t={tProp}
 			{unstyled}
 			class={classForm}
-			compact
 		/>
 	</div>
 </Modal>

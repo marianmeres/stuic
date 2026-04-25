@@ -73,8 +73,6 @@
 		unstyled?: boolean;
 		class?: string;
 		el?: HTMLFormElement;
-
-		compact?: boolean;
 	}
 </script>
 
@@ -111,7 +109,6 @@
 		unstyled = false,
 		class: classProp,
 		el = $bindable(),
-		compact,
 		...rest
 	}: Props = $props();
 
@@ -158,13 +155,7 @@
 	let _class = $derived(unstyled ? classProp : twMerge("stuic-login-form", classProp));
 </script>
 
-<form
-	bind:this={el}
-	class={_class}
-	use:onSubmitValidityCheck
-	{...rest}
-	data-compact={compact ? "" : undefined}
->
+<form bind:this={el} class={_class} use:onSubmitValidityCheck {...rest}>
 	<!-- General error alert -->
 	<DismissibleMessage message={error} intent="destructive" onDismiss={false} />
 
@@ -184,7 +175,6 @@
 		required
 		name="login-email"
 		labelLeftBreakpoint={0}
-		class={compact ? "mb-4" : ""}
 		validate={{
 			customValidator(val) {
 				return fieldError("email") || "";
@@ -203,7 +193,7 @@
 		required
 		name="login-password"
 		labelLeftBreakpoint={0}
-		class={compact ? "mb-4" : ""}
+		class="mb-10"
 		validate={{
 			customValidator(val) {
 				return fieldError("password") || "";
@@ -211,9 +201,22 @@
 		}}
 	/>
 
-	{#if compact}
-		<!-- Compact: remember me + submit in one row -->
-		<div class={unstyled ? undefined : "stuic-login-form-compact-cta"}>
+	<!-- CTA -->
+	{#if submitButton}
+		{@render submitButton({ isSubmitting, disabled: isSubmitting })}
+	{:else}
+		<div class={unstyled ? undefined : "stuic-login-form-submit"}>
+			<Button intent="primary" type="submit" disabled={isSubmitting} class="w-full">
+				{isSubmitting
+					? (submittingLabel ?? t("login_form.submitting"))
+					: (submitLabel ?? t("login_form.submit"))}
+			</Button>
+		</div>
+	{/if}
+
+	<!-- Remember me + Forgot password -->
+	{#if showRememberMe || onForgotPassword}
+		<div class={unstyled ? undefined : "stuic-login-form-options"}>
 			{#if showRememberMe}
 				<!-- svelte-ignore binding_property_non_reactive -->
 				<span use:tooltip aria-label={t("login_form.remember_me_tooltip")}>
@@ -225,57 +228,17 @@
 					/>
 				</span>
 			{/if}
-			{#if submitButton}
-				{@render submitButton({ isSubmitting, disabled: isSubmitting })}
-			{:else}
-				<Button intent="primary" type="submit" disabled={isSubmitting} class="block">
-					{isSubmitting
-						? (submittingLabel ?? t("login_form.submitting"))
-						: (submitLabel ?? t("login_form.submit"))}
+			{#if onForgotPassword}
+				<Button
+					variant="link"
+					type="button"
+					class={unstyled ? undefined : "text-muted-foreground ml-auto"}
+					size="sm"
+					onclick={onForgotPassword}
+				>
+					{t("login_form.forgot_password")}
 				</Button>
 			{/if}
-		</div>
-	{:else}
-		<!-- Normal: remember me above submit -->
-		{#if showRememberMe}
-			<!-- svelte-ignore binding_property_non_reactive -->
-			<div class={unstyled ? undefined : "stuic-login-form-remember"}>
-				<span use:tooltip aria-label={t("login_form.remember_me_tooltip")}>
-					<FieldCheckbox
-						bind:checked={formData.rememberMe}
-						label={t("login_form.remember_me")}
-						name="login-remember-me"
-					/>
-				</span>
-			</div>
-		{/if}
-
-		<!-- CTA -->
-		{#if submitButton}
-			{@render submitButton({ isSubmitting, disabled: isSubmitting })}
-		{:else}
-			<div class={unstyled ? undefined : "stuic-login-form-submit"}>
-				<Button intent="primary" type="submit" disabled={isSubmitting} class="w-full">
-					{isSubmitting
-						? (submittingLabel ?? t("login_form.submitting"))
-						: (submitLabel ?? t("login_form.submit"))}
-				</Button>
-			</div>
-		{/if}
-	{/if}
-
-	<!-- Forgot password -->
-	{#if onForgotPassword}
-		<div class={unstyled ? undefined : "stuic-login-form-forgot"}>
-			<Button
-				variant="link"
-				type="button"
-				class="text-muted-foreground"
-				size="sm"
-				onclick={onForgotPassword}
-			>
-				{t("login_form.forgot_password")}
-			</Button>
 		</div>
 	{/if}
 
