@@ -12,6 +12,7 @@
 	import Button from "$lib/components/Button/Button.svelte";
 	import FieldSwitch from "$lib/components/Input/FieldSwitch.svelte";
 	import { iconGoogle, iconFacebook, iconApple } from "$lib/icons/index.js";
+	import LoginFormsNav from "../login-form/LoginFormsNav.svelte";
 
 	// --- Interactive demo state ---
 	let mode = $state<LoginOrRegisterFormMode>("login");
@@ -68,6 +69,14 @@
 	let showFooter = $state(true);
 	let showExtraFields = $state(false);
 	let useCustomSwitcher = $state(false);
+	let showGeneralError = $state(false);
+
+	let loginGeneralError = $derived(
+		showGeneralError ? "Invalid email or password" : undefined
+	);
+	let registerGeneralError = $derived(
+		showGeneralError ? "Registration failed — please try again" : undefined
+	);
 
 	const sampleExtraFields: RegisterFieldConfig[] = [
 		{
@@ -92,6 +101,13 @@
 	let modalVerifyEmail = $state("");
 	let modalVerifyError = $state<string | undefined>(undefined);
 	let modalSubmitCount = $state(0);
+	let modalShowGeneralError = $state(false);
+	let modalLoginError = $derived(
+		modalShowGeneralError ? "Invalid email or password" : undefined
+	);
+	let modalRegisterError = $derived(
+		modalShowGeneralError ? "Registration failed — please try again" : undefined
+	);
 
 	function handleModalLogin(data: LoginFormData) {
 		modalSubmitCount++;
@@ -128,6 +144,8 @@
 	}
 </script>
 
+<LoginFormsNav />
+
 <h1 class="text-2xl font-bold mb-8">LoginOrRegisterForm</h1>
 
 <!-- ============== INTERACTIVE DEMO ============== -->
@@ -163,6 +181,12 @@
 			name="use-custom-switcher"
 			renderSize="sm"
 		/>
+		<FieldSwitch
+			bind:checked={showGeneralError}
+			label="Show general error (mode-aware)"
+			name="show-general-error"
+			renderSize="sm"
+		/>
 	</div>
 
 	<div class="max-w-lg">
@@ -177,7 +201,9 @@
 			onResendCode={handleResendCode}
 			{isSubmitting}
 			onForgotPassword={() => alert("Forgot password!")}
+			loginProps={{ error: loginGeneralError }}
 			registerProps={{
+				error: registerGeneralError,
 				extraFields: showExtraFields ? sampleExtraFields : undefined,
 			}}
 			verifyProps={{ error: verifyError, resendCooldownSeconds: 5 }}
@@ -245,10 +271,11 @@
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Verify mode</h2>
 	<p class="text-sm opacity-60 mb-4">
-		The composite form supports a third <code>"verify"</code> mode for the post-registration
-		email-verify step. The mode switcher and shared social-logins are hidden; the form
-		shows the <code>EmailVerifyForm</code>. Submit a real registration above (or use the
-		button below) to flip into <code>"verify"</code>; then enter <code>111111</code>
+		The composite form supports a third <code>"verify"</code> mode for the
+		post-registration email-verify step. The mode switcher and shared social-logins are
+		hidden; the form shows the <code>EmailVerifyForm</code>. Submit a real registration
+		above (or use the button below) to flip into <code>"verify"</code>; then enter
+		<code>111111</code>
 		to "verify".
 	</p>
 	<div class="flex gap-2 items-center">
@@ -289,6 +316,15 @@
 		<code>LoginOrRegisterFormModal</code> renders the composite inside a modal dialog. The title
 		updates live as the user toggles modes ("Log In" ↔ "Create account").
 	</p>
+	<div class="max-w-sm mb-4">
+		<FieldSwitch
+			bind:checked={modalShowGeneralError}
+			label="Show general error in modal (mode-aware)"
+			name="modal-show-general-error"
+			renderSize="sm"
+		/>
+	</div>
+
 	<div class="flex gap-4 items-center">
 		<LoginOrRegisterFormModal
 			bind:this={modalRef}
@@ -300,6 +336,8 @@
 			onRegister={handleModalRegister}
 			onVerify={handleModalVerify}
 			onResendCode={handleModalResendCode}
+			loginProps={{ error: modalLoginError }}
+			registerProps={{ error: modalRegisterError }}
 			verifyProps={{ error: modalVerifyError, resendCooldownSeconds: 5 }}
 			socialLogins={socialButtons}
 		>
@@ -319,8 +357,8 @@
 	</div>
 	<p class="text-xs opacity-60 mt-2">
 		Submitting a registration in the modal flips the inner mode to <code>"verify"</code>
-		and the modal title updates to "Verify your email". Use code <code>111111</code> to
-		complete verification.
+		and the modal title updates to "Verify your email". Use code <code>111111</code> to complete
+		verification.
 	</p>
 </section>
 

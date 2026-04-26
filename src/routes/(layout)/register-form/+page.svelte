@@ -10,6 +10,7 @@
 	import FieldCheckbox from "$lib/components/Input/FieldCheckbox.svelte";
 	import FieldSwitch from "$lib/components/Input/FieldSwitch.svelte";
 	import { iconGoogle, iconFacebook, iconApple } from "$lib/icons/index.js";
+	import LoginFormsNav from "../login-form/LoginFormsNav.svelte";
 
 	// --- Interactive demo state ---
 	let formData = $state<RegisterFormData>(createEmptyRegisterFormData());
@@ -86,6 +87,10 @@
 	// --- Modal demo state ---
 	let registerModal: RegisterFormModal = $state()!;
 	let modalSubmitCount = $state(0);
+	let modalShowGeneralError = $state(false);
+	let modalGeneralError = $derived(
+		modalShowGeneralError ? "Registration failed — please try again" : undefined
+	);
 
 	function handleModalSubmit(data: RegisterFormData) {
 		modalSubmitCount++;
@@ -95,6 +100,8 @@
 		}, 1000);
 	}
 </script>
+
+<LoginFormsNav />
 
 <h1 class="text-2xl font-bold mb-8">RegisterForm</h1>
 
@@ -239,10 +246,20 @@
 		button.
 	</p>
 
+	<div class="max-w-sm mb-4">
+		<FieldSwitch
+			bind:checked={modalShowGeneralError}
+			label="Show general error in modal"
+			name="modal-show-general-error"
+			renderSize="sm"
+		/>
+	</div>
+
 	<div class="flex gap-4 items-center">
 		<RegisterFormModal
 			bind:this={registerModal}
 			onSubmit={handleModalSubmit}
+			error={modalGeneralError}
 			extraFields={sampleExtraFields}
 			socialLogins={socialButtons}
 		>

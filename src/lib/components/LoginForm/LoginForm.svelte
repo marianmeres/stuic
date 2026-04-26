@@ -157,7 +157,7 @@
 
 <form bind:this={el} class={_class} use:onSubmitValidityCheck {...rest}>
 	<!-- General error alert -->
-	<DismissibleMessage message={error} intent="destructive" onDismiss={false} />
+	<DismissibleMessage message={error} intent="destructive" />
 
 	<!--
 			svelte-ignore binding_property_non_reactive:

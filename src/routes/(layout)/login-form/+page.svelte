@@ -8,6 +8,7 @@
 	import Button from "$lib/components/Button/Button.svelte";
 	import FieldSwitch from "$lib/components/Input/FieldSwitch.svelte";
 	import { iconGoogle, iconFacebook, iconApple } from "$lib/icons/index.js";
+	import LoginFormsNav from "./LoginFormsNav.svelte";
 
 	// --- Interactive demo state ---
 	let formData = $state<LoginFormData>(createEmptyLoginFormData());
@@ -46,6 +47,10 @@
 	// --- Modal demo state ---
 	let loginModal: LoginFormModal = $state()!;
 	let modalSubmitCount = $state(0);
+	let modalShowGeneralError = $state(false);
+	let modalGeneralError = $derived(
+		modalShowGeneralError ? "Invalid email or password" : undefined
+	);
 
 	function handleModalSubmit(data: LoginFormData) {
 		modalSubmitCount++;
@@ -56,6 +61,8 @@
 		}, 1000);
 	}
 </script>
+
+<LoginFormsNav />
 
 <h1 class="text-2xl font-bold mb-8">LoginForm</h1>
 
@@ -181,13 +188,24 @@
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Modal</h2>
 	<p class="text-sm opacity-60 mb-4">
-		<code>LoginFormModal</code> renders the login form inside a modal dialog with a trigger button.
+		<code>LoginFormModal</code> renders the login form inside a modal dialog with a trigger
+		button.
 	</p>
+
+	<div class="max-w-sm mb-4">
+		<FieldSwitch
+			bind:checked={modalShowGeneralError}
+			label="Show general error in modal"
+			name="modal-show-general-error"
+			renderSize="sm"
+		/>
+	</div>
 
 	<div class="flex gap-4 items-center">
 		<LoginFormModal
 			bind:this={loginModal}
 			onSubmit={handleModalSubmit}
+			error={modalGeneralError}
 			onForgotPassword={() => alert("Forgot password!")}
 			socialLogins={socialButtons}
 		>
