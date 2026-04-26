@@ -62,6 +62,7 @@ export * from "./components/ModalDialog/index.js";
 export * from "./components/Nav/index.js";
 export * from "./components/Notifications/index.js";
 export * from "./components/OtpInput/index.js";
+export * from "./components/Pill/index.js";
 export * from "./components/PricingTable/index.js";
 export * from "./components/Progress/index.js";
 export * from "./components/Separator/index.js";

@@ -2,7 +2,7 @@
 
 ## Overview
 
-55 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
+56 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
@@ -72,6 +72,7 @@
 | Component       | Purpose                                                             |
 | --------------- | ------------------------------------------------------------------- |
 | Avatar          | User avatars with fallback                                          |
+| Pill            | Inline rounded badge/tag/chip (intent + variant + size, dismissible, dot, polymorphic span/a/button) |
 | KbdShortcut     | Keyboard shortcut hints                                             |
 | Carousel        | Image/content slider with snap, keyboard nav, wheel scroll, arrows  |
 | ListItemButton  | List item with actions                                              |

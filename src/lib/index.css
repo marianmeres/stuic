@@ -84,6 +84,7 @@ In practice:
 @import "./components/Nav/index.css";
 @import "./components/Notifications/index.css";
 @import "./components/OtpInput/index.css";
+@import "./components/Pill/index.css";
 @import "./components/PricingTable/index.css";
 @import "./components/Progress/index.css";
 @import "./components/Separator/index.css";

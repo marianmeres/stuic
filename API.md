@@ -841,6 +841,36 @@ User avatar with fallback to initials or icon.
 <!-- Shows "JD" initials -->
 ```
 
+#### `Pill`
+
+Inline rounded badge/tag/chip with intent + variant + size system. Polymorphic: renders as `<span>` (default), `<a>` (when `href` set), or `<button>` (when `onclick` set).
+
+| Prop            | Type                                                               | Default  | Description                                          |
+| --------------- | ------------------------------------------------------------------ | -------- | ---------------------------------------------------- |
+| `intent`        | `"primary" \| "accent" \| "destructive" \| "warning" \| "success"` | -        | Semantic color                                       |
+| `variant`       | `"solid" \| "outline" \| "ghost" \| "soft" \| "link"`              | `"soft"` | Visual treatment                                     |
+| `size`          | `"sm" \| "md" \| "lg"`                                             | `"md"`   | Pill size                                            |
+| `roundedFull`   | `boolean`                                                          | `true`   | Fully rounded (9999px). `false` → element radius     |
+| `block`         | `boolean`                                                          | `false`  | Block-level flex (full width)                        |
+| `dot`           | `boolean`                                                          | `false`  | Status dot before content                            |
+| `dismissible`   | `boolean`                                                          | `false`  | Built-in X dismiss button                            |
+| `ondismiss`     | `(e: MouseEvent) => void`                                          | -        | Called when X clicked (stops propagation)            |
+| `active`        | `boolean`                                                          | `false`  | Selected state (filter-chip)                         |
+| `muted`         | `boolean`                                                          | `false`  | Lower opacity                                        |
+| `href`, `target`| `string`                                                           | -        | Render as `<a>`                                      |
+| `onclick`       | `(e: MouseEvent) => void`                                          | -        | Render as `<button>`                                 |
+| `contentBefore` | `THC`                                                              | -        | Content before children                              |
+| `contentAfter`  | `THC`                                                              | -        | Content after children                               |
+
+```svelte
+<Pill intent="success" dot>Online</Pill>
+<Pill intent="primary" dismissible ondismiss={() => removeTag()}>tag</Pill>
+<Pill intent="accent" href="/profile">Profile</Pill>
+<Pill intent="warning" variant="outline" active onclick={toggle}>Filter</Pill>
+```
+
+CSS tokens: `--stuic-pill-radius`, `--stuic-pill-font-family`, `--stuic-pill-font-weight`, `--stuic-pill-gap`, `--stuic-pill-dot-size`, `--stuic-pill-ring-{width,color}`, `--stuic-pill-{padding-x,padding-y,font-size,min-height}-{sm,md,lg}`.
+
 #### `KbdShortcut`
 
 Keyboard shortcut display.
