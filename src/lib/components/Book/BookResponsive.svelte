@@ -25,6 +25,7 @@
 </script>
 
 <script lang="ts">
+	import { untrack } from "svelte";
 	import {
 		iconBookOpen,
 		iconArrowRight as iconNext,
@@ -89,7 +90,7 @@
 
 	// ---- Manual mode override ----
 
-	let manualMode: "book" | "inline" | null = $state(initialMode ?? null);
+	let manualMode: "book" | "inline" | null = $state(untrack(() => initialMode ?? null));
 
 	// ---- Inline mode ----
 

@@ -1,3 +1,4 @@
+// @ts-nocheck - Deno-style imports for @marianmeres/mcp-server discovery
 import { z } from "npm:zod";
 import type { McpToolDefinition } from "jsr:@marianmeres/mcp-server/types";
 import { generateThemeCss, type ThemeSchema } from "./utils/design-tokens.js";

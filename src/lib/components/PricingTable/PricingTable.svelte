@@ -195,7 +195,6 @@
 				onButtonClick={(i) => {
 					billingPeriod = i === 0 ? "monthly" : "annual";
 				}}
-				{unstyled}
 				class={classToggleProp}
 				style="
 					width: auto;
@@ -229,7 +228,6 @@
 					class={tierClass}
 					data-highlighted={!unstyled && tier.highlighted ? "" : undefined}
 					data-disabled={!unstyled && tier.disabled ? "" : undefined}
-					aria-disabled={tier.disabled ? "true" : undefined}
 					role="listitem"
 				>
 					{#if tier.highlighted && tier.highlightedBadge}

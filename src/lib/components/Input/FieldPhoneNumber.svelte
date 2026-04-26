@@ -59,7 +59,7 @@
 </script>
 
 <script lang="ts">
-	import { tick } from "svelte";
+	import { tick, untrack } from "svelte";
 	import {
 		validate as validateAction,
 		type ValidationResult,
@@ -142,9 +142,8 @@
 	});
 
 	// Selected country object (initialize once from defaultCountry prop)
-	const _initCountry = defaultCountry;
 	let selectedCountry: Country | undefined = $state(
-		_initCountry ? ISO_MAP.get(_initCountry.toUpperCase()) : undefined
+		untrack(() => (defaultCountry ? ISO_MAP.get(defaultCountry.toUpperCase()) : undefined))
 	);
 
 	// Internal local number (for controlled input)

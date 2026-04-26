@@ -85,15 +85,14 @@
 				{/snippet}
 				{#snippet description({ image, onclick })}
 					<div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
-						<p
-							class="text-white text-sm cursor-pointer hover:underline"
-							role="button"
+						<button
+							type="button"
+							class="text-white text-sm text-left cursor-pointer hover:underline bg-transparent border-0 p-0"
 							tabindex="-1"
-							onclick={onclick}
-							onkeydown={onclick}
+							{onclick}
 						>
 							{image.description}
-						</p>
+						</button>
 					</div>
 				{/snippet}
 			</ImageCycler>
