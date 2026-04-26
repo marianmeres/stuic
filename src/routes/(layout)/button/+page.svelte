@@ -67,6 +67,64 @@
 
 <hr class="my-8" />
 
+<h2 class="text-xl font-semibold mb-4">Pure Rounded X (neutral overlay hover)</h2>
+<p class="text-sm text-neutral-500 mb-4">
+	The combination <code>x</code> + <code>variant="ghost"</code> + <code>roundedFull</code> auto-applies
+	a neutral semi-transparent overlay on hover (instead of the intent-tinted ghost hover), so the
+	dismiss-style X reads correctly on any background. Override globally via
+	<code>--stuic-button-x-bg-hover</code> (light) and <code>:root.dark</code> (dark).
+</p>
+
+<div class="space-y-4">
+	<div>
+		<p class="text-sm text-neutral-500 mb-2">Different intents — all share the same neutral hover:</p>
+		<div class="flex flex-wrap gap-3 items-center">
+			<Button x variant="ghost" roundedFull />
+			<Button x variant="ghost" roundedFull intent="primary" />
+			<Button x variant="ghost" roundedFull intent="accent" />
+			<Button x variant="ghost" roundedFull intent="destructive" />
+			<Button x variant="ghost" roundedFull intent="success" />
+		</div>
+	</div>
+
+	<div>
+		<p class="text-sm text-neutral-500 mb-2">On colored surfaces (the motivating use case):</p>
+		<div class="flex flex-wrap gap-3 items-center">
+			<div
+				class="flex items-center gap-3 px-4 py-3 rounded text-white"
+				style="background: var(--stuic-color-primary);"
+			>
+				<span class="text-sm">Primary surface</span>
+				<Button x variant="ghost" roundedFull size="sm" class="text-inherit" />
+			</div>
+			<div
+				class="flex items-center gap-3 px-4 py-3 rounded text-white"
+				style="background: var(--stuic-color-destructive);"
+			>
+				<span class="text-sm">Destructive surface</span>
+				<Button x variant="ghost" roundedFull size="sm" class="text-inherit" />
+			</div>
+		</div>
+	</div>
+
+	<div>
+		<p class="text-sm text-neutral-500 mb-2">
+			Custom override via <code>--stuic-button-x-bg-hover</code>:
+		</p>
+		<div class="flex flex-wrap gap-3 items-center">
+			<Button
+				x
+				variant="ghost"
+				roundedFull
+				style="--stuic-button-x-bg-hover: rgb(255 0 0 / 0.25);"
+			/>
+			<span class="text-sm text-neutral-500">red overlay on hover</span>
+		</div>
+	</div>
+</div>
+
+<hr class="my-8" />
+
 <h2 class="text-xl font-semibold mb-4">Sizes</h2>
 
 <div class="flex flex-wrap gap-4 items-end">

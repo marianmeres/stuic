@@ -142,6 +142,7 @@
 		data-rounded-full={!unstyled && roundedFull ? "true" : undefined}
 		data-aspect1={!unstyled && _isAspect1 ? "true" : undefined}
 		data-icon-button={!unstyled && _isIconButton ? "true" : undefined}
+		data-x={!unstyled && !!_xProps ? "true" : undefined}
 		use:tooltip={_tooltipConfig}
 		{...rest as HTMLAnchorAttributes}
 	>
@@ -175,6 +176,7 @@
 		data-rounded-full={!unstyled && roundedFull ? "true" : undefined}
 		data-aspect1={!unstyled && _isAspect1 ? "true" : undefined}
 		data-icon-button={!unstyled && _isIconButton ? "true" : undefined}
+		data-x={!unstyled && !!_xProps ? "true" : undefined}
 		use:tooltip={_tooltipConfig}
 		{...rest}
 	>

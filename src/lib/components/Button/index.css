@@ -42,6 +42,14 @@
 	/* Raised (3D push) effect */
 	--stuic-button-raised-offset: 2px;
 	--stuic-button-raised-color: rgb(0 0 0 / 0.8);
+
+	/* Neutral overlay hover for "pure rounded X" (ghost + x + roundedFull).
+	   Intentionally non-themed — sits on top of any background color. */
+	--stuic-button-x-bg-hover: rgb(0 0 0 / 0.1);
+}
+
+:root.dark {
+	--stuic-button-x-bg-hover: rgb(255 255 255 / 0.05);
 }
 
 @layer components {
@@ -415,5 +423,15 @@
 	   ============================================================================ */
 	.stuic-button[data-icon-button] {
 		--stuic-button-radius: 9999px;
+	}
+
+	/* ============================================================================
+	   PURE ROUNDED X
+	   Ghost variant + x icon + fully rounded — replace the intent-tinted ghost
+	   hover with a neutral overlay so the button reads on any background.
+	   ============================================================================ */
+	.stuic-button[data-variant="ghost"][data-x][data-rounded-full] {
+		--_bg-hover: var(--stuic-button-x-bg-hover);
+		--_bg-active: var(--stuic-button-x-bg-hover);
 	}
 }
