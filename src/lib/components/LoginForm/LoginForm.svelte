@@ -115,6 +115,19 @@
 
 	let t = $derived(tProp ?? t_default);
 
+	// Mirror the form ref into local $state so it survives prop re-application
+	// when the parent re-renders without binding `el`. Otherwise the bindable
+	// prop reverts to its default (undefined) on the next parent re-render, the
+	// `$effect` tracking it cleans up the `submit_valid` listener, and `bind:this`
+	// does NOT re-fire (the form element wasn't unmounted) — leaving the form
+	// alive in the DOM with no submit handler. Next click silently goes nowhere.
+	// `el` stays the public API: consumers can still bind it; we mirror formEl
+	// into it so the binding sees a value.
+	let formEl = $state<HTMLFormElement | undefined>();
+	$effect(() => {
+		el = formEl;
+	});
+
 	// Internal validation errors (set on submit)
 	let internalErrors = $state<LoginFormValidationError[]>([]);
 
@@ -145,8 +158,8 @@
 		// pre-clears before the per-field re-dispatch), but doing it here too is
 		// cheap insurance against any future regression that lets a stale flag slip
 		// past the action.
-		if (el) {
-			for (const node of Array.from(el.elements) as HTMLInputElement[]) {
+		if (formEl) {
+			for (const node of Array.from(formEl.elements) as HTMLInputElement[]) {
 				if (typeof node.setCustomValidity === "function") node.setCustomValidity("");
 			}
 		}
@@ -188,9 +201,11 @@
 
 	// The onSubmitValidityCheck action intercepts native submit (capture phase,
 	// stopImmediatePropagation) and dispatches a custom "submit_valid" event.
-	// Listen for it on the form element as a fallback.
+	// Listen for it on the form element as a fallback. Reads `formEl` (local state)
+	// — NOT the `el` prop, which can revert to undefined on parent re-render and
+	// would cause this $effect's cleanup to silently detach the listener.
 	$effect(() => {
-		const node = el;
+		const node = formEl;
 		if (!node) return;
 		node.addEventListener("submit_valid", handleSubmitValid);
 		return () => node.removeEventListener("submit_valid", handleSubmitValid);
@@ -199,7 +214,7 @@
 	let _class = $derived(unstyled ? classProp : twMerge("stuic-login-form", classProp));
 </script>
 
-<form bind:this={el} class={_class} use:onSubmitValidityCheck {...rest}>
+<form bind:this={formEl} class={_class} use:onSubmitValidityCheck {...rest}>
 	<!-- General error alert -->
 	<DismissibleMessage message={error} intent="destructive" />
 

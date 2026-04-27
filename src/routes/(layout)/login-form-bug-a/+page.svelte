@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { LoginForm, createEmptyLoginFormData } from "$lib/index.js";
 	import type { LoginFormData } from "$lib/components/LoginForm/_internal/login-form-types.js";
+	import WrappingParent from "./WrappingParent.svelte";
 
 	// Real HTTP target. example.com doesn't have a login endpoint, so this will
 	// 404 (or be blocked by CORS — the response status / network error is enough
@@ -176,6 +177,22 @@
 	</div>
 </div>
 
+<hr class="my-8 opacity-30" />
+
+<h2 class="text-xl font-bold mb-2">Wrapped repro (Issue A — bind:this gotcha)</h2>
+<p class="text-sm opacity-70 mb-4">
+	Same form, but mounted inside a <code>WrappingParent</code> sub-component that flips
+	<code>isSubmitting</code> in <code>finally</code> after a fake (Promise-only) failure. This is
+	the configuration that historically reproduced the silent-retry bug because the parent
+	re-render reset <code>el = $bindable()</code> to <code>undefined</code> and detached the
+	<code>submit_valid</code> listener. With the <code>formEl</code> local-state mirror in place,
+	the second click must increment the wrapper's count.
+</p>
+
+<div class="border rounded-md p-4 max-w-md">
+	<WrappingParent onLog={append} />
+</div>
+
 <div class="mt-6 text-xs opacity-60 space-y-1">
 	<p><strong>Repro steps:</strong></p>
 	<ol class="list-decimal pl-5 space-y-1">
@@ -195,6 +212,11 @@
 		<li>
 			The event log on the right will tell us whether <code>submit_invalid</code> fires (and
 			which validity flag is set) or whether the click never reaches the form.
+		</li>
+		<li>
+			<strong>Wrapped section:</strong> repeat the same flow there. The wrapped count must
+			also reach 2 — that's the regression test for the <code>bind:this</code> +
+			<code>$bindable</code> gotcha.
 		</li>
 	</ol>
 </div>

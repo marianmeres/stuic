@@ -132,6 +132,14 @@
 
 	let t = $derived(tProp ?? t_default);
 
+	// Mirror the form ref into local $state so it survives prop re-application
+	// when the parent re-renders without binding `el`. See LoginForm for the full
+	// rationale — same Svelte 5 `$bindable` + `bind:this` gotcha applies here.
+	let formEl = $state<HTMLFormElement | undefined>();
+	$effect(() => {
+		el = formEl;
+	});
+
 	let topFields = $derived(extraFields.filter((f) => f.position === "top"));
 	let bottomFields = $derived(extraFields.filter((f) => f.position !== "top"));
 
@@ -180,9 +188,11 @@
 
 	// The onSubmitValidityCheck action intercepts native submit (capture phase,
 	// stopImmediatePropagation) and dispatches a custom "submit_valid" event.
-	// Listen for it on the form element as a fallback.
+	// Listen for it on the form element as a fallback. Reads `formEl` (local state)
+	// — NOT the `el` prop, which can revert to undefined on parent re-render and
+	// would cause this $effect's cleanup to silently detach the listener.
 	$effect(() => {
-		const node = el;
+		const node = formEl;
 		if (!node) return;
 		node.addEventListener("submit_valid", handleSubmitValid);
 		return () => node.removeEventListener("submit_valid", handleSubmitValid);
@@ -191,7 +201,7 @@
 	let _class = $derived(unstyled ? classProp : twMerge("stuic-register-form", classProp));
 </script>
 
-<form bind:this={el} class={_class} use:onSubmitValidityCheck {...rest}>
+<form bind:this={formEl} class={_class} use:onSubmitValidityCheck {...rest}>
 	<!-- General error alert -->
 	<DismissibleMessage message={error} intent="destructive" />
 

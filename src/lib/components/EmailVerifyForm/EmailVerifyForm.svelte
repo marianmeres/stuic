@@ -89,6 +89,18 @@
 
 	let t = $derived(tProp ?? t_default);
 
+	// Mirror the form ref into local $state so it survives prop re-application
+	// when the parent re-renders without binding `el`. See LoginForm for the full
+	// rationale — same Svelte 5 `$bindable` + `bind:this` gotcha applies here.
+	// EmailVerifyForm uses `onsubmit={handleFormSubmit}` (declarative attribute)
+	// so the listener wouldn't get torn down the way LoginForm/RegisterForm did,
+	// but the public `el` prop is still unsafe for consumers that bind it after
+	// any parent re-render — same fix for consistency.
+	let formEl = $state<HTMLFormElement | undefined>();
+	$effect(() => {
+		el = formEl;
+	});
+
 	let code = $state("");
 	let cooldownRemaining = $state(0);
 	let resentFlash = $state(false);
@@ -182,7 +194,7 @@
 	let submitDisabled = $derived(code.length !== codeLength || isSubmitting);
 </script>
 
-<form bind:this={el} class={_class} onsubmit={handleFormSubmit} {...rest}>
+<form bind:this={formEl} class={_class} onsubmit={handleFormSubmit} {...rest}>
 	<!-- Heading -->
 	<H level={2} class={unstyled ? undefined : "stuic-email-verify-form-heading"}>
 		{t("email_verify_form.heading")}
