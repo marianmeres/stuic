@@ -257,8 +257,13 @@ export function validate(
 			let customValidatorMessage = "";
 			if (typeof customValidator === "function") {
 				customValidatorMessage = customValidator(el.value, context, el) || "";
-				el.setCustomValidity(customValidatorMessage);
 			}
+			// Always write — including the no-validator case (which writes "" and
+			// thus clears any stale `customError` flag the element may be carrying
+			// from a prior listener generation). Without this, a `customValidator`
+			// being removed across re-renders would leave the previous message
+			// stuck on the element forever.
+			el.setCustomValidity(customValidatorMessage);
 
 			// this triggers the bubble, which is not what we want
 			// el.reportValidity();

@@ -60,6 +60,18 @@ export function onSubmitValidityCheck(node: HTMLFormElement) {
 				// input (last radio input), which is not desired
 				if (el.type === "radio") continue;
 
+				// Clear any stale `customError` flag from a prior submit attempt before
+				// re-dispatching the validate listeners. Without this, if the field's
+				// per-field validate $effect was torn down/re-mounted in a way that
+				// skipped re-running its `customValidator` (e.g., the parent re-rendered
+				// for an unrelated reason between submits), the previous submit's
+				// customValidity message lingers on the DOM element. Then `el.validity.valid`
+				// would return false here even though the customValidator now reports no
+				// error, silently routing the form to `submit_invalid` and never calling
+				// the consumer's onSubmit. The dispatched change event below re-runs the
+				// per-field validator which re-applies a real customValidity if needed.
+				if (typeof el.setCustomValidity === "function") el.setCustomValidity("");
+
 				el.dispatchEvent(new Event("input", { bubbles: true }));
 				el.dispatchEvent(new Event("change", { bubbles: true }));
 
