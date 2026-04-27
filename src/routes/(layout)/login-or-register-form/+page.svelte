@@ -142,6 +142,52 @@
 	async function handleModalResendCode() {
 		await new Promise((r) => setTimeout(r, 300));
 	}
+
+	// --- Bug-repro modal (Issues A / B / C from the BUG-stuic-LoginOrRegisterFormModal report) ---
+	let bugModalRef: LoginOrRegisterFormModal = $state()!;
+	let bugMode = $state<LoginOrRegisterFormMode>("login");
+	let bugIsSubmitting = $state(false);
+	let bugFormError = $state<string | undefined>(undefined);
+	let bugLoginCallCount = $state(0);
+	let bugFailNextSubmit = $state(true);
+	let bugClearErrorOnModeChange = $state(true);
+	let bugAllowBackdropClose = $state(false);
+	let bugSubmitLog = $state<string[]>([]);
+
+	function bugLog(msg: string) {
+		bugSubmitLog = [...bugSubmitLog, `${new Date().toLocaleTimeString()} — ${msg}`].slice(
+			-10
+		);
+	}
+
+	async function handleBugLogin(data: LoginFormData) {
+		bugLoginCallCount++;
+		bugLog(`onLogin called (#${bugLoginCallCount}) — ${data.email}`);
+		bugIsSubmitting = true;
+		bugFormError = undefined;
+		await new Promise((r) => setTimeout(r, 300));
+		if (bugFailNextSubmit) {
+			bugFormError = "Invalid email and/or password";
+			bugLog("→ failed (server returned 401-equivalent)");
+		} else {
+			bugLog("→ succeeded — closing modal");
+			bugModalRef.close();
+		}
+		bugIsSubmitting = false;
+	}
+
+	async function handleBugRegister(data: RegisterFormData) {
+		bugLog(`onRegister called — ${data.email}`);
+		bugIsSubmitting = true;
+		bugFormError = undefined;
+		await new Promise((r) => setTimeout(r, 300));
+		if (bugFailNextSubmit) {
+			bugFormError = "Registration failed";
+		} else {
+			bugModalRef.close();
+		}
+		bugIsSubmitting = false;
+	}
 </script>
 
 <LoginFormsNav />
@@ -360,6 +406,122 @@
 		and the modal title updates to "Verify your email". Use code <code>111111</code> to complete
 		verification.
 	</p>
+</section>
+
+<!-- ============== BUG REPRO ============== -->
+<section class="mb-12">
+	<h2 class="text-lg font-bold mb-2">Bug repro (Issues A / B / C)</h2>
+	<p class="text-sm opacity-60 mb-4">
+		Targeted reproduction harness for the
+		<code>BUG-stuic-LoginOrRegisterFormModal</code>
+		report. Drives the modal through a failed-submit cycle so the silent-retry, accidental-backdrop-close,
+		and stale-error-on-mode-switch behaviours can be exercised here without the real backend.
+	</p>
+
+	<div class="max-w-md mb-4 space-y-2">
+		<FieldSwitch
+			bind:checked={bugFailNextSubmit}
+			label="Next submit fails (returns 'Invalid email and/or password')"
+			name="bug-fail-next-submit"
+			renderSize="sm"
+		/>
+		<FieldSwitch
+			bind:checked={bugClearErrorOnModeChange}
+			label="Clear error on mode change (uses new onModeChange prop — Issue C fix)"
+			name="bug-clear-on-mode-change"
+			renderSize="sm"
+		/>
+		<FieldSwitch
+			bind:checked={bugAllowBackdropClose}
+			label="Allow backdrop close (sets noClickOutsideClose=false — opt-out of Issue B fix)"
+			name="bug-allow-backdrop-close"
+			renderSize="sm"
+		/>
+	</div>
+
+	<div class="flex gap-3 items-start flex-wrap">
+		<LoginOrRegisterFormModal
+			bind:this={bugModalRef}
+			bind:mode={bugMode}
+			onLogin={handleBugLogin}
+			onRegister={handleBugRegister}
+			isSubmitting={bugIsSubmitting}
+			loginProps={{ error: bugFormError }}
+			registerProps={{ error: bugFormError }}
+			noClickOutsideClose={!bugAllowBackdropClose}
+			onModeChange={
+				bugClearErrorOnModeChange ? () => (bugFormError = undefined) : undefined
+			}
+		>
+			{#snippet trigger({ open })}
+				<Button onclick={open}>Open bug-repro modal</Button>
+			{/snippet}
+		</LoginOrRegisterFormModal>
+
+		<div class="text-sm space-y-1 max-w-md">
+			<div>
+				<strong>onLogin call count:</strong>
+				<code>{bugLoginCallCount}</code>
+				— if Issue A is fixed this should increment on every submit click, even when the previous
+				submit returned an error.
+			</div>
+			<div>
+				<strong>Current mode:</strong>
+				<code>{bugMode}</code>
+			</div>
+			<div>
+				<strong>Current error:</strong>
+				<code>{bugFormError ?? "(none)"}</code>
+			</div>
+		</div>
+	</div>
+
+	<div class="mt-4 grid md:grid-cols-3 gap-4 text-xs">
+		<div class="space-y-1">
+			<h3 class="text-sm font-semibold">Issue A — silent retry</h3>
+			<ol class="list-decimal pl-5 space-y-1 opacity-80">
+				<li>Open modal, leave "Next submit fails" ON.</li>
+				<li>Type any email + password, submit.</li>
+				<li>Wait for the red error banner.</li>
+				<li>
+					<em>Without dismissing it</em>, change the password and submit again.
+				</li>
+				<li>
+					Watch <code>onLogin call count</code> — must increment to 2 (the fix's symptom).
+				</li>
+			</ol>
+		</div>
+		<div class="space-y-1">
+			<h3 class="text-sm font-semibold">Issue B — accidental close</h3>
+			<ol class="list-decimal pl-5 space-y-1 opacity-80">
+				<li>Open modal.</li>
+				<li>Click in the empty area between the modal box and the screen edge.</li>
+				<li>
+					With "Allow backdrop close" OFF (default after fix): modal stays open. Toggle ON to
+					see the legacy behaviour.
+				</li>
+			</ol>
+		</div>
+		<div class="space-y-1">
+			<h3 class="text-sm font-semibold">Issue C — stale error on mode switch</h3>
+			<ol class="list-decimal pl-5 space-y-1 opacity-80">
+				<li>Open modal, submit (with failures ON) so the error banner shows.</li>
+				<li>Click the "Sign up" tab.</li>
+				<li>
+					With "Clear error on mode change" ON: banner disappears via the new
+					<code>onModeChange</code> callback. Toggle OFF to see the stale-banner bug.
+				</li>
+			</ol>
+		</div>
+	</div>
+
+	{#if bugSubmitLog.length}
+		<div class="mt-4">
+			<h3 class="text-sm font-semibold mb-1">Event log (last 10):</h3>
+			<pre
+				class="text-xs bg-muted p-3 rounded-md overflow-x-auto">{bugSubmitLog.join("\n")}</pre>
+		</div>
+	{/if}
 </section>
 
 <!-- ============== UNSTYLED ============== -->

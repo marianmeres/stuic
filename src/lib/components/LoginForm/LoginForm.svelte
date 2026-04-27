@@ -77,6 +77,7 @@
 </script>
 
 <script lang="ts">
+	import { untrack } from "svelte";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import { t_default } from "./_internal/login-form-i18n-defaults.js";
 	import {
@@ -130,6 +131,19 @@
 	}
 
 	function handleSubmitValid() {
+		// Defensively clear any stale customValidity left on form fields by a prior
+		// validation pass. The `validate` action already clears it when the field's
+		// customValidator returns an empty string, but a field can skip that path
+		// (e.g., it was disabled, or its $effect torn down between submits) and the
+		// stale flag would then make `el.validity.valid` return false on the next
+		// submit, silently routing the form to `submit_invalid` and never calling
+		// `onSubmit`. Resetting here gives every retry a clean slate.
+		if (el) {
+			for (const node of Array.from(el.elements) as HTMLInputElement[]) {
+				if (typeof node.setCustomValidity === "function") node.setCustomValidity("");
+			}
+		}
+
 		const validationErrors = validateLoginForm(formData, t);
 		internalErrors = validationErrors;
 
@@ -137,6 +151,20 @@
 			onSubmit(formData);
 		}
 	}
+
+	// Clear internal field errors as soon as the user edits the form, so a previous
+	// failed-submit's errors don't linger after the user has fixed them. Re-validation
+	// on the next submit will repopulate `internalErrors` if anything is still wrong.
+	// `untrack` for the read+write so this effect only re-runs on formData changes —
+	// otherwise `handleSubmitValid` setting `internalErrors` would immediately re-fire
+	// this effect and wipe the errors back out.
+	$effect(() => {
+		void formData.email;
+		void formData.password;
+		untrack(() => {
+			if (internalErrors.length) internalErrors = [];
+		});
+	});
 
 	$effect(() => {
 		if (error && notifications) notifications.error(error);

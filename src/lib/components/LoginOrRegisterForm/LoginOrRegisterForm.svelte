@@ -117,6 +117,15 @@
 		>;
 
 		notifications?: NotificationsStack;
+
+		/**
+		 * Called when the active mode changes (login/register/verify). Receives
+		 * `(next, prev)`. Use this to clear parent-owned, mode-specific state — e.g.,
+		 * a general `error` string that shouldn't survive a transition between Login
+		 * and Sign up.
+		 */
+		onModeChange?: (next: LoginOrRegisterFormMode, prev: LoginOrRegisterFormMode) => void;
+
 		t?: TranslateFn;
 		unstyled?: boolean;
 		class?: string;
@@ -155,6 +164,7 @@
 		socialDividerLabel,
 		footer,
 		notifications,
+		onModeChange,
 		t: tProp,
 		unstyled = false,
 		class: classProp,
@@ -173,6 +183,7 @@
 	// effect (which would be prone to loops).
 	function setMode(next: LoginOrRegisterFormMode) {
 		if (next === mode) return;
+		const prev = mode;
 		const sourceEmail =
 			mode === "verify"
 				? verifyEmail
@@ -187,6 +198,9 @@
 			// next === "verify"
 			verifyEmail = sourceEmail;
 		}
+		// Notify before mutating so consumers can clear parent-owned, mode-specific
+		// state (e.g., a stale `error`) before the new view renders with it.
+		onModeChange?.(next, prev);
 		mode = next;
 	}
 

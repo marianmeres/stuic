@@ -22,6 +22,8 @@
 		onEscape?: () => void;
 		/** Disable body scroll lock when modal is open */
 		noScrollLock?: boolean;
+		/** Disable close on backdrop / outside click */
+		noClickOutsideClose?: boolean;
 	}
 </script>
 
@@ -45,6 +47,7 @@
 		el = $bindable(),
 		onEscape,
 		noScrollLock = false,
+		noClickOutsideClose = false,
 	}: Props = $props();
 
 	let modalDialog: ModalDialog = $state()!;
@@ -89,6 +92,7 @@
 	ariaLabelledby={labelledby}
 	ariaDescribedby={describedby}
 	{noScrollLock}
+	{noClickOutsideClose}
 	preEscapeClose={handlePreEscapeClose}
 	preClose={handlePreClose}
 	class={twMerge(

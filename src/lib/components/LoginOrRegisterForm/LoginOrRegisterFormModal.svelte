@@ -84,6 +84,21 @@
 
 		noXClose?: boolean;
 		onClose?: () => false | void;
+
+		/**
+		 * Disable close on backdrop / outside click. Defaults to `true` because
+		 * accidentally losing typed credentials due to a stray backdrop click is a
+		 * worse UX than requiring an explicit close. Set to `false` to opt back in.
+		 */
+		noClickOutsideClose?: boolean;
+
+		/**
+		 * Called when the active form mode changes (login/register/verify). Receives
+		 * `(next, prev)`. Use this to clear parent-owned, mode-specific state — e.g.,
+		 * a general `error` string that shouldn't survive a transition between Login
+		 * and Sign up.
+		 */
+		onModeChange?: (next: LoginOrRegisterFormMode, prev: LoginOrRegisterFormMode) => void;
 	}
 </script>
 
@@ -129,6 +144,8 @@
 		unstyled = false,
 		noXClose = false,
 		onClose,
+		noClickOutsideClose = true,
+		onModeChange,
 	}: Props = $props();
 
 	let t = $derived(tProp ?? t_default);
@@ -163,6 +180,7 @@
 	class={classModal}
 	classInner={twMerge("max-w-sm md:max-w-sm", "h-auto md:h-auto m-auto", classInner)}
 	classDialog="flex items-center justify-center"
+	{noClickOutsideClose}
 >
 	{#snippet header()}
 		<div class="flex items-center justify-between p-4">
@@ -207,6 +225,7 @@
 			{socialDividerLabel}
 			{footer}
 			{notifications}
+			{onModeChange}
 			t={tProp}
 			{unstyled}
 			class={classForm}

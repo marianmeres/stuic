@@ -88,6 +88,13 @@
 
 		noXClose?: boolean;
 		onClose?: () => false | void;
+
+		/**
+		 * Disable close on backdrop / outside click. Defaults to `true` because
+		 * accidentally losing typed credentials due to a stray backdrop click is a
+		 * worse UX than requiring an explicit close. Set to `false` to opt back in.
+		 */
+		noClickOutsideClose?: boolean;
 	}
 </script>
 
@@ -126,6 +133,7 @@
 		unstyled = false,
 		noXClose = false,
 		onClose,
+		noClickOutsideClose = true,
 	}: Props = $props();
 
 	let t = $derived(tProp ?? t_default);
@@ -152,6 +160,7 @@
 	class={classModal}
 	classInner={twMerge("max-w-sm md:max-w-sm", "h-auto md:h-auto m-auto", classInner)}
 	classDialog="flex items-center justify-center"
+	{noClickOutsideClose}
 >
 	{#snippet header()}
 		<div class="flex items-center justify-between p-4">
