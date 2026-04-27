@@ -299,11 +299,10 @@
 		class="max-w-md"
 		style="
 			--stuic-checkout-guest-or-login-tabs-margin-bottom: 1.5rem;
-			--stuic-tabbed-menu-tab-bg: transparent;
-			--stuic-tabbed-menu-tab-bg-active: var(--stuic-color-foreground);
-			--stuic-tabbed-menu-tab-text-active: var(--stuic-color-background);
-			--stuic-tabbed-menu-border: var(--stuic-color-border);
-			--stuic-tabbed-menu-border-active: var(--stuic-color-foreground);
+			--stuic-button-group-button-bg-active: var(--stuic-color-foreground);
+			--stuic-button-group-button-text-active: var(--stuic-color-background);
+			--stuic-button-group-button-bg-active-hover: var(--stuic-color-foreground);
+			--stuic-button-group-button-text-active-hover: var(--stuic-color-background);
 		"
 	>
 		<CheckoutGuestOrLoginForm

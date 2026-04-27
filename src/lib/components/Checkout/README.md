@@ -26,7 +26,7 @@ Each step container renders a `CheckoutProgress` indicator (unless `hideProgress
 | `CheckoutOrderSummary` | Totals (subtotal/tax/shipping/discount/total) |
 | `CheckoutOrderReview` | Read-only order dump (items + addresses + delivery) |
 | `CheckoutOrderConfirmation` | Completed-order summary with order number & next steps |
-| `CheckoutGuestOrLoginForm` | Tabbed guest / login |
+| `CheckoutGuestOrLoginForm` | Guest / login switcher (segmented pill) |
 | `CheckoutGuestForm` | Guest-checkout fields |
 | `CheckoutLoginForm` | Login (adapts the generic `LoginForm` to checkout i18n) |
 | `CheckoutAddressForm` | Structured address input |
@@ -221,7 +221,7 @@ By default `CheckoutGuestOrLoginForm` in tabbed mode renders an inline `<Checkou
 
 - `CheckoutProgress` renders past/current/future steps with `aria-current="step"` on the active step.
 - Form submissions do **not** automatically move focus to the first error field. Consumers wanting this behavior should do it in their `onContinue` handler after receiving validation errors.
-- `CheckoutGuestOrLoginForm` uses the underlying `TabbedMenu` semantics; focus does not auto-move to the tab-panel heading on tab switch.
+- `CheckoutGuestOrLoginForm` uses `ButtonGroupRadio` (`role="radiogroup"`) for the guest/login switch; focus does not auto-move to the panel heading on switch.
 
 ## Address equality (advanced)
 

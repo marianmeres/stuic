@@ -119,7 +119,7 @@
 	import CheckoutLoginForm from "./CheckoutLoginForm.svelte";
 	import LoginFormModal from "../LoginForm/LoginFormModal.svelte";
 	import LoginOrRegisterFormModal from "../LoginOrRegisterForm/LoginOrRegisterFormModal.svelte";
-	import TabbedMenu from "../TabbedMenu/TabbedMenu.svelte";
+	import ButtonGroupRadio from "../ButtonGroupRadio/ButtonGroupRadio.svelte";
 	import { H, type HLevel } from "../H/index.js";
 	import CheckoutSectionHeader from "./CheckoutSectionHeader.svelte";
 
@@ -254,27 +254,9 @@
 		}
 	});
 
-	let tabItems = $derived([
-		{ id: "guest", label: guestTabLabel ?? t("checkout.guest_or_login.guest_tab") },
-		{
-			id: "login",
-			label: loginTabLabel ?? t("checkout.guest_or_login.login_tab"),
-			...(_useLoginOrRegisterModal
-				? {
-						onSelect: () => {
-							loginOrRegisterModalRef?.open();
-							return false;
-						},
-					}
-				: _useLoginModal
-					? {
-							onSelect: () => {
-								loginModalRef?.open();
-								return false;
-							},
-						}
-					: {}),
-		},
+	let tabOptions = $derived([
+		{ value: "guest", label: guestTabLabel ?? t("checkout.guest_or_login.guest_tab") },
+		{ value: "login", label: loginTabLabel ?? t("checkout.guest_or_login.login_tab") },
 	]);
 
 	let _class = $derived(
@@ -305,23 +287,26 @@
 			<CheckoutLoginForm {...loginForm} {notifications} t={tProp} {unstyled} />
 		{/if}
 	{:else if formMode === "tabbed"}
-		<TabbedMenu
-			items={tabItems}
-			value={activeTab}
-			onSelect={(item) => {
-				activeTab = item.id as "guest" | "login";
-			}}
-			{unstyled}
+		<ButtonGroupRadio
+			options={tabOptions}
+			bind:value={activeTab as string}
 			class={unstyled ? undefined : "stuic-checkout-guest-or-login-tabs"}
+			onButtonClick={(index) => {
+				if (tabOptions[index]?.value !== "login") return;
+				if (_useLoginOrRegisterModal) {
+					loginOrRegisterModalRef?.open();
+					return false;
+				}
+				if (_useLoginModal) {
+					loginModalRef?.open();
+					return false;
+				}
+			}}
 		/>
 		{#if activeTab === "guest" && guestForm}
-			<div role="tabpanel">
-				<CheckoutGuestForm {...guestForm} {notifications} t={tProp} {unstyled} />
-			</div>
-		{:else if activeTab === "login" && loginForm && !_useLoginOrRegisterModal}
-			<div role="tabpanel">
-				<CheckoutLoginForm {...loginForm} {notifications} t={tProp} {unstyled} />
-			</div>
+			<CheckoutGuestForm {...guestForm} {notifications} t={tProp} {unstyled} />
+		{:else if activeTab === "login" && loginForm && !_useLoginOrRegisterModal && !_useLoginModal}
+			<CheckoutLoginForm {...loginForm} {notifications} t={tProp} {unstyled} />
 		{/if}
 	{:else if formMode === "stacked"}
 		{#if loginForm}
