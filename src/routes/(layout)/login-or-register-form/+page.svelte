@@ -188,6 +188,140 @@
 		}
 		bugIsSubmitting = false;
 	}
+
+	// --- Accidental-close → resume-verify recommended pattern ----------------------------
+	//
+	// Demonstrates how a consuming app should handle the "user accidentally closed the OTP
+	// popup" case. Backend is the source of truth (`requiresVerification` flag); frontend
+	// persists a short-lived hint in localStorage so re-opening the modal lands directly
+	// back on the verify screen — no extra round-trip through login.
+	const RESUME_PENDING_KEY = "stuic.demo.auth.pendingVerification";
+	const RESUME_OTP_TTL_MS = 60_000; // shortened to 60s for demo purposes
+	const RESUME_VALID_CODE = "111111";
+
+	type ResumePending = { email: string; expiresAt: number };
+
+	let resumeModalRef: LoginOrRegisterFormModal = $state()!;
+	let resumeMode = $state<LoginOrRegisterFormMode>("login");
+	let resumeVerifyEmail = $state("");
+	let resumeVerifyError = $state<string | undefined>(undefined);
+	let resumeLoginError = $state<string | undefined>(undefined);
+	let resumeIsSubmitting = $state(false);
+	let resumePendingHint = $state<ResumePending | null>(null);
+	let resumeLog = $state<string[]>([]);
+
+	// Simulated backend: emails registered but not yet verified.
+	let resumeServerPending = $state<Set<string>>(new Set());
+
+	function resumeAddLog(msg: string) {
+		resumeLog = [...resumeLog, `${new Date().toLocaleTimeString()} — ${msg}`].slice(-12);
+	}
+
+	function resumeReadPending(): ResumePending | null {
+		try {
+			const raw = localStorage.getItem(RESUME_PENDING_KEY);
+			if (!raw) return null;
+			const p: ResumePending = JSON.parse(raw);
+			if (Date.now() >= p.expiresAt) {
+				localStorage.removeItem(RESUME_PENDING_KEY);
+				return null;
+			}
+			return p;
+		} catch {
+			return null;
+		}
+	}
+
+	function resumeWritePending(email: string) {
+		const p: ResumePending = { email, expiresAt: Date.now() + RESUME_OTP_TTL_MS };
+		localStorage.setItem(RESUME_PENDING_KEY, JSON.stringify(p));
+		resumePendingHint = p;
+	}
+
+	function resumeClearPending() {
+		localStorage.removeItem(RESUME_PENDING_KEY);
+		resumePendingHint = null;
+	}
+
+	function resumeRefreshHint() {
+		resumePendingHint = resumeReadPending();
+	}
+
+	$effect(() => {
+		// Reflect localStorage state on mount and whenever the modal closes.
+		if (typeof window !== "undefined") resumeRefreshHint();
+	});
+
+	function resumeOpenAuthModal() {
+		const pending = resumeReadPending();
+		if (pending) {
+			resumeAddLog(`hint found — resuming verify for ${pending.email}`);
+			resumeVerifyEmail = pending.email;
+			resumeVerifyError = undefined;
+			resumeMode = "verify";
+		} else {
+			resumeAddLog("no hint — opening at login mode");
+		}
+		resumeModalRef.open();
+	}
+
+	async function handleResumeRegister(data: RegisterFormData) {
+		resumeIsSubmitting = true;
+		resumeAddLog(`register submitted — ${data.email}`);
+		await new Promise((r) => setTimeout(r, 300));
+		// Simulated backend response: account created, requires verification.
+		resumeServerPending.add(data.email);
+		resumeServerPending = new Set(resumeServerPending); // trigger reactivity
+		resumeVerifyEmail = data.email;
+		resumeVerifyError = undefined;
+		resumeMode = "verify";
+		resumeWritePending(data.email);
+		resumeAddLog("→ requiresVerification: true (hint persisted)");
+		resumeIsSubmitting = false;
+	}
+
+	async function handleResumeLogin(data: LoginFormData) {
+		resumeIsSubmitting = true;
+		resumeLoginError = undefined;
+		resumeAddLog(`login submitted — ${data.email}`);
+		await new Promise((r) => setTimeout(r, 300));
+		// Simulated backend: if account is in pending-verification state, route to verify.
+		if (resumeServerPending.has(data.email)) {
+			resumeAddLog("→ backend says requiresVerification — routing to verify");
+			resumeVerifyEmail = data.email;
+			resumeVerifyError = undefined;
+			resumeWritePending(data.email);
+			resumeMode = "verify";
+		} else {
+			resumeAddLog("→ login ok — closing modal");
+			resumeModalRef.close();
+		}
+		resumeIsSubmitting = false;
+	}
+
+	async function handleResumeVerify(code: string) {
+		resumeIsSubmitting = true;
+		resumeAddLog(`verify submitted — code: ${code}`);
+		await new Promise((r) => setTimeout(r, 300));
+		if (code === RESUME_VALID_CODE) {
+			resumeServerPending.delete(resumeVerifyEmail);
+			resumeServerPending = new Set(resumeServerPending);
+			resumeClearPending();
+			resumeAddLog("→ verified — hint cleared, closing modal");
+			resumeVerifyError = undefined;
+			resumeModalRef.close();
+		} else {
+			resumeVerifyError = `Invalid code. (Hint: ${RESUME_VALID_CODE})`;
+			resumeAddLog("→ invalid code — hint preserved");
+		}
+		resumeIsSubmitting = false;
+	}
+
+	async function handleResumeResendCode() {
+		await new Promise((r) => setTimeout(r, 200));
+		resumeWritePending(resumeVerifyEmail); // refresh expiry window
+		resumeAddLog(`code resent to ${resumeVerifyEmail} — TTL refreshed`);
+	}
 </script>
 
 <LoginFormsNav />
@@ -449,9 +583,9 @@
 			loginProps={{ error: bugFormError }}
 			registerProps={{ error: bugFormError }}
 			noClickOutsideClose={!bugAllowBackdropClose}
-			onModeChange={
-				bugClearErrorOnModeChange ? () => (bugFormError = undefined) : undefined
-			}
+			onModeChange={bugClearErrorOnModeChange
+				? () => (bugFormError = undefined)
+				: undefined}
 		>
 			{#snippet trigger({ open })}
 				<Button onclick={open}>Open bug-repro modal</Button>
@@ -497,8 +631,8 @@
 				<li>Open modal.</li>
 				<li>Click in the empty area between the modal box and the screen edge.</li>
 				<li>
-					With "Allow backdrop close" OFF (default after fix): modal stays open. Toggle ON to
-					see the legacy behaviour.
+					With "Allow backdrop close" OFF (default after fix): modal stays open. Toggle ON
+					to see the legacy behaviour.
 				</li>
 			</ol>
 		</div>
@@ -518,8 +652,146 @@
 	{#if bugSubmitLog.length}
 		<div class="mt-4">
 			<h3 class="text-sm font-semibold mb-1">Event log (last 10):</h3>
-			<pre
-				class="text-xs bg-muted p-3 rounded-md overflow-x-auto">{bugSubmitLog.join("\n")}</pre>
+			<pre class="text-xs bg-muted p-3 rounded-md overflow-x-auto">{bugSubmitLog.join(
+					"\n"
+				)}</pre>
+		</div>
+	{/if}
+</section>
+
+<!-- ============== RESUME VERIFY (RECOMMENDED PATTERN) ============== -->
+<section class="mb-12">
+	<h2 class="text-lg font-bold mb-2">Resume verify after accidental close</h2>
+	<p class="text-sm opacity-60 mb-4">
+		Recommended consumer-side pattern for the case where a user closes the OTP popup
+		mid-verification. Backend is the source of truth (here mocked as
+		<code>resumeServerPending</code>); the frontend persists a short-lived hint in
+		<code>localStorage</code> so re-opening the modal lands directly back on the verify screen
+		without going through login first.
+	</p>
+
+	<div class="text-xs opacity-70 mb-4 max-w-2xl">
+		<strong>Demo TTL:</strong>
+		<code>{RESUME_OTP_TTL_MS / 1000}s</code> (deliberately short — production should match
+		your server-side OTP lifetime, e.g. 5–10 min). <strong>Valid OTP:</strong>
+		<code>{RESUME_VALID_CODE}</code>.
+	</div>
+
+	<div class="flex gap-3 items-start flex-wrap mb-4">
+		<LoginOrRegisterFormModal
+			bind:this={resumeModalRef}
+			bind:mode={resumeMode}
+			bind:verifyEmail={resumeVerifyEmail}
+			onLogin={handleResumeLogin}
+			onRegister={handleResumeRegister}
+			onVerify={handleResumeVerify}
+			onResendCode={handleResumeResendCode}
+			isSubmitting={resumeIsSubmitting}
+			loginProps={{ error: resumeLoginError }}
+			verifyProps={{ error: resumeVerifyError, resendCooldownSeconds: 5 }}
+		/>
+
+		<Button onclick={resumeOpenAuthModal}>Open auth modal (avatar click)</Button>
+		<Button
+			variant="outline"
+			onclick={() => {
+				resumeClearPending();
+				resumeServerPending.clear();
+				resumeServerPending = new Set();
+				resumeAddLog("manual reset — cleared hint and server pending set");
+			}}
+		>
+			Reset demo state
+		</Button>
+		<Button variant="ghost" onclick={resumeRefreshHint}>Refresh hint display</Button>
+	</div>
+
+	<div class="grid md:grid-cols-2 gap-4 text-sm mb-4">
+		<div>
+			<h3 class="text-sm font-semibold mb-1">Pending hint (localStorage)</h3>
+			<pre class="text-xs bg-muted p-3 rounded-md overflow-x-auto">{resumePendingHint
+					? JSON.stringify(
+							{
+								email: resumePendingHint.email,
+								expiresIn:
+									Math.max(0, resumePendingHint.expiresAt - Date.now()) / 1000 + "s",
+							},
+							null,
+							2
+						)
+					: "(none)"}</pre>
+		</div>
+		<div>
+			<h3 class="text-sm font-semibold mb-1">Server pending set (mocked)</h3>
+			<pre class="text-xs bg-muted p-3 rounded-md overflow-x-auto">{JSON.stringify(
+					[...resumeServerPending],
+					null,
+					2
+				)}</pre>
+		</div>
+	</div>
+
+	<div class="grid md:grid-cols-2 gap-4 text-xs mb-4">
+		<div class="space-y-1">
+			<h3 class="text-sm font-semibold">Walkthrough A — accidental close</h3>
+			<ol class="list-decimal pl-5 space-y-1 opacity-80">
+				<li>Click "Open auth modal" → switch to Sign up tab.</li>
+				<li>Submit a register form (any email + password).</li>
+				<li>The verify screen appears; the pending hint appears on the right.</li>
+				<li><strong>Close the modal via X (do not enter the code).</strong></li>
+				<li>
+					Click "Open auth modal" again — modal opens directly on the verify screen for
+					the same email. No re-registration needed.
+				</li>
+				<li>Enter <code>{RESUME_VALID_CODE}</code> → modal closes, hint cleared.</li>
+			</ol>
+		</div>
+		<div class="space-y-1">
+			<h3 class="text-sm font-semibold">Walkthrough B — backend-driven routing</h3>
+			<ol class="list-decimal pl-5 space-y-1 opacity-80">
+				<li>
+					Register an email, close the modal, then click "Reset demo state" — wait, don't.
+				</li>
+				<li>Instead: register an email, then click "Open auth modal" → close it.</li>
+				<li>
+					Click "Reset demo state" → hint is cleared but the email stays on the mocked
+					server pending set (simulating user switched browsers).
+				</li>
+				<li>
+					Open modal → it opens at login (no hint). Type the same email + any password and
+					submit.
+				</li>
+				<li>
+					Backend mock returns <code>requiresVerification: true</code> → form switches to verify,
+					hint is re-written. This is the cross-device fallback.
+				</li>
+			</ol>
+		</div>
+	</div>
+
+	<div class="space-y-1 text-xs mb-4">
+		<h3 class="text-sm font-semibold">Walkthrough C — TTL expiry</h3>
+		<ol class="list-decimal pl-5 space-y-1 opacity-80">
+			<li>Register an email; close the modal.</li>
+			<li>
+				Wait <code>{RESUME_OTP_TTL_MS / 1000}s</code> for the hint TTL to elapse.
+			</li>
+			<li>
+				Click "Refresh hint display" — hint is now <code>(none)</code> (auto-purged on read).
+			</li>
+			<li>
+				Open modal → opens at login mode. Submit login → backend still has pending state →
+				routed to verify with a fresh hint (TTL refreshed).
+			</li>
+		</ol>
+	</div>
+
+	{#if resumeLog.length}
+		<div>
+			<h3 class="text-sm font-semibold mb-1">Event log (last 12):</h3>
+			<pre class="text-xs bg-muted p-3 rounded-md overflow-x-auto">{resumeLog.join(
+					"\n"
+				)}</pre>
 		</div>
 	{/if}
 </section>

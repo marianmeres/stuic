@@ -95,6 +95,7 @@
 </script>
 
 <script lang="ts">
+	import { untrack } from "svelte";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import { t_default } from "./_internal/register-form-i18n-defaults.js";
 	import {
@@ -145,6 +146,22 @@
 
 	// Internal validation errors (set on submit)
 	let internalErrors = $state<RegisterFormValidationError[]>([]);
+
+	// Clear internal field errors as soon as the user edits any tracked field, so a
+	// previous failed-submit's errors don't linger after the user has fixed them.
+	// Re-validation on the next submit will repopulate `internalErrors` if anything
+	// is still wrong. `untrack` for the read+write so this effect only re-runs on
+	// formData changes — otherwise `handleSubmitValid` setting `internalErrors`
+	// would immediately re-fire this effect and wipe the errors back out.
+	$effect(() => {
+		void formData.email;
+		void formData.password;
+		void formData.passwordConfirm;
+		for (const f of extraFields) void formData.extra?.[f.name];
+		untrack(() => {
+			if (internalErrors.length) internalErrors = [];
+		});
+	});
 
 	// Merge internal + external errors; external takes precedence per field
 	let allErrors = $derived.by(() => {
