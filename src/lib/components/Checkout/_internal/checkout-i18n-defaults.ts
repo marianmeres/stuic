@@ -108,6 +108,48 @@ const DEFAULTS: Record<string, string> = {
 	"checkout.complete.totals_title": "Order Total",
 	"checkout.complete.continue_shopping": "Continue Shopping",
 
+	// -- Register (mirrors register_form.*; surfaced via CheckoutGuestOrLoginForm
+	//    when the optional `loginOrRegisterModal` is wired up) --
+	"checkout.register.email_label": "Email",
+	"checkout.register.email_placeholder": "you@example.com",
+	"checkout.register.password_label": "Password",
+	"checkout.register.password_placeholder": "",
+	"checkout.register.password_confirm_label": "Confirm password",
+	"checkout.register.password_confirm_placeholder": "",
+	"checkout.register.submit": "Create account",
+	"checkout.register.submitting": "Creating account...",
+	"checkout.register.email_required": "Email is required",
+	"checkout.register.email_invalid": "Please enter a valid email address",
+	"checkout.register.password_required": "Password is required",
+	"checkout.register.password_too_short": "Password must be at least {min} characters",
+	"checkout.register.password_confirm_required": "Please confirm your password",
+	"checkout.register.password_mismatch": "Passwords do not match",
+	"checkout.register.field_required": "{label} is required",
+	"checkout.register.social_divider": "or continue with",
+	"checkout.register.already_have_account": "Already have an account?",
+	"checkout.register.modal_title": "Create account",
+
+	// -- Verify (mirrors email_verify_form.*; surfaced via CheckoutGuestOrLoginForm
+	//    when the optional `loginOrRegisterModal` is wired up) --
+	"checkout.verify.heading": "Check your email",
+	"checkout.verify.subheading": "We sent a 6-digit code to {email}",
+	"checkout.verify.submit": "Verify",
+	"checkout.verify.submitting": "Verifying...",
+	"checkout.verify.resend_prompt": "Didn't receive it?",
+	"checkout.verify.resend": "Resend code",
+	"checkout.verify.resend_cooldown": "Resend available in {seconds}s",
+	"checkout.verify.resent": "New code sent",
+	"checkout.verify.attempts_remaining": "{count} attempts remaining",
+
+	// -- LoginOrRegister composite (mirrors login_or_register_form.*) --
+	"checkout.login_or_register.mode_login": "Log in",
+	"checkout.login_or_register.mode_register": "Sign up",
+	"checkout.login_or_register.mode_verify": "Verify",
+	"checkout.login_or_register.social_divider": "or continue with",
+	"checkout.login_or_register.modal_title_login": "Log In",
+	"checkout.login_or_register.modal_title_register": "Create account",
+	"checkout.login_or_register.modal_title_verify": "Verify your email",
+
 	// -- CheckoutGuestOrLoginForm (composite) --
 	"checkout.guest_or_login.guest_tab": "Guest",
 	"checkout.guest_or_login.login_tab": "Log In",

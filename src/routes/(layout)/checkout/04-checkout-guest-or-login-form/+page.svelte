@@ -5,7 +5,11 @@
 		createEmptyLoginFormData,
 		type CheckoutCustomerFormData,
 		type CheckoutLoginFormData,
+		type LoginFormData,
+		type RegisterFormData,
+		type LoginOrRegisterFormMode,
 	} from "$lib/index.js";
+	import FieldSwitch from "$lib/components/Input/FieldSwitch.svelte";
 
 	// --- State ---
 	let actionLog = $state<string[]>([]);
@@ -44,6 +48,64 @@
 	// -- Mode switcher --
 	let selectedMode = $state<"guest-only" | "login-only" | "tabbed" | "stacked">("tabbed");
 	const modes = ["guest-only", "login-only", "tabbed", "stacked"] as const;
+
+	// -- loginOrRegisterModal demo state --
+	let lorMode = $state<LoginOrRegisterFormMode>("login");
+	let lorVerifyEmail = $state("");
+	let lorIsSubmitting = $state(false);
+	let lorFormError = $state<string | undefined>(undefined);
+	let lorRequireVerification = $state(true);
+
+	const lorLoginProps = $derived({ error: lorFormError, showRememberMe: true });
+	const lorRegisterProps = $derived({ error: lorFormError });
+	const lorVerifyProps = $derived({ error: lorFormError, resendCooldownSeconds: 5 });
+
+	async function handleLorLogin(data: LoginFormData) {
+		lorIsSubmitting = true;
+		lorFormError = undefined;
+		log(`LoR login: ${data.email}`);
+		await new Promise((r) => setTimeout(r, 600));
+		if (lorRequireVerification) {
+			lorVerifyEmail = data.email;
+			lorMode = "verify";
+			log("→ requiresVerification: true (routed to verify)");
+		} else {
+			lorFormError = "Invalid email or password";
+			log("→ login failed");
+		}
+		lorIsSubmitting = false;
+	}
+
+	async function handleLorRegister(data: RegisterFormData) {
+		lorIsSubmitting = true;
+		lorFormError = undefined;
+		log(`LoR register: ${data.email}`);
+		await new Promise((r) => setTimeout(r, 600));
+		lorVerifyEmail = data.email;
+		lorMode = "verify";
+		log("→ register OK; routed to verify");
+		lorIsSubmitting = false;
+	}
+
+	async function handleLorVerify(code: string) {
+		lorIsSubmitting = true;
+		lorFormError = undefined;
+		log(`LoR verify code: ${code}`);
+		await new Promise((r) => setTimeout(r, 400));
+		if (code === "111111") {
+			log(`→ verified ${lorVerifyEmail}; modal would close here`);
+			lorMode = "login";
+			lorVerifyEmail = "";
+		} else {
+			lorFormError = `Invalid code (try 111111)`;
+		}
+		lorIsSubmitting = false;
+	}
+
+	async function handleLorResendCode() {
+		await new Promise((r) => setTimeout(r, 200));
+		log(`LoR resent code to ${lorVerifyEmail}`);
+	}
 </script>
 
 <h1 class="text-2xl font-bold mb-8">CheckoutGuestOrLoginForm</h1>
@@ -309,6 +371,74 @@
 			loginModal={{}}
 		/>
 	</div>
+</section>
+
+<!-- ============== LOGIN-OR-REGISTER MODAL (login + register + verify-OTP) ============== -->
+<section class="mb-12">
+	<h2 class="text-lg font-bold mb-2">
+		Login-or-register modal (login + register + verify-OTP)
+	</h2>
+	<p class="text-sm opacity-60 mb-4">
+		With <code>loginOrRegisterModal</code> prop, the login tab opens a
+		<code>LoginOrRegisterFormModal</code>
+		giving consumers all three flows — login, self-registration, and post-register OTP verification
+		— in a single modal. The consumer owns <code>mode</code> / <code>verifyEmail</code> state and
+		flips them in response to backend signals (e.g.,
+		<code>requiresVerification</code>). Use <code>onModeChange</code> to keep external state in sync.
+		Valid OTP for the demo: <code>111111</code>.
+	</p>
+
+	<div class="max-w-sm mb-4 space-y-2">
+		<FieldSwitch
+			bind:checked={lorRequireVerification}
+			label="Login response: requiresVerification (routes to verify mode)"
+			name="lor-require-verification"
+			renderSize="sm"
+		/>
+	</div>
+
+	<div class="max-w-md">
+		<CheckoutGuestOrLoginForm
+			heading="Contact Information"
+			guestForm={{
+				formData: createEmptyCustomerFormData(),
+				onSubmit: (data) => log(`Guest: ${data.email}`),
+			}}
+			loginForm={{
+				formData: createEmptyLoginFormData(),
+				onSubmit: () => {},
+			}}
+			loginOrRegisterModal={{
+				mode: lorMode,
+				verifyEmail: lorVerifyEmail,
+				onLogin: handleLorLogin,
+				onRegister: handleLorRegister,
+				onVerify: handleLorVerify,
+				onResendCode: handleLorResendCode,
+				onForgotPassword: () => log("LoR forgot password clicked"),
+				onModeChange: (next) => {
+					lorMode = next;
+					lorFormError = undefined;
+					log(`LoR mode → ${next}`);
+				},
+				isSubmitting: lorIsSubmitting,
+				loginProps: lorLoginProps,
+				registerProps: lorRegisterProps,
+				verifyProps: lorVerifyProps,
+				onClose: () => {
+					lorFormError = undefined;
+					log("LoR modal closed");
+				},
+			}}
+		/>
+	</div>
+
+	<p class="text-xs opacity-60 mt-3">
+		current modal mode: <code>{lorMode}</code>
+		{#if lorVerifyEmail}
+			· verifyEmail: <code>{lorVerifyEmail}</code>
+		{/if}
+	</p>
 </section>
 
 <!-- ============== STACKED MODE ============== -->

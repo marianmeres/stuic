@@ -139,6 +139,84 @@ Every component accepts an optional `t?: TranslateFn` prop. Sensible English def
 
 `CheckoutLoginForm` internally bridges `checkout.login.*` keys to the generic `LoginForm` component's `login_form.*` keys, so you only need one consistent prefix.
 
+When `CheckoutGuestOrLoginForm` is wired to `LoginOrRegisterFormModal` via the optional `loginOrRegisterModal` prop, the same bridging is applied to `register_form.*` (→ `checkout.register.*`), `email_verify_form.*` (→ `checkout.verify.*`), and `login_or_register_form.*` (→ `checkout.login_or_register.*`) — so the entire login + register + verify flow stays under the `checkout.*` prefix.
+
+## Login + register + verify in checkout
+
+By default `CheckoutGuestOrLoginForm` in tabbed mode renders an inline `<CheckoutLoginForm>` in the login tab. For apps with self-registration, pass `loginOrRegisterModal` to wire the login tab to a `LoginOrRegisterFormModal` instead — giving you login, register, and post-register OTP verification in a single modal:
+
+```svelte
+<script lang="ts">
+    import {
+        CheckoutGuestOrLoginForm,
+        createEmptyCustomerFormData,
+        createEmptyLoginFormData,
+        type LoginOrRegisterFormMode,
+        type LoginFormData,
+        type RegisterFormData,
+    } from "@marianmeres/stuic";
+
+    let formData = $state(createEmptyCustomerFormData());
+    let loginFormData = $state(createEmptyLoginFormData());
+
+    let mode = $state<LoginOrRegisterFormMode>("login");
+    let verifyEmail = $state("");
+    let isSubmitting = $state(false);
+    let formError = $state<string | null>(null);
+
+    const loginProps = $derived({ error: formError ?? undefined, showRememberMe: true });
+    const registerProps = $derived({ error: formError ?? undefined });
+    const verifyProps = $derived({ error: formError ?? undefined, heading: false as const });
+
+    async function onLogin(d: LoginFormData) {
+        // ... call API; on `requiresVerification`, flip:
+        //     verifyEmail = d.email; mode = "verify";
+    }
+    async function onRegister(d: RegisterFormData) {
+        // ... call API; on success, flip to verify:
+        //     verifyEmail = d.email; mode = "verify";
+    }
+    async function onVerify(code: string) {
+        // ... call API; on success, modal closes via consumer-managed state.
+    }
+    async function onResendCode() { /* ... */ }
+</script>
+
+<CheckoutGuestOrLoginForm
+    formMode="tabbed"
+    guestForm={{ formData, onSubmit: handleStartCheckout, isSubmitting, errors: [] }}
+    loginForm={{ formData: loginFormData, onSubmit: onLogin, isSubmitting }}
+    loginOrRegisterModal={{
+        mode,
+        verifyEmail,
+        onLogin,
+        onRegister,
+        onVerify,
+        onResendCode,
+        onForgotPassword: () => {/* ... */},
+        onModeChange: (next) => {
+            // mirror mode changes back into our local state and clear errors
+            mode = next;
+            formError = null;
+        },
+        isSubmitting,
+        loginProps,
+        registerProps,
+        verifyProps,
+        onClose: () => {
+            formError = null;
+            mode = "login";
+        },
+    }}
+/>
+```
+
+**State sync.** `mode` and `verifyEmail` flow one-way from prop into the modal — programmatically flipping `mode = "verify"` (e.g., on a `requiresVerification` server response) updates the modal. To observe modal-driven changes (user clicks the "Sign up" tab, etc.), wire `onModeChange` and update your local state there.
+
+**Precedence.** `loginOrRegisterModal` takes precedence over `loginModal`. If both are passed, only `loginOrRegisterModal` is wired up (and a dev-mode `console.warn` fires).
+
+**i18n.** All `register_form.*` / `email_verify_form.*` / `login_or_register_form.*` keys are bridged to `checkout.register.*` / `checkout.verify.*` / `checkout.login_or_register.*` respectively, so a single `t` function with a unified `checkout.*` prefix covers the full flow.
+
 ## Accessibility
 
 - `CheckoutProgress` renders past/current/future steps with `aria-current="step"` on the active step.

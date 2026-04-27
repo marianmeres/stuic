@@ -5,6 +5,8 @@
 	import type { Props as GuestFormProps } from "./CheckoutGuestForm.svelte";
 	import type { Props as LoginFormProps } from "./CheckoutLoginForm.svelte";
 	import type { Props as LoginFormModalProps } from "../LoginForm/LoginFormModal.svelte";
+	import type { Props as LoginOrRegisterFormModalProps } from "../LoginOrRegisterForm/LoginOrRegisterFormModal.svelte";
+	import type { LoginOrRegisterFormMode } from "../LoginOrRegisterForm/LoginOrRegisterForm.svelte";
 	import type { NotificationsStack } from "../Notifications/notifications-stack.svelte.js";
 
 	export type FormMode = "guest-only" | "login-only" | "tabbed" | "stacked";
@@ -41,6 +43,49 @@
 			| "showRememberMe"
 		>;
 
+		/**
+		 * When provided (and `formMode === "tabbed"`), clicking the login tab opens
+		 * a `LoginOrRegisterFormModal` instead of rendering `<CheckoutLoginForm>` inline,
+		 * giving consumers login + register + verify-OTP in a single modal.
+		 *
+		 * Mutually exclusive with `loginModal` — if both are provided,
+		 * `loginOrRegisterModal` wins.
+		 *
+		 * `mode` and `verifyEmail` are forwarded one-way (prop → modal); use
+		 * `onModeChange` to keep consumer-side state in sync. To programmatically
+		 * flip into verify mode (e.g., on a `requiresVerification` server response),
+		 * the consumer updates its own `mode` state and the new value flows down.
+		 */
+		loginOrRegisterModal?: Pick<
+			LoginOrRegisterFormModalProps,
+			| "title"
+			| "classModal"
+			| "classInner"
+			| "classForm"
+			| "noXClose"
+			| "noClickOutsideClose"
+			| "onClose"
+			| "mode"
+			| "verifyEmail"
+			| "onLogin"
+			| "onRegister"
+			| "onVerify"
+			| "onResendCode"
+			| "onForgotPassword"
+			| "onModeChange"
+			| "isSubmitting"
+			| "loginProps"
+			| "registerProps"
+			| "verifyProps"
+			| "socialLogins"
+			| "socialDividerLabel"
+			| "footer"
+			| "modeSwitcher"
+			| "loginModeLabel"
+			| "registerModeLabel"
+			| "verifyModeLabel"
+		>;
+
 		/** Tab label for the guest form tab. Default from i18n. */
 		guestTabLabel?: string;
 
@@ -73,12 +118,15 @@
 	import CheckoutGuestForm from "./CheckoutGuestForm.svelte";
 	import CheckoutLoginForm from "./CheckoutLoginForm.svelte";
 	import LoginFormModal from "../LoginForm/LoginFormModal.svelte";
+	import LoginOrRegisterFormModal from "../LoginOrRegisterForm/LoginOrRegisterFormModal.svelte";
 	import TabbedMenu from "../TabbedMenu/TabbedMenu.svelte";
 	import { H, type HLevel } from "../H/index.js";
 	import CheckoutSectionHeader from "./CheckoutSectionHeader.svelte";
 
-	// Map login_form.* keys → checkout.login.* keys (same as CheckoutLoginForm)
-	const LOGIN_FORM_KEY_MAP: Record<string, string> = {
+	// Map login_form.* / register_form.* / email_verify_form.* keys to
+	// their checkout.* equivalents so consumers can keep a single i18n prefix.
+	const FORM_KEY_MAP: Record<string, string> = {
+		// LoginForm
 		"login_form.email_label": "checkout.login.email_label",
 		"login_form.email_placeholder": "checkout.login.email_placeholder",
 		"login_form.password_label": "checkout.login.password_label",
@@ -93,6 +141,46 @@
 		"login_form.remember_me": "checkout.login.remember_me",
 		"login_form.remember_me_tooltip": "checkout.login.remember_me_tooltip",
 		"login_form.modal_title": "checkout.login.modal_title",
+		// RegisterForm
+		"register_form.email_label": "checkout.register.email_label",
+		"register_form.email_placeholder": "checkout.register.email_placeholder",
+		"register_form.password_label": "checkout.register.password_label",
+		"register_form.password_placeholder": "checkout.register.password_placeholder",
+		"register_form.password_confirm_label": "checkout.register.password_confirm_label",
+		"register_form.password_confirm_placeholder":
+			"checkout.register.password_confirm_placeholder",
+		"register_form.submit": "checkout.register.submit",
+		"register_form.submitting": "checkout.register.submitting",
+		"register_form.email_required": "checkout.register.email_required",
+		"register_form.email_invalid": "checkout.register.email_invalid",
+		"register_form.password_required": "checkout.register.password_required",
+		"register_form.password_too_short": "checkout.register.password_too_short",
+		"register_form.password_confirm_required": "checkout.register.password_confirm_required",
+		"register_form.password_mismatch": "checkout.register.password_mismatch",
+		"register_form.field_required": "checkout.register.field_required",
+		"register_form.social_divider": "checkout.register.social_divider",
+		"register_form.already_have_account": "checkout.register.already_have_account",
+		"register_form.modal_title": "checkout.register.modal_title",
+		// EmailVerifyForm
+		"email_verify_form.heading": "checkout.verify.heading",
+		"email_verify_form.subheading": "checkout.verify.subheading",
+		"email_verify_form.submit": "checkout.verify.submit",
+		"email_verify_form.submitting": "checkout.verify.submitting",
+		"email_verify_form.resend_prompt": "checkout.verify.resend_prompt",
+		"email_verify_form.resend": "checkout.verify.resend",
+		"email_verify_form.resend_cooldown": "checkout.verify.resend_cooldown",
+		"email_verify_form.resent": "checkout.verify.resent",
+		"email_verify_form.attempts_remaining": "checkout.verify.attempts_remaining",
+		// LoginOrRegisterForm (composite)
+		"login_or_register_form.mode_login": "checkout.login_or_register.mode_login",
+		"login_or_register_form.mode_register": "checkout.login_or_register.mode_register",
+		"login_or_register_form.mode_verify": "checkout.login_or_register.mode_verify",
+		"login_or_register_form.social_divider": "checkout.login_or_register.social_divider",
+		"login_or_register_form.modal_title_login": "checkout.login_or_register.modal_title_login",
+		"login_or_register_form.modal_title_register":
+			"checkout.login_or_register.modal_title_register",
+		"login_or_register_form.modal_title_verify":
+			"checkout.login_or_register.modal_title_verify",
 	};
 
 	let {
@@ -100,6 +188,7 @@
 		loginForm,
 		formMode = "tabbed",
 		loginModal,
+		loginOrRegisterModal,
 		notifications,
 		guestTabLabel,
 		loginTabLabel,
@@ -116,32 +205,75 @@
 
 	let t = $derived(tProp ?? t_default);
 
-	let loginModalRef: LoginFormModal = $state()!;
+	// `loginOrRegisterModal` wins when both are passed.
+	let _useLoginOrRegisterModal = $derived(!!loginOrRegisterModal);
+	let _useLoginModal = $derived(!loginOrRegisterModal && !!loginModal);
 
-	// Adapted t for LoginFormModal (maps login_form.* → checkout.login.*)
+	$effect(() => {
+		if (loginModal && loginOrRegisterModal) {
+			console.warn(
+				"[CheckoutGuestOrLoginForm] Both `loginModal` and `loginOrRegisterModal` " +
+					"were provided; `loginOrRegisterModal` takes precedence."
+			);
+		}
+	});
+
+	let loginModalRef: LoginFormModal = $state()!;
+	let loginOrRegisterModalRef: LoginOrRegisterFormModal = $state()!;
+
+	// Adapted t for the modals — maps login_form.* / register_form.* /
+	// email_verify_form.* / login_or_register_form.* keys to their checkout.* equivalents.
 	let modalT = $derived(
-		loginModal
+		loginModal || loginOrRegisterModal
 			? (
 					key: string,
 					values?: false | null | undefined | Record<string, string | number>,
 					fallback?: string | boolean
-				) => t(LOGIN_FORM_KEY_MAP[key] ?? key, values, fallback)
+				) => t(FORM_KEY_MAP[key] ?? key, values, fallback)
 			: undefined
 	);
+
+	// Local mirrors of the bindable LoginOrRegisterFormModal state — kept in sync
+	// from the consumer-supplied values via $effect, so consumer-driven updates
+	// (e.g., flipping `mode = "verify"` after a `requiresVerification` response)
+	// flow down. Modal-driven changes are forwarded back via `onModeChange`.
+	let _loroMode: LoginOrRegisterFormMode = $state("login");
+	let _loroVerifyEmail = $state("");
+
+	$effect(() => {
+		if (loginOrRegisterModal?.mode !== undefined && loginOrRegisterModal.mode !== _loroMode) {
+			_loroMode = loginOrRegisterModal.mode;
+		}
+	});
+	$effect(() => {
+		if (
+			loginOrRegisterModal?.verifyEmail !== undefined &&
+			loginOrRegisterModal.verifyEmail !== _loroVerifyEmail
+		) {
+			_loroVerifyEmail = loginOrRegisterModal.verifyEmail;
+		}
+	});
 
 	let tabItems = $derived([
 		{ id: "guest", label: guestTabLabel ?? t("checkout.guest_or_login.guest_tab") },
 		{
 			id: "login",
 			label: loginTabLabel ?? t("checkout.guest_or_login.login_tab"),
-			...(loginModal
+			...(_useLoginOrRegisterModal
 				? {
 						onSelect: () => {
-							loginModalRef?.open();
+							loginOrRegisterModalRef?.open();
 							return false;
 						},
 					}
-				: {}),
+				: _useLoginModal
+					? {
+							onSelect: () => {
+								loginModalRef?.open();
+								return false;
+							},
+						}
+					: {}),
 		},
 	]);
 
@@ -186,7 +318,7 @@
 			<div role="tabpanel">
 				<CheckoutGuestForm {...guestForm} {notifications} t={tProp} {unstyled} />
 			</div>
-		{:else if activeTab === "login" && loginForm}
+		{:else if activeTab === "login" && loginForm && !_useLoginOrRegisterModal}
 			<div role="tabpanel">
 				<CheckoutLoginForm {...loginForm} {notifications} t={tProp} {unstyled} />
 			</div>
@@ -203,7 +335,7 @@
 		{/if}
 	{/if}
 
-	{#if loginModal && loginForm}
+	{#if _useLoginModal && loginModal && loginForm}
 		<LoginFormModal
 			bind:this={loginModalRef}
 			formData={loginForm.formData}
@@ -223,6 +355,43 @@
 			t={modalT}
 			{unstyled}
 			{...loginModal}
+		/>
+	{/if}
+
+	{#if _useLoginOrRegisterModal && loginOrRegisterModal}
+		<LoginOrRegisterFormModal
+			bind:this={loginOrRegisterModalRef}
+			bind:mode={_loroMode}
+			bind:verifyEmail={_loroVerifyEmail}
+			onLogin={loginOrRegisterModal.onLogin}
+			onRegister={loginOrRegisterModal.onRegister}
+			onVerify={loginOrRegisterModal.onVerify}
+			onResendCode={loginOrRegisterModal.onResendCode}
+			onForgotPassword={loginOrRegisterModal.onForgotPassword}
+			onModeChange={(next, prev) => {
+				loginOrRegisterModal!.onModeChange?.(next, prev);
+			}}
+			isSubmitting={loginOrRegisterModal.isSubmitting}
+			loginProps={loginOrRegisterModal.loginProps}
+			registerProps={loginOrRegisterModal.registerProps}
+			verifyProps={loginOrRegisterModal.verifyProps}
+			modeSwitcher={loginOrRegisterModal.modeSwitcher}
+			loginModeLabel={loginOrRegisterModal.loginModeLabel}
+			registerModeLabel={loginOrRegisterModal.registerModeLabel}
+			verifyModeLabel={loginOrRegisterModal.verifyModeLabel}
+			socialLogins={loginOrRegisterModal.socialLogins}
+			socialDividerLabel={loginOrRegisterModal.socialDividerLabel}
+			footer={loginOrRegisterModal.footer}
+			{notifications}
+			title={loginOrRegisterModal.title}
+			classModal={loginOrRegisterModal.classModal}
+			classInner={loginOrRegisterModal.classInner}
+			classForm={loginOrRegisterModal.classForm}
+			noXClose={loginOrRegisterModal.noXClose}
+			noClickOutsideClose={loginOrRegisterModal.noClickOutsideClose}
+			onClose={loginOrRegisterModal.onClose}
+			t={modalT}
+			{unstyled}
 		/>
 	{/if}
 </div>
