@@ -1,6 +1,6 @@
 :root {
 	--stuic-email-verify-form-gap: 1rem;
-	--stuic-email-verify-form-subheading-color: var(--stuic-color-muted-foreground);
+	--stuic-email-verify-form-subheading-color: var(--stuic-color-foreground);
 	--stuic-email-verify-form-attempts-color: var(--stuic-color-muted-foreground);
 	--stuic-email-verify-form-resend-color: var(--stuic-color-muted-foreground);
 	--stuic-email-verify-form-resend-flash-color: var(--stuic-color-primary);
@@ -21,6 +21,7 @@
 		margin: 0;
 		color: var(--stuic-email-verify-form-subheading-color);
 		font-size: var(--text-sm);
+		text-align: center;
 	}
 
 	.stuic-email-verify-form-otp {

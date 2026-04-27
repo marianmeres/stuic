@@ -168,6 +168,20 @@
 	export function close() {
 		modal.close();
 	}
+
+	// Reset terminal `verify` state when the modal *closes* — otherwise a
+	// register → OTP → logout → re-open cycle resumes on the stale 6-digit-code
+	// screen. Keyed on the visible: true → false transition (not a static
+	// `!visible && mode==="verify"` test) so consumers can still programmatically
+	// open the modal in verify mode by setting `mode = "verify"` before `open()`.
+	let _wasVisible = false;
+	$effect(() => {
+		if (_wasVisible && !visible && mode === "verify") {
+			mode = "login";
+			verifyEmail = "";
+		}
+		_wasVisible = visible;
+	});
 </script>
 
 {#if trigger}
