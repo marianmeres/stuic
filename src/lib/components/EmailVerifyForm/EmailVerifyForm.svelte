@@ -51,6 +51,14 @@
 		/** Override CTA section. */
 		submitButton?: Snippet<[{ isSubmitting: boolean; disabled: boolean }]>;
 
+		/**
+		 * Override or suppress the form heading. By default the heading is rendered
+		 * with the i18n value of `email_verify_form.heading`. Pass a string to override
+		 * the text, or `false` to skip rendering the heading entirely (useful when the
+		 * surrounding container — e.g. a modal — already provides a title).
+		 */
+		heading?: string | false;
+
 		t?: TranslateFn;
 		unstyled?: boolean;
 		class?: string;
@@ -80,6 +88,7 @@
 		notifications,
 		footer,
 		submitButton,
+		heading,
 		t: tProp,
 		unstyled = false,
 		class: classProp,
@@ -196,9 +205,11 @@
 
 <form bind:this={formEl} class={_class} onsubmit={handleFormSubmit} {...rest}>
 	<!-- Heading -->
-	<H level={2} class={unstyled ? undefined : "stuic-email-verify-form-heading"}>
-		{t("email_verify_form.heading")}
-	</H>
+	{#if heading !== false}
+		<H level={2} class={unstyled ? undefined : "stuic-email-verify-form-heading"}>
+			{typeof heading === "string" ? heading : t("email_verify_form.heading")}
+		</H>
+	{/if}
 
 	<!-- Subheading with bolded email -->
 	<p class={unstyled ? undefined : "stuic-email-verify-form-subheading"}>

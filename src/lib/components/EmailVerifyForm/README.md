@@ -50,6 +50,7 @@ The form owns:
 | `notifications`         | `NotificationsStack`                       | —        | Route errors to notification system                      |
 | `submitButton`          | `Snippet`                                  | —        | Override submit section                                  |
 | `footer`                | `Snippet`                                  | —        | Content below the resend control                         |
+| `heading`               | `string \| false`                          | —        | Override heading text, or `false` to suppress entirely   |
 | `t`                     | `TranslateFn`                              | built-in | Translation function                                     |
 | `unstyled`              | `boolean`                                  | `false`  | Skip default styling                                     |
 | `class`                 | `string`                                   | —        | Additional CSS classes on the form root                  |
