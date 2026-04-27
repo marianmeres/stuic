@@ -2,11 +2,11 @@
 	import type { Snippet } from "svelte";
 	import type { HTMLAttributes } from "svelte/elements";
 	import type { TranslateFn } from "../../types.js";
+	import type { NotificationsStack } from "../Notifications/notifications-stack.svelte.js";
 	import type {
 		LoginFormData,
 		LoginFormValidationError,
 	} from "./_internal/login-form-types.js";
-	import type { NotificationsStack } from "../Notifications/notifications-stack.svelte.js";
 
 	export interface Props extends Omit<HTMLAttributes<HTMLFormElement>, "children"> {
 		/** Bindable login data. Default: createEmptyLoginFormData() */
@@ -78,18 +78,18 @@
 
 <script lang="ts">
 	import { untrack } from "svelte";
+	import { onSubmitValidityCheck } from "../../actions/on-submit-validity-check.svelte.js";
+	import { tooltip } from "../../actions/tooltip/tooltip.svelte.js";
 	import { twMerge } from "../../utils/tw-merge.js";
+	import Button from "../Button/Button.svelte";
+	import DismissibleMessage from "../DismissibleMessage/DismissibleMessage.svelte";
+	import FieldCheckbox from "../Input/FieldCheckbox.svelte";
+	import FieldInput from "../Input/FieldInput.svelte";
 	import { t_default } from "./_internal/login-form-i18n-defaults.js";
 	import {
 		createEmptyLoginFormData,
 		validateLoginForm,
 	} from "./_internal/login-form-utils.js";
-	import { tooltip } from "../../actions/tooltip/tooltip.svelte.js";
-	import Button from "../Button/Button.svelte";
-	import DismissibleMessage from "../DismissibleMessage/DismissibleMessage.svelte";
-	import FieldCheckbox from "../Input/FieldCheckbox.svelte";
-	import FieldInput from "../Input/FieldInput.svelte";
-	import { onSubmitValidityCheck } from "../../actions/on-submit-validity-check.svelte.js";
 
 	let {
 		formData = $bindable(createEmptyLoginFormData()),
@@ -131,13 +131,20 @@
 	}
 
 	function handleSubmitValid() {
+		// // [debug] kept commented for the next time Issue A regresses
+		// // eslint-disable-next-line no-console
+		// console.log("[LoginForm handleSubmitValid] entered", {
+		// 	formData: { ...formData },
+		// 	internalErrors: $state.snapshot(internalErrors),
+		// 	externalErrors: [...externalErrors],
+		// 	error,
+		// });
+
 		// Defensively clear any stale customValidity left on form fields by a prior
-		// validation pass. The `validate` action already clears it when the field's
-		// customValidator returns an empty string, but a field can skip that path
-		// (e.g., it was disabled, or its $effect torn down between submits) and the
-		// stale flag would then make `el.validity.valid` return false on the next
-		// submit, silently routing the form to `submit_invalid` and never calling
-		// `onSubmit`. Resetting here gives every retry a clean slate.
+		// validation pass. The canonical fix lives in `onSubmitValidityCheck` (which
+		// pre-clears before the per-field re-dispatch), but doing it here too is
+		// cheap insurance against any future regression that lets a stale flag slip
+		// past the action.
 		if (el) {
 			for (const node of Array.from(el.elements) as HTMLInputElement[]) {
 				if (typeof node.setCustomValidity === "function") node.setCustomValidity("");
@@ -146,6 +153,15 @@
 
 		const validationErrors = validateLoginForm(formData, t);
 		internalErrors = validationErrors;
+
+		// // [debug] kept commented for the next time Issue A regresses
+		// // eslint-disable-next-line no-console
+		// console.log("[LoginForm handleSubmitValid] post-validate", {
+		// 	validationErrors,
+		// 	externalErrorsLen: externalErrors.length,
+		// 	willCallOnSubmit:
+		// 		validationErrors.length === 0 && externalErrors.length === 0,
+		// });
 
 		if (validationErrors.length === 0 && externalErrors.length === 0) {
 			onSubmit(formData);
@@ -188,10 +204,10 @@
 	<DismissibleMessage message={error} intent="destructive" />
 
 	<!--
-			svelte-ignore binding_property_non_reactive:
-			formData is a $bindable prop — deep reactivity depends on the consumer
-			passing a $state() object. The bindings work correctly regardless.
-		-->
+		svelte-ignore binding_property_non_reactive:
+		formData is a $bindable prop — deep reactivity depends on the consumer
+		passing a $state() object. The bindings work correctly regardless.
+	-->
 	<!-- Email -->
 	<!-- svelte-ignore binding_property_non_reactive -->
 	<FieldInput

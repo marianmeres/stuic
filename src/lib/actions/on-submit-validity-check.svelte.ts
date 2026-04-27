@@ -47,9 +47,15 @@ const SUBMIT_INVALID_EVENT_NAME = "submit_invalid";
 export function onSubmitValidityCheck(node: HTMLFormElement) {
 	const onSubmit = (e: Event) => {
 		e.preventDefault();
-
 		// this will disable all other onsubmit listeners...
 		e.stopImmediatePropagation();
+
+		// // [debug] kept commented for the next time Issue A regresses
+		// // eslint-disable-next-line no-console
+		// console.log(
+		// 	"[onSubmitValidityCheck] submit intercepted. element count:",
+		// 	node.elements?.length
+		// );
 
 		const invalid = [];
 		for (let i = 0; i < node.elements?.length; i++) {
@@ -59,6 +65,16 @@ export function onSubmitValidityCheck(node: HTMLFormElement) {
 				// hm... radios are tricky, as triggering change automatically checks the last
 				// input (last radio input), which is not desired
 				if (el.type === "radio") continue;
+
+				// // [debug] kept commented for the next time Issue A regresses
+				// // eslint-disable-next-line no-console
+				// console.log(`[onSubmitValidityCheck] el#${i} ${el.name || el.type} BEFORE`, {
+				// 	value: el.value,
+				// 	valid: el.validity.valid,
+				// 	customError: el.validity.customError,
+				// 	valueMissing: el.validity.valueMissing,
+				// 	validationMessage: el.validationMessage,
+				// });
 
 				// Clear any stale `customError` flag from a prior submit attempt before
 				// re-dispatching the validate listeners. Without this, if the field's
@@ -75,9 +91,16 @@ export function onSubmitValidityCheck(node: HTMLFormElement) {
 				el.dispatchEvent(new Event("input", { bubbles: true }));
 				el.dispatchEvent(new Event("change", { bubbles: true }));
 
-				// typeof el.checkValidity === "function" && !el.checkValidity();
-				// NOTE: el.checkValidity() returns true for hidden inputs event if they are invalid!
-				// if (!el.checkValidity()) {
+				// // [debug] kept commented for the next time Issue A regresses
+				// // eslint-disable-next-line no-console
+				// console.log(`[onSubmitValidityCheck] el#${i} ${el.name || el.type} AFTER `, {
+				// 	value: el.value,
+				// 	valid: el.validity.valid,
+				// 	customError: el.validity.customError,
+				// 	valueMissing: el.validity.valueMissing,
+				// 	validationMessage: el.validationMessage,
+				// });
+
 				if (!el.validity.valid) {
 					invalid.push(el);
 				}
@@ -86,6 +109,9 @@ export function onSubmitValidityCheck(node: HTMLFormElement) {
 
 		// none invalid
 		if (!invalid.length) {
+			// // [debug] kept commented for the next time Issue A regresses
+			// // eslint-disable-next-line no-console
+			// console.log("[onSubmitValidityCheck] → dispatching submit_valid");
 			node.dispatchEvent(
 				new CustomEvent(SUBMIT_VALID_EVENT_NAME, {
 					bubbles: true,
@@ -93,6 +119,19 @@ export function onSubmitValidityCheck(node: HTMLFormElement) {
 				})
 			);
 		} else {
+			// // [debug] kept commented for the next time Issue A regresses
+			// // eslint-disable-next-line no-console
+			// console.warn(
+			// 	"[onSubmitValidityCheck] → dispatching submit_invalid; invalid =",
+			// 	invalid.map((el) => ({
+			// 		name: el.name,
+			// 		type: el.type,
+			// 		value: el.value,
+			// 		customError: el.validity.customError,
+			// 		valueMissing: el.validity.valueMissing,
+			// 		validationMessage: el.validationMessage,
+			// 	}))
+			// );
 			node.dispatchEvent(
 				new CustomEvent(SUBMIT_INVALID_EVENT_NAME, {
 					bubbles: true,

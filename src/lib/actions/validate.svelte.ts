@@ -245,6 +245,15 @@ export function validate(
 			return fallback;
 		};
 
+		// // [debug] kept commented for the next time Issue A regresses
+		// // eslint-disable-next-line no-console
+		// console.log(
+		// 	`[validate $effect] (re)mount listener on <${el.tagName.toLowerCase()} name="${
+		// 		(el as HTMLInputElement).name || ""
+		// 	}">`,
+		// 	{ enabled, on, hasCustomValidator: typeof customValidator === "function" }
+		// );
+
 		const _doValidate = () => {
 			if (!enabled) return;
 
@@ -264,6 +273,20 @@ export function validate(
 			// being removed across re-renders would leave the previous message
 			// stuck on the element forever.
 			el.setCustomValidity(customValidatorMessage);
+
+			// // [debug] kept commented for the next time Issue A regresses
+			// // eslint-disable-next-line no-console
+			// console.log(
+			// 	`[validate _doValidate] ran on <${el.tagName.toLowerCase()} name="${
+			// 		(el as HTMLInputElement).name || ""
+			// 	}">`,
+			// 	{
+			// 		value: el.value,
+			// 		customValidatorMessage,
+			// 		customError: el.validity.customError,
+			// 		valid: el.validity.valid,
+			// 	}
+			// );
 
 			// this triggers the bubble, which is not what we want
 			// el.reportValidity();
