@@ -394,6 +394,7 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 		annotationEl.style.top = "";
 		annotationEl.style.right = "";
 		annotationEl.style.bottom = "";
+		annotationEl.style.transform = "";
 
 		if (pos.startsWith("top")) {
 			annotationEl.style.left = `${x}px`;
@@ -408,6 +409,23 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 			annotationEl.style.left = `${x + w + offset}px`;
 			annotationEl.style.top = `${y}px`;
 		}
+
+		// Clamp into viewport after layout settles. Using transform keeps the
+		// underlying left/top intent intact so the next call recomputes cleanly.
+		requestAnimationFrame(() => {
+			if (!annotationEl) return;
+			const a = annotationEl.getBoundingClientRect();
+			const m = 8;
+			const vw = window.innerWidth;
+			const vh = window.innerHeight;
+			let dx = 0;
+			let dy = 0;
+			if (a.left < m) dx = m - a.left;
+			else if (a.right > vw - m) dx = vw - m - a.right;
+			if (a.top < m) dy = m - a.top;
+			else if (a.bottom > vh - m) dy = vh - m - a.bottom;
+			annotationEl.style.transform = dx || dy ? `translate(${dx}px, ${dy}px)` : "";
+		});
 	}
 
 	function renderContent() {
@@ -502,6 +520,10 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 						position: fixed;
 						position-anchor: ${anchorName};
 						position-area: ${POSITION_MAP[currentOptions.position || "bottom"] || "bottom"};
+						position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+						position-try-order: most-width;
+						max-width: calc(100vw - 1rem);
+						max-height: calc(100vh - 1rem);
 						transition-duration: ${TRANSITION}ms;
 						margin: ${offsetValue};
 						z-index: 50;

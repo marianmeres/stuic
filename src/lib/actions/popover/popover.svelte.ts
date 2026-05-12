@@ -453,6 +453,8 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 				position: fixed;
 				position-anchor: ${anchorName};
 				position-area: ${POSITION_MAP[currentOptions.position || "bottom"] || "bottom"};
+				max-width: calc(100vw - 1rem);
+				max-height: calc(100vh - 1rem);
 				transition-duration: ${TRANSITION}ms;
 				margin: ${offsetValue};
 			`;
