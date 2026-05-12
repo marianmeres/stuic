@@ -38,7 +38,7 @@
 	import type { AssetPreviewNormalized } from "../AssetsPreview/_internal/assets-preview-types.js";
 	import AssetsPreviewInline from "../AssetsPreview/AssetsPreviewInline.svelte";
 	import Button from "../Button/Button.svelte";
-	import IconSwap from "../IconSwap/IconSwap.svelte";
+	import ButtonGroupRadio from "../ButtonGroupRadio/ButtonGroupRadio.svelte";
 	import { bookPagesToAssets } from "./_internal/book-pages-to-assets.js";
 	import Book, {
 		buildSpreads,
@@ -105,15 +105,6 @@
 	);
 
 	const MODE_SWITCH_ICON_SIZE = 19;
-	const modeSwitchStates = [
-		iconBookOpen({ size: MODE_SWITCH_ICON_SIZE, strokeWidth: 2 }),
-		iconFileImage({ size: MODE_SWITCH_ICON_SIZE, strokeWidth: 2 }),
-	];
-	let modeSwitchActive = $derived(useInline ? 1 : 0);
-
-	function toggleMode() {
-		manualMode = useInline ? "book" : "inline";
-	}
 
 	let inlineAssets = $derived(useInline ? bookPagesToAssets(pages, baseUrl) : []);
 
@@ -393,17 +384,27 @@
 		{/if}
 	{/if}
 	{#if !noModeSwitch && !forceInline && !belowThreshold && pages.length > 0}
-		<Button
-			type="button"
-			iconButton
-			class="absolute bottom-4 right-4 border-0"
-			onclick={toggleMode}
-			tooltip={() => ({
-				content: useInline ? "Switch to book view" : "Switch to inline view",
+		<ButtonGroupRadio
+			size="sm"
+			class="absolute bottom-4 right-4 w-auto"
+			value={useInline ? "inline" : "book"}
+			options={[
+				{
+					label: iconBookOpen({ size: MODE_SWITCH_ICON_SIZE, strokeWidth: 2 }),
+					value: "book",
+				},
+				{
+					label: iconFileImage({ size: MODE_SWITCH_ICON_SIZE, strokeWidth: 2 }),
+					value: "inline",
+				},
+			]}
+			buttonProps={(i) => ({
+				tooltip: () => ({ content: i === 0 ? "Book view" : "Inline view" }),
 			})}
-		>
-			<IconSwap states={modeSwitchStates} active={modeSwitchActive} duration={200} />
-		</Button>
+			onButtonClick={(i) => {
+				manualMode = i === 0 ? "book" : "inline";
+			}}
+		/>
 	{/if}
 </div>
 
