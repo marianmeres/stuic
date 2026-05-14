@@ -97,6 +97,7 @@ Only one item can be open at a time:
 | --------------------------------------- | ---------------------- | ----------------------------- |
 | `--stuic-accordion-border-color`        | `--stuic-color-border` | Item separator color          |
 | `--stuic-accordion-border-width`        | `1px`                  | Separator width               |
+| `--stuic-accordion-divider-inset`       | `0`                    | Inset of divider from L/R edges (e.g. `16px`) |
 | `--stuic-accordion-radius`              | `--radius-md`          | Corner rounding               |
 | `--stuic-accordion-transition`          | `200ms`                | Open/close animation duration |
 | `--stuic-accordion-trigger-padding-x`   | `1rem`                 | Trigger horizontal padding    |

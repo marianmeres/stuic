@@ -7,6 +7,7 @@
 :root {
 	/* Border & shape */
 	--stuic-accordion-border-color: var(--stuic-color-border);
+	--stuic-accordion-divider-inset: 0;
 
 	/* Animation */
 
@@ -49,9 +50,12 @@
 	   ITEM
 	   ============================================================================ */
 
-	.stuic-accordion-item + .stuic-accordion-item {
-		border-top: var(--stuic-accordion-border-width, var(--stuic-border-width)) solid
-			var(--stuic-accordion-border-color);
+	.stuic-accordion-item + .stuic-accordion-item::before {
+		content: "";
+		display: block;
+		height: var(--stuic-accordion-border-width, var(--stuic-border-width));
+		background: var(--stuic-accordion-border-color);
+		margin-inline: var(--stuic-accordion-divider-inset);
 	}
 
 	/* ============================================================================

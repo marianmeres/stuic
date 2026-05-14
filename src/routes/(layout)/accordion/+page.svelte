@@ -127,6 +127,49 @@
 	</section>
 
 	<section>
+		<h2 class="text-lg font-semibold mb-2">Inset divider</h2>
+		<p class="text-sm text-neutral-500 mb-2">
+			Shorten the divider line between items via
+			<code>--stuic-accordion-divider-inset</code>.
+		</p>
+		<Accordion style="--stuic-accordion-divider-inset: 16px;">
+			<AccordionItem>
+				{#snippet trigger()}First section{/snippet}
+				<p>The divider below this item is inset 16px from both edges.</p>
+			</AccordionItem>
+			<AccordionItem>
+				{#snippet trigger()}Second section{/snippet}
+				<p>Notice the divider line no longer touches the container edges.</p>
+			</AccordionItem>
+			<AccordionItem>
+				{#snippet trigger()}Third section{/snippet}
+				<p>Useful when you want the divider visually aligned with the content padding.</p>
+			</AccordionItem>
+		</Accordion>
+	</section>
+
+	<section>
+		<h2 class="text-lg font-semibold mb-2">Custom chevron</h2>
+		<p class="text-sm text-neutral-500 mb-2">
+			Adjust chevron size and color via
+			<code>--stuic-accordion-chevron-size</code> and
+			<code>--stuic-accordion-chevron-color</code>.
+		</p>
+		<Accordion
+			style="--stuic-accordion-chevron-size: 24px; --stuic-accordion-chevron-color: oklch(0.6 0.2 25);"
+		>
+			<AccordionItem>
+				{#snippet trigger()}Larger, red chevron{/snippet}
+				<p>The chevron is 24px and tinted red, independent of the trigger text color.</p>
+			</AccordionItem>
+			<AccordionItem>
+				{#snippet trigger()}Still rotates on open{/snippet}
+				<p>Rotation behavior is preserved.</p>
+			</AccordionItem>
+		</Accordion>
+	</section>
+
+	<section>
 		<h2 class="text-lg font-semibold mb-2">Custom styling</h2>
 		<Accordion
 			style="--stuic-accordion-border-color: oklch(0.6 0.15 250); --stuic-accordion-radius: 0; --stuic-accordion-trigger-bg-hover: oklch(0.6 0.15 250 / 0.1);"
