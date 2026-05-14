@@ -21,6 +21,10 @@
 		transparent
 	);
 
+	/* Chevron */
+	--stuic-accordion-chevron-size: 16px;
+	--stuic-accordion-chevron-color: currentColor;
+
 	/* Content */
 	--stuic-accordion-content-padding-x: 1rem;
 	--stuic-accordion-content-padding-y: 0.75rem;
@@ -89,6 +93,9 @@
 
 	.stuic-accordion-chevron {
 		flex-shrink: 0;
+		width: var(--stuic-accordion-chevron-size);
+		height: var(--stuic-accordion-chevron-size);
+		color: var(--stuic-accordion-chevron-color);
 		transition: transform var(--stuic-accordion-transition, var(--stuic-transition));
 	}
 

@@ -104,6 +104,8 @@ Only one item can be open at a time:
 | `--stuic-accordion-trigger-font-weight` | `--font-weight-medium` | Trigger text weight           |
 | `--stuic-accordion-trigger-bg`          | `transparent`          | Trigger background            |
 | `--stuic-accordion-trigger-bg-hover`    | muted mix              | Trigger hover background      |
+| `--stuic-accordion-chevron-size`        | `16px`                 | Chevron icon size             |
+| `--stuic-accordion-chevron-color`       | `currentColor`         | Chevron icon color            |
 | `--stuic-accordion-content-padding-x`   | `1rem`                 | Content horizontal padding    |
 | `--stuic-accordion-content-padding-y`   | `0.75rem`              | Content vertical padding      |
 | `--stuic-accordion-ring-width`          | `2px`                  | Focus ring width              |
