@@ -22,7 +22,7 @@
 	--stuic-input-border: var(--stuic-color-border);
 	--stuic-input-border-focus: var(--stuic-input-accent);
 	--stuic-input-text: var(--stuic-color-foreground);
-	--stuic-input-placeholder: var(--stuic-color-muted-foreground);
+	--stuic-input-placeholder: color-mix(in oklab, var(--stuic-color-muted-foreground) 75%, transparent);
 
 	/* Size: sm */
 	--stuic-input-padding-x-sm: calc(var(--spacing) * 2.5);
@@ -598,7 +598,8 @@
 		color: var(--stuic-field-phone-trigger-text);
 		background: var(--stuic-field-phone-trigger-bg);
 		border-right: 1px solid var(--stuic-field-phone-trigger-border);
-		border-radius: var(--stuic-input-radius, var(--stuic-radius)) 0 0 var(--stuic-input-radius, var(--stuic-radius));
+		border-radius: var(--stuic-input-radius, var(--stuic-radius)) 0 0
+			var(--stuic-input-radius, var(--stuic-radius));
 		transition:
 			background var(--stuic-input-transition, var(--stuic-transition)),
 			color var(--stuic-input-transition, var(--stuic-transition));

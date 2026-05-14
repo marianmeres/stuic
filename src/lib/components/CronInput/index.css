@@ -151,7 +151,7 @@
 
 	.stuic-cron-input-field-input::placeholder {
 		color: var(--stuic-input-placeholder);
-		opacity: 0.5;
+		/* opacity: 0.5; */
 		font-family: var(--stuic-input-font-family);
 	}
 
