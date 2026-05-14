@@ -181,7 +181,6 @@
 
 	.stuic-cron-input-raw::placeholder {
 		color: var(--stuic-input-placeholder);
-		opacity: 0.5;
 	}
 
 	/* Summary / human description */
