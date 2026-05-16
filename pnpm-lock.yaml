@@ -36,8 +36,8 @@ importers:
         specifier: ^2.3.0
         version: 2.3.0
       libphonenumber-js:
-        specifier: ^1.13.1
-        version: 1.13.1
+        specifier: ^1.13.2
+        version: 1.13.2
       runed:
         specifier: ^0.23.4
         version: 0.23.4(svelte@5.55.7(@typescript-eslint/types@8.59.3))
@@ -509,14 +509,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@marianmeres/batch@1.2.4':
-    resolution: {integrity: sha512-+/dlni0HIpQ/YFDrSktR2OtxguFgw8zwmOALmfFqd/zywV99HPgbmFYwwVlxnLy30A072otmMgiPBMYg1ZHvFA==}
-
   '@marianmeres/batch@1.2.5':
     resolution: {integrity: sha512-PxH3RJWL00XGDzErK4sS7pKC7YZlygfycjXkUFc0HOv53C9SZ34wPFWd9jaJZHy6eXMrwO6ND1nbKBrzq+CPfw==}
-
-  '@marianmeres/clog@3.19.1':
-    resolution: {integrity: sha512-Vh9oLqSdfJ40YYMzpMX9Jz0IvG4HNBazogRpmvn73V6zbomGbHRVbH/RTsbHf+2MJcuiKfG+frnr2y2eCjeTLQ==}
 
   '@marianmeres/clog@3.19.2':
     resolution: {integrity: sha512-RJr0cP4gLvtTnCneDeoAP+nRbmynJlWZ7ulv3jhG8a1CoRjFKiZUfuW6nTxi6yKOS+uZKRklhDlaUeQDtlhMkg==}
@@ -1417,8 +1411,8 @@ packages:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
 
-  libphonenumber-js@1.13.1:
-    resolution: {integrity: sha512-GEw0GLL7YUUA6nv21IsCvVjtI5Ejn84sjbdfQ9KxdbqEVOk1PZh7xejn01EEiniKw+dBeCfim+8MGeuvVuE2BA==}
+  libphonenumber-js@1.13.2:
+    resolution: {integrity: sha512-S3kmBrptp3yRTm83NUcHy9g1vbwiWMzI8WvY22+koBJ6zkRteLnedBL2VX0MIAGwx2yiyxX4J85pceZyQ6ffgg==}
 
   lightningcss-android-arm64@1.32.0:
     resolution: {integrity: sha512-YK7/ClTt4kAK0vo6w3X+Pnm0D2cf2vPHbhOXdoNti1Ga0al1P4TBZhwjATvjNwLEBCnKvjJc2jQgHXH0NEwlAg==}
@@ -2185,19 +2179,10 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@marianmeres/batch@1.2.4':
-    dependencies:
-      '@marianmeres/clog': 3.19.1
-      '@marianmeres/pubsub': 3.0.0
-
   '@marianmeres/batch@1.2.5':
     dependencies:
-      '@marianmeres/clog': 3.19.1
+      '@marianmeres/clog': 3.19.2
       '@marianmeres/pubsub': 3.0.0
-
-  '@marianmeres/clog@3.19.1':
-    dependencies:
-      '@marianmeres/batch': 1.2.4
 
   '@marianmeres/clog@3.19.2':
     dependencies:
@@ -3054,7 +3039,7 @@ snapshots:
       prelude-ls: 1.2.1
       type-check: 0.4.0
 
-  libphonenumber-js@1.13.1: {}
+  libphonenumber-js@1.13.2: {}
 
   lightningcss-android-arm64@1.32.0:
     optional: true
