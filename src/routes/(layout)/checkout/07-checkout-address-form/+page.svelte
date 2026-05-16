@@ -99,7 +99,7 @@
 		usErrors = errs;
 	}
 
-	// --- Country options for custom selector demo ---
+	// --- Country options for custom selector demo (free-text fallback) ---
 	const COUNTRIES = [
 		"United States",
 		"Canada",
@@ -110,6 +110,23 @@
 		"Slovakia",
 		"Austria",
 	];
+
+	// --- Localized country names (Slovak) for the i18n demo ---
+	const COUNTRY_NAMES_SK: Record<string, string> = {
+		SK: "Slovensko",
+		CZ: "Česko",
+		AT: "Rakúsko",
+		DE: "Nemecko",
+		FR: "Francúzsko",
+		GB: "Spojené kráľovstvo",
+		US: "Spojené štáty",
+		IT: "Taliansko",
+		ES: "Španielsko",
+		PL: "Poľsko",
+		HU: "Maďarsko",
+	};
+
+	let localizedAddress = $state<CheckoutAddressData>(createEmptyAddress());
 </script>
 
 <h1 class="text-2xl font-bold mb-8">CheckoutAddressForm</h1>
@@ -179,6 +196,7 @@
 				label="shipping"
 				{errors}
 				fields={fieldsConfig}
+				preferredCountries={["SK", "CZ", "AT", "DE"]}
 				phoneFieldProps={{
 					defaultCountry: "SK",
 					preferredCountries: ["SK", "CZ", "AT", "DE"],
@@ -202,6 +220,7 @@
 				label="shipping"
 				{errors}
 				fields={fieldsConfig}
+				preferredCountries={["SK", "CZ", "AT", "DE"]}
 				phoneFieldProps={{
 					defaultCountry: "SK",
 					preferredCountries: ["SK", "CZ", "AT", "DE"],
@@ -420,7 +439,9 @@
 <!-- ============== PRE-FILLED ============== -->
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Pre-filled address</h2>
-	<p class="text-sm opacity-60 mb-4">Address data pre-populated.</p>
+	<p class="text-sm opacity-60 mb-4">
+		Address data pre-populated. <code>country</code> is the ISO alpha-2 code.
+	</p>
 
 	<div class="max-w-lg">
 		<CheckoutAddressForm
@@ -430,9 +451,37 @@
 				city: "Portland",
 				state_or_region: "OR",
 				postal_code: "97201",
-				country: "United States",
+				country: "US",
 				phone: "+1 (503) 555-0199",
 			}}
 		/>
+	</div>
+</section>
+
+<!-- ============== LOCALIZED + PREFERRED COUNTRIES ============== -->
+<section class="mb-12">
+	<h2 class="text-lg font-bold mb-2">Localized country names + preferred list</h2>
+	<p class="text-sm opacity-60 mb-4">
+		<code>countryNames</code> overrides displayed names with a custom (Slovak) map.
+		<code>preferredCountries</code> pins ISO codes at the top of the dropdown above a divider.
+		Search still matches English names too — try typing "germ" or "nemec".
+	</p>
+
+	<div class="max-w-lg">
+		<CheckoutAddressForm
+			bind:address={localizedAddress}
+			label="localized"
+			preferredCountries={["SK", "CZ", "AT", "DE"]}
+			countryNames={COUNTRY_NAMES_SK}
+		/>
+	</div>
+
+	<div class="mt-4">
+		<h3 class="text-sm font-semibold mb-1">Live address data:</h3>
+		<pre class="text-xs bg-muted p-3 rounded-md overflow-x-auto">{JSON.stringify(
+				localizedAddress,
+				null,
+				2
+			)}</pre>
 	</div>
 </section>

@@ -625,4 +625,31 @@
 		padding-top: 0;
 		padding-bottom: 0;
 	}
+
+	/* ============================================================================
+	   FIELD COUNTRY
+	   ============================================================================ */
+
+	/*
+	 * DropdownMenu defaults to `display: inline-block` (shrink-to-fit), which
+	 * makes the trigger button's `w-full` only as wide as its content — so the
+	 * chevron snaps to the text instead of the right edge. Stretch the wrapper
+	 * inside the InputWrap's flex container.
+	 */
+	.stuic-field-country.stuic-dropdown-menu {
+		display: block;
+		flex: 1;
+		min-width: 0;
+	}
+
+	/*
+	 * Reset field-input padding leaking into the popover's search bar
+	 * (mirrors the phone-prefix-picker fix — the input itself is correctly
+	 * sized, but its container also gets `.stuic-dropdown-menu-search`
+	 * padding which stacks on top, making the row look oversized).
+	 */
+	.stuic-field-country .stuic-dropdown-menu-search {
+		padding-top: 0;
+		padding-bottom: 0;
+	}
 }

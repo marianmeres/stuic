@@ -76,6 +76,8 @@ const DEFAULTS: Record<string, string> = {
 	"checkout.address.postal_code_placeholder": "",
 	"checkout.address.country_label": "Country",
 	"checkout.address.country_placeholder": "",
+	"checkout.address.country_search_placeholder": "Search country...",
+	"checkout.address.country_no_results": "No country found",
 	"checkout.address.phone_label": "Phone",
 	"checkout.address.phone_placeholder": "",
 	"checkout.address.required_marker": "*",

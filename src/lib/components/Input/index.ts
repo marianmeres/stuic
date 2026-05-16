@@ -67,6 +67,11 @@ export {
 	type Props as FieldPhoneNumberProps,
 } from "./FieldPhoneNumber.svelte";
 
+export {
+	default as FieldCountry,
+	type Props as FieldCountryProps,
+} from "./FieldCountry.svelte";
+
 export { validatePhoneNumber } from "./phone-validation.js";
 
-export { type Country } from "./_internal/countries.js";
+export { type Country, COUNTRIES, ISO_MAP } from "./_internal/countries.js";

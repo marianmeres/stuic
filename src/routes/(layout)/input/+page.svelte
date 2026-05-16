@@ -11,3 +11,5 @@
 <a href="./input/object" class="underline">Object (pretty view)</a>
 <br />
 <a href="./input/phone-number" class="underline">Phone number</a>
+<br />
+<a href="./input/country" class="underline">Country</a>

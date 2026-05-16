@@ -7,9 +7,17 @@
 		CheckoutValidationError,
 	} from "./_internal/checkout-types.js";
 	import type { Props as FieldPhoneNumberProps } from "../Input/FieldPhoneNumber.svelte";
+	import type { Props as FieldCountryProps } from "../Input/FieldCountry.svelte";
+	import type { Country } from "../Input/_internal/countries.js";
 
 	export interface Props extends Omit<HTMLAttributes<HTMLFieldSetElement>, "children"> {
-		/** Bindable address data. Default: createEmptyAddress() */
+		/**
+		 * Bindable address data. Default: createEmptyAddress().
+		 *
+		 * Note: `address.country` is expected to be an ISO alpha-2 code (e.g. "SK")
+		 * when used with the built-in country selector. Pre-existing free-text values
+		 * won't match a country and will render as unselected.
+		 */
 		address?: CheckoutAddressData;
 
 		/**
@@ -42,12 +50,13 @@
 
 		/**
 		 * Override the country field with a custom selector.
-		 * When provided, replaces the default text input for country.
+		 * When provided, replaces the default searchable country picker.
+		 * `value` is an ISO alpha-2 code.
 		 */
 		countryField?: Snippet<
 			[
 				{
-					/** Current country value */
+					/** Current country value (ISO alpha-2 code) */
 					value: string;
 					/** Called when country changes */
 					onchange: (value: string) => void;
@@ -61,8 +70,28 @@
 			]
 		>;
 
+		/**
+		 * Restrict the country selector to a specific list. Accepts ISO codes
+		 * or already-resolved Country objects. Default: all countries.
+		 */
+		countryList?: Country[] | string[];
+
+		/**
+		 * ISO codes pinned at the top of the country dropdown, above a divider.
+		 */
+		preferredCountries?: string[];
+
+		/**
+		 * Override displayed country names. Keys are ISO alpha-2 codes,
+		 * values are the localized name. Missing keys fall back to English.
+		 */
+		countryNames?: Record<string, string>;
+
 		/** Extra props forwarded to the internal FieldPhoneNumber component. */
 		phoneFieldProps?: Partial<FieldPhoneNumberProps>;
+
+		/** Extra props forwarded to the internal FieldCountry component. */
+		countryFieldProps?: Partial<FieldCountryProps>;
 
 		t?: TranslateFn;
 		unstyled?: boolean;
@@ -77,6 +106,7 @@
 	import { createEmptyAddress } from "./_internal/checkout-utils.js";
 	import FieldInput from "../Input/FieldInput.svelte";
 	import FieldPhoneNumber from "../Input/FieldPhoneNumber.svelte";
+	import FieldCountry from "../Input/FieldCountry.svelte";
 	import { validatePhoneNumber } from "../Input/phone-validation.js";
 
 	const DEFAULT_REQUIRED = ["name", "street", "city", "postal_code", "country"];
@@ -88,7 +118,11 @@
 		fields,
 		requiredFields = DEFAULT_REQUIRED,
 		countryField,
+		countryList,
+		preferredCountries,
+		countryNames,
 		phoneFieldProps,
+		countryFieldProps,
 		t: tProp,
 		unstyled = false,
 		class: classProp,
@@ -235,7 +269,7 @@
 			})}
 		{:else}
 			<!-- svelte-ignore binding_property_non_reactive -->
-			<FieldInput
+			<FieldCountry
 				bind:value={address.country}
 				label={t("checkout.address.country_label")}
 				placeholder={t("checkout.address.country_placeholder")}
@@ -243,11 +277,16 @@
 				name="{label}-country"
 				id="{label}-country"
 				labelLeftBreakpoint={0}
+				{countryList}
+				{preferredCountries}
+				{countryNames}
+				t={tProp}
 				validate={{
 					customValidator(val) {
 						return fieldError("country") || "";
 					},
 				}}
+				{...countryFieldProps}
 			/>
 		{/if}
 	{/if}
