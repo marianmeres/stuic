@@ -28,6 +28,7 @@
 			name?: boolean;
 			street?: boolean;
 			city?: boolean;
+			state_or_region?: boolean;
 			postal_code?: boolean;
 			country?: boolean;
 			phone?: boolean;
@@ -163,8 +164,8 @@
 		/>
 	{/if}
 
-	<!-- City + Postal Code (2-column grid) -->
-	{#if fields?.city !== false || fields?.postal_code !== false}
+	<!-- City + State/Region + Postal Code (responsive 2- or 3-column grid) -->
+	{#if fields?.city !== false || fields?.state_or_region !== false || fields?.postal_code !== false}
 		<div class={unstyled ? undefined : "stuic-checkout-address-row"}>
 			{#if fields?.city !== false}
 				<!-- svelte-ignore binding_property_non_reactive -->
@@ -179,6 +180,23 @@
 					validate={{
 						customValidator(val) {
 							return fieldError("city") || "";
+						},
+					}}
+				/>
+			{/if}
+			{#if fields?.state_or_region !== false}
+				<!-- svelte-ignore binding_property_non_reactive -->
+				<FieldInput
+					bind:value={address.state_or_region}
+					label={t("checkout.address.state_or_region_label")}
+					labelLeftBreakpoint={0}
+					placeholder={t("checkout.address.state_or_region_placeholder")}
+					required={isRequired("state_or_region")}
+					name="{label}-state_or_region"
+					id="{label}-state_or_region"
+					validate={{
+						customValidator(val) {
+							return fieldError("state_or_region") || "";
 						},
 					}}
 				/>
@@ -238,7 +256,9 @@
 	{#if fields?.phone !== false}
 		<FieldPhoneNumber
 			value={address.phone ?? ""}
-			onChange={(v) => { address.phone = v; }}
+			onChange={(v) => {
+				address.phone = v;
+			}}
 			label={t("checkout.address.phone_label")}
 			placeholder={t("checkout.address.phone_placeholder")}
 			required={isRequired("phone")}

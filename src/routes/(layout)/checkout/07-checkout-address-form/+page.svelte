@@ -28,6 +28,7 @@
 	let showName = $state(true);
 	let showStreet = $state(true);
 	let showCity = $state(true);
+	let showStateOrRegion = $state(true);
 	let showPostalCode = $state(true);
 	let showCountry = $state(true);
 	let showPhone = $state(true);
@@ -37,6 +38,7 @@
 		name: showName,
 		street: showStreet,
 		city: showCity,
+		state_or_region: showStateOrRegion,
 		postal_code: showPostalCode,
 		country: showCountry,
 		phone: showPhone,
@@ -68,6 +70,33 @@
 			}
 		}
 		minimalErrors = errs;
+	}
+
+	// --- US-style demo (state_or_region required) ---
+	let usAddress = $state<CheckoutAddressData>(createEmptyAddress());
+	let usErrors = $state<CheckoutValidationError[]>([]);
+	const usRequired = [
+		"name",
+		"street",
+		"city",
+		"state_or_region",
+		"postal_code",
+		"country",
+	];
+
+	function handleUsValidate() {
+		const errs: CheckoutValidationError[] = [];
+		for (const field of usRequired) {
+			const value = usAddress[field as keyof CheckoutAddressData];
+			if (!value || !String(value).trim()) {
+				const label = t_default(`checkout.address.${field}_label`);
+				errs.push({
+					field: `us.${field}`,
+					message: t_default("checkout.address.field_required", { field: label }),
+				});
+			}
+		}
+		usErrors = errs;
 	}
 
 	// --- Country options for custom selector demo ---
@@ -109,6 +138,12 @@
 			bind:checked={showCity}
 			label="Show City"
 			name="show-city"
+			renderSize="sm"
+		/>
+		<FieldSwitch
+			bind:checked={showStateOrRegion}
+			label="Show State / Region"
+			name="show-state-or-region"
 			renderSize="sm"
 		/>
 		<FieldSwitch
@@ -290,6 +325,63 @@
 	</div>
 </section>
 
+<!-- ============== US-STYLE (STATE REQUIRED) ============== -->
+<section class="mb-12">
+	<h2 class="text-lg font-bold mb-2">US-style address (state required)</h2>
+	<p class="text-sm opacity-60 mb-4">
+		<code>state_or_region</code> is visible by default but
+		<strong>not</strong> required by default — keeping the component country-agnostic. For
+		US-targeted checkouts, opt in by adding it to <code>requiredFields</code>.
+	</p>
+
+	<div class="max-w-lg">
+		<CheckoutAddressForm
+			bind:address={usAddress}
+			label="us"
+			errors={usErrors}
+			requiredFields={usRequired}
+		/>
+	</div>
+
+	<div class="mt-4 flex gap-2">
+		<Button size="sm" class="border px-3" onclick={handleUsValidate}>Validate</Button>
+		<Button
+			size="sm"
+			class="border px-3"
+			onclick={() => {
+				usAddress = createEmptyAddress();
+				usErrors = [];
+			}}
+		>
+			Reset
+		</Button>
+	</div>
+
+	{#if usErrors.length > 0}
+		<div class="mt-4">
+			<h3 class="text-sm font-semibold mb-1">US validation errors:</h3>
+			<pre class="text-xs bg-muted p-3 rounded-md overflow-x-auto">{JSON.stringify(
+					usErrors,
+					null,
+					2
+				)}</pre>
+		</div>
+	{/if}
+</section>
+
+<!-- ============== WITHOUT STATE/REGION ============== -->
+<section class="mb-12">
+	<h2 class="text-lg font-bold mb-2">Without state/region field</h2>
+	<p class="text-sm opacity-60 mb-4">
+		<code>fields=&#123;&#123; state_or_region: false &#125;&#125;</code> hides the state/region
+		field — the City + Postal Code row collapses back to 2 columns.
+	</p>
+
+	<div class="max-w-lg">
+		<CheckoutAddressForm fields={{ state_or_region: false }} />
+	</div>
+</section>
+
 <!-- ============== WITHOUT PHONE ============== -->
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Without phone field</h2>
@@ -336,6 +428,7 @@
 				name: "Jane Doe",
 				street: "456 Oak Avenue",
 				city: "Portland",
+				state_or_region: "OR",
 				postal_code: "97201",
 				country: "United States",
 				phone: "+1 (503) 555-0199",

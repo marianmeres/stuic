@@ -22,6 +22,10 @@
 		grid-template-columns: 1fr;
 	}
 
+	.stuic-checkout-address-row:has(> :nth-child(3)) {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
 	.stuic-checkout-guest-form[data-small] .stuic-checkout-guest-row,
 	.stuic-checkout-address[data-small] .stuic-checkout-address-row {
 		grid-template-columns: 1fr;

@@ -93,6 +93,14 @@ test("validateAddress validates the optional phone when present", () => {
 	assert.equal(errs[0].field, "shipping.phone");
 });
 
+test("validateAddress does NOT flag a missing state_or_region (truly optional by default)", () => {
+	// fullAddress has no state_or_region — validation should still pass.
+	assert.deepEqual(validateAddress(fullAddress, "shipping", t), []);
+	// Explicitly empty also passes.
+	const addr = { ...fullAddress, state_or_region: "" };
+	assert.deepEqual(validateAddress(addr, "shipping", t), []);
+});
+
 test("validateAddress prefixes field paths with the given prefix", () => {
 	const errs = validateAddress(createEmptyAddress(), "billing", t);
 	assert(errs.every((e) => e.field.startsWith("billing.")));
@@ -163,6 +171,7 @@ test("addressesEqual returns true for identical addresses", () => {
 test("addressesEqual returns false when any tracked field differs", () => {
 	assert.isFalse(addressesEqual(fullAddress, { ...fullAddress, city: "Kosice" }));
 	assert.isFalse(addressesEqual(fullAddress, { ...fullAddress, postal_code: "99999" }));
+	assert.isFalse(addressesEqual(fullAddress, { ...fullAddress, state_or_region: "CA" }));
 });
 
 test("addressesEqual treats missing phone and empty phone as equal", () => {
@@ -187,7 +196,15 @@ test("addressesEqual compares non-required fields (label, is_default)", () => {
 
 test("createEmptyAddress returns all required fields as empty strings", () => {
 	const addr = createEmptyAddress();
-	for (const k of ["name", "street", "city", "postal_code", "country", "phone"] as const) {
+	for (const k of [
+		"name",
+		"street",
+		"city",
+		"state_or_region",
+		"postal_code",
+		"country",
+		"phone",
+	] as const) {
 		assert.equal(addr[k], "", `expected ${k} to be empty string`);
 	}
 });

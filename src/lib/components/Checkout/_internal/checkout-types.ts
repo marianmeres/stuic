@@ -28,6 +28,7 @@ export interface CheckoutAddressData {
 	name: string;
 	street: string;
 	city: string;
+	state_or_region?: string;
 	postal_code: string;
 	country: string;
 	phone?: string;

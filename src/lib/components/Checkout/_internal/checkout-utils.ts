@@ -64,6 +64,7 @@ const ALL_ADDRESS_FIELDS: readonly (keyof CheckoutAddressData)[] = [
 	"name",
 	"street",
 	"city",
+	"state_or_region",
 	"postal_code",
 	"country",
 	"phone",
@@ -134,7 +135,15 @@ export function validateLoginForm(
 // ====================================================================
 
 export function createEmptyAddress(): CheckoutAddressData {
-	return { name: "", street: "", city: "", postal_code: "", country: "", phone: "" };
+	return {
+		name: "",
+		street: "",
+		city: "",
+		state_or_region: "",
+		postal_code: "",
+		country: "",
+		phone: "",
+	};
 }
 
 export function createEmptyCustomerFormData(): CheckoutCustomerFormData {
