@@ -90,6 +90,20 @@ export class ColorScheme {
 	}
 
 	/**
+	 * Re-seed `current` from the actual `<html>` class state. Used by the
+	 * hydration components after their inline bootstrap `<script>` has run, so
+	 * the runtime matches whichever strategy actually painted the DOM. Does NOT
+	 * write to the DOM.
+	 */
+	static syncFromDom(): void {
+		if (typeof document === "undefined") return;
+		const next = document.documentElement.classList.contains(ColorScheme.DARK)
+			? ColorScheme.DARK
+			: ColorScheme.LIGHT;
+		if (next !== _current) _current = next;
+	}
+
+	/**
 	 * Reads the `prefers-color-scheme` system setting
 	 */
 	static getSystemValue(): Scheme {

@@ -3,6 +3,15 @@
 	export interface Props {}
 </script>
 
+<script lang="ts">
+	import { ColorScheme } from "./color-scheme.svelte.js";
+	$effect(() => {
+		// Bootstrap <script> below has run by the time this effect fires;
+		// re-seed the runtime from whatever the DOM is now showing.
+		ColorScheme.syncFromDom();
+	});
+</script>
+
 <!--
 	Similar to ColorSchemeSystemAware, except that it never reads window.matchMedia and only
 	relies on the local userland setting.

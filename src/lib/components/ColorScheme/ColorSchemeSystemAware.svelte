@@ -3,6 +3,15 @@
 	export interface Props {}
 </script>
 
+<script lang="ts">
+	import { ColorScheme } from "./color-scheme.svelte.js";
+	$effect(() => {
+		// Bootstrap <script> below has run by the time this effect fires;
+		// re-seed the runtime from whatever the DOM is now showing.
+		ColorScheme.syncFromDom();
+	});
+</script>
+
 <!--
 	If you do not wish to take the system preference into account use ColorSchemeLocal sibling.
 
