@@ -71,6 +71,10 @@
 
 <script lang="ts">
 	import { twMerge } from "../../utils/tw-merge.js";
+	import {
+		scrollToFirstInvalidField,
+		validateAllFields,
+	} from "../../utils/validate-fields.js";
 	import { t_default } from "./_internal/checkout-i18n-defaults.js";
 	import {
 		createEmptyCustomerFormData,
@@ -139,6 +143,52 @@
 	let _class = $derived(
 		unstyled ? classProp : twMerge("stuic-checkout-guest-form", classProp)
 	);
+
+	// Imperative API ----------------------------------------------------------
+	// Field refs collected during render so consumers can trigger per-field
+	// inline messages without going through native form submission.
+	let emailField = $state<FieldInput>();
+	let firstNameField = $state<FieldInput>();
+	let lastNameField = $state<FieldInput>();
+	let phoneField = $state<FieldPhoneNumber>();
+	let companyNameField = $state<FieldInput>();
+	let taxIdField = $state<FieldInput>();
+	let vatNumberField = $state<FieldInput>();
+
+	function _fields() {
+		return [
+			emailField,
+			firstNameField,
+			lastNameField,
+			phoneField,
+			companyNameField,
+			taxIdField,
+			vatNumberField,
+		];
+	}
+
+	/**
+	 * Run every visible field's validator and render any inline errors.
+	 * Returns true if all fields are valid.
+	 */
+	export function validate(): boolean {
+		return validateAllFields(_fields());
+	}
+
+	/**
+	 * Scroll the first invalid field into view and focus it. Returns true
+	 * if a field was scrolled. Call after `validate()`.
+	 */
+	export function scrollToFirstError(
+		opts?: Parameters<typeof scrollToFirstInvalidField>[1]
+	): boolean {
+		return scrollToFirstInvalidField(_fields(), opts);
+	}
+
+	/** Clear all inline validation messages on the rendered fields. */
+	export function clearValidation(): void {
+		for (const f of _fields()) f?.clearValidation?.();
+	}
 </script>
 
 <form
@@ -158,6 +208,7 @@
 	<!-- Email (always shown, always required) -->
 	<!-- svelte-ignore binding_property_non_reactive -->
 	<FieldInput
+		bind:this={emailField}
 		bind:value={formData.email}
 		label={t("checkout.guest.email_label")}
 		type="email"
@@ -178,6 +229,7 @@
 			{#if fields?.first_name !== false}
 				<!-- svelte-ignore binding_property_non_reactive -->
 				<FieldInput
+					bind:this={firstNameField}
 					bind:value={formData.first_name}
 					label={t("checkout.guest.first_name_label")}
 					labelLeftBreakpoint={0}
@@ -188,6 +240,7 @@
 			{#if fields?.last_name !== false}
 				<!-- svelte-ignore binding_property_non_reactive -->
 				<FieldInput
+					bind:this={lastNameField}
 					bind:value={formData.last_name}
 					label={t("checkout.guest.last_name_label")}
 					labelLeftBreakpoint={0}
@@ -202,6 +255,7 @@
 	{#if fields?.phone !== false}
 		<!-- svelte-ignore binding_property_non_reactive -->
 		<FieldPhoneNumber
+			bind:this={phoneField}
 			bind:value={formData.phone}
 			label={t("checkout.guest.phone_label")}
 			placeholder={t("checkout.guest.phone_placeholder")}
@@ -221,6 +275,7 @@
 				{#if fields?.company_name !== false}
 					<!-- svelte-ignore binding_property_non_reactive -->
 					<FieldInput
+						bind:this={companyNameField}
 						bind:value={formData.company_name}
 						label={t("checkout.guest.company_name_label")}
 						name="checkout-guest-company-name"
@@ -232,6 +287,7 @@
 						{#if fields?.tax_id !== false}
 							<!-- svelte-ignore binding_property_non_reactive -->
 							<FieldInput
+								bind:this={taxIdField}
 								bind:value={formData.tax_id}
 								label={t("checkout.guest.tax_id_label")}
 								name="checkout-guest-tax-id"
@@ -240,6 +296,7 @@
 						{#if fields?.vat_number !== false}
 							<!-- svelte-ignore binding_property_non_reactive -->
 							<FieldInput
+								bind:this={vatNumberField}
 								bind:value={formData.vat_number}
 								label={t("checkout.guest.vat_number_label")}
 								name="checkout-guest-vat-number"

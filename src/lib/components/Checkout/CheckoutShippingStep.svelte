@@ -115,6 +115,7 @@
 
 <script lang="ts">
 	import { twMerge } from "../../utils/tw-merge.js";
+	import type { scrollToFirstInvalidField } from "../../utils/validate-fields.js";
 	import Button from "../Button/Button.svelte";
 	import FieldCheckbox from "../Input/FieldCheckbox.svelte";
 	import Skeleton from "../Skeleton/Skeleton.svelte";
@@ -173,6 +174,44 @@
 	let _class = $derived(
 		unstyled ? classProp : twMerge("stuic-checkout-shipping-step", classProp)
 	);
+
+	// Imperative API ----------------------------------------------------------
+	// Refs to the inner address forms so consumers can trigger validation
+	// across shipping + (conditionally) billing without binding to each form.
+	let shippingFormRef = $state<CheckoutAddressForm>();
+	let billingFormRef = $state<CheckoutAddressForm>();
+
+	/**
+	 * Run validation on the shipping form (and billing, if visible).
+	 * Returns true if everything is valid. Pair with the `*Errors` props:
+	 * set external errors first, await `tick()`, then call `validate()`.
+	 */
+	export function validate(): boolean {
+		const shippingValid = shippingFormRef?.validate() ?? true;
+		const billingValid = billingSameAsShipping
+			? true
+			: (billingFormRef?.validate() ?? true);
+		return shippingValid && billingValid;
+	}
+
+	/**
+	 * Scroll the first invalid field across both forms into view. Shipping
+	 * comes first in the DOM, so it gets priority.
+	 */
+	export function scrollToFirstError(
+		opts?: Parameters<typeof scrollToFirstInvalidField>[1]
+	): boolean {
+		if (shippingFormRef?.scrollToFirstError(opts)) return true;
+		if (!billingSameAsShipping && billingFormRef?.scrollToFirstError(opts))
+			return true;
+		return false;
+	}
+
+	/** Clear all inline validation messages on both address forms. */
+	export function clearValidation(): void {
+		shippingFormRef?.clearValidation();
+		billingFormRef?.clearValidation();
+	}
 </script>
 
 <div bind:this={el} class={_class} {...rest}>
@@ -227,6 +266,7 @@
 							</H>
 						</CheckoutSectionHeader>
 						<CheckoutAddressForm
+							bind:this={shippingFormRef}
 							bind:address={shippingAddress}
 							label="shipping"
 							errors={shippingErrors}
@@ -252,6 +292,7 @@
 								</H>
 							</CheckoutSectionHeader>
 							<CheckoutAddressForm
+								bind:this={billingFormRef}
 								bind:address={billingAddress}
 								label="billing"
 								errors={billingErrors}

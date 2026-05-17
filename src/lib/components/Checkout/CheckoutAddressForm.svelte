@@ -102,6 +102,10 @@
 
 <script lang="ts">
 	import { twMerge } from "../../utils/tw-merge.js";
+	import {
+		scrollToFirstInvalidField,
+		validateAllFields,
+	} from "../../utils/validate-fields.js";
 	import { t_default } from "./_internal/checkout-i18n-defaults.js";
 	import { createEmptyAddress } from "./_internal/checkout-utils.js";
 	import FieldInput from "../Input/FieldInput.svelte";
@@ -146,6 +150,56 @@
 	let _class = $derived(
 		unstyled ? classProp : twMerge("stuic-checkout-address", classProp)
 	);
+
+	// Imperative API ----------------------------------------------------------
+	// Field refs collected during render so consumers can trigger validation
+	// without waiting for native form submission. Refs stay undefined for
+	// fields hidden via the `fields` prop or replaced by the `countryField`
+	// snippet — `validateAllFields` skips nullish entries.
+	let nameField = $state<FieldInput>();
+	let streetField = $state<FieldInput>();
+	let cityField = $state<FieldInput>();
+	let stateField = $state<FieldInput>();
+	let postalCodeField = $state<FieldInput>();
+	let countryFieldRef = $state<FieldCountry>();
+	let phoneField = $state<FieldPhoneNumber>();
+
+	// DOM order top-to-bottom — first invalid wins for scrollToFirstError.
+	function _fields() {
+		return [
+			nameField,
+			streetField,
+			cityField,
+			stateField,
+			postalCodeField,
+			countryFieldRef,
+			phoneField,
+		];
+	}
+
+	/**
+	 * Run every visible field's validator and render any inline errors.
+	 * Returns true if all fields are valid. Pair with the `errors` prop:
+	 * set external errors first, await `tick()`, then call `validate()`.
+	 */
+	export function validate(): boolean {
+		return validateAllFields(_fields());
+	}
+
+	/**
+	 * Scroll the first invalid field into view and focus it. Returns true
+	 * if a field was scrolled. Call after `validate()`.
+	 */
+	export function scrollToFirstError(
+		opts?: Parameters<typeof scrollToFirstInvalidField>[1]
+	): boolean {
+		return scrollToFirstInvalidField(_fields(), opts);
+	}
+
+	/** Clear all inline validation messages on the rendered fields. */
+	export function clearValidation(): void {
+		for (const f of _fields()) f?.clearValidation?.();
+	}
 </script>
 
 <fieldset
@@ -164,6 +218,7 @@
 	{#if fields?.name !== false}
 		<!-- svelte-ignore binding_property_non_reactive -->
 		<FieldInput
+			bind:this={nameField}
 			bind:value={address.name}
 			label={t("checkout.address.name_label")}
 			placeholder={t("checkout.address.name_placeholder")}
@@ -183,6 +238,7 @@
 	{#if fields?.street !== false}
 		<!-- svelte-ignore binding_property_non_reactive -->
 		<FieldInput
+			bind:this={streetField}
 			bind:value={address.street}
 			label={t("checkout.address.street_label")}
 			placeholder={t("checkout.address.street_placeholder")}
@@ -204,6 +260,7 @@
 			{#if fields?.city !== false}
 				<!-- svelte-ignore binding_property_non_reactive -->
 				<FieldInput
+					bind:this={cityField}
 					bind:value={address.city}
 					label={t("checkout.address.city_label")}
 					labelLeftBreakpoint={0}
@@ -221,6 +278,7 @@
 			{#if fields?.state_or_region !== false}
 				<!-- svelte-ignore binding_property_non_reactive -->
 				<FieldInput
+					bind:this={stateField}
 					bind:value={address.state_or_region}
 					label={t("checkout.address.state_or_region_label")}
 					labelLeftBreakpoint={0}
@@ -238,6 +296,7 @@
 			{#if fields?.postal_code !== false}
 				<!-- svelte-ignore binding_property_non_reactive -->
 				<FieldInput
+					bind:this={postalCodeField}
 					bind:value={address.postal_code}
 					label={t("checkout.address.postal_code_label")}
 					labelLeftBreakpoint={0}
@@ -270,6 +329,7 @@
 		{:else}
 			<!-- svelte-ignore binding_property_non_reactive -->
 			<FieldCountry
+				bind:this={countryFieldRef}
 				bind:value={address.country}
 				label={t("checkout.address.country_label")}
 				placeholder={t("checkout.address.country_placeholder")}
@@ -294,6 +354,7 @@
 	<!-- Phone (full width, block label) -->
 	{#if fields?.phone !== false}
 		<FieldPhoneNumber
+			bind:this={phoneField}
 			value={address.phone ?? ""}
 			onChange={(v) => {
 				address.phone = v;

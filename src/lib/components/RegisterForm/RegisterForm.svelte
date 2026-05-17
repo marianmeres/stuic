@@ -257,7 +257,13 @@
 	}
 </script>
 
-<form bind:this={formEl} class={_class} use:onSubmitValidityCheck {...rest}>
+<form
+	bind:this={formEl}
+	class={_class}
+	use:onSubmitValidityCheck
+	novalidate
+	{...rest}
+>
 	<!-- General error alert -->
 	<DismissibleMessage message={error} intent="destructive" />
 

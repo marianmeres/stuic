@@ -75,6 +75,7 @@
 
 <script lang="ts">
 	import { twMerge } from "../../utils/tw-merge.js";
+	import type { scrollToFirstInvalidField } from "../../utils/validate-fields.js";
 	import { t_default } from "./_internal/checkout-i18n-defaults.js";
 	import { createEmptyLoginFormData } from "./_internal/checkout-utils.js";
 	import LoginForm from "../LoginForm/LoginForm.svelte";
@@ -120,6 +121,40 @@
 	let _class = $derived(
 		unstyled ? classProp : twMerge("stuic-checkout-login-form", classProp)
 	);
+
+	// Imperative API ----------------------------------------------------------
+	// Thin delegation to the wrapped LoginForm's own imperative API.
+	let loginFormRef = $state<LoginForm>();
+
+	/** Run validation on the wrapped LoginForm. Returns true if valid. */
+	export function validate(): boolean {
+		return loginFormRef?.validate() ?? true;
+	}
+
+	/** Scroll the first invalid field into view. Call after `validate()`. */
+	export function scrollToFirstError(
+		opts?: Parameters<typeof scrollToFirstInvalidField>[1]
+	): boolean {
+		return loginFormRef?.scrollToFirstError(opts) ?? false;
+	}
+
+	/**
+	 * Clear all inline validation messages on the wrapped LoginForm.
+	 * Currently a no-op because LoginForm doesn't yet expose
+	 * clearValidation — present for API symmetry with the other Checkout
+	 * composites; will start working once LoginForm gains the method.
+	 */
+	export function clearValidation(): void {
+		// loginFormRef?.clearValidation?.();
+	}
 </script>
 
-<LoginForm bind:formData bind:el t={adaptedT} {unstyled} class={_class} {...rest} />
+<LoginForm
+	bind:this={loginFormRef}
+	bind:formData
+	bind:el
+	t={adaptedT}
+	{unstyled}
+	class={_class}
+	{...rest}
+/>

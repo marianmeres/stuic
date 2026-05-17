@@ -114,6 +114,7 @@
 
 <script lang="ts">
 	import { twMerge } from "../../utils/tw-merge.js";
+	import type { scrollToFirstInvalidField } from "../../utils/validate-fields.js";
 	import { t_default } from "./_internal/checkout-i18n-defaults.js";
 	import CheckoutGuestForm from "./CheckoutGuestForm.svelte";
 	import CheckoutLoginForm from "./CheckoutLoginForm.svelte";
@@ -262,6 +263,44 @@
 	let _class = $derived(
 		unstyled ? classProp : twMerge("stuic-checkout-guest-or-login-form", classProp)
 	);
+
+	// Imperative API ----------------------------------------------------------
+	// Routes to whichever inner form is currently visible inline. Modal-based
+	// flows (loginModal, loginOrRegisterModal) own their own submit/validate
+	// flow and are not validated through here.
+	let guestFormRef = $state<CheckoutGuestForm>();
+	let loginFormRef = $state<CheckoutLoginForm>();
+
+	function _activeForm(): CheckoutGuestForm | CheckoutLoginForm | undefined {
+		if (formMode === "guest-only") return guestFormRef;
+		if (formMode === "login-only") return loginFormRef;
+		if (formMode === "stacked") {
+			return activeTab === "login" ? loginFormRef : guestFormRef;
+		}
+		// "tabbed"
+		if (activeTab === "guest") return guestFormRef;
+		// login tab — falls through to modal when configured; no inline form
+		if (_useLoginModal || _useLoginOrRegisterModal) return undefined;
+		return loginFormRef;
+	}
+
+	/** Run validation on the currently active inline form. */
+	export function validate(): boolean {
+		return _activeForm()?.validate() ?? true;
+	}
+
+	/** Scroll the first invalid field on the active inline form into view. */
+	export function scrollToFirstError(
+		opts?: Parameters<typeof scrollToFirstInvalidField>[1]
+	): boolean {
+		return _activeForm()?.scrollToFirstError(opts) ?? false;
+	}
+
+	/** Clear all inline validation messages on both inner forms. */
+	export function clearValidation(): void {
+		guestFormRef?.clearValidation();
+		loginFormRef?.clearValidation();
+	}
 </script>
 
 <div bind:this={el} class={_class} {...rest}>
@@ -280,11 +319,23 @@
 
 	{#if formMode === "guest-only"}
 		{#if guestForm}
-			<CheckoutGuestForm {...guestForm} {notifications} t={tProp} {unstyled} />
+			<CheckoutGuestForm
+				bind:this={guestFormRef}
+				{...guestForm}
+				{notifications}
+				t={tProp}
+				{unstyled}
+			/>
 		{/if}
 	{:else if formMode === "login-only"}
 		{#if loginForm}
-			<CheckoutLoginForm {...loginForm} {notifications} t={tProp} {unstyled} />
+			<CheckoutLoginForm
+				bind:this={loginFormRef}
+				{...loginForm}
+				{notifications}
+				t={tProp}
+				{unstyled}
+			/>
 		{/if}
 	{:else if formMode === "tabbed"}
 		<ButtonGroupRadio
@@ -304,19 +355,43 @@
 			}}
 		/>
 		{#if activeTab === "guest" && guestForm}
-			<CheckoutGuestForm {...guestForm} {notifications} t={tProp} {unstyled} />
+			<CheckoutGuestForm
+				bind:this={guestFormRef}
+				{...guestForm}
+				{notifications}
+				t={tProp}
+				{unstyled}
+			/>
 		{:else if activeTab === "login" && loginForm && !_useLoginOrRegisterModal && !_useLoginModal}
-			<CheckoutLoginForm {...loginForm} {notifications} t={tProp} {unstyled} />
+			<CheckoutLoginForm
+				bind:this={loginFormRef}
+				{...loginForm}
+				{notifications}
+				t={tProp}
+				{unstyled}
+			/>
 		{/if}
 	{:else if formMode === "stacked"}
 		{#if loginForm}
-			<CheckoutLoginForm {...loginForm} {notifications} t={tProp} {unstyled} />
+			<CheckoutLoginForm
+				bind:this={loginFormRef}
+				{...loginForm}
+				{notifications}
+				t={tProp}
+				{unstyled}
+			/>
 		{/if}
 		<div class={unstyled ? undefined : "stuic-checkout-guest-or-login-divider"}>
 			<span>{t("checkout.step.or_divider")}</span>
 		</div>
 		{#if guestForm}
-			<CheckoutGuestForm {...guestForm} {notifications} t={tProp} {unstyled} />
+			<CheckoutGuestForm
+				bind:this={guestFormRef}
+				{...guestForm}
+				{notifications}
+				t={tProp}
+				{unstyled}
+			/>
 		{/if}
 	{/if}
 
