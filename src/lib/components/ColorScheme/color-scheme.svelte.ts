@@ -1,58 +1,89 @@
 type Scheme = "dark" | "light";
 
+const DEFAULT_KEY = "stuic-color-scheme";
+let _key = DEFAULT_KEY;
 let _current = $state<Scheme>("light");
 
 function _compute(): Scheme {
-	return ColorScheme.getLocalValue(ColorScheme.getSystemValue());
+	const local = globalThis.localStorage?.getItem(_key) as Scheme | null;
+	if (local === "dark" || local === "light") return local;
+	return ColorScheme.getSystemValue();
+}
+
+function _applyDom(scheme: Scheme): void {
+	globalThis?.document?.documentElement.classList.toggle(
+		ColorScheme.DARK,
+		scheme === ColorScheme.DARK
+	);
 }
 
 function _sync(): void {
 	const next = _compute();
-	if (next !== _current) _current = next;
+	if (next !== _current) {
+		_current = next;
+		_applyDom(next);
+	}
 }
 
 /**
  * A utility class for managing light/dark color scheme preferences.
  *
- * Handles system preferences, localStorage persistence, and DOM class toggling.
+ * Handles localStorage persistence and DOM class toggling.
  * Works with Tailwind CSS dark mode (class-based strategy).
  *
  * The `ColorScheme.current` getter is reactive (Svelte 5 `$state`): reading it
- * inside a `$derived`/`$effect`/template will react to toggles, cross-tab
- * `storage` events, and OS-level system-preference changes.
+ * inside a `$derived`/`$effect`/template will react to toggles and cross-tab
+ * `storage` events.
  *
  * @example
  * ```ts
  * // Reactive current value (use in templates / $derived / $effect):
  * const scheme = ColorScheme.current; // 'light' or 'dark'
  *
- * // Backward-compatible non-reactive read:
- * const v = ColorScheme.getValue();
- *
  * // Toggle between light and dark
  * ColorScheme.toggle();
  *
- * // Check system preference only
- * const systemPref = ColorScheme.getSystemValue();
- *
  * // Reset to system preference
  * ColorScheme.reset();
+ *
+ * // Use a custom localStorage key (call early in app boot):
+ * ColorScheme.configure({ key: "myapp:color-scheme" });
  * ```
  *
  * @remarks
- * - Uses localStorage key: "stuic-color-scheme"
+ * - Default localStorage key: "stuic-color-scheme" (override via `configure`)
  * - Adds/removes "dark" class on `<html>` element
  * - Works with Tailwind's `darkMode: 'class'` configuration
+ * - Pair with `<ColorSchemeLocal />` or `<ColorSchemeSystemAware />` for
+ *   FOUC-free initial paint
  */
 export class ColorScheme {
-	static readonly KEY = "stuic-color-scheme" as const;
 	static readonly DARK = "dark" as const;
 	static readonly LIGHT = "light" as const;
 
 	/**
+	 * The active localStorage key. Default is `"stuic-color-scheme"`. Override via
+	 * `ColorScheme.configure({ key })` or the `key` prop on the hydration components.
+	 */
+	static get KEY(): string {
+		return _key;
+	}
+
+	/**
+	 * Configure the runtime. Call early in app boot, before any consumer reads
+	 * `ColorScheme.current`. Mutates module state; safe to call more than once
+	 * (last write wins). Calling without changes is a no-op.
+	 */
+	static configure(opts: { key?: string }): void {
+		if (opts?.key && opts.key !== _key) {
+			_key = opts.key;
+			_sync();
+		}
+	}
+
+	/**
 	 * Reactive current value. Read inside `$derived`, `$effect`, or a Svelte
-	 * template to react to scheme changes (including cross-tab `storage`
-	 * events and OS-level system-preference changes).
+	 * template to react to scheme changes (including cross-tab `storage` events).
 	 */
 	static get current(): Scheme {
 		return _current;
@@ -71,52 +102,43 @@ export class ColorScheme {
 	 * Reads locally (localStorage) saved value
 	 */
 	static getLocalValue(fallback: Scheme = "light"): Scheme {
-		return (
-			(globalThis.localStorage?.getItem(ColorScheme.KEY) as Scheme) || fallback
-		);
+		return (globalThis.localStorage?.getItem(_key) as Scheme) || fallback;
 	}
 
 	/**
-	 * Tries local first, fallbacks to system. Backward-compatible alias for `current`.
+	 * Backward-compatible alias for `current`.
 	 */
 	static getValue(): Scheme {
-		return ColorScheme.current;
+		return _current;
 	}
 
 	/**
-	 * Sets and saves the opposite of current.
+	 * Toggles between light and dark, persists to localStorage, and updates the DOM.
 	 */
 	static toggle(): void {
-		// returns bool, indicating whether token is in the list after the call or not.
-		const isDark = globalThis?.document?.documentElement.classList.toggle(
-			ColorScheme.DARK
-		);
-		globalThis.localStorage?.setItem(
-			ColorScheme.KEY,
-			isDark ? ColorScheme.DARK : ColorScheme.LIGHT
-		);
-		_sync();
+		const next: Scheme =
+			_current === ColorScheme.DARK ? ColorScheme.LIGHT : ColorScheme.DARK;
+		globalThis.localStorage?.setItem(_key, next);
+		_applyDom(next);
+		_current = next;
 	}
 
 	/**
-	 * Resets color scheme to system preference by removing localStorage value and classes.
+	 * Resets color scheme to system preference by removing the localStorage value
+	 * and re-applying the resolved scheme.
 	 */
 	static reset(): void {
-		globalThis.localStorage?.removeItem(ColorScheme.KEY);
-		globalThis?.document?.documentElement.classList.remove(
-			ColorScheme.DARK,
-			ColorScheme.LIGHT
-		);
+		globalThis.localStorage?.removeItem(_key);
 		_sync();
 	}
 }
 
 if (typeof window !== "undefined") {
-	_current = _compute();
+	// Seed _current from the DOM so it matches whichever bootstrap component painted.
+	_current = document.documentElement.classList.contains(ColorScheme.DARK)
+		? ColorScheme.DARK
+		: ColorScheme.LIGHT;
 	window.addEventListener("storage", (e) => {
-		if (e.key === ColorScheme.KEY) _sync();
+		if (e.key === _key) _sync();
 	});
-	window
-		.matchMedia?.(`(prefers-color-scheme: ${ColorScheme.DARK})`)
-		.addEventListener("change", () => _sync());
 }

@@ -1,19 +1,30 @@
 <script lang="ts" module>
-	/** ColorSchemeSystemAware has no props - it's a pure hydration component */
-	export interface Props {}
+	export interface Props {
+		/**
+		 * Override the localStorage key the inline bootstrap script reads.
+		 * Default: `"stuic-color-scheme"`. When set, also reconfigures the runtime
+		 * (equivalent to calling `ColorScheme.configure({ key })`).
+		 */
+		key?: string;
+	}
+</script>
+
+<script lang="ts">
+	import { ColorScheme } from "./color-scheme.svelte.js";
+
+	let { key }: Props = $props();
+	$effect(() => {
+		if (key) ColorScheme.configure({ key });
+	});
+	const k = $derived(JSON.stringify(key ?? "stuic-color-scheme"));
+	const bootstrap = $derived(
+		`<script>(function(){var K=${k};var C=document.documentElement.classList;if(K in localStorage){localStorage.getItem(K)==="dark"?C.add("dark"):C.remove("dark");}else if(window.matchMedia("(prefers-color-scheme: dark)").matches){C.add("dark");}})();<\/script>`
+	);
 </script>
 
 <!--
-	If you do not wish to take the system preference into account use LocalColorScheme sibling
+	If you do not wish to take the system preference into account use ColorSchemeLocal sibling.
 -->
 <svelte:head>
-	<script>
-		const KEY = "stuic-color-scheme";
-		const cls = window.document.documentElement.classList;
-		if (KEY in localStorage) {
-			localStorage.getItem(KEY) === "dark" ? cls.add("dark") : cls.remove("dark");
-		} else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-			cls.add("dark");
-		}
-	</script>
+	{@html bootstrap}
 </svelte:head>
