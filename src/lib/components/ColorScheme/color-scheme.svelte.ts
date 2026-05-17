@@ -1,5 +1,19 @@
 type Scheme = "dark" | "light";
 
+declare global {
+	interface Window {
+		/**
+		 * Optional global override for the localStorage key the inline bootstrap
+		 * `<script>` in `<ColorSchemeLocal />` / `<ColorSchemeSystemAware />` reads
+		 * from. Set this before the hydration component mounts (e.g. in
+		 * `app.html` or at the very top of the root layout's `<script>`) to use a
+		 * custom key with FOUC-free hydration. `ColorScheme.configure({ key })`
+		 * also writes this global to keep runtime and bootstrap in sync.
+		 */
+		__COLOR_SCHEME_KEY__?: string;
+	}
+}
+
 const DEFAULT_KEY = "stuic-color-scheme";
 let _key = DEFAULT_KEY;
 let _current = $state<Scheme>("light");
@@ -73,10 +87,15 @@ export class ColorScheme {
 	 * Configure the runtime. Call early in app boot, before any consumer reads
 	 * `ColorScheme.current`. Mutates module state; safe to call more than once
 	 * (last write wins). Calling without changes is a no-op.
+	 *
+	 * Also writes `window.__COLOR_SCHEME_KEY__` so a subsequent hydration
+	 * component mount (or any external bootstrap script that reads the global)
+	 * stays in sync with the runtime.
 	 */
 	static configure(opts: { key?: string }): void {
 		if (opts?.key && opts.key !== _key) {
 			_key = opts.key;
+			if (typeof window !== "undefined") window.__COLOR_SCHEME_KEY__ = opts.key;
 			_sync();
 		}
 	}
@@ -148,6 +167,10 @@ export class ColorScheme {
 }
 
 if (typeof window !== "undefined") {
+	// If the app declared a custom key via the global (typical place: app.html,
+	// before the bootstrap <script> runs), adopt it so the runtime reads/writes
+	// the same key the bootstrap painted from.
+	if (window.__COLOR_SCHEME_KEY__) _key = window.__COLOR_SCHEME_KEY__;
 	// Seed from localStorage (with system-pref fallback). Reading from the DOM
 	// here is unreliable: module init runs before the hydration component's
 	// inline <script> is appended to <head>, so the dark class isn't there yet.
