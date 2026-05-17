@@ -12,7 +12,7 @@
 
 	let selectedTheme = $state("stone");
 	let themeCss = $derived(themes[selectedTheme]);
-	let colorScheme = $state(ColorScheme.getLocalValue());
+	const colorScheme = $derived(ColorScheme.current);
 
 	const notifications = new NotificationsStack([], {
 		disposeInterval: 1_000,
@@ -20,7 +20,6 @@
 
 	function toggleColorScheme() {
 		ColorScheme.toggle();
-		colorScheme = ColorScheme.getLocalValue();
 	}
 
 	function nextTheme() {

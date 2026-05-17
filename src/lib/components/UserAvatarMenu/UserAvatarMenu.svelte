@@ -205,14 +205,13 @@
 		colorScheme === false ? false : cs.enabled !== false /* default true */
 	);
 
-	function readIsDark(): boolean {
-		return cs.isDark ? cs.isDark() : ColorScheme.getValue() === "dark";
-	}
-
-	let isDark = $state(false);
-	$effect(() => {
-		if (csEnabled) isDark = readIsDark();
-	});
+	const isDark = $derived(
+		csEnabled
+			? cs.isDark
+				? cs.isDark()
+				: ColorScheme.current === "dark"
+			: false
+	);
 
 	function toggleColorScheme() {
 		if (cs.onToggle) {
@@ -220,7 +219,6 @@
 		} else {
 			ColorScheme.toggle();
 		}
-		isDark = readIsDark();
 	}
 
 	// Default labels (English)

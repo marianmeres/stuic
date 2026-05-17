@@ -1,4 +1,4 @@
-export * from "./color-scheme.js";
+export * from "./color-scheme.svelte.js";
 export {
 	default as ColorSchemeLocal,
 	type Props as ColorSchemeLocalProps,

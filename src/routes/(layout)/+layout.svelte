@@ -9,7 +9,7 @@
 
 	const THEME_STORAGE_KEY = "stuic-selected-theme";
 
-	let theme = $state(ColorScheme.getLocalValue(ColorScheme.LIGHT));
+	const theme = $derived(ColorScheme.current);
 
 	let selectedTheme = $state(
 		browser ? localStorage.getItem(THEME_STORAGE_KEY) || "stone" : "stone"
@@ -22,10 +22,7 @@
 		}
 	});
 
-	const toggleTheme = () => {
-		ColorScheme.toggle();
-		theme = ColorScheme.getLocalValue();
-	};
+	const toggleTheme = () => ColorScheme.toggle();
 
 	let route = $derived(page.route.id?.slice(1).replace(/\([^)]+\)\//, ""));
 
