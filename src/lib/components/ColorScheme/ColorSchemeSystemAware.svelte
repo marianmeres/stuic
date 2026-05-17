@@ -13,7 +13,10 @@
 </script>
 
 <!--
-	If you do not wish to take the system preference into account use ColorSchemeLocal sibling.
+	Explicit opt-in for OS-aware first paint. The `ColorScheme` runtime itself
+	never auto-derives from `prefers-color-scheme` — only this bootstrap does,
+	and only at hydration when no preference is stored. If you do not want
+	system preference taken into account, use the ColorSchemeLocal sibling.
 
 	Uses the hardcoded default storage key "stuic-color-scheme". Apps that
 	override the runtime key via `ColorScheme.configure({ key })` should ship

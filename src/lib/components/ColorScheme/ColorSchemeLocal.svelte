@@ -16,6 +16,11 @@
 	Similar to ColorSchemeSystemAware, except that it never reads window.matchMedia and only
 	relies on the local userland setting.
 
+	If no preference is stored, this bootstrap leaves the `<html>` class
+	alone — meaning the app's SSR'd default wins. Ship `<html class="dark">`
+	from your `app.html` / SSR to default the app to dark; users can still
+	override via `ColorScheme.toggle()` later.
+
 	Uses the hardcoded default storage key "stuic-color-scheme". Apps that
 	override the runtime key via `ColorScheme.configure({ key })` should ship
 	their own inline bootstrap in `app.html` if FOUC-free hydration matters.
@@ -24,6 +29,9 @@
 	<script>
 		const KEY = window.__COLOR_SCHEME_KEY__ ?? "stuic-color-scheme";
 		const cls = window.document.documentElement.classList;
-		localStorage.getItem(KEY) === "dark" ? cls.add("dark") : cls.remove("dark");
+		const v = localStorage.getItem(KEY);
+		if (v === "dark") cls.add("dark");
+		else if (v === "light") cls.remove("dark");
+		// else: no stored preference — leave the SSR'd class alone.
 	</script>
 </svelte:head>

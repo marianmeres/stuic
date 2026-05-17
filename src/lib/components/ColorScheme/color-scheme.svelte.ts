@@ -21,7 +21,12 @@ let _current = $state<Scheme>("light");
 function _compute(): Scheme {
 	const local = globalThis.localStorage?.getItem(_key) as Scheme | null;
 	if (local === "dark" || local === "light") return local;
-	return ColorScheme.getSystemValue();
+	// No persisted preference: defer to whatever the DOM (SSR'd <html> class
+	// or a prior bootstrap) currently shows. The runtime has no opinion of
+	// its own and never auto-derives from prefers-color-scheme.
+	return globalThis?.document?.documentElement.classList.contains(ColorScheme.DARK)
+		? ColorScheme.DARK
+		: ColorScheme.LIGHT;
 }
 
 function _applyDom(scheme: Scheme): void {
@@ -57,7 +62,7 @@ function _sync(): void {
  * // Toggle between light and dark
  * ColorScheme.toggle();
  *
- * // Reset to system preference
+ * // Clear persisted preference (visual reverts on next reload)
  * ColorScheme.reset();
  *
  * // Use a custom localStorage key (call early in app boot):
@@ -70,6 +75,11 @@ function _sync(): void {
  * - Works with Tailwind's `darkMode: 'class'` configuration
  * - Pair with `<ColorSchemeLocal />` or `<ColorSchemeSystemAware />` for
  *   FOUC-free initial paint
+ * - Runtime never auto-derives from `prefers-color-scheme`. When no
+ *   preference is stored, it defers to whatever class the SSR'd `<html>`
+ *   already has. To support OS-aware paint, mount
+ *   `<ColorSchemeSystemAware />` (opt-in) or call `getSystemValue()` from
+ *   your own UI.
  */
 export class ColorScheme {
 	static readonly DARK = "dark" as const;
@@ -123,7 +133,12 @@ export class ColorScheme {
 	}
 
 	/**
-	 * Reads the `prefers-color-scheme` system setting
+	 * Reads the `prefers-color-scheme` system setting. Manual-only utility —
+	 * the runtime never invokes this implicitly. Wire it to a custom button if
+	 * your app wants OS-aware behavior, e.g.
+	 * `localStorage.setItem(ColorScheme.KEY, ColorScheme.getSystemValue())`
+	 * followed by a re-sync, or mount `<ColorSchemeSystemAware />` for
+	 * OS-aware first paint.
 	 */
 	static getSystemValue(): Scheme {
 		return globalThis.matchMedia?.(`(prefers-color-scheme: ${ColorScheme.DARK})`).matches
@@ -157,8 +172,12 @@ export class ColorScheme {
 	}
 
 	/**
-	 * Resets color scheme to system preference by removing the localStorage value
-	 * and re-applying the resolved scheme.
+	 * Clears the persisted preference from `localStorage`. Does NOT change the
+	 * current visual state in the active session — `_sync()` will read the
+	 * (now empty) storage and the DOM (last applied class) and find no change.
+	 * The visual revert to the app's SSR'd default happens on the next page
+	 * load. The runtime never consults `prefers-color-scheme` on its own; call
+	 * `ColorScheme.getSystemValue()` explicitly if you want that behavior.
 	 */
 	static reset(): void {
 		globalThis.localStorage?.removeItem(_key);
@@ -171,9 +190,11 @@ if (typeof window !== "undefined") {
 	// before the bootstrap <script> runs), adopt it so the runtime reads/writes
 	// the same key the bootstrap painted from.
 	if (window.__COLOR_SCHEME_KEY__) _key = window.__COLOR_SCHEME_KEY__;
-	// Seed from localStorage (with system-pref fallback). Reading from the DOM
-	// here is unreliable: module init runs before the hydration component's
-	// inline <script> is appended to <head>, so the dark class isn't there yet.
+	// Seed from localStorage; if empty, fall back to the current <html> class
+	// (set by SSR, app.html, or a bootstrap <script> in `<svelte:head>` that
+	// has already executed inline). In CSR-only setups the bootstrap may run
+	// after this read — that is fine, the hydration component's `$effect`
+	// later calls `syncFromDom()` to reconcile.
 	_current = _compute();
 	window.addEventListener("storage", (e) => {
 		if (e.key === _key) _sync();
