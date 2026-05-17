@@ -131,6 +131,7 @@
 	}: Props = $props();
 
 	let isOpen = $state(false);
+	let triggerEl: HTMLButtonElement | undefined = $state();
 	let hiddenInputEl: HTMLInputElement | undefined = $state();
 	let validation: ValidationResult | undefined = $state();
 	const setValidationResult = (res: ValidationResult) => (validation = res);
@@ -259,12 +260,13 @@
 	<DropdownMenu
 		{items}
 		bind:isOpen
+		bind:triggerEl
 		position="bottom-span-right"
 		search={searchConfig}
 		maxHeight="300px"
 		closeOnSelect
 		class="stuic-field-country"
-		classDropdown={twMerge("w-72 max-w-[calc(100vw-1rem)]", classDropdown)}
+		classDropdown={twMerge("stuic-field-country-dropdown", classDropdown)}
 	>
 		{#snippet trigger({ toggle, triggerProps })}
 			<!--
@@ -275,6 +277,7 @@
 				on the trigger and `role="menu"` on the popover keep the menu accessible.
 			-->
 			<button
+				bind:this={triggerEl}
 				type="button"
 				class={twMerge(
 					"stuic-field-country-trigger",

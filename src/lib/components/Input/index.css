@@ -643,6 +643,27 @@
 	}
 
 	/*
+	 * Suppress the browser's default focus ring on the trigger — InputWrap
+	 * already shows the ring via `.input-wrap:focus-within`.
+	 */
+	.stuic-field-country-trigger:focus,
+	.stuic-field-country-trigger:focus-visible {
+		outline: none;
+		box-shadow: none;
+	}
+
+	/*
+	 * Size the popover to the trigger via CSS Anchor Positioning's
+	 * `anchor-size()`. In browsers without anchor positioning, DropdownMenu
+	 * already switches to a centered-modal fallback, so this rule simply
+	 * doesn't apply there. `min-width` keeps very narrow triggers usable.
+	 */
+	.stuic-field-country-dropdown {
+		width: anchor-size(width);
+		min-width: 12rem;
+	}
+
+	/*
 	 * Reset field-input padding leaking into the popover's search bar
 	 * (mirrors the phone-prefix-picker fix — the input itself is correctly
 	 * sized, but its container also gets `.stuic-dropdown-menu-search`
