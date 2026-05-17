@@ -134,10 +134,10 @@ export class ColorScheme {
 }
 
 if (typeof window !== "undefined") {
-	// Seed _current from the DOM so it matches whichever bootstrap component painted.
-	_current = document.documentElement.classList.contains(ColorScheme.DARK)
-		? ColorScheme.DARK
-		: ColorScheme.LIGHT;
+	// Seed from localStorage (with system-pref fallback). Reading from the DOM
+	// here is unreliable: module init runs before the hydration component's
+	// inline <script> is appended to <head>, so the dark class isn't there yet.
+	_current = _compute();
 	window.addEventListener("storage", (e) => {
 		if (e.key === _key) _sync();
 	});
