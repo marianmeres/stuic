@@ -49,11 +49,14 @@ export { iconLucideGripHorizontal as iconGripHorizontal } from "@marianmeres/ico
 export { iconLucideGripVertical as iconGripVertical } from "@marianmeres/icons-fns/lucide/iconLucideGripVertical.js";
 export { iconLucideLanguages as iconLanguages } from "@marianmeres/icons-fns/lucide/iconLucideLanguages.js";
 export { iconLucideList as iconList } from "@marianmeres/icons-fns/lucide/iconLucideList.js";
+export { iconLucideLogOut as iconLogOut } from "@marianmeres/icons-fns/lucide/iconLucideLogOut.js";
 export { iconLucideMenu as iconMenu } from "@marianmeres/icons-fns/lucide/iconLucideMenu.js";
+export { iconLucideMoon as iconMoon } from "@marianmeres/icons-fns/lucide/iconLucideMoon.js";
 export { iconLucideSearch as iconSearch } from "@marianmeres/icons-fns/lucide/iconLucideSearch.js";
 export { iconLucideSlidersHorizontal as iconSlidersHorizontal } from "@marianmeres/icons-fns/lucide/iconLucideSlidersHorizontal.js";
 export { iconLucideSettings as iconSettings } from "@marianmeres/icons-fns/lucide/iconLucideSettings.js";
 export { iconLucideSquare as iconSquare } from "@marianmeres/icons-fns/lucide/iconLucideSquare.js";
+export { iconLucideSun as iconSun } from "@marianmeres/icons-fns/lucide/iconLucideSun.js";
 export { iconLucideUser as iconUser } from "@marianmeres/icons-fns/lucide/iconLucideUser.js";
 export { iconLucideX as iconX } from "@marianmeres/icons-fns/lucide/iconLucideX.js";
 export { iconLucidePencil as iconPencil } from "@marianmeres/icons-fns/lucide/iconLucidePencil.js";

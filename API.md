@@ -841,6 +841,47 @@ User avatar with fallback to initials or icon.
 <!-- Shows "JD" initials -->
 ```
 
+#### `UserAvatarMenu`
+
+Thin wrapper around `Avatar` + `DropdownMenu` for the "user avatar in the header → small menu" pattern. Renders sensibly in both authenticated (header tile, View profile, color-scheme toggle, Logout) and unauthenticated (Login, Register) states from the same trigger position. Built-in color-scheme item calls `ColorScheme.toggle()`; all other actions are consumer callbacks. No auth/router/i18n ownership.
+
+| Prop             | Type                                         | Default | Description                                                                            |
+| ---------------- | -------------------------------------------- | ------- | -------------------------------------------------------------------------------------- |
+| `identity`       | `UserAvatarMenuIdentity \| null`             | `null`  | `{ email, name?, src?, roles? }`. `null` → unauth mode.                                |
+| `actions`        | `UserAvatarMenuActions`                      | `{}`    | `onProfile`, `onSettings`, `onLogout`, `onLoginOrRegister`, `onLogin`, `onRegister`. Missing → item hidden. |
+| `labels`         | `UserAvatarMenuLabels`                       | English | Translated strings for built-in items.                                                 |
+| `colorScheme`    | `boolean \| { enabled?, onToggle?, isDark? }` | `true`  | Built-in dark/light toggle. `false` to disable.                                        |
+| `showHeaderTile` | `boolean`                                    | `true`  | Render the avatar+email tile (auth only).                                              |
+| `showRoles`      | `boolean`                                    | `false` | Render `identity.roles` under the email.                                               |
+| `extraItems`     | `DropdownMenuItem[]`                         | —       | Appended to the standard item set.                                                     |
+| `items`          | `DropdownMenuItem[]`                         | —       | Full override of the item list (trigger + shell still render).                         |
+| `avatar`         | `Partial<AvatarProps>`                       | —       | Forwarded to the trigger Avatar (and header-tile Avatar).                              |
+| `position`       | `DropdownMenuPosition`                       | —       | Forwarded to `DropdownMenu`.                                                           |
+| `classDropdown`  | `string`                                     | —       | Forwarded.                                                                             |
+| `trigger`        | `Snippet<[{ isOpen, toggle, triggerProps }]>` | —       | Custom trigger snippet (replaces default `Avatar`).                                    |
+| `headerTile`     | `Snippet<[{ identity }]>`                    | —       | Custom header-tile snippet.                                                            |
+
+```svelte
+<!-- Authenticated -->
+<UserAvatarMenu
+	identity={{ email: user.email }}
+	actions={{
+		onProfile: () => goto("/me"),
+		onLogout: () => goto("/logout"),
+	}}
+/>
+
+<!-- Unauthenticated -->
+<UserAvatarMenu
+	actions={{
+		onLogin: () => openLoginModal(),
+		onRegister: () => openRegisterModal(),
+	}}
+/>
+```
+
+CSS tokens: `--stuic-user-avatar-menu-trigger-{radius,opacity-hover,outline-color}`, `--stuic-user-avatar-menu-header-{gap,padding,margin-bottom,bg,color,radius}`, `--stuic-user-avatar-menu-header-email-{font-size,color}`, `--stuic-user-avatar-menu-header-roles-{font-size,color,opacity}`. Header tile defaults to `--stuic-color-muted` bg + `--stuic-color-muted-foreground` text; long email/name/roles truncate with ellipsis.
+
 #### `Pill`
 
 Inline rounded badge/tag/chip with intent + variant + size system. Polymorphic: renders as `<span>` (default), `<a>` (when `href` set), or `<button>` (when `onclick` set).

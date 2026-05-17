@@ -1,0 +1,95 @@
+.stuic-user-avatar-menu {
+	display: inline-flex;
+}
+
+/* Fixed dropdown width so every instance opens at the same size, regardless
+ * of content length. Override the var, or pass `classDropdown` (Tailwind
+ * class wins via tw-merge). Long emails/names/roles truncate against this
+ * bounded width. */
+.stuic-user-avatar-menu-dropdown {
+	width: var(--stuic-user-avatar-menu-dropdown-width, 16rem);
+}
+
+.stuic-user-avatar-menu-trigger {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: transparent;
+	border: 0;
+	padding: 0;
+	margin: 0;
+	cursor: pointer;
+	border-radius: var(
+		--stuic-user-avatar-menu-trigger-radius,
+		var(--stuic-radius, var(--radius-md))
+	);
+	transition: opacity
+		var(--stuic-user-avatar-menu-transition, var(--stuic-transition, 150ms)) ease;
+}
+
+.stuic-user-avatar-menu-trigger:hover {
+	opacity: var(--stuic-user-avatar-menu-trigger-opacity-hover, 0.85);
+}
+
+.stuic-user-avatar-menu-trigger:focus-visible {
+	outline: 2px solid
+		var(
+			--stuic-user-avatar-menu-trigger-outline-color,
+			var(--stuic-color-primary, currentColor)
+		);
+	outline-offset: 2px;
+}
+
+.stuic-user-avatar-menu-header {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--stuic-user-avatar-menu-header-gap, 0.5rem);
+	padding: var(--stuic-user-avatar-menu-header-padding, 0.75rem 0.5rem);
+	margin-bottom: var(--stuic-user-avatar-menu-header-margin-bottom, 0.25rem);
+	background: var(
+		--stuic-user-avatar-menu-header-bg,
+		var(--stuic-color-muted, transparent)
+	);
+	color: var(
+		--stuic-user-avatar-menu-header-color,
+		var(--stuic-color-muted-foreground, inherit)
+	);
+	border-radius: var(
+		--stuic-user-avatar-menu-header-radius,
+		var(--stuic-radius, var(--radius-md))
+	);
+	/* fill the dropdown's content width so children can truncate against a
+	 * known boundary (instead of growing to their intrinsic width) */
+	width: 100%;
+	min-width: 0;
+	overflow: hidden;
+}
+
+/* Direct text children of the header tile must each get the full row width
+ * so `text-overflow: ellipsis` has something to clip against (under
+ * align-items: center, children otherwise shrink to their intrinsic width). */
+.stuic-user-avatar-menu-header-email,
+.stuic-user-avatar-menu-header-roles {
+	display: block;
+	width: 100%;
+	min-width: 0;
+	text-align: center;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.stuic-user-avatar-menu-header-email {
+	font-size: var(--stuic-user-avatar-menu-header-email-font-size, inherit);
+	color: var(--stuic-user-avatar-menu-header-email-color, inherit);
+}
+
+.stuic-user-avatar-menu-header-roles {
+	font-size: var(--stuic-user-avatar-menu-header-roles-font-size, 0.75rem);
+	color: var(
+		--stuic-user-avatar-menu-header-roles-color,
+		var(--stuic-color-muted-foreground, currentColor)
+	);
+	opacity: var(--stuic-user-avatar-menu-header-roles-opacity, 0.7);
+}

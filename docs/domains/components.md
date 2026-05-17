@@ -72,6 +72,7 @@
 | Component       | Purpose                                                             |
 | --------------- | ------------------------------------------------------------------- |
 | Avatar          | User avatars with fallback                                          |
+| UserAvatarMenu  | Avatar trigger + dropdown menu with header tile, color-scheme toggle, authed/unauthed states |
 | Pill            | Inline rounded badge/tag/chip (intent + variant + size, dismissible, dot, polymorphic span/a/button) |
 | KbdShortcut     | Keyboard shortcut hints                                             |
 | Carousel        | Image/content slider with snap, keyboard nav, wheel scroll, arrows  |
@@ -901,6 +902,63 @@ Prefix: `--stuic-tree-*`
 
 ---
 
+## UserAvatarMenu
+
+Thin opinionated wrapper around `Avatar` + `DropdownMenu` for the common "user avatar in the header opens a small menu" pattern. Renders in both authenticated (header tile, View profile, color-scheme toggle, Logout) and unauthenticated (Login, Register) states from the same trigger position. Color scheme is the one built-in side effect; everything else is consumer callbacks.
+
+### Exports
+
+| Export                       | Kind      | Description                                |
+| ---------------------------- | --------- | ------------------------------------------ |
+| `UserAvatarMenu`             | component | Main component                             |
+| `UserAvatarMenuProps`        | type      | Props type                                 |
+| `UserAvatarMenuIdentity`     | type      | `{ email, name?, src?, roles? }`           |
+| `UserAvatarMenuActions`      | type      | `{ onProfile?, onSettings?, onLogout?, onLoginOrRegister?, onLogin?, onRegister? }` |
+| `UserAvatarMenuLabels`       | type      | Label overrides (all optional, English defaults) |
+| `UserAvatarMenuColorScheme`  | type      | `boolean \| { enabled?, onToggle?, isDark? }` |
+
+### Key Props
+
+| Prop             | Type                                          | Default | Description                                                                            |
+| ---------------- | --------------------------------------------- | ------- | -------------------------------------------------------------------------------------- |
+| `identity`       | `UserAvatarMenuIdentity \| null`              | `null`  | Current user. `null` / `undefined` → unauthenticated mode.                             |
+| `actions`        | `UserAvatarMenuActions`                       | `{}`    | Handlers; missing → corresponding item hidden.                                         |
+| `labels`         | `UserAvatarMenuLabels`                        | English | Translated strings for built-in items.                                                 |
+| `colorScheme`    | `boolean \| { enabled?, onToggle?, isDark? }` | `true`  | Built-in dark/light toggle. `false` to disable.                                        |
+| `showHeaderTile` | `boolean`                                     | `true`  | Render avatar+email tile inside the dropdown (auth only).                              |
+| `showRoles`      | `boolean`                                     | `false` | Render `identity.roles` under the email in the header tile.                            |
+| `extraItems`     | `DropdownMenuItem[]`                          | —       | Appended to the standard item set.                                                     |
+| `items`          | `DropdownMenuItem[]`                          | —       | Full override of items (trigger + shell still render).                                 |
+| `avatar`         | `Partial<AvatarProps>`                        | —       | Forwarded to the default trigger Avatar (and header-tile Avatar).                      |
+| `position`       | `DropdownMenuPosition`                        | —       | Forwarded to `DropdownMenu`.                                                           |
+| `classDropdown`  | `string`                                      | —       | Forwarded.                                                                             |
+| `classTrigger`   | `string`                                      | —       | Class merged onto the default trigger `<button>`.                                      |
+| `trigger`        | `Snippet<[{ isOpen, toggle, triggerProps }]>` | —       | Custom trigger snippet (replaces default Avatar trigger).                              |
+| `headerTile`     | `Snippet<[{ identity }]>`                     | —       | Custom header-tile snippet (replaces default avatar+email tile).                       |
+| `isOpen`         | `boolean`                                     | `false` | Bindable open state.                                                                   |
+
+### Default item order
+
+**Authenticated:** header tile → View profile → Settings → Color scheme → Divider → Logout → `extraItems`. Each rendered only if its precondition (handler present, etc.) holds.
+
+**Unauthenticated:** Login or register → Login → Register → Color scheme → `extraItems`. Each rendered only if the corresponding handler is provided. The three are independent — pass any combination. The combined `onLoginOrRegister` (typically opening a `LoginOrRegisterFormModal`) is the most common variant. No header tile.
+
+### Opinionated decisions
+
+- Color scheme is the only built-in side effect (`ColorScheme.toggle()` + re-read on select). Opt out with `colorScheme={false}`.
+- English label defaults; consumers pass `labels` for i18n. No i18n library imported.
+- No auth state ownership, no router, no modal triggering — all consumer callbacks.
+
+### CSS Tokens
+
+Prefix: `--stuic-user-avatar-menu-*`
+
+`dropdown-width` (16rem), `trigger-radius`, `trigger-opacity-hover`, `trigger-outline-color`, `transition`, `header-gap`, `header-padding`, `header-margin-bottom`, `header-bg`, `header-color`, `header-radius`, `header-email-font-size`, `header-email-color`, `header-roles-font-size`, `header-roles-color`, `header-roles-opacity`
+
+The dropdown has a fixed `width` so every instance opens identically — short and long content alike. Email, name, and roles truncate with `text-overflow: ellipsis`. Header tile defaults: `--stuic-color-muted` bg + `--stuic-color-muted-foreground` text.
+
+---
+
 ## Key Files
 
 | File                          | Purpose                                               |
@@ -916,4 +974,5 @@ Prefix: `--stuic-tree-*`
 | src/lib/components/Checkout/  | E-commerce checkout flow (14 exported sub-components) |
 | src/lib/components/Card/      | Card with image/title/footer variants                 |
 | src/lib/components/Tree/      | Hierarchical tree with drag-and-drop                  |
+| src/lib/components/UserAvatarMenu/ | Avatar trigger + dropdown for user menu          |
 | src/lib/index.ts              | All component exports                                 |

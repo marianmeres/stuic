@@ -66,6 +66,7 @@
         'tooltip',
         'tree',
         'tw-check',
+		'user-avatar-menu',
 		'with-side-panel',
 		// 'viewport',
 		'x'

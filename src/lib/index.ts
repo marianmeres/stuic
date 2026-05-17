@@ -76,6 +76,7 @@ export * from "./components/ThemePreview/index.js";
 export * from "./components/Tree/index.js";
 export * from "./components/TwCheck/index.js";
 export * from "./components/TypeaheadInput/index.js";
+export * from "./components/UserAvatarMenu/index.js";
 export * from "./components/WithSidePanel/index.js";
 export * from "./components/X/index.js";
 
