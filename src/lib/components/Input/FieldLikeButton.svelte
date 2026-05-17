@@ -219,7 +219,7 @@
 		{id}
 		{name}
 		use:validateAction={() => ({
-			enabled: !!validateProp,
+			enabled: validateProp !== false,
 			...(typeof validateProp === "boolean"
 				? {
 						// Return actual messages (not reason names) because hidden inputs

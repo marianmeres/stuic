@@ -114,6 +114,30 @@ inline messages to render. They won't — the `validate` action's
 2. **Call the field component's imperative `validate()` from your submit
    handler** (works for any flow — wizards, multi-step, custom CTAs).
 
+### Hidden inputs and `required`
+
+Per the HTML spec, `<input type="hidden">` is *barred from constraint
+validation* — `validity.valueMissing` stays `false` regardless of the
+`required` attribute, and native browser submit blocking is skipped. Several
+STUIC field components (`FieldPhoneNumber`, `FieldCountry`, `FieldObject`,
+`FieldAssets`, `FieldInputLocalized`, `FieldKeyValues`, `FieldLikeButton`)
+use a hidden input to participate in `FormData`, so they each enforce
+`required` themselves inside their `customValidator`:
+
+```ts
+customValidator(val, ctx, el) {
+    if (required && (val == null || val === "")) {
+        return "This field requires attention. Please review and try again.";
+    }
+    return userValidator?.(val, ctx, el) || "";
+}
+```
+
+This means `<FieldCountry required />` and `<FieldPhoneNumber required />`
+correctly fail validation when empty — both through the imperative
+`validate()` path and via `use:onSubmitValidityCheck`. Without this wrap
+they'd silently accept empty values.
+
 ### File Dropzone
 
 ```svelte

@@ -119,6 +119,30 @@ mounts — which silently breaks any flow that pre-populates errors via
 force every "sleeping" field's validator to run, rendering inline errors all
 at once — no synthetic `change` events, no DOM lookups, no id-format coupling.
 
+### The `validate` prop — defaults & opt-out
+
+All field components that use the `validate` action treat the prop with one
+consistent rule:
+
+| `validate` value          | Action                                                     |
+| ------------------------- | ---------------------------------------------------------- |
+| (omitted) / `undefined`   | **Enabled** with default options (the common case)         |
+| `true`                    | Enabled with default options (explicit; same as omitting)  |
+| `false`                   | **Disabled** — no validation, `validate()` becomes a no-op |
+| `{ customValidator, ... }`| Enabled, with `ValidateOptions` overrides applied          |
+
+So `<FieldInput required />` works as expected — required is enforced, and a
+failed `validate()` (imperative or event-driven) renders the inline error.
+Use `validate={false}` to bypass stuic's validation entirely.
+
+> **Why default-on?** Hidden-input field components (`FieldPhoneNumber`,
+> `FieldCountry`, `FieldObject`, `FieldAssets`, `FieldInputLocalized`,
+> `FieldKeyValues`, `FieldLikeButton`) *must* be default-on because hidden
+> inputs are excluded from native browser constraint validation — without the
+> stuic action enforcing `required` in a `customValidator`, the attribute is a
+> silent no-op. Plain-input field components were harmonized to the same
+> default to keep the rule uniform: "`required` means required."
+
 ### Per-field methods
 
 Available on `FieldInput`, `FieldTextarea`, `FieldCheckbox`, `FieldSelect`,

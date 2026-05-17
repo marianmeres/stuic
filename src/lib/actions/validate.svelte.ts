@@ -219,10 +219,18 @@ export interface ValidateOptions {
  * validate.t = (reason, value, fallback) => translations[reason] ?? fallback;
  * ```
  *
- * **Hidden Input Limitation**: Browsers don't populate `el.validationMessage`
- * for hidden inputs (`type="hidden"`) even when `setCustomValidity()` is called.
- * This action works around this by preserving the `customValidator` return value
- * and using it directly as the error message fallback.
+ * **Hidden Input Limitations** (two distinct issues, both relevant when wrapping
+ * `<input type="hidden">` for form-data participation):
+ *
+ * 1. Browsers don't populate `el.validationMessage` for hidden inputs even when
+ *    `setCustomValidity()` is called. This action works around it by preserving
+ *    the `customValidator` return value and using it directly as the error
+ *    message fallback.
+ * 2. Per the HTML spec, hidden inputs are **barred from constraint validation**
+ *    entirely. `validity.valueMissing` stays `false` regardless of the
+ *    `required` attribute, so `required` is a silent no-op. STUIC's hidden-input
+ *    Field components (`FieldPhoneNumber`, `FieldCountry`, `FieldObject`, etc.)
+ *    enforce `required` themselves inside their `customValidator`.
  */
 export function validate(
 	el: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,

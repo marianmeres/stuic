@@ -68,6 +68,7 @@
 </script>
 
 <script lang="ts">
+	import { tick } from "svelte";
 	import {
 		validate as validateAction,
 		type ValidationResult,
@@ -208,8 +209,14 @@
 			onSelect: () => {
 				value = c.iso;
 				onChange?.(c.iso);
-				// Trigger change on hidden input so validation runs.
-				hiddenInputEl?.dispatchEvent(new Event("change", { bubbles: true }));
+				// Wait one tick so Svelte flushes the `value` binding onto the
+				// hidden input's DOM attribute BEFORE we fire the change event.
+				// Without this, the validate action reads the stale `el.value`
+				// (still empty) on the first selection — the required-check then
+				// keeps the inline error visible until the second selection.
+				tick().then(() => {
+					hiddenInputEl?.dispatchEvent(new Event("change", { bubbles: true }));
+				});
 			},
 		};
 	}

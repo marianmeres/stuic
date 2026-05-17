@@ -160,7 +160,7 @@
 			setValue: (v: string) => (value = v),
 		})}
 		use:validateAction={() => ({
-			enabled: !!validateProp,
+			enabled: validateProp !== false,
 			...(typeof validateProp === "boolean" ? {} : validateProp),
 			setValidationResult,
 			setDoValidate: (fn) => (_doValidate = fn),

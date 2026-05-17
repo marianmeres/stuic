@@ -164,7 +164,7 @@
 			class={twMerge("block w-full", classInput)}
 			use:highlightDragover={() => ({ classes: ["outline-dashed"] })}
 			use:validateAction={() => ({
-				enabled: !!validateProp,
+				enabled: validateProp !== false,
 				...(typeof validateProp === "boolean" ? {} : validateProp),
 				setValidationResult,
 				setDoValidate: (fn) => (_doValidate = fn),

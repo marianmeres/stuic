@@ -357,7 +357,7 @@
 		const customOpts = typeof validateProp === "object" && validateProp ? validateProp : {};
 		const userValidator = customOpts.customValidator;
 		return {
-			enabled: !!validateProp,
+			enabled: validateProp !== false,
 			...customOpts,
 			// Hidden inputs are barred from native constraint validation, so
 			// `required` on the element itself is a no-op. We enforce it here

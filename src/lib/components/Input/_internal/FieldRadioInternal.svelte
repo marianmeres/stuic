@@ -127,7 +127,7 @@
 			class={twMerge(classInput)}
 			aria-describedby={description ? idDesc : undefined}
 			use:validateAction={() => ({
-				enabled: !!validateProp,
+				enabled: validateProp !== false,
 				...(typeof validateProp === "boolean" ? {} : validateProp),
 				setValidationResult,
 				setDoValidate: (fn) => (_doValidate = fn),

@@ -14,4 +14,6 @@
 <br />
 <a href="./input/country" class="underline">Country</a>
 <br />
-<a href="./validate-imperative" class="underline">Imperative validate() — full flow</a>
+<a href="./input/validate-imperative" class="underline"
+	>Imperative validate() — full flow</a
+>

@@ -174,7 +174,7 @@
 		{required}
 		{name}
 		use:validateAction={() => ({
-			enabled: !!validateProp,
+			enabled: validateProp !== false,
 			...(typeof validateProp === "boolean" ? {} : validateProp),
 			setValidationResult: (res) => {
 				_validation = res;
