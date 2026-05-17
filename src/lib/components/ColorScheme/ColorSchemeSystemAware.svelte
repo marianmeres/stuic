@@ -21,7 +21,7 @@
 -->
 <svelte:head>
 	<script>
-		const KEY = "stuic-color-scheme";
+		const KEY = window.__COLOR_SCHEME_KEY__ ?? "stuic-color-scheme";
 		const cls = window.document.documentElement.classList;
 		if (KEY in localStorage) {
 			localStorage.getItem(KEY) === "dark" ? cls.add("dark") : cls.remove("dark");
