@@ -1,31 +1,20 @@
 <script lang="ts" module>
-	export interface Props {
-		/**
-		 * Override the localStorage key the inline bootstrap script reads.
-		 * Default: `"stuic-color-scheme"`. When set, also reconfigures the runtime
-		 * (equivalent to calling `ColorScheme.configure({ key })`).
-		 */
-		key?: string;
-	}
-</script>
-
-<script lang="ts">
-	import { ColorScheme } from "./color-scheme.svelte.js";
-
-	let { key }: Props = $props();
-	$effect(() => {
-		if (key) ColorScheme.configure({ key });
-	});
-	const k = $derived(JSON.stringify(key ?? "stuic-color-scheme"));
-	const bootstrap = $derived(
-		`<script>(function(){var K=${k};var C=document.documentElement.classList;localStorage.getItem(K)==="dark"?C.add("dark"):C.remove("dark");})();<\/script>`
-	);
+	/** ColorSchemeLocal has no props - it's a pure hydration component */
+	export interface Props {}
 </script>
 
 <!--
-    Similar to ColorSchemeSystemAware, except that it never reads window.matchMedia and only
-    relies on the local userland setting.
+	Similar to ColorSchemeSystemAware, except that it never reads window.matchMedia and only
+	relies on the local userland setting.
+
+	Uses the hardcoded default storage key "stuic-color-scheme". Apps that
+	override the runtime key via `ColorScheme.configure({ key })` should ship
+	their own inline bootstrap in `app.html` if FOUC-free hydration matters.
 -->
 <svelte:head>
-	{@html bootstrap}
+	<script>
+		const KEY = "stuic-color-scheme";
+		const cls = window.document.documentElement.classList;
+		localStorage.getItem(KEY) === "dark" ? cls.add("dark") : cls.remove("dark");
+	</script>
 </svelte:head>
