@@ -187,7 +187,8 @@
 		required = false,
 		disabled = false,
 		//
-		validate,
+		// Renamed local binding to avoid collision with `export function validate()` below.
+		validate: validateProp,
 		//
 		labelAfter,
 		below,
@@ -251,6 +252,9 @@
 	let parentHiddenInputEl: HTMLInputElement | undefined = $state();
 	let hasLabel = $derived(isTHCNotEmpty(label) || typeof label === "function");
 	let inputEl = $state<HTMLInputElement>()!;
+	// Outer wrapper for scrollIntoView and focus targeting.
+	let wrapEl: HTMLDivElement | undefined = $state();
+	let hiddenInputEl: HTMLInputElement | undefined = $state();
 	let assetsPreview: AssetsPreview = $state()!;
 
 	let assets: FieldAsset[] = $derived(parseValue(value));
@@ -270,6 +274,38 @@
 	let validation: ValidationResult | undefined = $state();
 	const setValidationResult = (res: ValidationResult) => (validation = res);
 
+	let _doValidate: (() => void) | undefined = $state();
+
+	/** Trigger validation now. Renders the inline message if invalid. */
+	export function validate(): ValidationResult | undefined {
+		_doValidate?.();
+		return validation;
+	}
+
+	/** Clear the inline validation message and reset `setCustomValidity`. */
+	export function clearValidation(): void {
+		validation = undefined;
+		hiddenInputEl?.setCustomValidity?.("");
+	}
+
+	/** Current validation state, or undefined if validator has never run. */
+	export function getValidation(): ValidationResult | undefined {
+		return validation;
+	}
+
+	/**
+	 * Focus the visible dropzone wrapper. The hidden file/validation inputs
+	 * cannot be focused directly.
+	 */
+	export function focus(): void {
+		wrapEl?.focus?.();
+	}
+
+	/** Scroll the field into view. Defaults to smooth + center. */
+	export function scrollIntoView(opts?: ScrollIntoViewOptions): void {
+		wrapEl?.scrollIntoView?.({ behavior: "smooth", block: "center", ...opts });
+	}
+
 	//
 	let wrappedValidate: Omit<ValidateOptions, "setValidationResult"> = $derived({
 		enabled: true,
@@ -285,12 +321,13 @@
 			// normally, with other fieldtypes, we would continue with provided validator:
 			// return (validate as any)?.customValidator?.(value, context, el) || "";
 			// but not here, we just warn
-			if ((validate as any)?.customValidator) {
+			if ((validateProp as any)?.customValidator) {
 				console.warn("Custom validator was provided, but is ignored in <FieldAssets />");
 			}
 			return "";
 		},
 		setValidationResult,
+		setDoValidate: (fn: () => void) => (_doValidate = fn),
 	});
 
 	//
@@ -404,6 +441,8 @@
 
 <div
 	class={twMerge("w-full stuic-field-assets mb-8", classWrap)}
+	bind:this={wrapEl}
+	tabindex="-1"
 	use:highlightDragover={() => ({
 		enabled: typeof processAssets === "function",
 		classes: ["outline-dashed outline-2 outline-(--stuic-color-border)"],
@@ -516,7 +555,13 @@
 
 <input type="file" bind:this={inputEl} multiple style="display: none" {accept} />
 <!-- hack to be able to validate the conventional way -->
-<input type="hidden" {name} {value} use:validateAction={() => wrappedValidate} />
+<input
+	type="hidden"
+	{name}
+	{value}
+	bind:this={hiddenInputEl}
+	use:validateAction={() => wrappedValidate}
+/>
 
 <AssetsPreview
 	bind:this={assetsPreview}

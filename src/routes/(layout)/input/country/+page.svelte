@@ -1,11 +1,42 @@
 <script lang="ts">
-	import { FieldCountry, ISO_MAP } from "$lib/index.js";
+	import {
+		FieldCountry,
+		ISO_MAP,
+		onSubmitValidityCheck,
+		type ValidationResult,
+	} from "$lib/index.js";
 
 	let value = $state("");
 	let value2 = $state("SK");
 	let value3 = $state("");
 	let value4 = $state("");
 	let validatedValue = $state("");
+
+	// Imperative API demo state
+	let imperativeValue = $state("");
+	let imperativeField = $state<FieldCountry>();
+	let lastResult = $state<ValidationResult | undefined>();
+
+	function forceValidate() {
+		lastResult = imperativeField?.validate();
+	}
+
+	function clearAndReset() {
+		imperativeField?.clearValidation();
+		imperativeValue = "";
+		lastResult = undefined;
+	}
+
+	// Wire onSubmitValidityCheck's custom "submit_valid" event via addEventListener
+	// — DOM-event attributes (`onsubmit_valid`) aren't in HTMLFormAttributes.
+	let basicForm = $state<HTMLFormElement>();
+	$effect(() => {
+		const form = basicForm;
+		if (!form) return;
+		const handler = () => alert("Form submitted: " + value);
+		form.addEventListener("submit_valid", handler);
+		return () => form.removeEventListener("submit_valid", handler);
+	});
 
 	// Localized country names (Slovak) for the i18n demo
 	const COUNTRY_NAMES_SK: Record<string, string> = {
@@ -30,13 +61,13 @@
 <div class="max-w-lg mx-auto py-8 space-y-12">
 	<section class="space-y-4">
 		<h2 class="text-xl font-semibold">Basic (with built-in validation)</h2>
-		<form
-			onsubmit={(e) => {
-				e.preventDefault();
-				alert("Form submitted: " + value);
-			}}
-			class="space-y-4"
-		>
+		<p class="text-sm opacity-60">
+			Uses <code>use:onSubmitValidityCheck</code> so the form runs every field's
+			validator before firing <code>submit_valid</code> — required for
+			<code>FieldCountry</code> because hidden inputs are barred from native
+			constraint validation.
+		</p>
+		<form bind:this={basicForm} use:onSubmitValidityCheck class="space-y-4">
 			<FieldCountry
 				bind:value
 				label="Country"
@@ -191,5 +222,49 @@
 			renderSize="md"
 		/>
 		<FieldCountry label="Large" placeholder="Select a country" renderSize="lg" />
+	</section>
+
+	<!--
+		Demonstrates the imperative validate() / clearValidation() API.
+		Note: works even without setting `name` (the hidden validation input
+		mounts whenever `validate !== false`).
+	-->
+	<section class="space-y-4">
+		<h2 class="text-xl font-semibold">Imperative validate() API</h2>
+		<p class="text-sm opacity-70">
+			Click <strong>Validate now</strong> without selecting anything — the inline
+			error renders even though the dropdown was never opened.
+		</p>
+		<FieldCountry
+			bind:this={imperativeField}
+			bind:value={imperativeValue}
+			label="Country"
+			placeholder="Select a country"
+			required
+		/>
+		<div class="flex gap-2">
+			<button
+				type="button"
+				class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+				onclick={forceValidate}
+			>
+				Validate now
+			</button>
+			<button
+				type="button"
+				class="px-4 py-2 border rounded hover:bg-black/5"
+				onclick={clearAndReset}
+			>
+				Clear
+			</button>
+		</div>
+		{#if lastResult}
+			<pre
+				class="text-xs p-3 rounded bg-black/5 overflow-auto">{JSON.stringify(
+					{ valid: lastResult.valid, message: lastResult.message },
+					null,
+					2
+				)}</pre>
+		{/if}
 	</section>
 </div>

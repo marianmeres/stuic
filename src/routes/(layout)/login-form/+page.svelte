@@ -44,6 +44,9 @@
 		alert("Forgot password clicked!");
 	}
 
+	// --- Imperative validate() demo ---
+	let imperativeLogin = $state<LoginForm>();
+
 	// --- Modal demo state ---
 	let loginModal: LoginFormModal = $state()!;
 	let modalSubmitCount = $state(0);
@@ -237,6 +240,31 @@
 			class="space-y-4"
 			onSubmit={(data) => alert("Submitted: " + data.email)}
 		/>
+	</div>
+</section>
+
+<!-- ============== IMPERATIVE VALIDATE() ============== -->
+<section class="mb-12">
+	<h2 class="text-lg font-bold mb-2">Imperative validate()</h2>
+	<p class="text-sm opacity-60 mb-4">
+		<code>LoginForm</code> exposes <code>validate()</code> and
+		<code>scrollToFirstError()</code> on its component reference, aggregating the
+		validators of every inner field. Trigger them from any external button — no
+		native form-submit required.
+	</p>
+
+	<div class="max-w-lg space-y-4">
+		<LoginForm bind:this={imperativeLogin} onSubmit={() => alert("OK!")} />
+		<div class="flex gap-2">
+			<Button
+				onclick={() => {
+					const ok = imperativeLogin?.validate();
+					if (!ok) imperativeLogin?.scrollToFirstError();
+				}}
+			>
+				Validate (without submit)
+			</Button>
+		</div>
 	</div>
 </section>
 

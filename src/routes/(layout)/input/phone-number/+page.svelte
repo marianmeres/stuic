@@ -1,5 +1,9 @@
 <script lang="ts">
-	import { FieldPhoneNumber } from "$lib/index.js";
+	import {
+		FieldPhoneNumber,
+		onSubmitValidityCheck,
+		type ValidationResult,
+	} from "$lib/index.js";
 	import { isValidPhoneNumber, parsePhoneNumber } from "libphonenumber-js";
 
 	let value = $state("");
@@ -11,6 +15,32 @@
 
 	let validatedValue = $state("");
 	let validatedCountry = $state("");
+
+	// Imperative API demo state
+	let imperativeValue = $state("");
+	let imperativeField = $state<FieldPhoneNumber>();
+	let lastResult = $state<ValidationResult | undefined>();
+
+	function forceValidate() {
+		lastResult = imperativeField?.validate();
+	}
+
+	function clearAndReset() {
+		imperativeField?.clearValidation();
+		imperativeValue = "";
+		lastResult = undefined;
+	}
+
+	// Wire onSubmitValidityCheck's custom "submit_valid" event via addEventListener
+	// — DOM-event attributes (`onsubmit_valid`) aren't in HTMLFormAttributes.
+	let requiredForm = $state<HTMLFormElement>();
+	$effect(() => {
+		const form = requiredForm;
+		if (!form) return;
+		const handler = () => alert("Form submitted!");
+		form.addEventListener("submit_valid", handler);
+		return () => form.removeEventListener("submit_valid", handler);
+	});
 </script>
 
 <div class="max-w-lg mx-auto py-8 space-y-12">
@@ -119,13 +149,12 @@
 
 	<section class="space-y-4">
 		<h2 class="text-xl font-semibold">Required with validation</h2>
-		<form
-			onsubmit={(e) => {
-				e.preventDefault();
-				alert("Form submitted!");
-			}}
-			class="space-y-4"
-		>
+		<p class="text-sm opacity-60">
+			Uses <code>use:onSubmitValidityCheck</code> so STUIC's validation runs before
+			submit — needed because the underlying hidden input is barred from native
+			constraint validation.
+		</p>
+		<form bind:this={requiredForm} use:onSubmitValidityCheck class="space-y-4">
 			<FieldPhoneNumber
 				label="Phone (required)"
 				placeholder="Enter phone"
@@ -209,5 +238,51 @@
 			defaultCountry="SK"
 			renderSize="lg"
 		/>
+	</section>
+
+	<!--
+		Demonstrates the imperative `validate()` / `clearValidation()` API.
+		Useful when validation must be triggered from a JS submit handler that
+		isn't a native <form> submission — e.g., a multi-step wizard where each
+		"Continue" button advances without unmounting the field.
+	-->
+	<section class="space-y-4">
+		<h2 class="text-xl font-semibold">Imperative validate() API</h2>
+		<p class="text-sm opacity-70">
+			Click <strong>Validate now</strong> without typing anything — the inline error
+			renders even though the field was never focused.
+		</p>
+		<FieldPhoneNumber
+			bind:this={imperativeField}
+			bind:value={imperativeValue}
+			label="Phone number"
+			placeholder="905 123 456"
+			defaultCountry="SK"
+			required
+		/>
+		<div class="flex gap-2">
+			<button
+				type="button"
+				class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+				onclick={forceValidate}
+			>
+				Validate now
+			</button>
+			<button
+				type="button"
+				class="px-4 py-2 border rounded hover:bg-black/5"
+				onclick={clearAndReset}
+			>
+				Clear
+			</button>
+		</div>
+		{#if lastResult}
+			<pre
+				class="text-xs p-3 rounded bg-black/5 overflow-auto">{JSON.stringify(
+					{ valid: lastResult.valid, message: lastResult.message },
+					null,
+					2
+				)}</pre>
+		{/if}
 	</section>
 </div>

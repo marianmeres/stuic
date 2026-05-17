@@ -102,6 +102,113 @@
 
 ---
 
+## Imperative validate API
+
+Every `Field*` component that uses the `validate` action exposes a small
+imperative API on its component reference, accessed via `bind:this`. Form
+components (`LoginForm`, `RegisterForm`, `LoginOrRegisterForm`,
+`EmailVerifyForm`) compose those into form-level `validate()` /
+`scrollToFirstError()`.
+
+### Why
+
+The `validate` action only runs on user-driven DOM events (`change`, first
+`blur`). On a pristine, never-touched field the inline `validation-box` never
+mounts — which silently breaks any flow that pre-populates errors via
+`customValidator` on a fresh form. The imperative API lets a submit handler
+force every "sleeping" field's validator to run, rendering inline errors all
+at once — no synthetic `change` events, no DOM lookups, no id-format coupling.
+
+### Per-field methods
+
+Available on `FieldInput`, `FieldTextarea`, `FieldCheckbox`, `FieldSelect`,
+`FieldFile`, `FieldObject`, `FieldAssets`, `FieldInputLocalized`,
+`FieldKeyValues`, `FieldPhoneNumber`, `FieldCountry`, `FieldLikeButton`,
+`FieldRadios`, `FieldSwitch`, `FieldOptions`, and `Switch`:
+
+| Method                                        | Returns                          | Purpose                                                            |
+| --------------------------------------------- | -------------------------------- | ------------------------------------------------------------------ |
+| `validate()`                                  | `ValidationResult \| undefined`  | Run the validator now. Renders the inline message if invalid.       |
+| `clearValidation()`                           | `void`                           | Clear the inline message and `setCustomValidity`.                   |
+| `getValidation()`                             | `ValidationResult \| undefined`  | Read cached state (no re-run).                                      |
+| `focus()`                                     | `void`                           | Focus the visible interactive element.                              |
+| `scrollIntoView(opts?)`                       | `void`                           | Scroll the field into view. Defaults to `smooth` + `center`.        |
+
+```svelte
+<script>
+	let nameField = $state<FieldInput>();
+
+	function checkName() {
+		const result = nameField?.validate();
+		if (result && !result.valid) {
+			console.warn("Name invalid:", result.message);
+		}
+	}
+</script>
+
+<FieldInput bind:this={nameField} bind:value={name} label="Name" required />
+<Button onclick={checkName}>Check now</Button>
+```
+
+### Form-level methods
+
+`LoginForm`, `RegisterForm`, `LoginOrRegisterForm`, and `EmailVerifyForm` each
+expose:
+
+| Method                              | Returns   | Purpose                                                              |
+| ----------------------------------- | --------- | -------------------------------------------------------------------- |
+| `validate()`                        | `boolean` | Run every inner field's validator. `true` if all valid.              |
+| `scrollToFirstError(opts?)`         | `boolean` | Scroll the first invalid field into view + focus it. Call after `validate()`. |
+
+```svelte
+<script>
+	let loginForm = $state<LoginForm>();
+
+	async function handleCustomSubmit() {
+		if (!loginForm?.validate()) {
+			loginForm?.scrollToFirstError();
+			return;
+		}
+		await api.login(/* ... */);
+	}
+</script>
+
+<LoginForm bind:this={loginForm} onSubmit={handleCustomSubmit} />
+<Button onclick={handleCustomSubmit}>Submit from outside</Button>
+```
+
+### Pristine-form errors pattern
+
+The trap: an external `errors` prop wired into each field's `customValidator`
+won't render until the user touches the field. Pair the existing prop with
+an imperative `validate()` call from your submit handler:
+
+```svelte
+<FieldInput
+	bind:this={nameField}
+	bind:value={address.name}
+	required
+	validate={{
+		customValidator() {
+			return externalErrors.find((e) => e.field === "name")?.message || "";
+		},
+	}}
+/>
+
+<!-- in your submit handler -->
+<script>
+	function handleContinue() {
+		if (!validateAllFields([nameField, /* ... */])) return;
+		// ...submit
+	}
+</script>
+```
+
+For aggregation across many fields, see
+[validate-fields utilities](./utils.md#field-validation-aggregators).
+
+---
+
 ## LoginForm
 
 Standalone login form with optional modal variant. Supports social logins, forgot password, remember me, client+server validation, i18n, and notifications integration.

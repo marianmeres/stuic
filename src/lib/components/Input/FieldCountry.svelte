@@ -102,7 +102,8 @@
 		description,
 		class: classProp,
 		renderSize = "md",
-		validate,
+		// Renamed local binding to avoid collision with `export function validate()` below.
+		validate: validateProp,
 		//
 		labelAfter,
 		inputBefore,
@@ -135,6 +136,39 @@
 	let hiddenInputEl: HTMLInputElement | undefined = $state();
 	let validation: ValidationResult | undefined = $state();
 	const setValidationResult = (res: ValidationResult) => (validation = res);
+
+	let _doValidate: (() => void) | undefined = $state();
+
+	/** Trigger validation now. Renders the inline message if invalid. */
+	export function validate(): ValidationResult | undefined {
+		_doValidate?.();
+		return validation;
+	}
+
+	/** Clear the inline validation message and reset `setCustomValidity`. */
+	export function clearValidation(): void {
+		validation = undefined;
+		hiddenInputEl?.setCustomValidity?.("");
+	}
+
+	/** Current validation state, or undefined if validator has never run. */
+	export function getValidation(): ValidationResult | undefined {
+		return validation;
+	}
+
+	/** Focus the visible dropdown trigger button. */
+	export function focus(): void {
+		triggerEl?.focus?.();
+	}
+
+	/** Scroll the field into view. Defaults to smooth + center. */
+	export function scrollIntoView(opts?: ScrollIntoViewOptions): void {
+		triggerEl?.scrollIntoView?.({
+			behavior: "smooth",
+			block: "center",
+			...opts,
+		});
+	}
 
 	function localizedName(c: Country): string {
 		return countryNames?.[c.iso] ?? c.name;
@@ -308,19 +342,35 @@
 	</DropdownMenu>
 </InputWrap>
 
-<!-- Hidden input for form submission + validation -->
-{#if name}
+<!-- Hidden input for form submission + validation.
+     Rendered whenever validation is enabled (default) OR `name` is set, so
+     imperative `validate()` works even when the field is used outside a
+     <form> / without a name. A hidden input without `name` is skipped by
+     FormData per the HTML spec, so this is invisible to form submission. -->
+{#if name || validateProp !== false}
 	<input
 		type="hidden"
 		{name}
 		value={value ?? ""}
 		bind:this={hiddenInputEl}
 		use:validateAction={() => {
-			const customOpts = typeof validate === "object" && validate ? validate : {};
+			const customOpts =
+				typeof validateProp === "object" && validateProp ? validateProp : {};
+			const userValidator = customOpts.customValidator;
 			return {
-				enabled: validate !== false,
+				enabled: validateProp !== false,
 				...customOpts,
+				// Hidden inputs are barred from native constraint validation, so
+				// `required` on the element itself is a no-op. We enforce it here
+				// instead, then fall through to the consumer's customValidator.
+				customValidator(val, ctx, el) {
+					if (required && (val == null || val === "")) {
+						return "This field requires attention. Please review and try again.";
+					}
+					return userValidator?.(val, ctx, el) || "";
+				},
 				setValidationResult,
+				setDoValidate: (fn) => (_doValidate = fn),
 			};
 		}}
 		{required}

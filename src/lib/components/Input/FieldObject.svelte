@@ -51,7 +51,8 @@
 		renderSize = "sm",
 		required = false,
 		disabled = false,
-		validate,
+		// Renamed local binding to avoid collision with `export function validate()` below.
+		validate: validateProp,
 		labelAfter,
 		below,
 		labelLeft,
@@ -72,6 +73,9 @@
 
 	let editMode = $state(false);
 	let hiddenInputEl: HTMLInputElement | undefined = $state();
+	// Visible interactive elements used by the imperative focus/scroll API.
+	let toggleBtnEl: HTMLButtonElement | undefined = $state();
+	let textareaEl: HTMLTextAreaElement | undefined = $state();
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- initialized by bind:clientWidth
 	let contentWidth: number = $state()!;
 	const isNarrow = $derived(contentWidth < 360);
@@ -123,6 +127,44 @@
 	// Validation
 	let validation: ValidationResult | undefined = $state();
 	const setValidationResult = (res: ValidationResult) => (validation = res);
+
+	let _doValidate: (() => void) | undefined = $state();
+
+	/** Trigger validation now. Renders the inline message if invalid. */
+	export function validate(): ValidationResult | undefined {
+		_doValidate?.();
+		return validation;
+	}
+
+	/** Clear the inline validation message and reset `setCustomValidity`. */
+	export function clearValidation(): void {
+		validation = undefined;
+		hiddenInputEl?.setCustomValidity?.("");
+	}
+
+	/** Current validation state, or undefined if validator has never run. */
+	export function getValidation(): ValidationResult | undefined {
+		return validation;
+	}
+
+	/**
+	 * Focus the visible interactive element — the textarea in edit mode,
+	 * otherwise the edit-toggle button. The hidden validation `<input>`
+	 * itself cannot be focused.
+	 */
+	export function focus(): void {
+		if (editMode) textareaEl?.focus?.();
+		else toggleBtnEl?.focus?.();
+	}
+
+	/** Scroll the field into view. Defaults to smooth + center. */
+	export function scrollIntoView(opts?: ScrollIntoViewOptions): void {
+		(toggleBtnEl ?? textareaEl)?.scrollIntoView?.({
+			behavior: "smooth",
+			block: "center",
+			...opts,
+		});
+	}
 
 	const TEXTAREA_CLS =
 		"w-full min-h-16 p-2 font-mono text-sm focus:outline-none focus:ring-0";
@@ -263,6 +305,7 @@
 			{#if editMode}
 				<textarea
 					bind:value
+					bind:this={textareaEl}
 					{id}
 					class={TEXTAREA_CLS}
 					{tabindex}
@@ -287,6 +330,7 @@
 		<button
 			type="button"
 			class={BTN_CLS}
+			bind:this={toggleBtnEl}
 			onclick={toggleMode}
 			{disabled}
 			use:tooltip={() => ({
@@ -309,9 +353,23 @@
 	{name}
 	{value}
 	bind:this={hiddenInputEl}
-	use:validateAction={() => ({
-		enabled: !!validate,
-		...(typeof validate === "boolean" ? {} : validate),
-		setValidationResult,
-	})}
+	use:validateAction={() => {
+		const customOpts = typeof validateProp === "object" && validateProp ? validateProp : {};
+		const userValidator = customOpts.customValidator;
+		return {
+			enabled: !!validateProp,
+			...customOpts,
+			// Hidden inputs are barred from native constraint validation, so
+			// `required` on the element itself is a no-op. We enforce it here
+			// before delegating to the consumer's customValidator.
+			customValidator(val, ctx, el) {
+				if (required && (val == null || val === "")) {
+					return "This field requires attention. Please review and try again.";
+				}
+				return userValidator?.(val, ctx, el) || "";
+			},
+			setValidationResult,
+			setDoValidate: (fn) => (_doValidate = fn),
+		};
+	}}
 />

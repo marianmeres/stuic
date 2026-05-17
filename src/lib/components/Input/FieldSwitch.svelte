@@ -58,7 +58,8 @@
 		required = false,
 		disabled = false,
 		//
-		validate,
+		// Renamed local binding to avoid collision with `export function validate()` below.
+		validate: validateProp,
 		//
 		labelAfter,
 		inputBefore,
@@ -90,6 +91,36 @@
 	//
 	let validation: ValidationResult | undefined = $state();
 	const setValidationResult = (res: ValidationResult) => (validation = res);
+
+	// Delegate the imperative API to the inner Switch.
+	let switchRef: Switch | undefined = $state();
+
+	/** Trigger validation now. Renders the inline message if invalid. */
+	export function validate(): ValidationResult | undefined {
+		switchRef?.validate();
+		return validation;
+	}
+
+	/** Clear the inline validation message. */
+	export function clearValidation(): void {
+		switchRef?.clearValidation?.();
+		validation = undefined;
+	}
+
+	/** Current validation state. */
+	export function getValidation(): ValidationResult | undefined {
+		return validation;
+	}
+
+	/** Focus the visual switch. */
+	export function focus(): void {
+		switchRef?.focus?.();
+	}
+
+	/** Scroll the field into view. */
+	export function scrollIntoView(opts?: ScrollIntoViewOptions): void {
+		switchRef?.scrollIntoView?.(opts);
+	}
 </script>
 
 <InputWrap
@@ -119,5 +150,13 @@
 	classInputBoxWrap={twMerge("input-wrap-transparent", classInputBoxWrap)}
 	{style}
 >
-	<Switch bind:checked {name} {required} {disabled} {validate} {setValidationResult} />
+	<Switch
+		bind:this={switchRef}
+		bind:checked
+		{name}
+		{required}
+		{disabled}
+		validate={validateProp}
+		{setValidationResult}
+	/>
 </InputWrap>

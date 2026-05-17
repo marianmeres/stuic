@@ -173,6 +173,43 @@ storage.get("user"); // { name: 'John' }
 | `generateCssTokens`  | Convert token schema to CSS  |
 | `toCssString`        | Format tokens as CSS string  |
 
+---
+
+## Field Validation Aggregators
+
+Helpers for orchestrating `validate()` across multiple `Field*` components.
+Pair with the per-field imperative API documented in the
+[Components domain](./components.md#imperative-validate-api).
+
+| Util                          | Purpose                                                      |
+| ----------------------------- | ------------------------------------------------------------ |
+| `validateAllFields`           | Run `validate()` on every provided field ref. Returns `true` if all valid. |
+| `findFirstInvalidField`       | Return the first ref whose cached `getValidation()` is invalid. |
+| `scrollToFirstInvalidField`   | Scroll the first invalid field into view + focus (call after `validateAllFields`). |
+| `ValidatableField` (interface)| Minimal shape every STUIC `Field*` satisfies — your own components can too. |
+
+```ts
+import {
+	scrollToFirstInvalidField,
+	validateAllFields,
+} from "@marianmeres/stuic";
+
+let nameField = $state<FieldInput>();
+let emailField = $state<FieldInput>();
+let countryField = $state<FieldCountry>();
+
+function handleContinue() {
+	const allValid = validateAllFields([nameField, emailField, countryField]);
+	if (!allValid) {
+		scrollToFirstInvalidField([nameField, emailField, countryField]);
+		return;
+	}
+	// ...submit
+}
+```
+
+`undefined` / `null` entries are skipped so callers can spread conditional refs
+without filtering first.
 
 ---
 
@@ -184,4 +221,5 @@ storage.get("user"); // { name: 'John' }
 | src/lib/utils/tw-merge.ts                | Critical for class merging                |
 | src/lib/utils/persistent-state.svelte.ts | Reactive storage pattern (runes-based)    |
 | src/lib/utils/storage-abstraction.ts     | Non-reactive storage (localStorage, etc.) |
+| src/lib/utils/validate-fields.ts         | Form-level validation aggregators         |
 | src/lib/utils/design-tokens.ts           | Re-exports from `@marianmeres/design-tokens` |

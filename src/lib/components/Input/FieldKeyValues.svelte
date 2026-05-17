@@ -93,7 +93,8 @@
 		renderSize = "sm",
 		required = false,
 		disabled = false,
-		validate,
+		// Renamed local binding to avoid collision with `export function validate()` below.
+		validate: validateProp,
 		labelAfter,
 		below,
 		labelLeft,
@@ -235,6 +236,39 @@
 	let validation: ValidationResult | undefined = $state();
 	const setValidationResult = (res: ValidationResult) => (validation = res);
 
+	let _doValidate: (() => void) | undefined = $state();
+
+	/** Trigger validation now. Renders the inline message if invalid. */
+	export function validate(): ValidationResult | undefined {
+		_doValidate?.();
+		return validation;
+	}
+
+	/** Clear the inline validation message and reset `setCustomValidity`. */
+	export function clearValidation(): void {
+		validation = undefined;
+		hiddenInputEl?.setCustomValidity?.("");
+	}
+
+	/** Current validation state, or undefined if validator has never run. */
+	export function getValidation(): ValidationResult | undefined {
+		return validation;
+	}
+
+	/** Focus the first key input. */
+	export function focus(): void {
+		keyInputRefs[0]?.focus?.();
+	}
+
+	/** Scroll the field into view. Defaults to smooth + center. */
+	export function scrollIntoView(opts?: ScrollIntoViewOptions): void {
+		keyInputRefs[0]?.scrollIntoView?.({
+			behavior: "smooth",
+			block: "center",
+			...opts,
+		});
+	}
+
 	let wrappedValidate: Omit<ValidateOptions, "setValidationResult"> = $derived({
 		enabled: true,
 		customValidator(val: any, context: Record<string, any> | undefined, el: any) {
@@ -264,9 +298,10 @@
 			}
 
 			// Continue with provided validator
-			return (validate as any)?.customValidator?.(val, context, el) || "";
+			return (validateProp as any)?.customValidator?.(val, context, el) || "";
 		},
 		setValidationResult,
+		setDoValidate: (fn: () => void) => (_doValidate = fn),
 	});
 
 	const BTN_CLS = [

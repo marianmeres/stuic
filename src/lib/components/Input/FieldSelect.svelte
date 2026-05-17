@@ -60,7 +60,8 @@
 		required = false,
 		disabled = false,
 		//
-		validate,
+		// Renamed local binding to avoid collision with `export function validate()` below.
+		validate: validateProp,
 		//
 		labelAfter,
 		inputBefore,
@@ -90,6 +91,35 @@
 	//
 	let validation: ValidationResult | undefined = $state();
 	const setValidationResult = (res: ValidationResult) => (validation = res);
+
+	let _doValidate: (() => void) | undefined = $state();
+
+	/** Trigger validation now. Renders the inline message if invalid. */
+	export function validate(): ValidationResult | undefined {
+		_doValidate?.();
+		return validation;
+	}
+
+	/** Clear the inline validation message and reset `setCustomValidity`. */
+	export function clearValidation(): void {
+		validation = undefined;
+		input?.setCustomValidity?.("");
+	}
+
+	/** Current validation state, or undefined if validator has never run. */
+	export function getValidation(): ValidationResult | undefined {
+		return validation;
+	}
+
+	/** Focus the underlying `<select>` element. */
+	export function focus(): void {
+		input?.focus?.();
+	}
+
+	/** Scroll the field into view. Defaults to smooth + center. */
+	export function scrollIntoView(opts?: ScrollIntoViewOptions): void {
+		input?.scrollIntoView?.({ behavior: "smooth", block: "center", ...opts });
+	}
 
 	const _normalizeAndGroupOptions = (opts: (string | FieldSelectOption)[]) => {
 		const groupped = new Map<string, FieldSelectOption[]>();
@@ -140,9 +170,10 @@
 		{id}
 		class={twMerge(classInput)}
 		use:validateAction={() => ({
-			enabled: !!validate,
-			...(typeof validate === "boolean" ? {} : validate),
+			enabled: !!validateProp,
+			...(typeof validateProp === "boolean" ? {} : validateProp),
 			setValidationResult,
+			setDoValidate: (fn) => (_doValidate = fn),
 		})}
 		{tabindex}
 		{required}

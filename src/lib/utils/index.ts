@@ -41,3 +41,4 @@ export * from "./tr.js";
 export * from "./tw-merge.js";
 export * from "./ucfirst.js";
 export * from "./unaccent.js";
+export * from "./validate-fields.js";

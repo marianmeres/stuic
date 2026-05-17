@@ -140,6 +140,18 @@ export interface ValidateOptions {
 	on?: "input" | "change"; // intentionally not 'blur'
 	//
 	setValidationResult?: (res: ValidationResult) => void;
+	/**
+	 * Receives a reference to the action's internal validator function so the
+	 * host component can trigger validation imperatively (e.g., on submit,
+	 * without waiting for the user to focus/blur or change a value).
+	 *
+	 * Called whenever the action's `$effect` re-runs — the host should store
+	 * the latest reference. Invoking the function runs the exact same code
+	 * path the change/blur listeners do (no synthetic DOM events).
+	 *
+	 * Pair with `setValidationResult` to read the new result after invoking.
+	 */
+	setDoValidate?: (doValidate: () => void) => void;
 	//
 	t?: false | ReasonTranslate;
 }
@@ -225,6 +237,7 @@ export function validate(
 			customValidator,
 			on = "change",
 			setValidationResult,
+			setDoValidate,
 			t,
 		} = typeof fnResult === "boolean" ? { enabled: !!fnResult } : fnResult;
 
@@ -323,6 +336,12 @@ export function validate(
 			});
 			// });
 		};
+
+		// Expose the current validator to the host so it can trigger validation
+		// imperatively (e.g., on submit). The closure captures the current
+		// `enabled` / `customValidator` / `context` / `t`, so re-running the
+		// effect with new options updates the exposed function in lockstep.
+		setDoValidate?.(_doValidate);
 
 		el.addEventListener(on!, _doValidate);
 

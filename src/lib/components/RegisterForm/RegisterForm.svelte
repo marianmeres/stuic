@@ -106,6 +106,10 @@
 	import DismissibleMessage from "../DismissibleMessage/DismissibleMessage.svelte";
 	import FieldInput from "../Input/FieldInput.svelte";
 	import { onSubmitValidityCheck } from "../../actions/on-submit-validity-check.svelte.js";
+	import {
+		scrollToFirstInvalidField,
+		validateAllFields,
+	} from "../../utils/validate-fields.js";
 
 	let {
 		formData = $bindable(createEmptyRegisterFormData()),
@@ -216,6 +220,41 @@
 	});
 
 	let _class = $derived(unstyled ? classProp : twMerge("stuic-register-form", classProp));
+
+	// Imperative API ----------------------------------------------------------
+	let topFieldRefs: (FieldInput | undefined)[] = $state([]);
+	let bottomFieldRefs: (FieldInput | undefined)[] = $state([]);
+	let emailField = $state<FieldInput>();
+	let passwordField = $state<FieldInput>();
+	let passwordConfirmField = $state<FieldInput>();
+
+	function _fields() {
+		return [
+			...topFieldRefs,
+			emailField,
+			passwordField,
+			...(showPasswordConfirm ? [passwordConfirmField] : []),
+			...bottomFieldRefs,
+		];
+	}
+
+	/**
+	 * Run every field's validator and render any inline errors. Returns true
+	 * if all fields are valid. Useful from custom submit handlers.
+	 */
+	export function validate(): boolean {
+		return validateAllFields(_fields());
+	}
+
+	/**
+	 * Scroll the first invalid field into view and focus it. Returns true
+	 * if a field was scrolled. Call after `validate()`.
+	 */
+	export function scrollToFirstError(
+		opts?: Parameters<typeof scrollToFirstInvalidField>[1]
+	): boolean {
+		return scrollToFirstInvalidField(_fields(), opts);
+	}
 </script>
 
 <form bind:this={formEl} class={_class} use:onSubmitValidityCheck {...rest}>
@@ -223,8 +262,9 @@
 	<DismissibleMessage message={error} intent="destructive" />
 
 	<!-- Top-position extra fields -->
-	{#each topFields as cfg (cfg.name)}
+	{#each topFields as cfg, i (cfg.name)}
 		<FieldInput
+			bind:this={topFieldRefs[i]}
 			value={extraValue(cfg)}
 			oninput={(e: Event) =>
 				setExtraValue(cfg, (e.currentTarget as HTMLInputElement).value)}
@@ -252,6 +292,7 @@
 	<!-- Email -->
 	<!-- svelte-ignore binding_property_non_reactive -->
 	<FieldInput
+		bind:this={emailField}
 		bind:value={formData.email}
 		label={t("register_form.email_label")}
 		type="email"
@@ -270,6 +311,7 @@
 	<!-- Password -->
 	<!-- svelte-ignore binding_property_non_reactive -->
 	<FieldInput
+		bind:this={passwordField}
 		bind:value={formData.password}
 		label={t("register_form.password_label")}
 		autocomplete="new-password"
@@ -290,6 +332,7 @@
 	{#if showPasswordConfirm}
 		<!-- svelte-ignore binding_property_non_reactive -->
 		<FieldInput
+			bind:this={passwordConfirmField}
 			bind:value={formData.passwordConfirm}
 			label={t("register_form.password_confirm_label")}
 			autocomplete="new-password"
@@ -308,8 +351,9 @@
 	{/if}
 
 	<!-- Bottom-position extra fields (default) -->
-	{#each bottomFields as cfg (cfg.name)}
+	{#each bottomFields as cfg, i (cfg.name)}
 		<FieldInput
+			bind:this={bottomFieldRefs[i]}
 			value={extraValue(cfg)}
 			oninput={(e: Event) =>
 				setExtraValue(cfg, (e.currentTarget as HTMLInputElement).value)}

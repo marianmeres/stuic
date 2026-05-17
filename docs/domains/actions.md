@@ -64,6 +64,56 @@ Actions using `$effect()` accept a function returning options:
 />
 ```
 
+### Imperative validate() trigger
+
+The `validate` action only runs `_doValidate` in response to user-driven DOM
+events (`change`, first `blur`). On a pristine, never-touched field the inline
+validation message never mounts — which silently breaks any flow that
+pre-populates errors via `customValidator` on a fresh form.
+
+Pass a `setDoValidate` callback to capture a reference to the action's internal
+validator function and trigger it imperatively (e.g., from a submit handler):
+
+```svelte
+<script>
+	let doValidate: (() => void) | undefined = $state();
+
+	function handleSubmit() {
+		// Force every "sleeping" field's validator to run, rendering inline
+		// errors even on fields the user never touched.
+		doValidate?.();
+		// ...check validationResult.valid here, or use validateAllFields().
+	}
+</script>
+
+<input
+	required
+	use:validate={() => ({
+		enabled: true,
+		setValidationResult: (res) => (validationResult = res),
+		setDoValidate: (fn) => (doValidate = fn),
+	})}
+/>
+```
+
+> **You generally don't write this by hand.** Every STUIC `Field*` component
+> already wires `setDoValidate` internally and exposes the result as
+> `export function validate()` on its component reference. See the
+> [Components domain doc](./components.md#imperative-validate-api) for the
+> per-field method list and the [validate-fields utility](./utils.md) for
+> `validateAllFields()` / `scrollToFirstInvalidField()` aggregators.
+
+### Pristine forms and external errors
+
+A common trap: setting an `errors` prop on a brand-new form and expecting the
+inline messages to render. They won't — the `validate` action's
+`customValidator` is only invoked on user events. Two fixes:
+
+1. **Wrap the form in `<form use:onSubmitValidityCheck>`** and listen for
+   `submit_valid` / `submit_invalid` (works for native submit flows).
+2. **Call the field component's imperative `validate()` from your submit
+   handler** (works for any flow — wizards, multi-step, custom CTAs).
+
 ### File Dropzone
 
 ```svelte

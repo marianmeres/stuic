@@ -58,7 +58,8 @@
 		off,
 		onclick,
 		preHook,
-		validate,
+		// Renamed local binding to avoid collision with `export function validate()` below.
+		validate: validateProp,
 		setValidationResult,
 		...rest
 	}: Props = $props();
@@ -88,6 +89,39 @@
 		checkbox.checked = !checked;
 		checkbox.dispatchEvent(new Event("change", { bubbles: true, cancelable: true }));
 		wrap.focus();
+	}
+
+	//
+	let _doValidate: (() => void) | undefined = $state();
+	// Local copy of the last validation result so getValidation() works even
+	// when no external setValidationResult was provided.
+	let _validation: ValidationResult | undefined = $state();
+
+	/** Trigger validation now. Reaches the parent via `setValidationResult`. */
+	export function validate(): ValidationResult | undefined {
+		_doValidate?.();
+		return _validation;
+	}
+
+	/** Clear the inline validation message and reset `setCustomValidity`. */
+	export function clearValidation(): void {
+		_validation = undefined;
+		checkbox?.setCustomValidity?.("");
+	}
+
+	/** Current validation state. */
+	export function getValidation(): ValidationResult | undefined {
+		return _validation;
+	}
+
+	/** Focus the visual switch wrapper. */
+	export function focus(): void {
+		wrap?.focus?.();
+	}
+
+	/** Scroll the switch into view. */
+	export function scrollIntoView(opts?: ScrollIntoViewOptions): void {
+		wrap?.scrollIntoView?.({ behavior: "smooth", block: "center", ...opts });
 	}
 </script>
 
@@ -140,9 +174,13 @@
 		{required}
 		{name}
 		use:validateAction={() => ({
-			enabled: !!validate,
-			...(typeof validate === "boolean" ? {} : validate),
-			setValidationResult,
+			enabled: !!validateProp,
+			...(typeof validateProp === "boolean" ? {} : validateProp),
+			setValidationResult: (res) => {
+				_validation = res;
+				setValidationResult?.(res);
+			},
+			setDoValidate: (fn) => (_doValidate = fn),
 		})}
 		tabindex="-1"
 	/>

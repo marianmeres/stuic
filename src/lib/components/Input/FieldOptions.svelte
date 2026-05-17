@@ -5,7 +5,10 @@
 	import { Debounced, watch } from "runed";
 	import { onDestroy, tick, type Snippet } from "svelte";
 	import { tooltip } from "../../actions/index.js";
-	import { type ValidateOptions } from "../../actions/validate.svelte.js";
+	import {
+		type ValidateOptions,
+		type ValidationResult,
+	} from "../../actions/validate.svelte.js";
 	import type { TranslateFn } from "../../types.js";
 	import { getId } from "../../utils/get-id.js";
 	import { isPlainObject } from "../../utils/is-plain-object.js";
@@ -136,7 +139,8 @@
 		required = false,
 		disabled = false,
 		//
-		validate,
+		// Renamed local binding to avoid collision with `export function validate()` below.
+		validate: validateProp,
 		//
 		labelAfter,
 		below,
@@ -187,6 +191,34 @@
 	$effect(() => {
 		modal = modalDialog;
 	});
+
+	// Imperative API delegates to the inner FieldLikeButton trigger.
+	let triggerRef: FieldLikeButton | undefined = $state();
+
+	/** Trigger validation now. Renders the inline message if invalid. */
+	export function validate(): ValidationResult | undefined {
+		return triggerRef?.validate();
+	}
+
+	/** Clear the inline validation message. */
+	export function clearValidation(): void {
+		triggerRef?.clearValidation?.();
+	}
+
+	/** Current validation state. */
+	export function getValidation(): ValidationResult | undefined {
+		return triggerRef?.getValidation?.();
+	}
+
+	/** Focus the visible trigger button. */
+	export function focus(): void {
+		triggerRef?.focus?.();
+	}
+
+	/** Scroll the field into view. */
+	export function scrollIntoView(opts?: ScrollIntoViewOptions): void {
+		triggerRef?.scrollIntoView?.(opts);
+	}
 	let innerValue = $state("");
 	let isFetching = $state(false);
 	let isUnmounted = false;
@@ -214,7 +246,7 @@
 			if (selected.length > cardinality) return "rangeOverflow";
 
 			// continue with provided validator
-			return (validate as any)?.customValidator?.(value, context, el) || "";
+			return (validateProp as any)?.customValidator?.(value, context, el) || "";
 		},
 		t(reason: keyof ValidityStateFlags, value: any, fallback: string) {
 			// Unfortunately, for hidden, everything is a `customError` reason. So, we must generalize...
@@ -508,6 +540,7 @@
 		{@render trigger({ value, modal: modalDialog })}
 	{:else}
 		<FieldLikeButton
+			bind:this={triggerRef}
 			bind:value
 			bind:input={parentHiddenInputEl}
 			{name}

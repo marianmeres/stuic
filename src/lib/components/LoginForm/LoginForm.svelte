@@ -81,6 +81,10 @@
 	import { onSubmitValidityCheck } from "../../actions/on-submit-validity-check.svelte.js";
 	import { tooltip } from "../../actions/tooltip/tooltip.svelte.js";
 	import { twMerge } from "../../utils/tw-merge.js";
+	import {
+		scrollToFirstInvalidField,
+		validateAllFields,
+	} from "../../utils/validate-fields.js";
 	import Button from "../Button/Button.svelte";
 	import DismissibleMessage from "../DismissibleMessage/DismissibleMessage.svelte";
 	import FieldCheckbox from "../Input/FieldCheckbox.svelte";
@@ -212,6 +216,35 @@
 	});
 
 	let _class = $derived(unstyled ? classProp : twMerge("stuic-login-form", classProp));
+
+	// Imperative API ----------------------------------------------------------
+	// Field refs collected during render so consumers can trigger validation
+	// without waiting for native form submission (e.g., from a custom button
+	// outside this component, or to pre-render server-error messages).
+	let emailField = $state<FieldInput>();
+	let passwordField = $state<FieldInput>();
+
+	function _fields() {
+		return [emailField, passwordField];
+	}
+
+	/**
+	 * Run every field's validator and render any inline errors. Returns true
+	 * if all fields are valid. Useful from custom submit handlers.
+	 */
+	export function validate(): boolean {
+		return validateAllFields(_fields());
+	}
+
+	/**
+	 * Scroll the first invalid field into view and focus it. Returns true
+	 * if a field was scrolled. Call after `validate()`.
+	 */
+	export function scrollToFirstError(
+		opts?: Parameters<typeof scrollToFirstInvalidField>[1]
+	): boolean {
+		return scrollToFirstInvalidField(_fields(), opts);
+	}
 </script>
 
 <form bind:this={formEl} class={_class} use:onSubmitValidityCheck {...rest}>
@@ -226,6 +259,7 @@
 	<!-- Email -->
 	<!-- svelte-ignore binding_property_non_reactive -->
 	<FieldInput
+		bind:this={emailField}
 		bind:value={formData.email}
 		label={t("login_form.email_label")}
 		type="email"
@@ -244,6 +278,7 @@
 	<!-- Password -->
 	<!-- svelte-ignore binding_property_non_reactive -->
 	<FieldInput
+		bind:this={passwordField}
 		bind:value={formData.password}
 		label={t("login_form.password_label")}
 		autocomplete="current-password"

@@ -67,7 +67,10 @@
 		required = false,
 		disabled = false,
 		//
-		validate,
+		// Renamed binding because `validate` is also the name of the exported
+		// imperative method below — destructuring under the same name would
+		// collide with `export function validate()` in the script scope.
+		validate: validateProp,
 		//
 		labelAfter,
 		inputBefore,
@@ -97,6 +100,42 @@
 	//
 	let validation: ValidationResult | undefined = $state();
 	const setValidationResult = (res: ValidationResult) => (validation = res);
+
+	// Imperative API. The validate action re-assigns `_doValidate` on every
+	// $effect run (whenever options change), so the exported `validate()`
+	// always invokes the current closure.
+	let _doValidate: (() => void) | undefined = $state();
+
+	/**
+	 * Trigger validation now. Same code path as the change/blur listeners.
+	 * Renders the inline validation message if invalid. Useful from submit
+	 * handlers where the user may not have touched every field.
+	 */
+	export function validate(): ValidationResult | undefined {
+		_doValidate?.();
+		return validation;
+	}
+
+	/** Clear the inline validation message and reset `setCustomValidity`. */
+	export function clearValidation(): void {
+		validation = undefined;
+		input?.setCustomValidity?.("");
+	}
+
+	/** Current validation state, or undefined if validator has never run. */
+	export function getValidation(): ValidationResult | undefined {
+		return validation;
+	}
+
+	/** Focus the underlying `<input>` element. */
+	export function focus(): void {
+		input?.focus?.();
+	}
+
+	/** Scroll the field into view. Defaults to smooth + center. */
+	export function scrollIntoView(opts?: ScrollIntoViewOptions): void {
+		input?.scrollIntoView?.({ behavior: "smooth", block: "center", ...opts });
+	}
 </script>
 
 <InputWrap
@@ -142,9 +181,10 @@
 			...(typeof useTypeahead === "boolean" ? {} : useTypeahead),
 		})}
 		use:validateAction={() => ({
-			enabled: !!validate,
-			...(typeof validate === "boolean" ? {} : validate),
+			enabled: !!validateProp,
+			...(typeof validateProp === "boolean" ? {} : validateProp),
 			setValidationResult,
+			setDoValidate: (fn) => (_doValidate = fn),
 		})}
 		{tabindex}
 		{required}

@@ -92,7 +92,8 @@
 		renderSize = "md",
 		required = false,
 		disabled = false,
-		validate,
+		// Renamed local binding to avoid collision with `export function validate()` below.
+		validate: validateProp,
 		labelAfter,
 		below,
 		labelLeft,
@@ -226,6 +227,41 @@
 	let validation: ValidationResult | undefined = $state();
 	const setValidationResult = (res: ValidationResult) => (validation = res);
 
+	let _doValidate: (() => void) | undefined = $state();
+	// Default-language visible input — focus target for the imperative API.
+	let defaultInputEl: HTMLInputElement | HTMLTextAreaElement | undefined = $state();
+
+	/** Trigger validation now. Renders the inline message if invalid. */
+	export function validate(): ValidationResult | undefined {
+		_doValidate?.();
+		return validation;
+	}
+
+	/** Clear the inline validation message and reset `setCustomValidity`. */
+	export function clearValidation(): void {
+		validation = undefined;
+		hiddenInputEl?.setCustomValidity?.("");
+	}
+
+	/** Current validation state, or undefined if validator has never run. */
+	export function getValidation(): ValidationResult | undefined {
+		return validation;
+	}
+
+	/** Focus the default-language input/textarea. */
+	export function focus(): void {
+		defaultInputEl?.focus?.();
+	}
+
+	/** Scroll the field into view. Defaults to smooth + center. */
+	export function scrollIntoView(opts?: ScrollIntoViewOptions): void {
+		defaultInputEl?.scrollIntoView?.({
+			behavior: "smooth",
+			block: "center",
+			...opts,
+		});
+	}
+
 	let wrappedValidate: Omit<ValidateOptions, "setValidationResult"> = $derived({
 		enabled: true,
 		customValidator(val: any, context: Record<string, any> | undefined, el: any) {
@@ -236,9 +272,10 @@
 				}
 			}
 			// Delegate to provided validator
-			return (validate as any)?.customValidator?.(val, context, el) || "";
+			return (validateProp as any)?.customValidator?.(val, context, el) || "";
 		},
 		setValidationResult,
+		setDoValidate: (fn: () => void) => (_doValidate = fn),
 	});
 
 	const INPUT_CLS = "w-full";
@@ -281,6 +318,7 @@
 			{#if !expanded}
 				{#if multiline}
 					<textarea
+						bind:this={defaultInputEl}
 						value={entries.find((e) => e.language === _defaultLanguage)?.value ?? ""}
 						oninput={(e) => updateEntry(_defaultLanguage, e.currentTarget.value)}
 						class={twMerge(INPUT_CLS, "min-h-16", classLanguageInput)}
@@ -294,6 +332,7 @@
 					></textarea>
 				{:else}
 					<input
+						bind:this={defaultInputEl}
 						type="text"
 						value={entries.find((e) => e.language === _defaultLanguage)?.value ?? ""}
 						oninput={(e) => updateEntry(_defaultLanguage, e.currentTarget.value)}

@@ -13,3 +13,5 @@
 <a href="./input/phone-number" class="underline">Phone number</a>
 <br />
 <a href="./input/country" class="underline">Country</a>
+<br />
+<a href="./validate-imperative" class="underline">Imperative validate() — full flow</a>

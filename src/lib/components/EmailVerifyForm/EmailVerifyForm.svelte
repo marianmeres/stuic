@@ -201,6 +201,27 @@
 	);
 
 	let submitDisabled = $derived(code.length !== codeLength || isSubmitting);
+
+	// Imperative API ----------------------------------------------------------
+	// EmailVerifyForm uses OtpInput rather than validateAction-based fields, so
+	// "validation" here is just "is the code complete?". Exposed for parity
+	// with LoginForm / RegisterForm so consumers (and LoginOrRegisterForm) can
+	// call `.validate()` regardless of which sub-form is active.
+
+	/** Returns true when the OTP code is the expected length. */
+	export function validate(): boolean {
+		return code.length === codeLength;
+	}
+
+	/**
+	 * Scroll the form into view if the code is incomplete. Returns true if
+	 * a scroll was performed.
+	 */
+	export function scrollToFirstError(opts?: ScrollIntoViewOptions): boolean {
+		if (validate()) return false;
+		formEl?.scrollIntoView?.({ behavior: "smooth", block: "center", ...opts });
+		return true;
+	}
 </script>
 
 <form bind:this={formEl} class={_class} onsubmit={handleFormSubmit} {...rest}>

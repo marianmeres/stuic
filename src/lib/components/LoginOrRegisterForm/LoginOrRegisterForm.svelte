@@ -141,6 +141,7 @@
 	import { createEmptyRegisterFormData } from "../RegisterForm/_internal/register-form-utils.js";
 	import EmailVerifyForm from "../EmailVerifyForm/EmailVerifyForm.svelte";
 	import ButtonGroupRadio from "../ButtonGroupRadio/ButtonGroupRadio.svelte";
+	import type { scrollToFirstInvalidField } from "../../utils/validate-fields.js";
 
 	let {
 		mode = $bindable("login"),
@@ -212,6 +213,42 @@
 	let _class = $derived(
 		unstyled ? classProp : twMerge("stuic-login-or-register-form", classProp)
 	);
+
+	// Imperative API ----------------------------------------------------------
+	// Refs to the currently rendered inner form. Only one is mounted at a time
+	// (Svelte tears down the others), so `validate()` just asks the active one.
+	let loginFormRef = $state<LoginForm>();
+	let registerFormRef = $state<RegisterForm>();
+	let verifyFormRef = $state<EmailVerifyForm>();
+
+	function _activeForm(): {
+		validate?(): boolean;
+		scrollToFirstError?(opts?: Parameters<typeof scrollToFirstInvalidField>[1]): boolean;
+	} | undefined {
+		if (mode === "login") return loginFormRef;
+		if (mode === "register") return registerFormRef;
+		if (mode === "verify") return verifyFormRef;
+		return undefined;
+	}
+
+	/**
+	 * Run validation on the active inner form (login / register / verify).
+	 * Returns true if valid, false if any field is invalid. No-op if no form
+	 * is mounted yet.
+	 */
+	export function validate(): boolean {
+		return _activeForm()?.validate?.() ?? true;
+	}
+
+	/**
+	 * Scroll the first invalid field of the active inner form into view.
+	 * Returns true if a field was scrolled.
+	 */
+	export function scrollToFirstError(
+		opts?: Parameters<typeof scrollToFirstInvalidField>[1]
+	): boolean {
+		return _activeForm()?.scrollToFirstError?.(opts) ?? false;
+	}
 </script>
 
 <div class={_class} {...rest}>
@@ -238,6 +275,7 @@
 		{#if mode === "login"}
 			<!-- svelte-ignore binding_property_non_reactive -->
 			<LoginForm
+				bind:this={loginFormRef}
 				bind:formData={loginData}
 				onSubmit={onLogin}
 				{isSubmitting}
@@ -249,6 +287,7 @@
 		{:else if mode === "register"}
 			<!-- svelte-ignore binding_property_non_reactive -->
 			<RegisterForm
+				bind:this={registerFormRef}
 				bind:formData={registerData}
 				onSubmit={onRegister}
 				{isSubmitting}
@@ -258,6 +297,7 @@
 			/>
 		{:else}
 			<EmailVerifyForm
+				bind:this={verifyFormRef}
 				email={verifyEmail || registerData.email || loginData.email}
 				onSubmit={(code) => onVerify?.(code)}
 				onResend={onResendCode}

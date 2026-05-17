@@ -38,7 +38,8 @@
 		required,
 		disabled,
 		renderSize = "md",
-		validate,
+		// Renamed local binding to avoid collision with `export function validate()` below.
+		validate: validateProp,
 		//
 		class: classProp,
 		classRadioBox,
@@ -63,6 +64,38 @@
 	let validation = $state<ValidationResult | undefined>();
 	let invalid = $derived(validation && !validation?.valid);
 
+	// Refs to each rendered radio — used for the imperative validate() / focus().
+	// All radios in the group share validity (browser-level), so delegating to
+	// the first one is sufficient to run the validator.
+	let radioRefs: (FieldRadioInternal | undefined)[] = $state([]);
+
+	/** Trigger validation now. Renders the inline message if invalid. */
+	export function validate(): ValidationResult | undefined {
+		radioRefs[0]?.validate();
+		return validation;
+	}
+
+	/** Clear the inline validation message. */
+	export function clearValidation(): void {
+		for (const r of radioRefs) r?.clearValidation?.();
+		validation = undefined;
+	}
+
+	/** Current validation state. */
+	export function getValidation(): ValidationResult | undefined {
+		return validation;
+	}
+
+	/** Focus the first radio. */
+	export function focus(): void {
+		radioRefs[0]?.focus?.();
+	}
+
+	/** Scroll the field into view. */
+	export function scrollIntoView(opts?: ScrollIntoViewOptions): void {
+		radioRefs[0]?.scrollIntoView?.(opts);
+	}
+
 	// $inspect(value);
 </script>
 
@@ -75,6 +108,7 @@
 		<div class={twMerge("radios-box", "gap-y-2 grid p-2 mb-8", classProp)}>
 			{#each _options as o, i}
 				<FieldRadioInternal
+					bind:this={radioRefs[i]}
 					{name}
 					bind:group={value}
 					label={o.label}
@@ -84,7 +118,7 @@
 					{disabled}
 					{tabindex}
 					{required}
-					{validate}
+					validate={validateProp}
 					{classRadioBox}
 					{classInputBox}
 					{classInput}
