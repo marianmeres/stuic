@@ -18,7 +18,9 @@ A flexible avatar component that displays user photos, initials, or icons with a
 | `bg`             | `string`                                          | -        | Background color (Tailwind class). Ignored if `autoColor=true`                         |
 | `textColor`      | `string`                                          | -        | Text color (Tailwind class). Ignored if `autoColor=true`                               |
 | `autoColor`      | `boolean`                                         | `false`  | Generate deterministic pastel colors from hashSource/initials                          |
+| `padding`        | `string`                                          | -        | CSS padding around the visual circle. Outer keeps its size, inner circle shrinks (e.g. `"4px"`, `"0.25rem"`). Useful for larger tap targets. |
 | `class`          | `string`                                          | -        | Additional CSS classes                                                                 |
+| `classInner`     | `string`                                          | -        | Additional CSS classes for the inner element (only used when `padding` is set)         |
 | `el`             | `HTMLElement`                                     | -        | Bindable element reference                                                             |
 
 ## Usage
@@ -82,6 +84,18 @@ Generate deterministic pastel colors based on a hash source:
 <Avatar src="/photo.jpg" onclick={() => console.log("clicked")} />
 ```
 
+### Padded (larger tap target / visually smaller circle)
+
+Use `padding` to keep the avatar's outer footprint (e.g. a 44px tap target) while shrinking the visible colored circle. The padded ring is transparent.
+
+```svelte
+<!-- Outer stays at size="md" (2.75rem), circle shrinks by 4px on each side -->
+<Avatar size="md" initials="AB" padding="4px" />
+<Avatar size="md" autoColor initials="john@example.com" padding="0.25rem" onclick={() => {}} />
+```
+
+When `padding` is set, `bg`, `textColor`, and `autoColor` automatically apply to the inner circle (not the outer element).
+
 ### Custom Colors
 
 ```svelte
@@ -107,6 +121,7 @@ Override globally in `:root` or locally via `style` prop:
 | `--stuic-avatar-fg`          | `--stuic-color-muted-foreground` | Default text/icon color           |
 | `--stuic-avatar-ring-width`  | `3px`                            | Focus ring width (button mode)    |
 | `--stuic-avatar-ring-color`  | `--stuic-color-ring`             | Focus ring color                  |
+| `--stuic-avatar-padding`     | -                                | Set by the `padding` prop; can also be driven directly via CSS |
 
 ### Size Tokens
 
@@ -148,6 +163,7 @@ The component uses data attributes for CSS styling:
 | ------------------ | ----------------------------- | ----------------------------------- |
 | `data-size`        | `sm`, `md`, `lg`, `xl`, `2xl` | Size preset (only for preset sizes) |
 | `data-interactive` | `true`                        | Present when `onclick` is provided  |
+| `data-padded`      | `""`                          | Present when `padding` is set       |
 
 ## Theming
 

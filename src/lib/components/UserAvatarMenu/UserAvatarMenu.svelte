@@ -116,8 +116,15 @@
 		 */
 		items?: DropdownMenuItem[];
 
-		/** Forwarded to the default `Avatar` trigger and header-tile avatar. */
+		/** Forwarded to BOTH the trigger `Avatar` and the header-tile `Avatar`. */
 		avatar?: Partial<Omit<AvatarProps, "onclick" | "initials" | "src" | "el">>;
+
+		/**
+		 * Overrides applied on top of `avatar` for the header-tile `Avatar` only
+		 * (the larger avatar shown above the menu items inside the popup).
+		 * Shallow-merged: keys present here win over `avatar`.
+		 */
+		avatarHeader?: Partial<Omit<AvatarProps, "onclick" | "initials" | "src" | "el">>;
 
 		/** Forwarded to `DropdownMenu`. */
 		position?: DropdownMenuPosition;
@@ -181,6 +188,7 @@
 		extraItems,
 		items: itemsOverride,
 		avatar: avatarOverrides,
+		avatarHeader: avatarHeaderOverrides,
 		position,
 		offset,
 		maxHeight,
@@ -196,6 +204,11 @@
 	}: Props = $props();
 
 	const isAuthed = $derived(!!identity);
+
+	const avatarHeaderMerged = $derived({
+		...(avatarOverrides ?? {}),
+		...(avatarHeaderOverrides ?? {}),
+	});
 
 	// Color-scheme config normalization
 	const cs = $derived(
@@ -345,7 +358,7 @@
 				hashSource={identity.email}
 				src={identity.src}
 				onclick={actions.onProfile}
-				{...avatarOverrides}
+				{...avatarHeaderMerged}
 			/>
 			<div class={!unstyled ? "stuic-user-avatar-menu-header-email" : undefined}>
 				{identity.name ?? identity.email}

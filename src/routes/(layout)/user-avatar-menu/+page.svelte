@@ -259,6 +259,7 @@
 			darkMode: "Dark mode",
 		}}
 		avatar={{ class: "size-[60px]", padding: "10px" }}
+		avatarHeader={{ class: "size-[80px]", padding: "12px" }}
 		classDropdown="min-w-56 rounded-lg border-primary border-3 border-solid"
 	/>
 </section>

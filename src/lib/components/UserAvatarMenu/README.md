@@ -53,6 +53,19 @@ The component composes existing primitives and adds convention, not behavior. It
 />
 ```
 
+### Separate trigger vs header-tile avatar styling
+
+`avatar` is the shared base; `avatarHeader` overrides keys on the header-tile Avatar only (shallow merge).
+
+```svelte
+<UserAvatarMenu
+	identity={{ email: user.email }}
+	actions={{ onProfile: () => goto("/me"), onLogout: () => goto("/logout") }}
+	avatar={{ class: "size-8" }}
+	avatarHeader={{ class: "size-16", padding: "10px" }}
+/>
+```
+
 ## Props
 
 | Prop             | Type                                          | Default | Description                                                                                 |
@@ -65,7 +78,8 @@ The component composes existing primitives and adds convention, not behavior. It
 | `showRoles`      | `boolean`                                     | `false` | Render `identity.roles` under the email in the header tile.                                 |
 | `extraItems`     | `DropdownMenuItem[]`                          | —       | Appended to the standard item set.                                                          |
 | `items`          | `DropdownMenuItem[]`                          | —       | Full override of the item list. Trigger + dropdown shell still render.                      |
-| `avatar`         | `Partial<AvatarProps>`                        | —       | Forwarded to the default trigger Avatar (and the header-tile Avatar).                       |
+| `avatar`         | `Partial<AvatarProps>`                        | —       | Forwarded to BOTH the trigger Avatar and the header-tile Avatar.                            |
+| `avatarHeader`   | `Partial<AvatarProps>`                        | —       | Overrides applied on top of `avatar` for the header-tile Avatar only. Shallow merge.        |
 | `position`       | `DropdownMenuPosition`                        | —       | Forwarded to `DropdownMenu`.                                                                |
 | `offset`         | `string`                                      | —       | Forwarded.                                                                                  |
 | `maxHeight`      | `string`                                      | —       | Forwarded.                                                                                  |
