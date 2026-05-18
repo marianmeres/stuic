@@ -274,7 +274,7 @@
 				});
 			}
 
-			let renderedAny = false;
+			let hasUserActions = false;
 			if (actions.onProfile) {
 				out.push({
 					type: "action",
@@ -282,7 +282,7 @@
 					label: L.viewProfile,
 					onSelect: actions.onProfile,
 				});
-				renderedAny = true;
+				hasUserActions = true;
 			}
 			if (actions.onSettings) {
 				out.push({
@@ -291,23 +291,23 @@
 					label: L.settings,
 					onSelect: actions.onSettings,
 				});
-				renderedAny = true;
+				hasUserActions = true;
 			}
-			if (csEnabled) {
-				out.push(buildColorSchemeItem());
-				renderedAny = true;
-			}
-
 			if (extraItems?.length) {
 				out.push(...extraItems);
-				renderedAny = true;
+				hasUserActions = true;
 			}
 
-			if (renderedAny && actions.onLogout) {
-				out.push({ type: "divider", id: "div-logout" });
+			let hasColorScheme = false;
+			if (csEnabled) {
+				out.push(buildColorSchemeItem());
+				hasColorScheme = true;
 			}
 
 			if (actions.onLogout) {
+				if (hasUserActions || hasColorScheme) {
+					out.push({ type: "divider", id: "div-logout" });
+				}
 				out.push({
 					type: "action",
 					id: "logout",
@@ -341,8 +341,13 @@
 					onSelect: actions.onRegister,
 				});
 			}
-			if (csEnabled) out.push(buildColorSchemeItem());
-			if (extraItems?.length) out.push(...extraItems);
+			if (extraItems?.length) {
+				out.push(...extraItems);
+			}
+
+			if (csEnabled) {
+				out.push(buildColorSchemeItem());
+			}
 		}
 
 		return out;
