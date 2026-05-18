@@ -298,6 +298,11 @@
 				renderedAny = true;
 			}
 
+			if (extraItems?.length) {
+				out.push(...extraItems);
+				renderedAny = true;
+			}
+
 			if (renderedAny && actions.onLogout) {
 				out.push({ type: "divider", id: "div-logout" });
 			}
@@ -337,9 +342,9 @@
 				});
 			}
 			if (csEnabled) out.push(buildColorSchemeItem());
+			if (extraItems?.length) out.push(...extraItems);
 		}
 
-		if (extraItems?.length) out.push(...extraItems);
 		return out;
 	});
 
