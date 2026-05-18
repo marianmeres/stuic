@@ -52,7 +52,11 @@
 		const preferredSet = new Set(preferredCountries?.map((c) => c.toUpperCase()) ?? []);
 
 		if (preferredSet.size > 0) {
-			const preferred = countryList.filter((c) => preferredSet.has(c.iso));
+			// Preserve the order given in `preferredCountries`.
+			const order = preferredCountries!.map((c) => c.toUpperCase());
+			const preferred = order
+				.map((iso) => countryList.find((c) => c.iso === iso))
+				.filter((c): c is Country => !!c);
 			preferred.forEach((c) => result.push(countryToItem(c)));
 			if (preferred.length > 0) {
 				result.push({ type: "divider" });
