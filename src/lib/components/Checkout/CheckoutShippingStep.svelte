@@ -10,6 +10,7 @@
 		CheckoutValidationError,
 	} from "./_internal/checkout-types.js";
 	import type { NotificationsStack } from "../Notifications/notifications-stack.svelte.js";
+	import type { Props as CheckoutAddressFormProps } from "./CheckoutAddressForm.svelte";
 
 	export interface Props extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
 		/** Order data (for totals display in sidebar) */
@@ -94,6 +95,24 @@
 			]
 		>;
 
+		/**
+		 * Props forwarded to both inner `CheckoutAddressForm` instances (shipping
+		 * and, when visible, billing). Use this to configure `phoneFieldProps`,
+		 * `countryFieldProps`, `preferredCountries`, `countryList`, `countryNames`,
+		 * `requiredFields`, or `fields` without replacing the entire left column
+		 * via the `leftColumn` snippet.
+		 *
+		 * Structural props that `CheckoutShippingStep` owns (`address`, `errors`,
+		 * `label`, `countryField`, `t`, `unstyled`, `el`) cannot be overridden via
+		 * this object — they are applied after the spread.
+		 */
+		addressFormProps?: Partial<
+			Omit<
+				CheckoutAddressFormProps,
+				"address" | "errors" | "label" | "countryField" | "t" | "unstyled" | "el"
+			>
+		>;
+
 		/** Override left column entirely */
 		leftColumn?: Snippet;
 
@@ -154,6 +173,7 @@
 		continueLabel,
 		continuingLabel,
 		countryField,
+		addressFormProps,
 		leftColumn,
 		rightColumn,
 		t: tProp,
@@ -267,6 +287,7 @@
 						</CheckoutSectionHeader>
 						<CheckoutAddressForm
 							bind:this={shippingFormRef}
+							{...addressFormProps}
 							bind:address={shippingAddress}
 							label="shipping"
 							errors={shippingErrors}
@@ -293,6 +314,7 @@
 							</CheckoutSectionHeader>
 							<CheckoutAddressForm
 								bind:this={billingFormRef}
+								{...addressFormProps}
 								bind:address={billingAddress}
 								label="billing"
 								errors={billingErrors}
