@@ -11,8 +11,15 @@
 	--stuic-header-gap: 1rem;
 	--stuic-header-min-height: 3.5rem;
 
+	/* Content row max-width. `none` lets the inner row fill the parent.
+	   Override globally or per-instance via the `contentMaxWidth` prop. */
+	--stuic-header-content-max-width: none;
+
 	/* Nav items */
 	--stuic-header-nav-gap: 0.25rem;
+
+	/* Actions (icon buttons in the end region) */
+	--stuic-header-actions-gap: 0.25rem;
 
 	/* Project name */
 	--stuic-header-project-name-font-weight: var(--font-weight-semibold, 600);
@@ -27,14 +34,26 @@
 	   ============================================================================ */
 
 	.stuic-header {
-		display: flex;
-		align-items: center;
 		width: 100%;
-		min-height: var(--stuic-header-min-height);
-		padding: var(--stuic-header-padding-y) var(--stuic-header-padding-x);
-		gap: var(--stuic-header-gap);
 		background: var(--stuic-header-bg, var(--color-background, inherit));
 		color: var(--stuic-header-text, inherit);
+	}
+
+	/* ============================================================================
+	   CONTENT ROW (inner wrapper — flex layout, padding, gap, optional max-width)
+	   The outer .stuic-header keeps full width / background; this inner row
+	   carries the layout so it can be capped via `contentMaxWidth` and centered.
+	   ============================================================================ */
+
+	.stuic-header-content {
+		display: flex;
+		align-items: center;
+		gap: var(--stuic-header-gap);
+		min-height: var(--stuic-header-min-height);
+		padding: var(--stuic-header-padding-y) var(--stuic-header-padding-x);
+		width: 100%;
+		max-width: var(--stuic-header-content-max-width);
+		margin-inline: auto;
 	}
 
 	/* ============================================================================
@@ -50,13 +69,29 @@
 	}
 
 	/* ============================================================================
-	   LOGO
+	   LEADING (left-side slot — hamburger, back arrow, etc.)
+	   ============================================================================ */
+
+	.stuic-header-leading {
+		display: flex;
+		align-items: center;
+		flex-shrink: 0;
+	}
+
+	.stuic-header-leading-hamburger {
+		/* Ghost Button handles hover/focus — only override sizing if needed */
+	}
+
+	/* ============================================================================
+	   LOGO / TITLE (takes available space — flex-1 with min-width: 0 so long
+	   content can shrink/ellipsize instead of overflowing the row)
 	   ============================================================================ */
 
 	.stuic-header-logo {
 		display: flex;
 		align-items: center;
-		flex-shrink: 0;
+		flex: 1;
+		min-width: 0;
 	}
 
 	.stuic-header-project-name {
@@ -89,6 +124,26 @@
 		display: inline-flex;
 		align-items: center;
 		flex-shrink: 0;
+	}
+
+	/* ============================================================================
+	   ACTIONS (icon buttons in the end region — search, notifications, etc.)
+	   ============================================================================ */
+
+	.stuic-header-actions {
+		display: flex;
+		align-items: center;
+		gap: var(--stuic-header-actions-gap);
+		flex-shrink: 0;
+	}
+
+	.stuic-header-action {
+		/* Ghost iconButton handles base styling — placeholder hook for consumer overrides */
+	}
+
+	.stuic-header-action[data-active] {
+		color: var(--stuic-header-action-text-active, var(--color-foreground, inherit));
+		background: var(--stuic-header-action-bg-active, var(--color-muted, transparent));
 	}
 
 	/* ============================================================================
