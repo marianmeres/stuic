@@ -132,20 +132,41 @@ Navigation wrapper component.
 
 #### `Header`
 
-Responsive navigation header with logo, nav items, avatar, and automatic hamburger collapse. Renders as `<header>`.
+Responsive navigation header with leading slot, logo, nav items, locale switcher, action icon buttons, avatar, and configurable responsive collapse (`"hamburger"` fold or `"hide"` for app-like shells). Renders as `<header>`.
 
-| Prop                | Type              | Default               | Description                        |
-| ------------------- | ----------------- | --------------------- | ---------------------------------- |
-| `logo`              | `Snippet`         | —                     | Logo/brand snippet                 |
-| `projectName`       | `string`          | —                     | Simple text logo alternative       |
-| `items`             | `HeaderNavItem[]` | `[]`                  | Navigation items                   |
-| `avatar`            | `Snippet`         | —                     | Avatar snippet (far right)         |
-| `avatarOnClick`     | `() => void`      | —                     | Avatar click handler               |
-| `collapseThreshold` | `number`          | `768`                 | Width (px) to collapse; 0 disables |
-| `fixed`             | `boolean`         | `false`               | Fixed positioning at top           |
-| `isCollapsed`       | `boolean`         | —                     | Bindable: collapsed state          |
-| `isMenuOpen`        | `boolean`         | —                     | Bindable: hamburger menu open      |
-| `onSelect`          | `(item) => void`  | —                     | Item selection callback            |
+| Prop                    | Type                                      | Default                | Description                                                                                                          |
+| ----------------------- | ----------------------------------------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `leading`               | `Snippet<[{ isCollapsed }]>`              | —                      | Leading (left-side) slot. Overrides `leadingHamburger`.                                                              |
+| `leadingHamburger`      | `boolean \| "collapsed"`                  | `false`                | Built-in hamburger in the leading slot (`"collapsed"` = only below threshold). Ignored when `leading` is provided.   |
+| `onLeadingHamburger`    | `() => void`                              | —                      | Click handler for the built-in leading hamburger (typically opens a drawer).                                          |
+| `leadingHamburgerIcon`  | `THC`                                     | menu icon              | Icon override for the built-in leading hamburger.                                                                     |
+| `leadingHamburgerLabel` | `string`                                  | `"Open menu"`          | Aria-label for the leading hamburger.                                                                                 |
+| `logo`                  | `Snippet`                                 | —                      | Logo/brand snippet.                                                                                                   |
+| `projectName`           | `string`                                  | —                      | Simple text logo alternative.                                                                                         |
+| `navVariant`            | `ButtonVariant`                           | `"ghost"`              | Button variant for nav items and the locale switcher trigger.                                                         |
+| `items`                 | `HeaderNavItem[]`                         | `[]`                   | Navigation items — inline when expanded, dropdown when collapsed (hamburger mode).                                    |
+| `actions`               | `HeaderActionItem[]`                      | `[]`                   | Action icon buttons between the locale switcher and the avatar. Always visible — never fold into the dropdown.        |
+| `onActionSelect`        | `(action) => void`                        | —                      | Called after the per-item `onclick`.                                                                                  |
+| `avatar`                | `Snippet`                                 | —                      | Avatar snippet (far right).                                                                                           |
+| `avatarOnClick`         | `() => void`                              | —                      | Makes the avatar interactive. In `"hamburger"` collapse mode it moves into the dropdown.                              |
+| `avatarLabel`           | `THC`                                     | `"Account"`            | Label for the avatar entry inside the collapsed dropdown.                                                             |
+| `locales`               | `HeaderLocaleItem[]`                      | `[]`                   | Locale items. Switcher only renders when 2+.                                                                          |
+| `activeLocale`          | `string`                                  | —                      | Current locale id.                                                                                                    |
+| `onLocaleChange`        | `(localeId) => void`                      | —                      | Locale selection callback.                                                                                            |
+| `localeLabel`           | `THC`                                     | `"Language"`           | Section header inside the collapsed dropdown.                                                                         |
+| `contentMaxWidth`       | `string \| number`                        | —                      | Max-width of the inner content row (outer header stays 100%). Accepts any CSS length. Maps to `--stuic-header-content-max-width`. |
+| `collapseThreshold`     | `number`                                  | `768`                  | Width (px) to collapse; 0 disables.                                                                                   |
+| `collapseMode`          | `"hamburger" \| "hide"`                   | `"hamburger"`          | Collapse behavior. `"hide"` keeps avatar/actions visible and renders no trailing hamburger (app-shell pattern).        |
+| `keepLocaleOnCollapse`  | `boolean`                                 | `false`                | Keep the locale switcher visible in collapsed mode (only `collapseMode === "hide"`).                                   |
+| `fixed`                 | `boolean`                                 | `false`                | Fixed positioning at the top.                                                                                         |
+| `isCollapsed`           | `boolean`                                 | —                      | Bindable: collapsed state.                                                                                            |
+| `isMenuOpen`            | `boolean`                                 | —                      | Bindable: hamburger menu open.                                                                                        |
+| `dropdownPosition`      | `DropdownMenuPosition`                    | `"bottom-span-right"`  | Position of the collapsed dropdown.                                                                                   |
+| `iconSize`              | `number`                                  | `24`                   | Hamburger/X icon size in px.                                                                                          |
+| `onSelect`              | `(item) => void`                          | —                      | Item selection callback (both modes).                                                                                 |
+| `children`              | `Snippet<[{ isCollapsed, items, offsetWidth }]>` | —              | Escape hatch: override the entire inner layout.                                                                       |
+
+Class slots: `class`, `classContent`, `classLeading`, `classLeadingHamburger`, `classLogo`, `classNav`, `classNavItem`, `classNavItemActive`, `classActions`, `classAction`, `classActionActive`, `classEnd`, `classAvatar`, `classLocale`, `classHamburger`, `classDropdown`.
 
 ```svelte
 <Header
@@ -159,11 +180,32 @@ Responsive navigation header with logo, nav items, avatar, and automatic hamburg
 		<Avatar src="/me.jpg" alt="User" />
 	{/snippet}
 </Header>
+
+<!-- App-shell pattern: avatar + actions stay visible in collapsed mode,
+     nav items hide, leading hamburger opens a drawer. -->
+<Header
+	projectName="App"
+	items={navItems}
+	actions={[
+		{ id: "search", icon: { html: iconSearch() }, label: "Search", onclick: openSearch },
+		{ id: "cart", icon: { html: iconCart() }, label: "Cart", onclick: openCart },
+	]}
+	collapseMode="hide"
+	leadingHamburger="collapsed"
+	onLeadingHamburger={() => (drawerOpen = true)}
+	avatarOnClick={() => goto("/me")}
+>
+	{#snippet avatar()}<Avatar initials="MM" autoColor />{/snippet}
+</Header>
 ```
 
-**HeaderNavItem:** `{ id, label, href?, onclick?, icon?, active?, disabled?, class? }`
+**HeaderNavItem:** `{ id, label, href?, target?, onclick?, icon?, active?, disabled?, class? }`
 
-CSS tokens: `--stuic-header-padding-x`, `--stuic-header-padding-y`, `--stuic-header-gap`, `--stuic-header-min-height`, `--stuic-header-nav-gap`, `--stuic-header-bg`, `--stuic-header-text`, `--stuic-header-border-width`, `--stuic-header-border-color`, `--stuic-header-nav-item-bg-active`, `--stuic-header-nav-item-text-active`, `--stuic-header-z-index`.
+**HeaderActionItem:** `{ id, icon?, label, onclick?, href?, target?, active?, disabled?, class?, render? }` — `render` is an optional `Snippet<[{ action, class, isCollapsed, onclick }]>` that replaces the default `<Button>` for that action (useful for wrapping in a popover/tooltip directive or adding a count badge while keeping default positioning).
+
+**HeaderLocaleItem:** `{ id, label }`
+
+CSS tokens: `--stuic-header-padding-x`, `--stuic-header-padding-y`, `--stuic-header-gap`, `--stuic-header-min-height`, `--stuic-header-nav-gap`, `--stuic-header-content-max-width`, `--stuic-header-bg`, `--stuic-header-text`, `--stuic-header-border-width`, `--stuic-header-border-color`, `--stuic-header-nav-item-bg-active`, `--stuic-header-nav-item-text-active`, `--stuic-header-z-index`.
 
 ---
 
@@ -333,6 +375,38 @@ International phone number input with country dial code picker. Parses and compo
 | `validate`           | `boolean \| ValidateOptions`        | —           | Enable phone validation                            |
 
 Exports: `FieldPhoneNumber`, `FieldPhoneNumberProps`, `validatePhoneNumber`, `Country`.
+
+#### `FieldCountry`
+
+Country picker dropdown with searchable, optionally flag-prefixed list. Submits a country ISO alpha-2 code via a hidden input. Pairs naturally with `FieldPhoneNumber` and with checkout/address forms.
+
+| Prop                 | Type                              | Default     | Description                                                                |
+| -------------------- | --------------------------------- | ----------- | -------------------------------------------------------------------------- |
+| `value`              | `string`                          | `""`        | Bindable ISO alpha-2 code (e.g. `"SK"`). Empty = unselected.               |
+| `onChange`           | `(iso: string) => void`           | —           | Called when selection changes.                                             |
+| `countryList`        | `Country[] \| string[]`           | all         | Restrict the list to specific countries (objects or ISO codes).            |
+| `preferredCountries` | `string[]`                        | —           | ISO codes pinned at the top of the dropdown.                               |
+| `countryNames`       | `Record<string, string>`          | English     | Override displayed country names (keyed by ISO code).                      |
+| `flags`              | `boolean`                         | `true`      | Show country flag emoji.                                                   |
+| `name`               | `string`                          | —           | Hidden input name (enables form submission + native validation).           |
+| `placeholder`        | `string`                          | —           | Trigger placeholder text when nothing is selected.                         |
+| `required`           | `boolean`                         | `false`     | Required indicator + validation.                                           |
+| `disabled`           | `boolean`                         | `false`     | Disable the trigger and dropdown.                                          |
+| `validate`           | `boolean \| ValidateOptions`      | enabled     | Validation behavior (default-on, see Imperative validate API).             |
+
+Integrates with `InputWrap` — supports `label`, `description`, `renderSize`, `labelLeft`, `labelLeftWidth`, `labelLeftBreakpoint`, `inputBefore`, `inputAfter`, `inputBelow`, `below`, `classInput`, `classDropdown`.
+
+```svelte
+<FieldCountry
+	bind:value={address.country}
+	name="country"
+	label="Country"
+	preferredCountries={["SK", "CZ", "AT", "DE"]}
+	required
+/>
+```
+
+Exports: `FieldCountry`, `FieldCountryProps`, `Country`, `COUNTRIES`, `ISO_MAP`.
 
 #### `FieldObject`
 

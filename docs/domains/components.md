@@ -2,7 +2,7 @@
 
 ## Overview
 
-56 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
+57 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
@@ -798,21 +798,34 @@ Prefix: `--stuic-cron-input-*`
 
 ## Header
 
-Responsive navigation header with logo, nav items, avatar, and automatic hamburger collapse.
+Responsive navigation header with leading slot, logo, nav items, locale switcher, action icon buttons, avatar, and configurable responsive collapse. Two collapse modes:
+
+- `"hamburger"` (default): nav items fold into a trailing dropdown along with the locale switcher and (if interactive) the avatar.
+- `"hide"`: nav items are hidden entirely — no trailing hamburger. Avatar + actions stay visible. Common "app shell" pattern where a leading hamburger opens a side drawer.
 
 ### Exports
 
-| Export                     | Kind     | Description               |
-| -------------------------- | -------- | ------------------------- |
-| `Header`                   | component | Main header component    |
-| `HeaderProps`              | type     | Props type                |
-| `HeaderNavItem`            | type     | Nav item interface        |
-| `HEADER_BASE_CLASSES`      | constant | `"stuic-header"`          |
-| `HEADER_LOGO_CLASSES`      | constant | `"stuic-header-logo"`     |
-| `HEADER_NAV_CLASSES`       | constant | `"stuic-header-nav"`      |
-| `HEADER_NAV_ITEM_CLASSES`  | constant | `"stuic-header-nav-item"` |
-| `HEADER_END_CLASSES`       | constant | `"stuic-header-end"`      |
-| `HEADER_HAMBURGER_CLASSES` | constant | `"stuic-header-hamburger"` |
+| Export                              | Kind      | Description                              |
+| ----------------------------------- | --------- | ---------------------------------------- |
+| `Header`                            | component | Main header component                    |
+| `HeaderProps`                       | type      | Props type                               |
+| `HeaderNavItem`                     | type      | Nav item interface                       |
+| `HeaderActionItem`                  | type      | Action icon-button interface             |
+| `HeaderLocaleItem`                  | type      | Locale switcher item                     |
+| `HeaderCollapseMode`                | type      | `"hamburger" \| "hide"`                  |
+| `HeaderLeadingHamburger`            | type      | `boolean \| "collapsed"`                 |
+| `HEADER_BASE_CLASSES`               | constant  | `"stuic-header"`                         |
+| `HEADER_CONTENT_CLASSES`            | constant  | `"stuic-header-content"`                 |
+| `HEADER_LEADING_CLASSES`            | constant  | `"stuic-header-leading"`                 |
+| `HEADER_LEADING_HAMBURGER_CLASSES`  | constant  | `"stuic-header-leading-hamburger"`       |
+| `HEADER_LOGO_CLASSES`               | constant  | `"stuic-header-logo"`                    |
+| `HEADER_NAV_CLASSES`                | constant  | `"stuic-header-nav"`                     |
+| `HEADER_NAV_ITEM_CLASSES`           | constant  | `"stuic-header-nav-item"`                |
+| `HEADER_ACTIONS_CLASSES`            | constant  | `"stuic-header-actions"`                 |
+| `HEADER_ACTION_CLASSES`             | constant  | `"stuic-header-action"`                  |
+| `HEADER_END_CLASSES`                | constant  | `"stuic-header-end"`                     |
+| `HEADER_HAMBURGER_CLASSES`          | constant  | `"stuic-header-hamburger"`               |
+| `HEADER_LOCALE_CLASSES`             | constant  | `"stuic-header-locale"`                  |
 
 ### HeaderNavItem
 
@@ -821,6 +834,7 @@ interface HeaderNavItem {
   id: string | number;
   label: THC;
   href?: string;
+  target?: string;
   onclick?: () => void;
   icon?: THC;
   active?: boolean;
@@ -829,28 +843,98 @@ interface HeaderNavItem {
 }
 ```
 
+### HeaderActionItem
+
+```ts
+interface HeaderActionItem {
+  id: string | number;
+  icon?: THC;           // visible content (ignored when render is provided)
+  label: THC;           // aria-label
+  onclick?: () => void;
+  href?: string;
+  target?: string;
+  active?: boolean;
+  disabled?: boolean;
+  class?: string;
+  /** Optional custom renderer — replaces the default <Button> while
+   *  keeping Header-owned positioning + collapse behavior. */
+  render?: Snippet<[{
+    action: HeaderActionItem;
+    class: string;
+    isCollapsed: boolean;
+    onclick: () => void;
+  }]>;
+}
+```
+
 ### Key Props
 
-| Prop                | Type                  | Default                 | Description                          |
-| ------------------- | --------------------- | ----------------------- | ------------------------------------ |
-| `logo`              | `Snippet`             | —                       | Logo/brand snippet                   |
-| `projectName`       | `string`              | —                       | Simple text logo alternative         |
-| `items`             | `HeaderNavItem[]`     | `[]`                    | Navigation items                     |
-| `avatar`            | `Snippet`             | —                       | Avatar snippet (far right)           |
-| `avatarOnClick`     | `() => void`          | —                       | Avatar click handler                 |
-| `collapseThreshold` | `number`              | `768`                   | Width (px) to collapse; 0 disables   |
-| `fixed`             | `boolean`             | `false`                 | Fixed positioning at top             |
-| `isCollapsed`       | `boolean`             | —                       | Bindable: collapsed state            |
-| `isMenuOpen`        | `boolean`             | —                       | Bindable: hamburger menu open        |
-| `onSelect`          | `(item) => void`      | —                       | Item selection callback              |
+| Prop                    | Type                                       | Default                | Description                                                                                |
+| ----------------------- | ------------------------------------------ | ---------------------- | ------------------------------------------------------------------------------------------ |
+| `leading`               | `Snippet<[{ isCollapsed }]>`               | —                      | Leading (left) slot. Overrides `leadingHamburger`.                                         |
+| `leadingHamburger`      | `boolean \| "collapsed"`                   | `false`                | Built-in leading hamburger (`"collapsed"` = only below threshold).                         |
+| `onLeadingHamburger`    | `() => void`                               | —                      | Click handler for the leading hamburger (typically opens a drawer).                        |
+| `leadingHamburgerIcon`  | `THC`                                      | menu icon              | Icon override for the leading hamburger.                                                   |
+| `leadingHamburgerLabel` | `string`                                   | `"Open menu"`          | Aria-label for the leading hamburger.                                                      |
+| `logo`                  | `Snippet`                                  | —                      | Logo/brand snippet.                                                                        |
+| `projectName`           | `string`                                   | —                      | Simple text logo alternative.                                                              |
+| `navVariant`            | `ButtonVariant`                            | `"ghost"`              | Button variant for nav items + locale trigger.                                             |
+| `items`                 | `HeaderNavItem[]`                          | `[]`                   | Nav items — inline expanded, dropdown collapsed (hamburger mode).                           |
+| `actions`               | `HeaderActionItem[]`                       | `[]`                   | Action icon buttons. Always visible.                                                       |
+| `onActionSelect`        | `(action) => void`                         | —                      | Called after per-item `onclick`.                                                           |
+| `avatar`                | `Snippet`                                  | —                      | Avatar snippet (far right).                                                                |
+| `avatarOnClick`         | `() => void`                               | —                      | Makes avatar interactive. In `"hamburger"` mode it folds into the dropdown when collapsed.  |
+| `avatarLabel`           | `THC`                                      | `"Account"`            | Label for the avatar entry inside the collapsed dropdown.                                  |
+| `locales`               | `HeaderLocaleItem[]`                       | `[]`                   | Locale items. Switcher only renders when 2+.                                               |
+| `activeLocale`          | `string`                                   | —                      | Current locale id.                                                                         |
+| `onLocaleChange`        | `(localeId) => void`                       | —                      | Locale selection callback.                                                                 |
+| `localeLabel`           | `THC`                                      | `"Language"`           | Section header inside the collapsed dropdown.                                              |
+| `contentMaxWidth`       | `string \| number`                         | —                      | Inner content row max-width (outer header stays 100%).                                     |
+| `collapseThreshold`     | `number`                                   | `768`                  | Width (px) to collapse; 0 disables.                                                        |
+| `collapseMode`          | `"hamburger" \| "hide"`                    | `"hamburger"`          | Collapse behavior. See top of section.                                                     |
+| `keepLocaleOnCollapse`  | `boolean`                                  | `false`                | Keep locale switcher visible when collapsed (only `collapseMode === "hide"`).               |
+| `fixed`                 | `boolean`                                  | `false`                | Fixed positioning at top.                                                                  |
+| `isCollapsed`           | `boolean`                                  | —                      | Bindable: collapsed state.                                                                 |
+| `isMenuOpen`            | `boolean`                                  | —                      | Bindable: hamburger menu open.                                                             |
+| `dropdownPosition`      | `DropdownMenuPosition`                     | `"bottom-span-right"`  | Position of the collapsed dropdown.                                                        |
+| `iconSize`              | `number`                                   | `24`                   | Hamburger/X icon size in px.                                                               |
+| `onSelect`              | `(item) => void`                           | —                      | Item selection callback (both modes).                                                      |
 
-Snippets: `logo`, `avatar`, `children({ isCollapsed, items, offsetWidth })`.
+Snippets: `leading({ isCollapsed })`, `logo`, `avatar`, `children({ isCollapsed, items, offsetWidth })`. `HeaderActionItem.render` is a per-action snippet.
+
+Class slots: `class`, `classContent`, `classLeading`, `classLeadingHamburger`, `classLogo`, `classNav`, `classNavItem`, `classNavItemActive`, `classActions`, `classAction`, `classActionActive`, `classEnd`, `classAvatar`, `classLocale`, `classHamburger`, `classDropdown`.
+
+### App-shell pattern (`collapseMode="hide"`)
+
+Common pattern for app interfaces: the leading hamburger opens a side drawer for navigation, while avatar + action buttons (search, notifications, cart…) remain accessible in the top bar even on narrow viewports.
+
+```svelte
+<Header
+  projectName="App"
+  items={navItems}                <!-- inline expanded, hidden collapsed -->
+  actions={[
+    { id: "search", icon: { html: iconSearch() }, label: "Search", onclick: openSearch },
+    { id: "cart", icon: { html: iconCart() }, label: "Cart", onclick: openCart },
+  ]}
+  collapseMode="hide"
+  leadingHamburger="collapsed"
+  onLeadingHamburger={() => (drawerOpen = true)}
+  {locales}
+  {activeLocale}
+  onLocaleChange={(id) => (activeLocale = id)}
+  avatarOnClick={() => goto("/me")}
+>
+  {#snippet avatar()}<Avatar initials="MM" autoColor />{/snippet}
+</Header>
+```
+
+See [Header/README.md](../../src/lib/components/Header/README.md) for the breakdown of which markup branch handles each requirement of this pattern.
 
 ### CSS Tokens
 
 Prefix: `--stuic-header-*`
 
-`padding-x`, `padding-y`, `gap`, `min-height`, `nav-gap`, `project-name-font-weight`, `z-index`, `bg`, `text`, `border-width`, `border-color`, `nav-item-bg-active`, `nav-item-text-active`
+`padding-x`, `padding-y`, `gap`, `min-height`, `nav-gap`, `content-max-width`, `project-name-font-weight`, `z-index`, `bg`, `text`, `border-width`, `border-color`, `nav-item-bg-active`, `nav-item-text-active`
 
 ---
 

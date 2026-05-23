@@ -23,14 +23,15 @@
 
 ```
 src/lib/
-├── components/     # 56 UI components
+├── components/     # 57 component directories
 ├── actions/        # 15 Svelte actions
-├── utils/          # 43 utility modules
-├── themes/         # Generated theme CSS (css/) — definitions from @marianmeres/design-tokens
-├── icons/          # Icon re-exports
+├── utils/          # 44 utility modules
+├── icons/          # Icon re-exports from @marianmeres/icons-fns
 ├── index.css       # Centralized CSS imports
 └── index.ts        # Main exports
 ```
+
+Theme CSS files are not bundled in this package — they're provided by `@marianmeres/design-tokens/css/*.css` (42 themes) and imported by `src/lib/index.css`.
 
 ---
 
@@ -116,10 +117,10 @@ Global tokens that control cross-component visual properties. Defined in `src/li
 
 ### Domain Docs
 
-- [Components](./docs/domains/components.md) — 56 component directories, Props pattern, snippets
+- [Components](./docs/domains/components.md) — 57 component directories, Props pattern, snippets
 - [Theming](./docs/domains/theming.md) — CSS tokens, dark mode, themes
 - [Actions](./docs/domains/actions.md) — 15 Svelte directives
-- [Utils](./docs/domains/utils.md) — 43 utility modules
+- [Utils](./docs/domains/utils.md) — 44 utility modules
 
 ### Reference
 

@@ -2,7 +2,7 @@
 
 ## Overview
 
-43 utility modules for common tasks. Organized by category.
+44 utility modules for common tasks. Organized by category.
 
 ---
 

@@ -10,21 +10,25 @@ STUIC is a Svelte 5 component library with centralized CSS theming via custom pr
 
 ---
 
-## Three-Layer Styling System
+## Four-Layer Styling System
 
 ```
-Layer 1: Theme Tokens (--stuic-color-*)
+Layer 1: Theme Tokens         (--stuic-color-*)
     ↓
-Layer 2: Component Tokens (--stuic-{component}-*)
+Layer 2: Structural Tokens    (--stuic-radius, --stuic-shadow, --stuic-border-width, --stuic-transition)
+    ↓ (used as fallbacks)
+Layer 3: Component Tokens     (--stuic-{component}-*)
     ↓
-Layer 3: Internal Vars (--_bg, --_text, --_border)
+Layer 4: Internal Vars        (--_bg, --_text, --_border)
 ```
 
-**Layer 1 - Theme Tokens:** Global design tokens defining colors, provided by `@marianmeres/design-tokens/css/`.
+**Layer 1 - Theme Tokens:** Global design tokens defining colors, provided by `@marianmeres/design-tokens/css/`. Includes intent colors (`primary`, `accent`, `destructive`, `warning`, `success`), surface intents (15%/30% color-mix tints), and role colors (`background`, `surface`, `muted`, `foreground`, `border`, `input`, `ring`).
 
-**Layer 2 - Component Tokens:** Component-specific customization points, defined in component `index.css` files.
+**Layer 2 - Structural Tokens:** Shared cross-component visuals defined in `src/lib/index.css`. Override these to reshape the entire library at once (e.g., a brutalist "no radius / no shadow / no border" pass). See [Conventions § Shared Structural Tokens](./conventions.md).
 
-**Layer 3 - Internal Vars:** Private variables set by intent/variant selectors, used in base styles.
+**Layer 3 - Component Tokens:** Component-specific customization points, defined in component `index.css` files. Reference structural tokens as fallbacks at usage sites (NOT at `:root`) so per-instance scoped overrides remain possible.
+
+**Layer 4 - Internal Vars:** Private variables (`--_*`) set by intent/variant/size selectors and consumed in base styles.
 
 ---
 
@@ -32,7 +36,7 @@ Layer 3: Internal Vars (--_bg, --_text, --_border)
 
 ```
 src/lib/
-├── components/           # 46 UI components
+├── components/           # 57 component directories
 │   └── {Name}/
 │       ├── {Name}.svelte     # Main component
 │       ├── index.ts          # Exports
@@ -44,12 +48,12 @@ src/lib/
 │   ├── *.ts                  # Traditional actions
 │   └── index.ts              # Barrel export
 │
-├── utils/                # 43 utility modules
+├── utils/                # 44 utility modules
 │   ├── *.svelte.ts           # Reactive utilities
 │   ├── *.ts                  # Pure functions
 │   └── index.ts              # Barrel export
 │
-├── icons/                # Icon re-exports
+├── icons/                # Icon re-exports from @marianmeres/icons-fns
 │
 ├── index.css             # CENTRALIZED CSS imports
 └── index.ts              # Main barrel export
