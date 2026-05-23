@@ -21,6 +21,29 @@
 	/* Actions (icon buttons in the end region) */
 	--stuic-header-actions-gap: 0.25rem;
 
+	/* Hamburger offsets — outdent the built-in hamburger buttons on both
+	   inline sides so the *icon* (not the invisible iconButton hit area)
+	   sits flush with the header's content padding on one side and tightens
+	   against its neighbor (logo / avatar) on the other side. The flex
+	   `gap` between header regions kicks in *after* the button's invisible
+	   padding, so without these the perceived gap is `--stuic-header-gap` +
+	   one button padding.
+	   Default magnitude is derived from the iconButton's own padding so the
+	   alignment stays correct if button padding ever changes. Set to 0 to
+	   disable; override each side independently if needed. */
+	--stuic-header-leading-hamburger-offset-inline-start: calc(
+		-1 * var(--stuic-button-padding-y-sm)
+	);
+	--stuic-header-leading-hamburger-offset-inline-end: calc(
+		-1 * var(--stuic-button-padding-y-sm)
+	);
+	--stuic-header-trailing-hamburger-offset-inline-start: calc(
+		-1 * var(--stuic-button-padding-y-sm)
+	);
+	--stuic-header-trailing-hamburger-offset-inline-end: calc(
+		-1 * var(--stuic-button-padding-y-sm)
+	);
+
 	/* Project name */
 	--stuic-header-project-name-font-weight: var(--font-weight-semibold, 600);
 
@@ -79,7 +102,12 @@
 	}
 
 	.stuic-header-leading-hamburger {
-		/* Ghost Button handles hover/focus — only override sizing if needed */
+		/* Outdent on both inline sides so the icon (not the iconButton hit
+		   area) aligns with the header's content padding on the start and
+		   tightens against the logo on the end. Override each side via its
+		   own token. */
+		margin-inline-start: var(--stuic-header-leading-hamburger-offset-inline-start);
+		margin-inline-end: var(--stuic-header-leading-hamburger-offset-inline-end);
 	}
 
 	/* ============================================================================
@@ -214,6 +242,11 @@
 	   ============================================================================ */
 
 	.stuic-header-hamburger {
-		/* Ghost Button handles hover/focus — only override sizing */
+		/* Symmetric counterpart to the leading hamburger — outdent on both
+		   inline sides so the icon tightens against its left neighbor
+		   (avatar) on the start and aligns with the header's content padding
+		   on the end. Override each side via its own token. */
+		margin-inline-start: var(--stuic-header-trailing-hamburger-offset-inline-start);
+		margin-inline-end: var(--stuic-header-trailing-hamburger-offset-inline-end);
 	}
 }

@@ -29,6 +29,8 @@
 	let appContainerWidth = $state(1000);
 	let hideNavContainerWidth = $state(1000);
 	let searchActive = $state(false);
+	let unreadCount = $state(3);
+	let lastCustomAction = $state<string | null>(null);
 
 	const actions: HeaderActionItem[] = [
 		{
@@ -334,15 +336,14 @@
 		<p class="text-sm text-neutral-500 mb-4">
 			Icon-only action buttons via <code
 				class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">actions</code
-			> sit between the locale switcher and the avatar. They support <code
-				class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">onclick</code
-			>,
+			>
+			sit between the locale switcher and the avatar. They support
+			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">onclick</code>,
 			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">href</code>,
 			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">active</code>, and
-			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">disabled</code>. Search is
-			active: <code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded"
-				>{searchActive}</code
-			>
+			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">disabled</code>.
+			Search is active:
+			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">{searchActive}</code>
 		</p>
 		<div class="border rounded-lg overflow-hidden">
 			<Header
@@ -365,15 +366,112 @@
 
 	<hr class="border-neutral-200 dark:border-neutral-700" />
 
+	<!-- Custom-rendered action item (popover/tooltip/badge use case) -->
+	<section>
+		<h2 class="text-xl font-semibold mb-2">Custom-rendered Action (badge overlay)</h2>
+		<p class="text-sm text-neutral-500 mb-4">
+			An action with a
+			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">render</code> snippet
+			replaces the default
+			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">&lt;Button&gt;</code>
+			for that item while the Header still owns positioning and the collapse decision. Use it
+			when an action needs custom DOM around its trigger — popover/tooltip directives, badge
+			overlays, etc. The snippet receives the default action
+			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">class</code>, current
+			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">isCollapsed</code>,
+			and a pre-wired
+			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">onclick</code> that
+			fires both
+			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">action.onclick</code>
+			and
+			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">onActionSelect</code>.
+		</p>
+		<p class="text-sm text-neutral-500 mb-4">
+			Unread: <code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded"
+				>{unreadCount}</code
+			>
+			· Last action:
+			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded"
+				>{lastCustomAction ?? "—"}</code
+			>
+		</p>
+		<div class="border rounded-lg overflow-hidden">
+			<Header
+				projectName="Custom Action"
+				items={navItems}
+				actions={[
+					{
+						id: "search",
+						icon: { html: iconSearch({ size: 18 }) },
+						label: "Search",
+						onclick: () => (lastCustomAction = "search"),
+					},
+					{
+						id: "notifications",
+						label: "Notifications",
+						onclick: () => {
+							lastCustomAction = "notifications";
+							unreadCount = 0;
+						},
+						render: notificationsRender,
+					},
+				]}
+				onActionSelect={(a) => console.log("onActionSelect:", a.id)}
+				avatarOnClick={() => (lastCustomAction = "avatar")}
+			>
+				{#snippet avatar()}
+					<Avatar initials="MM" size="md" autoColor />
+				{/snippet}
+			</Header>
+		</div>
+		<div class="mt-3 flex gap-2">
+			<Button size="sm" onclick={() => unreadCount++}>+1 unread</Button>
+			<Button size="sm" onclick={() => (unreadCount = 0)}>Clear</Button>
+		</div>
+	</section>
+
+	{#snippet notificationsRender({
+		action,
+		class: cls,
+		onclick,
+	}: {
+		action: HeaderActionItem;
+		class: string;
+		isCollapsed: boolean;
+		onclick: () => void;
+	})}
+		<div class="relative inline-flex">
+			<Button
+				variant="ghost"
+				iconButton
+				size="sm"
+				class={cls}
+				aria-label={typeof action.label === "string" ? action.label : undefined}
+				{onclick}
+			>
+				{@html iconUser({ size: 18 })}
+			</Button>
+			{#if unreadCount > 0}
+				<span
+					class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-semibold flex items-center justify-center pointer-events-none"
+				>
+					{unreadCount > 99 ? "99+" : unreadCount}
+				</span>
+			{/if}
+		</div>
+	{/snippet}
+
+	<hr class="border-neutral-200 dark:border-neutral-700" />
+
 	<!-- App-like collapse: hide nav, keep avatar always visible -->
 	<section>
 		<h2 class="text-xl font-semibold mb-2">App-like Collapse (hide nav)</h2>
 		<p class="text-sm text-neutral-500 mb-4">
 			With <code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded"
 				>collapseMode="hide"</code
-			> nav items disappear entirely below the threshold (no trailing hamburger), but the
-			avatar stays — the well-known "profile always accessible" UX. A leading hamburger opens
-			the drawer that owns the navigation. Drag the slider to see the transition.
+			> nav items disappear entirely below the threshold (no trailing hamburger), but the avatar
+			stays — the well-known "profile always accessible" UX. A leading hamburger opens the drawer
+			that owns the navigation. Drag the slider to see the transition.
 		</p>
 		<input
 			type="range"
@@ -447,7 +545,8 @@
 			</Header>
 		</div>
 		<p class="text-xs opacity-60 mt-2">
-			Tip: the outer header background fills the surface; the centered inner row is capped at
+			Tip: the outer header background fills the surface; the centered inner row is capped
+			at
 			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">48rem</code>.
 		</p>
 	</section>

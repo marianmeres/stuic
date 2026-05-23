@@ -40,8 +40,10 @@
 	export interface HeaderActionItem {
 		/** Unique identifier */
 		id: string | number;
-		/** Icon — THC (string/html/component/snippet). The visible content. */
-		icon: THC;
+		/** Icon — THC (string/html/component/snippet). The visible content.
+		 *  Required for the default rendering; ignored when `render` is provided
+		 *  (the snippet owns its own DOM). */
+		icon?: THC;
 		/** Accessible label (aria-label). */
 		label: THC;
 		/** Click handler */
@@ -56,6 +58,31 @@
 		disabled?: boolean;
 		/** Additional CSS classes */
 		class?: string;
+		/** Optional custom renderer. When provided, replaces the default
+		 *  `<Button>` rendering for this action. The Header still owns
+		 *  positioning (slot in the actions row) and the collapse decision.
+		 *
+		 *  Use this when an action needs custom DOM around its trigger —
+		 *  e.g. a popover/tooltip directive, or a count/dot badge overlay.
+		 *
+		 *  Snippet args:
+		 *  - `action`     — the item itself (lets a snippet be reused across items)
+		 *  - `class`      — the same merged class the default `<Button>` would receive,
+		 *                   so consumers can opt into the default look
+		 *  - `isCollapsed`— current collapse state
+		 *  - `onclick`    — pre-wired handler that calls `action.onclick` and
+		 *                   `onActionSelect`; consumers can wire it to their
+		 *                   button or ignore it. */
+		render?: Snippet<
+			[
+				{
+					action: HeaderActionItem;
+					class: string;
+					isCollapsed: boolean;
+					onclick: () => void;
+				},
+			]
+		>;
 	}
 
 	/** Collapse behavior when the header drops below `collapseThreshold`:
@@ -559,26 +586,38 @@
 			{#if actions.length > 0}
 				<div class={_classActions}>
 					{#each actions as action (action.id)}
-						<Button
-							variant="ghost"
-							iconButton
-							size="sm"
-							href={action.href}
-							target={action.target}
-							disabled={action.disabled}
-							{unstyled}
-							class={twMerge(
-								!unstyled && HEADER_ACTION_CLASSES,
-								!unstyled && action.active && classActionActive,
-								classAction,
-								action.class
-							)}
-							data-active={!unstyled && action.active ? "" : undefined}
-							aria-label={typeof action.label === "string" ? action.label : undefined}
-							onclick={() => handleActionClick(action)}
-						>
-							<Thc thc={action.icon} />
-						</Button>
+						{@const actionClass = twMerge(
+							!unstyled && HEADER_ACTION_CLASSES,
+							!unstyled && action.active && classActionActive,
+							classAction,
+							action.class
+						)}
+						{#if action.render}
+							{@render action.render({
+								action,
+								class: actionClass,
+								isCollapsed: _isCollapsed,
+								onclick: () => handleActionClick(action),
+							})}
+						{:else}
+							<Button
+								variant="ghost"
+								iconButton
+								size="sm"
+								href={action.href}
+								target={action.target}
+								disabled={action.disabled}
+								{unstyled}
+								class={actionClass}
+								data-active={!unstyled && action.active ? "" : undefined}
+								aria-label={typeof action.label === "string" ? action.label : undefined}
+								onclick={() => handleActionClick(action)}
+							>
+								{#if action.icon !== undefined}
+									<Thc thc={action.icon} />
+								{/if}
+							</Button>
+						{/if}
 					{/each}
 				</div>
 			{/if}
