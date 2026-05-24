@@ -81,7 +81,7 @@
 	"dependencies": {
 		"@marianmeres/clog": "^3.21.0",
 		"@marianmeres/cron": "^2.0.1",
-		"@marianmeres/design-tokens": "^1.6.0",
+		"@marianmeres/design-tokens": "^1.7.0",
 		"@marianmeres/icons-fns": "^5.0.0",
 		"@marianmeres/item-collection": "^1.4.2",
 		"@marianmeres/paging-store": "^2.1.1",
