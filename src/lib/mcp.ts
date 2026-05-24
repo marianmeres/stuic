@@ -30,7 +30,7 @@ export const tools: McpToolDefinition[] = [
 		},
 		handler: async ({ schema, prefix }) => {
 			const parsed: ThemeSchema = JSON.parse(schema);
-			return generateThemeCss(parsed, prefix);
+			return generateThemeCss(parsed, prefix, { prettierIgnore: true });
 		},
 	},
 	{
@@ -38,9 +38,7 @@ export const tools: McpToolDefinition[] = [
 		description:
 			"Convert a CSS HEX color to oklch() format. Useful for perceptually uniform color manipulation in modern CSS.",
 		params: {
-			hex: z
-				.string()
-				.describe('HEX color string, e.g. "#ff0000", "ff0000", "#f00"'),
+			hex: z.string().describe('HEX color string, e.g. "#ff0000", "ff0000", "#f00"'),
 		},
 		handler: async ({ hex }) => {
 			return hexToOklch(hex);
@@ -51,9 +49,7 @@ export const tools: McpToolDefinition[] = [
 		description:
 			"Convert a CSS HEX color to RGB components. Returns JSON with r, g, b values (0-255).",
 		params: {
-			hex: z
-				.string()
-				.describe('HEX color string, e.g. "#ff0000", "ff0000", "#f00"'),
+			hex: z.string().describe('HEX color string, e.g. "#ff0000", "ff0000", "#f00"'),
 		},
 		handler: async ({ hex }) => {
 			const rgb = hexToRgb(hex);
@@ -68,9 +64,7 @@ export const tools: McpToolDefinition[] = [
 		params: {
 			source: z
 				.string()
-				.describe(
-					"String identifier to generate colors from (e.g. email, user ID)"
-				),
+				.describe("String identifier to generate colors from (e.g. email, user ID)"),
 		},
 		handler: async ({ source }) => {
 			return JSON.stringify(generateAvatarColors(source));

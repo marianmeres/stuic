@@ -1,6 +1,8 @@
 allowBuilds:
   '@parcel/watcher': true
   esbuild: true
+minimumReleaseAgeExclude:
+  - '@marianmeres/design-tokens@1.5.1'
 onlyBuiltDependencies:
   - "@parcel/watcher"
   - esbuild
