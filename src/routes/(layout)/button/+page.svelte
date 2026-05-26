@@ -6,6 +6,7 @@
 		type ButtonVariant,
 		iconPlus,
 		iconMinus,
+		iconArrowLeft,
 		iconArrowRight,
 		iconDownload,
 		iconCheck,
@@ -16,6 +17,8 @@
 		Spinner,
 		SpinnerCircle,
 		SpinnerUnicode,
+		iconChevronLeft,
+		iconChevronRight,
 	} from "$lib/index.js";
 
 	let checked = $state(true);
@@ -69,15 +72,18 @@
 
 <h2 class="text-xl font-semibold mb-4">Pure Rounded X (neutral overlay hover)</h2>
 <p class="text-sm text-neutral-500 mb-4">
-	The combination <code>x</code> + <code>variant="ghost"</code> + <code>roundedFull</code> auto-applies
-	a neutral semi-transparent overlay on hover (instead of the intent-tinted ghost hover), so the
-	dismiss-style X reads correctly on any background. Override globally via
+	The combination <code>x</code> + <code>variant="ghost"</code> + <code>roundedFull</code>
+	auto-applies a neutral semi-transparent overlay on hover (instead of the intent-tinted
+	ghost hover), so the dismiss-style X reads correctly on any background. Override
+	globally via
 	<code>--stuic-button-x-bg-hover</code> (light) and <code>:root.dark</code> (dark).
 </p>
 
 <div class="space-y-4">
 	<div>
-		<p class="text-sm text-neutral-500 mb-2">Different intents — all share the same neutral hover:</p>
+		<p class="text-sm text-neutral-500 mb-2">
+			Different intents — all share the same neutral hover:
+		</p>
 		<div class="flex flex-wrap gap-3 items-center">
 			<Button x variant="ghost" roundedFull />
 			<Button x variant="ghost" roundedFull intent="primary" />
@@ -88,7 +94,9 @@
 	</div>
 
 	<div>
-		<p class="text-sm text-neutral-500 mb-2">On colored surfaces (the motivating use case):</p>
+		<p class="text-sm text-neutral-500 mb-2">
+			On colored surfaces (the motivating use case):
+		</p>
 		<div class="flex flex-wrap gap-3 items-center">
 			<div
 				class="flex items-center gap-3 px-4 py-3 rounded text-white"
@@ -119,6 +127,93 @@
 				style="--stuic-button-x-bg-hover: rgb(255 0 0 / 0.25);"
 			/>
 			<span class="text-sm text-neutral-500">red overlay on hover</span>
+		</div>
+	</div>
+</div>
+
+<hr class="my-8" />
+
+<h2 class="text-xl font-semibold mb-4">Nav (prev / next)</h2>
+<p class="text-sm text-neutral-500 mb-4">
+	Shortcut for a normalized prev/next navigation icon button (square, fully rounded,
+	arrow icon). Mirrors the <code>x</code> shortcut pattern. Default icon is an arrow;
+	pass the object form to swap it (e.g. for a chevron). If both <code>x</code> and
+	<code>nav</code>
+	are set,
+	<code>x</code> wins.
+</p>
+
+<div class="space-y-4">
+	<div>
+		<p class="text-sm text-neutral-500 mb-2">Shorthand (default arrow):</p>
+		<div class="flex flex-wrap gap-3 items-center">
+			<Button nav="prev" />
+			<Button nav="next" />
+			<Button nav="prev" intent="primary" />
+			<Button nav="next" intent="primary" />
+			<Button nav="prev" intent="accent" variant="soft" />
+			<Button nav="next" intent="accent" variant="soft" />
+			<Button nav="prev" variant="outline" />
+			<Button nav="next" variant="outline" />
+		</div>
+	</div>
+
+	<div>
+		<p class="text-sm text-neutral-500 mb-2">Sizes:</p>
+		<div class="flex flex-wrap gap-3 items-center">
+			<Button nav="prev" size="sm" />
+			<Button nav="next" size="sm" />
+			<Button nav="prev" size="md" />
+			<Button nav="next" size="md" />
+			<Button nav="prev" size="lg" />
+			<Button nav="next" size="lg" />
+			<Button nav="prev" size="xl" />
+			<Button nav="next" size="xl" />
+		</div>
+	</div>
+
+	<div>
+		<p class="text-sm text-neutral-500 mb-2">
+			Ghost variant (auto-neutral overlay hover, same as rounded X):
+		</p>
+		<div class="flex flex-wrap gap-3 items-center">
+			<Button nav="prev" variant="ghost" />
+			<Button nav="next" variant="ghost" />
+			<Button nav="prev" variant="ghost" intent="primary" />
+			<Button nav="next" variant="ghost" intent="primary" />
+		</div>
+	</div>
+
+	<div>
+		<p class="text-sm text-neutral-500 mb-2">
+			Icon override (chevrons instead of arrows):
+		</p>
+		<div class="flex flex-wrap gap-3 items-center">
+			<Button nav={{ direction: "prev", icon: iconChevronLeft({ size: 18 }) }} />
+			<Button nav={{ direction: "next", icon: iconChevronRight({ size: 18 }) }} />
+			<Button
+				nav={{ direction: "prev", icon: iconChevronLeft({ size: 18 }) }}
+				intent="primary"
+			/>
+			<Button
+				nav={{ direction: "next", icon: iconChevronRight({ size: 18 }) }}
+				intent="primary"
+				variant="soft"
+			/>
+		</div>
+	</div>
+
+	<div>
+		<p class="text-sm text-neutral-500 mb-2">On colored surfaces (overlay use case):</p>
+		<div class="flex flex-wrap gap-3 items-center">
+			<div
+				class="flex items-center gap-3 px-4 py-3 rounded text-white"
+				style="background: var(--stuic-color-primary);"
+			>
+				<Button nav="prev" variant="ghost" size="sm" class="text-inherit" />
+				<span class="text-sm">slide 1 / 5</span>
+				<Button nav="next" variant="ghost" size="sm" class="text-inherit" />
+			</div>
 		</div>
 	</div>
 </div>
@@ -347,9 +442,12 @@
 	<div>
 		<p class="text-sm text-neutral-500 mb-2">Icon Only (circular):</p>
 		<div class="flex flex-wrap gap-3 items-end">
-			<Button intent="primary" size="sm" iconButton roundedFull>{@html iconPlus()}</Button>
+			<Button intent="primary" size="sm" iconButton roundedFull>{@html iconPlus()}</Button
+			>
 			<Button intent="accent" size="md" iconButton roundedFull>{@html iconPlus()}</Button>
-			<Button intent="success" size="lg" iconButton roundedFull>{@html iconCheck()}</Button>
+			<Button intent="success" size="lg" iconButton roundedFull
+				>{@html iconCheck()}</Button
+			>
 			<Button variant="outline" iconButton roundedFull>{@html iconSettings()}</Button>
 			<Button variant="ghost" iconButton roundedFull>{@html iconDownload()}</Button>
 		</div>

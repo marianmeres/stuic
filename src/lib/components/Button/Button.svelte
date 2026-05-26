@@ -6,6 +6,17 @@
 	export type ButtonVariant = "solid" | "outline" | "ghost" | "soft" | "link";
 	export type ButtonSize = "sm" | "md" | "lg" | "xl";
 
+	export type ButtonNavDirection = "prev" | "next";
+
+	export interface ButtonNavProps {
+		/** Which direction this button represents */
+		direction: ButtonNavDirection;
+		/** Override the default arrow. Pass any iconLucide* SVG string or Snippet. */
+		icon?: string | Snippet;
+		/** Extra classes merged onto the rendered icon wrapper */
+		class?: string;
+	}
+
 	export interface Props extends Omit<HTMLButtonAttributes, "children"> {
 		/** Color intent (semantic meaning) */
 		intent?: IntentColorKey;
@@ -51,6 +62,13 @@
 		 * For that look, use: `<Button x unstyled class="stuic-close-button" />`
 		 */
 		x?: boolean | XProps;
+		/**
+		 * Render as a normalized prev/next navigation icon button. Implies iconButton
+		 * (square, fully-rounded). Default icon is an arrow in the correct direction;
+		 * pass the object form with `icon` to override (e.g. chevron). If both `x` and
+		 * `nav` are set, `x` takes precedence.
+		 */
+		nav?: ButtonNavDirection | ButtonNavProps;
 		/** Two icon states for swap animation (implies iconButton). Uses `checked` for active state. */
 		iconSwap?: [string | Snippet, string | Snippet];
 		/** Optional out-of-the-box spinner support  */
@@ -67,6 +85,10 @@
 	import Thc, { type THC } from "../Thc/Thc.svelte";
 	import Spinner from "../Spinner/Spinner.svelte";
 	import { IconSwap } from "../IconSwap/index.js";
+	import {
+		iconArrowLeft as iconPrev,
+		iconArrowRight as iconNext,
+	} from "../../icons/index.js";
 	let {
 		class: classProp,
 		intent,
@@ -86,6 +108,7 @@
 		iconButton = false,
 		tooltip: _tooltip,
 		x,
+		nav,
 		iconSwap,
 		spinner,
 		spinnerOnly,
@@ -120,8 +143,13 @@
 		}
 	});
 
-	// "x" and "iconSwap" are semantically icon buttons
-	let _isIconButton = $derived(iconButton || !!_xProps || !!iconSwap);
+	let _navProps: undefined | ButtonNavProps = $derived.by(() => {
+		if (!nav) return;
+		return typeof nav === "string" ? { direction: nav } : { ...nav };
+	});
+
+	// "x", "nav" and "iconSwap" are semantically icon buttons
+	let _isIconButton = $derived(iconButton || !!_xProps || !!_navProps || !!iconSwap);
 
 	// icon buttons implicitly set aspect1
 	let _isAspect1 = $derived(aspect1 || _isIconButton);
@@ -143,11 +171,22 @@
 		data-aspect1={!unstyled && _isAspect1 ? "true" : undefined}
 		data-icon-button={!unstyled && _isIconButton ? "true" : undefined}
 		data-x={!unstyled && !!_xProps ? "true" : undefined}
+		data-nav={!unstyled && _navProps ? _navProps.direction : undefined}
 		use:tooltip={_tooltipConfig}
 		{...rest as HTMLAnchorAttributes}
 	>
 		{#if _xProps}
 			<X {..._xProps} />
+		{:else if _navProps}
+			{#if typeof _navProps.icon === "string"}
+				<span class={_navProps.class}>{@html _navProps.icon}</span>
+			{:else if _navProps.icon}
+				{@render _navProps.icon()}
+			{:else if _navProps.direction === "prev"}
+				<span class={_navProps.class}>{@html iconPrev({ size: 24 })}</span>
+			{:else}
+				<span class={_navProps.class}>{@html iconNext({ size: 24 })}</span>
+			{/if}
 		{:else if iconSwap}
 			<IconSwap states={iconSwap} active={checked ? 1 : 0} />
 		{:else}
@@ -177,11 +216,22 @@
 		data-aspect1={!unstyled && _isAspect1 ? "true" : undefined}
 		data-icon-button={!unstyled && _isIconButton ? "true" : undefined}
 		data-x={!unstyled && !!_xProps ? "true" : undefined}
+		data-nav={!unstyled && _navProps ? _navProps.direction : undefined}
 		use:tooltip={_tooltipConfig}
 		{...rest}
 	>
 		{#if _xProps}
 			<X {..._xProps} />
+		{:else if _navProps}
+			{#if typeof _navProps.icon === "string"}
+				<span class={_navProps.class}>{@html _navProps.icon}</span>
+			{:else if _navProps.icon}
+				{@render _navProps.icon()}
+			{:else if _navProps.direction === "prev"}
+				<span class={_navProps.class}>{@html iconPrev({ size: 24 })}</span>
+			{:else}
+				<span class={_navProps.class}>{@html iconNext({ size: 24 })}</span>
+			{/if}
 		{:else if iconSwap}
 			<IconSwap states={iconSwap} active={checked ? 1 : 0} />
 		{:else}

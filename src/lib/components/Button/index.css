@@ -434,4 +434,14 @@
 		--_bg-hover: var(--stuic-button-x-bg-hover);
 		--_bg-active: var(--stuic-button-x-bg-hover);
 	}
+
+	/* ============================================================================
+	   PURE ROUNDED NAV (prev/next)
+	   Same treatment as the rounded X — useful for carousel/lightbox overlays
+	   where the prev/next button sits on imagery.
+	   ============================================================================ */
+	.stuic-button[data-variant="ghost"][data-nav][data-rounded-full] {
+		--_bg-hover: var(--stuic-button-x-bg-hover);
+		--_bg-active: var(--stuic-button-x-bg-hover);
+	}
 }

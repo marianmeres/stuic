@@ -18,6 +18,8 @@ A flexible button component with semantic intents, visual variants, sizes, and o
 | `el`         | `HTMLElement`                                                      | -         | Element reference (bindable)                      |
 | `iconButton` | `boolean`                                                          | `false`   | Icon-only button (implies aspect1, adds CSS hook) |
 | `iconSwap`   | `[string \| Snippet, string \| Snippet]`                           | -         | Two icon states with swap animation (implies iconButton) |
+| `x`          | `boolean \| XProps`                                                | -         | Normalized "X" icon button shortcut (close/dismiss) |
+| `nav`        | `"prev" \| "next" \| ButtonNavProps`                               | -         | Normalized prev/next icon button shortcut (arrow by default; `x` wins on conflict) |
 | `class`      | `string`                                                           | -         | Additional CSS classes                            |
 
 ## Snippet Props
@@ -97,6 +99,33 @@ The `children` snippet receives `{ checked }` when `roleSwitch` is enabled.
 <Button iconSwap={[iconPlus(), iconMinus()]} roleSwitch bind:checked roundedFull />
 ```
 
+### Nav (prev / next)
+
+Shortcut for a normalized prev/next navigation icon button (square, fully
+rounded, arrow icon). Mirrors the `x` shortcut pattern — single `nav`
+prop carries the direction so contradictory props are impossible.
+
+```svelte
+<!-- Shorthand: default arrow in the correct direction -->
+<Button nav="prev" />
+<Button nav="next" />
+
+<!-- Cascades intent / variant / size like `x` -->
+<Button nav="prev" intent="primary" size="sm" />
+<Button nav="next" variant="ghost" />
+
+<!-- Override the default arrow (e.g. chevron) via object form -->
+<Button nav={{ direction: "prev", icon: iconChevronLeft() }} />
+<Button nav={{ direction: "next", icon: iconChevronRight({ size: 18 }) }} />
+```
+
+Notes:
+
+- `nav` implies `iconButton` (square + fully-rounded).
+- `ghost + nav + roundedFull` auto-applies the same neutral overlay hover
+  used by the rounded X — handy for carousels/lightboxes on imagery.
+- If both `x` and `nav` are set on the same Button, `x` takes precedence.
+
 Global CSS targeting for all icon buttons:
 
 ```css
@@ -170,5 +199,7 @@ The component uses data attributes for styling:
 - `data-raised` - Present when raised
 - `data-checked` - Present when roleSwitch is enabled and checked
 - `data-rounded-full` - Present when roundedFull
-- `data-aspect1` - Present when aspect1 (or iconButton, or x)
-- `data-icon-button` - Present when iconButton (or x)
+- `data-aspect1` - Present when aspect1 (or iconButton, or x, or nav)
+- `data-icon-button` - Present when iconButton (or x, or nav)
+- `data-x` - Present when x is set
+- `data-nav` - Set to `"prev"` or `"next"` when nav is set
