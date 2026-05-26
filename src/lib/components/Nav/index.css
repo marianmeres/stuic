@@ -117,6 +117,36 @@
 		visibility: hidden;
 	}
 
+	/* Interactive (collapsible) variant: opt-in via `collapsibleTitle` prop */
+	.stuic-nav-section-title[data-interactive] {
+		display: flex;
+		align-items: center;
+		gap: var(--stuic-nav-gap);
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		text-align: left;
+		-webkit-tap-highlight-color: transparent;
+		border-radius: var(--stuic-nav-radius, var(--stuic-radius));
+	}
+
+	.stuic-nav-section-title[data-interactive]:hover {
+		background: var(--stuic-nav-item-bg-hover);
+	}
+
+	.stuic-nav-section-title[data-interactive]:focus {
+		outline: none;
+	}
+
+	.stuic-nav-section-title[data-interactive]:focus-visible {
+		background: var(--stuic-nav-item-bg-hover);
+	}
+
+	/* Chevron opacity to match group chevrons */
+	.stuic-nav-section-title[data-interactive] > span:first-child {
+		opacity: var(--stuic-nav-chevron-opacity);
+	}
+
 	/* =============================================================================
 	   GROUP TITLE/HEADER (collapsible)
 	   ============================================================================= */

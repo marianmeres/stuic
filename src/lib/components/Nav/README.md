@@ -4,35 +4,38 @@ A navigation component for sidebars with support for groups, nested items, expan
 
 ## Props
 
-| Prop                 | Type                                                | Default       | Description                                               |
-| -------------------- | --------------------------------------------------- | ------------- | --------------------------------------------------------- |
-| `groups`             | `NavGroup[]`                                        | -             | Navigation groups to render                               |
-| `title`              | `MaybeLocalized`                                    | -             | Section title above groups (uppercase, non-interactive)   |
-| `locale`             | `string`                                            | -             | Current locale for localized labels                       |
-| `isCollapsed`        | `boolean`                                           | `false`       | Collapsed mode (icon-only)                                |
-| `isExpanding`        | `boolean`                                           | `false`       | Transitioning from collapsed to expanded                  |
-| `activeId`           | `string`                                            | -             | Active item ID for highlighting                           |
-| `isActive`           | `(item: NavItem) => boolean`                        | -             | Custom active check callback                              |
-| `isGroupActive`      | `(group: NavGroup) => boolean`                      | -             | Custom group active check callback                        |
-| `onSelect`           | `(item: NavItem) => void`                           | -             | Item selection callback                                   |
-| `onGroupSelect`      | `(group: NavGroup) => void`                         | -             | Group selection callback (groups without items)           |
-| `onGroupToggle`      | `(groupIndex: number, isExpanded: boolean) => void` | -             | Group expand/collapse callback                            |
-| `touchFriendly`      | `boolean \| "auto"`                                 | `false`       | Touch-friendly sizing mode                                |
-| `persistState`       | `boolean`                                           | `true`        | Enable localStorage persistence for expand/collapse state |
-| `storageKeyPrefix`   | `string`                                            | `"stuic-nav"` | Storage key prefix for localStorage                       |
-| `class`              | `string`                                            | -             | Classes for wrapper element                               |
-| `classTitle`         | `string`                                            | -             | Classes for section title                                 |
-| `classGroupTitle`    | `string`                                            | -             | Classes for group title/header                            |
-| `classItem`          | `string`                                            | -             | Classes for individual items                              |
-| `classItemActive`    | `string`                                            | -             | Classes for active items                                  |
-| `classItemCollapsed` | `string`                                            | -             | Classes for collapsed mode items                          |
-| `classItemDisabled`  | `string`                                            | -             | Classes for disabled items                                |
-| `classIcon`          | `string`                                            | -             | Classes for icons                                         |
-| `classLabel`         | `string`                                            | -             | Classes for labels                                        |
-| `classChildren`      | `string`                                            | -             | Classes for children container                            |
-| `classChevron`       | `string`                                            | -             | Classes for chevron icon                                  |
-| `unstyled`           | `boolean`                                           | `false`       | Skip all default styling                                  |
-| `el`                 | `HTMLElement`                                       | -             | Element reference (bindable)                              |
+| Prop                   | Type                                                | Default       | Description                                               |
+| ---------------------- | --------------------------------------------------- | ------------- | --------------------------------------------------------- |
+| `groups`               | `NavGroup[]`                                        | -             | Navigation groups to render                               |
+| `title`                | `MaybeLocalized`                                    | -             | Section title above groups (uppercase, non-interactive)   |
+| `locale`               | `string`                                            | -             | Current locale for localized labels                       |
+| `isCollapsed`          | `boolean`                                           | `false`       | Collapsed mode (icon-only)                                |
+| `isExpanding`          | `boolean`                                           | `false`       | Transitioning from collapsed to expanded                  |
+| `activeId`             | `string`                                            | -             | Active item ID for highlighting                           |
+| `isActive`             | `(item: NavItem) => boolean`                        | -             | Custom active check callback                              |
+| `isGroupActive`        | `(group: NavGroup) => boolean`                      | -             | Custom group active check callback                        |
+| `onSelect`             | `(item: NavItem) => void`                           | -             | Item selection callback                                   |
+| `onGroupSelect`        | `(group: NavGroup) => void`                         | -             | Group selection callback (groups without items)           |
+| `onGroupToggle`        | `(groupIndex: number, isExpanded: boolean) => void` | -             | Group expand/collapse callback                            |
+| `touchFriendly`        | `boolean \| "auto"`                                 | `false`       | Touch-friendly sizing mode                                |
+| `persistState`         | `boolean`                                           | `true`        | Enable localStorage persistence for expand/collapse state |
+| `storageKeyPrefix`     | `string`                                            | `"stuic-nav"` | Storage key prefix for localStorage                       |
+| `collapsibleTitle`     | `boolean`                                           | `false`       | Make the section title clickable to collapse all groups   |
+| `defaultTitleExpanded` | `boolean`                                           | `true`        | Initial expanded state when `collapsibleTitle` is true    |
+| `onTitleToggle`        | `(isExpanded: boolean) => void`                     | -             | Callback when the section title is toggled                |
+| `class`                | `string`                                            | -             | Classes for wrapper element                               |
+| `classTitle`           | `string`                                            | -             | Classes for section title                                 |
+| `classGroupTitle`      | `string`                                            | -             | Classes for group title/header                            |
+| `classItem`            | `string`                                            | -             | Classes for individual items                              |
+| `classItemActive`      | `string`                                            | -             | Classes for active items                                  |
+| `classItemCollapsed`   | `string`                                            | -             | Classes for collapsed mode items                          |
+| `classItemDisabled`    | `string`                                            | -             | Classes for disabled items                                |
+| `classIcon`            | `string`                                            | -             | Classes for icons                                         |
+| `classLabel`           | `string`                                            | -             | Classes for labels                                        |
+| `classChildren`        | `string`                                            | -             | Classes for children container                            |
+| `classChevron`         | `string`                                            | -             | Classes for chevron icon                                  |
+| `unstyled`             | `boolean`                                           | `false`       | Skip all default styling                                  |
+| `el`                   | `HTMLElement`                                       | -             | Element reference (bindable)                              |
 
 ## Interfaces
 
@@ -249,6 +252,28 @@ Storage keys follow the pattern:
 
 - Groups: `{prefix}-group-{groupId}`
 - Items: `{prefix}-item-{itemId}`
+- Section title (when `collapsibleTitle`): `{prefix}-section`
+
+### Collapsible Section Title
+
+Opt in with `collapsibleTitle` to make the section title clickable. Clicking it expands or collapses all groups beneath it as a unit. The expanded state is persisted (under `{storageKeyPrefix}-section`) unless `persistState={false}`.
+
+```svelte
+<Nav title="Main" {groups} collapsibleTitle />
+
+<!-- Start collapsed -->
+<Nav title="Main" {groups} collapsibleTitle defaultTitleExpanded={false} />
+
+<!-- React to toggle -->
+<Nav
+	title="Main"
+	{groups}
+	collapsibleTitle
+	onTitleToggle={(expanded) => console.log("section expanded:", expanded)}
+/>
+```
+
+Note: in icon-only sidebar mode (`isCollapsed`), the section title is visually hidden but the saved collapsed state is still respected — if a user collapsed the section in expanded-sidebar mode, its groups will stay hidden in icon-only mode too.
 
 ### Custom Active Check
 
@@ -326,11 +351,13 @@ The component applies these base classes (when `unstyled` is false):
 
 ### Data Attributes
 
-| Attribute             | Applied When                             |
-| --------------------- | ---------------------------------------- |
-| `data-collapsed`      | Sidebar is in collapsed mode             |
-| `data-expanding`      | Transitioning from collapsed to expanded |
-| `data-active`         | Item/group is currently active           |
-| `data-touch-friendly` | Touch-friendly mode is active            |
-| `data-has-children`   | Item has nested children                 |
-| `data-disabled`       | Item is disabled                         |
+| Attribute             | Applied When                                          |
+| --------------------- | ----------------------------------------------------- |
+| `data-collapsed`      | Sidebar is in collapsed mode                          |
+| `data-expanding`      | Transitioning from collapsed to expanded              |
+| `data-active`         | Item/group is currently active                        |
+| `data-touch-friendly` | Touch-friendly mode is active                         |
+| `data-has-children`   | Item has nested children                              |
+| `data-disabled`       | Item is disabled                                      |
+| `data-interactive`    | Section title is clickable (`collapsibleTitle` is on) |
+| `data-expanded`       | Section title's content is currently expanded         |

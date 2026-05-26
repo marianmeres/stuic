@@ -308,6 +308,27 @@
 	<hr class="my-4" />
 
 	<section class="space-y-4">
+		<h2 class="text-xl font-semibold">Collapsible Section Title (opt-in)</h2>
+		<p class="text-sm text-neutral-600 dark:text-neutral-400">
+			Pass <code>collapsibleTitle</code> to make the section title clickable. Clicking it toggles
+			all groups beneath it; the state is persisted via localStorage.
+		</p>
+
+		<div class="w-64 bg-neutral-100 dark:bg-neutral-800 rounded-lg p-2">
+			<Nav
+				title="Main"
+				groups={[contentGroup, productsGroup]}
+				collapsibleTitle
+				storageKeyPrefix="stuic-nav-collapsible-title-demo"
+				{activeId}
+				onSelect={handleSelect}
+			/>
+		</div>
+	</section>
+
+	<hr class="my-4" />
+
+	<section class="space-y-4">
 		<h2 class="text-xl font-semibold">Multiple Groups</h2>
 		<p class="text-sm text-neutral-600 dark:text-neutral-400">
 			A single Nav component can render multiple groups.
