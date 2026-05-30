@@ -24,12 +24,19 @@
 ```
 src/lib/
 ├── components/     # 57 component directories
-├── actions/        # 15 Svelte actions
+├── actions/        # 15 Svelte actions (use: directives)
+├── attachments/    # Svelte attachments ({@attach} — preferred for new DOM helpers)
 ├── utils/          # 44 utility modules
 ├── icons/          # Icon re-exports from @marianmeres/icons-fns
 ├── index.css       # Centralized CSS imports
 └── index.ts        # Main exports
 ```
+
+> **Actions vs attachments:** for new DOM-enhancement helpers prefer a Svelte
+> [attachment](https://svelte.dev/docs/svelte/@attach) (`{@attach}`, since Svelte 5.29) over a
+> `use:` action — they are reactive, composable, and forwardable through components. Put new
+> attachments in `src/lib/attachments/` (export from its `index.ts`). The existing `actions/`
+> are kept as-is for back-compat; no need to migrate them.
 
 Theme CSS files are not bundled in this package — they're provided by `@marianmeres/design-tokens/css/*.css` (42 themes) and imported by `src/lib/index.css`.
 
@@ -58,39 +65,40 @@ Theme CSS files are not bundled in this package — they're provided by `@marian
 
 Global tokens that control cross-component visual properties. Defined in `src/lib/index.css`:
 
-| Token                      | Default              | Purpose                                       |
-| -------------------------- | -------------------- | --------------------------------------------- |
-| `--stuic-radius`           | `var(--radius-md)`   | Element-level radius (inputs, badges, list items) |
-| `--stuic-radius-button`    | `var(--radius-md)`   | Button-specific radius (independent from general elements) |
-| `--stuic-radius-container` | `var(--radius-lg)`   | Container-level radius (cards, modals, dropdowns) |
-| `--stuic-shadow`           | `var(--shadow-sm)`   | Default resting shadow                        |
-| `--stuic-shadow-hover`     | `var(--shadow-md)`   | Hover/elevated shadow                         |
-| `--stuic-shadow-overlay`   | `var(--shadow-lg)`   | Overlays (dropdowns, notifications)           |
-| `--stuic-shadow-dialog`    | `var(--shadow-xl)`   | Dialogs/modals                                |
-| `--stuic-border-width`     | `1px`                | Default border width                          |
-| `--stuic-border-width-button` | `1px`             | Button-specific border width (independent from general elements) |
-| `--stuic-transition`       | `150ms`              | Default transition duration                   |
+| Token                         | Default            | Purpose                                                          |
+| ----------------------------- | ------------------ | ---------------------------------------------------------------- |
+| `--stuic-radius`              | `var(--radius-md)` | Element-level radius (inputs, badges, list items)                |
+| `--stuic-radius-button`       | `var(--radius-md)` | Button-specific radius (independent from general elements)       |
+| `--stuic-radius-container`    | `var(--radius-lg)` | Container-level radius (cards, modals, dropdowns)                |
+| `--stuic-shadow`              | `var(--shadow-sm)` | Default resting shadow                                           |
+| `--stuic-shadow-hover`        | `var(--shadow-md)` | Hover/elevated shadow                                            |
+| `--stuic-shadow-overlay`      | `var(--shadow-lg)` | Overlays (dropdowns, notifications)                              |
+| `--stuic-shadow-dialog`       | `var(--shadow-xl)` | Dialogs/modals                                                   |
+| `--stuic-border-width`        | `1px`              | Default border width                                             |
+| `--stuic-border-width-button` | `1px`              | Button-specific border width (independent from general elements) |
+| `--stuic-transition`          | `150ms`            | Default transition duration                                      |
 
 **When creating new components**, use the fallback pattern at CSS usage sites:
 
 ```css
 /* CORRECT: fallback resolved at element level — scoped overrides work */
 .stuic-my-component {
-    border-radius: var(--stuic-my-component-radius, var(--stuic-radius));
-    box-shadow: var(--stuic-my-component-shadow, var(--stuic-shadow));
-    border-width: var(--stuic-my-component-border-width, var(--stuic-border-width));
-    transition: background var(--stuic-my-component-transition, var(--stuic-transition));
+	border-radius: var(--stuic-my-component-radius, var(--stuic-radius));
+	box-shadow: var(--stuic-my-component-shadow, var(--stuic-shadow));
+	border-width: var(--stuic-my-component-border-width, var(--stuic-border-width));
+	transition: background var(--stuic-my-component-transition, var(--stuic-transition));
 }
 ```
 
 ```css
 /* WRONG: :root declarations resolve eagerly — scoped overrides on child elements are ignored */
 :root {
-    --stuic-my-component-radius: var(--stuic-radius); /* DO NOT DO THIS */
+	--stuic-my-component-radius: var(--stuic-radius); /* DO NOT DO THIS */
 }
 ```
 
 **Element vs Container classification:**
+
 - **Element** (`--stuic-radius`): inputs, badges, list items, checkboxes, tabs — interactive controls
 - **Button** (`--stuic-radius-button`): buttons, button groups — allows rounded buttons even with flat elements
 - **Container** (`--stuic-radius-container`): cards, modals, dropdowns, notifications, accordions — content wrappers
@@ -120,6 +128,7 @@ Global tokens that control cross-component visual properties. Defined in `src/li
 - [Components](./docs/domains/components.md) — 57 component directories, Props pattern, snippets
 - [Theming](./docs/domains/theming.md) — CSS tokens, dark mode, themes
 - [Actions](./docs/domains/actions.md) — 15 Svelte directives
+- [Attachments](./docs/domains/attachments.md) — `{@attach}` DOM helpers (preferred for new ones)
 - [Utils](./docs/domains/utils.md) — 44 utility modules
 
 ### Reference
@@ -131,13 +140,13 @@ Global tokens that control cross-component visual properties. Defined in `src/li
 
 ## Key Files
 
-| File                             | Purpose                                                                |
-| -------------------------------- | ---------------------------------------------------------------------- |
-| `src/lib/index.css`              | CSS entry point                                                        |
-| `src/lib/index.ts`               | JS entry point                                                         |
-| `src/lib/utils/design-tokens.ts` | Re-exports from `@marianmeres/design-tokens`                          |
-| `@marianmeres/design-tokens/css/*.css` | Theme CSS files (42 themes, `--stuic-` prefix)                   |
-| `src/lib/components/Button/`     | Reference component                                                    |
+| File                                   | Purpose                                        |
+| -------------------------------------- | ---------------------------------------------- |
+| `src/lib/index.css`                    | CSS entry point                                |
+| `src/lib/index.ts`                     | JS entry point                                 |
+| `src/lib/utils/design-tokens.ts`       | Re-exports from `@marianmeres/design-tokens`   |
+| `@marianmeres/design-tokens/css/*.css` | Theme CSS files (42 themes, `--stuic-` prefix) |
+| `src/lib/components/Button/`           | Reference component                            |
 
 ---
 

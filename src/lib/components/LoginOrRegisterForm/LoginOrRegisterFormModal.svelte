@@ -99,6 +99,9 @@
 		 * and Sign up.
 		 */
 		onModeChange?: (next: LoginOrRegisterFormMode, prev: LoginOrRegisterFormMode) => void;
+
+		/** Forwarded to `LoginOrRegisterForm`. Animate content height on mode change. Default: true. */
+		animateHeight?: boolean;
 	}
 </script>
 
@@ -146,6 +149,7 @@
 		onClose,
 		noClickOutsideClose = true,
 		onModeChange,
+		animateHeight,
 	}: Props = $props();
 
 	let t = $derived(tProp ?? t_default);
@@ -240,6 +244,7 @@
 			{footer}
 			{notifications}
 			{onModeChange}
+			{animateHeight}
 			t={tProp}
 			{unstyled}
 			class={classForm}

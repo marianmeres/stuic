@@ -3,6 +3,10 @@
 	--stuic-login-or-register-form-gap: 0rem;
 	--stuic-login-or-register-form-switcher-margin-bottom: 2rem;
 
+	/* Height animation on mode/content change (animateHeight prop) */
+	--stuic-login-or-register-form-height-transition-duration: 250ms;
+	--stuic-login-or-register-form-height-transition-easing: ease;
+
 	/* Social login section (shared, rendered at composite level) */
 	--stuic-login-or-register-form-social-margin-top: 1.5rem;
 	--stuic-login-or-register-form-social-gap: 0.75rem;
@@ -33,6 +37,29 @@
 
 	.stuic-login-or-register-form-body {
 		display: contents;
+	}
+
+	/* Height-animated wrappers (rendered only when animateHeight && !unstyled).
+	   The autoHeight attachment drives the viewport's height and toggles
+	   `overflow: clip` *only while the height transitions* — so growing content
+	   doesn't spill out mid-animation, while focus rings / borders aren't clipped at
+	   rest. `overflow-clip-margin` lets those rings/borders (~4px outline on the
+	   switcher) paint just past the clip edge so they aren't sliced mid-transition
+	   either; it only takes effect while the attachment is clipping. The inner is the
+	   natural-height flex column the attachment measures. */
+	.stuic-login-or-register-form-viewport {
+		overflow-clip-margin: var(--stuic-login-or-register-form-height-clip-margin, 0.5rem);
+	}
+	.stuic-login-or-register-form-inner {
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-login-or-register-form-gap);
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.stuic-login-or-register-form-viewport {
+			transition: height var(--stuic-login-or-register-form-height-transition-duration)
+				var(--stuic-login-or-register-form-height-transition-easing);
+		}
 	}
 
 	/* Social login container */

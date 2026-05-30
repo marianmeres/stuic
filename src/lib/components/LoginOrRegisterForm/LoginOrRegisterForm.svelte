@@ -67,7 +67,13 @@
 		/** Pass-through props for the inner EmailVerifyForm (spread). */
 		verifyProps?: Omit<
 			EmailVerifyFormProps,
-			"email" | "onSubmit" | "onResend" | "isSubmitting" | "t" | "notifications" | "footer"
+			| "email"
+			| "onSubmit"
+			| "onResend"
+			| "isSubmitting"
+			| "t"
+			| "notifications"
+			| "footer"
 		>;
 
 		/** Reserved for future use (verify mode is not exposed in the default switcher). */
@@ -126,6 +132,14 @@
 		 */
 		onModeChange?: (next: LoginOrRegisterFormMode, prev: LoginOrRegisterFormMode) => void;
 
+		/**
+		 * Smoothly animate the content height when the mode or content changes
+		 * (login ↔ register ↔ verify, error messages appearing, etc.) instead of
+		 * snapping. Respects `prefers-reduced-motion` (snaps when reduce is set).
+		 * Has no effect when `unstyled`. Default: true.
+		 */
+		animateHeight?: boolean;
+
 		t?: TranslateFn;
 		unstyled?: boolean;
 		class?: string;
@@ -141,6 +155,7 @@
 	import { createEmptyRegisterFormData } from "../RegisterForm/_internal/register-form-utils.js";
 	import EmailVerifyForm from "../EmailVerifyForm/EmailVerifyForm.svelte";
 	import ButtonGroupRadio from "../ButtonGroupRadio/ButtonGroupRadio.svelte";
+	import { autoHeight } from "../../attachments/auto-height.js";
 	import type { scrollToFirstInvalidField } from "../../utils/validate-fields.js";
 
 	let {
@@ -166,6 +181,7 @@
 		footer,
 		notifications,
 		onModeChange,
+		animateHeight = true,
 		t: tProp,
 		unstyled = false,
 		class: classProp,
@@ -221,10 +237,14 @@
 	let registerFormRef = $state<RegisterForm>();
 	let verifyFormRef = $state<EmailVerifyForm>();
 
-	function _activeForm(): {
-		validate?(): boolean;
-		scrollToFirstError?(opts?: Parameters<typeof scrollToFirstInvalidField>[1]): boolean;
-	} | undefined {
+	function _activeForm():
+		| {
+				validate?(): boolean;
+				scrollToFirstError?(
+					opts?: Parameters<typeof scrollToFirstInvalidField>[1]
+				): boolean;
+		  }
+		| undefined {
 		if (mode === "login") return loginFormRef;
 		if (mode === "register") return registerFormRef;
 		if (mode === "verify") return verifyFormRef;
@@ -251,7 +271,7 @@
 	}
 </script>
 
-<div class={_class} {...rest}>
+{#snippet formContent()}
 	<!-- Mode switcher (verify mode is never rendered as a tab — it's an outcome state) -->
 	{#if mode !== "verify"}
 		<div class={unstyled ? undefined : "stuic-login-or-register-form-switcher"}>
@@ -330,5 +350,21 @@
 	<!-- Footer -->
 	{#if footer}
 		{@render footer({ mode, setMode })}
+	{/if}
+{/snippet}
+
+<div class={_class} {...rest}>
+	{#if !unstyled && animateHeight}
+		<!-- Height-animated viewport: drives its own height to the inner's natural
+		     height (via the autoHeight attachment) and clips overflow while it transits.
+		     Both wrappers exist only when the feature is active, so a disabled / unstyled
+		     form renders byte-for-byte identically to before (children flatten into the root). -->
+		<div class="stuic-login-or-register-form-viewport" {@attach autoHeight}>
+			<div class="stuic-login-or-register-form-inner">
+				{@render formContent()}
+			</div>
+		</div>
+	{:else}
+		{@render formContent()}
 	{/if}
 </div>
