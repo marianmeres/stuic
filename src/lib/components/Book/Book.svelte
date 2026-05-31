@@ -418,11 +418,17 @@
 	let swipeStartTime = 0;
 	let isSwiping = false;
 
-	// ---- Drag detection (for page click vs drag/swipe discrimination) ----
+	// ---- Tap vs drag discrimination for page/area activation ----
+	// Activation uses pointer events (pointerdown/pointerup) rather than a synthesized
+	// mouse `click`. Pointer events unify mouse + touch and fire reliably on a clean tap,
+	// even on the `touch-action: none` gesture surface where tap→click synthesis is
+	// unreliable (notably iOS Safari, worst of all on inner SVG shapes). A tap is a
+	// pointerup landing within TAP_SLOP_PX of its pointerdown; movement beyond that is a
+	// swipe/drag and does not activate.
 
-	let _wasDragged = false;
-	let _dragStartClientX = 0;
-	let _dragStartClientY = 0;
+	const TAP_SLOP_PX = 10;
+	let _tapDownX = 0;
+	let _tapDownY = 0;
 
 	// ---- Zoom helpers ----
 
@@ -572,10 +578,6 @@
 			const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
 			const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
 
-			_wasDragged = false;
-			_dragStartClientX = clientX;
-			_dragStartClientY = clientY;
-
 			if (zoomLevel > 1) {
 				// Pan mode
 				e.preventDefault();
@@ -601,18 +603,6 @@
 				const scale = dist / initialPinchDistance;
 				continuousZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, initialPinchZoom * scale));
 				return;
-			}
-
-			// Track drag for page click detection
-			if (!_wasDragged) {
-				const cx = "touches" in e ? (e.touches[0]?.clientX ?? 0) : e.clientX;
-				const cy = "touches" in e ? (e.touches[0]?.clientY ?? 0) : e.clientY;
-				if (
-					Math.abs(cx - _dragStartClientX) > 5 ||
-					Math.abs(cy - _dragStartClientY) > 5
-				) {
-					_wasDragged = true;
-				}
 			}
 
 			// Pan
@@ -693,10 +683,21 @@
 		};
 	}
 
+	// ---- Tap (pointer) helpers for page/area activation ----
+
+	function handleTapDown(e: PointerEvent) {
+		_tapDownX = e.clientX;
+		_tapDownY = e.clientY;
+	}
+
+	function isTap(e: PointerEvent): boolean {
+		return Math.hypot(e.clientX - _tapDownX, e.clientY - _tapDownY) <= TAP_SLOP_PX;
+	}
+
 	// ---- Page click ----
 
-	function handlePageClick(e: MouseEvent, page: BookPage | undefined) {
-		if (!onPageClick || !page || _wasDragged) return;
+	function handlePageClick(e: PointerEvent, page: BookPage | undefined) {
+		if (!onPageClick || !page || !isTap(e)) return;
 		const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
 		const x = (e.clientX - rect.left) / rect.width;
 		const y = (e.clientY - rect.top) / rect.height;
@@ -769,7 +770,8 @@
 						<div
 							class={twMerge(!unstyled && "stuic-book-sheet-front", classPage)}
 							data-placeholder={!sheet.frontPage && sheet.backPage ? "" : undefined}
-							onclick={(e) => handlePageClick(e, sheet.frontPage)}
+							onpointerdown={handleTapDown}
+							onpointerup={(e) => handlePageClick(e, sheet.frontPage)}
 						>
 							{#if isNearby && sheet.frontPage}
 								{#if renderPage}
@@ -840,8 +842,9 @@
 												width={area.w}
 												height={area.h}
 												class={!unstyled ? "stuic-book-area" : undefined}
-												onclick={(e: MouseEvent) => {
-													if (_wasDragged) return;
+												onpointerdown={handleTapDown}
+												onpointerup={(e: PointerEvent) => {
+													if (!isTap(e)) return;
 													e.stopPropagation();
 													onAreaClick({ area, page: sheet.frontPage! });
 												}}
@@ -858,7 +861,8 @@
 						<div
 							class={twMerge(!unstyled && "stuic-book-sheet-back", classPage)}
 							data-placeholder={!sheet.backPage && sheet.frontPage ? "" : undefined}
-							onclick={(e) => handlePageClick(e, sheet.backPage)}
+							onpointerdown={handleTapDown}
+							onpointerup={(e) => handlePageClick(e, sheet.backPage)}
 						>
 							{#if isNearby && sheet.backPage}
 								{#if renderPage}
@@ -925,8 +929,9 @@
 												width={area.w}
 												height={area.h}
 												class={!unstyled ? "stuic-book-area" : undefined}
-												onclick={(e: MouseEvent) => {
-													if (_wasDragged) return;
+												onpointerdown={handleTapDown}
+												onpointerup={(e: PointerEvent) => {
+													if (!isTap(e)) return;
 													e.stopPropagation();
 													onAreaClick({ area, page: sheet.backPage! });
 												}}
