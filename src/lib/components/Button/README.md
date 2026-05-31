@@ -20,6 +20,7 @@ A flexible button component with semantic intents, visual variants, sizes, and o
 | `iconSwap`   | `[string \| Snippet, string \| Snippet]`                           | -         | Two icon states with swap animation (implies iconButton) |
 | `x`          | `boolean \| XProps`                                                | -         | Normalized "X" icon button shortcut (close/dismiss) |
 | `nav`        | `"prev" \| "next" \| ButtonNavProps`                               | -         | Normalized prev/next icon button shortcut (arrow by default; `x` wins on conflict) |
+| `iconEdge`   | `"leading" \| "trailing"`                                          | -         | Trim icon-side padding to the y-padding (pill + edge-flush icon; pair with `roundedFull`) |
 | `class`      | `string`                                                           | -         | Additional CSS classes                            |
 
 ## Snippet Props
@@ -134,6 +135,26 @@ Global CSS targeting for all icon buttons:
 }
 ```
 
+### Pill with edge-flush icon (`iconEdge`)
+
+The "rounded icon button with label" look: a pill-shaped button whose leading (or
+trailing) icon sits the same distance from the edge as a rounded icon (nav) button.
+`iconEdge` trims the icon-side horizontal padding down to the vertical padding — it's
+size-aware and uses logical properties, so `leading`/`trailing` follow text direction
+(RTL-safe). It does NOT round the button on its own; pair it with `roundedFull`.
+
+```svelte
+<Button roundedFull iconEdge="leading">{@html iconArrowLeft({ size: 24 })} Back</Button>
+<Button roundedFull iconEdge="trailing">Next {@html iconArrowRight({ size: 24 })}</Button>
+```
+
+Notes:
+
+- `iconEdge` is composable — it only trims padding, so it also works on a
+  default-radius (non-pill) button if you want the icon flush without the pill shape.
+- You compose the icon + label yourself in `children` (no default icon, unlike `nav`),
+  so it works with any icon. Use `size: 24` to match the nav button's arrow.
+
 ### Custom Styling
 
 ```svelte
@@ -199,6 +220,7 @@ The component uses data attributes for styling:
 - `data-raised` - Present when raised
 - `data-checked` - Present when roleSwitch is enabled and checked
 - `data-rounded-full` - Present when roundedFull
+- `data-icon-edge` - Set to `"leading"` or `"trailing"` when iconEdge is set
 - `data-aspect1` - Present when aspect1 (or iconButton, or x, or nav)
 - `data-icon-button` - Present when iconButton (or x, or nav)
 - `data-x` - Present when x is set

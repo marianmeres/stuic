@@ -456,6 +456,73 @@
 
 <hr class="my-8" />
 
+<h2 class="text-xl font-semibold mb-4">Pill-Shaped with Icon</h2>
+<p class="text-sm text-neutral-500 mb-4">
+	Combine <code>roundedFull</code> with <code>iconEdge="leading"</code> (or
+	<code>"trailing"</code>) plus an icon + visible label for the "rounded icon button
+	with label" pill look, e.g. a "Back" button with a leading prev arrow.
+	<code>iconEdge</code> trims the icon-side horizontal padding down to the vertical
+	padding (size-aware, RTL-aware), so the icon sits the same distance from the edge
+	as a rounded nav icon button.
+</p>
+
+<div class="space-y-4">
+	<div>
+		<p class="text-sm text-neutral-500 mb-2">Back (leading prev arrow + label):</p>
+		<div class="flex flex-wrap gap-3 items-center">
+			<Button roundedFull iconEdge="leading">{@html iconArrowLeft({ size: 24 })} Back</Button>
+			<Button roundedFull iconEdge="leading" intent="primary"
+				>{@html iconArrowLeft({ size: 24 })} Back</Button
+			>
+			<Button roundedFull iconEdge="leading" variant="outline"
+				>{@html iconArrowLeft({ size: 24 })} Back</Button
+			>
+			<Button roundedFull iconEdge="leading" variant="ghost"
+				>{@html iconArrowLeft({ size: 24 })} Back</Button
+			>
+			<Button roundedFull iconEdge="leading" intent="accent" variant="soft"
+				>{@html iconArrowLeft({ size: 24 })} Back</Button
+			>
+		</div>
+	</div>
+
+	<div>
+		<p class="text-sm text-neutral-500 mb-2">Next (trailing next arrow + label):</p>
+		<div class="flex flex-wrap gap-3 items-center">
+			<Button roundedFull iconEdge="trailing">Next {@html iconArrowRight({ size: 24 })}</Button>
+			<Button roundedFull iconEdge="trailing" intent="primary"
+				>Next {@html iconArrowRight({ size: 24 })}</Button
+			>
+			<Button roundedFull iconEdge="trailing" variant="outline"
+				>Next {@html iconArrowRight({ size: 24 })}</Button
+			>
+		</div>
+	</div>
+
+	<div>
+		<p class="text-sm text-neutral-500 mb-2">
+			Sizes (icon inset stays matched to the nav button at every size):
+		</p>
+		<div class="flex flex-wrap gap-3 items-center">
+			<Button nav="prev" size="sm" />
+			<Button roundedFull iconEdge="leading" intent="primary" size="sm"
+				>{@html iconArrowLeft({ size: 24 })} Back</Button
+			>
+			<Button roundedFull iconEdge="leading" intent="primary" size="md"
+				>{@html iconArrowLeft({ size: 24 })} Back</Button
+			>
+			<Button roundedFull iconEdge="leading" intent="primary" size="lg"
+				>{@html iconArrowLeft({ size: 24 })} Back</Button
+			>
+			<Button roundedFull iconEdge="leading" intent="primary" size="xl"
+				>{@html iconArrowLeft({ size: 24 })} Back</Button
+			>
+		</div>
+	</div>
+</div>
+
+<hr class="my-8" />
+
 <h2 class="text-xl font-semibold mb-4">Role Switch (Toggle)</h2>
 
 <div class="space-y-4">

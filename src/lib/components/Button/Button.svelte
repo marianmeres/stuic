@@ -32,6 +32,14 @@
 		unstyled?: boolean;
 		/** Render as rounded-full */
 		roundedFull?: boolean;
+		/**
+		 * Trim the icon-side horizontal padding down to the vertical padding, so a
+		 * leading/trailing icon sits the same distance from the edge as a rounded icon
+		 * (aspect1) button. Pair with `roundedFull` for the "rounded icon button with
+		 * label" pill look (e.g. a "Back" button: prev arrow + label). Size-aware and
+		 * RTL-aware (`leading` = start side, `trailing` = end side).
+		 */
+		iconEdge?: "leading" | "trailing";
 		/** Render as aspect ratio 1 */
 		aspect1?: boolean;
 		/** Icon-only button (implies aspect1, adds data-icon-button for global CSS targeting) */
@@ -104,6 +112,7 @@
 		raised = false,
 		unstyled = false,
 		roundedFull = false,
+		iconEdge,
 		aspect1 = false,
 		iconButton = false,
 		tooltip: _tooltip,
@@ -168,6 +177,7 @@
 		data-raised={!unstyled && raised ? "true" : undefined}
 		data-checked={roleSwitch && checked ? "true" : undefined}
 		data-rounded-full={!unstyled && roundedFull ? "true" : undefined}
+		data-icon-edge={!unstyled && iconEdge ? iconEdge : undefined}
 		data-aspect1={!unstyled && _isAspect1 ? "true" : undefined}
 		data-icon-button={!unstyled && _isIconButton ? "true" : undefined}
 		data-x={!unstyled && !!_xProps ? "true" : undefined}
@@ -213,6 +223,7 @@
 		data-raised={!unstyled && raised ? "true" : undefined}
 		data-checked={roleSwitch && checked ? "true" : undefined}
 		data-rounded-full={!unstyled && roundedFull ? "true" : undefined}
+		data-icon-edge={!unstyled && iconEdge ? iconEdge : undefined}
 		data-aspect1={!unstyled && _isAspect1 ? "true" : undefined}
 		data-icon-button={!unstyled && _isIconButton ? "true" : undefined}
 		data-x={!unstyled && !!_xProps ? "true" : undefined}

@@ -423,6 +423,38 @@
 	}
 
 	/* ============================================================================
+	   ICON EDGE
+	   Trim the icon-side horizontal padding down to the vertical padding, so a
+	   leading/trailing icon sits the same distance from the edge as a rounded icon
+	   (aspect1) button. Pair with [data-rounded-full] for the "rounded icon button
+	   with label" pill look. Logical props => leading/trailing follow text direction.
+	   ============================================================================ */
+	.stuic-button[data-icon-edge="leading"][data-size="sm"] {
+		padding-inline-start: var(--stuic-button-padding-y-sm);
+	}
+	.stuic-button[data-icon-edge="leading"][data-size="md"] {
+		padding-inline-start: var(--stuic-button-padding-y-md);
+	}
+	.stuic-button[data-icon-edge="leading"][data-size="lg"] {
+		padding-inline-start: var(--stuic-button-padding-y-lg);
+	}
+	.stuic-button[data-icon-edge="leading"][data-size="xl"] {
+		padding-inline-start: var(--stuic-button-padding-y-xl);
+	}
+	.stuic-button[data-icon-edge="trailing"][data-size="sm"] {
+		padding-inline-end: var(--stuic-button-padding-y-sm);
+	}
+	.stuic-button[data-icon-edge="trailing"][data-size="md"] {
+		padding-inline-end: var(--stuic-button-padding-y-md);
+	}
+	.stuic-button[data-icon-edge="trailing"][data-size="lg"] {
+		padding-inline-end: var(--stuic-button-padding-y-lg);
+	}
+	.stuic-button[data-icon-edge="trailing"][data-size="xl"] {
+		padding-inline-end: var(--stuic-button-padding-y-xl);
+	}
+
+	/* ============================================================================
 	   ICON BUTTON
 	   Semantic marker for icon-only buttons. Layout is handled by [data-aspect1].
 	   Override globally: .stuic-button[data-icon-button] { --stuic-button-radius: ...; }
