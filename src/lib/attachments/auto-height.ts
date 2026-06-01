@@ -27,6 +27,13 @@ import type { Attachment } from "svelte/attachments";
  * then a `ResizeObserver` keeps it in sync. With no transition configured, or under
  * `prefers-reduced-motion`, the height simply snaps and nothing is ever clipped.
  *
+ * Resize-driven measures are coalesced to the next animation frame, so the height
+ * write never happens *inside* the `ResizeObserver` delivery cycle. Mutating layout
+ * synchronously in that callback is what triggers the browser's benign-but-noisy
+ * "ResizeObserver loop completed with undelivered notifications" warning; the
+ * one-frame deferral (~16ms, imperceptible against the transition) avoids it. The
+ * initial on-mount measure stays synchronous to keep the height lock before paint.
+ *
  * @example
  * ```svelte
  * <div class="viewport" {@attach autoHeight}>
@@ -76,14 +83,24 @@ export const autoHeight: Attachment<HTMLElement> = (node) => {
 		if (e.target === node && e.propertyName === "height") node.style.overflow = "";
 	};
 
+	// Defer the resize-driven measure to the next frame so the layout write
+	// never lands inside the ResizeObserver delivery cycle (see top doc comment).
+	let rafId = 0;
+	const scheduleMeasure = () => {
+		cancelAnimationFrame(rafId);
+		rafId = requestAnimationFrame(measure);
+	};
+
+	// Initial measure stays synchronous: lock height from `auto` to px before paint.
 	measure();
 
-	const ro = new ResizeObserver(measure);
+	const ro = new ResizeObserver(scheduleMeasure);
 	if (node.firstElementChild) ro.observe(node.firstElementChild);
 	node.addEventListener("transitionend", reveal);
 	node.addEventListener("transitioncancel", reveal);
 
 	return () => {
+		cancelAnimationFrame(rafId);
 		ro.disconnect();
 		node.removeEventListener("transitionend", reveal);
 		node.removeEventListener("transitioncancel", reveal);
