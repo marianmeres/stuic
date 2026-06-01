@@ -278,6 +278,15 @@ export function validate(
 		const _doValidate = () => {
 			if (!enabled) return;
 
+			// A focused, dirty field torn down by a route change fires a final
+			// synchronous `change`/`blur` while being removed from the DOM. That
+			// removal runs inside Svelte's flush, so writing `validation` state here
+			// would throw `state_unsafe_mutation`. By then the node is already
+			// detached (`isConnected === false`) and the field is going away — skip.
+			// No-op for normal interactive validation and for the synchronous
+			// imperative `validate()` path, both of which run while connected.
+			if (!el.isConnected) return;
+
 			el.checkValidity();
 
 			// Store customValidator message directly - hidden inputs (type="hidden")
@@ -324,9 +333,6 @@ export function validate(
 
 			// console.log(1111, validityState, el);
 
-			// hm... Uncaught Svelte error: state_unsafe_mutation...
-			// the `tick` await helps, but I'm not really sure I understand the internals...
-			// tick().then(() => {
 			setValidationResult?.({
 				validity: validityState,
 				reasons,
@@ -342,7 +348,6 @@ export function validate(
 						"This field is invalid. Please review and try again."
 				),
 			});
-			// });
 		};
 
 		// Expose the current validator to the host so it can trigger validation
