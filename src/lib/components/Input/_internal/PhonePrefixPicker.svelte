@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { twMerge } from "../../../utils/tw-merge.js";
+	import { type Country, ISO_MAP } from "@marianmeres/countries";
 	import { iconChevronDown } from "../../../icons/index.js";
+	import { twMerge } from "../../../utils/tw-merge.js";
 	import DropdownMenu, {
 		type DropdownMenuActionItem,
 		type DropdownMenuItem,
 		type DropdownMenuSearchConfig,
 	} from "../../DropdownMenu/DropdownMenu.svelte";
-	import { type Country, ISO_MAP } from "./countries.js";
 
 	interface Props {
 		selectedCountry?: Country;

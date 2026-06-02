@@ -1,15 +1,16 @@
 <script lang="ts">
 	import {
 		FieldCountry,
-		ISO_MAP,
 		onSubmitValidityCheck,
 		type ValidationResult,
 	} from "$lib/index.js";
+	import { ISO_MAP } from "@marianmeres/countries";
 
 	let value = $state("");
 	let value2 = $state("SK");
 	let value3 = $state("");
 	let value4 = $state("");
+	let value5 = $state("");
 	let validatedValue = $state("");
 
 	// Imperative API demo state
@@ -121,6 +122,26 @@
 		<div class="text-sm font-mono space-y-1 p-3 rounded bg-black/5">
 			<div>value (ISO): <strong>{value3 || "—"}</strong></div>
 			<div>english name: <strong>{nameOf(value3)}</strong></div>
+		</div>
+	</section>
+
+	<section class="space-y-4">
+		<h2 class="text-xl font-semibold">Built-in locale (locale prop)</h2>
+		<p class="text-sm opacity-60">
+			<code>locale="sk"</code> resolves names via <code>@marianmeres/countries</code>'
+			bundled Slovak locale — no <code>countryNames</code> map required. The locale
+			chunk loads lazily, so names start in English and switch once it arrives.
+		</p>
+		<FieldCountry
+			bind:value={value5}
+			locale="sk"
+			label="Krajina"
+			placeholder="Vyberte krajinu"
+			preferredCountries={["SK", "CZ", "AT", "DE"]}
+		/>
+		<div class="text-sm font-mono space-y-1 p-3 rounded bg-black/5">
+			<div>value (ISO): <strong>{value5 || "—"}</strong></div>
+			<div>english name: <strong>{nameOf(value5)}</strong></div>
 		</div>
 	</section>
 

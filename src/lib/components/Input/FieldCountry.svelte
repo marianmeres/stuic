@@ -1,9 +1,9 @@
 <script lang="ts" module>
+	import type { Country } from "@marianmeres/countries";
 	import type { Snippet } from "svelte";
 	import type { ValidateOptions } from "../../actions/validate.svelte.js";
 	import type { TranslateFn } from "../../types.js";
 	import type { THC } from "../Thc/Thc.svelte";
-	import type { Country } from "./_internal/countries.js";
 	import type { InputWrapClassProps } from "./types.js";
 
 	type SnippetWithId = Snippet<[{ id: string }]>;
@@ -26,10 +26,32 @@
 
 		/**
 		 * Override displayed country names. Keys are ISO alpha-2 codes,
-		 * values are the localized name. Missing keys fall back to the English
-		 * name from countries.ts.
+		 * values are the localized name. Takes precedence over `locale`; missing
+		 * keys fall back to the locale-resolved name (then the English name).
 		 */
 		countryNames?: Record<string, string>;
+
+		/**
+		 * Display country names in this locale (ISO 639-1 code, e.g. "sk").
+		 * Resolved via @marianmeres/countries' built-in locales.
+		 *
+		 * Locales load lazily (code-split), so by default names render in
+		 * English for one frame until the chunk arrives. To avoid that flash,
+		 * make the locale synchronously available before this field renders —
+		 * either register it once at app startup:
+		 *
+		 * ```ts
+		 * import { registerLocale } from "@marianmeres/countries";
+		 * import sk from "@marianmeres/countries/locales/sk";
+		 * registerLocale("sk", sk);
+		 * ```
+		 *
+		 * …or skip the `locale` prop entirely and pass the statically-imported
+		 * map straight to `countryNames={sk}` (it's keyed by ISO code).
+		 *
+		 * Default: "en". Overridden per-country by `countryNames`.
+		 */
+		locale?: string;
 
 		/** Show country flag emoji in dropdown items. Default: true. */
 		flags?: boolean;
@@ -68,21 +90,28 @@
 </script>
 
 <script lang="ts">
+	import {
+		COUNTRIES,
+		DEFAULT_LOCALE,
+		ISO_MAP,
+		getName,
+		hasLocale,
+		loadLocale,
+	} from "@marianmeres/countries";
 	import { tick } from "svelte";
 	import {
 		validate as validateAction,
 		type ValidationResult,
 	} from "../../actions/validate.svelte.js";
+	import { iconChevronDown } from "../../icons/index.js";
 	import { getId } from "../../utils/get-id.js";
 	import { twMerge } from "../../utils/tw-merge.js";
-	import { iconChevronDown } from "../../icons/index.js";
 	import DropdownMenu, {
 		type DropdownMenuActionItem,
 		type DropdownMenuItem,
 		type DropdownMenuSearchConfig,
 	} from "../DropdownMenu/DropdownMenu.svelte";
 	import InputWrap from "./_internal/InputWrap.svelte";
-	import { COUNTRIES, ISO_MAP } from "./_internal/countries.js";
 
 	let {
 		value = $bindable(""),
@@ -90,6 +119,7 @@
 		countryList: countryListProp,
 		preferredCountries,
 		countryNames,
+		locale = DEFAULT_LOCALE,
 		flags = true,
 		//
 		name,
@@ -171,8 +201,32 @@
 		});
 	}
 
+	// Reactive marker: bumps once the requested locale is registered, so the
+	// derived names below recompute. The locale registry in @marianmeres/countries
+	// is plain module state, not a Svelte reactive source, hence this $state tick.
+	let localeLoaded = $state(DEFAULT_LOCALE);
+	$effect(() => {
+		const code = locale;
+		if (hasLocale(code)) {
+			localeLoaded = code;
+			return;
+		}
+		let cancelled = false;
+		loadLocale(code)
+			.then(() => {
+				if (!cancelled) localeLoaded = code;
+			})
+			.catch(() => {
+				if (!cancelled) localeLoaded = DEFAULT_LOCALE;
+			});
+		return () => {
+			cancelled = true;
+		};
+	});
+
 	function localizedName(c: Country): string {
-		return countryNames?.[c.iso] ?? c.name;
+		void localeLoaded; // establish reactive dependency on locale load
+		return countryNames?.[c.iso] ?? getName(c.iso, locale) ?? c.name;
 	}
 
 	// Resolve the working country list (accept ISO codes or Country objects).
@@ -180,9 +234,7 @@
 		if (!countryListProp) return COUNTRIES;
 		if (countryListProp.length === 0) return [];
 		if (typeof countryListProp[0] === "string") {
-			const set = new Set(
-				(countryListProp as string[]).map((c) => c.toUpperCase())
-			);
+			const set = new Set((countryListProp as string[]).map((c) => c.toUpperCase()));
 			return COUNTRIES.filter((c) => set.has(c.iso));
 		}
 		return countryListProp as Country[];
@@ -223,9 +275,7 @@
 
 	let items: DropdownMenuItem[] = $derived.by(() => {
 		const result: DropdownMenuItem[] = [];
-		const preferredSet = new Set(
-			preferredCountries?.map((c) => c.toUpperCase()) ?? []
-		);
+		const preferredSet = new Set(preferredCountries?.map((c) => c.toUpperCase()) ?? []);
 
 		if (preferredSet.size > 0) {
 			// Preserve the order given in `preferredCountries`.
@@ -260,8 +310,7 @@
 			return `${localized} ${c.name} ${c.iso}`;
 		},
 		autoFocus: true,
-		noResultsMessage:
-			t?.("checkout.address.country_no_results") || "No country found",
+		noResultsMessage: t?.("checkout.address.country_no_results") || "No country found",
 	});
 
 	let triggerText = $derived.by(() => {

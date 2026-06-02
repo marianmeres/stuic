@@ -59,6 +59,13 @@
 </script>
 
 <script lang="ts">
+	import {
+		COUNTRIES,
+		DIAL_CODES_DESC,
+		DIAL_CODE_MAP,
+		ISO_MAP,
+		type Country,
+	} from "@marianmeres/countries";
 	import { tick, untrack } from "svelte";
 	import {
 		validate as validateAction,
@@ -68,13 +75,6 @@
 	import { twMerge } from "../../utils/tw-merge.js";
 	import InputWrap from "./_internal/InputWrap.svelte";
 	import PhonePrefixPicker from "./_internal/PhonePrefixPicker.svelte";
-	import {
-		COUNTRIES,
-		ISO_MAP,
-		DIAL_CODES_DESC,
-		DIAL_CODE_MAP,
-		type Country,
-	} from "./_internal/countries.js";
 	import { validatePhoneNumber } from "./phone-validation.js";
 
 	let {
@@ -173,7 +173,9 @@
 
 	// Selected country object (initialize once from defaultCountry prop)
 	let selectedCountry: Country | undefined = $state(
-		untrack(() => (defaultCountry ? ISO_MAP.get(defaultCountry.toUpperCase()) : undefined))
+		untrack(() =>
+			defaultCountry ? ISO_MAP.get(defaultCountry.toUpperCase()) : undefined
+		)
 	);
 
 	// Internal local number (for controlled input)

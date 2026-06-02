@@ -73,5 +73,3 @@ export {
 } from "./FieldCountry.svelte";
 
 export { validatePhoneNumber } from "./phone-validation.js";
-
-export { type Country, COUNTRIES, ISO_MAP } from "./_internal/countries.js";

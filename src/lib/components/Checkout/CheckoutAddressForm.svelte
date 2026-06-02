@@ -1,14 +1,14 @@
 <script lang="ts" module>
+	import type { Country } from "@marianmeres/countries";
 	import type { Snippet } from "svelte";
 	import type { HTMLAttributes } from "svelte/elements";
 	import type { TranslateFn } from "../../types.js";
+	import type { Props as FieldCountryProps } from "../Input/FieldCountry.svelte";
+	import type { Props as FieldPhoneNumberProps } from "../Input/FieldPhoneNumber.svelte";
 	import type {
 		CheckoutAddressData,
 		CheckoutValidationError,
 	} from "./_internal/checkout-types.js";
-	import type { Props as FieldPhoneNumberProps } from "../Input/FieldPhoneNumber.svelte";
-	import type { Props as FieldCountryProps } from "../Input/FieldCountry.svelte";
-	import type { Country } from "../Input/_internal/countries.js";
 
 	export interface Props extends Omit<HTMLAttributes<HTMLFieldSetElement>, "children"> {
 		/**
@@ -106,12 +106,12 @@
 		scrollToFirstInvalidField,
 		validateAllFields,
 	} from "../../utils/validate-fields.js";
-	import { t_default } from "./_internal/checkout-i18n-defaults.js";
-	import { createEmptyAddress } from "./_internal/checkout-utils.js";
+	import FieldCountry from "../Input/FieldCountry.svelte";
 	import FieldInput from "../Input/FieldInput.svelte";
 	import FieldPhoneNumber from "../Input/FieldPhoneNumber.svelte";
-	import FieldCountry from "../Input/FieldCountry.svelte";
 	import { validatePhoneNumber } from "../Input/phone-validation.js";
+	import { t_default } from "./_internal/checkout-i18n-defaults.js";
+	import { createEmptyAddress } from "./_internal/checkout-utils.js";
 
 	const DEFAULT_REQUIRED = ["name", "street", "city", "postal_code", "country"];
 
