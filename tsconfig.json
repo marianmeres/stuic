@@ -8,8 +8,11 @@
 		"resolveJsonModule": true,
 		"skipLibCheck": true,
 		"sourceMap": true,
-		"strict": true,
-		"module": "NodeNext",
-		"moduleResolution": "NodeNext"
+		"strict": true
+		// `module` / `moduleResolution` intentionally inherited from
+		// .svelte-kit/tsconfig.json (esnext + bundler): this lib is only ever
+		// consumed through a bundler (Vite/SvelteKit, incl. adapter-node), so
+		// bundler resolution matches the real runtime. publint guards packaging
+		// for all consumers independently of this setting.
 	}
 }

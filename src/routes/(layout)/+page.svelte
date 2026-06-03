@@ -40,6 +40,7 @@
 		'list-item-button',
 		'login-form',
 		'login-or-register-form',
+		'markdown-editor',
 		'modal-dialog',
 		'modal',
 		'nav',

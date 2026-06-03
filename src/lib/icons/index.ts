@@ -61,6 +61,22 @@ export { iconLucideUser as iconUser } from "@marianmeres/icons-fns/lucide/iconLu
 export { iconLucideX as iconX } from "@marianmeres/icons-fns/lucide/iconLucideX.js";
 export { iconLucidePencil as iconPencil } from "@marianmeres/icons-fns/lucide/iconLucidePencil.js";
 
+// Markdown Editor / formatting toolbar Icons (Lucide)
+// (bullet list reuses `iconList` and horizontal rule reuses `iconMinus` above)
+export { iconLucideBold as iconBold } from "@marianmeres/icons-fns/lucide/iconLucideBold.js";
+export { iconLucideItalic as iconItalic } from "@marianmeres/icons-fns/lucide/iconLucideItalic.js";
+export { iconLucideHeading1 as iconHeading1 } from "@marianmeres/icons-fns/lucide/iconLucideHeading1.js";
+export { iconLucideHeading2 as iconHeading2 } from "@marianmeres/icons-fns/lucide/iconLucideHeading2.js";
+export { iconLucideHeading3 as iconHeading3 } from "@marianmeres/icons-fns/lucide/iconLucideHeading3.js";
+export { iconLucideLink as iconLink } from "@marianmeres/icons-fns/lucide/iconLucideLink.js";
+export { iconLucideImage as iconImage } from "@marianmeres/icons-fns/lucide/iconLucideImage.js";
+export { iconLucideListOrdered as iconListOrdered } from "@marianmeres/icons-fns/lucide/iconLucideListOrdered.js";
+export { iconLucideQuote as iconQuote } from "@marianmeres/icons-fns/lucide/iconLucideQuote.js";
+export { iconLucideCode as iconCode } from "@marianmeres/icons-fns/lucide/iconLucideCode.js";
+export { iconLucideCornerDownLeft as iconCornerDownLeft } from "@marianmeres/icons-fns/lucide/iconLucideCornerDownLeft.js";
+export { iconLucideUndo2 as iconUndo } from "@marianmeres/icons-fns/lucide/iconLucideUndo2.js";
+export { iconLucideRedo2 as iconRedo } from "@marianmeres/icons-fns/lucide/iconLucideRedo2.js";
+
 // Brand Icons (OAuth and more...)
 export { iconBsApple as iconApple } from "@marianmeres/icons-fns/bootstrap/iconBsApple.js";
 export { iconBsFacebook as iconFacebook } from "@marianmeres/icons-fns/bootstrap/iconBsFacebook.js";
