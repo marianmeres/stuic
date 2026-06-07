@@ -157,7 +157,12 @@
 	flex: 1;
 	min-width: 0;
 	min-height: var(--_min-height);
-	max-height: var(--stuic-markdown-editor-max-height, none);
+	/* A finite default cap so a long document scrolls INSIDE the surface instead
+	   of growing the editor unbounded (which scrolls the toolbar out of view).
+	   `32rem` is kept in sync with DEFAULT_MAX_HEIGHT_VAR in _internal/max-height.ts.
+	   The component may narrow this further (inline `max-height`) to the parent's
+	   available height — see the `maxHeight` / `capToParent` props. */
+	max-height: var(--stuic-markdown-editor-max-height, 32rem);
 	overflow: auto;
 	padding: var(--_pad-y) var(--_pad-x);
 }

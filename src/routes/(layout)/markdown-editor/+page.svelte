@@ -45,6 +45,18 @@
 		// Programmatic mutation — must update the editor once, no echo loop.
 		value = `## Set from outside\n\nReplaced at random: ${Math.round(performance.now())}`;
 	}
+
+	// Long document — exercises the surface max-height (scrolls internally instead
+	// of growing the editor and pushing the toolbar out of view).
+	const longDoc =
+		`# A very long document\n\n` +
+		Array.from(
+			{ length: 60 },
+			(_, i) =>
+				`## Section ${i + 1}\n\nParagraph ${i + 1} with some **bold** and _italic_ text to fill space. Lorem ipsum dolor sit amet, consectetur adipiscing elit.`
+		).join("\n\n");
+	let longValue = $state(longDoc);
+	let paneValue = $state(longDoc);
 </script>
 
 <div class="w-full max-w-2xl mx-auto py-8 space-y-12">
@@ -103,6 +115,25 @@
 			showModeToggle={false}
 			label="Disabled"
 		/>
+	</section>
+
+	<section class="space-y-4">
+		<h2 class="text-xl font-semibold">Long content (scrolls at the default 32rem cap)</h2>
+		<p class="text-sm opacity-60">
+			The surface stops growing and scrolls internally — the toolbar stays put.
+		</p>
+		<MarkdownEditor bind:value={longValue} label="Long document" />
+	</section>
+
+	<section class="space-y-4">
+		<h2 class="text-xl font-semibold">Capped to a height-constrained parent</h2>
+		<p class="text-sm opacity-60">
+			Parent is a fixed-height flex column; with <code>capToParent</code> (default) the editor
+			fills it and scrolls internally rather than overflowing.
+		</p>
+		<div class="flex flex-col" style="height: 22rem;">
+			<MarkdownEditor bind:value={paneValue} maxHeight="100vh" label="Fills the pane" />
+		</div>
 	</section>
 </div>
 

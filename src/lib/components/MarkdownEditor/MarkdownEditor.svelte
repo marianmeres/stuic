@@ -112,6 +112,23 @@
 		 * (any `window.prompt`-compatible sync/async function works).
 		 */
 		prompt?: PromptFn;
+		/**
+		 * Caps the editing surface height so a long document scrolls *inside* the
+		 * surface instead of growing the editor (which would push the toolbar out
+		 * of view). `number` → pixels; `string` → any CSS length (`"40rem"`,
+		 * `"60vh"`, `"min(40rem,50vh)"`). Defaults to `32rem` (themeable via
+		 * `--stuic-markdown-editor-max-height`). The surface is additionally capped
+		 * to the parent's available height when {@link capToParent} is on — the
+		 * smaller limit wins.
+		 */
+		maxHeight?: number | string;
+		/**
+		 * Also cap the editing surface to the height available in the parent
+		 * container (measured at runtime), so the editor never overflows a
+		 * height-constrained parent. Default `true`. Set `false` to rely solely on
+		 * {@link maxHeight}.
+		 */
+		capToParent?: boolean;
 		/** Show the WYSIWYG/Source mode toggle. Default `true`. */
 		showModeToggle?: boolean;
 		/** Label for the toggle when in WYSIWYG mode (switches to source). */
@@ -165,6 +182,12 @@
 	} from "$lib/icons/index.js";
 	import InputWrap from "../Input/_internal/InputWrap.svelte";
 	import type { EditorCommands, EditorHandle, PromptFn } from "./_internal/types.js";
+	import {
+		computeParentAvailable,
+		DEFAULT_MAX_HEIGHT_VAR,
+		maxHeightToCss,
+		surfaceMaxHeight,
+	} from "./_internal/max-height.js";
 	import "./index.css";
 
 	// Default URL prompt for link/image — the native `window.prompt`. Opt into
@@ -227,6 +250,8 @@
 		autoSourceOnMobile = true,
 		mobileQuery = "(pointer: coarse) and (max-width: 640px)",
 		prompt = defaultPrompt,
+		maxHeight,
+		capToParent = true,
 		showModeToggle = true,
 		sourceLabel = "Source",
 		previewLabel = "Preview",
@@ -283,6 +308,78 @@
 	let host = $state<HTMLDivElement>();
 	$effect(() => {
 		input = host;
+	});
+
+	// --- Surface max-height ---------------------------------------------------
+	// Cap the editing surface so a long document scrolls internally instead of
+	// growing the editor (which scrolls the toolbar out of view). The base cap is
+	// the `maxHeight` prop (funneled into the CSS var so the surface rule + the
+	// min() below both see it) or `32rem`; `capToParent` further caps it to the
+	// parent's measured available height. `min()` picks the smaller limit.
+
+	// Funnel an explicit `maxHeight` into the themeable CSS var on the root.
+	const maxHeightVar = $derived.by(() => {
+		const css = maxHeightToCss(maxHeight);
+		return css ? `--stuic-markdown-editor-max-height: ${css};` : undefined;
+	});
+
+	// Measured parent-available height (px), or null when capping is off / not
+	// yet measured / the parent is unconstrained — then the CSS default applies.
+	let parentAvailable = $state<number | null>(null);
+
+	// Inline surface `max-height`; undefined falls back to the CSS rule default.
+	const surfaceMaxHeightCss = $derived(
+		capToParent && parentAvailable != null
+			? surfaceMaxHeight(DEFAULT_MAX_HEIGHT_VAR, parentAvailable)
+			: undefined
+	);
+
+	$effect(() => {
+		if (!capToParent || !host || typeof ResizeObserver === "undefined") {
+			parentAvailable = null;
+			return;
+		}
+		const surface = host;
+		// Measure against the parent of the whole field (InputWrap's root), which
+		// is the consumer's container — that is the "parent" whose height we cap to.
+		const root = (surface.closest(".stuic-input") as HTMLElement | null) ?? surface;
+		const parent = root.parentElement;
+		if (!parent) {
+			parentAvailable = null;
+			return;
+		}
+
+		const measure = () => {
+			const cs = getComputedStyle(parent);
+			const next = computeParentAvailable({
+				fromTop: surface.getBoundingClientRect().top,
+				parentBottom: parent.getBoundingClientRect().bottom,
+				parentBorderBottom: parseFloat(cs.borderBottomWidth) || 0,
+				parentPaddingBottom: parseFloat(cs.paddingBottom) || 0,
+			});
+			// `untrack` the read of `parentAvailable`: the initial measure() runs
+			// inside this effect, and tracking its own output would tear down and
+			// rebuild the observer on every measurement. The threshold also guards
+			// against sub-pixel ResizeObserver feedback loops.
+			const prev = untrack(() => parentAvailable);
+			if (next == null) {
+				if (prev !== null) parentAvailable = null;
+			} else if (prev == null || Math.abs(next - prev) > 1) {
+				parentAvailable = next;
+			}
+		};
+
+		measure();
+		const ro = new ResizeObserver(measure);
+		ro.observe(parent);
+		// Observe the field root too, so the surface re-measures when content above
+		// it reflows (label wraps, description expands, validation message appears).
+		ro.observe(root);
+		window.addEventListener("resize", measure);
+		return () => {
+			ro.disconnect();
+			window.removeEventListener("resize", measure);
+		};
 	});
 
 	// Handle to whichever backend is currently mounted (null while (re)loading).
@@ -464,6 +561,7 @@
 		class:disabled
 		data-size={renderSize}
 		data-mode={mode}
+		style={maxHeightVar}
 	>
 		{#if toolbarItems.length || showModeToggle}
 			<div class={twMerge("stuic-markdown-editor-bar", classToolbar)}>
@@ -511,6 +609,7 @@
 		<div
 			bind:this={host}
 			class="stuic-markdown-editor-surface"
+			style:max-height={surfaceMaxHeightCss}
 			onfocusout={handleFocusOut}
 			role="textbox"
 			aria-multiline="true"

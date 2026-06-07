@@ -60,6 +60,8 @@ Bind the component instance to access:
 | `validate`       | `boolean \| ValidateOptions` | –           | Pass a `customValidator` to validate markdown                       |
 | `renderSize`     | `"sm" \| "md" \| "lg"`       | `"md"`      |                                                                     |
 | `toolbar`        | `boolean \| ToolbarItem[]`   | `true`      | `true` = default toolbar, `false` = none, or an ordered button list |
+| `maxHeight`      | `number \| string`           | `32rem`     | Surface height cap (`number` = px). Long docs scroll internally     |
+| `capToParent`    | `boolean`                    | `true`      | Also cap the surface to the parent's available height               |
 | `showModeToggle` | `boolean`                    | `true`      | Show the WYSIWYG/source toggle                                      |
 | `name`           | `string`                     | –           | Hidden input name for form submission                               |
 
@@ -94,6 +96,33 @@ Available items: `bold`, `italic`, `heading1`, `heading2`, `heading3`, `link`,
 `image`, `bulletList`, `orderedList`, `blockquote`, `codeBlock`, `hr`,
 `hardBreak`, `undo`, `redo`, and `"|"` (separator). The default layout is
 exported as `DEFAULT_TOOLBAR`.
+
+### Height & scrolling
+
+A long document never grows the editor unbounded (which would scroll the toolbar
+out of view). The editing **surface** has a finite max height and scrolls
+internally instead:
+
+- **Fixed cap** — `maxHeight` (`number` → px, or any CSS length string like
+  `"40rem"` / `"60vh"`), defaulting to `32rem` (themeable via
+  `--stuic-markdown-editor-max-height`).
+- **Parent cap** — with `capToParent` on (default), the surface is _also_ capped
+  to the height available in the parent container, measured at runtime. The
+  **smaller** of the two limits wins, so the editor fills — but never overflows —
+  a height-constrained parent (e.g. a flex column, modal body, or split pane).
+
+```svelte
+<!-- explicit fixed cap; ignore the parent -->
+<MarkdownEditor bind:value maxHeight="20rem" capToParent={false} />
+
+<!-- fill a height-constrained pane, scrolling internally past its available height -->
+<div style="height: 60vh; display: flex; flex-direction: column;">
+	<MarkdownEditor bind:value maxHeight="100vh" />
+</div>
+```
+
+The minimum height (`--stuic-markdown-editor-min-height`, `12rem` for `md`) still
+applies, so the surface never collapses below a usable editing area.
 
 ### Link / image URL prompt
 
@@ -146,7 +175,7 @@ input/global tokens:
 --stuic-markdown-editor-border-focus
 --stuic-markdown-editor-bg
 --stuic-markdown-editor-min-height  /* default 12rem (9/16rem for sm/lg) */
---stuic-markdown-editor-max-height
+--stuic-markdown-editor-max-height  /* default 32rem; see "Height & scrolling" */
 --stuic-markdown-editor-font-size
 --stuic-markdown-editor-font-mono
 --stuic-markdown-editor-code-bg
