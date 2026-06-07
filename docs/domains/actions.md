@@ -8,23 +8,23 @@
 
 ## Available Actions
 
-| Action                  | Purpose                                                       | File                                 |
-| ----------------------- | ------------------------------------------------------------- | ------------------------------------ |
-| `validate`              | Form field validation with i18n support                       | `validate.svelte.ts`                 |
-| `focusTrap`             | Keyboard focus containment (modals/dialogs)                   | `focus-trap.ts`                      |
-| `autogrow`              | Auto-resize textarea to content                               | `autogrow.svelte.ts`                 |
-| `autoscroll`            | Auto-scroll container to bottom                               | `autoscroll.ts`                      |
-| `dimBehind`             | Dim everything behind a target element (simplified spotlight) | `dim-behind/`                        |
-| `fileDropzone`          | Drag-and-drop file handling                                   | `file-dropzone.svelte.ts`            |
-| `highlightDragover`     | Visual feedback on drag-over                                  | `highlight-dragover.svelte.ts`       |
-| `resizableWidth`        | Draggable width resizing                                      | `resizable-width.svelte.ts`          |
-| `trim`                  | Auto-trim whitespace from input                               | `trim.svelte.ts`                     |
-| `typeahead`             | Advanced autocomplete behavior                                | `typeahead.svelte.ts`                |
-| `onSubmitValidityCheck` | Form submit validation                                        | `on-submit-validity-check.svelte.ts` |
-| `popover`               | Popover positioning                                           | `popover/`                           |
-| `spotlight`             | Spotlight/coach mark overlay with cutout hole                 | `spotlight/`                         |
-| `tooltip`               | Tooltip positioning and display                               | `tooltip/`                           |
-| `createTour` / `tourStep` | Multi-step onboarding tour (built on spotlight)             | `onboarding/`                        |
+| Action                    | Purpose                                                       | File                                 |
+| ------------------------- | ------------------------------------------------------------- | ------------------------------------ |
+| `validate`                | Form field validation with i18n support                       | `validate.svelte.ts`                 |
+| `focusTrap`               | Keyboard focus containment (modals/dialogs)                   | `focus-trap.ts`                      |
+| `autogrow`                | Auto-resize textarea to content                               | `autogrow.svelte.ts`                 |
+| `autoscroll`              | Auto-scroll container to bottom                               | `autoscroll.ts`                      |
+| `dimBehind`               | Dim everything behind a target element (simplified spotlight) | `dim-behind/`                        |
+| `fileDropzone`            | Drag-and-drop file handling                                   | `file-dropzone.svelte.ts`            |
+| `highlightDragover`       | Visual feedback on drag-over                                  | `highlight-dragover.svelte.ts`       |
+| `resizableWidth`          | Draggable width resizing                                      | `resizable-width.svelte.ts`          |
+| `trim`                    | Auto-trim whitespace from input                               | `trim.svelte.ts`                     |
+| `typeahead`               | Advanced autocomplete behavior                                | `typeahead.svelte.ts`                |
+| `onSubmitValidityCheck`   | Form submit validation                                        | `on-submit-validity-check.svelte.ts` |
+| `popover`                 | Popover positioning                                           | `popover/`                           |
+| `spotlight`               | Spotlight/coach mark overlay with cutout hole                 | `spotlight/`                         |
+| `tooltip`                 | Tooltip positioning and display                               | `tooltip/`                           |
+| `createTour` / `tourStep` | Multi-step onboarding tour (built on spotlight)               | `onboarding/`                        |
 
 ---
 
@@ -116,8 +116,8 @@ inline messages to render. They won't — the `validate` action's
 
 ### Hidden inputs and `required`
 
-Per the HTML spec, `<input type="hidden">` is *barred from constraint
-validation* — `validity.valueMissing` stays `false` regardless of the
+Per the HTML spec, `<input type="hidden">` is _barred from constraint
+validation_ — `validity.valueMissing` stays `false` regardless of the
 `required` attribute, and native browser submit blocking is skipped. Several
 STUIC field components (`FieldPhoneNumber`, `FieldCountry`, `FieldObject`,
 `FieldAssets`, `FieldInputLocalized`, `FieldKeyValues`, `FieldLikeButton`)
@@ -137,6 +137,29 @@ This means `<FieldCountry required />` and `<FieldPhoneNumber required />`
 correctly fail validation when empty — both through the imperative
 `validate()` path and via `use:onSubmitValidityCheck`. Without this wrap
 they'd silently accept empty values.
+
+### `onSubmitValidityCheck` and synthetic events
+
+On submit the action walks `form.elements` and synthetically dispatches
+`input` + `change` on each control, so custom `validate` listeners run even on
+fields the user never touched. `form.elements` includes CSS-hidden controls
+(`display:none` does **not** remove an element — only `disabled` or being
+outside the form does), so this fan-out reaches every wired input.
+
+Two element types are deliberately exempt from the synthetic dispatch:
+
+- **`type="radio"`** — dispatching `change` auto-selects the last radio in the
+  group, which is wrong.
+- **`type="file"`** — a file input's value is read-only to script, so a
+  synthetic `change` can't re-validate it; worse, it re-triggers any dropzone /
+  upload listener bound to the input. `FieldAssets` wires its hidden
+  `<input type="file">` through `fileDropzone`, so a re-fired `change` would
+  re-run `processFiles` with the previously-picked file still in `inputEl.files`
+  — duplicating the asset and firing a real re-upload on every save. File inputs
+  are still read for native constraint validation (`required`); only the event
+  dispatch is skipped. (`FieldAssets` additionally clears its file input after
+  consuming a selection, both as defense-in-depth and to allow re-selecting the
+  same file twice in a row.)
 
 ### File Dropzone
 

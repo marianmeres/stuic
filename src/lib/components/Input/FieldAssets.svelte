@@ -453,7 +453,27 @@
 		processFiles(files: FileList | null, wasDrop?: boolean) {
 			clog.debug(`processFiles`, wasDrop ? "[DROPPED]" : "", files);
 
-			if (accept && [...(files ?? [])].some((f) => !is_accepted_type(accept, f.type))) {
+			// Copy the File objects into a stable array, then IMMEDIATELY release the
+			// hidden <input type="file">'s retained FileList. A native file input
+			// keeps its FileList after a selection until it is reset (form reset or
+			// `value = ""`), and its `change` event (wired by the `fileDropzone`
+			// action) calls back into this handler. Without this reset, any later
+			// stray `change` re-runs processFiles with the SAME file still in
+			// `inputEl.files`, pushing a duplicate optimistic asset and firing a real
+			// re-upload. `onSubmitValidityCheck` used to dispatch exactly such a
+			// synthetic `change` on submit (now fixed there too — belt and braces).
+			// Clearing also restores the ability to re-select the same file twice in
+			// a row (an unchanged value emits no `change`). The blob URLs we create
+			// below are independent of the input, so clearing here is safe.
+			const incoming = [...(files ?? [])];
+			if (inputEl) inputEl.value = "";
+
+			// Nothing to consume — a cancelled picker, or a stray/synthetic `change`
+			// on an already-cleared input. Bail before touching state or calling
+			// processAssets (which would otherwise run with an empty batch).
+			if (!incoming.length) return;
+
+			if (accept && incoming.some((f) => !is_accepted_type(accept, f.type))) {
 				const msg = t("invalid_type", { accept });
 				if (notifications) notifications.error(msg);
 				else alert(msg);
@@ -461,8 +481,11 @@
 			}
 
 			const cardErrMsg = t("cardinality_reached", { max: cardinality });
-			if (assets.length > cardinality) {
-				// if (assets.length + (files?.length ?? 0) > cardinality) {
+			// `>=` (not `>`): refuse the moment the field already holds `cardinality`
+			// assets, instead of optimistically adding one past the limit and relying
+			// on the validator to reject it afterwards (the off-by-one that made the
+			// single-cardinality symptom loud).
+			if (assets.length >= cardinality) {
 				if (notifications) notifications.error(cardErrMsg);
 				else alert(cardErrMsg);
 				return;
@@ -470,8 +493,8 @@
 
 			const toBeProcessed: FieldAsset[] = [];
 
-			for (const file of files ?? []) {
-				if (assets.length > cardinality) {
+			for (const file of incoming) {
+				if (assets.length >= cardinality) {
 					notifications ? notifications.error(cardErrMsg) : alert(cardErrMsg);
 					break;
 				}

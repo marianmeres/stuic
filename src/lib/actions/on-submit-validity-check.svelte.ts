@@ -66,6 +66,18 @@ export function onSubmitValidityCheck(node: HTMLFormElement) {
 				// input (last radio input), which is not desired
 				if (el.type === "radio") continue;
 
+				// File inputs: validate WITHOUT re-dispatching events. A synthetic
+				// `change` can't change a file input's value (it's read-only to
+				// script), so it adds nothing for validation — but it DOES re-trigger
+				// any dropzone/upload listener bound to the input. `FieldAssets`'
+				// hidden `<input type="file">` is exactly such a listener (wired via
+				// the `fileDropzone` action): re-firing `change` re-runs its
+				// `processFiles` with the file still sitting in `inputEl.files`,
+				// pushing a duplicate optimistic asset and kicking off a real
+				// re-upload on every submit. We still read `el.validity` below, so
+				// native `required` file inputs are honored as before.
+				const isFile = el.type === "file";
+
 				// // [debug] kept commented for the next time Issue A regresses
 				// // eslint-disable-next-line no-console
 				// console.log(`[onSubmitValidityCheck] el#${i} ${el.name || el.type} BEFORE`, {
@@ -86,10 +98,12 @@ export function onSubmitValidityCheck(node: HTMLFormElement) {
 				// error, silently routing the form to `submit_invalid` and never calling
 				// the consumer's onSubmit. The dispatched change event below re-runs the
 				// per-field validator which re-applies a real customValidity if needed.
-				if (typeof el.setCustomValidity === "function") el.setCustomValidity("");
+				if (!isFile) {
+					if (typeof el.setCustomValidity === "function") el.setCustomValidity("");
 
-				el.dispatchEvent(new Event("input", { bubbles: true }));
-				el.dispatchEvent(new Event("change", { bubbles: true }));
+					el.dispatchEvent(new Event("input", { bubbles: true }));
+					el.dispatchEvent(new Event("change", { bubbles: true }));
+				}
 
 				// // [debug] kept commented for the next time Issue A regresses
 				// // eslint-disable-next-line no-console
