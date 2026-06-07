@@ -20,6 +20,12 @@
 			Authorization: "Bearer token123",
 			"X-Custom-Header": "A longer value that might span\nmultiple lines",
 		}),
+		structured: JSON.stringify({
+			endpoint: "https://api.example.com",
+			retries: 3,
+			tags: ["a", "b"],
+			options: { debug: true, timeout: 5000 },
+		}),
 		required: "{}",
 		withValidation: "{}",
 	});
@@ -65,6 +71,23 @@
 		<pre
 			class="text-xs mt-2 bg-neutral-100 dark:bg-neutral-800 p-2 rounded overflow-auto">{JSON.stringify(
 				maybeJsonParse(values.prefilled),
+				null,
+				2
+			)}</pre>
+	</form>
+
+	<!-- Structured JSON values -->
+	<form use:onSubmitValidityCheck class="border p-4 rounded">
+		<h3 class="text-lg font-semibold mb-4">Structured JSON Values</h3>
+		<FieldKeyValues
+			bind:value={values.structured}
+			name="structured"
+			label="Configuration"
+			description="Object/array values pretty-print on load and on blur; the corner glyph signals valid JSON (try breaking one to see the amber warning)"
+		/>
+		<pre
+			class="text-xs mt-2 bg-neutral-100 dark:bg-neutral-800 p-2 rounded overflow-auto">{JSON.stringify(
+				maybeJsonParse(values.structured),
 				null,
 				2
 			)}</pre>

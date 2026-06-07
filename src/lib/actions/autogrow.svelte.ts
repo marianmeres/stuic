@@ -44,7 +44,15 @@ export function autogrow(
 			// console.log(123, el.value);
 			if (enabled) {
 				el.style.height = "auto"; // Reset height to auto to correctly calculate scrollHeight
-				el.style.height = Math.max(min, Math.min(el.scrollHeight, max)) + "px";
+				// `scrollHeight` excludes the border, but with `box-sizing: border-box` the
+				// height we set *includes* it — so without adding the vertical border back
+				// we undershoot by a couple px and a scrollbar lingers.
+				const cs = getComputedStyle(el);
+				const borderY =
+					cs.boxSizing === "border-box"
+						? parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth)
+						: 0;
+				el.style.height = Math.max(min, Math.min(el.scrollHeight + borderY, max)) + "px";
 			}
 		}
 

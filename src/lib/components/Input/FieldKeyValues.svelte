@@ -42,13 +42,23 @@
 		addLabel?: string;
 		emptyMessage?: string;
 		onChange?: (value: string) => void;
+		/**
+		 * When `true`, a value that *looks like* JSON (starts with `{`/`[`) but
+		 * fails to parse becomes a blocking validation error on submit.
+		 *
+		 * Defaults to `false`: the component detects/parses JSON for convenience
+		 * (pretty-print + the inline indicator) but does **not** enforce validity —
+		 * whether a value must be valid JSON is a business rule the consumer owns.
+		 * Unparseable values are simply stored as plain strings. Opt in to `true`
+		 * only for a strictly JSON-only field.
+		 */
 		strictJsonValidation?: boolean;
 		t?: TranslateFn;
 	}
 </script>
 
 <script lang="ts">
-	import { iconPlus, iconTrash } from "$lib/icons/index.js";
+	import { iconAlertWarning, iconCode, iconPlus, iconTrash } from "$lib/icons/index.js";
 	import { tick } from "svelte";
 	import { autogrow } from "../../actions/autogrow.svelte.js";
 	import { validate as validateAction } from "../../actions/validate.svelte.js";
@@ -75,6 +85,7 @@
 			remove_entry: "Remove entry",
 			duplicate_keys: "Duplicate keys are not allowed",
 			invalid_json_syntax: "Invalid JSON syntax. Check for missing quotes or brackets.",
+			json_detected: "Valid JSON",
 		};
 		let out = m[k] ?? fallback ?? k;
 		return isPlainObject(values) ? replaceMap(out, values as any) : out;
@@ -118,7 +129,7 @@
 		addLabel,
 		emptyMessage,
 		onChange,
-		strictJsonValidation = true,
+		strictJsonValidation = false,
 		t = t_default,
 	}: Props = $props();
 
@@ -159,7 +170,7 @@
 			if (!isPlainObject(parsed)) return [];
 			return Object.entries(parsed).map(([key, val]) => ({
 				key,
-				value: typeof val === "string" ? val : JSON.stringify(val),
+				value: typeof val === "string" ? val : JSON.stringify(val, null, 2),
 				parsedValue: val,
 			}));
 		} catch (e) {
@@ -230,6 +241,35 @@
 			entries[idx].key = newValue;
 		}
 		syncToValue();
+	}
+
+	// Pretty-print structured JSON (objects/arrays) on blur. Display-only: the
+	// parsed value is unchanged, so the serialized external `value` is identical
+	// and `syncToValue()` is intentionally not called. Primitives, plain strings,
+	// and invalid JSON are left exactly as typed (no surprising normalization).
+	function formatValueEntry(idx: number) {
+		const raw = entries[idx].value;
+		const trimmed = raw.trim();
+		if (!(trimmed.startsWith("{") || trimmed.startsWith("["))) return;
+		try {
+			const parsed = JSON.parse(trimmed);
+			const pretty = JSON.stringify(parsed, null, 2);
+			if (pretty !== raw) {
+				entries[idx].value = pretty;
+				entries[idx].parsedValue = parsed;
+				entryJsonErrors[idx] = false;
+			}
+		} catch {
+			// invalid JSON: leave as typed; indicator + validation handle it
+		}
+	}
+
+	// Per-entry JSON signal for the subtle inline indicator.
+	function jsonState(entry: KeyValueEntry, idx: number): "valid" | "error" | "none" {
+		if (entryJsonErrors[idx]) return "error";
+		const v = entry.parsedValue;
+		if (isPlainObject(v) || Array.isArray(v)) return "valid";
+		return "none";
 	}
 
 	// Validation
@@ -314,6 +354,7 @@
 
 	const INPUT_CLS = [
 		"rounded bg-(--stuic-color-input)",
+		"font-mono",
 		"focus:outline-none focus:ring-0",
 		"border border-(--stuic-color-border)",
 		"focus:border-(--stuic-color-border-hover)",
@@ -355,6 +396,7 @@
 		{:else}
 			<div class="p-2">
 				{#each entries as entry, idx (idx)}
+					{@const st = jsonState(entry, idx)}
 					<div
 						class={twMerge(
 							"flex gap-2 items-start py-2",
@@ -382,15 +424,42 @@
 							/>
 
 							<!-- Value textarea -->
-							<textarea
-								value={entry.value}
-								oninput={(e) => updateEntry(idx, "value", e.currentTarget.value)}
-								placeholder={valuePlaceholder ?? t("value_placeholder")}
-								class={twMerge(INPUT_CLS, "min-h-10 flex-none", classValueInput)}
-								{disabled}
-								{tabindex}
-								use:autogrow={() => ({ enabled: true, value: entry.value })}
-							></textarea>
+							<div class="relative">
+								<textarea
+									value={entry.value}
+									oninput={(e) => updateEntry(idx, "value", e.currentTarget.value)}
+									onblur={() => formatValueEntry(idx)}
+									placeholder={valuePlaceholder ?? t("value_placeholder")}
+									class={twMerge(
+										INPUT_CLS,
+										"w-full min-h-10 flex-none pr-6",
+										classValueInput
+									)}
+									{disabled}
+									{tabindex}
+									use:autogrow={() => ({ enabled: true, value: entry.value })}
+								></textarea>
+
+								<!-- Subtle JSON state indicator -->
+								{#if st !== "none"}
+									<span
+										class={twMerge(
+											"pointer-events-none absolute top-1.5 right-1.5",
+											st === "valid"
+												? "opacity-40"
+												: "text-amber-500 opacity-80"
+										)}
+										title={st === "valid"
+											? t("json_detected")
+											: t("invalid_json_syntax")}
+										aria-hidden="true"
+									>
+										{@html st === "valid"
+											? iconCode({ size: 14 })
+											: iconAlertWarning({ size: 14 })}
+									</span>
+								{/if}
+							</div>
 						</div>
 
 						<!-- Delete button -->
