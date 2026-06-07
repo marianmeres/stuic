@@ -68,6 +68,9 @@ export { iconLucideItalic as iconItalic } from "@marianmeres/icons-fns/lucide/ic
 export { iconLucideHeading1 as iconHeading1 } from "@marianmeres/icons-fns/lucide/iconLucideHeading1.js";
 export { iconLucideHeading2 as iconHeading2 } from "@marianmeres/icons-fns/lucide/iconLucideHeading2.js";
 export { iconLucideHeading3 as iconHeading3 } from "@marianmeres/icons-fns/lucide/iconLucideHeading3.js";
+export { iconLucideHeading4 as iconHeading4 } from "@marianmeres/icons-fns/lucide/iconLucideHeading4.js";
+export { iconLucideHeading5 as iconHeading5 } from "@marianmeres/icons-fns/lucide/iconLucideHeading5.js";
+export { iconLucideHeading6 as iconHeading6 } from "@marianmeres/icons-fns/lucide/iconLucideHeading6.js";
 export { iconLucideLink as iconLink } from "@marianmeres/icons-fns/lucide/iconLucideLink.js";
 export { iconLucideImage as iconImage } from "@marianmeres/icons-fns/lucide/iconLucideImage.js";
 export { iconLucideListOrdered as iconListOrdered } from "@marianmeres/icons-fns/lucide/iconLucideListOrdered.js";

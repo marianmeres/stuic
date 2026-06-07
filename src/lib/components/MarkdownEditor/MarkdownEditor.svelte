@@ -15,6 +15,9 @@
 		| "heading1"
 		| "heading2"
 		| "heading3"
+		| "heading4"
+		| "heading5"
+		| "heading6"
 		| "link"
 		| "image"
 		| "bulletList"
@@ -147,6 +150,9 @@
 		iconHeading1,
 		iconHeading2,
 		iconHeading3,
+		iconHeading4,
+		iconHeading5,
+		iconHeading6,
 		iconImage,
 		iconItalic,
 		iconLink,
@@ -176,6 +182,9 @@
 		heading1: { title: "Heading 1", icon: iconHeading1, run: (c) => c.heading(1) },
 		heading2: { title: "Heading 2", icon: iconHeading2, run: (c) => c.heading(2) },
 		heading3: { title: "Heading 3", icon: iconHeading3, run: (c) => c.heading(3) },
+		heading4: { title: "Heading 4", icon: iconHeading4, run: (c) => c.heading(4) },
+		heading5: { title: "Heading 5", icon: iconHeading5, run: (c) => c.heading(5) },
+		heading6: { title: "Heading 6", icon: iconHeading6, run: (c) => c.heading(6) },
 		link: { title: "Link", icon: iconLink, run: (c) => c.link() },
 		image: { title: "Image", icon: iconImage, run: (c) => c.image() },
 		bulletList: { title: "Bullet list", icon: iconList, run: (c) => c.bulletList() },
