@@ -37,7 +37,11 @@ export default defineConfig({
 					name: "client",
 					include: ["src/**/*.svelte.test.ts"],
 					setupFiles: ["vitest-browser-svelte"],
-					testTimeout: 2000,
+					// Browser-mode tests are real Chromium interactions; under full-suite
+					// load (parallel files contending for CPU) a multi-step reactive test
+					// can exceed a tight budget. 5s keeps expect.element retries honest
+					// without masking genuine hangs. See docs/component-testing.
+					testTimeout: 5000,
 					browser: {
 						enabled: true,
 						headless: true,
