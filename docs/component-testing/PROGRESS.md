@@ -26,7 +26,7 @@ Branch: `feat/component-testing`
 | 9 | **DismissibleMessage** — intent, dismiss, auto-reset | [03](./03-component-coverage-roadmap.md) #6 | ✅ | `c520780` |
 | 10 | **Avatar** — initials/img/icon fallback, autoColor | [03](./03-component-coverage-roadmap.md) #7 | ✅ | `43ed174` |
 | 11 | **Progress** — value→width/stroke (real layout) | [03](./03-component-coverage-roadmap.md) #8 | ✅ | `c8cc0ef` |
-| 12 | **Hard proof** — anchor-position viewport clamp (rec.) *or* focus trap | [04](./04-hard-cases-and-e2e.md) | ⏸️ | — |
+| 12 | **Hard proof** — anchor-position viewport clamp | [04](./04-hard-cases-and-e2e.md) | ✅ | _this_ |
 | 13 | CI — minimal GitHub Actions `test.yml` | [05](./05-ci.md) | ⬜ | — |
 
 ## Backlog (ranked, post-sprint)
@@ -52,7 +52,7 @@ Branch: `feat/component-testing`
 - **2026-06-08** — Task 1 done: **vitest 4.1.8** installed (vite already `^7.3.5`, compatible); all 9 node suites / 59 tests pass unchanged. `--dir src/` still supported in v4.
 - **2026-06-08** — Tasks 4–8 done (Button/Pill/Switch/Spinner/Skeleton). Drafted in parallel via a subagent workflow, then each verified in isolation + a full-suite gate before commit. **`prefers-reduced-motion`** has no simple per-test API in vitest browser mode → Skeleton omits that assertion (asserts always-on markup instead); revisit if Playwright context emulation is wired up. **Snippet `text()` helper kept inline per-file** (no shared util yet) — re-evaluate if it spreads further. **`testTimeout` 2000→5000ms** (`da9805f`): a multi-click reactive test (Switch) intermittently timed out under full-suite Chromium contention while green in isolation. Added `.vitest-attachments`/`__screenshots__` to `.gitignore` (`6294e63`).
 - **2026-06-08** — Task 2 done: harness works. Deps: `@vitest/browser-playwright 4.1.8`, `playwright 1.60.0`, `vitest-browser-svelte 2.1.1`. `projects` split added to `vite.config.ts`; scripts now `test` = `vitest run` (+ `test:watch`, `test:ui`). Separator smoke test (3 assertions) passes in Chromium → **10 files / 62 tests green**, `pnpm check` clean (0 errors). **The documented SvelteKit-plugin/server-build blocker is resolved** — browser mode resolves the client build, `toHaveClass("stuic-separator")` confirms tailwind + the client runtime run. No `client`-project plugin fallback needed.
-- **⏸️ Open (task 12):** which single hard proof — anchor-position clamp (recommended, guards the `9d8c974` regression) vs focus trap.
+- **2026-06-08** — Task 12 resolved (owner): **anchor-position viewport clamp** as the single hard proof. `clampIntoViewport` gets a browser test (`utils/anchor-position.svelte.test.ts`, 8 tests — real `getBoundingClientRect` + `window.inner*`, jsdom-impossible, guards `9d8c974`); the pure `buildPositionTryFallbacks` math gets a fast node companion (`utils/anchor-position.test.ts`, 3 tests). Focus trap deferred to the portals/focus-trap backlog (#16).
 - **⏸️ Open (task 13):** `packageManager` field vs pinned pnpm version in the CI action; Node version to pin.
 
 ## How to resume (for a fresh conversation)
