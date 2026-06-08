@@ -15,8 +15,8 @@ Branch: `feat/component-testing`
 
 | # | Task | Source | Status | Commit |
 |---|------|--------|--------|--------|
-| 1 | Upgrade vitest 3→4; confirm 9 existing node suites still green | [01](./01-framework-setup.md) Step 1 | ✅ | _next_ |
-| 2 | Browser harness: add deps, `projects` config split, `playwright install chromium`, fix test scripts, Separator smoke test | [01](./01-framework-setup.md) Steps 2–5 | ⬜ | — |
+| 1 | Upgrade vitest 3→4; confirm 9 existing node suites still green | [01](./01-framework-setup.md) Step 1 | ✅ | `71e47e2` |
+| 2 | Browser harness: add deps, `projects` config split, `playwright install chromium`, fix test scripts, Separator smoke test | [01](./01-framework-setup.md) Steps 2–5 | ✅ | _next_ |
 | 3 | Reconcile [`docs/testing.md`](../testing.md) — add the browser-behavior layer | [02](./02-test-conventions.md) | ⬜ | — |
 | 4 | **Button** — flagship; establish assertion patterns | [03](./03-component-coverage-roadmap.md) #1 | ⬜ | — |
 | 5 | **Pill** — intent/active/dismissible event | [03](./03-component-coverage-roadmap.md) #2 | ⬜ | — |
@@ -50,6 +50,7 @@ Branch: `feat/component-testing`
 - **2026-06-08** — **CI: yes, minimal GitHub Actions**, added late in the sprint once a few component tests pass locally.
 - **2026-06-08** — **Config lives in `vite.config.ts`** (extend with a `test` block) rather than a separate `vitest.config.ts` — minimal change.
 - **2026-06-08** — Task 1 done: **vitest 4.1.8** installed (vite already `^7.3.5`, compatible); all 9 node suites / 59 tests pass unchanged. `--dir src/` still supported in v4.
+- **2026-06-08** — Task 2 done: harness works. Deps: `@vitest/browser-playwright 4.1.8`, `playwright 1.60.0`, `vitest-browser-svelte 2.1.1`. `projects` split added to `vite.config.ts`; scripts now `test` = `vitest run` (+ `test:watch`, `test:ui`). Separator smoke test (3 assertions) passes in Chromium → **10 files / 62 tests green**, `pnpm check` clean (0 errors). **The documented SvelteKit-plugin/server-build blocker is resolved** — browser mode resolves the client build, `toHaveClass("stuic-separator")` confirms tailwind + the client runtime run. No `client`-project plugin fallback needed.
 - **⏸️ Open (task 12):** which single hard proof — anchor-position clamp (recommended, guards the `9d8c974` regression) vs focus trap.
 - **⏸️ Open (task 13):** `packageManager` field vs pinned pnpm version in the CI action; Node version to pin.
 

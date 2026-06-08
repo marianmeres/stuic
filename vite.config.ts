@@ -3,6 +3,7 @@ import { sveltekit } from "@sveltejs/kit/vite";
 // import { defineConfig } from 'vite';
 import { defineConfig } from "vitest/config";
 import tailwindcss from "@tailwindcss/vite";
+import { playwright } from "@vitest/browser-playwright";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -13,5 +14,38 @@ export default defineConfig({
 		port: parseInt(process.env.DEV_PORT || "8886"),
 		// expose on all
 		host: true,
+	},
+	test: {
+		// Two projects, routed purely by filename:
+		//   *.test.ts        -> fast node env (pure logic, the existing suites)
+		//   *.svelte.test.ts -> real browser (Chromium) for component/DOM/$effect tests
+		// See docs/component-testing/01-framework-setup.md
+		projects: [
+			{
+				extends: true, // inherit root plugins (tailwind + sveltekit)
+				test: {
+					name: "server",
+					environment: "node",
+					include: ["src/**/*.test.ts"],
+					// *.svelte.test.ts also ends in .test.ts, so it must be excluded here
+					exclude: ["src/**/*.svelte.test.ts"],
+				},
+			},
+			{
+				extends: true,
+				test: {
+					name: "client",
+					include: ["src/**/*.svelte.test.ts"],
+					setupFiles: ["vitest-browser-svelte"],
+					testTimeout: 2000,
+					browser: {
+						enabled: true,
+						headless: true,
+						provider: playwright(),
+						instances: [{ browser: "chromium" }],
+					},
+				},
+			},
+		],
 	},
 });
