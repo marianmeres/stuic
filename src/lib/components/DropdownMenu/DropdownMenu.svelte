@@ -267,6 +267,10 @@
 	import ListItemButton from "../ListItemButton/ListItemButton.svelte";
 	import { BodyScroll } from "../../utils/body-scroll-locker.js";
 	import { waitForTwoRepaints } from "../../utils/paint.js";
+	import {
+		extractSearchableItems,
+		filterItemsByMatchedIds,
+	} from "./_internal/dropdown-menu-search.js";
 
 	let {
 		items,
@@ -357,20 +361,9 @@
 		return search === true ? defaults : { ...defaults, ...search };
 	});
 
-	// Extract all searchable items (action + expandable + nested actions)
-	let allSearchableItems = $derived.by(() => {
-		const result: (DropdownMenuActionItem | DropdownMenuExpandableItem)[] = [];
-		for (const item of items) {
-			if (item.type === "action") result.push(item);
-			if (item.type === "expandable") {
-				result.push(item);
-				for (const child of item.items) {
-					if (child.type === "action") result.push(child);
-				}
-			}
-		}
-		return result;
-	});
+	// Extract all searchable items (action + expandable + nested actions).
+	// Pure logic lives in _internal/dropdown-menu-search.ts (node-tested).
+	let allSearchableItems = $derived(extractSearchableItems(items));
 
 	// Searchable collection (recreate when items or config changes)
 	let searchableCollection = $derived.by(() => {
@@ -389,19 +382,7 @@
 		const results = searchableCollection.search(searchQuery, searchConfig.strategy);
 		const matchedIds = new Set(results.map((r) => r.id));
 
-		return items.filter((item) => {
-			if (item.type === "divider" || item.type === "header" || item.type === "custom") {
-				return false; // Hide during search
-			}
-			if (item.type === "action") return matchedIds.has(item.id);
-			if (item.type === "expandable") {
-				return (
-					matchedIds.has(item.id) ||
-					item.items.some((c) => c.type === "action" && matchedIds.has(c.id))
-				);
-			}
-			return false;
-		});
+		return filterItemsByMatchedIds(items, matchedIds);
 	});
 
 	// Matched IDs for use in template filtering during search

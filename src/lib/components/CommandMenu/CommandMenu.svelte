@@ -65,6 +65,11 @@
 
 <script lang="ts">
 	import Button from "../Button/Button.svelte";
+	import {
+		normalizeAndGroupOptions,
+		renderOptionLabelOf,
+		sortByOptgroupLabel,
+	} from "./_internal/command-menu-utils.js";
 
 	const clog = createClog("CommandMenu");
 
@@ -86,15 +91,14 @@
 		unstyled = false,
 	}: Props = $props();
 
+	// Pure helpers extracted to _internal/command-menu-utils.ts (node-tested). These
+	// thin wrappers keep reading the live props/closures and delegate the logic.
 	function _renderOptionLabel(item: Item): string {
-		return renderOptionLabel?.(item) || `${item[itemIdPropName]}`;
+		return renderOptionLabelOf(item, renderOptionLabel, itemIdPropName);
 	}
 
 	function sortFn(a: Item, b: Item) {
-		const withOptGroup = (i: Item) => `${i.optgroup || ""}__${_renderOptionLabel(i)}`;
-		return withOptGroup(a).localeCompare(withOptGroup(b), undefined, {
-			sensitivity: "base",
-		});
+		return sortByOptgroupLabel(a, b, _renderOptionLabel);
 	}
 
 	let modalDialog: ModalDialog = $state()!;
@@ -155,14 +159,7 @@
 
 	//
 	function _normalize_and_group_options(opts: Item[]): Map<string, Item[]> {
-		const groupped = new Map<string, Item[]>();
-		opts.forEach((o) => {
-			const optgLabel = renderOptionGroup(o.optgroup || "");
-			if (!groupped.has(optgLabel)) groupped.set(optgLabel, []);
-			const optgroup = groupped.get(optgLabel);
-			optgroup!.push(o);
-		});
-		return groupped;
+		return normalizeAndGroupOptions(opts, renderOptionGroup);
 	}
 
 	export function close() {

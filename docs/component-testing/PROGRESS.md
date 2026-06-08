@@ -38,7 +38,7 @@ Branch: `feat/component-testing`
 | 14   | Rest of Tier 1 (Separator already smoke-tested · H, KbdShortcut, ButtonGroupRadio, ListItemButton, Card, TabbedMenu, IconSwap, Collapsible)                             | [03](./03-component-coverage-roadmap.md) #10–17 | ✅     |
 | 15   | Tier 2 — `FieldInput` first, then the Field\* family + OtpInput, Nav, etc.                                                                                              | [03](./03-component-coverage-roadmap.md)        | 🚧     |
 | 16   | Portals/focus-traps in browser mode (Modal, ModalDialog, Backdrop, Drawer, AlertConfirmPrompt)                                                                          | [04](./04-hard-cases-and-e2e.md)                | ✅     |
-| 17   | Anchor-positioned menus (DropdownMenu, CommandMenu, UserAvatarMenu) + extract search logic to `_internal`                                                               | [04](./04-hard-cases-and-e2e.md)                | ⬜     |
+| 17   | Anchor-positioned menus (DropdownMenu, CommandMenu, UserAvatarMenu) + extract search logic to `_internal`                                                               | [04](./04-hard-cases-and-e2e.md)                | 🚧     |
 | 18   | Standalone Playwright E2E layer (drag: Tree/FieldOptions/FieldFile; Milkdown; Checkout/auth flows)                                                                      | [04](./04-hard-cases-and-e2e.md)                | ⏭️     |
 | 19   | Clear the repo's **pre-existing lint debt** (8 eslint errors + 119 prettier files), then add a **`pnpm lint`** CI job. (`pnpm check` already runs in CI as of task 13.) | [05](./05-ci.md)                                | ✅     |
 | 20   | (Maybe) visual-regression via `toMatchScreenshot`; multi-browser matrix                                                                                                 | [00](./00-overview-and-roadmap.md)              | ⏭️     |
@@ -96,6 +96,14 @@ behavioral yield; revisit in a focused follow-up. Moving on to backlog #16/#17.
 - [x] Drawer — role=dialog/aria-modal, escape + outside callbacks, position (7 tests)
 - [x] ModalDialog — fixture + imperative open/close, focus-trap, Escape, click-outside (8 tests)
 - [x] AlertConfirmPrompt — stack-driven alert/confirm/prompt: render, focus, click resolves promise (11 tests)
+
+### Task 17 — Anchor-positioned menus + search-logic extraction
+
+- [x] Extract search logic to `_internal` — `DropdownMenu/_internal/dropdown-menu-search.ts` +
+      `CommandMenu/_internal/command-menu-utils.ts`, node-tested (14 tests); components refactored to import
+- [ ] DropdownMenu (browser)
+- [ ] CommandMenu (browser)
+- [ ] UserAvatarMenu (browser)
 
 ## Decisions log
 
