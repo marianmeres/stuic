@@ -41,7 +41,8 @@ export function t_default(
 	k: string,
 	values: false | null | undefined | Record<string, string | number> = null,
 	fallback: string | boolean = "",
-	i18nSpanWrap: boolean = true
+	// kept for signature compatibility; not used by this default impl
+	_i18nSpanWrap: boolean = true
 ) {
 	const m: Record<string, string> = {
 		unable_to_preview: "Unable to preview",
@@ -51,9 +52,13 @@ export function t_default(
 		zoom_out: "Zoom out",
 		delete: "Delete",
 	};
-	let out = m[k] ?? fallback ?? k;
+	const out = m[k] ?? fallback ?? k;
 
-	return isPlainObject(values) ? replaceMap(out, values as any) : out;
+	// values is narrowed to Record<string, string | number>; replaceMap wants
+	// string | CallableFunction values (it stringifies), hence the bridge cast.
+	return isPlainObject(values)
+		? replaceMap(out, values as unknown as Record<string, string | CallableFunction>)
+		: out;
 }
 
 // naive best-effort
@@ -62,7 +67,9 @@ export function ext(name: string): string {
 	return _ext ? `.${_ext}` : "";
 }
 
-export function normalizeInput(input: string | AssetPreview): AssetPreviewNormalized | null {
+export function normalizeInput(
+	input: string | AssetPreview
+): AssetPreviewNormalized | null {
 	const asset: AssetPreviewNormalized = {
 		name: "",
 		type: "",

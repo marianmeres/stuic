@@ -48,7 +48,9 @@ const defaults: FocusTrapOptions = { enabled: true, autoFocusFirst: true };
  * ```
  */
 export function focusTrap(node: HTMLElement, options: FocusTrapOptions = {}) {
-	let { enabled = true, autoFocusFirst } = { ...defaults, ...(options ?? {}) };
+	const merged = { ...defaults, ...(options ?? {}) };
+	let { enabled = true } = merged; // reassigned by the update hook below
+	const { autoFocusFirst } = merged;
 
 	const focusableSelectors = [
 		"[contentEditable=true]",

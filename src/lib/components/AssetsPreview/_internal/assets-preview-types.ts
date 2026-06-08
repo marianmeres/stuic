@@ -1,6 +1,6 @@
 import type { BookPageArea } from "../../Book/Book.svelte";
 
-export interface AssetArea extends BookPageArea {}
+export type AssetArea = BookPageArea;
 
 export type AssetPreviewUrlObj = {
 	// o
