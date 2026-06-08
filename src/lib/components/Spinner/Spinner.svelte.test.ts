@@ -86,7 +86,7 @@ test("bar height derives from size (md: barLength 6 - 1 = 5px)", async () => {
 test("rounded -> bar border-radius in px", async () => {
 	const { container } = await render(Spinner, { rounded: 7 });
 	const bar = page.elementLocator(bars(container)[0]);
-	await expect.element(bar).toHaveStyle({ "border-radius": "7px" });
+	await expect.element(bar).toHaveStyle({ borderRadius: "7px" });
 });
 
 test("duration prop is reflected in the --stuic-spinner-duration custom property", async () => {
