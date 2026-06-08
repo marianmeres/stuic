@@ -63,7 +63,7 @@ Render a semantic `h2` but style it like an `h4`:
 | `--stuic-h-line-height`    | `1.2`                                            | Line height          |
 | `--stuic-h-letter-spacing` | `normal`                                         | Letter spacing       |
 | `--stuic-h-color`          | `inherit`                                        | Text color           |
-| `--stuic-h-margin`         | `0`                                              | Margin               |
+| `--stuic-h-margin`         | `0 0 0.5em`                                      | Margin (bottom-only) |
 | `--stuic-h1-font-size`     | `clamp(1.875rem, 1.6rem + 1vw, 2.5rem)`          | H1 font size (fluid) |
 | `--stuic-h2-font-size`     | `clamp(1.5rem, 1.3rem + 0.9vw, 2.125rem)`        | H2 font size (fluid) |
 | `--stuic-h3-font-size`     | `clamp(1.25rem, 1.1rem + 0.65vw, 1.625rem)`      | H3 font size (fluid) |

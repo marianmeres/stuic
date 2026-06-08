@@ -10,7 +10,10 @@
 	--stuic-h-line-height: 1.2;
 	--stuic-h-letter-spacing: normal;
 	--stuic-h-color: inherit;
-	--stuic-h-margin: 0;
+	/* Bottom-only by default: binds the heading to the content below it, while
+	   space above comes from the previous element's collapsing bottom margin.
+	   Avoids the first-child / flex-grid issues a baked-in margin-top would cause. */
+	--stuic-h-margin: 0 0 0.5em;
 
 	/* Per-level font sizes — fluid scaling, original values at ~1024px viewport */
 	--stuic-h1-font-size: clamp(1.875rem, 1.6rem + 1vw, 2.5rem);
