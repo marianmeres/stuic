@@ -50,7 +50,7 @@ Branch: `feat/component-testing`
 - [x] ButtonGroupRadio — `ButtonGroupRadio.svelte.test.ts`
 - [x] ListItemButton — `ListItemButton.svelte.test.ts`
 - [x] Card — `Card.svelte.test.ts`
-- [ ] TabbedMenu
+- [x] TabbedMenu — `TabbedMenu.svelte.test.ts`
 - [ ] IconSwap
 - [ ] Collapsible
 
