@@ -116,7 +116,7 @@ behavioral yield; revisit in a focused follow-up. Moving on to backlog #16/#17.
   poll the live node's `textContent` instead. (b) **A Playwright `.click()` on an element that synchronously
   removes itself orphans a "Cancelled" rejection** (non-zero exit) — use a native `el.click()` for
   self-closing menuitems; ModalDialog-based closes are async so they're unaffected. (c) `getByRole("list")/
-  ("listitem")` is ambiguous when a `<ul>`/`<li>` is nested — scope by class. (d) **Task 15: 5 heavy/low-yield
+("listitem")` is ambiguous when a `<ul>`/`<li>` is nested — scope by class. (d) **Task 15: 5 heavy/low-yield
   components postponed** (Nav, ThemePreview, AppShell/AppShellSimple, AssetsPreview, Notifications). (e)
   **#17 refactor:** pure search logic extracted to `DropdownMenu/_internal/dropdown-menu-search.ts` +
   `CommandMenu/_internal/command-menu-utils.ts`, node-tested (14 tests).
