@@ -1,6 +1,10 @@
 import { mount, unmount } from "svelte";
 import { twMerge } from "../../utils/tw-merge.js";
 import { addAnchorName, removeAnchorName } from "../../utils/anchor-name.js";
+import {
+	buildPositionTryFallbacks,
+	clampIntoViewport,
+} from "../../utils/anchor-position.js";
 import { BodyScroll } from "../../utils/body-scroll-locker.js";
 import type { THC } from "../../components/Thc/Thc.svelte";
 import SpotlightContent from "./SpotlightContent.svelte";
@@ -280,6 +284,9 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 	let resizeObserver: ResizeObserver | null = null;
 	let rafId: number | null = null;
 	let lastRect: DOMRect | null = null;
+	// True once the annotation is display:block and laid out — gates the
+	// viewport clamp so it never measures a `display:none` element (zeros).
+	let annotationShown = false;
 
 	// Unique identifiers
 	const rnd = Math.random().toString(36).slice(2);
@@ -330,9 +337,13 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 			anchorEl.style.height = `${rect.height + padding * 2}px`;
 		}
 
-		// Update fallback annotation position
-		if (annotationEl && !isSupported) {
-			positionAnnotationFallback(rect, padding);
+		// Reposition / re-clamp the annotation. The fallback path recomputes its
+		// base left/top here; the anchor path is re-placed by the browser. Either
+		// way we re-clamp so an edge-anchored annotation stays on-screen as the
+		// target moves (the anchor path has no built-in viewport clamping).
+		if (annotationEl) {
+			if (!isSupported) positionAnnotationFallback(rect, padding);
+			clampAnnotationIntoViewport();
 		}
 	}
 
@@ -410,22 +421,21 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 			annotationEl.style.top = `${y}px`;
 		}
 
-		// Clamp into viewport after layout settles. Using transform keeps the
-		// underlying left/top intent intact so the next call recomputes cleanly.
-		requestAnimationFrame(() => {
-			if (!annotationEl) return;
-			const a = annotationEl.getBoundingClientRect();
-			const m = 8;
-			const vw = window.innerWidth;
-			const vh = window.innerHeight;
-			let dx = 0;
-			let dy = 0;
-			if (a.left < m) dx = m - a.left;
-			else if (a.right > vw - m) dx = vw - m - a.right;
-			if (a.top < m) dy = m - a.top;
-			else if (a.bottom > vh - m) dy = vh - m - a.bottom;
-			annotationEl.style.transform = dx || dy ? `translate(${dx}px, ${dy}px)` : "";
-		});
+		// Viewport clamping is handled by clampAnnotationIntoViewport(), called by
+		// the caller once the annotation is laid out (and on every reposition).
+	}
+
+	/**
+	 * Clamp the annotation into the viewport, on BOTH positioning paths. The CSS
+	 * Anchor Positioning path has no built-in way to slide a centered annotation
+	 * back on-screen when the target is near a viewport edge (visible on Android
+	 * Chrome, which supports anchor positioning; iOS Safari ≤18 takes the JS
+	 * fallback path). Gated on `annotationShown` so it never measures a
+	 * `display:none` element. See {@link clampIntoViewport}.
+	 */
+	function clampAnnotationIntoViewport() {
+		if (!annotationEl || !annotationShown) return;
+		clampIntoViewport(annotationEl);
 	}
 
 	function renderContent() {
@@ -520,8 +530,8 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 						position: fixed;
 						position-anchor: ${anchorName};
 						position-area: ${POSITION_MAP[currentOptions.position || "bottom"] || "bottom"};
-						position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
-						position-try-order: most-width;
+						position-try-fallbacks: ${buildPositionTryFallbacks(currentOptions.position || "bottom")};
+						position-try-order: normal;
 						max-width: calc(100vw - 1rem);
 						max-height: calc(100vh - 1rem);
 						transition-duration: ${TRANSITION}ms;
@@ -565,6 +575,10 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 				backdropEl?.classList.add("spot-visible");
 				if (annotationEl) {
 					annotationEl.classList.add("spot-block");
+					// Now display:block and laid out — clamp into the viewport before
+					// it fades in. Applies to both the anchor and fallback paths.
+					annotationShown = true;
+					clampAnnotationIntoViewport();
 					requestAnimationFrame(() => {
 						annotationEl?.classList.add("spot-visible");
 					});
@@ -599,6 +613,7 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 
 		if (!isVisible) return;
 		isVisible = false;
+		annotationShown = false;
 		if (currentOptions.id) {
 			spotlightOpenStates[currentOptions.id] = false;
 		}
@@ -703,6 +718,7 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 	$effect(() => {
 		return () => {
 			// Cleanup on unmount
+			annotationShown = false;
 			if (mountedComponent) {
 				unmount(mountedComponent);
 				mountedComponent = null;

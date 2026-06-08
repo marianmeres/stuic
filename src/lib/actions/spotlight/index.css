@@ -26,11 +26,18 @@
 
 @supports (anchor-name: --anchor) {
 	.stuic-spotlight-annotation {
-		position-try-order: most-width;
+		/* The spotlight action overrides these inline per-instance, tailoring the
+		   fallbacks to each annotation's position (see buildPositionTryFallbacks).
+		   These are a sane default for the centered `bottom` placement. `normal`
+		   order keeps the base position when it fits and only engages the span
+		   fallbacks on overflow; the JS clamp is the final backstop. */
+		position-try-order: normal;
 		position-try-fallbacks:
 			flip-block,
 			flip-inline,
-			flip-block flip-inline;
+			flip-block flip-inline,
+			bottom span-left,
+			bottom span-right;
 
 		&.spot-block {
 			display: block;

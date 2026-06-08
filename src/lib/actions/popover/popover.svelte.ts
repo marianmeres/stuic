@@ -1,6 +1,7 @@
 import { mount, unmount } from "svelte";
 import { twMerge } from "../../utils/tw-merge.js";
 import { addAnchorName, removeAnchorName } from "../../utils/anchor-name.js";
+import { clampIntoViewport } from "../../utils/anchor-position.js";
 import { iconX } from "../../icons/index.js";
 import { BodyScroll } from "../../utils/body-scroll-locker.js";
 import type { THC } from "../../components/Thc/Thc.svelte";
@@ -549,9 +550,18 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 				// Use another RAF to let browser finalize positioning
 				requestAnimationFrame(() => {
 					if (!popoverEl) return;
+
+					// Clamp into the viewport first. The discrete @position-try
+					// fallbacks can leave a residual overflow (and don't cover
+					// sub-pixel/vertical cases); clamping keeps small edge-anchored
+					// popovers anchored instead of switching them to a modal.
+					clampIntoViewport(popoverEl);
+
 					const rect = popoverEl.getBoundingClientRect();
 					const viewportWidth = window.innerWidth;
 
+					// If it STILL overflows horizontally after clamping, the content
+					// is too wide to fit anchored — fall back to the centered modal.
 					if (rect.left < 0 || rect.right > viewportWidth) {
 						debug("overflow detected, switching to fallback mode");
 						switchingToFallback = true;

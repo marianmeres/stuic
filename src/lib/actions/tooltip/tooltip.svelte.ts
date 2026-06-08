@@ -1,5 +1,6 @@
 import { twMerge } from "../../utils/tw-merge.js";
 import { addAnchorName, removeAnchorName } from "../../utils/anchor-name.js";
+import { clampIntoViewport } from "../../utils/anchor-position.js";
 
 const TIMEOUT = 200;
 const TRANSITION = 200;
@@ -288,6 +289,10 @@ export function tooltip(anchorEl: HTMLElement, fn?: TooltipConfig) {
 				anchorEl.setAttribute("aria-expanded", "true");
 				//
 				tooltipEl.classList.add("tt-block");
+				// Backstop: the CSS @position-try fallbacks handle most edge cases,
+				// but can leave a residual overflow (and don't cover the "no fallback
+				// fits" case) — clamp fully on-screen now that it's laid out.
+				clampIntoViewport(tooltipEl);
 				requestAnimationFrame(() => {
 					tooltipEl.classList.add("tt-visible");
 					on_show?.();
