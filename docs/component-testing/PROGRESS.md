@@ -35,13 +35,24 @@ Branch: `feat/component-testing`
 
 | Rank | Task                                                                                                                                                                    | Source                                          | Status |
 | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- | ------ |
-| 14   | Rest of Tier 1 (Separator already smoke-tested · H, KbdShortcut, ButtonGroupRadio, ListItemButton, Card, TabbedMenu, IconSwap, Collapsible)                             | [03](./03-component-coverage-roadmap.md) #10–17 | ⬜     |
+| 14   | Rest of Tier 1 (Separator already smoke-tested · H, KbdShortcut, ButtonGroupRadio, ListItemButton, Card, TabbedMenu, IconSwap, Collapsible)                             | [03](./03-component-coverage-roadmap.md) #10–17 | 🚧     |
 | 15   | Tier 2 — `FieldInput` first, then the Field\* family + OtpInput, Nav, etc.                                                                                              | [03](./03-component-coverage-roadmap.md)        | ⬜     |
 | 16   | Portals/focus-traps in browser mode (Modal, ModalDialog, Backdrop, Drawer, AlertConfirmPrompt)                                                                          | [04](./04-hard-cases-and-e2e.md)                | ⬜     |
 | 17   | Anchor-positioned menus (DropdownMenu, CommandMenu, UserAvatarMenu) + extract search logic to `_internal`                                                               | [04](./04-hard-cases-and-e2e.md)                | ⬜     |
 | 18   | Standalone Playwright E2E layer (drag: Tree/FieldOptions/FieldFile; Milkdown; Checkout/auth flows)                                                                      | [04](./04-hard-cases-and-e2e.md)                | ⏭️     |
 | 19   | Clear the repo's **pre-existing lint debt** (8 eslint errors + 119 prettier files), then add a **`pnpm lint`** CI job. (`pnpm check` already runs in CI as of task 13.) | [05](./05-ci.md)                                | ✅     |
 | 20   | (Maybe) visual-regression via `toMatchScreenshot`; multi-browser matrix                                                                                                 | [00](./00-overview-and-roadmap.md)              | ⏭️     |
+
+### Task 14 — Tier 1 components (one commit each)
+
+- [x] H — `H.svelte.test.ts` (8 tests)
+- [ ] KbdShortcut
+- [ ] ButtonGroupRadio
+- [ ] ListItemButton
+- [ ] Card
+- [ ] TabbedMenu
+- [ ] IconSwap
+- [ ] Collapsible
 
 ## Decisions log
 
