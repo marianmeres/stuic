@@ -186,28 +186,28 @@ const css = generateThemeCss(custom, "stuic-");
 
 Global tokens defined in `src/lib/index.css` that control cross-component visual properties. Override these to change the entire library's visual character:
 
-| Token                      | Default              | Purpose                                          |
-| -------------------------- | -------------------- | ------------------------------------------------ |
-| `--stuic-radius`           | `var(--radius-md)`   | Element-level radius (buttons, inputs, badges)    |
-| `--stuic-radius-container` | `var(--radius-lg)`   | Container-level radius (cards, modals, dropdowns) |
-| `--stuic-shadow`           | `var(--shadow-sm)`   | Default resting shadow                           |
-| `--stuic-shadow-hover`     | `var(--shadow-md)`   | Hover/elevated shadow                            |
-| `--stuic-shadow-overlay`   | `var(--shadow-lg)`   | Overlays (dropdowns, notifications)              |
-| `--stuic-shadow-dialog`    | `var(--shadow-xl)`   | Dialogs/modals                                   |
-| `--stuic-border-width`     | `1px`                | Default border width                             |
-| `--stuic-transition`       | `150ms`              | Default transition duration                      |
+| Token                      | Default            | Purpose                                           |
+| -------------------------- | ------------------ | ------------------------------------------------- |
+| `--stuic-radius`           | `var(--radius-md)` | Element-level radius (buttons, inputs, badges)    |
+| `--stuic-radius-container` | `var(--radius-lg)` | Container-level radius (cards, modals, dropdowns) |
+| `--stuic-shadow`           | `var(--shadow-sm)` | Default resting shadow                            |
+| `--stuic-shadow-hover`     | `var(--shadow-md)` | Hover/elevated shadow                             |
+| `--stuic-shadow-overlay`   | `var(--shadow-lg)` | Overlays (dropdowns, notifications)               |
+| `--stuic-shadow-dialog`    | `var(--shadow-xl)` | Dialogs/modals                                    |
+| `--stuic-border-width`     | `1px`              | Default border width                              |
+| `--stuic-transition`       | `150ms`            | Default transition duration                       |
 
 Example — brutalist style in 7 lines:
 
 ```css
 :root {
-    --stuic-radius: 0;
-    --stuic-radius-container: 0;
-    --stuic-shadow: none;
-    --stuic-shadow-hover: none;
-    --stuic-shadow-overlay: none;
-    --stuic-shadow-dialog: none;
-    --stuic-border-width: 0;
+	--stuic-radius: 0;
+	--stuic-radius-container: 0;
+	--stuic-shadow: none;
+	--stuic-shadow-hover: none;
+	--stuic-shadow-overlay: none;
+	--stuic-shadow-dialog: none;
+	--stuic-border-width: 0;
 }
 ```
 
@@ -215,7 +215,7 @@ Components reference these via the fallback pattern (not `:root` declarations):
 
 ```css
 .stuic-button {
-    border-radius: var(--stuic-button-radius, var(--stuic-radius));
+	border-radius: var(--stuic-button-radius, var(--stuic-radius));
 }
 ```
 
@@ -253,9 +253,9 @@ Override locally:
 
 ## Key Files
 
-| File                              | Purpose                                                                          |
-| --------------------------------- | -------------------------------------------------------------------------------- |
-| src/lib/utils/design-tokens.ts    | Re-exports from `@marianmeres/design-tokens`                                    |
-| src/lib/index.css                 | Theme import location (loads `stone.css` by default)                             |
-| docs/DESIGN_TOKENS_MANUAL.md      | Token philosophy                                                                 |
-| docs/TAILWIND_V4_CSS_VARIABLES.md | Tailwind v4 variables                                                            |
+| File                              | Purpose                                              |
+| --------------------------------- | ---------------------------------------------------- |
+| src/lib/utils/design-tokens.ts    | Re-exports from `@marianmeres/design-tokens`         |
+| src/lib/index.css                 | Theme import location (loads `stone.css` by default) |
+| docs/DESIGN_TOKENS_MANUAL.md      | Token philosophy                                     |
+| docs/TAILWIND_V4_CSS_VARIABLES.md | Tailwind v4 variables                                |

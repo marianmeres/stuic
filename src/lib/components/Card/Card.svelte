@@ -5,7 +5,10 @@
 
 	export type CardVariant = "vertical" | "horizontal";
 
-	export interface Props extends Omit<HTMLAttributes<HTMLDivElement>, "children" | "title"> {
+	export interface Props extends Omit<
+		HTMLAttributes<HTMLDivElement>,
+		"children" | "title"
+	> {
 		/** Image URL for the top (vertical) or side (horizontal) image area */
 		image?: string;
 		/** Alt text for the image */
@@ -82,14 +85,22 @@
 
 	let _effectiveVariant = $derived.by(() => {
 		if (variant !== "horizontal" || !horizontalThreshold) return variant;
-		return _offsetWidth > 0 && _offsetWidth < horizontalThreshold ? "vertical" : "horizontal";
+		return _offsetWidth > 0 && _offsetWidth < horizontalThreshold
+			? "vertical"
+			: "horizontal";
 	});
 
 	let _class = $derived(unstyled ? classProp : twMerge("stuic-card", classProp));
-	let _classImage = $derived(unstyled ? classImageProp : twMerge("stuic-card-image", classImageProp));
-	let _classContent = $derived(unstyled ? classContentProp : twMerge("stuic-card-content", classContentProp));
+	let _classImage = $derived(
+		unstyled ? classImageProp : twMerge("stuic-card-image", classImageProp)
+	);
+	let _classContent = $derived(
+		unstyled ? classContentProp : twMerge("stuic-card-content", classContentProp)
+	);
 	let _classBody = $derived(unstyled ? undefined : "stuic-card-body");
-	let _classFooter = $derived(unstyled ? classFooterProp : twMerge("stuic-card-footer", classFooterProp));
+	let _classFooter = $derived(
+		unstyled ? classFooterProp : twMerge("stuic-card-footer", classFooterProp)
+	);
 
 	let _isInteractive = $derived(!!(href || onclick));
 	let _hasImage = $derived(!!(image || renderImage));
@@ -123,13 +134,19 @@
 				{:else if _hasContent}
 					<div class={_classContent}>
 						{#if eyebrow}
-							<div class={unstyled ? undefined : "stuic-card-eyebrow"}><Thc thc={eyebrow} /></div>
+							<div class={unstyled ? undefined : "stuic-card-eyebrow"}>
+								<Thc thc={eyebrow} />
+							</div>
 						{/if}
 						{#if title}
-							<div class={unstyled ? undefined : "stuic-card-title"}><Thc thc={title} /></div>
+							<div class={unstyled ? undefined : "stuic-card-title"}>
+								<Thc thc={title} />
+							</div>
 						{/if}
 						{#if description}
-							<div class={unstyled ? undefined : "stuic-card-description"}><Thc thc={description} /></div>
+							<div class={unstyled ? undefined : "stuic-card-description"}>
+								<Thc thc={description} />
+							</div>
 						{/if}
 					</div>
 				{/if}

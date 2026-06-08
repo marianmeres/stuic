@@ -96,8 +96,7 @@
 	/* Focus styles (interactive variants) */
 	a.stuic-pill:focus-visible,
 	button.stuic-pill:focus-visible {
-		outline: var(--stuic-pill-ring-width) solid
-			var(--_ring, var(--stuic-pill-ring-color));
+		outline: var(--stuic-pill-ring-width) solid var(--_ring, var(--stuic-pill-ring-color));
 		outline-offset: var(--stuic-pill-ring-offset);
 	}
 
@@ -432,8 +431,7 @@
 	}
 
 	.stuic-pill-main:focus-visible {
-		outline: var(--stuic-pill-ring-width) solid
-			var(--_ring, var(--stuic-pill-ring-color));
+		outline: var(--stuic-pill-ring-width) solid var(--_ring, var(--stuic-pill-ring-color));
 		outline-offset: 2px;
 		border-radius: 2px;
 	}
@@ -464,8 +462,7 @@
 	}
 
 	.stuic-pill-dismiss:focus-visible {
-		outline: var(--stuic-pill-ring-width) solid
-			var(--_ring, var(--stuic-pill-ring-color));
+		outline: var(--stuic-pill-ring-width) solid var(--_ring, var(--stuic-pill-ring-color));
 		outline-offset: 1px;
 		border-radius: 9999px;
 	}

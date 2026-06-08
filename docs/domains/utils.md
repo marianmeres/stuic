@@ -126,10 +126,10 @@ twMerge("px-4 py-2", "px-6"); // => "py-2 px-6"
 
 ## URL
 
-| Util            | Purpose                                      |
-| --------------- | -------------------------------------------- |
-| `resolveUrl`    | Resolve relative URL against base URL        |
-| `resolveSrcset` | Resolve all URLs within a srcset string      |
+| Util            | Purpose                                 |
+| --------------- | --------------------------------------- |
+| `resolveUrl`    | Resolve relative URL against base URL   |
+| `resolveSrcset` | Resolve all URLs within a srcset string |
 
 ---
 
@@ -168,10 +168,10 @@ storage.get("user"); // { name: 'John' }
 
 ## Design Tokens
 
-| Util                 | Purpose                      |
-| -------------------- | ---------------------------- |
-| `generateCssTokens`  | Convert token schema to CSS  |
-| `toCssString`        | Format tokens as CSS string  |
+| Util                | Purpose                     |
+| ------------------- | --------------------------- |
+| `generateCssTokens` | Convert token schema to CSS |
+| `toCssString`       | Format tokens as CSS string |
 
 ---
 
@@ -181,18 +181,15 @@ Helpers for orchestrating `validate()` across multiple `Field*` components.
 Pair with the per-field imperative API documented in the
 [Components domain](./components.md#imperative-validate-api).
 
-| Util                          | Purpose                                                      |
-| ----------------------------- | ------------------------------------------------------------ |
-| `validateAllFields`           | Run `validate()` on every provided field ref. Returns `true` if all valid. |
-| `findFirstInvalidField`       | Return the first ref whose cached `getValidation()` is invalid. |
-| `scrollToFirstInvalidField`   | Scroll the first invalid field into view + focus (call after `validateAllFields`). |
-| `ValidatableField` (interface)| Minimal shape every STUIC `Field*` satisfies — your own components can too. |
+| Util                           | Purpose                                                                            |
+| ------------------------------ | ---------------------------------------------------------------------------------- |
+| `validateAllFields`            | Run `validate()` on every provided field ref. Returns `true` if all valid.         |
+| `findFirstInvalidField`        | Return the first ref whose cached `getValidation()` is invalid.                    |
+| `scrollToFirstInvalidField`    | Scroll the first invalid field into view + focus (call after `validateAllFields`). |
+| `ValidatableField` (interface) | Minimal shape every STUIC `Field*` satisfies — your own components can too.        |
 
 ```ts
-import {
-	scrollToFirstInvalidField,
-	validateAllFields,
-} from "@marianmeres/stuic";
+import { scrollToFirstInvalidField, validateAllFields } from "@marianmeres/stuic";
 
 let nameField = $state<FieldInput>();
 let emailField = $state<FieldInput>();
@@ -215,11 +212,11 @@ without filtering first.
 
 ## Key Files
 
-| File                                     | Purpose                                   |
-| ---------------------------------------- | ----------------------------------------- |
-| src/lib/utils/index.ts                   | All utility exports                       |
-| src/lib/utils/tw-merge.ts                | Critical for class merging                |
-| src/lib/utils/persistent-state.svelte.ts | Reactive storage pattern (runes-based)    |
-| src/lib/utils/storage-abstraction.ts     | Non-reactive storage (localStorage, etc.) |
-| src/lib/utils/validate-fields.ts         | Form-level validation aggregators         |
+| File                                     | Purpose                                      |
+| ---------------------------------------- | -------------------------------------------- |
+| src/lib/utils/index.ts                   | All utility exports                          |
+| src/lib/utils/tw-merge.ts                | Critical for class merging                   |
+| src/lib/utils/persistent-state.svelte.ts | Reactive storage pattern (runes-based)       |
+| src/lib/utils/storage-abstraction.ts     | Non-reactive storage (localStorage, etc.)    |
+| src/lib/utils/validate-fields.ts         | Form-level validation aggregators            |
 | src/lib/utils/design-tokens.ts           | Re-exports from `@marianmeres/design-tokens` |

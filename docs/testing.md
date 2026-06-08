@@ -61,11 +61,11 @@ import { assert, test } from "vitest";
 import { myThing } from "./my-thing.js";
 
 test("myThing handles the empty case", () => {
-    assert.equal(myThing(""), null);
+	assert.equal(myThing(""), null);
 });
 
 test("myThing handles the happy path", () => {
-    assert.equal(myThing("foo"), "FOO");
+	assert.equal(myThing("foo"), "FOO");
 });
 ```
 

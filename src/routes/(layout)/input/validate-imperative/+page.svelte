@@ -92,9 +92,8 @@
 		<p class="text-sm opacity-70">
 			This page wires several pristine fields together with the
 			<code>validateAllFields()</code> + <code>scrollToFirstInvalidField()</code>
-			utilities. Clicking <strong>Continue</strong> triggers every field's validator
-			at once — no synthetic <code>change</code> events, no id-format coupling, no
-			DOM lookups.
+			utilities. Clicking <strong>Continue</strong> triggers every field's validator at
+			once — no synthetic <code>change</code> events, no id-format coupling, no DOM lookups.
 		</p>
 	</header>
 
@@ -107,10 +106,10 @@
 			{/snippet}
 		</FieldCheckbox>
 		<p class="text-xs opacity-60">
-			When ticked, each field's <code>customValidator</code> returns a non-empty
-			string from <code>fieldError(name)</code> — the exact pattern external-error
-			pipelines use. Without imperative <code>validate()</code>, those errors stay
-			invisible until each field is touched.
+			When ticked, each field's <code>customValidator</code> returns a non-empty string
+			from <code>fieldError(name)</code> — the exact pattern external-error pipelines use.
+			Without imperative <code>validate()</code>, those errors stay invisible until each
+			field is touched.
 		</p>
 	</section>
 
@@ -206,8 +205,7 @@
 	{#if lastSubmit}
 		<section class="space-y-2">
 			<h2 class="text-lg font-semibold">Last submit attempt</h2>
-			<pre
-				class="text-xs p-3 rounded bg-black/5 overflow-auto">{JSON.stringify(
+			<pre class="text-xs p-3 rounded bg-black/5 overflow-auto">{JSON.stringify(
 					lastSubmit,
 					null,
 					2

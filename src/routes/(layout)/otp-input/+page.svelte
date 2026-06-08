@@ -65,8 +65,7 @@
 		</div>
 		<div>
 			<h3 class="text-sm font-semibold mb-1">Last onComplete</h3>
-			<pre
-				class="text-xs bg-muted p-3 rounded-md">{JSON.stringify(lastComplete1)}</pre>
+			<pre class="text-xs bg-muted p-3 rounded-md">{JSON.stringify(lastComplete1)}</pre>
 		</div>
 	</div>
 

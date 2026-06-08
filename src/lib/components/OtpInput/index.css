@@ -20,10 +20,7 @@
 	}
 
 	.stuic-otp-input-slot:focus {
-		border-color: var(
-			--stuic-otp-input-border-color-focus,
-			var(--stuic-color-primary)
-		);
+		border-color: var(--stuic-otp-input-border-color-focus, var(--stuic-color-primary));
 		outline: none;
 	}
 

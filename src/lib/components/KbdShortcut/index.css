@@ -37,7 +37,8 @@
 		/* Box model */
 		padding: var(--stuic-kbd-padding-y) var(--stuic-kbd-padding-x);
 		border-radius: var(--stuic-kbd-radius, var(--stuic-radius));
-		border: var(--stuic-kbd-border-width, var(--stuic-border-width)) solid var(--stuic-kbd-border-color);
+		border: var(--stuic-kbd-border-width, var(--stuic-border-width)) solid
+			var(--stuic-kbd-border-color);
 	}
 
 	/* Symbol styling (⌘, ⇧, ⌥, ⌃, ⊞) */

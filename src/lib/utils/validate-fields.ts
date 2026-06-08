@@ -64,9 +64,7 @@ export function validateAllFields(fields: FieldArg[]): boolean {
  * Reads cached state via `getValidation()` — call `validateAllFields()` first
  * if you need fresh results.
  */
-export function findFirstInvalidField(
-	fields: FieldArg[]
-): ValidatableField | undefined {
+export function findFirstInvalidField(fields: FieldArg[]): ValidatableField | undefined {
 	for (const f of fields) {
 		if (!f) continue;
 		const v = f.getValidation?.();

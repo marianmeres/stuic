@@ -1,5 +1,10 @@
 <script lang="ts">
-	import { Button, FieldObject, maybeJsonParse, onSubmitValidityCheck } from "$lib/index.js";
+	import {
+		Button,
+		FieldObject,
+		maybeJsonParse,
+		onSubmitValidityCheck,
+	} from "$lib/index.js";
 
 	let values = $state({
 		flat: JSON.stringify({

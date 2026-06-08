@@ -41,7 +41,8 @@
 	   ============================================================================ */
 
 	.stuic-accordion {
-		border: var(--stuic-accordion-border-width, var(--stuic-border-width)) solid var(--stuic-accordion-border-color);
+		border: var(--stuic-accordion-border-width, var(--stuic-border-width)) solid
+			var(--stuic-accordion-border-color);
 		border-radius: var(--stuic-accordion-radius, var(--stuic-radius-container));
 		overflow: hidden;
 	}
@@ -114,7 +115,8 @@
 	.stuic-accordion-content {
 		display: grid;
 		grid-template-rows: 0fr;
-		transition: grid-template-rows var(--stuic-accordion-transition, var(--stuic-transition));
+		transition: grid-template-rows
+			var(--stuic-accordion-transition, var(--stuic-transition));
 	}
 
 	[data-open="true"] > .stuic-accordion-content {

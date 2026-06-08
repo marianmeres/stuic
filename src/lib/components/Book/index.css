@@ -64,7 +64,8 @@
 		backface-visibility: hidden;
 		-webkit-backface-visibility: hidden;
 		background: var(--stuic-book-page-bg);
-		border-radius: 0 var(--stuic-book-radius, var(--stuic-radius)) var(--stuic-book-radius, var(--stuic-radius)) 0;
+		border-radius: 0 var(--stuic-book-radius, var(--stuic-radius))
+			var(--stuic-book-radius, var(--stuic-radius)) 0;
 		overflow: hidden;
 	}
 
@@ -82,7 +83,8 @@
 		-webkit-backface-visibility: hidden;
 		transform: rotateY(180deg);
 		background: var(--stuic-book-page-bg);
-		border-radius: var(--stuic-book-radius, var(--stuic-radius)) 0 0 var(--stuic-book-radius, var(--stuic-radius));
+		border-radius: var(--stuic-book-radius, var(--stuic-radius)) 0 0
+			var(--stuic-book-radius, var(--stuic-radius));
 		overflow: hidden;
 	}
 

@@ -17,8 +17,12 @@
 		minWait?: number;
 		transitionDuration?: number;
 		onclick?: (image: ImageCyclerImage, index: number) => void;
-		title?: Snippet<[{ image: ImageCyclerImage; index: number; onclick: (() => void) | undefined }]>;
-		description?: Snippet<[{ image: ImageCyclerImage; index: number; onclick: (() => void) | undefined }]>;
+		title?: Snippet<
+			[{ image: ImageCyclerImage; index: number; onclick: (() => void) | undefined }]
+		>;
+		description?: Snippet<
+			[{ image: ImageCyclerImage; index: number; onclick: (() => void) | undefined }]
+		>;
 		unstyled?: boolean;
 		class?: string;
 		el?: HTMLElement;
@@ -47,7 +51,9 @@
 
 	let _class = $derived(unstyled ? classProp : twMerge("stuic-image-cycler", classProp));
 
-	let _onclick = $derived(onclick ? () => onclick(images[currentIndex], currentIndex) : undefined);
+	let _onclick = $derived(
+		onclick ? () => onclick(images[currentIndex], currentIndex) : undefined
+	);
 
 	$effect(() => {
 		const idx = currentIndex;
@@ -87,10 +93,18 @@
 				out:fade={{ duration: transitionDuration }}
 			>
 				{#if title}
-					{@render title({ image: images[currentIndex], index: currentIndex, onclick: _onclick })}
+					{@render title({
+						image: images[currentIndex],
+						index: currentIndex,
+						onclick: _onclick,
+					})}
 				{/if}
 				{#if description}
-					{@render description({ image: images[currentIndex], index: currentIndex, onclick: _onclick })}
+					{@render description({
+						image: images[currentIndex],
+						index: currentIndex,
+						onclick: _onclick,
+					})}
 				{/if}
 			</div>
 		{/key}

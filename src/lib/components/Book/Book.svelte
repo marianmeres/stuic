@@ -720,7 +720,12 @@
 
 {#if spreads.length}
 	<!-- Measurement wrapper: always 100% width for responsive detection -->
-	<div bind:clientWidth={containerWidth} style:width="100%" style:display="flex" style:justify-content="center">
+	<div
+		bind:clientWidth={containerWidth}
+		style:width="100%"
+		style:display="flex"
+		style:justify-content="center"
+	>
 		<!-- Visual book wrapper: owns background/shadow/radius -->
 		<div
 			bind:this={el}

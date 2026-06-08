@@ -14,7 +14,11 @@ function makeField(opts: {
 	onValidate?: () => void;
 	onFocus?: () => void;
 	onScroll?: (opts?: ScrollIntoViewOptions) => void;
-}): ValidatableField & { validateCount: number; focusCount: number; scrollCount: number } {
+}): ValidatableField & {
+	validateCount: number;
+	focusCount: number;
+	scrollCount: number;
+} {
 	let _validation = opts.invalid
 		? createValidationResult(opts.message ?? "Required")
 		: undefined;

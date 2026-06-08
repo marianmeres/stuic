@@ -156,7 +156,8 @@
 		"register_form.email_invalid": "checkout.register.email_invalid",
 		"register_form.password_required": "checkout.register.password_required",
 		"register_form.password_too_short": "checkout.register.password_too_short",
-		"register_form.password_confirm_required": "checkout.register.password_confirm_required",
+		"register_form.password_confirm_required":
+			"checkout.register.password_confirm_required",
 		"register_form.password_mismatch": "checkout.register.password_mismatch",
 		"register_form.field_required": "checkout.register.field_required",
 		"register_form.social_divider": "checkout.register.social_divider",
@@ -177,7 +178,8 @@
 		"login_or_register_form.mode_register": "checkout.login_or_register.mode_register",
 		"login_or_register_form.mode_verify": "checkout.login_or_register.mode_verify",
 		"login_or_register_form.social_divider": "checkout.login_or_register.social_divider",
-		"login_or_register_form.modal_title_login": "checkout.login_or_register.modal_title_login",
+		"login_or_register_form.modal_title_login":
+			"checkout.login_or_register.modal_title_login",
 		"login_or_register_form.modal_title_register":
 			"checkout.login_or_register.modal_title_register",
 		"login_or_register_form.modal_title_verify":
@@ -242,7 +244,10 @@
 	let _loroVerifyEmail = $state("");
 
 	$effect(() => {
-		if (loginOrRegisterModal?.mode !== undefined && loginOrRegisterModal.mode !== _loroMode) {
+		if (
+			loginOrRegisterModal?.mode !== undefined &&
+			loginOrRegisterModal.mode !== _loroMode
+		) {
 			_loroMode = loginOrRegisterModal.mode;
 		}
 	});

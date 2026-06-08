@@ -90,8 +90,19 @@
 	] as const;
 
 	const MONTH_NAMES = [
-		"", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-		"Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+		"",
+		"Jan",
+		"Feb",
+		"Mar",
+		"Apr",
+		"May",
+		"Jun",
+		"Jul",
+		"Aug",
+		"Sep",
+		"Oct",
+		"Nov",
+		"Dec",
 	];
 
 	const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -120,7 +131,9 @@
 		} else if (hour.startsWith("*/")) {
 			segments.push(`every ${hour.slice(2)} hours`);
 		} else {
-			segments.push(`at ${hour.padStart(2, "0")}:${minute === "*" ? "00" : minute.padStart(2, "0")}`);
+			segments.push(
+				`at ${hour.padStart(2, "0")}:${minute === "*" ? "00" : minute.padStart(2, "0")}`
+			);
 			// remove the minute segment if we have a specific hour
 			if (minute !== "*" && !minute.includes("/")) {
 				segments.length = 0;
@@ -167,7 +180,9 @@
 			}
 		}
 
-		return segments.length ? segments[0].charAt(0).toUpperCase() + segments.join(", ").slice(1) : "";
+		return segments.length
+			? segments[0].charAt(0).toUpperCase() + segments.join(", ").slice(1)
+			: "";
 	}
 </script>
 
@@ -240,21 +255,11 @@
 	}
 
 	// Effective show flags — mode overrides explicit props when defined
-	let _showPresets = $derived(
-		hasModeToggle ? mode === "predefined" : showPresets
-	);
-	let _showFields = $derived(
-		hasModeToggle ? mode === "manual" : showFields
-	);
-	let _showRawInput = $derived(
-		hasModeToggle ? false : showRawInput
-	);
-	let _showDescription = $derived(
-		hasModeToggle ? mode === "manual" : showDescription
-	);
-	let _showNextRun = $derived(
-		hasModeToggle ? mode === "manual" : showNextRun
-	);
+	let _showPresets = $derived(hasModeToggle ? mode === "predefined" : showPresets);
+	let _showFields = $derived(hasModeToggle ? mode === "manual" : showFields);
+	let _showRawInput = $derived(hasModeToggle ? false : showRawInput);
+	let _showDescription = $derived(hasModeToggle ? mode === "manual" : showDescription);
+	let _showNextRun = $derived(hasModeToggle ? mode === "manual" : showNextRun);
 
 	const BTN_CLS = [
 		"toggle-btn",
@@ -378,7 +383,9 @@
 	}
 
 	// When only presets are visible, render as a plain select (no extra padding/border)
-	let presetsOnly = $derived(_showPresets && !_showFields && !_showRawInput && !_showDescription && !_showNextRun);
+	let presetsOnly = $derived(
+		_showPresets && !_showFields && !_showRawInput && !_showDescription && !_showNextRun
+	);
 
 	// Minute tick — triggers re-evaluation of "Next: ..." every 60s
 	let _tick = $state(0);
@@ -463,48 +470,46 @@
 				{/if}
 
 				{#if _showFields}
-				<div
-					class={unstyled
-						? classFields
-						: twMerge("stuic-cron-input-fields", classFields)}
-				>
-					{#each FIELD_DEFS as def}
-						<div
-							class={unstyled
-								? classField
-								: twMerge("stuic-cron-input-field", classField)}
-						>
-							<span
+					<div
+						class={unstyled
+							? classFields
+							: twMerge("stuic-cron-input-fields", classFields)}
+					>
+						{#each FIELD_DEFS as def}
+							<div
 								class={unstyled
-									? classFieldLabel
-									: twMerge("stuic-cron-input-field-label", classFieldLabel)}
+									? classField
+									: twMerge("stuic-cron-input-field", classField)}
 							>
-								{def.label}
-							</span>
-							<input
-								type="text"
-								class={unstyled
-									? classFieldInput
-									: twMerge("stuic-cron-input-field-input", classFieldInput)}
-								bind:value={fields[def.key]}
-								oninput={onFieldInput}
-								placeholder={def.placeholder}
-								aria-label={`${def.label} (${def.placeholder})`}
-								{disabled}
-								autocomplete="off"
-								spellcheck={false}
-							/>
-						</div>
-					{/each}
-				</div>
+								<span
+									class={unstyled
+										? classFieldLabel
+										: twMerge("stuic-cron-input-field-label", classFieldLabel)}
+								>
+									{def.label}
+								</span>
+								<input
+									type="text"
+									class={unstyled
+										? classFieldInput
+										: twMerge("stuic-cron-input-field-input", classFieldInput)}
+									bind:value={fields[def.key]}
+									oninput={onFieldInput}
+									placeholder={def.placeholder}
+									aria-label={`${def.label} (${def.placeholder})`}
+									{disabled}
+									autocomplete="off"
+									spellcheck={false}
+								/>
+							</div>
+						{/each}
+					</div>
 				{/if}
 
 				{#if _showRawInput}
 					<input
 						type="text"
-						class={unstyled
-							? classRaw
-							: twMerge("stuic-cron-input-raw", classRaw)}
+						class={unstyled ? classRaw : twMerge("stuic-cron-input-raw", classRaw)}
 						bind:value={rawValue}
 						oninput={onRawInput}
 						placeholder="* * * * *"
@@ -524,16 +529,15 @@
 						{humanDescription}
 					</div>
 				{/if}
-
 			</div>
 			{#if hasModeToggle}
 				<button
 					type="button"
-					class={unstyled
-						? classToggleButton
-						: twMerge(BTN_CLS, classToggleButton)}
+					class={unstyled ? classToggleButton : twMerge(BTN_CLS, classToggleButton)}
 					onclick={toggleMode}
-					aria-label={mode === "predefined" ? "Switch to manual input" : "Switch to presets"}
+					aria-label={mode === "predefined"
+						? "Switch to manual input"
+						: "Switch to presets"}
 					{disabled}
 					use:tooltip={() => ({
 						enabled: true,

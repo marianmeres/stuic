@@ -10,9 +10,9 @@ The cron expression string is the single source of truth; field / preset / raw s
 
 ```svelte
 <script lang="ts">
-    import { CronInput } from "@marianmeres/stuic";
+	import { CronInput } from "@marianmeres/stuic";
 
-    let expression = $state("0 9 * * 1-5");
+	let expression = $state("0 9 * * 1-5");
 </script>
 
 <CronInput bind:value={expression} label="Schedule" />
@@ -24,13 +24,13 @@ Default `mode` is `"predefined"` — users see the preset picker with a toggle b
 
 ```svelte
 <CronInput
-    bind:value={expression}
-    mode={undefined}
-    showPresets
-    showFields
-    showRawInput
-    showDescription
-    showNextRun
+	bind:value={expression}
+	mode={undefined}
+	showPresets
+	showFields
+	showRawInput
+	showDescription
+	showNextRun
 />
 ```
 
@@ -38,13 +38,13 @@ Default `mode` is `"predefined"` — users see the preset picker with a toggle b
 
 ```svelte
 <script lang="ts">
-    import { CronInput, type CronPreset } from "@marianmeres/stuic";
+	import { CronInput, type CronPreset } from "@marianmeres/stuic";
 
-    const presets: CronPreset[] = [
-        { label: "Top of every hour", value: "0 * * * *" },
-        { label: "Daily at 09:00", value: "0 9 * * *" },
-        { label: "Every 5 minutes", value: "*/5 * * * *" },
-    ];
+	const presets: CronPreset[] = [
+		{ label: "Top of every hour", value: "0 * * * *" },
+		{ label: "Daily at 09:00", value: "0 9 * * *" },
+		{ label: "Every 5 minutes", value: "*/5 * * * *" },
+	];
 </script>
 
 <CronInput bind:value={expression} {presets} />
@@ -56,11 +56,11 @@ For places outside the CronInput that need the next-fire time (e.g. a dashboard 
 
 ```svelte
 <script lang="ts">
-    import { CronNextRun } from "@marianmeres/stuic";
-    import { onDestroy } from "svelte";
+	import { CronNextRun } from "@marianmeres/stuic";
+	import { onDestroy } from "svelte";
 
-    const nr = new CronNextRun("0 9 * * 1-5");
-    onDestroy(() => nr.destroy());
+	const nr = new CronNextRun("0 9 * * 1-5");
+	onDestroy(() => nr.destroy());
 </script>
 
 <p>Next run: {nr.nextRunFormatted}</p>
@@ -72,11 +72,11 @@ For places outside the CronInput that need the next-fire time (e.g. a dashboard 
 
 The `mode` prop controls which surfaces are visible and whether the toggle button is shown:
 
-| `mode`              | Toggle shown | Visible surfaces                                     |
-| ------------------- | ------------ | ---------------------------------------------------- |
-| `"predefined"`      | yes          | preset picker                                        |
-| `"manual"`          | yes          | fields + raw + description + next-run                |
-| `undefined`         | no           | whatever the `show*` flags enable (full control)     |
+| `mode`         | Toggle shown | Visible surfaces                                 |
+| -------------- | ------------ | ------------------------------------------------ |
+| `"predefined"` | yes          | preset picker                                    |
+| `"manual"`     | yes          | fields + raw + description + next-run            |
+| `undefined`    | no           | whatever the `show*` flags enable (full control) |
 
 When `mode` is defined, it **overrides** the individual `show*` flags. Set `mode={undefined}` if you want to pick surfaces yourself.
 
@@ -91,13 +91,13 @@ The `value` string is canonical. Internally:
 
 Off-by-one conventions match standard cron:
 
-| Field        | Range  | Notes                                |
-| ------------ | ------ | ------------------------------------ |
-| minute       | 0-59   |                                      |
-| hour         | 0-23   |                                      |
-| day of month | 1-31   |                                      |
-| month        | 1-12   | 1 = January                          |
-| day of week  | 0-6    | 0 = Sunday                           |
+| Field        | Range | Notes       |
+| ------------ | ----- | ----------- |
+| minute       | 0-59  |             |
+| hour         | 0-23  |             |
+| day of month | 1-31  |             |
+| month        | 1-12  | 1 = January |
+| day of week  | 0-6   | 0 = Sunday  |
 
 ## Validation
 
@@ -113,21 +113,21 @@ All next-run calculations use the **host's local timezone**. There is no `timezo
 
 ## Props
 
-| Prop                  | Type                                  | Default         | Description                                          |
-| --------------------- | ------------------------------------- | --------------- | ---------------------------------------------------- |
-| `value`               | `string`                              | `"* * * * *"`   | Cron expression (bindable)                           |
-| `mode`                | `"predefined" \| "manual" \| undefined` | `"predefined"` | Editor mode; `undefined` hides the toggle            |
-| `presets`             | `CronPreset[]`                        | `DEFAULT_PRESETS` | Preset options                                     |
-| `showPresets`         | `boolean`                             | `true`          | (Ignored when `mode` is defined)                     |
-| `showFields`          | `boolean`                             | `true`          | (Ignored when `mode` is defined)                     |
-| `showRawInput`        | `boolean`                             | `true`          | (Ignored when `mode` is defined)                     |
-| `showDescription`     | `boolean`                             | `true`          | (Ignored when `mode` is defined)                     |
-| `showNextRun`         | `boolean`                             | `true`          | (Ignored when `mode` is defined)                     |
-| `onchange`            | `(expr, valid) => void`               | -               | Fires on every valid or invalid change               |
-| `unstyled`            | `boolean`                             | `false`         | Skip stuic base classes (user provides all styling)  |
-| `class`               | `string`                              | -               | Wrapper class                                        |
-| `el`                  | `HTMLElement`                         | -               | Bindable wrapper element                             |
-| `classFields`/`classField`/`classFieldLabel`/`classFieldInput`/`classPreset`/`classRaw`/`classSummary`/`classToggleButton` | `string` | - | Per-element class overrides |
+| Prop                                                                                                                       | Type                                    | Default           | Description                                         |
+| -------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | ----------------- | --------------------------------------------------- |
+| `value`                                                                                                                    | `string`                                | `"* * * * *"`     | Cron expression (bindable)                          |
+| `mode`                                                                                                                     | `"predefined" \| "manual" \| undefined` | `"predefined"`    | Editor mode; `undefined` hides the toggle           |
+| `presets`                                                                                                                  | `CronPreset[]`                          | `DEFAULT_PRESETS` | Preset options                                      |
+| `showPresets`                                                                                                              | `boolean`                               | `true`            | (Ignored when `mode` is defined)                    |
+| `showFields`                                                                                                               | `boolean`                               | `true`            | (Ignored when `mode` is defined)                    |
+| `showRawInput`                                                                                                             | `boolean`                               | `true`            | (Ignored when `mode` is defined)                    |
+| `showDescription`                                                                                                          | `boolean`                               | `true`            | (Ignored when `mode` is defined)                    |
+| `showNextRun`                                                                                                              | `boolean`                               | `true`            | (Ignored when `mode` is defined)                    |
+| `onchange`                                                                                                                 | `(expr, valid) => void`                 | -                 | Fires on every valid or invalid change              |
+| `unstyled`                                                                                                                 | `boolean`                               | `false`           | Skip stuic base classes (user provides all styling) |
+| `class`                                                                                                                    | `string`                                | -                 | Wrapper class                                       |
+| `el`                                                                                                                       | `HTMLElement`                           | -                 | Bindable wrapper element                            |
+| `classFields`/`classField`/`classFieldLabel`/`classFieldInput`/`classPreset`/`classRaw`/`classSummary`/`classToggleButton` | `string`                                | -                 | Per-element class overrides                         |
 
 Plus all standard `InputWrap` wrapper class props (`classLabel`, `classLabelBox`, `classInputBox`, `classInputBoxWrap`, `classInputBoxWrapInvalid`, `classDescBox`, `classBelowBox`) — same pattern as every other `Field*` component.
 

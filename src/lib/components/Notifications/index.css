@@ -152,8 +152,14 @@
 		align-items: center;
 		justify-content: center;
 		padding: 0 calc(var(--spacing) * 3);
-		border-top-right-radius: var(--stuic-notification-radius, var(--stuic-radius-container));
-		border-bottom-right-radius: var(--stuic-notification-radius, var(--stuic-radius-container));
+		border-top-right-radius: var(
+			--stuic-notification-radius,
+			var(--stuic-radius-container)
+		);
+		border-bottom-right-radius: var(
+			--stuic-notification-radius,
+			var(--stuic-radius-container)
+		);
 		color: var(--_text);
 		opacity: 0.75;
 		transition: opacity var(--stuic-notification-transition, var(--stuic-transition));
@@ -198,8 +204,14 @@
 		position: absolute;
 		inset: 0;
 		background: transparent;
-		border-bottom-left-radius: var(--stuic-notification-radius, var(--stuic-radius-container));
-		border-bottom-right-radius: var(--stuic-notification-radius, var(--stuic-radius-container));
+		border-bottom-left-radius: var(
+			--stuic-notification-radius,
+			var(--stuic-radius-container)
+		);
+		border-bottom-right-radius: var(
+			--stuic-notification-radius,
+			var(--stuic-radius-container)
+		);
 		overflow: hidden;
 		pointer-events: none;
 	}
@@ -208,7 +220,13 @@
 		width: 100%;
 		height: 100%;
 		/* background: rgb(255 255 255 / 0.5); */
-		border-bottom-left-radius: var(--stuic-notification-radius, var(--stuic-radius-container));
-		border-bottom-right-radius: var(--stuic-notification-radius, var(--stuic-radius-container));
+		border-bottom-left-radius: var(
+			--stuic-notification-radius,
+			var(--stuic-radius-container)
+		);
+		border-bottom-right-radius: var(
+			--stuic-notification-radius,
+			var(--stuic-radius-container)
+		);
 	}
 }

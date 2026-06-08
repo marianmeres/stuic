@@ -38,7 +38,6 @@
 </script>
 
 <div class="space-y-16 py-8">
-
 	<!-- Section 1: Basic cover (default) -->
 	<section>
 		<h2 class="text-xl font-semibold mb-2">Basic (cover, default)</h2>
@@ -56,8 +55,8 @@
 	<section>
 		<h2 class="text-xl font-semibold mb-2">With metadata snippets + onClick</h2>
 		<p class="text-sm text-neutral-500 mb-4">
-			Title overlay (top-left) and description overlay (bottom). The <code>onclick</code> prop is
-			passed into both snippets — clicking either fires the handler.
+			Title overlay (top-left) and description overlay (bottom). The <code>onclick</code>
+			prop is passed into both snippets — clicking either fires the handler.
 			{#if lastClicked}
 				<span class="ml-2 font-medium text-green-600 dark:text-green-400">
 					Clicked: "{lastClicked.title}" (index {lastClicked.index})
@@ -84,7 +83,9 @@
 					</div>
 				{/snippet}
 				{#snippet description({ image, onclick })}
-					<div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
+					<div
+						class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent"
+					>
 						<button
 							type="button"
 							class="text-white text-sm text-left cursor-pointer hover:underline bg-transparent border-0 p-0"
@@ -108,11 +109,18 @@
 			Portrait images (400×600) in a landscape container (400×300) to show the difference.
 		</p>
 		<div class="grid grid-cols-3 gap-4">
-			{#each (["cover", "contain", "fill"] as const) as fit}
+			{#each ["cover", "contain", "fill"] as const as fit}
 				<div>
 					<p class="text-xs font-mono text-center mb-2 text-neutral-500">{fit}</p>
-					<div class="h-[300px] rounded-xl overflow-hidden bg-neutral-100 dark:bg-neutral-800">
-						<ImageCycler images={portrait} {fit} minWait={2500} transitionDuration={400} />
+					<div
+						class="h-[300px] rounded-xl overflow-hidden bg-neutral-100 dark:bg-neutral-800"
+					>
+						<ImageCycler
+							images={portrait}
+							{fit}
+							minWait={2500}
+							transitionDuration={400}
+						/>
 					</div>
 				</div>
 			{/each}
@@ -125,7 +133,8 @@
 	<section>
 		<h2 class="text-xl font-semibold mb-2">Custom timing</h2>
 		<p class="text-sm text-neutral-500 mb-4">
-			<code>minWait={1500}</code>, <code>transitionDuration={1000}</code> — slow fade, short wait.
+			<code>minWait={1500}</code>, <code>transitionDuration={1000}</code> — slow fade, short
+			wait.
 		</p>
 		<div class="w-full h-[300px] rounded-xl overflow-hidden">
 			<ImageCycler {images} minWait={1500} transitionDuration={1000} />
@@ -144,5 +153,4 @@
 			<ImageCycler images={[images[0]]} />
 		</div>
 	</section>
-
 </div>

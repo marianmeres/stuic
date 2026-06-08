@@ -34,14 +34,14 @@
 
 	/* border between panels: left position */
 	.stuic-with-side-panel[data-position="left"] .stuic-with-side-panel-side {
-		border-right: var(--stuic-with-side-panel-border-width, var(--stuic-border-width)) solid
-			var(--stuic-with-side-panel-border-color);
+		border-right: var(--stuic-with-side-panel-border-width, var(--stuic-border-width))
+			solid var(--stuic-with-side-panel-border-color);
 	}
 
 	/* border between panels: right position */
 	.stuic-with-side-panel[data-position="right"] .stuic-with-side-panel-side {
-		border-left: var(--stuic-with-side-panel-border-width, var(--stuic-border-width)) solid
-			var(--stuic-with-side-panel-border-color);
+		border-left: var(--stuic-with-side-panel-border-width, var(--stuic-border-width))
+			solid var(--stuic-with-side-panel-border-color);
 	}
 
 	.stuic-with-side-panel-main {

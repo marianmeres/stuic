@@ -46,7 +46,8 @@
 		display: block;
 		width: 100%;
 		padding: var(--stuic-tabbed-menu-padding-y) var(--stuic-tabbed-menu-padding-x);
-		border-radius: var(--stuic-tabbed-menu-radius, var(--stuic-radius)) var(--stuic-tabbed-menu-radius, var(--stuic-radius)) 0 0;
+		border-radius: var(--stuic-tabbed-menu-radius, var(--stuic-radius))
+			var(--stuic-tabbed-menu-radius, var(--stuic-radius)) 0 0;
 		border: 1px solid var(--stuic-tabbed-menu-border);
 		border-bottom: 0;
 		background: var(--stuic-tabbed-menu-tab-bg);
@@ -102,13 +103,15 @@
 	}
 
 	.stuic-tabbed-menu[data-orientation="vertical"] .stuic-tabbed-menu-tab {
-		border-radius: var(--stuic-tabbed-menu-radius, var(--stuic-radius)) 0 0 var(--stuic-tabbed-menu-radius, var(--stuic-radius));
+		border-radius: var(--stuic-tabbed-menu-radius, var(--stuic-radius)) 0 0
+			var(--stuic-tabbed-menu-radius, var(--stuic-radius));
 		border: 1px solid var(--stuic-tabbed-menu-border);
 		border-right: 0;
 		text-align: left;
 	}
 
-	.stuic-tabbed-menu[data-orientation="vertical"] .stuic-tabbed-menu-tab[aria-selected="true"] {
+	.stuic-tabbed-menu[data-orientation="vertical"]
+		.stuic-tabbed-menu-tab[aria-selected="true"] {
 		border-color: var(--stuic-tabbed-menu-border-active);
 	}
 }

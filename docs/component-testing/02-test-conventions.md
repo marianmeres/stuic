@@ -8,7 +8,7 @@ vitest-browser-svelte docs. Planning artifact; no code was changed.
 # Test Conventions
 
 > How to write a STUIC browser component test, and — just as important — **what is worth
-> asserting**. The headline: test *behavior the build can't see* (events fire, bindings update,
+> asserting**. The headline: test _behavior the build can't see_ (events fire, bindings update,
 > aria/disabled/active states, computed layout), not "does it render" (already gated by
 > `svelte-check` + `publint` + the build). Use `render()` → locators → `expect.element`. In Svelte 5
 > events are props, so you assert them with spies; snippet children come from `createRawSnippet`.
@@ -25,10 +25,10 @@ predates a capability we didn't have:
 
 - "Does it render / compile / export" → still low-yield, still covered by `svelte-check` + `publint` +
   build. We will **not** write tests for that.
-- "Does it *behave*" — click handlers, two-way `bind:`, `aria-*`/`disabled`/`active` state, focus
+- "Does it _behave_" — click handlers, two-way `bind:`, `aria-*`/`disabled`/`active` state, focus
   traps, viewport-clamped anchor positioning (cf. the recent `9d8c974` annotation-clamp fix) — was
   **previously impossible** (node/server build, no DOM, no `$effect`). Browser mode makes it possible,
-  and *this* is the high-yield target.
+  and _this_ is the high-yield target.
 
 **Task in the roadmap:** update `docs/testing.md` to add this browser-test layer so the docs aren't
 self-contradictory — promote "interactive behavior" from ❌ to ✅-when-it's-a-real-contract, and point
@@ -96,7 +96,8 @@ file can't contain markup, so build snippets with `createRawSnippet`:
 import { createRawSnippet } from "svelte";
 
 // tiny helper for static text children — keep it in a shared test util
-const text = (s: string) => createRawSnippet(() => ({ render: () => `<span>${s}</span>` }));
+const text = (s: string) =>
+	createRawSnippet(() => ({ render: () => `<span>${s}</span>` }));
 
 render(Button, { children: text("Click me") });
 ```
@@ -138,7 +139,7 @@ when a test needs to manage it manually. Rarely needed.
 ## Timing / flakiness
 
 Rely on `expect.element` retries and awaited locator actions — **never fixed `sleep`s**. In-component
-reactivity resolves through the retry loop; only assertions on *external* universal state living in a
+reactivity resolves through the retry loop; only assertions on _external_ universal state living in a
 `*.svelte.ts` module may need `flushSync()` from `svelte`.
 
 ## Open questions / decisions needed

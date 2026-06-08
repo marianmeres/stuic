@@ -42,13 +42,13 @@ Global tokens in `src/lib/index.css` that control cross-component visual propert
 ```css
 /* Brutalist example — 7 lines to transform everything */
 :root {
-    --stuic-radius: 0;
-    --stuic-radius-container: 0;
-    --stuic-shadow: none;
-    --stuic-shadow-hover: none;
-    --stuic-shadow-overlay: none;
-    --stuic-shadow-dialog: none;
-    --stuic-border-width: 0;
+	--stuic-radius: 0;
+	--stuic-radius-container: 0;
+	--stuic-shadow: none;
+	--stuic-shadow-hover: none;
+	--stuic-shadow-overlay: none;
+	--stuic-shadow-dialog: none;
+	--stuic-border-width: 0;
 }
 ```
 
@@ -59,10 +59,10 @@ Component CSS must reference shared tokens as **fallbacks at usage sites**, not 
 ```css
 /* CORRECT — fallback resolved at element level, scoped overrides work */
 .stuic-widget {
-    border-radius: var(--stuic-widget-radius, var(--stuic-radius));
-    box-shadow: var(--stuic-widget-shadow, var(--stuic-shadow));
-    border-width: var(--stuic-widget-border-width, var(--stuic-border-width));
-    transition: background var(--stuic-widget-transition, var(--stuic-transition));
+	border-radius: var(--stuic-widget-radius, var(--stuic-radius));
+	box-shadow: var(--stuic-widget-shadow, var(--stuic-shadow));
+	border-width: var(--stuic-widget-border-width, var(--stuic-border-width));
+	transition: background var(--stuic-widget-transition, var(--stuic-transition));
 }
 ```
 
@@ -70,10 +70,10 @@ Component CSS must reference shared tokens as **fallbacks at usage sites**, not 
 /* WRONG — CSS vars resolve eagerly at :root, so overriding --stuic-radius on a
    descendant element has no effect on --stuic-widget-radius */
 :root {
-    --stuic-widget-radius: var(--stuic-radius);
+	--stuic-widget-radius: var(--stuic-radius);
 }
 .stuic-widget {
-    border-radius: var(--stuic-widget-radius);
+	border-radius: var(--stuic-widget-radius);
 }
 ```
 
@@ -83,10 +83,10 @@ Per-component overrides (`--stuic-widget-radius: 0`) still take precedence over 
 
 Two tiers of radius for natural visual hierarchy:
 
-| Tier | Token | Default | Use for |
-| ---- | ----- | ------- | ------- |
-| Element | `--stuic-radius` | `var(--radius-md)` | Buttons, inputs, badges, list items, checkboxes, tabs |
-| Container | `--stuic-radius-container` | `var(--radius-lg)` | Cards, modals, dropdowns, notifications, accordions |
+| Tier      | Token                      | Default            | Use for                                               |
+| --------- | -------------------------- | ------------------ | ----------------------------------------------------- |
+| Element   | `--stuic-radius`           | `var(--radius-md)` | Buttons, inputs, badges, list items, checkboxes, tabs |
+| Container | `--stuic-radius-container` | `var(--radius-lg)` | Cards, modals, dropdowns, notifications, accordions   |
 
 **Rule of thumb:** if it wraps other interactive elements, it's a container.
 
@@ -278,14 +278,14 @@ export {
 
 Use Tailwind v4 `--text-*` variables instead of hardcoded `rem` values for `font-size`:
 
-| Token            | Value     | Usage                                     |
-| ---------------- | --------- | ----------------------------------------- |
-| `var(--text-xs)` | 0.75rem   | Badges, avatar initials, section titles   |
-| `var(--text-sm)` | 0.875rem  | Dividers, decorative text (use sparingly) |
-| `var(--text-base)` | 1rem    | Body text, labels, descriptions           |
-| `var(--text-lg)` | 1.125rem  | Headings, totals, summary text            |
-| `var(--text-xl)` | 1.25rem   | Large totals, prominent values            |
-| `var(--text-2xl)` | 1.5rem   | Hero text, large avatars                  |
+| Token              | Value    | Usage                                     |
+| ------------------ | -------- | ----------------------------------------- |
+| `var(--text-xs)`   | 0.75rem  | Badges, avatar initials, section titles   |
+| `var(--text-sm)`   | 0.875rem | Dividers, decorative text (use sparingly) |
+| `var(--text-base)` | 1rem     | Body text, labels, descriptions           |
+| `var(--text-lg)`   | 1.125rem | Headings, totals, summary text            |
+| `var(--text-xl)`   | 1.25rem  | Large totals, prominent values            |
+| `var(--text-2xl)`  | 1.5rem   | Hero text, large avatars                  |
 
 **`--text-sm` guideline:** Only use for truly secondary, non-essential text (e.g. divider labels like "or continue with"). Avoid for content that users need to read comfortably (labels, descriptions, error messages).
 

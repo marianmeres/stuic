@@ -11,29 +11,25 @@ Generic N-slot one-time-code input. 6 digits by default, configurable. Building 
 	let code = $state("");
 </script>
 
-<OtpInput
-	bind:value={code}
-	length={6}
-	onComplete={(c) => console.log("Got code:", c)}
-/>
+<OtpInput bind:value={code} length={6} onComplete={(c) => console.log("Got code:", c)} />
 ```
 
 ## Props
 
-| Prop           | Type                            | Default            | Description                                                       |
-| -------------- | ------------------------------- | ------------------ | ----------------------------------------------------------------- |
-| `value`        | `string`                        | `""`               | Bindable concatenated value                                       |
-| `length`       | `number`                        | `6`                | Number of slots                                                   |
-| `onComplete`   | `(code: string) => void`        | —                  | Fired when all slots are filled                                   |
-| `oninput`      | `(value: string) => void`       | —                  | Fired on every change                                             |
-| `error`        | `boolean`                       | `false`            | Renders error styling + `aria-invalid`                            |
-| `disabled`     | `boolean`                       | `false`            | Disables all slots                                                |
-| `autoFocus`    | `boolean`                       | `true`             | Auto-focus the first empty slot on mount                          |
-| `mode`         | `"numeric" \| "alphanumeric"`   | `"numeric"`        | Restrict input characters                                         |
-| `autocomplete` | `string`                        | `"one-time-code"`  | Pass-through to first slot for browser/iOS auto-fill              |
-| `unstyled`     | `boolean`                       | `false`            | Skip default styling                                              |
-| `class`        | `string`                        | —                  | Additional CSS classes on the root                                |
-| `el`           | `HTMLDivElement`                | —                  | Bindable root element ref                                         |
+| Prop           | Type                          | Default           | Description                                          |
+| -------------- | ----------------------------- | ----------------- | ---------------------------------------------------- |
+| `value`        | `string`                      | `""`              | Bindable concatenated value                          |
+| `length`       | `number`                      | `6`               | Number of slots                                      |
+| `onComplete`   | `(code: string) => void`      | —                 | Fired when all slots are filled                      |
+| `oninput`      | `(value: string) => void`     | —                 | Fired on every change                                |
+| `error`        | `boolean`                     | `false`           | Renders error styling + `aria-invalid`               |
+| `disabled`     | `boolean`                     | `false`           | Disables all slots                                   |
+| `autoFocus`    | `boolean`                     | `true`            | Auto-focus the first empty slot on mount             |
+| `mode`         | `"numeric" \| "alphanumeric"` | `"numeric"`       | Restrict input characters                            |
+| `autocomplete` | `string`                      | `"one-time-code"` | Pass-through to first slot for browser/iOS auto-fill |
+| `unstyled`     | `boolean`                     | `false`           | Skip default styling                                 |
+| `class`        | `string`                      | —                 | Additional CSS classes on the root                   |
+| `el`           | `HTMLDivElement`              | —                 | Bindable root element ref                            |
 
 ## Behavior
 

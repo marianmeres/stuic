@@ -563,7 +563,11 @@
 						}}
 					>
 						{#if selectable}
-							<div class={!unstyled ? "stuic-checkbox stuic-data-table-card-checkbox" : undefined}>
+							<div
+								class={!unstyled
+									? "stuic-checkbox stuic-data-table-card-checkbox"
+									: undefined}
+							>
 								<input
 									type="checkbox"
 									checked={isSelected}

@@ -263,8 +263,9 @@
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">With social logins</h2>
 	<p class="text-sm opacity-60 mb-4">
-		The <code>socialLogins</code> snippet renders OAuth/social buttons with an auto-generated
-		divider. Override the divider label via <code>socialDividerLabel</code>, or hide it with
+		The <code>socialLogins</code> snippet renders OAuth/social buttons with an
+		auto-generated divider. Override the divider label via
+		<code>socialDividerLabel</code>, or hide it with
 		<code>socialDividerLabel=&#123;false&#125;</code>.
 	</p>
 

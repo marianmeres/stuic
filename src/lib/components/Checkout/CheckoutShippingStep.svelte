@@ -222,8 +222,7 @@
 		opts?: Parameters<typeof scrollToFirstInvalidField>[1]
 	): boolean {
 		if (shippingFormRef?.scrollToFirstError(opts)) return true;
-		if (!billingSameAsShipping && billingFormRef?.scrollToFirstError(opts))
-			return true;
+		if (!billingSameAsShipping && billingFormRef?.scrollToFirstError(opts)) return true;
 		return false;
 	}
 

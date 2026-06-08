@@ -118,20 +118,20 @@ Minimal, dense read-only list for order confirmation screens or invoices. Each l
 
 ## Props
 
-| Prop               | Type                                | Default                       | Description                                                         |
-| ------------------ | ----------------------------------- | ----------------------------- | ------------------------------------------------------------------- |
-| `items`            | `CartComponentItem[]`               | required                      | Cart items to display                                               |
-| `variant`          | `"default" \| "compact" \| "summary"` | `"default"`                 | Layout variant. `compact` = smaller/scrollable (implicit readonly); `summary` = receipt-style list with name ×qty + line total, no thumbnails/controls/footer (implicit readonly) |
-| `formatPrice`      | `(value: number) => string`         | `(v) => (v / 100).toFixed(2)` | Format numeric price for display                                    |
-| `onQuantityChange` | `(id: string, qty: number) => void` | —                             | Called when quantity changes                                        |
-| `onRemove`         | `(id: string) => void`              | —                             | Called when remove is clicked                                       |
-| `readonly`         | `boolean`                           | `false`                       | Hide interactive controls                                           |
-| `loading`          | `boolean`                           | `false`                       | Show loading skeleton                                               |
-| `updatingItems`    | `Set<string>`                       | `new Set()`                   | Item IDs currently being updated                                    |
-| `t`                | `TranslateFn`                       | built-in                      | Translation function                                                |
-| `unstyled`         | `boolean`                           | `false`                       | Skip all default styling                                            |
-| `class`            | `string`                            | —                             | Additional CSS classes                                              |
-| `el`               | `HTMLDivElement`                    | —                             | Bindable element reference                                          |
+| Prop               | Type                                  | Default                       | Description                                                                                                                                                                       |
+| ------------------ | ------------------------------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `items`            | `CartComponentItem[]`                 | required                      | Cart items to display                                                                                                                                                             |
+| `variant`          | `"default" \| "compact" \| "summary"` | `"default"`                   | Layout variant. `compact` = smaller/scrollable (implicit readonly); `summary` = receipt-style list with name ×qty + line total, no thumbnails/controls/footer (implicit readonly) |
+| `formatPrice`      | `(value: number) => string`           | `(v) => (v / 100).toFixed(2)` | Format numeric price for display                                                                                                                                                  |
+| `onQuantityChange` | `(id: string, qty: number) => void`   | —                             | Called when quantity changes                                                                                                                                                      |
+| `onRemove`         | `(id: string) => void`                | —                             | Called when remove is clicked                                                                                                                                                     |
+| `readonly`         | `boolean`                             | `false`                       | Hide interactive controls                                                                                                                                                         |
+| `loading`          | `boolean`                             | `false`                       | Show loading skeleton                                                                                                                                                             |
+| `updatingItems`    | `Set<string>`                         | `new Set()`                   | Item IDs currently being updated                                                                                                                                                  |
+| `t`                | `TranslateFn`                         | built-in                      | Translation function                                                                                                                                                              |
+| `unstyled`         | `boolean`                             | `false`                       | Skip all default styling                                                                                                                                                          |
+| `class`            | `string`                              | —                             | Additional CSS classes                                                                                                                                                            |
+| `el`               | `HTMLDivElement`                      | —                             | Bindable element reference                                                                                                                                                        |
 
 ### CartComponentItem
 
@@ -184,15 +184,15 @@ Minimal, dense read-only list for order confirmation screens or invoices. Each l
 
 ## Translation Keys
 
-| Key                 | Default              | Description               |
-| ------------------- | -------------------- | ------------------------- |
-| `empty_cart`        | "Your cart is empty" | Empty state text          |
-| `unit_price_each`   | "{price} each"       | Unit price label          |
-| `quantity_label`    | "Qty: {quantity}"    | Readonly quantity display |
-| `remove_item`       | "Remove"             | Remove button text        |
+| Key                 | Default              | Description                                                 |
+| ------------------- | -------------------- | ----------------------------------------------------------- |
+| `empty_cart`        | "Your cart is empty" | Empty state text                                            |
+| `unit_price_each`   | "{price} each"       | Unit price label                                            |
+| `quantity_label`    | "Qty: {quantity}"    | Readonly quantity display                                   |
+| `remove_item`       | "Remove"             | Remove button text                                          |
 | `remove_item_aria`  | "Remove {name}"      | Accessible label on the remove button (announces item name) |
-| `total_label`       | "Total"              | Summary label             |
-| `item_count_1`      | "1 item"             | Singular item count       |
-| `item_count_n`      | "{count} items"      | Plural item count         |
-| `decrease_quantity` | "Decrease quantity"  | Aria label for − button   |
-| `increase_quantity` | "Increase quantity"  | Aria label for + button   |
+| `total_label`       | "Total"              | Summary label                                               |
+| `item_count_1`      | "1 item"             | Singular item count                                         |
+| `item_count_n`      | "{count} items"      | Plural item count                                           |
+| `decrease_quantity` | "Decrease quantity"  | Aria label for − button                                     |
+| `increase_quantity` | "Increase quantity"  | Aria label for + button                                     |

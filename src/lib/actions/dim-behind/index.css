@@ -16,7 +16,10 @@
 	background: var(--stuic-dim-behind-backdrop-bg);
 	opacity: 0;
 	transition-property: opacity;
-	transition-duration: var(--stuic-dim-behind-transition-duration, var(--stuic-transition));
+	transition-duration: var(
+		--stuic-dim-behind-transition-duration,
+		var(--stuic-transition)
+	);
 	pointer-events: auto;
 
 	&.dim-visible {

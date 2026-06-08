@@ -265,15 +265,8 @@
 		{@render submitButton({ isSubmitting, disabled: submitDisabled })}
 	{:else}
 		<div class={unstyled ? undefined : "stuic-email-verify-form-submit"}>
-			<Button
-				intent="primary"
-				type="submit"
-				disabled={submitDisabled}
-				class="w-full"
-			>
-				{isSubmitting
-					? t("email_verify_form.submitting")
-					: t("email_verify_form.submit")}
+			<Button intent="primary" type="submit" disabled={submitDisabled} class="w-full">
+				{isSubmitting ? t("email_verify_form.submitting") : t("email_verify_form.submit")}
 			</Button>
 		</div>
 	{/if}

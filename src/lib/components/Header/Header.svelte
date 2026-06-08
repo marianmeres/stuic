@@ -331,8 +331,7 @@
 	// trailing dropdown when collapsed). In "hide" mode: visible when not
 	// collapsed, or when collapsed and `keepLocaleOnCollapse` is set.
 	let _showLocaleSwitcher = $derived(
-		_hasLocales &&
-			(!_isCollapsed || (collapseMode === "hide" && keepLocaleOnCollapse))
+		_hasLocales && (!_isCollapsed || (collapseMode === "hide" && keepLocaleOnCollapse))
 	);
 
 	// Active locale object (for trigger label); fallback to first
@@ -473,199 +472,196 @@
 		})}
 	{:else}
 		<div bind:offsetWidth={_innerWidth} class={_classContent} style={_styleContent}>
-		<!-- Leading slot (left-side) -->
-		{#if leading}
-			<div class={_classLeading}>
-				{@render leading({ isCollapsed: _isCollapsed })}
-			</div>
-		{:else if _showLeadingHamburger}
-			<div class={_classLeading}>
-				<Button
-					variant="ghost"
-					iconButton
-					size="sm"
-					{unstyled}
-					class={twMerge(
-						!unstyled && HEADER_LEADING_HAMBURGER_CLASSES,
-						classLeadingHamburger
-					)}
-					onclick={onLeadingHamburger}
-					aria-label={leadingHamburgerLabel}
-				>
-					{#if leadingHamburgerIcon}
-						<Thc thc={leadingHamburgerIcon} />
-					{:else}
-						{@html iconMenu({ size: iconSize })}
-					{/if}
-				</Button>
-			</div>
-		{/if}
-
-		<!-- Logo / Title (flex-1) -->
-		<div class={_classLogo}>
-			{#if logo}
-				{@render logo()}
-			{:else if projectName}
-				<span class={unstyled ? undefined : "stuic-header-project-name"}>
-					{projectName}
-				</span>
-			{/if}
-		</div>
-
-		<!-- Nav items (expanded mode) -->
-		{#if !_isCollapsed && items.length > 0}
-			<nav class={_classNav}>
-				{#each items as item (item.id)}
+			<!-- Leading slot (left-side) -->
+			{#if leading}
+				<div class={_classLeading}>
+					{@render leading({ isCollapsed: _isCollapsed })}
+				</div>
+			{:else if _showLeadingHamburger}
+				<div class={_classLeading}>
 					<Button
-						variant={navVariant}
+						variant="ghost"
+						iconButton
 						size="sm"
-						href={item.href}
-						target={item.target}
-						disabled={item.disabled}
 						{unstyled}
 						class={twMerge(
-							!unstyled && HEADER_NAV_ITEM_CLASSES,
-							!unstyled && item.active && classNavItemActive,
-							classNavItem,
-							item.class
+							!unstyled && HEADER_LEADING_HAMBURGER_CLASSES,
+							classLeadingHamburger
 						)}
-						data-active={!unstyled && item.active ? "" : undefined}
-						aria-current={item.active ? "page" : undefined}
-						onclick={() => handleItemClick(item)}
+						onclick={onLeadingHamburger}
+						aria-label={leadingHamburgerLabel}
 					>
-						{#if item.icon}
-							<span class={unstyled ? undefined : "stuic-header-nav-icon"}>
-								<Thc thc={item.icon} />
-							</span>
+						{#if leadingHamburgerIcon}
+							<Thc thc={leadingHamburgerIcon} />
+						{:else}
+							{@html iconMenu({ size: iconSize })}
 						{/if}
-						<Thc thc={item.label} />
 					</Button>
-				{/each}
-			</nav>
-		{/if}
+				</div>
+			{/if}
 
-		<!-- End area: locale + actions + avatar + trailing hamburger -->
-		<div class={_classEnd}>
-			<!-- Locale switcher (shown when expanded, or in "hide" mode with keepLocaleOnCollapse) -->
-			{#if _showLocaleSwitcher}
-				<DropdownMenu
-					items={_localeDropdownItems}
-					position="bottom-span-right"
-					class={_classLocale}
-				>
-					{#snippet trigger({ isOpen, toggle, triggerProps })}
+			<!-- Logo / Title (flex-1) -->
+			<div class={_classLogo}>
+				{#if logo}
+					{@render logo()}
+				{:else if projectName}
+					<span class={unstyled ? undefined : "stuic-header-project-name"}>
+						{projectName}
+					</span>
+				{/if}
+			</div>
+
+			<!-- Nav items (expanded mode) -->
+			{#if !_isCollapsed && items.length > 0}
+				<nav class={_classNav}>
+					{#each items as item (item.id)}
 						<Button
 							variant={navVariant}
 							size="sm"
+							href={item.href}
+							target={item.target}
+							disabled={item.disabled}
 							{unstyled}
 							class={twMerge(
-								!unstyled && "stuic-header-locale-trigger",
-								classLocale
+								!unstyled && HEADER_NAV_ITEM_CLASSES,
+								!unstyled && item.active && classNavItemActive,
+								classNavItem,
+								item.class
 							)}
-							onclick={toggle}
-							aria-label="Change language"
-							{...triggerProps}
+							data-active={!unstyled && item.active ? "" : undefined}
+							aria-current={item.active ? "page" : undefined}
+							onclick={() => handleItemClick(item)}
 						>
-							{#if _activeLocale}
-								<Thc thc={_activeLocale.label} />
+							{#if item.icon}
+								<span class={unstyled ? undefined : "stuic-header-nav-icon"}>
+									<Thc thc={item.icon} />
+								</span>
 							{/if}
-							<span
-								class={twMerge(
-									!unstyled && "stuic-header-locale-chevron",
-									isOpen && !unstyled && "stuic-header-locale-chevron-open"
-								)}
-							>
-								{@html iconChevronDown({ size: 14 })}
-							</span>
+							<Thc thc={item.label} />
 						</Button>
-					{/snippet}
-				</DropdownMenu>
+					{/each}
+				</nav>
 			{/if}
 
-			<!-- Actions (icon buttons, always visible) -->
-			{#if actions.length > 0}
-				<div class={_classActions}>
-					{#each actions as action (action.id)}
-						{@const actionClass = twMerge(
-							!unstyled && HEADER_ACTION_CLASSES,
-							!unstyled && action.active && classActionActive,
-							classAction,
-							action.class
-						)}
-						{#if action.render}
-							{@render action.render({
-								action,
-								class: actionClass,
-								isCollapsed: _isCollapsed,
-								onclick: () => handleActionClick(action),
-							})}
-						{:else}
+			<!-- End area: locale + actions + avatar + trailing hamburger -->
+			<div class={_classEnd}>
+				<!-- Locale switcher (shown when expanded, or in "hide" mode with keepLocaleOnCollapse) -->
+				{#if _showLocaleSwitcher}
+					<DropdownMenu
+						items={_localeDropdownItems}
+						position="bottom-span-right"
+						class={_classLocale}
+					>
+						{#snippet trigger({ isOpen, toggle, triggerProps })}
+							<Button
+								variant={navVariant}
+								size="sm"
+								{unstyled}
+								class={twMerge(!unstyled && "stuic-header-locale-trigger", classLocale)}
+								onclick={toggle}
+								aria-label="Change language"
+								{...triggerProps}
+							>
+								{#if _activeLocale}
+									<Thc thc={_activeLocale.label} />
+								{/if}
+								<span
+									class={twMerge(
+										!unstyled && "stuic-header-locale-chevron",
+										isOpen && !unstyled && "stuic-header-locale-chevron-open"
+									)}
+								>
+									{@html iconChevronDown({ size: 14 })}
+								</span>
+							</Button>
+						{/snippet}
+					</DropdownMenu>
+				{/if}
+
+				<!-- Actions (icon buttons, always visible) -->
+				{#if actions.length > 0}
+					<div class={_classActions}>
+						{#each actions as action (action.id)}
+							{@const actionClass = twMerge(
+								!unstyled && HEADER_ACTION_CLASSES,
+								!unstyled && action.active && classActionActive,
+								classAction,
+								action.class
+							)}
+							{#if action.render}
+								{@render action.render({
+									action,
+									class: actionClass,
+									isCollapsed: _isCollapsed,
+									onclick: () => handleActionClick(action),
+								})}
+							{:else}
+								<Button
+									variant="ghost"
+									iconButton
+									size="sm"
+									href={action.href}
+									target={action.target}
+									disabled={action.disabled}
+									{unstyled}
+									class={actionClass}
+									data-active={!unstyled && action.active ? "" : undefined}
+									aria-label={typeof action.label === "string" ? action.label : undefined}
+									onclick={() => handleActionClick(action)}
+								>
+									{#if action.icon !== undefined}
+										<Thc thc={action.icon} />
+									{/if}
+								</Button>
+							{/if}
+						{/each}
+					</div>
+				{/if}
+
+				<!-- Avatar: hidden when collapsed + avatarOnClick (moves into dropdown) -->
+				{#if avatar && !(_isCollapsed && _avatarInDropdown)}
+					{#if avatarOnClick}
+						<button
+							type="button"
+							class={twMerge(!unstyled && "stuic-header-avatar", classAvatar)}
+							onclick={avatarOnClick}
+						>
+							{@render avatar()}
+						</button>
+					{:else}
+						<div class={twMerge(!unstyled && "stuic-header-avatar", classAvatar)}>
+							{@render avatar()}
+						</div>
+					{/if}
+				{/if}
+
+				{#if _isCollapsed && _dropdownItems.length > 0}
+					<DropdownMenu
+						items={_dropdownItems}
+						bind:isOpen={isMenuOpen}
+						position={dropdownPosition}
+						class={classDropdown}
+					>
+						{#snippet trigger({ isOpen, toggle, triggerProps })}
 							<Button
 								variant="ghost"
 								iconButton
 								size="sm"
-								href={action.href}
-								target={action.target}
-								disabled={action.disabled}
 								{unstyled}
-								class={actionClass}
-								data-active={!unstyled && action.active ? "" : undefined}
-								aria-label={typeof action.label === "string" ? action.label : undefined}
-								onclick={() => handleActionClick(action)}
+								class={twMerge(!unstyled && HEADER_HAMBURGER_CLASSES, classHamburger)}
+								onclick={toggle}
+								aria-label={isOpen ? "Close menu" : "Open menu"}
+								{...triggerProps}
 							>
-								{#if action.icon !== undefined}
-									<Thc thc={action.icon} />
-								{/if}
+								<IconSwap
+									active={isOpen ? 1 : 0}
+									states={[iconMenu({ size: iconSize }), iconX({ size: iconSize })]}
+								/>
 							</Button>
-						{/if}
-					{/each}
-				</div>
-			{/if}
-
-			<!-- Avatar: hidden when collapsed + avatarOnClick (moves into dropdown) -->
-			{#if avatar && !(_isCollapsed && _avatarInDropdown)}
-				{#if avatarOnClick}
-					<button
-						type="button"
-						class={twMerge(!unstyled && "stuic-header-avatar", classAvatar)}
-						onclick={avatarOnClick}
-					>
-						{@render avatar()}
-					</button>
-				{:else}
-					<div class={twMerge(!unstyled && "stuic-header-avatar", classAvatar)}>
-						{@render avatar()}
-					</div>
+						{/snippet}
+					</DropdownMenu>
 				{/if}
-			{/if}
-
-			{#if _isCollapsed && _dropdownItems.length > 0}
-				<DropdownMenu
-					items={_dropdownItems}
-					bind:isOpen={isMenuOpen}
-					position={dropdownPosition}
-					class={classDropdown}
-				>
-					{#snippet trigger({ isOpen, toggle, triggerProps })}
-						<Button
-							variant="ghost"
-							iconButton
-							size="sm"
-							{unstyled}
-							class={twMerge(!unstyled && HEADER_HAMBURGER_CLASSES, classHamburger)}
-							onclick={toggle}
-							aria-label={isOpen ? "Close menu" : "Open menu"}
-							{...triggerProps}
-						>
-							<IconSwap
-								active={isOpen ? 1 : 0}
-								states={[iconMenu({ size: iconSize }), iconX({ size: iconSize })]}
-							/>
-						</Button>
-					{/snippet}
-				</DropdownMenu>
-			{/if}
-		</div>
+			</div>
 		</div>
 	{/if}
 </header>

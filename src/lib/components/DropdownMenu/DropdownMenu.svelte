@@ -835,7 +835,9 @@
 		<button
 			bind:this={triggerEl}
 			id={triggerId}
-			class={unstyled ? classTrigger : twMerge(DROPDOWN_MENU_TRIGGER_CLASSES, classTrigger)}
+			class={unstyled
+				? classTrigger
+				: twMerge(DROPDOWN_MENU_TRIGGER_CLASSES, classTrigger)}
 			onclick={() => (isOpen = !isOpen)}
 			aria-haspopup="menu"
 			aria-expanded={isOpen}
@@ -858,7 +860,9 @@
 	{#if isOpen && !isSupported && showBackdrop}
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<div
-			class={unstyled ? classBackdrop : twMerge(DROPDOWN_MENU_BACKDROP_CLASSES, classBackdrop)}
+			class={unstyled
+				? classBackdrop
+				: twMerge(DROPDOWN_MENU_BACKDROP_CLASSES, classBackdrop)}
 			onclick={() => {
 				if (closeOnClickOutside) {
 					isOpen = false;

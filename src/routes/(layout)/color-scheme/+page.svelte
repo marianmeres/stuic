@@ -43,20 +43,20 @@
 			Apply key
 		</button>
 		<p class="text-xs opacity-60">
-			After applying, toggle from the header. The new key should appear in
-			localStorage; the default <code>stuic-color-scheme</code> stays untouched.
-			Open a second tab on <code>/</code> (default key) — its toggles won't
-			affect this tab. Note: the inline bootstrap script in
-			<code>&lt;ColorSchemeLocal /&gt;</code> always reads the default key, so a
-			hard refresh on this page will paint based on
-			<code>stuic-color-scheme</code> until <code>configure</code> runs again.
-			Apps that need FOUC-free custom-key hydration should ship their own
-			bootstrap in <code>app.html</code>.
+			After applying, toggle from the header. The new key should appear in localStorage;
+			the default <code>stuic-color-scheme</code> stays untouched. Open a second tab on
+			<code>/</code>
+			(default key) — its toggles won't affect this tab. Note: the inline bootstrap script in
+			<code>&lt;ColorSchemeLocal /&gt;</code> always reads the default key, so a hard
+			refresh on this page will paint based on
+			<code>stuic-color-scheme</code> until <code>configure</code> runs again. Apps that
+			need FOUC-free custom-key hydration should ship their own bootstrap in
+			<code>app.html</code>.
 		</p>
 	</div>
 
 	<p class="text-xs opacity-60">
-		Cross-tab sync: open <code>/</code> in two tabs and toggle in one. Page
-		colors in the other should follow within a frame.
+		Cross-tab sync: open <code>/</code> in two tabs and toggle in one. Page colors in the other
+		should follow within a frame.
 	</p>
 </div>

@@ -13,35 +13,35 @@ A fresh conversation should read this file first, then the relevant `NN-*.md` se
 
 Branch: `feat/component-testing`
 
-| # | Task | Source | Status | Commit |
-|---|------|--------|--------|--------|
-| 1 | Upgrade vitest 3→4; confirm 9 existing node suites still green | [01](./01-framework-setup.md) Step 1 | ✅ | `71e47e2` |
-| 2 | Browser harness: add deps, `projects` config split, `playwright install chromium`, fix test scripts, Separator smoke test | [01](./01-framework-setup.md) Steps 2–5 | ✅ | `980b323` |
-| 3 | Reconcile [`docs/testing.md`](../testing.md) — add the browser-behavior layer | [02](./02-test-conventions.md) | ✅ | `977c431` |
-| 4 | **Button** — flagship; establish assertion patterns | [03](./03-component-coverage-roadmap.md) #1 | ✅ | `9485e97` |
-| 5 | **Pill** — intent/active/dismissible event | [03](./03-component-coverage-roadmap.md) #2 | ✅ | `2992faf` |
-| 6 | **Switch** — checked binding, toggle, disabled | [03](./03-component-coverage-roadmap.md) #3 | ✅ | `6aa1771` |
-| 7 | **Spinner** — size/count/direction | [03](./03-component-coverage-roadmap.md) #4 | ✅ | `485b764` |
-| 8 | **Skeleton** — variants, reduced-motion | [03](./03-component-coverage-roadmap.md) #5 | ✅ | `ff8bd7e` |
-| 9 | **DismissibleMessage** — intent, dismiss, auto-reset | [03](./03-component-coverage-roadmap.md) #6 | ✅ | `c520780` |
-| 10 | **Avatar** — initials/img/icon fallback, autoColor | [03](./03-component-coverage-roadmap.md) #7 | ✅ | `43ed174` |
-| 11 | **Progress** — value→width/stroke (real layout) | [03](./03-component-coverage-roadmap.md) #8 | ✅ | `c8cc0ef` |
-| 12 | **Hard proof** — anchor-position viewport clamp | [04](./04-hard-cases-and-e2e.md) | ✅ | `5ae4470` |
-| 13 | CI — minimal GitHub Actions `test.yml` (test + check jobs) | [05](./05-ci.md) | ✅ | `a61b8cb` |
+| #   | Task                                                                                                                      | Source                                      | Status | Commit    |
+| --- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ------ | --------- |
+| 1   | Upgrade vitest 3→4; confirm 9 existing node suites still green                                                            | [01](./01-framework-setup.md) Step 1        | ✅     | `71e47e2` |
+| 2   | Browser harness: add deps, `projects` config split, `playwright install chromium`, fix test scripts, Separator smoke test | [01](./01-framework-setup.md) Steps 2–5     | ✅     | `980b323` |
+| 3   | Reconcile [`docs/testing.md`](../testing.md) — add the browser-behavior layer                                             | [02](./02-test-conventions.md)              | ✅     | `977c431` |
+| 4   | **Button** — flagship; establish assertion patterns                                                                       | [03](./03-component-coverage-roadmap.md) #1 | ✅     | `9485e97` |
+| 5   | **Pill** — intent/active/dismissible event                                                                                | [03](./03-component-coverage-roadmap.md) #2 | ✅     | `2992faf` |
+| 6   | **Switch** — checked binding, toggle, disabled                                                                            | [03](./03-component-coverage-roadmap.md) #3 | ✅     | `6aa1771` |
+| 7   | **Spinner** — size/count/direction                                                                                        | [03](./03-component-coverage-roadmap.md) #4 | ✅     | `485b764` |
+| 8   | **Skeleton** — variants, reduced-motion                                                                                   | [03](./03-component-coverage-roadmap.md) #5 | ✅     | `ff8bd7e` |
+| 9   | **DismissibleMessage** — intent, dismiss, auto-reset                                                                      | [03](./03-component-coverage-roadmap.md) #6 | ✅     | `c520780` |
+| 10  | **Avatar** — initials/img/icon fallback, autoColor                                                                        | [03](./03-component-coverage-roadmap.md) #7 | ✅     | `43ed174` |
+| 11  | **Progress** — value→width/stroke (real layout)                                                                           | [03](./03-component-coverage-roadmap.md) #8 | ✅     | `c8cc0ef` |
+| 12  | **Hard proof** — anchor-position viewport clamp                                                                           | [04](./04-hard-cases-and-e2e.md)            | ✅     | `5ae4470` |
+| 13  | CI — minimal GitHub Actions `test.yml` (test + check jobs)                                                                | [05](./05-ci.md)                            | ✅     | `a61b8cb` |
 
 **🎉 First sprint complete** (tasks 1–13). 146 tests green (node + Chromium browser), `pnpm check` clean, CI in place. Next: pick up the backlog below.
 
 ## Backlog (ranked, post-sprint)
 
-| Rank | Task | Source | Status |
-|------|------|--------|--------|
-| 14 | Rest of Tier 1 (Separator already smoke-tested · H, KbdShortcut, ButtonGroupRadio, ListItemButton, Card, TabbedMenu, IconSwap, Collapsible) | [03](./03-component-coverage-roadmap.md) #10–17 | ⬜ |
-| 15 | Tier 2 — `FieldInput` first, then the Field* family + OtpInput, Nav, etc. | [03](./03-component-coverage-roadmap.md) | ⬜ |
-| 16 | Portals/focus-traps in browser mode (Modal, ModalDialog, Backdrop, Drawer, AlertConfirmPrompt) | [04](./04-hard-cases-and-e2e.md) | ⬜ |
-| 17 | Anchor-positioned menus (DropdownMenu, CommandMenu, UserAvatarMenu) + extract search logic to `_internal` | [04](./04-hard-cases-and-e2e.md) | ⬜ |
-| 18 | Standalone Playwright E2E layer (drag: Tree/FieldOptions/FieldFile; Milkdown; Checkout/auth flows) | [04](./04-hard-cases-and-e2e.md) | ⏭️ |
-| 19 | Clear the repo's **pre-existing lint debt** (8 eslint errors + 119 prettier files), then add a **`pnpm lint`** CI job. (`pnpm check` already runs in CI as of task 13.) | [05](./05-ci.md) | ⬜ |
-| 20 | (Maybe) visual-regression via `toMatchScreenshot`; multi-browser matrix | [00](./00-overview-and-roadmap.md) | ⏭️ |
+| Rank | Task                                                                                                                                                                    | Source                                          | Status |
+| ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- | ------ |
+| 14   | Rest of Tier 1 (Separator already smoke-tested · H, KbdShortcut, ButtonGroupRadio, ListItemButton, Card, TabbedMenu, IconSwap, Collapsible)                             | [03](./03-component-coverage-roadmap.md) #10–17 | ⬜     |
+| 15   | Tier 2 — `FieldInput` first, then the Field\* family + OtpInput, Nav, etc.                                                                                              | [03](./03-component-coverage-roadmap.md)        | ⬜     |
+| 16   | Portals/focus-traps in browser mode (Modal, ModalDialog, Backdrop, Drawer, AlertConfirmPrompt)                                                                          | [04](./04-hard-cases-and-e2e.md)                | ⬜     |
+| 17   | Anchor-positioned menus (DropdownMenu, CommandMenu, UserAvatarMenu) + extract search logic to `_internal`                                                               | [04](./04-hard-cases-and-e2e.md)                | ⬜     |
+| 18   | Standalone Playwright E2E layer (drag: Tree/FieldOptions/FieldFile; Milkdown; Checkout/auth flows)                                                                      | [04](./04-hard-cases-and-e2e.md)                | ⏭️     |
+| 19   | Clear the repo's **pre-existing lint debt** (8 eslint errors + 119 prettier files), then add a **`pnpm lint`** CI job. (`pnpm check` already runs in CI as of task 13.) | [05](./05-ci.md)                                | ⬜     |
+| 20   | (Maybe) visual-regression via `toMatchScreenshot`; multi-browser matrix                                                                                                 | [00](./00-overview-and-roadmap.md)              | ⏭️     |
 
 ## Decisions log
 

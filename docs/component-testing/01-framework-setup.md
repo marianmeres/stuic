@@ -12,7 +12,7 @@ Planning artifact; no code was changed.
 > `projects` split routed by filename** (`*.test.ts` → fast node, `*.svelte.test.ts` → real
 > browser) keeps the 9 existing suites untouched while adding component tests on top. The one
 > hard prerequisite is a **vitest 3 → 4 major upgrade** — `vitest-browser-svelte@^2` peer-requires
-> `vitest ^4`, and Browser Mode only became *stable* in Vitest 4.
+> `vitest ^4`, and Browser Mode only became _stable_ in Vitest 4.
 
 ## Current state (verified at `cc9958b`)
 
@@ -34,10 +34,10 @@ Planning artifact; no code was changed.
 
 A two-project Vitest config. Tests are routed purely by filename:
 
-| Project | Environment | Matches | Runs |
-|---------|-------------|---------|------|
-| `server` | `node` | `src/**/*.test.ts` (excl. `*.svelte.test.ts`) | the existing 9 pure-logic suites — unchanged, fast |
-| `client` | real browser (Chromium via Playwright) | `src/**/*.svelte.test.ts` | new component tests with DOM, `$effect`, layout, focus |
+| Project  | Environment                            | Matches                                       | Runs                                                   |
+| -------- | -------------------------------------- | --------------------------------------------- | ------------------------------------------------------ |
+| `server` | `node`                                 | `src/**/*.test.ts` (excl. `*.svelte.test.ts`) | the existing 9 pure-logic suites — unchanged, fast     |
+| `client` | real browser (Chromium via Playwright) | `src/**/*.svelte.test.ts`                     | new component tests with DOM, `$effect`, layout, focus |
 
 ## Step 1 — Upgrade Vitest 3 → 4 (own commit, gating)
 
@@ -128,7 +128,7 @@ Why this shape:
   output) and `sveltekit()` plugins apply. In the `client` project Vitest builds for the browser, so
   the **client** Svelte build is used and `$effect`/actions run — the exact thing the node setup can't do.
 - **The filename glob is the routing mechanism** and the single most important config decision. Note
-  `src/**/*.test.ts` *also* matches `foo.svelte.test.ts` (it ends in `.test.ts`), so the server
+  `src/**/*.test.ts` _also_ matches `foo.svelte.test.ts` (it ends in `.test.ts`), so the server
   project's `exclude` is **required**, not optional.
 - **`setupFiles: ['vitest-browser-svelte']`** is the entire setup — it registers auto-cleanup and
   helpers. Browser mode eliminates the 60–250-line jsdom API-mock setup files older guides used.

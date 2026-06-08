@@ -6,7 +6,7 @@ Claims verified against src/lib at commit cc9958b. Planning artifact; no code wa
 
 # Hard Cases & E2E Strategy
 
-> ~30 of the 74 components are "hard". But "hard" splits two ways: **most are hard for *jsdom* yet
+> ~30 of the 74 components are "hard". But "hard" splits two ways: **most are hard for _jsdom_ yet
 > perfectly testable in Vitest browser mode** (focus traps, anchor positioning, ResizeObserver — all
 > work in a real Chromium); only **drag-heavy and Milkdown-class** components genuinely need a
 > separate Playwright **E2E** layer against a running app. The single most valuable near-term action
@@ -15,10 +15,10 @@ Claims verified against src/lib at commit cc9958b. Planning artifact; no code wa
 
 ## The two kinds of "hard"
 
-| Kind | Examples | Where it's tested |
-|------|----------|-------------------|
+| Kind                                     | Examples                                                                                         | Where it's tested                                                                                            |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
 | **Hard for jsdom, fine in browser mode** | focus traps, anchor/viewport positioning, scroll/observer tracking, transitions, computed layout | **Vitest browser mode** (this plan) — a real Chromium page gives real `getBoundingClientRect`, focus, layout |
-| **Hard even in browser mode** | drag-and-drop reorder, file drop, full WYSIWYG editors, multi-step composite flows | **Standalone Playwright E2E** against `pnpm dev`/`preview` (deferred to a later sprint) |
+| **Hard even in browser mode**            | drag-and-drop reorder, file drop, full WYSIWYG editors, multi-step composite flows               | **Standalone Playwright E2E** against `pnpm dev`/`preview` (deferred to a later sprint)                      |
 
 This matters because the naive read ("30 components are E2E-only") is wrong — it would defer exactly
 the high-value behaviors (focus, positioning) that motivated this whole effort. Most of the 30 belong
@@ -34,13 +34,13 @@ candidates, both verified to exist:
 
 - **Code:** [`src/lib/utils/anchor-position.ts`](../../src/lib/utils/anchor-position.ts), consumed by
   `DropdownMenu/DropdownMenu.svelte` (and others).
-- **Why:** this is precisely what regressed in `9d8c974` *"clamp anchor-positioned annotations to
-  viewport on all paths"* and `8c52afe`. A test here has immediate, proven value and prevents
+- **Why:** this is precisely what regressed in `9d8c974` _"clamp anchor-positioned annotations to
+  viewport on all paths"_ and `8c52afe`. A test here has immediate, proven value and prevents
   recurrence. It's also the textbook "jsdom returns all-zeros from `getBoundingClientRect`" case — so
   it can only exist in browser mode.
 - **Shape:** render a host + an anchored element positioned near a viewport edge in a real page;
   assert the element's rect stays clamped inside `window.innerWidth/innerHeight`.
-- **Bonus:** the *pure* clamp math in `anchor-position.ts` can additionally get a fast **node** test
+- **Bonus:** the _pure_ clamp math in `anchor-position.ts` can additionally get a fast **node** test
   (`anchor-position.test.ts`) — cheap regression net independent of the browser.
 
 ### Candidate B (alternative) — focus trap
@@ -61,7 +61,7 @@ candidates, both verified to exist:
 `Modal`, `ModalDialog`, `Backdrop`, `Drawer`, `AlertConfirmPrompt` — all use
 [`focus-trap.ts`](../../src/lib/actions/focus-trap.ts), scroll-lock, and an Escape-key stack. These
 are testable in browser mode (open → focus trapped → Escape closes → backdrop click closes →
-`returnFocus`). The stack/queue *logic* is already unit-tested (`AlertConfirmPromptStack`,
+`returnFocus`). The stack/queue _logic_ is already unit-tested (`AlertConfirmPromptStack`,
 `NotificationsStack`); browser tests add the DOM-interaction layer. Higher effort, real value —
 schedule after Tier 1/2.
 

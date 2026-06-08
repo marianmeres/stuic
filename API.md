@@ -78,14 +78,14 @@ Overlay container with backdrop. Controlled programmatically.
 
 Pre-styled modal dialog with title and action buttons. Uses native `<dialog>` element with focus trap and backdrop.
 
-| Prop               | Type       | Default     | Description                                           |
-| ------------------ | ---------- | ----------- | ----------------------------------------------------- |
-| `classDialog`      | `string`   | `undefined` | CSS class for the dialog element                      |
-| `noClickOutsideClose` | `boolean` | `false`  | Disable close on outside click                        |
-| `noEscapeClose`    | `boolean`  | `false`     | Disable close on Escape key                           |
-| `noScrollLock`     | `boolean`  | `false`     | Disable body scroll lock when open                    |
-| `preEscapeClose`   | `() => any` | —          | Pre-close hook for Escape. Return false to prevent.   |
-| `preClose`         | `() => any` | —          | Pre-close hook. Return false to prevent.              |
+| Prop                  | Type        | Default     | Description                                         |
+| --------------------- | ----------- | ----------- | --------------------------------------------------- |
+| `classDialog`         | `string`    | `undefined` | CSS class for the dialog element                    |
+| `noClickOutsideClose` | `boolean`   | `false`     | Disable close on outside click                      |
+| `noEscapeClose`       | `boolean`   | `false`     | Disable close on Escape key                         |
+| `noScrollLock`        | `boolean`   | `false`     | Disable body scroll lock when open                  |
+| `preEscapeClose`      | `() => any` | —           | Pre-close hook for Escape. Return false to prevent. |
+| `preClose`            | `() => any` | —           | Pre-close hook. Return false to prevent.            |
 
 **Methods:** `open(openerOrEvent?)`, `close()`
 
@@ -134,37 +134,37 @@ Navigation wrapper component.
 
 Responsive navigation header with leading slot, logo, nav items, locale switcher, action icon buttons, avatar, and configurable responsive collapse (`"hamburger"` fold or `"hide"` for app-like shells). Renders as `<header>`.
 
-| Prop                    | Type                                      | Default                | Description                                                                                                          |
-| ----------------------- | ----------------------------------------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `leading`               | `Snippet<[{ isCollapsed }]>`              | —                      | Leading (left-side) slot. Overrides `leadingHamburger`.                                                              |
-| `leadingHamburger`      | `boolean \| "collapsed"`                  | `false`                | Built-in hamburger in the leading slot (`"collapsed"` = only below threshold). Ignored when `leading` is provided.   |
-| `onLeadingHamburger`    | `() => void`                              | —                      | Click handler for the built-in leading hamburger (typically opens a drawer).                                          |
-| `leadingHamburgerIcon`  | `THC`                                     | menu icon              | Icon override for the built-in leading hamburger.                                                                     |
-| `leadingHamburgerLabel` | `string`                                  | `"Open menu"`          | Aria-label for the leading hamburger.                                                                                 |
-| `logo`                  | `Snippet`                                 | —                      | Logo/brand snippet.                                                                                                   |
-| `projectName`           | `string`                                  | —                      | Simple text logo alternative.                                                                                         |
-| `navVariant`            | `ButtonVariant`                           | `"ghost"`              | Button variant for nav items and the locale switcher trigger.                                                         |
-| `items`                 | `HeaderNavItem[]`                         | `[]`                   | Navigation items — inline when expanded, dropdown when collapsed (hamburger mode).                                    |
-| `actions`               | `HeaderActionItem[]`                      | `[]`                   | Action icon buttons between the locale switcher and the avatar. Always visible — never fold into the dropdown.        |
-| `onActionSelect`        | `(action) => void`                        | —                      | Called after the per-item `onclick`.                                                                                  |
-| `avatar`                | `Snippet`                                 | —                      | Avatar snippet (far right).                                                                                           |
-| `avatarOnClick`         | `() => void`                              | —                      | Makes the avatar interactive. In `"hamburger"` collapse mode it moves into the dropdown.                              |
-| `avatarLabel`           | `THC`                                     | `"Account"`            | Label for the avatar entry inside the collapsed dropdown.                                                             |
-| `locales`               | `HeaderLocaleItem[]`                      | `[]`                   | Locale items. Switcher only renders when 2+.                                                                          |
-| `activeLocale`          | `string`                                  | —                      | Current locale id.                                                                                                    |
-| `onLocaleChange`        | `(localeId) => void`                      | —                      | Locale selection callback.                                                                                            |
-| `localeLabel`           | `THC`                                     | `"Language"`           | Section header inside the collapsed dropdown.                                                                         |
-| `contentMaxWidth`       | `string \| number`                        | —                      | Max-width of the inner content row (outer header stays 100%). Accepts any CSS length. Maps to `--stuic-header-content-max-width`. |
-| `collapseThreshold`     | `number`                                  | `768`                  | Width (px) to collapse; 0 disables.                                                                                   |
-| `collapseMode`          | `"hamburger" \| "hide"`                   | `"hamburger"`          | Collapse behavior. `"hide"` keeps avatar/actions visible and renders no trailing hamburger (app-shell pattern).        |
-| `keepLocaleOnCollapse`  | `boolean`                                 | `false`                | Keep the locale switcher visible in collapsed mode (only `collapseMode === "hide"`).                                   |
-| `fixed`                 | `boolean`                                 | `false`                | Fixed positioning at the top.                                                                                         |
-| `isCollapsed`           | `boolean`                                 | —                      | Bindable: collapsed state.                                                                                            |
-| `isMenuOpen`            | `boolean`                                 | —                      | Bindable: hamburger menu open.                                                                                        |
-| `dropdownPosition`      | `DropdownMenuPosition`                    | `"bottom-span-right"`  | Position of the collapsed dropdown.                                                                                   |
-| `iconSize`              | `number`                                  | `24`                   | Hamburger/X icon size in px.                                                                                          |
-| `onSelect`              | `(item) => void`                          | —                      | Item selection callback (both modes).                                                                                 |
-| `children`              | `Snippet<[{ isCollapsed, items, offsetWidth }]>` | —              | Escape hatch: override the entire inner layout.                                                                       |
+| Prop                    | Type                                             | Default               | Description                                                                                                                       |
+| ----------------------- | ------------------------------------------------ | --------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `leading`               | `Snippet<[{ isCollapsed }]>`                     | —                     | Leading (left-side) slot. Overrides `leadingHamburger`.                                                                           |
+| `leadingHamburger`      | `boolean \| "collapsed"`                         | `false`               | Built-in hamburger in the leading slot (`"collapsed"` = only below threshold). Ignored when `leading` is provided.                |
+| `onLeadingHamburger`    | `() => void`                                     | —                     | Click handler for the built-in leading hamburger (typically opens a drawer).                                                      |
+| `leadingHamburgerIcon`  | `THC`                                            | menu icon             | Icon override for the built-in leading hamburger.                                                                                 |
+| `leadingHamburgerLabel` | `string`                                         | `"Open menu"`         | Aria-label for the leading hamburger.                                                                                             |
+| `logo`                  | `Snippet`                                        | —                     | Logo/brand snippet.                                                                                                               |
+| `projectName`           | `string`                                         | —                     | Simple text logo alternative.                                                                                                     |
+| `navVariant`            | `ButtonVariant`                                  | `"ghost"`             | Button variant for nav items and the locale switcher trigger.                                                                     |
+| `items`                 | `HeaderNavItem[]`                                | `[]`                  | Navigation items — inline when expanded, dropdown when collapsed (hamburger mode).                                                |
+| `actions`               | `HeaderActionItem[]`                             | `[]`                  | Action icon buttons between the locale switcher and the avatar. Always visible — never fold into the dropdown.                    |
+| `onActionSelect`        | `(action) => void`                               | —                     | Called after the per-item `onclick`.                                                                                              |
+| `avatar`                | `Snippet`                                        | —                     | Avatar snippet (far right).                                                                                                       |
+| `avatarOnClick`         | `() => void`                                     | —                     | Makes the avatar interactive. In `"hamburger"` collapse mode it moves into the dropdown.                                          |
+| `avatarLabel`           | `THC`                                            | `"Account"`           | Label for the avatar entry inside the collapsed dropdown.                                                                         |
+| `locales`               | `HeaderLocaleItem[]`                             | `[]`                  | Locale items. Switcher only renders when 2+.                                                                                      |
+| `activeLocale`          | `string`                                         | —                     | Current locale id.                                                                                                                |
+| `onLocaleChange`        | `(localeId) => void`                             | —                     | Locale selection callback.                                                                                                        |
+| `localeLabel`           | `THC`                                            | `"Language"`          | Section header inside the collapsed dropdown.                                                                                     |
+| `contentMaxWidth`       | `string \| number`                               | —                     | Max-width of the inner content row (outer header stays 100%). Accepts any CSS length. Maps to `--stuic-header-content-max-width`. |
+| `collapseThreshold`     | `number`                                         | `768`                 | Width (px) to collapse; 0 disables.                                                                                               |
+| `collapseMode`          | `"hamburger" \| "hide"`                          | `"hamburger"`         | Collapse behavior. `"hide"` keeps avatar/actions visible and renders no trailing hamburger (app-shell pattern).                   |
+| `keepLocaleOnCollapse`  | `boolean`                                        | `false`               | Keep the locale switcher visible in collapsed mode (only `collapseMode === "hide"`).                                              |
+| `fixed`                 | `boolean`                                        | `false`               | Fixed positioning at the top.                                                                                                     |
+| `isCollapsed`           | `boolean`                                        | —                     | Bindable: collapsed state.                                                                                                        |
+| `isMenuOpen`            | `boolean`                                        | —                     | Bindable: hamburger menu open.                                                                                                    |
+| `dropdownPosition`      | `DropdownMenuPosition`                           | `"bottom-span-right"` | Position of the collapsed dropdown.                                                                                               |
+| `iconSize`              | `number`                                         | `24`                  | Hamburger/X icon size in px.                                                                                                      |
+| `onSelect`              | `(item) => void`                                 | —                     | Item selection callback (both modes).                                                                                             |
+| `children`              | `Snippet<[{ isCollapsed, items, offsetWidth }]>` | —                     | Escape hatch: override the entire inner layout.                                                                                   |
 
 Class slots: `class`, `classContent`, `classLeading`, `classLeadingHamburger`, `classLogo`, `classNav`, `classNavItem`, `classNavItemActive`, `classActions`, `classAction`, `classActionActive`, `classEnd`, `classAvatar`, `classLocale`, `classHamburger`, `classDropdown`.
 
@@ -361,18 +361,18 @@ Toggle button styled as a "like" action.
 
 International phone number input with country dial code picker. Parses and composes full phone numbers (e.g. `+421905123456`), handles paste with international prefix detection, supports country filtering and preferred countries.
 
-| Prop                 | Type                                | Default     | Description                                        |
-| -------------------- | ----------------------------------- | ----------- | -------------------------------------------------- |
-| `value`              | `string`                            | `""`        | Bindable full phone number (e.g. `"+421905123456"`) |
-| `country`            | `string`                            | `""`        | Bindable selected country ISO code (e.g. `"SK"`)   |
-| `dialCode`           | `string`                            | `""`        | Bindable dial code with `+` (e.g. `"+421"`)        |
-| `localNumber`        | `string`                            | `""`        | Bindable local number part                         |
-| `defaultCountry`     | `string`                            | —           | ISO code for initial country selection             |
-| `flags`              | `boolean`                           | `true`      | Show country flag emoji                            |
-| `countries`          | `string[]`                          | all         | Filtered list of country ISO codes to show         |
-| `preferredCountries` | `string[]`                          | —           | ISO codes pinned at top of dropdown                |
-| `name`               | `string`                            | —           | Hidden input name for form submission              |
-| `validate`           | `boolean \| ValidateOptions`        | —           | Enable phone validation                            |
+| Prop                 | Type                         | Default | Description                                         |
+| -------------------- | ---------------------------- | ------- | --------------------------------------------------- |
+| `value`              | `string`                     | `""`    | Bindable full phone number (e.g. `"+421905123456"`) |
+| `country`            | `string`                     | `""`    | Bindable selected country ISO code (e.g. `"SK"`)    |
+| `dialCode`           | `string`                     | `""`    | Bindable dial code with `+` (e.g. `"+421"`)         |
+| `localNumber`        | `string`                     | `""`    | Bindable local number part                          |
+| `defaultCountry`     | `string`                     | —       | ISO code for initial country selection              |
+| `flags`              | `boolean`                    | `true`  | Show country flag emoji                             |
+| `countries`          | `string[]`                   | all     | Filtered list of country ISO codes to show          |
+| `preferredCountries` | `string[]`                   | —       | ISO codes pinned at top of dropdown                 |
+| `name`               | `string`                     | —       | Hidden input name for form submission               |
+| `validate`           | `boolean \| ValidateOptions` | —       | Enable phone validation                             |
 
 Exports: `FieldPhoneNumber`, `FieldPhoneNumberProps`, `validatePhoneNumber`, `Country`.
 
@@ -380,19 +380,19 @@ Exports: `FieldPhoneNumber`, `FieldPhoneNumberProps`, `validatePhoneNumber`, `Co
 
 Country picker dropdown with searchable, optionally flag-prefixed list. Submits a country ISO alpha-2 code via a hidden input. Pairs naturally with `FieldPhoneNumber` and with checkout/address forms.
 
-| Prop                 | Type                              | Default     | Description                                                                |
-| -------------------- | --------------------------------- | ----------- | -------------------------------------------------------------------------- |
-| `value`              | `string`                          | `""`        | Bindable ISO alpha-2 code (e.g. `"SK"`). Empty = unselected.               |
-| `onChange`           | `(iso: string) => void`           | —           | Called when selection changes.                                             |
-| `countryList`        | `Country[] \| string[]`           | all         | Restrict the list to specific countries (objects or ISO codes).            |
-| `preferredCountries` | `string[]`                        | —           | ISO codes pinned at the top of the dropdown.                               |
-| `countryNames`       | `Record<string, string>`          | English     | Override displayed country names (keyed by ISO code).                      |
-| `flags`              | `boolean`                         | `true`      | Show country flag emoji.                                                   |
-| `name`               | `string`                          | —           | Hidden input name (enables form submission + native validation).           |
-| `placeholder`        | `string`                          | —           | Trigger placeholder text when nothing is selected.                         |
-| `required`           | `boolean`                         | `false`     | Required indicator + validation.                                           |
-| `disabled`           | `boolean`                         | `false`     | Disable the trigger and dropdown.                                          |
-| `validate`           | `boolean \| ValidateOptions`      | enabled     | Validation behavior (default-on, see Imperative validate API).             |
+| Prop                 | Type                         | Default | Description                                                      |
+| -------------------- | ---------------------------- | ------- | ---------------------------------------------------------------- |
+| `value`              | `string`                     | `""`    | Bindable ISO alpha-2 code (e.g. `"SK"`). Empty = unselected.     |
+| `onChange`           | `(iso: string) => void`      | —       | Called when selection changes.                                   |
+| `countryList`        | `Country[] \| string[]`      | all     | Restrict the list to specific countries (objects or ISO codes).  |
+| `preferredCountries` | `string[]`                   | —       | ISO codes pinned at the top of the dropdown.                     |
+| `countryNames`       | `Record<string, string>`     | English | Override displayed country names (keyed by ISO code).            |
+| `flags`              | `boolean`                    | `true`  | Show country flag emoji.                                         |
+| `name`               | `string`                     | —       | Hidden input name (enables form submission + native validation). |
+| `placeholder`        | `string`                     | —       | Trigger placeholder text when nothing is selected.               |
+| `required`           | `boolean`                    | `false` | Required indicator + validation.                                 |
+| `disabled`           | `boolean`                    | `false` | Disable the trigger and dropdown.                                |
+| `validate`           | `boolean \| ValidateOptions` | enabled | Validation behavior (default-on, see Imperative validate API).   |
 
 Integrates with `InputWrap` — supports `label`, `description`, `renderSize`, `labelLeft`, `labelLeftWidth`, `labelLeftBreakpoint`, `inputBefore`, `inputAfter`, `inputBelow`, `below`, `classInput`, `classDropdown`.
 
@@ -429,17 +429,17 @@ Dual-mode JSON object editor with pretty-print and raw edit modes. Validates JSO
 
 Cron expression editor with preset selector, manual 5-field editor, raw expression input, human-readable descriptions, and next-run calculation.
 
-| Prop              | Type                          | Default       | Description                     |
-| ----------------- | ----------------------------- | ------------- | ------------------------------- |
-| `value`           | `string`                      | `"* * * * *"` | Bindable cron expression        |
-| `mode`            | `CronInputMode`               | —             | Bindable; predefined or manual  |
-| `showPresets`     | `boolean`                     | `true`        | Show preset selector            |
-| `showFields`      | `boolean`                     | `true`        | Show 5-column field editor      |
-| `showRawInput`    | `boolean`                     | `true`        | Show raw expression input       |
-| `showDescription` | `boolean`                     | `true`        | Show human-readable description |
-| `showNextRun`     | `boolean`                     | `true`        | Show next run time              |
-| `presets`         | `CronPreset[]`                | default set   | Custom presets                  |
-| `onchange`        | `(expr: string, valid: boolean) => void` | — | Change callback                 |
+| Prop              | Type                                     | Default       | Description                     |
+| ----------------- | ---------------------------------------- | ------------- | ------------------------------- |
+| `value`           | `string`                                 | `"* * * * *"` | Bindable cron expression        |
+| `mode`            | `CronInputMode`                          | —             | Bindable; predefined or manual  |
+| `showPresets`     | `boolean`                                | `true`        | Show preset selector            |
+| `showFields`      | `boolean`                                | `true`        | Show 5-column field editor      |
+| `showRawInput`    | `boolean`                                | `true`        | Show raw expression input       |
+| `showDescription` | `boolean`                                | `true`        | Show human-readable description |
+| `showNextRun`     | `boolean`                                | `true`        | Show next run time              |
+| `presets`         | `CronPreset[]`                           | default set   | Custom presets                  |
+| `onchange`        | `(expr: string, valid: boolean) => void` | —             | Change callback                 |
 
 Integrates with `InputWrap` — supports `label`, `description`, `renderSize`, `required`, `disabled`, `validate`, `labelLeft`, `below`.
 
@@ -453,10 +453,10 @@ Exports: `CronInput`, `CronInputProps`, `CronPreset`, `CronInputMode`, `CRON_DEF
 
 ```ts
 const next = new CronNextRun("0 9 * * 1-5");
-next.nextRun;          // Date | null
+next.nextRun; // Date | null
 next.nextRunFormatted; // "YYYY-MM-DD HH:MM"
-next.valid;            // boolean
-next.destroy();        // cleanup timer
+next.valid; // boolean
+next.destroy(); // cleanup timer
 ```
 
 CSS tokens: `--stuic-cron-input-fields-gap`, `--stuic-cron-input-section-gap`, `--stuic-cron-input-field-label-text`, `--stuic-cron-input-summary-text`, `--stuic-cron-input-error-text`, `--stuic-cron-input-field-bg`, `--stuic-cron-input-field-border`, `--stuic-cron-input-field-border-focus`.
@@ -575,33 +575,33 @@ Loading spinner indicator (default SVG spinner).
 
 CSS-only circular spinner.
 
-| Prop        | Type                              | Default    | Description                |
-| ----------- | --------------------------------- | ---------- | -------------------------- |
-| `duration`  | `number`                          | `750`      | One loop duration in ms    |
-| `thickness` | `"normal" \| "thin" \| "thick"`   | `"normal"` | Border thickness preset    |
-| `direction` | `"cw" \| "ccw"`                   | `"cw"`     | Rotation direction         |
+| Prop        | Type                            | Default    | Description             |
+| ----------- | ------------------------------- | ---------- | ----------------------- |
+| `duration`  | `number`                        | `750`      | One loop duration in ms |
+| `thickness` | `"normal" \| "thin" \| "thick"` | `"normal"` | Border thickness preset |
+| `direction` | `"cw" \| "ccw"`                 | `"cw"`     | Rotation direction      |
 
 #### `SpinnerCircleOscillate`
 
 Animated Circle-based spinner with oscillating arc completeness.
 
-| Prop             | Type      | Default | Description                   |
-| ---------------- | --------- | ------- | ----------------------------- |
-| `bgStrokeColor`  | `string`  | —       | Background circle stroke      |
-| `strokeWidth`    | `number`  | —       | SVG stroke width              |
-| `noOscillate`    | `boolean` | —       | Fixed completeness (no anim)  |
-| `rotateDuration` | `string`  | —       | CSS animation duration        |
+| Prop             | Type      | Default | Description                  |
+| ---------------- | --------- | ------- | ---------------------------- |
+| `bgStrokeColor`  | `string`  | —       | Background circle stroke     |
+| `strokeWidth`    | `number`  | —       | SVG stroke width             |
+| `noOscillate`    | `boolean` | —       | Fixed completeness (no anim) |
+| `rotateDuration` | `string`  | —       | CSS animation duration       |
 
 #### `SpinnerUnicode`
 
 Unicode character frame animation with 17 built-in variants.
 
-| Prop       | Type                     | Default             | Description                  |
-| ---------- | ------------------------ | ------------------- | ---------------------------- |
-| `speed`    | `number`                 | `100`               | Frame interval in ms         |
-| `variant`  | `SpinnerUnicodeVariant`  | `"braille_bar_dot"` | Built-in animation variant   |
-| `reversed` | `boolean`                | `false`             | Reverse frame order          |
-| `frames`   | `string[]`               | —                   | Custom animation frames      |
+| Prop       | Type                    | Default             | Description                |
+| ---------- | ----------------------- | ------------------- | -------------------------- |
+| `speed`    | `number`                | `100`               | Frame interval in ms       |
+| `variant`  | `SpinnerUnicodeVariant` | `"braille_bar_dot"` | Built-in animation variant |
+| `reversed` | `boolean`               | `false`             | Reverse frame order        |
+| `frames`   | `string[]`              | —                   | Custom animation frames    |
 
 Variants: `braille_bar`, `braille_bar_dot`, `braille_dot_circle`, `braille_dot_bounce`, `half_circle`, `quarter_circle`, `ascii`, `bar_v`, `bar_h`, `shade`, `arrows`, `arrows2`, `asterix`, `asterix2`, `asterix3`, `asterix4`, `asterix5`.
 
@@ -919,21 +919,21 @@ User avatar with fallback to initials or icon.
 
 Thin wrapper around `Avatar` + `DropdownMenu` for the "user avatar in the header → small menu" pattern. Renders sensibly in both authenticated (header tile, View profile, color-scheme toggle, Logout) and unauthenticated (Login, Register) states from the same trigger position. Built-in color-scheme item calls `ColorScheme.toggle()`; all other actions are consumer callbacks. No auth/router/i18n ownership.
 
-| Prop             | Type                                         | Default | Description                                                                            |
-| ---------------- | -------------------------------------------- | ------- | -------------------------------------------------------------------------------------- |
-| `identity`       | `UserAvatarMenuIdentity \| null`             | `null`  | `{ email, name?, src?, roles? }`. `null` → unauth mode.                                |
-| `actions`        | `UserAvatarMenuActions`                      | `{}`    | `onProfile`, `onSettings`, `onLogout`, `onLoginOrRegister`, `onLogin`, `onRegister`. Missing → item hidden. |
-| `labels`         | `UserAvatarMenuLabels`                       | English | Translated strings for built-in items.                                                 |
-| `colorScheme`    | `boolean \| { enabled?, onToggle?, isDark? }` | `true`  | Built-in dark/light toggle. `false` to disable.                                        |
-| `showHeaderTile` | `boolean`                                    | `true`  | Render the avatar+email tile (auth only).                                              |
-| `showRoles`      | `boolean`                                    | `false` | Render `identity.roles` under the email.                                               |
-| `extraItems`     | `DropdownMenuItem[]`                         | —       | Appended to the standard item set.                                                     |
-| `items`          | `DropdownMenuItem[]`                         | —       | Full override of the item list (trigger + shell still render).                         |
-| `avatar`         | `Partial<AvatarProps>`                       | —       | Forwarded to the trigger Avatar (and header-tile Avatar).                              |
-| `position`       | `DropdownMenuPosition`                       | —       | Forwarded to `DropdownMenu`.                                                           |
-| `classDropdown`  | `string`                                     | —       | Forwarded.                                                                             |
-| `trigger`        | `Snippet<[{ isOpen, toggle, triggerProps }]>` | —       | Custom trigger snippet (replaces default `Avatar`).                                    |
-| `headerTile`     | `Snippet<[{ identity }]>`                    | —       | Custom header-tile snippet.                                                            |
+| Prop             | Type                                          | Default | Description                                                                                                 |
+| ---------------- | --------------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------- |
+| `identity`       | `UserAvatarMenuIdentity \| null`              | `null`  | `{ email, name?, src?, roles? }`. `null` → unauth mode.                                                     |
+| `actions`        | `UserAvatarMenuActions`                       | `{}`    | `onProfile`, `onSettings`, `onLogout`, `onLoginOrRegister`, `onLogin`, `onRegister`. Missing → item hidden. |
+| `labels`         | `UserAvatarMenuLabels`                        | English | Translated strings for built-in items.                                                                      |
+| `colorScheme`    | `boolean \| { enabled?, onToggle?, isDark? }` | `true`  | Built-in dark/light toggle. `false` to disable.                                                             |
+| `showHeaderTile` | `boolean`                                     | `true`  | Render the avatar+email tile (auth only).                                                                   |
+| `showRoles`      | `boolean`                                     | `false` | Render `identity.roles` under the email.                                                                    |
+| `extraItems`     | `DropdownMenuItem[]`                          | —       | Appended to the standard item set.                                                                          |
+| `items`          | `DropdownMenuItem[]`                          | —       | Full override of the item list (trigger + shell still render).                                              |
+| `avatar`         | `Partial<AvatarProps>`                        | —       | Forwarded to the trigger Avatar (and header-tile Avatar).                                                   |
+| `position`       | `DropdownMenuPosition`                        | —       | Forwarded to `DropdownMenu`.                                                                                |
+| `classDropdown`  | `string`                                      | —       | Forwarded.                                                                                                  |
+| `trigger`        | `Snippet<[{ isOpen, toggle, triggerProps }]>` | —       | Custom trigger snippet (replaces default `Avatar`).                                                         |
+| `headerTile`     | `Snippet<[{ identity }]>`                     | —       | Custom header-tile snippet.                                                                                 |
 
 ```svelte
 <!-- Authenticated -->
@@ -960,22 +960,22 @@ CSS tokens: `--stuic-user-avatar-menu-trigger-{radius,opacity-hover,outline-colo
 
 Inline rounded badge/tag/chip with intent + variant + size system. Polymorphic: renders as `<span>` (default), `<a>` (when `href` set), or `<button>` (when `onclick` set).
 
-| Prop            | Type                                                               | Default  | Description                                          |
-| --------------- | ------------------------------------------------------------------ | -------- | ---------------------------------------------------- |
-| `intent`        | `"primary" \| "accent" \| "destructive" \| "warning" \| "success"` | -        | Semantic color                                       |
-| `variant`       | `"solid" \| "outline" \| "ghost" \| "soft" \| "link"`              | `"soft"` | Visual treatment                                     |
-| `size`          | `"sm" \| "md" \| "lg"`                                             | `"md"`   | Pill size                                            |
-| `roundedFull`   | `boolean`                                                          | `true`   | Fully rounded (9999px). `false` → element radius     |
-| `block`         | `boolean`                                                          | `false`  | Block-level flex (full width)                        |
-| `dot`           | `boolean`                                                          | `false`  | Status dot before content                            |
-| `dismissible`   | `boolean`                                                          | `false`  | Built-in X dismiss button                            |
-| `ondismiss`     | `(e: MouseEvent) => void`                                          | -        | Called when X clicked (stops propagation)            |
-| `active`        | `boolean`                                                          | `false`  | Selected state (filter-chip)                         |
-| `muted`         | `boolean`                                                          | `false`  | Lower opacity                                        |
-| `href`, `target`| `string`                                                           | -        | Render as `<a>`                                      |
-| `onclick`       | `(e: MouseEvent) => void`                                          | -        | Render as `<button>`                                 |
-| `contentBefore` | `THC`                                                              | -        | Content before children                              |
-| `contentAfter`  | `THC`                                                              | -        | Content after children                               |
+| Prop             | Type                                                               | Default  | Description                                      |
+| ---------------- | ------------------------------------------------------------------ | -------- | ------------------------------------------------ |
+| `intent`         | `"primary" \| "accent" \| "destructive" \| "warning" \| "success"` | -        | Semantic color                                   |
+| `variant`        | `"solid" \| "outline" \| "ghost" \| "soft" \| "link"`              | `"soft"` | Visual treatment                                 |
+| `size`           | `"sm" \| "md" \| "lg"`                                             | `"md"`   | Pill size                                        |
+| `roundedFull`    | `boolean`                                                          | `true`   | Fully rounded (9999px). `false` → element radius |
+| `block`          | `boolean`                                                          | `false`  | Block-level flex (full width)                    |
+| `dot`            | `boolean`                                                          | `false`  | Status dot before content                        |
+| `dismissible`    | `boolean`                                                          | `false`  | Built-in X dismiss button                        |
+| `ondismiss`      | `(e: MouseEvent) => void`                                          | -        | Called when X clicked (stops propagation)        |
+| `active`         | `boolean`                                                          | `false`  | Selected state (filter-chip)                     |
+| `muted`          | `boolean`                                                          | `false`  | Lower opacity                                    |
+| `href`, `target` | `string`                                                           | -        | Render as `<a>`                                  |
+| `onclick`        | `(e: MouseEvent) => void`                                          | -        | Render as `<button>`                             |
+| `contentBefore`  | `THC`                                                              | -        | Content before children                          |
+| `contentAfter`   | `THC`                                                              | -        | Content after children                           |
 
 ```svelte
 <Pill intent="success" dot>Online</Pill>
@@ -998,39 +998,32 @@ Keyboard shortcut display.
 
 Image/content slider with scroll snap, keyboard navigation, wheel scroll, optional arrows, and active item tracking via IntersectionObserver.
 
-| Prop                | Type                                              | Default     | Description                                        |
-| ------------------- | ------------------------------------------------- | ----------- | -------------------------------------------------- |
-| `items`             | `CarouselItem[]`                                  | required    | Array of carousel items                            |
-| `itemsPerView`      | `number`                                          | `1`         | Number of items visible per view                   |
-| `peekPercent`       | `number`                                          | `0`         | Percentage of next item to show as peek (0-50)     |
-| `gap`               | `number \| string`                                | `undefined` | Gap between items                                  |
-| `trackActive`       | `boolean`                                         | `false`     | Enable active item tracking                        |
-| `syncActiveOnScroll`| `boolean`                                         | `false`     | Sync active item based on scroll position          |
-| `activeIndex`       | `number`                                          | `0`         | Currently active item index (bindable)             |
-| `value`             | `string \| number`                                | `undefined` | Currently active item ID (bindable)                |
-| `snap`              | `boolean`                                         | `true`      | Enable scroll snap behavior                        |
-| `snapAlign`         | `"start" \| "center" \| "end"`                    | `"start"`   | Snap alignment                                     |
-| `keyboard`          | `boolean`                                         | `true`      | Enable keyboard navigation (arrows, Home, End)     |
-| `loop`              | `boolean`                                         | `false`     | Allow cycling from last to first and vice versa    |
-| `scrollBehavior`    | `ScrollBehavior`                                  | `"smooth"`  | Scroll behavior for programmatic navigation        |
-| `scrollbar`         | `boolean`                                         | `true`      | Show scrollbar on hover                            |
-| `wheelScroll`       | `boolean`                                         | `true`      | Enable horizontal scrolling via mouse wheel        |
-| `arrows`            | `boolean`                                         | `false`     | Show prev/next arrow buttons                       |
-| `minItemWidth`      | `number`                                          | `undefined` | Minimum item width (px) for auto-fit               |
-| `onActiveChange`    | `(item: CarouselItem, index: number) => void`     | —           | Callback when active item changes                  |
-| `renderItem`        | `Snippet<[{ item, index, active }]>`              | —           | Custom render snippet for items                    |
+| Prop                 | Type                                          | Default     | Description                                     |
+| -------------------- | --------------------------------------------- | ----------- | ----------------------------------------------- |
+| `items`              | `CarouselItem[]`                              | required    | Array of carousel items                         |
+| `itemsPerView`       | `number`                                      | `1`         | Number of items visible per view                |
+| `peekPercent`        | `number`                                      | `0`         | Percentage of next item to show as peek (0-50)  |
+| `gap`                | `number \| string`                            | `undefined` | Gap between items                               |
+| `trackActive`        | `boolean`                                     | `false`     | Enable active item tracking                     |
+| `syncActiveOnScroll` | `boolean`                                     | `false`     | Sync active item based on scroll position       |
+| `activeIndex`        | `number`                                      | `0`         | Currently active item index (bindable)          |
+| `value`              | `string \| number`                            | `undefined` | Currently active item ID (bindable)             |
+| `snap`               | `boolean`                                     | `true`      | Enable scroll snap behavior                     |
+| `snapAlign`          | `"start" \| "center" \| "end"`                | `"start"`   | Snap alignment                                  |
+| `keyboard`           | `boolean`                                     | `true`      | Enable keyboard navigation (arrows, Home, End)  |
+| `loop`               | `boolean`                                     | `false`     | Allow cycling from last to first and vice versa |
+| `scrollBehavior`     | `ScrollBehavior`                              | `"smooth"`  | Scroll behavior for programmatic navigation     |
+| `scrollbar`          | `boolean`                                     | `true`      | Show scrollbar on hover                         |
+| `wheelScroll`        | `boolean`                                     | `true`      | Enable horizontal scrolling via mouse wheel     |
+| `arrows`             | `boolean`                                     | `false`     | Show prev/next arrow buttons                    |
+| `minItemWidth`       | `number`                                      | `undefined` | Minimum item width (px) for auto-fit            |
+| `onActiveChange`     | `(item: CarouselItem, index: number) => void` | —           | Callback when active item changes               |
+| `renderItem`         | `Snippet<[{ item, index, active }]>`          | —           | Custom render snippet for items                 |
 
 **Methods:** `goTo(index)`, `goToId(id)`, `next()`, `previous()`
 
 ```svelte
-<Carousel
-	items={slides}
-	itemsPerView={3}
-	gap={16}
-	arrows
-	trackActive
-	syncActiveOnScroll
->
+<Carousel items={slides} itemsPerView={3} gap={16} arrows trackActive syncActiveOnScroll>
 	{#snippet renderItem({ item, index, active })}
 		<img src={item.data.src} alt={item.data.alt} />
 	{/snippet}
@@ -1104,15 +1097,15 @@ Responsive data table with paging, row selection, batch actions, and mobile card
 
 Auto-cycling image carousel with fade transitions. Preloads next image before displaying. Supports custom title/description snippets.
 
-| Prop                 | Type                | Default   | Description                              |
-| -------------------- | ------------------- | --------- | ---------------------------------------- |
-| `images`             | `ImageCyclerImage[]`| required  | Array of images to cycle through         |
-| `fit`                | `ImageCyclerFit`    | `"cover"` | CSS object-fit: `"cover"`, `"contain"`, `"fill"` |
-| `minWait`            | `number`            | `3000`    | Minimum wait (ms) before next image      |
-| `transitionDuration` | `number`            | `500`     | Fade transition duration (ms)            |
-| `onclick`            | `(image, index) => void` | —    | Click handler                            |
-| `title`              | `Snippet`           | —         | Custom title snippet `({ image, index, onclick })` |
-| `description`        | `Snippet`           | —         | Custom description snippet               |
+| Prop                 | Type                     | Default   | Description                                        |
+| -------------------- | ------------------------ | --------- | -------------------------------------------------- |
+| `images`             | `ImageCyclerImage[]`     | required  | Array of images to cycle through                   |
+| `fit`                | `ImageCyclerFit`         | `"cover"` | CSS object-fit: `"cover"`, `"contain"`, `"fill"`   |
+| `minWait`            | `number`                 | `3000`    | Minimum wait (ms) before next image                |
+| `transitionDuration` | `number`                 | `500`     | Fade transition duration (ms)                      |
+| `onclick`            | `(image, index) => void` | —         | Click handler                                      |
+| `title`              | `Snippet`                | —         | Custom title snippet `({ image, index, onclick })` |
+| `description`        | `Snippet`                | —         | Custom description snippet                         |
 
 ```ts
 interface ImageCyclerImage {
@@ -1136,23 +1129,23 @@ Theme color swatch preview.
 
 Interactive book/flipbook reader with 3D CSS page flip animation, zoom, pan, swipe, clickable areas, and responsive single-page mode.
 
-| Prop             | Type                                                          | Default        | Description                                   |
-| ---------------- | ------------------------------------------------------------- | -------------- | --------------------------------------------- |
-| `pages`          | `BookPage[]`                                                  | required       | Ordered array of book pages                   |
-| `baseUrl`        | `string`                                                      | `undefined`    | Fallback base URL for relative page src       |
-| `activeSpread`   | `number`                                                      | `0`            | Currently active spread index (bindable)      |
-| `keyboard`       | `boolean`                                                     | `true`         | Enable keyboard navigation                    |
-| `swipe`          | `boolean`                                                     | `true`         | Enable swipe gesture navigation               |
-| `duration`       | `number`                                                      | `500`          | Flip animation duration in ms                 |
-| `zoom`           | `boolean`                                                     | `true`         | Enable zoom capability                        |
-| `zoomLevels`     | `readonly number[]`                                           | `[1,1.5,2,3]`  | Discrete zoom levels                          |
-| `clampPan`       | `boolean`                                                     | `false`        | Clamp panning within bounds                   |
-| `singlePage`     | `boolean`                                                     | `false`        | Force single-page layout                      |
-| `responsive`     | `boolean`                                                     | `true`         | Auto-switch to single-page when narrow        |
-| `onSpreadChange` | `(spread: BookSpread, index: number) => void`                 | —              | Callback when active spread changes           |
-| `onPageClick`    | `(data: { page: BookPage; x: number; y: number }) => void`   | —              | Callback on page click (coordinates 0–1)      |
-| `onAreaClick`    | `(data: { area: BookPageArea; page: BookPage }) => void`      | —              | Callback when clickable area is clicked       |
-| `renderPage`     | `Snippet<[{ page, position }]>`                               | —              | Custom page render snippet                    |
+| Prop             | Type                                                       | Default       | Description                              |
+| ---------------- | ---------------------------------------------------------- | ------------- | ---------------------------------------- |
+| `pages`          | `BookPage[]`                                               | required      | Ordered array of book pages              |
+| `baseUrl`        | `string`                                                   | `undefined`   | Fallback base URL for relative page src  |
+| `activeSpread`   | `number`                                                   | `0`           | Currently active spread index (bindable) |
+| `keyboard`       | `boolean`                                                  | `true`        | Enable keyboard navigation               |
+| `swipe`          | `boolean`                                                  | `true`        | Enable swipe gesture navigation          |
+| `duration`       | `number`                                                   | `500`         | Flip animation duration in ms            |
+| `zoom`           | `boolean`                                                  | `true`        | Enable zoom capability                   |
+| `zoomLevels`     | `readonly number[]`                                        | `[1,1.5,2,3]` | Discrete zoom levels                     |
+| `clampPan`       | `boolean`                                                  | `false`       | Clamp panning within bounds              |
+| `singlePage`     | `boolean`                                                  | `false`       | Force single-page layout                 |
+| `responsive`     | `boolean`                                                  | `true`        | Auto-switch to single-page when narrow   |
+| `onSpreadChange` | `(spread: BookSpread, index: number) => void`              | —             | Callback when active spread changes      |
+| `onPageClick`    | `(data: { page: BookPage; x: number; y: number }) => void` | —             | Callback on page click (coordinates 0–1) |
+| `onAreaClick`    | `(data: { area: BookPageArea; page: BookPage }) => void`   | —             | Callback when clickable area is clicked  |
+| `renderPage`     | `Snippet<[{ page, position }]>`                            | —             | Custom page render snippet               |
 
 **Exported helpers:** `buildSpreads(pages)`, `buildSinglePageSpreads(pages)`, `buildSheets(spreads)`, `computeBookPageSize(pages)`
 
@@ -1173,25 +1166,21 @@ Interactive book/flipbook reader with 3D CSS page flip animation, zoom, pan, swi
 
 Responsive wrapper around Book that intelligently switches between book mode (dual/single-page) and an inline asset preview mode based on container width. Inherits all Book props except `responsive` and `singlePage` (managed internally).
 
-| Prop              | Type                  | Default     | Description                                             |
-| ----------------- | --------------------- | ----------- | ------------------------------------------------------- |
-| `minPageWidth`    | `number`              | `150`       | Min page width (px) before switching to single-page     |
-| `debounce`        | `number`              | `150`       | Resize debounce delay in ms                             |
-| `inlineThreshold` | `number`              | `480`       | Container width (px) below which switches to inline (0 = disabled) |
-| `forceInline`     | `boolean`             | `false`     | Force inline asset preview mode                         |
-| `noPrevNext`      | `boolean`             | `false`     | Hide prev/next arrow buttons                            |
-| `classControls`   | `string`              | `undefined` | Custom class for prev/next buttons                      |
-| `noModeSwitch`    | `boolean`             | `false`     | Hide the book/inline toggle button                      |
-| `initialMode`     | `"book" \| "inline"`  | `undefined` | Override auto-detection on mount                        |
+| Prop              | Type                 | Default     | Description                                                        |
+| ----------------- | -------------------- | ----------- | ------------------------------------------------------------------ |
+| `minPageWidth`    | `number`             | `150`       | Min page width (px) before switching to single-page                |
+| `debounce`        | `number`             | `150`       | Resize debounce delay in ms                                        |
+| `inlineThreshold` | `number`             | `480`       | Container width (px) below which switches to inline (0 = disabled) |
+| `forceInline`     | `boolean`            | `false`     | Force inline asset preview mode                                    |
+| `noPrevNext`      | `boolean`            | `false`     | Hide prev/next arrow buttons                                       |
+| `classControls`   | `string`             | `undefined` | Custom class for prev/next buttons                                 |
+| `noModeSwitch`    | `boolean`            | `false`     | Hide the book/inline toggle button                                 |
+| `initialMode`     | `"book" \| "inline"` | `undefined` | Override auto-detection on mount                                   |
 
 **Exported utility:** `bookPagesToAssets(pages)` — Converts `BookPage[]` to `AssetPreview[]` for inline mode.
 
 ```svelte
-<BookResponsive
-	pages={bookPages}
-	inlineThreshold={600}
-	onAreaClick={handleAreaClick}
-/>
+<BookResponsive pages={bookPages} inlineThreshold={600} onAreaClick={handleAreaClick} />
 ```
 
 #### `Circle`
@@ -1236,25 +1225,25 @@ Element that expands width on hover with delayed transitions and shadow effects.
 
 Modal-based asset/file preview gallery with zoom, pan, pinch-zoom, swipe navigation, clickable area overlays, and download controls. Opens in a full-screen ModalDialog.
 
-| Prop              | Type                                                              | Default     | Description                                  |
-| ----------------- | ----------------------------------------------------------------- | ----------- | -------------------------------------------- |
-| `assets`          | `string[] \| AssetPreview[]`                                      | required    | Asset URLs or asset objects                  |
-| `baseUrl`         | `string`                                                          | `undefined` | Fallback base URL for relative asset URLs    |
-| `modalClassDialog`| `string`                                                          | `undefined` | CSS class for the modal dialog               |
-| `modalClass`      | `string`                                                          | `undefined` | CSS class for the modal container            |
-| `classControls`   | `string`                                                          | `undefined` | CSS class for control buttons                |
-| `t`               | `TranslateFn`                                                     | built-in    | Translation function                         |
-| `onDelete`        | `(asset: AssetPreview, index: number, { close }) => void`         | —           | Delete handler (shows delete button)         |
-| `onAreaClick`     | `(data: { area: AssetArea; asset: AssetPreviewNormalized }) => void` | —        | Callback for clickable area on image         |
-| `noName`          | `boolean`                                                         | `false`     | Hide file name display                       |
-| `clampPan`        | `boolean`                                                         | `true`      | Clamp panning within image bounds            |
-| `noDownload`      | `boolean`                                                         | `false`     | Hide download button                         |
-| `noPrevNext`      | `boolean`                                                         | `false`     | Hide prev/next arrows                        |
-| `noZoom`          | `boolean`                                                         | `false`     | Disable all zooming                          |
-| `noZoomButtons`   | `boolean`                                                         | `false`     | Hide zoom buttons (gestures still work)      |
-| `noDots`          | `boolean`                                                         | `false`     | Never show pagination dots                   |
-| `noCurrentOfTotal`| `boolean`                                                         | `false`     | Never show "x / y" counter                   |
-| `prevNextBottom`  | `boolean`                                                         | `false`     | Render prev/next arrows at bottom            |
+| Prop               | Type                                                                 | Default     | Description                               |
+| ------------------ | -------------------------------------------------------------------- | ----------- | ----------------------------------------- |
+| `assets`           | `string[] \| AssetPreview[]`                                         | required    | Asset URLs or asset objects               |
+| `baseUrl`          | `string`                                                             | `undefined` | Fallback base URL for relative asset URLs |
+| `modalClassDialog` | `string`                                                             | `undefined` | CSS class for the modal dialog            |
+| `modalClass`       | `string`                                                             | `undefined` | CSS class for the modal container         |
+| `classControls`    | `string`                                                             | `undefined` | CSS class for control buttons             |
+| `t`                | `TranslateFn`                                                        | built-in    | Translation function                      |
+| `onDelete`         | `(asset: AssetPreview, index: number, { close }) => void`            | —           | Delete handler (shows delete button)      |
+| `onAreaClick`      | `(data: { area: AssetArea; asset: AssetPreviewNormalized }) => void` | —           | Callback for clickable area on image      |
+| `noName`           | `boolean`                                                            | `false`     | Hide file name display                    |
+| `clampPan`         | `boolean`                                                            | `true`      | Clamp panning within image bounds         |
+| `noDownload`       | `boolean`                                                            | `false`     | Hide download button                      |
+| `noPrevNext`       | `boolean`                                                            | `false`     | Hide prev/next arrows                     |
+| `noZoom`           | `boolean`                                                            | `false`     | Disable all zooming                       |
+| `noZoomButtons`    | `boolean`                                                            | `false`     | Hide zoom buttons (gestures still work)   |
+| `noDots`           | `boolean`                                                            | `false`     | Never show pagination dots                |
+| `noCurrentOfTotal` | `boolean`                                                            | `false`     | Never show "x / y" counter                |
+| `prevNextBottom`   | `boolean`                                                            | `false`     | Render prev/next arrows at bottom         |
 
 **Methods:** `open(index?)`, `close()`
 
@@ -1265,10 +1254,17 @@ Modal-based asset/file preview gallery with zoom, pan, pinch-zoom, swipe navigat
 ```svelte
 <AssetsPreview
 	assets={[
-		{ url: { full: "/photo.jpg", thumb: "/photo-thumb.jpg" }, name: "Photo", type: "image/jpeg" },
+		{
+			url: { full: "/photo.jpg", thumb: "/photo-thumb.jpg" },
+			name: "Photo",
+			type: "image/jpeg",
+		},
 		"/document.pdf",
 	]}
-	onDelete={(asset, i, { close }) => { deleteAsset(i); close(); }}
+	onDelete={(asset, i, { close }) => {
+		deleteAsset(i);
+		close();
+	}}
 />
 ```
 
@@ -1276,34 +1272,31 @@ Modal-based asset/file preview gallery with zoom, pan, pinch-zoom, swipe navigat
 
 Always-visible (non-modal) variant of AssetsPreview with the same zoom, pan, swipe, and area clicking features. For embedding asset galleries directly in layouts.
 
-| Prop              | Type                                                              | Default     | Description                                  |
-| ----------------- | ----------------------------------------------------------------- | ----------- | -------------------------------------------- |
-| `assets`          | `string[] \| AssetPreview[]`                                      | required    | Asset URLs or asset objects                  |
-| `baseUrl`         | `string`                                                          | `undefined` | Fallback base URL for relative asset URLs    |
-| `initialIndex`    | `number`                                                          | `0`         | Starting asset index                         |
-| `currentIndex`    | `number`                                                          | `0`         | Current display index (bindable)             |
-| `class`           | `string`                                                          | `undefined` | Container CSS class                          |
-| `classControls`   | `string`                                                          | `undefined` | CSS class for control buttons                |
-| `t`               | `TranslateFn`                                                     | built-in    | Translation function                         |
-| `onDelete`        | `(asset, index, { close }) => void`                               | —           | Delete handler                               |
-| `onAreaClick`     | `(data: { area: AssetArea; asset: AssetPreviewNormalized }) => void` | —        | Callback for clickable area on image         |
-| `noName`          | `boolean`                                                         | `false`     | Hide file name display                       |
-| `clampPan`        | `boolean`                                                         | `true`      | Clamp panning within bounds                  |
-| `noDownload`      | `boolean`                                                         | `false`     | Hide download button                         |
-| `noPrevNext`      | `boolean`                                                         | `false`     | Hide prev/next arrows                        |
-| `noZoom`          | `boolean`                                                         | `false`     | Disable all zooming                          |
-| `noZoomButtons`   | `boolean`                                                         | `false`     | Hide zoom buttons (gestures still work)      |
-| `noDots`          | `boolean`                                                         | `false`     | Never show pagination dots                   |
-| `noCurrentOfTotal`| `boolean`                                                         | `false`     | Never show "x / y" counter                   |
-| `prevNextBottom`  | `boolean`                                                         | `false`     | Render prev/next arrows at bottom            |
+| Prop               | Type                                                                 | Default     | Description                               |
+| ------------------ | -------------------------------------------------------------------- | ----------- | ----------------------------------------- |
+| `assets`           | `string[] \| AssetPreview[]`                                         | required    | Asset URLs or asset objects               |
+| `baseUrl`          | `string`                                                             | `undefined` | Fallback base URL for relative asset URLs |
+| `initialIndex`     | `number`                                                             | `0`         | Starting asset index                      |
+| `currentIndex`     | `number`                                                             | `0`         | Current display index (bindable)          |
+| `class`            | `string`                                                             | `undefined` | Container CSS class                       |
+| `classControls`    | `string`                                                             | `undefined` | CSS class for control buttons             |
+| `t`                | `TranslateFn`                                                        | built-in    | Translation function                      |
+| `onDelete`         | `(asset, index, { close }) => void`                                  | —           | Delete handler                            |
+| `onAreaClick`      | `(data: { area: AssetArea; asset: AssetPreviewNormalized }) => void` | —           | Callback for clickable area on image      |
+| `noName`           | `boolean`                                                            | `false`     | Hide file name display                    |
+| `clampPan`         | `boolean`                                                            | `true`      | Clamp panning within bounds               |
+| `noDownload`       | `boolean`                                                            | `false`     | Hide download button                      |
+| `noPrevNext`       | `boolean`                                                            | `false`     | Hide prev/next arrows                     |
+| `noZoom`           | `boolean`                                                            | `false`     | Disable all zooming                       |
+| `noZoomButtons`    | `boolean`                                                            | `false`     | Hide zoom buttons (gestures still work)   |
+| `noDots`           | `boolean`                                                            | `false`     | Never show pagination dots                |
+| `noCurrentOfTotal` | `boolean`                                                            | `false`     | Never show "x / y" counter                |
+| `prevNextBottom`   | `boolean`                                                            | `false`     | Render prev/next arrows at bottom         |
 
 **Methods:** `goTo(index)`, `next()`, `previous()`
 
 ```svelte
-<AssetsPreviewInline
-	assets={imageUrls}
-	bind:currentIndex
-/>
+<AssetsPreviewInline assets={imageUrls} bind:currentIndex />
 ```
 
 #### `Card`
@@ -1347,24 +1340,24 @@ CSS tokens: `--stuic-card-bg`, `--stuic-card-bg-hover`, `--stuic-card-border`, `
 
 Accessible, keyboard-navigable hierarchical tree view with optional drag-and-drop reordering, expand/collapse, and localStorage persistence.
 
-| Prop              | Type                                     | Default      | Description                          |
-| ----------------- | ---------------------------------------- | ------------ | ------------------------------------ |
-| `items`           | `TreeNodeDTO<T>[]`                       | required     | Tree data                            |
-| `renderItem`      | `Snippet<[item, depth, isExpanded]>`     | —            | Custom item content                  |
-| `renderIcon`      | `Snippet<[item, depth, isExpanded]>`     | —            | Custom item icon                     |
-| `activeId`        | `string`                                 | —            | Selected item ID                     |
-| `isActive`        | `(item) => boolean`                      | —            | Custom active check                  |
-| `onSelect`        | `(item) => void`                         | —            | Item selection callback              |
-| `onToggle`        | `(item, expanded) => void`               | —            | Branch toggle callback               |
-| `sort`            | `(a, b) => number`                       | —            | Sort comparator (per-level)          |
-| `defaultExpanded` | `boolean`                                | `false`      | Default expand state                 |
-| `expandedIds`     | `Set<string>`                            | —            | Initially expanded IDs               |
-| `persistState`    | `boolean`                                | `false`      | Save expand state to localStorage    |
-| `draggable`       | `boolean`                                | `false`      | Enable drag-and-drop                 |
-| `isDraggable`     | `(item) => boolean`                      | —            | Per-item drag control                |
-| `isDropTarget`    | `(item) => boolean`                      | —            | Per-item drop target control         |
-| `onMove`          | `(event: TreeMoveEvent) => void \| false`| —            | Drop handler; return false to reject |
-| `dragExpandDelay` | `number`                                 | `800`        | Auto-expand delay (ms) on drag hover |
+| Prop              | Type                                      | Default  | Description                          |
+| ----------------- | ----------------------------------------- | -------- | ------------------------------------ |
+| `items`           | `TreeNodeDTO<T>[]`                        | required | Tree data                            |
+| `renderItem`      | `Snippet<[item, depth, isExpanded]>`      | —        | Custom item content                  |
+| `renderIcon`      | `Snippet<[item, depth, isExpanded]>`      | —        | Custom item icon                     |
+| `activeId`        | `string`                                  | —        | Selected item ID                     |
+| `isActive`        | `(item) => boolean`                       | —        | Custom active check                  |
+| `onSelect`        | `(item) => void`                          | —        | Item selection callback              |
+| `onToggle`        | `(item, expanded) => void`                | —        | Branch toggle callback               |
+| `sort`            | `(a, b) => number`                        | —        | Sort comparator (per-level)          |
+| `defaultExpanded` | `boolean`                                 | `false`  | Default expand state                 |
+| `expandedIds`     | `Set<string>`                             | —        | Initially expanded IDs               |
+| `persistState`    | `boolean`                                 | `false`  | Save expand state to localStorage    |
+| `draggable`       | `boolean`                                 | `false`  | Enable drag-and-drop                 |
+| `isDraggable`     | `(item) => boolean`                       | —        | Per-item drag control                |
+| `isDropTarget`    | `(item) => boolean`                       | —        | Per-item drop target control         |
+| `onMove`          | `(event: TreeMoveEvent) => void \| false` | —        | Drop handler; return false to reject |
+| `dragExpandDelay` | `number`                                  | `800`    | Auto-expand delay (ms) on drag hover |
 
 ```svelte
 <Tree
@@ -1528,24 +1521,24 @@ Spotlight/coach mark overlay that highlights a target element by dimming everyth
 
 **Options:**
 
-| Option                 | Type                | Default     | Description                                                      |
-| ---------------------- | ------------------- | ----------- | ---------------------------------------------------------------- |
-| `enabled`              | `boolean`           | `true`      | Whether the spotlight is enabled                                 |
-| `content`              | `THC \| null`       | `undefined` | Annotation content (string, {html}, {component, props}, snippet) |
-| `position`             | `SpotlightPosition` | `"bottom"`  | Annotation placement relative to target                          |
-| `padding`              | `number`            | `8`         | Padding around target in the cutout (px)                         |
-| `borderRadius`         | `number`            | `8`         | Border radius of the cutout hole (px)                            |
-| `class`                | `string`            | `undefined` | Custom class for annotation                                      |
-| `classBackdrop`        | `string`            | `undefined` | Custom class for backdrop                                        |
-| `offset`               | `string`            | `"0.5rem"`  | Annotation offset from target (CSS value)                        |
-| `closeOnEscape`        | `boolean`           | `true`      | Close on Escape key                                              |
-| `closeOnBackdropClick` | `boolean`           | `true`      | Close on backdrop click                                          |
-| `scrollIntoView`       | `boolean`           | `true`      | Scroll target into view before showing                           |
-| `open`                 | `boolean`           | `undefined` | Reactive programmatic control                                    |
-| `id`                   | `string`            | `undefined` | ID for registry-based control                                    |
+| Option                 | Type                | Default     | Description                                                                                                                                                                            |
+| ---------------------- | ------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `enabled`              | `boolean`           | `true`      | Whether the spotlight is enabled                                                                                                                                                       |
+| `content`              | `THC \| null`       | `undefined` | Annotation content (string, {html}, {component, props}, snippet)                                                                                                                       |
+| `position`             | `SpotlightPosition` | `"bottom"`  | Annotation placement relative to target                                                                                                                                                |
+| `padding`              | `number`            | `8`         | Padding around target in the cutout (px)                                                                                                                                               |
+| `borderRadius`         | `number`            | `8`         | Border radius of the cutout hole (px)                                                                                                                                                  |
+| `class`                | `string`            | `undefined` | Custom class for annotation                                                                                                                                                            |
+| `classBackdrop`        | `string`            | `undefined` | Custom class for backdrop                                                                                                                                                              |
+| `offset`               | `string`            | `"0.5rem"`  | Annotation offset from target (CSS value)                                                                                                                                              |
+| `closeOnEscape`        | `boolean`           | `true`      | Close on Escape key                                                                                                                                                                    |
+| `closeOnBackdropClick` | `boolean`           | `true`      | Close on backdrop click                                                                                                                                                                |
+| `scrollIntoView`       | `boolean`           | `true`      | Scroll target into view before showing                                                                                                                                                 |
+| `open`                 | `boolean`           | `undefined` | Reactive programmatic control                                                                                                                                                          |
+| `id`                   | `string`            | `undefined` | ID for registry-based control                                                                                                                                                          |
 | `autoTrack`            | `boolean`           | `true`      | Per-frame rAF compare-loop that keeps the spotlight glued to its target through layout shifts caused by sibling/ancestor movement (not just resize/scroll). Set to `false` to opt out. |
-| `onShow`               | `() => void`        | `undefined` | Callback when spotlight opens                                    |
-| `onHide`               | `() => void`        | `undefined` | Callback when spotlight hides                                    |
+| `onShow`               | `() => void`        | `undefined` | Callback when spotlight opens                                                                                                                                                          |
+| `onHide`               | `() => void`        | `undefined` | Callback when spotlight hides                                                                                                                                                          |
 
 **Registry functions:**
 
@@ -1600,20 +1593,20 @@ Multi-step onboarding tour built on the spotlight primitive. Define steps centra
 
 **`createTour(options)`**
 
-| Option            | Type                          | Default   | Description                                          |
-| ----------------- | ----------------------------- | --------- | ---------------------------------------------------- |
-| `steps`           | `TourStepDef[]`               | required  | Tour step definitions                                |
-| `waitForElement`  | `number`                      | `500`     | Max wait (ms) for step element to appear             |
-| `labels`          | `TourLabels`                  | defaults  | Default button labels (Next, Back, Skip, Finish)     |
-| `shell`           | `Snippet<[TourShellContext]>` | —         | Custom shell snippet replacing default UI            |
-| `closeOnEscape`   | `boolean`                     | `true`    | Press Escape to skip                                 |
-| `confirmSkip`     | `() => boolean \| Promise<boolean>` | —  | Guard before skipping (return `false` to cancel)     |
-| `storageKey`      | `string`                      | —         | Persist tour completion (skips on re-run)            |
-| `storage`         | `"local" \| "session"`        | `"local"` | Storage backend for persistence                      |
-| `onStart`         | `() => void`                  | —         | Called when tour starts                              |
-| `onEnd`           | `() => void`                  | —         | Called when tour completes                           |
-| `onSkip`          | `() => void`                  | —         | Called when tour is skipped                          |
-| `onStepChange`    | `(step, index) => void`       | —         | Called on every step change                          |
+| Option           | Type                                | Default   | Description                                      |
+| ---------------- | ----------------------------------- | --------- | ------------------------------------------------ |
+| `steps`          | `TourStepDef[]`                     | required  | Tour step definitions                            |
+| `waitForElement` | `number`                            | `500`     | Max wait (ms) for step element to appear         |
+| `labels`         | `TourLabels`                        | defaults  | Default button labels (Next, Back, Skip, Finish) |
+| `shell`          | `Snippet<[TourShellContext]>`       | —         | Custom shell snippet replacing default UI        |
+| `closeOnEscape`  | `boolean`                           | `true`    | Press Escape to skip                             |
+| `confirmSkip`    | `() => boolean \| Promise<boolean>` | —         | Guard before skipping (return `false` to cancel) |
+| `storageKey`     | `string`                            | —         | Persist tour completion (skips on re-run)        |
+| `storage`        | `"local" \| "session"`              | `"local"` | Storage backend for persistence                  |
+| `onStart`        | `() => void`                        | —         | Called when tour starts                          |
+| `onEnd`          | `() => void`                        | —         | Called when tour completes                       |
+| `onSkip`         | `() => void`                        | —         | Called when tour is skipped                      |
+| `onStepChange`   | `(step, index) => void`             | —         | Called on every step change                      |
 
 **Returns:** `{ start(), stop(), next(), prev(), skip(), reset(), reposition(), active, currentStep, currentIndex }`
 
@@ -1621,17 +1614,17 @@ Multi-step onboarding tour built on the spotlight primitive. Define steps centra
 
 **`TourStepDef`:**
 
-| Field         | Type                | Description                               |
-| ------------- | ------------------- | ----------------------------------------- |
-| `id`          | `string`            | Unique ID (must match `use:tourStep`)     |
-| `title`       | `string`            | Step title                                |
-| `content`     | `THC`               | Step description (string/html/component)  |
-| `position`    | `SpotlightPosition` | Annotation placement                      |
-| `padding`     | `number`            | Cutout padding (px)                       |
-| `borderRadius`| `number`            | Cutout border radius (px)                 |
-| `onEnter`     | `() => void`        | Called when entering step                  |
-| `onLeave`     | `() => void`        | Called when leaving step                   |
-| `selector`    | `string`            | CSS selector to find the target element (alternative to `use:tourStep`) |
+| Field          | Type                | Description                                                             |
+| -------------- | ------------------- | ----------------------------------------------------------------------- |
+| `id`           | `string`            | Unique ID (must match `use:tourStep`)                                   |
+| `title`        | `string`            | Step title                                                              |
+| `content`      | `THC`               | Step description (string/html/component)                                |
+| `position`     | `SpotlightPosition` | Annotation placement                                                    |
+| `padding`      | `number`            | Cutout padding (px)                                                     |
+| `borderRadius` | `number`            | Cutout border radius (px)                                               |
+| `onEnter`      | `() => void`        | Called when entering step                                               |
+| `onLeave`      | `() => void`        | Called when leaving step                                                |
+| `selector`     | `string`            | CSS selector to find the target element (alternative to `use:tourStep`) |
 
 **`tourStep` action:** `use:tourStep={[tour, stepId]}`
 
@@ -1657,9 +1650,6 @@ Multi-step onboarding tour built on the spotlight primitive. Define steps centra
 **Selector-based targeting:** Steps can target elements by CSS selector instead of `use:tourStep`. Useful when the target lives inside a reusable component that shouldn't know about the tour:
 
 ```svelte
-<!-- ReusableComponent.svelte — no tour knowledge -->
-<button data-tour-id="download">Download</button>
-
 <!-- Tour config -->
 <script>
 	const tour = createTour({
@@ -1673,6 +1663,9 @@ Multi-step onboarding tour built on the spotlight primitive. Define steps centra
 		],
 	});
 </script>
+
+<!-- ReusableComponent.svelte — no tour knowledge -->
+<button data-tour-id="download">Download</button>
 ```
 
 When a step has `selector`, the tour uses `document.querySelector(selector)` to find the target element. If the element isn't in the DOM yet, the tour polls periodically until `waitForElement` ms elapse (same timeout as `use:tourStep`). Steps without `selector` continue to use `use:tourStep` as before — both mechanisms coexist freely.

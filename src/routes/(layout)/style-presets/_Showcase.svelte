@@ -171,7 +171,7 @@
 						{
 							title: "Are you sure?",
 							content: "This action cannot be undone.",
-						},
+						}
 					)}
 			>
 				Confirm Dialog
@@ -184,7 +184,9 @@
 		<h3 class="text-lg font-semibold mb-4">Dropdown Menu</h3>
 		<DropdownMenu
 			items={dropdownItems}
-			onSelect={(item) => { notifications.info(`Selected: ${item.id}`); }}
+			onSelect={(item) => {
+				notifications.info(`Selected: ${item.id}`);
+			}}
 		>
 			Actions
 		</DropdownMenu>
@@ -204,7 +206,12 @@
 		<h3 class="text-lg font-semibold mb-4">Inputs</h3>
 		<div class="max-w-sm space-y-4">
 			<FieldInput label="Name" placeholder="Enter your name" bind:value={name} />
-			<FieldInput label="Email" type="email" placeholder="you@example.com" bind:value={email} />
+			<FieldInput
+				label="Email"
+				type="email"
+				placeholder="you@example.com"
+				bind:value={email}
+			/>
 			<FieldCheckbox label="I agree to the terms" bind:checked={agreed} />
 		</div>
 	</section>
@@ -217,23 +224,25 @@
 				<AccordionItem>
 					{#snippet trigger()}What are structural tokens?{/snippet}
 					<p class="text-sm">
-						Structural tokens are shared CSS custom properties that control cross-component
-						visual properties like border-radius, shadows, border-width, and transitions.
+						Structural tokens are shared CSS custom properties that control
+						cross-component visual properties like border-radius, shadows, border-width,
+						and transitions.
 					</p>
 				</AccordionItem>
 				<AccordionItem>
 					{#snippet trigger()}How do I customize them?{/snippet}
 					<p class="text-sm">
-						Override the tokens in your app's CSS: <code>:root {'{'} --stuic-radius: 0; {'}'}</code>.
-						All components that reference these tokens will update automatically.
+						Override the tokens in your app's CSS: <code
+							>:root {"{"} --stuic-radius: 0; {"}"}</code
+						>. All components that reference these tokens will update automatically.
 					</p>
 				</AccordionItem>
 				<AccordionItem>
 					{#snippet trigger()}Can I still override per component?{/snippet}
 					<p class="text-sm">
-						Yes. Per-component tokens like <code>--stuic-button-radius</code> take precedence
-						over the shared <code>--stuic-radius</code>. The shared tokens are defaults,
-						not constraints.
+						Yes. Per-component tokens like <code>--stuic-button-radius</code> take
+						precedence over the shared <code>--stuic-radius</code>. The shared tokens are
+						defaults, not constraints.
 					</p>
 				</AccordionItem>
 			</Accordion>

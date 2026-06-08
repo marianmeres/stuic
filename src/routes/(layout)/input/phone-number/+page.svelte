@@ -150,9 +150,8 @@
 	<section class="space-y-4">
 		<h2 class="text-xl font-semibold">Required with validation</h2>
 		<p class="text-sm opacity-60">
-			Uses <code>use:onSubmitValidityCheck</code> so STUIC's validation runs before
-			submit — needed because the underlying hidden input is barred from native
-			constraint validation.
+			Uses <code>use:onSubmitValidityCheck</code> so STUIC's validation runs before submit —
+			needed because the underlying hidden input is barred from native constraint validation.
 		</p>
 		<form bind:this={requiredForm} use:onSubmitValidityCheck class="space-y-4">
 			<FieldPhoneNumber
@@ -249,8 +248,8 @@
 	<section class="space-y-4">
 		<h2 class="text-xl font-semibold">Imperative validate() API</h2>
 		<p class="text-sm opacity-70">
-			Click <strong>Validate now</strong> without typing anything — the inline error
-			renders even though the field was never focused.
+			Click <strong>Validate now</strong> without typing anything — the inline error renders
+			even though the field was never focused.
 		</p>
 		<FieldPhoneNumber
 			bind:this={imperativeField}
@@ -277,8 +276,7 @@
 			</button>
 		</div>
 		{#if lastResult}
-			<pre
-				class="text-xs p-3 rounded bg-black/5 overflow-auto">{JSON.stringify(
+			<pre class="text-xs p-3 rounded bg-black/5 overflow-auto">{JSON.stringify(
 					{ valid: lastResult.valid, message: lastResult.message },
 					null,
 					2

@@ -36,39 +36,39 @@ The form owns:
 
 ## Props
 
-| Prop                    | Type                                       | Default  | Description                                              |
-| ----------------------- | ------------------------------------------ | -------- | -------------------------------------------------------- |
-| `email`                 | `string`                                   | required | Email address shown in the subhead                       |
-| `onSubmit`              | `(code: string) => void`                   | required | Called with the entered code (auto on complete + manual) |
-| `onResend`              | `() => Promise<void> \| void`              | —        | When set, renders a resend control                       |
-| `resendCooldownSeconds` | `number`                                   | `30`     | Cooldown after a successful resend                       |
-| `isSubmitting`          | `boolean`                                  | `false`  | Disables submit + OtpInput                               |
-| `error`                 | `string`                                   | —        | General error (renders alert + applies error styling)    |
-| `attemptsRemaining`     | `number`                                   | —        | Inline hint, e.g. "3 attempts remaining"                 |
-| `codeLength`            | `number`                                   | `6`      | Forwarded to OtpInput                                    |
-| `otpInputProps`         | `Partial<OtpInputProps>`                   | —        | Pass-through props for the inner OtpInput                |
-| `notifications`         | `NotificationsStack`                       | —        | Route errors to notification system                      |
-| `submitButton`          | `Snippet`                                  | —        | Override submit section                                  |
-| `footer`                | `Snippet`                                  | —        | Content below the resend control                         |
-| `heading`               | `string \| false`                          | —        | Override heading text, or `false` to suppress entirely   |
-| `t`                     | `TranslateFn`                              | built-in | Translation function                                     |
-| `unstyled`              | `boolean`                                  | `false`  | Skip default styling                                     |
-| `class`                 | `string`                                   | —        | Additional CSS classes on the form root                  |
-| `el`                    | `HTMLFormElement`                          | —        | Bindable form element                                    |
+| Prop                    | Type                          | Default  | Description                                              |
+| ----------------------- | ----------------------------- | -------- | -------------------------------------------------------- |
+| `email`                 | `string`                      | required | Email address shown in the subhead                       |
+| `onSubmit`              | `(code: string) => void`      | required | Called with the entered code (auto on complete + manual) |
+| `onResend`              | `() => Promise<void> \| void` | —        | When set, renders a resend control                       |
+| `resendCooldownSeconds` | `number`                      | `30`     | Cooldown after a successful resend                       |
+| `isSubmitting`          | `boolean`                     | `false`  | Disables submit + OtpInput                               |
+| `error`                 | `string`                      | —        | General error (renders alert + applies error styling)    |
+| `attemptsRemaining`     | `number`                      | —        | Inline hint, e.g. "3 attempts remaining"                 |
+| `codeLength`            | `number`                      | `6`      | Forwarded to OtpInput                                    |
+| `otpInputProps`         | `Partial<OtpInputProps>`      | —        | Pass-through props for the inner OtpInput                |
+| `notifications`         | `NotificationsStack`          | —        | Route errors to notification system                      |
+| `submitButton`          | `Snippet`                     | —        | Override submit section                                  |
+| `footer`                | `Snippet`                     | —        | Content below the resend control                         |
+| `heading`               | `string \| false`             | —        | Override heading text, or `false` to suppress entirely   |
+| `t`                     | `TranslateFn`                 | built-in | Translation function                                     |
+| `unstyled`              | `boolean`                     | `false`  | Skip default styling                                     |
+| `class`                 | `string`                      | —        | Additional CSS classes on the form root                  |
+| `el`                    | `HTMLFormElement`             | —        | Bindable form element                                    |
 
 ## i18n keys
 
-| Key                                       | Default                                    |
-| ----------------------------------------- | ------------------------------------------ |
-| `email_verify_form.heading`               | `Check your email`                         |
-| `email_verify_form.subheading`            | `We sent a 6-digit code to {email}`        |
-| `email_verify_form.submit`                | `Verify`                                   |
-| `email_verify_form.submitting`            | `Verifying...`                             |
-| `email_verify_form.resend_prompt`         | `Didn't receive it?`                       |
-| `email_verify_form.resend`                | `Resend code`                              |
-| `email_verify_form.resend_cooldown`       | `Resend available in {seconds}s`           |
-| `email_verify_form.resent`                | `New code sent`                            |
-| `email_verify_form.attempts_remaining`    | `{count} attempts remaining`               |
+| Key                                    | Default                             |
+| -------------------------------------- | ----------------------------------- |
+| `email_verify_form.heading`            | `Check your email`                  |
+| `email_verify_form.subheading`         | `We sent a 6-digit code to {email}` |
+| `email_verify_form.submit`             | `Verify`                            |
+| `email_verify_form.submitting`         | `Verifying...`                      |
+| `email_verify_form.resend_prompt`      | `Didn't receive it?`                |
+| `email_verify_form.resend`             | `Resend code`                       |
+| `email_verify_form.resend_cooldown`    | `Resend available in {seconds}s`    |
+| `email_verify_form.resent`             | `New code sent`                     |
+| `email_verify_form.attempts_remaining` | `{count} attempts remaining`        |
 
 ## CSS Tokens
 

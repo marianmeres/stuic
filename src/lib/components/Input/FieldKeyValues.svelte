@@ -445,13 +445,9 @@
 									<span
 										class={twMerge(
 											"pointer-events-none absolute top-1.5 right-1.5",
-											st === "valid"
-												? "opacity-40"
-												: "text-amber-500 opacity-80"
+											st === "valid" ? "opacity-40" : "text-amber-500 opacity-80"
 										)}
-										title={st === "valid"
-											? t("json_detected")
-											: t("invalid_json_syntax")}
+										title={st === "valid" ? t("json_detected") : t("invalid_json_syntax")}
 										aria-hidden="true"
 									>
 										{@html st === "valid"

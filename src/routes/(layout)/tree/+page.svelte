@@ -64,15 +64,35 @@
 									id: "src/lib/components/Tree",
 									value: { name: "Tree", type: "folder" },
 									children: [
-										{ id: "src/lib/components/Tree/Tree.svelte", value: { name: "Tree.svelte", type: "file" }, children: [] },
-										{ id: "src/lib/components/Tree/index.css", value: { name: "index.css", type: "file" }, children: [] },
-										{ id: "src/lib/components/Tree/index.ts", value: { name: "index.ts", type: "file" }, children: [] },
+										{
+											id: "src/lib/components/Tree/Tree.svelte",
+											value: { name: "Tree.svelte", type: "file" },
+											children: [],
+										},
+										{
+											id: "src/lib/components/Tree/index.css",
+											value: { name: "index.css", type: "file" },
+											children: [],
+										},
+										{
+											id: "src/lib/components/Tree/index.ts",
+											value: { name: "index.ts", type: "file" },
+											children: [],
+										},
 									],
 								},
 							],
 						},
-						{ id: "src/lib/index.ts", value: { name: "index.ts", type: "file" }, children: [] },
-						{ id: "src/lib/index.css", value: { name: "index.css", type: "file" }, children: [] },
+						{
+							id: "src/lib/index.ts",
+							value: { name: "index.ts", type: "file" },
+							children: [],
+						},
+						{
+							id: "src/lib/index.css",
+							value: { name: "index.css", type: "file" },
+							children: [],
+						},
 					],
 				},
 				{ id: "src/app.html", value: { name: "app.html", type: "file" }, children: [] },
@@ -118,10 +138,7 @@
 	}
 
 	// Remove a node by id from the tree, returns the removed node or null
-	function removeNode<V>(
-		items: TreeNodeDTO<V>[],
-		id: string
-	): TreeNodeDTO<V> | null {
+	function removeNode<V>(items: TreeNodeDTO<V>[], id: string): TreeNodeDTO<V> | null {
 		for (let i = 0; i < items.length; i++) {
 			if (items[i].id === id) {
 				return items.splice(i, 1)[0];
@@ -166,12 +183,9 @@
 		// This triggers when dropping directly "inside" a group, OR when dropping
 		// before/after an item that is already nested inside a group.
 		if (source.id === "bread") {
-			const wouldNest =
-				position === "inside" || !isTopLevel(dndItems, target.id);
+			const wouldNest = position === "inside" || !isTopLevel(dndItems, target.id);
 			if (wouldNest) {
-				throw new Error(
-					`"${source.value}" cannot be placed inside a group`
-				);
+				throw new Error(`"${source.value}" cannot be placed inside a group`);
 			}
 		}
 
@@ -242,7 +256,9 @@
 
 				{#snippet renderIcon(item, _depth, isExpanded)}
 					{#if item.children.length > 0}
-						{@html isExpanded ? iconLucideFolderOpen({ size: 15 }) : iconLucideFolder({ size: 15 })}
+						{@html isExpanded
+							? iconLucideFolderOpen({ size: 15 })
+							: iconLucideFolder({ size: 15 })}
 					{:else}
 						{@html iconBsFileEarmark({ size: 14 })}
 					{/if}

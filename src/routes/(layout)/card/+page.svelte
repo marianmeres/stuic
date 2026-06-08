@@ -83,7 +83,9 @@
 	<!-- Horizontal Variant -->
 	<section>
 		<h2 class="text-xl font-semibold mb-2">Horizontal Variant</h2>
-		<p class="text-sm text-neutral-500 mb-4">Image on the side, content flows horizontally.</p>
+		<p class="text-sm text-neutral-500 mb-4">
+			Image on the side, content flows horizontally.
+		</p>
 		<div class="max-w-2xl">
 			<Card
 				variant="horizontal"
@@ -128,7 +130,8 @@
 			</Card>
 		</div>
 		<p class="text-sm text-neutral-500 mt-4">
-			Same card with auto-switch disabled (<code>horizontalThreshold=&#123;0&#125;</code>):
+			Same card with auto-switch disabled (<code>horizontalThreshold=&#123;0&#125;</code
+			>):
 		</p>
 		<div class="max-w-xs mt-2">
 			<Card
@@ -155,9 +158,7 @@
 				description="Only a few pieces remaining. Get yours before they're gone."
 			>
 				{#snippet renderBadge()}
-					<span
-						class="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded"
-					>
+					<span class="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">
 						SALE
 					</span>
 				{/snippet}
@@ -180,11 +181,7 @@
 			Cards fill their parent container. Use CSS grid to control layout.
 		</p>
 		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-			{#each [
-				{ seed: "grid1", title: "Design", desc: "Create beautiful interfaces" },
-				{ seed: "grid2", title: "Develop", desc: "Build robust applications" },
-				{ seed: "grid3", title: "Deploy", desc: "Ship with confidence" },
-			] as item}
+			{#each [{ seed: "grid1", title: "Design", desc: "Create beautiful interfaces" }, { seed: "grid2", title: "Develop", desc: "Build robust applications" }, { seed: "grid3", title: "Deploy", desc: "Ship with confidence" }] as item}
 				<Card
 					image="https://picsum.photos/seed/{item.seed}/600/400"
 					title={item.title}
@@ -276,9 +273,7 @@
 	<!-- Custom Styling via CSS Variables -->
 	<section>
 		<h2 class="text-xl font-semibold mb-2">Custom Styling via CSS Variables</h2>
-		<p class="text-sm text-neutral-500 mb-4">
-			Customized using CSS custom properties.
-		</p>
+		<p class="text-sm text-neutral-500 mb-4">Customized using CSS custom properties.</p>
 		<div
 			class="max-w-sm"
 			style="
@@ -318,7 +313,9 @@
 	<!-- Unstyled -->
 	<section>
 		<h2 class="text-xl font-semibold mb-2">Unstyled</h2>
-		<p class="text-sm text-neutral-500 mb-4">Using unstyled mode with custom Tailwind classes.</p>
+		<p class="text-sm text-neutral-500 mb-4">
+			Using unstyled mode with custom Tailwind classes.
+		</p>
 		<div class="max-w-sm">
 			<Card
 				unstyled

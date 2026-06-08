@@ -42,7 +42,8 @@
 	   ============================================================================ */
 
 	.stuic-modal-dialog[open]::backdrop {
-		animation: stuic-modal-dialog-fadeIn var(--stuic-modal-dialog-transition, var(--stuic-transition)) ease-out;
+		animation: stuic-modal-dialog-fadeIn
+			var(--stuic-modal-dialog-transition, var(--stuic-transition)) ease-out;
 	}
 
 	@keyframes stuic-modal-dialog-fadeIn {

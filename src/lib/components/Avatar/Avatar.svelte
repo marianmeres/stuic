@@ -180,9 +180,7 @@
 	);
 
 	// When padded: colors go on inner element; otherwise on outer
-	let outerStyle = $derived(
-		padding ? `--stuic-avatar-padding: ${padding}` : colorStyle
-	);
+	let outerStyle = $derived(padding ? `--stuic-avatar-padding: ${padding}` : colorStyle);
 	let innerStyle = $derived(padding ? colorStyle : undefined);
 
 	// Build class string - base class for CSS targeting, allow user overrides via classProp

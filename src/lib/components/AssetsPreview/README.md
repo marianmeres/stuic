@@ -4,13 +4,13 @@ A modal-based asset preview component for displaying images and files. Supports 
 
 ## Props
 
-| Prop            | Type                         | Default  | Description                   |
-| --------------- | ---------------------------- | -------- | ----------------------------- |
-| `assets`        | `string[] \| AssetPreview[]` | -        | Array of assets to preview    |
-| `classControls` | `string`                     | -        | CSS for control buttons       |
-| `t`             | `TranslateFn`                | built-in | Translation function for i18n |
-| `onDelete`      | `(asset, index) => void`     | -        | Optional delete handler       |
-| `prevNextBottom`| `boolean`                      | `false`  | Render prev/next arrows at bottom |
+| Prop             | Type                         | Default  | Description                       |
+| ---------------- | ---------------------------- | -------- | --------------------------------- |
+| `assets`         | `string[] \| AssetPreview[]` | -        | Array of assets to preview        |
+| `classControls`  | `string`                     | -        | CSS for control buttons           |
+| `t`              | `TranslateFn`                | built-in | Translation function for i18n     |
+| `onDelete`       | `(asset, index) => void`     | -        | Optional delete handler           |
+| `prevNextBottom` | `boolean`                    | `false`  | Render prev/next arrows at bottom |
 
 ## Types
 

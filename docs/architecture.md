@@ -124,13 +124,13 @@ Props → Component → Data Attributes → CSS Selectors
 
 ## Key Files
 
-| File                             | Purpose                                                                     |
-| -------------------------------- | --------------------------------------------------------------------------- |
-| `src/lib/index.css`              | CSS entry point (import this)                                               |
-| `src/lib/index.ts`               | JS entry point (barrel export)                                              |
-| `@marianmeres/design-tokens/css/stone.css` | Default theme (42 themes available)                               |
-| `src/lib/utils/tw-merge.ts`      | Tailwind class merging                                                      |
-| `src/lib/utils/design-tokens.ts` | Theme types (`ThemeSchema`, `ColorPair`, etc.) and CSS generation functions |
+| File                                       | Purpose                                                                     |
+| ------------------------------------------ | --------------------------------------------------------------------------- |
+| `src/lib/index.css`                        | CSS entry point (import this)                                               |
+| `src/lib/index.ts`                         | JS entry point (barrel export)                                              |
+| `@marianmeres/design-tokens/css/stone.css` | Default theme (42 themes available)                                         |
+| `src/lib/utils/tw-merge.ts`                | Tailwind class merging                                                      |
+| `src/lib/utils/design-tokens.ts`           | Theme types (`ThemeSchema`, `ColorPair`, etc.) and CSS generation functions |
 
 ---
 

@@ -6,10 +6,7 @@ import { resolveUrl } from "../../../utils/resolve-url.js";
  * Convert BookPage[] to AssetPreview[] for use with AssetsPreviewInline.
  * Areas are directly compatible (AssetArea extends BookPageArea).
  */
-export function bookPagesToAssets(
-	pages: BookPage[],
-	baseUrl?: string
-): AssetPreview[] {
+export function bookPagesToAssets(pages: BookPage[], baseUrl?: string): AssetPreview[] {
 	return pages.map((page) => {
 		const src = resolveUrl(page.src, page.baseUrl || baseUrl);
 		return {

@@ -8,7 +8,7 @@ Notes for coding agents (and humans) maintaining a project that consumes `@maria
 
 1. Adopt new opt-in features (`unstyled` now on DropdownMenu / CronInput / CommandMenu; new Tree/DataTable snippets; cart/checkout helpers).
 2. Take advantage of new a11y wiring (the library now emits `aria-current`, `role="combobox"`, `aria-live` announcements, etc. — your CSS may want to react).
-3. Spot-check the few subtle behavior changes listed under *Subtle behavior deltas* below.
+3. Spot-check the few subtle behavior changes listed under _Subtle behavior deltas_ below.
 
 **Recommended post-upgrade check:** run the Browser Verification Checklist at the end of this doc.
 
@@ -36,26 +36,30 @@ Newly gained in this release: **DropdownMenu**, **CronInput**, **CommandMenu** (
 
 ### DropdownMenu
 
-| Prop | Type | Notes |
-| --- | --- | --- |
-| `unstyled` | `boolean` | Strips base classes; keeps functional layout. |
-| `el` | `HTMLDivElement` (bindable) | Wrapper element ref. |
+| Prop       | Type                        | Notes                                         |
+| ---------- | --------------------------- | --------------------------------------------- |
+| `unstyled` | `boolean`                   | Strips base classes; keeps functional layout. |
+| `el`       | `HTMLDivElement` (bindable) | Wrapper element ref.                          |
 
 ### DataTable
 
-| Prop | Type | Notes |
-| --- | --- | --- |
-| `row` | `Snippet<[{ row, columns, rowIndex, isSelected }]>` | Desktop-only — replaces the entire `<tr>`. Parallel to the existing `mobileRow`. |
-| `selectDisabledBy` | `(row, index) => boolean` | Per-row selection disable. Respected by "select all". |
+| Prop               | Type                                                | Notes                                                                            |
+| ------------------ | --------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `row`              | `Snippet<[{ row, columns, rowIndex, isSelected }]>` | Desktop-only — replaces the entire `<tr>`. Parallel to the existing `mobileRow`. |
+| `selectDisabledBy` | `(row, index) => boolean`                           | Per-row selection disable. Respected by "select all".                            |
 
 The `cell` snippet gained an extra parameter:
 
 ```svelte
 <!-- before -->
-{#snippet cell({ column, row, value, rowIndex })} ... {/snippet}
+{#snippet cell({ column, row, value, rowIndex })}
+	...
+{/snippet}
 
 <!-- after (both shapes compile; old callers ignore the new param) -->
-{#snippet cell({ column, row, value, rowIndex, variant })} ... {/snippet}
+{#snippet cell({ column, row, value, rowIndex, variant })}
+	...
+{/snippet}
 ```
 
 `variant` is `"desktop" | "mobile"` — lets a single snippet adapt to the layout.
@@ -66,9 +70,9 @@ Also dropped: the **dead `children?: Snippet` prop** that was declared but never
 
 First README in this release. Also:
 
-| Prop | Type | Notes |
-| --- | --- | --- |
-| `t` | `TranslateFn` | Translation function (used only for a11y move-announcements). |
+| Prop           | Type               | Notes                                                                                |
+| -------------- | ------------------ | ------------------------------------------------------------------------------------ |
+| `t`            | `TranslateFn`      | Translation function (used only for a11y move-announcements).                        |
 | `getNodeLabel` | `(item) => string` | How to stringify a node for the a11y announcement. Defaults to `String(item.value)`. |
 
 On a successful `onMove`, the component now announces the move via a visually-hidden `aria-live="polite"` region. Translation keys: `move_before`, `move_after`, `move_inside` with `{source}` and `{target}` placeholders.
@@ -81,15 +85,15 @@ Every `Field*` component that uses `InputWrap` now accepts the full set of **9 w
 import type { InputWrapClassProps } from "@marianmeres/stuic";
 
 interface InputWrapClassProps {
-  classLabel?: string;
-  classLabelBox?: string;
-  classInputBox?: string;
-  classInputBoxWrap?: string;
-  classInputBoxWrapInvalid?: string;
-  classDescBox?: string;
-  classDescBoxToggle?: string;   // newly forwarded
-  classBelowBox?: string;
-  classValidationBox?: string;   // newly forwarded
+	classLabel?: string;
+	classLabelBox?: string;
+	classInputBox?: string;
+	classInputBoxWrap?: string;
+	classInputBoxWrapInvalid?: string;
+	classDescBox?: string;
+	classDescBoxToggle?: string; // newly forwarded
+	classBelowBox?: string;
+	classValidationBox?: string; // newly forwarded
 }
 ```
 
@@ -112,7 +116,7 @@ First README for the Checkout family (explains the kit-of-parts composition mode
 New translation key:
 
 ```ts
-remove_item_aria: "Remove {name}"  // used as aria-label on the remove button
+remove_item_aria: "Remove {name}"; // used as aria-label on the remove button
 ```
 
 Override via your `t` prop to localize. README now also explains the `summary` variant and the caller's responsibility to keep `lineTotal` in sync after quantity changes.
@@ -145,7 +149,7 @@ Internally: programmatic scrolling now respects `prefers-reduced-motion: reduce`
 <Nav groups={[{ title: "…", items: […], defaultExpanded: false }]} />
 ```
 
-Also added: `aria-current="page"` on active anchor items, `:root.dark` override for the hover background. See *Subtle behavior deltas* below.
+Also added: `aria-current="page"` on active anchor items, `:root.dark` override for the hover background. See _Subtle behavior deltas_ below.
 
 ---
 
@@ -163,7 +167,7 @@ The hover background was previously `rgb(0 0 0 / 0.1)` with no dark-mode overrid
 
 ```css
 :root.dark {
-    --stuic-nav-item-bg-hover: rgb(255 255 255 / 0.08);
+	--stuic-nav-item-bg-hover: rgb(255 255 255 / 0.08);
 }
 ```
 
@@ -204,7 +208,7 @@ Also, `observeExists` now observes attribute mutations (not just `childList`). S
 
 ### CommandMenu `isFetching`
 
-Previously flickered back to `false` whenever any in-flight request resolved, including stale ones. Now only the latest request toggles it off. The spinner stays visible as long as *any* fresh request is still in flight.
+Previously flickered back to `false` whenever any in-flight request resolved, including stale ones. Now only the latest request toggles it off. The spinner stays visible as long as _any_ fresh request is still in flight.
 
 ### Tree `data-tree-id` query
 
@@ -263,7 +267,7 @@ When the user asks you to upgrade this library:
 2. **Grep the consuming project for these strings** and confirm they still match your intent:
    - `defaultCollapsed` — if found on a `NavGroup`, this never worked; change to `defaultExpanded` and invert your boolean.
    - `classInputBoxWrap="..."` on a `FieldCheckbox` — `FieldCheckbox` uses a bespoke layout and doesn't forward this prop (it never did). No change needed.
-   - `"bottom-span-left"` as a DropdownMenu position default — explicit values still work; it was only the *default* that was documented wrong. No change needed if you were passing it explicitly.
+   - `"bottom-span-left"` as a DropdownMenu position default — explicit values still work; it was only the _default_ that was documented wrong. No change needed if you were passing it explicitly.
    - `stuic-checkbox.*flex.*items-center.*gap-2.*mb-1` (as a CSS selector combo in the consumer's own CSS) — re-target to `.stuic-data-table-card-checkbox`.
 3. **If the consuming project has its own dark-mode CSS for Nav**, scan for overrides of `--stuic-nav-item-bg-hover` and confirm your rule still makes sense alongside the library's new `:root.dark` override.
 4. **If the project exposes an `esm-env` import** in its own source, add `esm-env` to its own `package.json` — it's no longer a direct dep of STUIC.

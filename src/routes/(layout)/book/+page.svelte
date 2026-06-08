@@ -54,11 +54,41 @@
 
 	// Broken image example — mix of valid and broken URLs
 	const brokenPages: BookPage[] = [
-		{ id: "b0", src: "https://picsum.photos/seed/ok-cover/420/600", title: "Cover (OK)", width: 420, height: 600 },
-		{ id: "b1", src: "https://broken.invalid/missing.jpg", title: "Page 1 (broken)", width: 420, height: 600 },
-		{ id: "b2", src: "https://picsum.photos/seed/ok-page2/420/600", title: "Page 2 (OK)", width: 420, height: 600 },
-		{ id: "b3", src: "https://broken.invalid/404.png", title: "Page 3 (broken)", width: 420, height: 600 },
-		{ id: "b4", src: "https://picsum.photos/seed/ok-back/420/600", title: "Back Cover (OK)", width: 420, height: 600 },
+		{
+			id: "b0",
+			src: "https://picsum.photos/seed/ok-cover/420/600",
+			title: "Cover (OK)",
+			width: 420,
+			height: 600,
+		},
+		{
+			id: "b1",
+			src: "https://broken.invalid/missing.jpg",
+			title: "Page 1 (broken)",
+			width: 420,
+			height: 600,
+		},
+		{
+			id: "b2",
+			src: "https://picsum.photos/seed/ok-page2/420/600",
+			title: "Page 2 (OK)",
+			width: 420,
+			height: 600,
+		},
+		{
+			id: "b3",
+			src: "https://broken.invalid/404.png",
+			title: "Page 3 (broken)",
+			width: 420,
+			height: 600,
+		},
+		{
+			id: "b4",
+			src: "https://picsum.photos/seed/ok-back/420/600",
+			title: "Back Cover (OK)",
+			width: 420,
+			height: 600,
+		},
 	];
 </script>
 
@@ -263,8 +293,8 @@
 	<section>
 		<h2 class="text-xl font-semibold mb-2">Clickable Areas</h2>
 		<p class="text-sm text-neutral-500 mb-4">
-			Pages with SVG overlay areas (e.g. product hotspots). Hover to see highlight, click to
-			trigger <code>onAreaClick</code>. Open a spread to see the areas.
+			Pages with SVG overlay areas (e.g. product hotspots). Hover to see highlight, click
+			to trigger <code>onAreaClick</code>. Open a spread to see the areas.
 		</p>
 
 		<div class="flex flex-col items-center gap-6">

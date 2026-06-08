@@ -354,7 +354,8 @@
 	{value}
 	bind:this={hiddenInputEl}
 	use:validateAction={() => {
-		const customOpts = typeof validateProp === "object" && validateProp ? validateProp : {};
+		const customOpts =
+			typeof validateProp === "object" && validateProp ? validateProp : {};
 		const userValidator = customOpts.customValidator;
 		return {
 			enabled: validateProp !== false,

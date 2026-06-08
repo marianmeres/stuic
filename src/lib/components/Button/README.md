@@ -4,24 +4,24 @@ A flexible button component with semantic intents, visual variants, sizes, and o
 
 ## Props
 
-| Prop         | Type                                                               | Default   | Description                                       |
-| ------------ | ------------------------------------------------------------------ | --------- | ------------------------------------------------- |
-| `intent`     | `"primary" \| "accent" \| "destructive" \| "warning" \| "success"` | -         | Semantic color intent                             |
-| `variant`    | `"solid" \| "outline" \| "ghost" \| "soft" \| "link"`              | `"solid"` | Visual variant (how colors are applied)           |
-| `size`       | `"sm" \| "md" \| "lg" \| "xl"`                                     | `"md"`    | Button size                                       |
-| `muted`      | `boolean`                                                          | `false`   | Reduce emphasis (lower opacity)                   |
-| `raised`     | `boolean`                                                          | `false`   | 3D push effect                                    |
-| `unstyled`   | `boolean`                                                          | `false`   | Skip all default styling                          |
-| `href`       | `string`                                                           | -         | Render as anchor tag with this URL                |
-| `roleSwitch` | `boolean`                                                          | `false`   | Enable toggle/switch behavior                     |
-| `checked`    | `boolean`                                                          | `false`   | Toggle state when `roleSwitch` is true (bindable) |
-| `el`         | `HTMLElement`                                                      | -         | Element reference (bindable)                      |
-| `iconButton` | `boolean`                                                          | `false`   | Icon-only button (implies aspect1, adds CSS hook) |
-| `iconSwap`   | `[string \| Snippet, string \| Snippet]`                           | -         | Two icon states with swap animation (implies iconButton) |
-| `x`          | `boolean \| XProps`                                                | -         | Normalized "X" icon button shortcut (close/dismiss) |
-| `nav`        | `"prev" \| "next" \| ButtonNavProps`                               | -         | Normalized prev/next icon button shortcut (arrow by default; `x` wins on conflict) |
+| Prop         | Type                                                               | Default   | Description                                                                               |
+| ------------ | ------------------------------------------------------------------ | --------- | ----------------------------------------------------------------------------------------- |
+| `intent`     | `"primary" \| "accent" \| "destructive" \| "warning" \| "success"` | -         | Semantic color intent                                                                     |
+| `variant`    | `"solid" \| "outline" \| "ghost" \| "soft" \| "link"`              | `"solid"` | Visual variant (how colors are applied)                                                   |
+| `size`       | `"sm" \| "md" \| "lg" \| "xl"`                                     | `"md"`    | Button size                                                                               |
+| `muted`      | `boolean`                                                          | `false`   | Reduce emphasis (lower opacity)                                                           |
+| `raised`     | `boolean`                                                          | `false`   | 3D push effect                                                                            |
+| `unstyled`   | `boolean`                                                          | `false`   | Skip all default styling                                                                  |
+| `href`       | `string`                                                           | -         | Render as anchor tag with this URL                                                        |
+| `roleSwitch` | `boolean`                                                          | `false`   | Enable toggle/switch behavior                                                             |
+| `checked`    | `boolean`                                                          | `false`   | Toggle state when `roleSwitch` is true (bindable)                                         |
+| `el`         | `HTMLElement`                                                      | -         | Element reference (bindable)                                                              |
+| `iconButton` | `boolean`                                                          | `false`   | Icon-only button (implies aspect1, adds CSS hook)                                         |
+| `iconSwap`   | `[string \| Snippet, string \| Snippet]`                           | -         | Two icon states with swap animation (implies iconButton)                                  |
+| `x`          | `boolean \| XProps`                                                | -         | Normalized "X" icon button shortcut (close/dismiss)                                       |
+| `nav`        | `"prev" \| "next" \| ButtonNavProps`                               | -         | Normalized prev/next icon button shortcut (arrow by default; `x` wins on conflict)        |
 | `iconEdge`   | `"leading" \| "trailing"`                                          | -         | Trim icon-side padding to the y-padding (pill + edge-flush icon; pair with `roundedFull`) |
-| `class`      | `string`                                                           | -         | Additional CSS classes                            |
+| `class`      | `string`                                                           | -         | Additional CSS classes                                                                    |
 
 ## Snippet Props
 

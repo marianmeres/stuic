@@ -63,10 +63,9 @@
 	<section class="space-y-4">
 		<h2 class="text-xl font-semibold">Basic (with built-in validation)</h2>
 		<p class="text-sm opacity-60">
-			Uses <code>use:onSubmitValidityCheck</code> so the form runs every field's
-			validator before firing <code>submit_valid</code> — required for
-			<code>FieldCountry</code> because hidden inputs are barred from native
-			constraint validation.
+			Uses <code>use:onSubmitValidityCheck</code> so the form runs every field's validator
+			before firing <code>submit_valid</code> — required for
+			<code>FieldCountry</code> because hidden inputs are barred from native constraint validation.
 		</p>
 		<form bind:this={basicForm} use:onSubmitValidityCheck class="space-y-4">
 			<FieldCountry
@@ -129,8 +128,8 @@
 		<h2 class="text-xl font-semibold">Built-in locale (locale prop)</h2>
 		<p class="text-sm opacity-60">
 			<code>locale="sk"</code> resolves names via <code>@marianmeres/countries</code>'
-			bundled Slovak locale — no <code>countryNames</code> map required. The locale
-			chunk loads lazily, so names start in English and switch once it arrives.
+			bundled Slovak locale — no <code>countryNames</code> map required. The locale chunk loads
+			lazily, so names start in English and switch once it arrives.
 		</p>
 		<FieldCountry
 			bind:value={value5}
@@ -253,8 +252,8 @@
 	<section class="space-y-4">
 		<h2 class="text-xl font-semibold">Imperative validate() API</h2>
 		<p class="text-sm opacity-70">
-			Click <strong>Validate now</strong> without selecting anything — the inline
-			error renders even though the dropdown was never opened.
+			Click <strong>Validate now</strong> without selecting anything — the inline error renders
+			even though the dropdown was never opened.
 		</p>
 		<FieldCountry
 			bind:this={imperativeField}
@@ -280,8 +279,7 @@
 			</button>
 		</div>
 		{#if lastResult}
-			<pre
-				class="text-xs p-3 rounded bg-black/5 overflow-auto">{JSON.stringify(
+			<pre class="text-xs p-3 rounded bg-black/5 overflow-auto">{JSON.stringify(
 					{ valid: lastResult.valid, message: lastResult.message },
 					null,
 					2

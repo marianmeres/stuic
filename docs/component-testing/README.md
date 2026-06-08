@@ -18,14 +18,14 @@ resume execution from [`PROGRESS.md`](./PROGRESS.md).
 
 ## Documents
 
-| # | Doc | Scope | Headline |
-|---|-----|-------|----------|
-| 00 | [overview-and-roadmap](./00-overview-and-roadmap.md) | synthesis + roadmap | The stack is the right default; vitest 3→4 upgrade is the gating prerequisite. |
-| 01 | [framework-setup](./01-framework-setup.md) | infra | Upgrade vitest 4, add a `projects` split (node `server` + browser `client`), route by filename. |
-| 02 | [test-conventions](./02-test-conventions.md) | how-to | `render()` + locators + `expect.element`; events are props (spies); snippets via `createRawSnippet`. |
-| 03 | [component-coverage-roadmap](./03-component-coverage-roadmap.md) | what to cover | 74 components tiered; warm up on Button/Pill/Switch, one commit per component. |
-| 04 | [hard-cases-and-e2e](./04-hard-cases-and-e2e.md) | the hard 30 | Portals/focus-traps/anchor-positioning: one "hard proof" now; standalone Playwright E2E deferred. |
-| 05 | [ci](./05-ci.md) | automation | One ~30-line GitHub Actions workflow; install Chromium, run `pnpm test`. |
+| #   | Doc                                                              | Scope               | Headline                                                                                             |
+| --- | ---------------------------------------------------------------- | ------------------- | ---------------------------------------------------------------------------------------------------- |
+| 00  | [overview-and-roadmap](./00-overview-and-roadmap.md)             | synthesis + roadmap | The stack is the right default; vitest 3→4 upgrade is the gating prerequisite.                       |
+| 01  | [framework-setup](./01-framework-setup.md)                       | infra               | Upgrade vitest 4, add a `projects` split (node `server` + browser `client`), route by filename.      |
+| 02  | [test-conventions](./02-test-conventions.md)                     | how-to              | `render()` + locators + `expect.element`; events are props (spies); snippets via `createRawSnippet`. |
+| 03  | [component-coverage-roadmap](./03-component-coverage-roadmap.md) | what to cover       | 74 components tiered; warm up on Button/Pill/Switch, one commit per component.                       |
+| 04  | [hard-cases-and-e2e](./04-hard-cases-and-e2e.md)                 | the hard 30         | Portals/focus-traps/anchor-positioning: one "hard proof" now; standalone Playwright E2E deferred.    |
+| 05  | [ci](./05-ci.md)                                                 | automation          | One ~30-line GitHub Actions workflow; install Chromium, run `pnpm test`.                             |
 
 ## How it was produced
 

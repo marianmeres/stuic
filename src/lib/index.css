@@ -32,19 +32,23 @@ In practice:
    ============================================================================ */
 :root {
 	/* Radius: three tiers */
-	--stuic-radius: var(--radius-md);           /* elements: inputs, badges, list items */
-	--stuic-radius-button: var(--radius-md);    /* buttons: independent from general elements */
-	--stuic-radius-container: var(--radius-lg); /* containers: cards, modals, dropdowns, notifications */
+	--stuic-radius: var(--radius-md); /* elements: inputs, badges, list items */
+	--stuic-radius-button: var(
+		--radius-md
+	); /* buttons: independent from general elements */
+	--stuic-radius-container: var(
+		--radius-lg
+	); /* containers: cards, modals, dropdowns, notifications */
 
 	/* Shadows */
-	--stuic-shadow: var(--shadow-sm);           /* default resting shadow */
-	--stuic-shadow-hover: var(--shadow-md);     /* hover/elevated shadow */
-	--stuic-shadow-overlay: var(--shadow-lg);   /* overlays: dropdowns, notifications */
-	--stuic-shadow-dialog: var(--shadow-xl);    /* dialogs/modals */
+	--stuic-shadow: var(--shadow-sm); /* default resting shadow */
+	--stuic-shadow-hover: var(--shadow-md); /* hover/elevated shadow */
+	--stuic-shadow-overlay: var(--shadow-lg); /* overlays: dropdowns, notifications */
+	--stuic-shadow-dialog: var(--shadow-xl); /* dialogs/modals */
 
 	/* Border */
 	--stuic-border-width: 1px;
-	--stuic-border-width-button: 1px;    /* buttons: independent from general elements */
+	--stuic-border-width-button: 1px; /* buttons: independent from general elements */
 
 	/* Transition */
 	--stuic-transition: 150ms;

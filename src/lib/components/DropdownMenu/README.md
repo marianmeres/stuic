@@ -4,32 +4,32 @@ A feature-rich dropdown menu component with CSS Anchor Positioning (with fallbac
 
 ## Props
 
-| Prop                     | Type                   | Default              | Description                              |
-| ------------------------ | ---------------------- | -------------------- | ---------------------------------------- |
-| `items`                  | `DropdownMenuItem[]`   | -                    | Menu items to display                    |
-| `isOpen`                 | `boolean`              | `false`              | Controlled open state (bindable)         |
-| `position`               | `DropdownMenuPosition` | `"bottom-span-right"` | Popover position relative to trigger    |
-| `offset`                 | `string`               | `"0.25rem"`          | Offset from trigger element (CSS value)  |
-| `maxHeight`              | `string`               | `"300px"`            | Max height of dropdown                   |
-| `closeOnSelect`          | `boolean`              | `true`               | Close menu when action item is selected  |
-| `closeOnClickOutside`    | `boolean`              | `true`               | Close on click outside                   |
-| `closeOnEscape`          | `boolean`              | `true`               | Close on Escape key                      |
-| `forceFallback`          | `boolean`              | `false`              | Force fallback positioning (for testing) |
-| `search`                 | `boolean \| DropdownMenuSearchConfig` | -     | Enable search/filter input (see [Search](#search)) |
-| `unstyled`               | `boolean`              | `false`              | Opt out of stuic base classes            |
-| `class`                  | `string`               | -                    | Classes for wrapper element              |
-| `classTrigger`           | `string`               | -                    | Classes for trigger button               |
-| `classDropdown`          | `string`               | -                    | Classes for dropdown container           |
-| `classItem`              | `string`               | -                    | Classes for action items                 |
-| `classItemActive`        | `string`               | -                    | Classes for active/focused item          |
-| `classItemDisabled`      | `string`               | -                    | Classes for disabled items               |
-| `classDivider`           | `string`               | -                    | Classes for dividers                     |
-| `classHeader`            | `string`               | -                    | Classes for header items                 |
-| `classExpandable`        | `string`               | -                    | Classes for expandable section header    |
-| `classExpandableContent` | `string`               | -                    | Classes for expandable section content   |
-| `el`                     | `HTMLDivElement`       | -                    | Wrapper element reference (bindable)     |
-| `triggerEl`              | `HTMLButtonElement`    | -                    | Trigger element reference (bindable)     |
-| `dropdownEl`             | `HTMLDivElement`       | -                    | Dropdown element reference (bindable)    |
+| Prop                     | Type                                  | Default               | Description                                        |
+| ------------------------ | ------------------------------------- | --------------------- | -------------------------------------------------- |
+| `items`                  | `DropdownMenuItem[]`                  | -                     | Menu items to display                              |
+| `isOpen`                 | `boolean`                             | `false`               | Controlled open state (bindable)                   |
+| `position`               | `DropdownMenuPosition`                | `"bottom-span-right"` | Popover position relative to trigger               |
+| `offset`                 | `string`                              | `"0.25rem"`           | Offset from trigger element (CSS value)            |
+| `maxHeight`              | `string`                              | `"300px"`             | Max height of dropdown                             |
+| `closeOnSelect`          | `boolean`                             | `true`                | Close menu when action item is selected            |
+| `closeOnClickOutside`    | `boolean`                             | `true`                | Close on click outside                             |
+| `closeOnEscape`          | `boolean`                             | `true`                | Close on Escape key                                |
+| `forceFallback`          | `boolean`                             | `false`               | Force fallback positioning (for testing)           |
+| `search`                 | `boolean \| DropdownMenuSearchConfig` | -                     | Enable search/filter input (see [Search](#search)) |
+| `unstyled`               | `boolean`                             | `false`               | Opt out of stuic base classes                      |
+| `class`                  | `string`                              | -                     | Classes for wrapper element                        |
+| `classTrigger`           | `string`                              | -                     | Classes for trigger button                         |
+| `classDropdown`          | `string`                              | -                     | Classes for dropdown container                     |
+| `classItem`              | `string`                              | -                     | Classes for action items                           |
+| `classItemActive`        | `string`                              | -                     | Classes for active/focused item                    |
+| `classItemDisabled`      | `string`                              | -                     | Classes for disabled items                         |
+| `classDivider`           | `string`                              | -                     | Classes for dividers                               |
+| `classHeader`            | `string`                              | -                     | Classes for header items                           |
+| `classExpandable`        | `string`                              | -                     | Classes for expandable section header              |
+| `classExpandableContent` | `string`                              | -                     | Classes for expandable section content             |
+| `el`                     | `HTMLDivElement`                      | -                     | Wrapper element reference (bindable)               |
+| `triggerEl`              | `HTMLButtonElement`                   | -                     | Trigger element reference (bindable)               |
+| `dropdownEl`             | `HTMLDivElement`                      | -                     | Dropdown element reference (bindable)              |
 
 ## Snippets
 
@@ -199,7 +199,13 @@ interface DropdownMenuSearchConfig {
 <DropdownMenu
 	items={[
 		{ type: "action", id: "docs", label: "Documentation", href: "/docs" },
-		{ type: "action", id: "github", label: "GitHub", href: "https://github.com/...", target: "_blank" },
+		{
+			type: "action",
+			id: "github",
+			label: "GitHub",
+			href: "https://github.com/...",
+			target: "_blank",
+		},
 		{ type: "divider" },
 		{ type: "action", id: "logout", label: "Logout", onSelect: () => handleLogout() },
 	]}

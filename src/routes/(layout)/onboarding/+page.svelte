@@ -126,8 +126,7 @@
 			{
 				id: "cs-step2",
 				title: "Step 2 — Almost there",
-				content:
-					"Cancelling the confirm keeps the tour active. Confirming exits it.",
+				content: "Cancelling the confirm keeps the tour active. Confirming exits it.",
 				position: "right",
 			},
 		],
@@ -144,8 +143,7 @@
 			{
 				id: "sel-intro",
 				title: "Selector Targeting",
-				content:
-					"This step uses a normal use:tourStep directive — nothing new here.",
+				content: "This step uses a normal use:tourStep directive — nothing new here.",
 				position: "bottom",
 			},
 			{
@@ -187,16 +185,13 @@
 <AlertConfirmPrompt {acp} />
 
 <div class="space-y-10 p-4">
-	<h1
-		class="text-2xl font-bold"
-		use:tourStep={[basicTour, "basic-header"]}
-	>
+	<h1 class="text-2xl font-bold" use:tourStep={[basicTour, "basic-header"]}>
 		Onboarding (createTour)
 	</h1>
 	<p class="text-sm text-neutral-600 dark:text-neutral-400">
 		A declarative multi-step tour abstraction built on top of the
-		<code>spotlight</code> primitive. Steps are defined centrally and
-		connected to DOM elements via <code>use:tourStep</code>.
+		<code>spotlight</code> primitive. Steps are defined centrally and connected to DOM
+		elements via <code>use:tourStep</code>.
 	</p>
 
 	<hr class="my-4" />
@@ -205,10 +200,9 @@
 	<section class="space-y-4">
 		<h2 class="text-xl font-semibold">Basic 3-step Tour</h2>
 		<p class="text-sm text-neutral-600 dark:text-neutral-400">
-			Default navigation shell with Prev / Next / Skip buttons and step
-			counter. Labels are overridable globally (<code>labels</code>) or per
-			step (<code>nextLabel</code>, <code>finishLabel</code>, …). Open the
-			console to see lifecycle callbacks.
+			Default navigation shell with Prev / Next / Skip buttons and step counter. Labels
+			are overridable globally (<code>labels</code>) or per step (<code>nextLabel</code>,
+			<code>finishLabel</code>, …). Open the console to see lifecycle callbacks.
 		</p>
 
 		<div class="flex gap-3 flex-wrap items-center">
@@ -217,9 +211,7 @@
 				onclick={basicTour.start}
 				disabled={basicTour.active}
 			>
-				{basicTour.active
-					? `Step ${basicTour.currentIndex + 1} / 3…`
-					: "Start Tour"}
+				{basicTour.active ? `Step ${basicTour.currentIndex + 1} / 3…` : "Start Tour"}
 			</button>
 			{#if basicTour.active}
 				<button
@@ -253,8 +245,8 @@
 	<section class="space-y-4">
 		<h2 class="text-xl font-semibold">No Step Counter</h2>
 		<p class="text-sm text-neutral-600 dark:text-neutral-400">
-			Pass <code>showSteps: false</code> to hide the step progress counter
-			from the default shell.
+			Pass <code>showSteps: false</code> to hide the step progress counter from the default
+			shell.
 		</p>
 
 		<div class="flex gap-3 flex-wrap items-center">
@@ -291,10 +283,10 @@
 	<section class="space-y-4">
 		<h2 class="text-xl font-semibold">Conditional Step (wait → skip)</h2>
 		<p class="text-sm text-neutral-600 dark:text-neutral-400">
-			Step 2's target is conditionally rendered. If the element isn't in the
-			DOM when the tour reaches it, the tour waits <code>waitForElement</code>
-			ms (default 500) — then warns in the console and skips to the next step.
-			Toggle the checkbox <em>off</em> before starting to see the skip.
+			Step 2's target is conditionally rendered. If the element isn't in the DOM when the
+			tour reaches it, the tour waits <code>waitForElement</code>
+			ms (default 500) — then warns in the console and skips to the next step. Toggle the checkbox
+			<em>off</em> before starting to see the skip.
 		</p>
 
 		<div class="flex gap-3 flex-wrap items-center">
@@ -307,9 +299,7 @@
 					? `Step ${conditionalTour.currentIndex + 1} / 3…`
 					: "Start Tour"}
 			</button>
-			<label
-				class="flex gap-2 items-center text-sm select-none cursor-pointer"
-			>
+			<label class="flex gap-2 items-center text-sm select-none cursor-pointer">
 				<input type="checkbox" bind:checked={showAdvanced} />
 				Show advanced element (step 2 target)
 			</label>
@@ -347,11 +337,11 @@
 	<section class="space-y-4">
 		<h2 class="text-xl font-semibold">Persisted Tour (sessionStorage)</h2>
 		<p class="text-sm text-neutral-600 dark:text-neutral-400">
-			Pass <code>storageKey</code> to persist the tour result. Once completed
-			or skipped, <code>start()</code> silently does nothing on subsequent
-			calls — even after a page reload (within the same session). Use
-			<code>tour.reset()</code> to clear the stored result and allow it to run
-			again.
+			Pass <code>storageKey</code> to persist the tour result. Once completed or skipped,
+			<code>start()</code>
+			silently does nothing on subsequent calls — even after a page reload (within the same
+			session). Use
+			<code>tour.reset()</code> to clear the stored result and allow it to run again.
 		</p>
 
 		<div class="flex gap-3 flex-wrap items-center">
@@ -401,11 +391,10 @@
 	<section class="space-y-4">
 		<h2 class="text-xl font-semibold">Confirm on Skip</h2>
 		<p class="text-sm text-neutral-600 dark:text-neutral-400">
-			Pass a <code>confirmSkip</code> function to intercept both the Skip
-			button and Escape key before the tour exits. Return (or resolve)
+			Pass a <code>confirmSkip</code> function to intercept both the Skip button and
+			Escape key before the tour exits. Return (or resolve)
 			<code>false</code> to cancel. Wiring it to
-			<code>createConfirm(acp)</code> gives a native-style confirm dialog with
-			zero extra plumbing.
+			<code>createConfirm(acp)</code> gives a native-style confirm dialog with zero extra plumbing.
 		</p>
 
 		<div class="flex gap-3 flex-wrap items-center">
@@ -443,10 +432,10 @@
 		<h2 class="text-xl font-semibold">Selector-Based Step Targeting</h2>
 		<p class="text-sm text-neutral-600 dark:text-neutral-400">
 			Steps can target elements by CSS selector instead of
-			<code>use:tourStep</code>. This is useful when the target lives inside
-			a reusable component that shouldn't know about the tour. The component
-			just adds a stable <code>data-*</code> attribute; the tour config
-			references it via <code>selector</code>.
+			<code>use:tourStep</code>. This is useful when the target lives inside a reusable
+			component that shouldn't know about the tour. The component just adds a stable
+			<code>data-*</code>
+			attribute; the tour config references it via <code>selector</code>.
 		</p>
 
 		<div class="flex gap-3 flex-wrap items-center">
@@ -489,8 +478,8 @@
 	<section class="space-y-4">
 		<h2 class="text-xl font-semibold">Multiple Independent Tours</h2>
 		<p class="text-sm text-neutral-600 dark:text-neutral-400">
-			Multiple <code>createTour()</code> instances coexist on the same page
-			without interference. Each manages its own state independently.
+			Multiple <code>createTour()</code> instances coexist on the same page without interference.
+			Each manages its own state independently.
 		</p>
 
 		<div class="flex gap-3 flex-wrap items-center">
@@ -499,9 +488,7 @@
 				onclick={tour3.start}
 				disabled={tour3.active}
 			>
-				{tour3.active
-					? `Step ${tour3.currentIndex + 1} / 2…`
-					: "Start Tour 3"}
+				{tour3.active ? `Step ${tour3.currentIndex + 1} / 2…` : "Start Tour 3"}
 			</button>
 		</div>
 
@@ -527,12 +514,12 @@
 	<section class="space-y-4">
 		<h2 class="text-xl font-semibold">Custom Shell Snippet</h2>
 		<p class="text-sm text-neutral-600 dark:text-neutral-400">
-			Pass a <code>shell</code> snippet to replace the entire default
-			navigation UI. The snippet receives a <code>TourShellContext</code> with
-			step data and navigation controls. Since snippets can't be referenced in
-			the <code>&lt;script&gt;</code> block that calls
-			<code>createTour</code>, the idiomatic Svelte 5 pattern is to define the
-			shell in a child component and pass it as a named snippet prop.
+			Pass a <code>shell</code> snippet to replace the entire default navigation UI. The
+			snippet receives a <code>TourShellContext</code> with step data and navigation
+			controls. Since snippets can't be referenced in the <code>&lt;script&gt;</code>
+			block that calls
+			<code>createTour</code>, the idiomatic Svelte 5 pattern is to define the shell in a
+			child component and pass it as a named snippet prop.
 		</p>
 
 		<!--

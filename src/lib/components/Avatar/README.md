@@ -4,24 +4,24 @@ A flexible avatar component that displays user photos, initials, or icons with a
 
 ## Props
 
-| Prop             | Type                                              | Default  | Description                                                                            |
-| ---------------- | ------------------------------------------------- | -------- | -------------------------------------------------------------------------------------- |
-| `src`            | `string`                                          | -        | Photo URL - when provided, renders in photo mode                                       |
-| `alt`            | `string`                                          | -        | Alt text for photo mode                                                                |
-| `initials`       | `string`                                          | -        | String to extract initials from. Supports: "AB", "John Doe", or "john.doe@example.com" |
-| `initialsLength` | `number`                                          | `2`      | Maximum length of extracted initials                                                   |
-| `icon`           | `IconFn`                                          | -        | Icon function to display - when provided alone, renders in icon mode                   |
-| `fallback`       | `AvatarFallback`                                  | `"icon"` | Fallback when photo fails to load                                                      |
-| `hashSource`     | `string`                                          | -        | String for color hash calculation (e.g., email, user ID). Falls back to `initials`     |
-| `size`           | `"sm" \| "md" \| "lg" \| "xl" \| "2xl" \| string` | `"md"`   | Size preset or custom Tailwind size class                                              |
-| `onclick`        | `(event: MouseEvent) => void`                     | -        | Click handler - when provided, renders as a button                                     |
-| `bg`             | `string`                                          | -        | Background color (Tailwind class). Ignored if `autoColor=true`                         |
-| `textColor`      | `string`                                          | -        | Text color (Tailwind class). Ignored if `autoColor=true`                               |
-| `autoColor`      | `boolean`                                         | `false`  | Generate deterministic pastel colors from hashSource/initials                          |
+| Prop             | Type                                              | Default  | Description                                                                                                                                  |
+| ---------------- | ------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src`            | `string`                                          | -        | Photo URL - when provided, renders in photo mode                                                                                             |
+| `alt`            | `string`                                          | -        | Alt text for photo mode                                                                                                                      |
+| `initials`       | `string`                                          | -        | String to extract initials from. Supports: "AB", "John Doe", or "john.doe@example.com"                                                       |
+| `initialsLength` | `number`                                          | `2`      | Maximum length of extracted initials                                                                                                         |
+| `icon`           | `IconFn`                                          | -        | Icon function to display - when provided alone, renders in icon mode                                                                         |
+| `fallback`       | `AvatarFallback`                                  | `"icon"` | Fallback when photo fails to load                                                                                                            |
+| `hashSource`     | `string`                                          | -        | String for color hash calculation (e.g., email, user ID). Falls back to `initials`                                                           |
+| `size`           | `"sm" \| "md" \| "lg" \| "xl" \| "2xl" \| string` | `"md"`   | Size preset or custom Tailwind size class                                                                                                    |
+| `onclick`        | `(event: MouseEvent) => void`                     | -        | Click handler - when provided, renders as a button                                                                                           |
+| `bg`             | `string`                                          | -        | Background color (Tailwind class). Ignored if `autoColor=true`                                                                               |
+| `textColor`      | `string`                                          | -        | Text color (Tailwind class). Ignored if `autoColor=true`                                                                                     |
+| `autoColor`      | `boolean`                                         | `false`  | Generate deterministic pastel colors from hashSource/initials                                                                                |
 | `padding`        | `string`                                          | -        | CSS padding around the visual circle. Outer keeps its size, inner circle shrinks (e.g. `"4px"`, `"0.25rem"`). Useful for larger tap targets. |
-| `class`          | `string`                                          | -        | Additional CSS classes                                                                 |
-| `classInner`     | `string`                                          | -        | Additional CSS classes for the inner element (only used when `padding` is set)         |
-| `el`             | `HTMLElement`                                     | -        | Bindable element reference                                                             |
+| `class`          | `string`                                          | -        | Additional CSS classes                                                                                                                       |
+| `classInner`     | `string`                                          | -        | Additional CSS classes for the inner element (only used when `padding` is set)                                                               |
+| `el`             | `HTMLElement`                                     | -        | Bindable element reference                                                                                                                   |
 
 ## Usage
 
@@ -91,7 +91,13 @@ Use `padding` to keep the avatar's outer footprint (e.g. a 44px tap target) whil
 ```svelte
 <!-- Outer stays at size="md" (2.75rem), circle shrinks by 4px on each side -->
 <Avatar size="md" initials="AB" padding="4px" />
-<Avatar size="md" autoColor initials="john@example.com" padding="0.25rem" onclick={() => {}} />
+<Avatar
+	size="md"
+	autoColor
+	initials="john@example.com"
+	padding="0.25rem"
+	onclick={() => {}}
+/>
 ```
 
 When `padding` is set, `bg`, `textColor`, and `autoColor` automatically apply to the inner circle (not the outer element).
@@ -112,15 +118,15 @@ When `padding` is set, `bg`, `textColor`, and `autoColor` automatically apply to
 
 Override globally in `:root` or locally via `style` prop:
 
-| Variable                     | Default                          | Description                       |
-| ---------------------------- | -------------------------------- | --------------------------------- |
-| `--stuic-avatar-radius`      | `9999px`                         | Border radius (circle by default) |
-| `--stuic-avatar-font-weight` | `--font-weight-medium`           | Font weight for initials          |
-| `--stuic-avatar-transition`  | `150ms`                          | Transition duration               |
-| `--stuic-avatar-bg`          | `--stuic-color-muted`            | Default background color          |
-| `--stuic-avatar-fg`          | `--stuic-color-muted-foreground` | Default text/icon color           |
-| `--stuic-avatar-ring-width`  | `3px`                            | Focus ring width (button mode)    |
-| `--stuic-avatar-ring-color`  | `--stuic-color-ring`             | Focus ring color                  |
+| Variable                     | Default                          | Description                                                    |
+| ---------------------------- | -------------------------------- | -------------------------------------------------------------- |
+| `--stuic-avatar-radius`      | `9999px`                         | Border radius (circle by default)                              |
+| `--stuic-avatar-font-weight` | `--font-weight-medium`           | Font weight for initials                                       |
+| `--stuic-avatar-transition`  | `150ms`                          | Transition duration                                            |
+| `--stuic-avatar-bg`          | `--stuic-color-muted`            | Default background color                                       |
+| `--stuic-avatar-fg`          | `--stuic-color-muted-foreground` | Default text/icon color                                        |
+| `--stuic-avatar-ring-width`  | `3px`                            | Focus ring width (button mode)                                 |
+| `--stuic-avatar-ring-color`  | `--stuic-color-ring`             | Focus ring color                                               |
 | `--stuic-avatar-padding`     | -                                | Set by the `padding` prop; can also be driven directly via CSS |
 
 ### Size Tokens

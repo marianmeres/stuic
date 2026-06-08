@@ -9,9 +9,7 @@
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
 	export interface Props
-		extends HTMLInputAttributes,
-			InputWrapClassProps,
-			Record<string, any> {
+		extends HTMLInputAttributes, InputWrapClassProps, Record<string, any> {
 		input?: HTMLInputElement;
 		value?: string | number;
 		label?: SnippetWithId | THC;

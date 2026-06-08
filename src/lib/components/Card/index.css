@@ -50,7 +50,8 @@
 		height: 100%;
 		overflow: hidden;
 		background: var(--stuic-card-bg);
-		border: var(--stuic-card-border-width, var(--stuic-border-width)) solid var(--stuic-card-border);
+		border: var(--stuic-card-border-width, var(--stuic-border-width)) solid
+			var(--stuic-card-border);
 		border-radius: var(--stuic-card-radius, var(--stuic-radius-container));
 		box-shadow: var(--stuic-card-shadow, var(--stuic-shadow));
 		transition:

@@ -4,18 +4,18 @@ Auto-cycling background-image carousel with fade transitions. Preloads the next 
 
 ## Props
 
-| Prop                 | Type                                                              | Default   | Description                                                            |
-| -------------------- | ----------------------------------------------------------------- | --------- | ---------------------------------------------------------------------- |
-| `images`             | `ImageCyclerImage[]`                                              | required  | Images to cycle through.                                               |
-| `fit`                | `"cover" \| "contain" \| "fill"`                                  | `"cover"` | Background-size mode. Set via `data-fit` on the image layer.            |
-| `minWait`            | `number`                                                          | `3000`    | Minimum wait (ms) on each image before advancing.                       |
-| `transitionDuration` | `number`                                                          | `500`     | Fade duration in ms (for both the image and the meta layer).            |
-| `onclick`            | `(image, index) => void`                                          | -         | Click handler. The snippets receive a forwarded version.                |
-| `title`              | `Snippet<[{ image, index, onclick }]>`                            | -         | Title overlay snippet.                                                  |
-| `description`        | `Snippet<[{ image, index, onclick }]>`                            | -         | Description overlay snippet.                                            |
-| `unstyled`           | `boolean`                                                         | `false`   | Skip default styling.                                                   |
-| `class`              | `string`                                                          | -         | Additional CSS classes.                                                 |
-| `el`                 | `HTMLElement`                                                     | -         | Bindable root element.                                                  |
+| Prop                 | Type                                   | Default   | Description                                                  |
+| -------------------- | -------------------------------------- | --------- | ------------------------------------------------------------ |
+| `images`             | `ImageCyclerImage[]`                   | required  | Images to cycle through.                                     |
+| `fit`                | `"cover" \| "contain" \| "fill"`       | `"cover"` | Background-size mode. Set via `data-fit` on the image layer. |
+| `minWait`            | `number`                               | `3000`    | Minimum wait (ms) on each image before advancing.            |
+| `transitionDuration` | `number`                               | `500`     | Fade duration in ms (for both the image and the meta layer). |
+| `onclick`            | `(image, index) => void`               | -         | Click handler. The snippets receive a forwarded version.     |
+| `title`              | `Snippet<[{ image, index, onclick }]>` | -         | Title overlay snippet.                                       |
+| `description`        | `Snippet<[{ image, index, onclick }]>` | -         | Description overlay snippet.                                 |
+| `unstyled`           | `boolean`                              | `false`   | Skip default styling.                                        |
+| `class`              | `string`                               | -         | Additional CSS classes.                                      |
+| `el`                 | `HTMLElement`                          | -         | Bindable root element.                                       |
 
 ## `ImageCyclerImage`
 
@@ -71,9 +71,9 @@ interface ImageCyclerImage {
 
 ## CSS Variables
 
-| Variable                                    | Default | Description           |
-| ------------------------------------------- | ------- | --------------------- |
-| `--stuic-image-cycler-transition-duration`  | `500ms` | (informational; the active transition duration comes from the `transitionDuration` prop) |
+| Variable                                   | Default | Description                                                                              |
+| ------------------------------------------ | ------- | ---------------------------------------------------------------------------------------- |
+| `--stuic-image-cycler-transition-duration` | `500ms` | (informational; the active transition duration comes from the `transitionDuration` prop) |
 
 ## Notes
 

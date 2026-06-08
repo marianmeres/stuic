@@ -403,9 +403,7 @@
 		</div>
 
 		{#if arrows && coll.size > 1}
-			<div
-				class="absolute inset-0 flex items-center justify-between pointer-events-none"
-			>
+			<div class="absolute inset-0 flex items-center justify-between pointer-events-none">
 				<Button
 					class={twMerge(
 						"stuic-carousel-arrow pointer-events-auto p-0! ml-4",

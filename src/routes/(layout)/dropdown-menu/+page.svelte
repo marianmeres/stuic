@@ -225,9 +225,9 @@
 	<section class="space-y-4">
 		<h2 class="text-xl font-semibold">Links (href)</h2>
 		<p class="text-sm text-neutral-600 dark:text-neutral-400">
-			Action items with <code>href</code> render as <code>&lt;a&gt;</code> elements instead
-			of buttons. Supports <code>target="_blank"</code> for external links. Regular action
-			items can be mixed in.
+			Action items with <code>href</code> render as <code>&lt;a&gt;</code> elements
+			instead of buttons. Supports <code>target="_blank"</code> for external links. Regular
+			action items can be mixed in.
 		</p>
 
 		<div class="flex gap-4 flex-wrap">

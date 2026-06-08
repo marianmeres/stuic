@@ -100,9 +100,10 @@
 				border-width CSS custom property (a multi-value shorthand is accepted):
 			</p>
 			<pre class="p-3 bg-black/5 dark:bg-white/10 rounded text-xs overflow-x-auto"><code
-				>:root &lbrace;
+					>:root &lbrace;
   --stuic-dismissible-message-border-width: 0 0 0 4px;
-&rbrace;</code></pre>
+&rbrace;</code
+				></pre>
 			<p class="mt-2">
 				Alternatively, target the <code>.stuic-dismissible-message</code> class directly.
 			</p>

@@ -22,7 +22,8 @@
 		justify-content: center;
 		opacity: 0;
 		pointer-events: none;
-		transition: opacity var(--stuic-icon-swap-duration, var(--stuic-transition)) var(--stuic-icon-swap-easing);
+		transition: opacity var(--stuic-icon-swap-duration, var(--stuic-transition))
+			var(--stuic-icon-swap-easing);
 	}
 
 	.stuic-icon-swap > .stuic-icon-swap-state[data-visible="true"] {

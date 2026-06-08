@@ -202,8 +202,8 @@
 	<section>
 		<h2 class="text-xl font-semibold mb-2">With Disabled Tier</h2>
 		<p class="text-sm text-neutral-500 mb-6">
-			The "Legacy" tier is sold out &mdash; disabled with reduced opacity and a custom label
-			replacing the CTA.
+			The "Legacy" tier is sold out &mdash; disabled with reduced opacity and a custom
+			label replacing the CTA.
 		</p>
 		<PricingTable tiers={disabledTiers} />
 	</section>

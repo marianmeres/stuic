@@ -4,36 +4,36 @@ A small rounded inline element for tags, badges, status indicators, and filter c
 
 ## Props
 
-| Prop            | Type                                                               | Default  | Description                                                          |
-| --------------- | ------------------------------------------------------------------ | -------- | -------------------------------------------------------------------- |
-| `intent`        | `"primary" \| "accent" \| "destructive" \| "warning" \| "success"` | -        | Semantic color intent                                                |
-| `variant`       | `"solid" \| "outline" \| "ghost" \| "soft" \| "link"`              | `"soft"` | Visual variant (how colors are applied)                              |
-| `size`          | `"sm" \| "md" \| "lg"`                                             | `"md"`   | Pill size                                                            |
-| `muted`         | `boolean`                                                          | `false`  | Reduce emphasis (lower opacity)                                      |
-| `active`        | `boolean`                                                          | `false`  | Selected/active state (filter-chip behavior)                         |
+| Prop            | Type                                                               | Default  | Description                                                           |
+| --------------- | ------------------------------------------------------------------ | -------- | --------------------------------------------------------------------- |
+| `intent`        | `"primary" \| "accent" \| "destructive" \| "warning" \| "success"` | -        | Semantic color intent                                                 |
+| `variant`       | `"solid" \| "outline" \| "ghost" \| "soft" \| "link"`              | `"soft"` | Visual variant (how colors are applied)                               |
+| `size`          | `"sm" \| "md" \| "lg"`                                             | `"md"`   | Pill size                                                             |
+| `muted`         | `boolean`                                                          | `false`  | Reduce emphasis (lower opacity)                                       |
+| `active`        | `boolean`                                                          | `false`  | Selected/active state (filter-chip behavior)                          |
 | `roundedFull`   | `boolean`                                                          | `true`   | Fully rounded corners (9999px). Set `false` to use the element radius |
 | `block`         | `boolean`                                                          | `false`  | Render as block-level flex (full width). `inline-flex` by default     |
-| `unstyled`      | `boolean`                                                          | `false`  | Skip all default styling                                             |
-| `href`          | `string`                                                           | -        | Render as `<a>` with this URL                                        |
-| `target`        | `string`                                                           | -        | Link target (only when `href` is set)                                |
-| `onclick`       | `(e: MouseEvent) => void`                                          | -        | Render as `<button>` with this handler (when no `href`)              |
-| `disabled`      | `boolean`                                                          | -        | Disabled state (interactive variants only)                           |
-| `dismissible`   | `boolean`                                                          | `false`  | Show built-in X dismiss button                                       |
-| `ondismiss`     | `(e: MouseEvent) => void`                                          | -        | Called when X is clicked. Stops propagation                          |
-| `dot`           | `boolean`                                                          | `false`  | Status dot rendered before content                                   |
-| `contentBefore` | `THC`                                                              | -        | Content rendered before children                                     |
-| `contentAfter`  | `THC`                                                              | -        | Content rendered after children                                      |
-| `el`            | `HTMLElement`                                                      | -        | Element reference (bindable)                                         |
-| `class`         | `string`                                                           | -        | Additional CSS classes                                               |
+| `unstyled`      | `boolean`                                                          | `false`  | Skip all default styling                                              |
+| `href`          | `string`                                                           | -        | Render as `<a>` with this URL                                         |
+| `target`        | `string`                                                           | -        | Link target (only when `href` is set)                                 |
+| `onclick`       | `(e: MouseEvent) => void`                                          | -        | Render as `<button>` with this handler (when no `href`)               |
+| `disabled`      | `boolean`                                                          | -        | Disabled state (interactive variants only)                            |
+| `dismissible`   | `boolean`                                                          | `false`  | Show built-in X dismiss button                                        |
+| `ondismiss`     | `(e: MouseEvent) => void`                                          | -        | Called when X is clicked. Stops propagation                           |
+| `dot`           | `boolean`                                                          | `false`  | Status dot rendered before content                                    |
+| `contentBefore` | `THC`                                                              | -        | Content rendered before children                                      |
+| `contentAfter`  | `THC`                                                              | -        | Content rendered after children                                       |
+| `el`            | `HTMLElement`                                                      | -        | Element reference (bindable)                                          |
+| `class`         | `string`                                                           | -        | Additional CSS classes                                                |
 
 ## Element Resolution
 
-| Condition                         | Element                                                |
-| --------------------------------- | ------------------------------------------------------ |
-| Default                           | `<span>`                                               |
-| `href` set                        | `<a>`                                                  |
-| `onclick` set (no `href`)         | `<button>`                                             |
-| `dismissible` set                 | `<span>` wrapper containing main element + X sibling   |
+| Condition                 | Element                                              |
+| ------------------------- | ---------------------------------------------------- |
+| Default                   | `<span>`                                             |
+| `href` set                | `<a>`                                                |
+| `onclick` set (no `href`) | `<button>`                                           |
+| `dismissible` set         | `<span>` wrapper containing main element + X sibling |
 
 ## Usage
 
@@ -69,9 +69,7 @@ A small rounded inline element for tags, badges, status indicators, and filter c
 <Pill intent="accent" href="/profile">Profile</Pill>
 
 <!-- Button -->
-<Pill intent="success" onclick={() => console.log("clicked")}>
-	Click me
-</Pill>
+<Pill intent="success" onclick={() => console.log("clicked")}>Click me</Pill>
 ```
 
 ### Status Dot
@@ -150,7 +148,10 @@ A small rounded inline element for tags, badges, status indicators, and filter c
 <Pill intent="primary" roundedFull={false}>Element radius</Pill>
 
 <!-- Unstyled for full control -->
-<Pill unstyled class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1 rounded-full">
+<Pill
+	unstyled
+	class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1 rounded-full"
+>
 	Custom
 </Pill>
 ```
@@ -159,17 +160,17 @@ A small rounded inline element for tags, badges, status indicators, and filter c
 
 ### Component Tokens
 
-| Variable                      | Default                | Description           |
-| ----------------------------- | ---------------------- | --------------------- |
-| `--stuic-pill-radius`         | `--stuic-radius`       | Border radius (overridden to `9999px` by `roundedFull`) |
-| `--stuic-pill-font-family`    | `--font-sans`          | Font family           |
-| `--stuic-pill-font-weight`    | `--font-weight-medium` | Font weight           |
-| `--stuic-pill-transition`     | `--stuic-transition`   | Transition duration   |
-| `--stuic-pill-border-width`   | `--stuic-border-width` | Border width          |
-| `--stuic-pill-ring-width`     | `2px`                  | Focus ring width      |
-| `--stuic-pill-ring-color`     | `--stuic-color-ring`   | Focus ring color      |
-| `--stuic-pill-gap`            | `0.375rem`             | Gap between dot/before/children/after/dismiss |
-| `--stuic-pill-dot-size`       | `0.5rem`               | Status dot diameter   |
+| Variable                    | Default                | Description                                             |
+| --------------------------- | ---------------------- | ------------------------------------------------------- |
+| `--stuic-pill-radius`       | `--stuic-radius`       | Border radius (overridden to `9999px` by `roundedFull`) |
+| `--stuic-pill-font-family`  | `--font-sans`          | Font family                                             |
+| `--stuic-pill-font-weight`  | `--font-weight-medium` | Font weight                                             |
+| `--stuic-pill-transition`   | `--stuic-transition`   | Transition duration                                     |
+| `--stuic-pill-border-width` | `--stuic-border-width` | Border width                                            |
+| `--stuic-pill-ring-width`   | `2px`                  | Focus ring width                                        |
+| `--stuic-pill-ring-color`   | `--stuic-color-ring`   | Focus ring color                                        |
+| `--stuic-pill-gap`          | `0.375rem`             | Gap between dot/before/children/after/dismiss           |
+| `--stuic-pill-dot-size`     | `0.5rem`               | Status dot diameter                                     |
 
 ### Size Tokens
 

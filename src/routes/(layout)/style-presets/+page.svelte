@@ -1,9 +1,25 @@
 <script lang="ts">
 	const presets = [
-		{ href: "style-presets/default", label: "Default", desc: "No overrides. Components as they look out of the box." },
-		{ href: "style-presets/brutalist", label: "Brutalist", desc: "Zero radius, no shadows, no borders. Raw and flat." },
-		{ href: "style-presets/soft", label: "Soft / Rounded", desc: "Pill-shaped elements, generous shadows, smooth transitions." },
-		{ href: "style-presets/retro", label: "Retro", desc: "Hard pixel edges, thick borders, offset block shadows." },
+		{
+			href: "style-presets/default",
+			label: "Default",
+			desc: "No overrides. Components as they look out of the box.",
+		},
+		{
+			href: "style-presets/brutalist",
+			label: "Brutalist",
+			desc: "Zero radius, no shadows, no borders. Raw and flat.",
+		},
+		{
+			href: "style-presets/soft",
+			label: "Soft / Rounded",
+			desc: "Pill-shaped elements, generous shadows, smooth transitions.",
+		},
+		{
+			href: "style-presets/retro",
+			label: "Retro",
+			desc: "Hard pixel edges, thick borders, offset block shadows.",
+		},
 	];
 </script>
 
@@ -12,9 +28,11 @@
 		<h2 class="text-2xl font-bold mb-2">Style Presets</h2>
 		<p class="text-neutral-600 dark:text-neutral-400 max-w-2xl">
 			Each page below renders the exact same set of components but with different
-			<code class="text-sm bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 rounded">--stuic-*</code>
-			structural token overrides. This demonstrates how a handful of CSS custom properties
-			can transform the entire library's visual character.
+			<code class="text-sm bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 rounded"
+				>--stuic-*</code
+			>
+			structural token overrides. This demonstrates how a handful of CSS custom properties can
+			transform the entire library's visual character.
 		</p>
 	</div>
 
@@ -35,7 +53,10 @@
 		<ul class="list-disc list-inside space-y-1 font-mono text-xs">
 			<li>--stuic-radius (element-level: buttons, inputs, badges)</li>
 			<li>--stuic-radius-container (container-level: cards, modals, dropdowns)</li>
-			<li>--stuic-shadow, --stuic-shadow-hover, --stuic-shadow-overlay, --stuic-shadow-dialog</li>
+			<li>
+				--stuic-shadow, --stuic-shadow-hover, --stuic-shadow-overlay,
+				--stuic-shadow-dialog
+			</li>
 			<li>--stuic-border-width</li>
 			<li>--stuic-transition</li>
 		</ul>

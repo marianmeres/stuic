@@ -40,7 +40,10 @@
 		position: relative;
 		display: flex;
 		flex-direction: column;
-		background: var(--stuic-pricing-table-tier-bg, var(--stuic-color-card, var(--stuic-color-background)));
+		background: var(
+			--stuic-pricing-table-tier-bg,
+			var(--stuic-color-card, var(--stuic-color-background))
+		);
 		border: var(--stuic-pricing-table-tier-border-width, var(--stuic-border-width)) solid
 			var(--stuic-pricing-table-tier-border-color, var(--stuic-color-border));
 		border-radius: var(--stuic-pricing-table-tier-radius, var(--stuic-radius-container));
@@ -82,9 +85,7 @@
 
 	@media (min-width: 768px) {
 		.stuic-pricing-table-tier[data-highlighted] {
-			transform: scale(
-				var(--stuic-pricing-table-tier-scale-highlighted, 1.02)
-			);
+			transform: scale(var(--stuic-pricing-table-tier-scale-highlighted, 1.02));
 		}
 	}
 
@@ -108,7 +109,10 @@
 		background: var(--stuic-pricing-table-badge-bg, var(--stuic-color-primary));
 		color: var(--stuic-pricing-table-badge-color, var(--stuic-color-primary-foreground));
 		font-size: var(--stuic-pricing-table-badge-font-size, var(--text-xs));
-		font-weight: var(--stuic-pricing-table-badge-font-weight, var(--font-weight-semibold, 600));
+		font-weight: var(
+			--stuic-pricing-table-badge-font-weight,
+			var(--font-weight-semibold, 600)
+		);
 		padding: var(--stuic-pricing-table-badge-padding, 0.25rem 0.75rem);
 		border-radius: 9999px;
 		white-space: nowrap;
@@ -135,10 +139,7 @@
 	}
 
 	.stuic-pricing-table-tier-description {
-		font-size: var(
-			--stuic-pricing-table-tier-description-font-size,
-			var(--text-sm)
-		);
+		font-size: var(--stuic-pricing-table-tier-description-font-size, var(--text-sm));
 		color: var(
 			--stuic-pricing-table-tier-description-color,
 			var(--stuic-color-muted-foreground)
@@ -167,10 +168,7 @@
 	}
 
 	.stuic-pricing-table-price-period {
-		font-size: var(
-			--stuic-pricing-table-price-period-font-size,
-			var(--text-sm)
-		);
+		font-size: var(--stuic-pricing-table-price-period-font-size, var(--text-sm));
 		color: var(
 			--stuic-pricing-table-price-period-color,
 			var(--stuic-color-muted-foreground)
@@ -182,10 +180,7 @@
 	   ============================================================================ */
 
 	.stuic-pricing-table-discount-badge {
-		font-size: var(
-			--stuic-pricing-table-discount-badge-font-size,
-			var(--text-xs)
-		);
+		font-size: var(--stuic-pricing-table-discount-badge-font-size, var(--text-xs));
 		font-weight: var(--font-weight-medium, 500);
 		background: var(
 			--stuic-pricing-table-discount-badge-bg,
@@ -220,14 +215,8 @@
 	}
 
 	.stuic-pricing-table-inherit {
-		font-size: var(
-			--stuic-pricing-table-inherit-font-size,
-			var(--text-sm)
-		);
-		color: var(
-			--stuic-pricing-table-inherit-color,
-			var(--stuic-color-muted-foreground)
-		);
+		font-size: var(--stuic-pricing-table-inherit-font-size, var(--text-sm));
+		color: var(--stuic-pricing-table-inherit-color, var(--stuic-color-muted-foreground));
 		font-style: italic;
 		padding-bottom: 0.25rem;
 	}
@@ -245,14 +234,8 @@
 		display: flex;
 		align-items: baseline;
 		gap: 0.5rem;
-		font-size: var(
-			--stuic-pricing-table-feature-font-size,
-			var(--text-sm)
-		);
-		color: var(
-			--stuic-pricing-table-feature-color,
-			var(--stuic-color-foreground)
-		);
+		font-size: var(--stuic-pricing-table-feature-font-size, var(--text-sm));
+		color: var(--stuic-pricing-table-feature-color, var(--stuic-color-foreground));
 	}
 
 	.stuic-pricing-table-feature-icon {
@@ -265,14 +248,16 @@
 		);
 	}
 
-	.stuic-pricing-table-feature-item:not([data-included]) .stuic-pricing-table-feature-icon {
+	.stuic-pricing-table-feature-item:not([data-included])
+		.stuic-pricing-table-feature-icon {
 		color: var(
 			--stuic-pricing-table-feature-icon-color-excluded,
 			var(--stuic-color-muted-foreground)
 		);
 	}
 
-	.stuic-pricing-table-feature-item:not([data-included]) .stuic-pricing-table-feature-label {
+	.stuic-pricing-table-feature-item:not([data-included])
+		.stuic-pricing-table-feature-label {
 		color: var(
 			--stuic-pricing-table-feature-color-excluded,
 			var(--stuic-color-muted-foreground)

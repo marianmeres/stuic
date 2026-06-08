@@ -98,7 +98,9 @@
 				showNextRun={false}
 			/>
 			<div class="mt-2 text-sm opacity-60">
-				Next run (updates every minute): <code>{nextRun1.nextRunFormatted || "invalid"}</code>
+				Next run (updates every minute): <code
+					>{nextRun1.nextRunFormatted || "invalid"}</code
+				>
 			</div>
 		</div>
 	</div>

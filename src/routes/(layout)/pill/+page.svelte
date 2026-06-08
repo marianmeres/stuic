@@ -127,12 +127,7 @@
 
 <div class="flex flex-wrap gap-2 items-center min-h-8">
 	{#each tags as tag (tag)}
-		<Pill
-			intent="primary"
-			variant="soft"
-			dismissible
-			ondismiss={() => dismissTag(tag)}
-		>
+		<Pill intent="primary" variant="soft" dismissible ondismiss={() => dismissTag(tag)}>
 			{tag}
 		</Pill>
 	{/each}
@@ -245,13 +240,7 @@
 	<Pill intent="destructive" variant="outline" onclick={() => {}} disabled>
 		disabled outline
 	</Pill>
-	<Pill
-		intent="accent"
-		dismissible
-		onclick={() => {}}
-		ondismiss={() => {}}
-		disabled
-	>
+	<Pill intent="accent" dismissible onclick={() => {}} ondismiss={() => {}} disabled>
 		disabled dismissible
 	</Pill>
 </div>
@@ -280,8 +269,11 @@
 <h2 class="text-xl font-semibold mb-4">Inline in text</h2>
 
 <p class="leading-7">
-	You can drop a <Pill intent="primary" size="sm">tag</Pill> right into a paragraph,
-	or call out a <Pill intent="success" size="sm" dot>shipped</Pill> status,
-	or mark something as <Pill intent="destructive" variant="outline" size="sm">deprecated</Pill>
+	You can drop a <Pill intent="primary" size="sm">tag</Pill> right into a paragraph, or call
+	out a <Pill intent="success" size="sm" dot>shipped</Pill> status, or mark something as <Pill
+		intent="destructive"
+		variant="outline"
+		size="sm">deprecated</Pill
+	>
 	&mdash; pills align nicely with surrounding text.
 </p>

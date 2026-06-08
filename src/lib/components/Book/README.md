@@ -22,7 +22,9 @@ A physical book visualization with CSS 3D page-flipping animation. Displays an o
 	let activeSpread = $state(0);
 </script>
 
-<div style="--stuic-book-page-width: {size.width}px; --stuic-book-page-height: {size.height}px;">
+<div
+	style="--stuic-book-page-width: {size.width}px; --stuic-book-page-height: {size.height}px;"
+>
 	<Book bind:this={book} {pages} bind:activeSpread />
 </div>
 
@@ -68,10 +70,10 @@ Pages are grouped into **spreads**:
 ```typescript
 interface BookPageArea {
 	id: string | number;
-	x: number;       // X position in natural image pixels
-	y: number;       // Y position in natural image pixels
-	w: number;       // Width in natural image pixels
-	h: number;       // Height in natural image pixels
+	x: number; // X position in natural image pixels
+	y: number; // Y position in natural image pixels
+	w: number; // Width in natural image pixels
+	h: number; // Height in natural image pixels
 	[key: string]: any;
 }
 
@@ -79,8 +81,8 @@ interface BookPage {
 	id: string | number;
 	src: string;
 	title?: string;
-	width: number;         // Natural image width in px
-	height: number;        // Natural image height in px
+	width: number; // Natural image width in px
+	height: number; // Natural image height in px
 	areas?: BookPageArea[];
 	[key: string]: any;
 }
@@ -114,8 +116,8 @@ Computes display dimensions from page image metadata. Finds the largest width/he
 ```ts
 import { computeBookPageSize } from "@marianmeres/stuic";
 
-const size = computeBookPageSize(pages);       // { width: 283, height: 400 }
-const size = computeBookPageSize(pages, 300);  // { width: 212, height: 300 }
+const size = computeBookPageSize(pages); // { width: 283, height: 400 }
+const size = computeBookPageSize(pages, 300); // { width: 212, height: 300 }
 ```
 
 ## Clickable Areas
@@ -155,14 +157,14 @@ Pages can define clickable areas (e.g. product hotspots in a catalog). Areas are
 
 ## CSS Variables
 
-| Variable                   | Default                       | Description               |
-| -------------------------- | ----------------------------- | ------------------------- |
-| `--stuic-book-page-width`  | `300px`                       | Width of a single page    |
-| `--stuic-book-page-height` | `400px`                       | Height of the book        |
-| `--stuic-book-perspective` | `1200px`                      | CSS perspective depth     |
-| `--stuic-book-duration`    | `600ms`                       | Flip animation duration   |
-| `--stuic-book-timing`      | `ease-in-out`                 | Animation timing function |
-| `--stuic-book-page-bg`     | `var(--stuic-color-surface)`  | Page background color     |
-| `--stuic-book-page-shadow` | `0 2px 16px rgba(0,0,0,0.15)` | Book shadow               |
-| `--stuic-book-radius`      | `var(--radius-sm)`            | Page border radius        |
-| `--stuic-book-area-fill-hover` | `rgba(0, 0, 0, 0.06)`    | Area hover highlight fill |
+| Variable                       | Default                       | Description               |
+| ------------------------------ | ----------------------------- | ------------------------- |
+| `--stuic-book-page-width`      | `300px`                       | Width of a single page    |
+| `--stuic-book-page-height`     | `400px`                       | Height of the book        |
+| `--stuic-book-perspective`     | `1200px`                      | CSS perspective depth     |
+| `--stuic-book-duration`        | `600ms`                       | Flip animation duration   |
+| `--stuic-book-timing`          | `ease-in-out`                 | Animation timing function |
+| `--stuic-book-page-bg`         | `var(--stuic-color-surface)`  | Page background color     |
+| `--stuic-book-page-shadow`     | `0 2px 16px rgba(0,0,0,0.15)` | Book shadow               |
+| `--stuic-book-radius`          | `var(--radius-sm)`            | Page border radius        |
+| `--stuic-book-area-fill-hover` | `rgba(0, 0, 0, 0.06)`         | Area hover highlight fill |

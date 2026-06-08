@@ -8,9 +8,9 @@ vitest-browser-svelte docs. Planning artifact; no code was changed.
 # @marianmeres/stuic — Component Testing: Overview & Roadmap
 
 > **Verdict:** the proposed stack — Vitest Browser Mode + `vitest-browser-svelte` + Playwright/Chromium
-> — is the right default for *this* library, where the value being shipped is precisely the DOM/layout/
+> — is the right default for _this_ library, where the value being shipped is precisely the DOM/layout/
 > focus/positioning behavior that the current node/server-build test setup **cannot exercise at all**.
-> The claim is *mostly* correct rather than gospel: it's not an officially-mandated singular standard
+> The claim is _mostly_ correct rather than gospel: it's not an officially-mandated singular standard
 > (svelte.dev still nominally leads with jsdom + @testing-library), and one term was dated — modern
 > spelling is `vitest-browser-svelte` + **`@vitest/browser-playwright`** + `playwright` on **Vitest 4**.
 >
@@ -32,28 +32,28 @@ vitest-browser-svelte docs. Planning artifact; no code was changed.
 
 [`docs/testing.md`](../testing.md) records a deliberate decision **not** to test component rendering
 ("50+ components × prop combos = slow suite, tiny yield; rendering is gated by svelte-check + publint +
-build"). That reasoning holds for *"does it render"* and we keep it. What changes: browser mode lets
-us test *"does it **behave**"* — events, two-way binding, aria/disabled/active state, focus traps,
+build"). That reasoning holds for _"does it render"_ and we keep it. What changes: browser mode lets
+us test _"does it **behave**"_ — events, two-way binding, aria/disabled/active state, focus traps,
 viewport-clamped positioning (cf. the `9d8c974` annotation regression) — which the build does **not**
 cover and which was **previously impossible**. Updating `docs/testing.md` to add this layer is an
 explicit sprint task so the docs don't contradict each other.
 
 ## Top recommendations across all dimensions (ranked)
 
-| Rank | Recommendation | Dimension | Value | Effort | Risk | Why now |
-|------|----------------|-----------|-------|--------|------|---------|
-| 1 | Upgrade vitest 3→4, verify 9 suites green | [01](./01-framework-setup.md) | high | S | med | Gating prerequisite; nothing installs without it |
-| 2 | Add `projects` split (node `server` + browser `client`) + Chromium | [01](./01-framework-setup.md) | high | S | med | The harness; routes by `*.svelte.test.ts` filename |
-| 3 | Separator smoke test — prove client build + `$effect` actually run | [01](./01-framework-setup.md) | high | S | med | Disproves/confirms the documented server-build blocker |
-| 4 | Reconcile `docs/testing.md` (behavior ✅, rendering still ❌) | [02](./02-test-conventions.md) | med | S | low | Keep docs internally consistent before scaling |
-| 5 | Button — flagship; sets every assertion pattern | [03](./03-component-coverage-roadmap.md) | high | S | low | Most-used primitive; template for the rest |
-| 6 | Pill, Switch — events + binding patterns | [03](./03-component-coverage-roadmap.md) | high | S | low | Cover dismiss/toggle/bind once, reuse everywhere |
-| 7 | Spinner, Skeleton, DismissibleMessage, Avatar, Progress | [03](./03-component-coverage-roadmap.md) | high | S | low | Deterministic, high-traffic; quick wins |
-| 8 | **One hard proof** — anchor-position viewport clamp (or focus trap) | [04](./04-hard-cases-and-e2e.md) | high | M | med | Guards a real recent regression; proves browser mode's worth |
-| 9 | Minimal GitHub Actions workflow | [05](./05-ci.md) | high | S | low | Stops broken tests reaching npm; once a few tests pass |
-| 10 | Tier-2 form fields (`FieldInput` first, then the family) | [03](./03-component-coverage-roadmap.md) | med | M | low | Largest component group; one pattern unlocks many |
-| 11 | Portals/focus-traps in browser mode (Modal/Drawer/Backdrop) | [04](./04-hard-cases-and-e2e.md) | med | M | med | High-value a11y contracts; after patterns settle |
-| 12 | Standalone Playwright E2E layer (drag, Milkdown, checkout flows) | [04](./04-hard-cases-and-e2e.md) | med | L | med | Separate later initiative; explicitly out of sprint 1 |
+| Rank | Recommendation                                                      | Dimension                                | Value | Effort | Risk | Why now                                                      |
+| ---- | ------------------------------------------------------------------- | ---------------------------------------- | ----- | ------ | ---- | ------------------------------------------------------------ |
+| 1    | Upgrade vitest 3→4, verify 9 suites green                           | [01](./01-framework-setup.md)            | high  | S      | med  | Gating prerequisite; nothing installs without it             |
+| 2    | Add `projects` split (node `server` + browser `client`) + Chromium  | [01](./01-framework-setup.md)            | high  | S      | med  | The harness; routes by `*.svelte.test.ts` filename           |
+| 3    | Separator smoke test — prove client build + `$effect` actually run  | [01](./01-framework-setup.md)            | high  | S      | med  | Disproves/confirms the documented server-build blocker       |
+| 4    | Reconcile `docs/testing.md` (behavior ✅, rendering still ❌)       | [02](./02-test-conventions.md)           | med   | S      | low  | Keep docs internally consistent before scaling               |
+| 5    | Button — flagship; sets every assertion pattern                     | [03](./03-component-coverage-roadmap.md) | high  | S      | low  | Most-used primitive; template for the rest                   |
+| 6    | Pill, Switch — events + binding patterns                            | [03](./03-component-coverage-roadmap.md) | high  | S      | low  | Cover dismiss/toggle/bind once, reuse everywhere             |
+| 7    | Spinner, Skeleton, DismissibleMessage, Avatar, Progress             | [03](./03-component-coverage-roadmap.md) | high  | S      | low  | Deterministic, high-traffic; quick wins                      |
+| 8    | **One hard proof** — anchor-position viewport clamp (or focus trap) | [04](./04-hard-cases-and-e2e.md)         | high  | M      | med  | Guards a real recent regression; proves browser mode's worth |
+| 9    | Minimal GitHub Actions workflow                                     | [05](./05-ci.md)                         | high  | S      | low  | Stops broken tests reaching npm; once a few tests pass       |
+| 10   | Tier-2 form fields (`FieldInput` first, then the family)            | [03](./03-component-coverage-roadmap.md) | med   | M      | low  | Largest component group; one pattern unlocks many            |
+| 11   | Portals/focus-traps in browser mode (Modal/Drawer/Backdrop)         | [04](./04-hard-cases-and-e2e.md)         | med   | M      | med  | High-value a11y contracts; after patterns settle             |
+| 12   | Standalone Playwright E2E layer (drag, Milkdown, checkout flows)    | [04](./04-hard-cases-and-e2e.md)         | med   | L      | med  | Separate later initiative; explicitly out of sprint 1        |
 
 > **Deliberately deferred as low-yield:** visual-regression / `toMatchScreenshot`, multi-browser
 > (Firefox/WebKit) matrix, and exhaustive prop-matrix coverage. Revisit only if motivated by a real bug.
@@ -65,7 +65,7 @@ Branch: `feat/component-testing`. One commit per task.
 1. **Vitest 4 upgrade (#1)** — `pnpm add -D vitest@^4`, run `pnpm test`, confirm 9 suites green. Why
    first: everything else peer-depends on it; isolating it makes the one risky bump reversible.
 2. **Browser harness (#2, #3)** — add browser deps, the `projects` config, `playwright install
-   chromium`, fix the test scripts, and land the Separator smoke test. Unblocks all component tests
+chromium`, fix the test scripts, and land the Separator smoke test. Unblocks all component tests
    and proves the server-build blocker is gone. Detail in [01](./01-framework-setup.md).
 3. **Reconcile `docs/testing.md` (#4)** — small doc edit so the philosophy matches reality.
 4. **Button (#5)** — establishes the assertion vocabulary ([02](./02-test-conventions.md)) every later

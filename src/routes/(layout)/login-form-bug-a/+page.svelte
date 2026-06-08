@@ -182,9 +182,10 @@
 <h2 class="text-xl font-bold mb-2">Wrapped repro (Issue A — bind:this gotcha)</h2>
 <p class="text-sm opacity-70 mb-4">
 	Same form, but mounted inside a <code>WrappingParent</code> sub-component that flips
-	<code>isSubmitting</code> in <code>finally</code> after a fake (Promise-only) failure. This is
-	the configuration that historically reproduced the silent-retry bug because the parent
-	re-render reset <code>el = $bindable()</code> to <code>undefined</code> and detached the
+	<code>isSubmitting</code> in <code>finally</code> after a fake (Promise-only) failure.
+	This is the configuration that historically reproduced the silent-retry bug because the
+	parent re-render reset <code>el = $bindable()</code> to <code>undefined</code> and
+	detached the
 	<code>submit_valid</code> listener. With the <code>formEl</code> local-state mirror in place,
 	the second click must increment the wrapper's count.
 </p>

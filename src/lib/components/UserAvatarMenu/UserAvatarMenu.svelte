@@ -219,11 +219,7 @@
 	);
 
 	const isDark = $derived(
-		csEnabled
-			? cs.isDark
-				? cs.isDark()
-				: ColorScheme.current === "dark"
-			: false
+		csEnabled ? (cs.isDark ? cs.isDark() : ColorScheme.current === "dark") : false
 	);
 
 	function toggleColorScheme() {

@@ -248,9 +248,8 @@
 	<h2 class="text-lg font-bold mb-2">Imperative validate()</h2>
 	<p class="text-sm opacity-60 mb-4">
 		<code>LoginForm</code> exposes <code>validate()</code> and
-		<code>scrollToFirstError()</code> on its component reference, aggregating the
-		validators of every inner field. Trigger them from any external button — no
-		native form-submit required.
+		<code>scrollToFirstError()</code> on its component reference, aggregating the validators
+		of every inner field. Trigger them from any external button — no native form-submit required.
 	</p>
 
 	<div class="max-w-lg space-y-4">

@@ -348,9 +348,12 @@
 
 <!-- ============== LOGIN AS MODAL (custom tab + title override) ============== -->
 <section class="mb-12">
-	<h2 class="text-lg font-bold mb-2">Login as modal (custom tab label + title override)</h2>
+	<h2 class="text-lg font-bold mb-2">
+		Login as modal (custom tab label + title override)
+	</h2>
 	<p class="text-sm opacity-60 mb-4">
-		Custom <code>loginTabLabel</code> auto-forwards to modal title. Or override with explicit
+		Custom <code>loginTabLabel</code> auto-forwards to modal title. Or override with
+		explicit
 		<code>loginModal.title</code>.
 	</p>
 
@@ -381,10 +384,10 @@
 		With <code>loginOrRegisterModal</code> prop, the login tab opens a
 		<code>LoginOrRegisterFormModal</code>
 		giving consumers all three flows — login, self-registration, and post-register OTP verification
-		— in a single modal. The consumer owns <code>mode</code> / <code>verifyEmail</code> state and
-		flips them in response to backend signals (e.g.,
-		<code>requiresVerification</code>). Use <code>onModeChange</code> to keep external state in sync.
-		Valid OTP for the demo: <code>111111</code>.
+		— in a single modal. The consumer owns <code>mode</code> / <code>verifyEmail</code>
+		state and flips them in response to backend signals (e.g.,
+		<code>requiresVerification</code>). Use <code>onModeChange</code> to keep external
+		state in sync. Valid OTP for the demo: <code>111111</code>.
 	</p>
 
 	<div class="max-w-sm mb-4 space-y-2">

@@ -327,10 +327,10 @@
 <!-- ============== SELECT ALL ACROSS PAGES ============== -->
 <h2 class="text-lg font-bold mb-4">Select All Across Pages</h2>
 <p class="text-sm opacity-70 mb-4">
-	Check all rows on a page to reveal the banner offering to select every result.
-	In all-pages mode, unchecking a row adds it to <code>excluded</code> instead of
-	removing it from <code>selected</code>. Off-page rows are implicitly selected —
-	execute batch operations as server-side filter queries, not by iterating IDs.
+	Check all rows on a page to reveal the banner offering to select every result. In
+	all-pages mode, unchecking a row adds it to <code>excluded</code> instead of removing it
+	from <code>selected</code>. Off-page rows are implicitly selected — execute batch
+	operations as server-side filter queries, not by iterating IDs.
 </p>
 <div>
 	<DataTable

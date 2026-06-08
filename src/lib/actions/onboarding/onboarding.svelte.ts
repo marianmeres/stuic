@@ -2,7 +2,10 @@ import type { Snippet } from "svelte";
 import { spotlight, repositionSpotlight } from "../spotlight/spotlight.svelte.js";
 import type { SpotlightPosition } from "../spotlight/spotlight.svelte.js";
 import type { THC } from "../../components/Thc/Thc.svelte";
-import OnboardingShell, { type Props as ShellProps, type IconFn } from "./OnboardingShell.svelte";
+import OnboardingShell, {
+	type Props as ShellProps,
+	type IconFn,
+} from "./OnboardingShell.svelte";
 import { StorageAbstraction } from "../../utils/storage-abstraction.js";
 
 //
@@ -459,7 +462,10 @@ export type TourInstance = ReturnType<typeof createTour>;
  * <button use:tourStep={[tour, 'save-btn']}>Save</button>
  * ```
  */
-export function tourStep(el: HTMLElement, args: [TourInstance | null | undefined, string]) {
+export function tourStep(
+	el: HTMLElement,
+	args: [TourInstance | null | undefined, string]
+) {
 	const [tour, id] = args;
 	if (!tour) return;
 	tour._registerAction(id);

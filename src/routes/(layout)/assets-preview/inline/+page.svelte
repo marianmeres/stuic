@@ -23,7 +23,11 @@
 	// Clickable areas example
 	const assetsWithAreas: AssetPreview[] = [
 		{
-			url: { thumb: "/assets/00.jpg", full: "/assets/00.jpg", original: "/assets/00.jpg" },
+			url: {
+				thumb: "/assets/00.jpg",
+				full: "/assets/00.jpg",
+				original: "/assets/00.jpg",
+			},
 			name: "image-with-areas.jpg",
 			width: 1000,
 			height: 1500,
@@ -35,21 +39,29 @@
 			],
 		},
 		{
-			url: { thumb: "/assets/01.jpg", full: "/assets/01.jpg", original: "/assets/01.jpg" },
+			url: {
+				thumb: "/assets/01.jpg",
+				full: "/assets/01.jpg",
+				original: "/assets/01.jpg",
+			},
 			name: "another-image.jpg",
 			width: 1000,
 			height: 1500,
-			areas: [
-				{ id: "center", x: 200, y: 400, w: 600, h: 700, label: "Main Product" },
-			],
+			areas: [{ id: "center", x: 200, y: 400, w: 600, h: 700, label: "Main Product" }],
 		},
 		{
-			url: { thumb: "/assets/02.jpg", full: "/assets/02.jpg", original: "/assets/02.jpg" },
+			url: {
+				thumb: "/assets/02.jpg",
+				full: "/assets/02.jpg",
+				original: "/assets/02.jpg",
+			},
 			name: "no-areas.jpg",
 		},
 	];
 
-	let lastClickedArea = $state<{ area: AssetArea; asset: AssetPreviewNormalized } | null>(null);
+	let lastClickedArea = $state<{ area: AssetArea; asset: AssetPreviewNormalized } | null>(
+		null
+	);
 </script>
 
 <div class="w-full h-125 border border-(--stuic-color-border) rounded-lg overflow-hidden">

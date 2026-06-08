@@ -4,14 +4,14 @@ A horizontal or vertical separator line. Renders an accessible `role="separator"
 
 ## Props
 
-| Prop          | Type                         | Default        | Description                                              |
-| ------------- | ---------------------------- | -------------- | -------------------------------------------------------- |
-| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Layout direction. Also published as `data-orientation`.   |
+| Prop          | Type                         | Default        | Description                                                 |
+| ------------- | ---------------------------- | -------------- | ----------------------------------------------------------- |
+| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Layout direction. Also published as `data-orientation`.     |
 | `decorative`  | `boolean`                    | `false`        | Drop `role` + `aria-orientation`, set `aria-hidden="true"`. |
-| `unstyled`    | `boolean`                    | `false`        | Skip all default styling.                                |
-| `class`       | `string`                     | -              | Additional CSS classes.                                  |
-| `style`       | `string`                     | -              | Inline style.                                            |
-| `el`          | `HTMLDivElement`             | -              | Bindable root element.                                   |
+| `unstyled`    | `boolean`                    | `false`        | Skip all default styling.                                   |
+| `class`       | `string`                     | -              | Additional CSS classes.                                     |
+| `style`       | `string`                     | -              | Inline style.                                               |
+| `el`          | `HTMLDivElement`             | -              | Bindable root element.                                      |
 
 ## Usage
 

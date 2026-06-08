@@ -73,9 +73,8 @@
 <h2 class="text-xl font-semibold mb-4">Pure Rounded X (neutral overlay hover)</h2>
 <p class="text-sm text-neutral-500 mb-4">
 	The combination <code>x</code> + <code>variant="ghost"</code> + <code>roundedFull</code>
-	auto-applies a neutral semi-transparent overlay on hover (instead of the intent-tinted
-	ghost hover), so the dismiss-style X reads correctly on any background. Override
-	globally via
+	auto-applies a neutral semi-transparent overlay on hover (instead of the intent-tinted ghost
+	hover), so the dismiss-style X reads correctly on any background. Override globally via
 	<code>--stuic-button-x-bg-hover</code> (light) and <code>:root.dark</code> (dark).
 </p>
 
@@ -135,9 +134,9 @@
 
 <h2 class="text-xl font-semibold mb-4">Nav (prev / next)</h2>
 <p class="text-sm text-neutral-500 mb-4">
-	Shortcut for a normalized prev/next navigation icon button (square, fully rounded,
-	arrow icon). Mirrors the <code>x</code> shortcut pattern. Default icon is an arrow;
-	pass the object form to swap it (e.g. for a chevron). If both <code>x</code> and
+	Shortcut for a normalized prev/next navigation icon button (square, fully rounded, arrow
+	icon). Mirrors the <code>x</code> shortcut pattern. Default icon is an arrow; pass the
+	object form to swap it (e.g. for a chevron). If both <code>x</code> and
 	<code>nav</code>
 	are set,
 	<code>x</code> wins.
@@ -459,18 +458,20 @@
 <h2 class="text-xl font-semibold mb-4">Pill-Shaped with Icon</h2>
 <p class="text-sm text-neutral-500 mb-4">
 	Combine <code>roundedFull</code> with <code>iconEdge="leading"</code> (or
-	<code>"trailing"</code>) plus an icon + visible label for the "rounded icon button
-	with label" pill look, e.g. a "Back" button with a leading prev arrow.
-	<code>iconEdge</code> trims the icon-side horizontal padding down to the vertical
-	padding (size-aware, RTL-aware), so the icon sits the same distance from the edge
-	as a rounded nav icon button.
+	<code>"trailing"</code>) plus an icon + visible label for the "rounded icon button with
+	label" pill look, e.g. a "Back" button with a leading prev arrow.
+	<code>iconEdge</code> trims the icon-side horizontal padding down to the vertical padding
+	(size-aware, RTL-aware), so the icon sits the same distance from the edge as a rounded nav
+	icon button.
 </p>
 
 <div class="space-y-4">
 	<div>
 		<p class="text-sm text-neutral-500 mb-2">Back (leading prev arrow + label):</p>
 		<div class="flex flex-wrap gap-3 items-center">
-			<Button roundedFull iconEdge="leading">{@html iconArrowLeft({ size: 24 })} Back</Button>
+			<Button roundedFull iconEdge="leading"
+				>{@html iconArrowLeft({ size: 24 })} Back</Button
+			>
 			<Button roundedFull iconEdge="leading" intent="primary"
 				>{@html iconArrowLeft({ size: 24 })} Back</Button
 			>
@@ -489,7 +490,9 @@
 	<div>
 		<p class="text-sm text-neutral-500 mb-2">Next (trailing next arrow + label):</p>
 		<div class="flex flex-wrap gap-3 items-center">
-			<Button roundedFull iconEdge="trailing">Next {@html iconArrowRight({ size: 24 })}</Button>
+			<Button roundedFull iconEdge="trailing"
+				>Next {@html iconArrowRight({ size: 24 })}</Button
+			>
 			<Button roundedFull iconEdge="trailing" intent="primary"
 				>Next {@html iconArrowRight({ size: 24 })}</Button
 			>

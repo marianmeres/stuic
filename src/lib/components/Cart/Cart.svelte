@@ -427,7 +427,8 @@
 										type="button"
 										class={!unstyled ? "stuic-cart-remove" : undefined}
 										disabled={isUpdating}
-										aria-label={t("remove_item_aria", { name: item.name }) || t("remove_item")}
+										aria-label={t("remove_item_aria", { name: item.name }) ||
+											t("remove_item")}
 										onclick={() => onRemove?.(item.id)}
 									>
 										{t("remove_item")}

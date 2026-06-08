@@ -4,16 +4,16 @@ Cross-fades between N visual states (HTML strings or Snippets) at a single posit
 
 ## Props
 
-| Prop         | Type                       | Default  | Description                                                                |
-| ------------ | -------------------------- | -------- | -------------------------------------------------------------------------- |
-| `states`     | `Array<string \| Snippet>` | required | The visual states to swap between. Strings are rendered with `{@html}`.    |
-| `active`     | `number`                   | `0`      | Bindable index of the currently visible state.                              |
-| `duration`   | `number`                   | `300`    | Transition duration in ms. Set `0` to disable.                              |
-| `easing`     | `string`                   | `"ease"` | CSS `transition-timing-function`.                                           |
-| `unstyled`   | `boolean`                  | `false`  | Skip default styling.                                                       |
-| `class`      | `string`                   | -        | Additional CSS classes for the root `<span>`.                              |
-| `stateClass` | `string`                   | -        | Additional CSS classes for each state wrapper.                              |
-| `el`         | `HTMLSpanElement`          | -        | Bindable root element.                                                      |
+| Prop         | Type                       | Default  | Description                                                             |
+| ------------ | -------------------------- | -------- | ----------------------------------------------------------------------- |
+| `states`     | `Array<string \| Snippet>` | required | The visual states to swap between. Strings are rendered with `{@html}`. |
+| `active`     | `number`                   | `0`      | Bindable index of the currently visible state.                          |
+| `duration`   | `number`                   | `300`    | Transition duration in ms. Set `0` to disable.                          |
+| `easing`     | `string`                   | `"ease"` | CSS `transition-timing-function`.                                       |
+| `unstyled`   | `boolean`                  | `false`  | Skip default styling.                                                   |
+| `class`      | `string`                   | -        | Additional CSS classes for the root `<span>`.                           |
+| `stateClass` | `string`                   | -        | Additional CSS classes for each state wrapper.                          |
+| `el`         | `HTMLSpanElement`          | -        | Bindable root element.                                                  |
 
 ## Usage
 
@@ -47,15 +47,20 @@ Cross-fades between N visual states (HTML strings or Snippets) at a single posit
 ### Custom easing/duration
 
 ```svelte
-<IconSwap states={frames} active={i} duration={500} easing="cubic-bezier(0.4, 0, 0.2, 1)" />
+<IconSwap
+	states={frames}
+	active={i}
+	duration={500}
+	easing="cubic-bezier(0.4, 0, 0.2, 1)"
+/>
 ```
 
 ## CSS Variables
 
-| Variable                      | Default | Description                |
-| ----------------------------- | ------- | -------------------------- |
-| `--stuic-icon-swap-duration`  | (prop)  | Transition duration         |
-| `--stuic-icon-swap-easing`    | (prop)  | Transition timing function  |
+| Variable                     | Default | Description                |
+| ---------------------------- | ------- | -------------------------- |
+| `--stuic-icon-swap-duration` | (prop)  | Transition duration        |
+| `--stuic-icon-swap-easing`   | (prop)  | Transition timing function |
 
 ## Data Attributes
 

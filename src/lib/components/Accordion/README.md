@@ -93,21 +93,21 @@ Only one item can be open at a time:
 
 ## CSS Variables
 
-| Variable                                | Default                | Description                   |
-| --------------------------------------- | ---------------------- | ----------------------------- |
-| `--stuic-accordion-border-color`        | `--stuic-color-border` | Item separator color          |
-| `--stuic-accordion-border-width`        | `1px`                  | Separator width               |
+| Variable                                | Default                | Description                                   |
+| --------------------------------------- | ---------------------- | --------------------------------------------- |
+| `--stuic-accordion-border-color`        | `--stuic-color-border` | Item separator color                          |
+| `--stuic-accordion-border-width`        | `1px`                  | Separator width                               |
 | `--stuic-accordion-divider-inset`       | `0`                    | Inset of divider from L/R edges (e.g. `16px`) |
-| `--stuic-accordion-radius`              | `--radius-md`          | Corner rounding               |
-| `--stuic-accordion-transition`          | `200ms`                | Open/close animation duration |
-| `--stuic-accordion-trigger-padding-x`   | `1rem`                 | Trigger horizontal padding    |
-| `--stuic-accordion-trigger-padding-y`   | `0.75rem`              | Trigger vertical padding      |
-| `--stuic-accordion-trigger-font-weight` | `--font-weight-medium` | Trigger text weight           |
-| `--stuic-accordion-trigger-bg`          | `transparent`          | Trigger background            |
-| `--stuic-accordion-trigger-bg-hover`    | muted mix              | Trigger hover background      |
-| `--stuic-accordion-chevron-size`        | `16px`                 | Chevron icon size             |
-| `--stuic-accordion-chevron-color`       | `currentColor`         | Chevron icon color            |
-| `--stuic-accordion-content-padding-x`   | `1rem`                 | Content horizontal padding    |
-| `--stuic-accordion-content-padding-y`   | `0.75rem`              | Content vertical padding      |
-| `--stuic-accordion-ring-width`          | `2px`                  | Focus ring width              |
-| `--stuic-accordion-ring-color`          | `--stuic-color-ring`   | Focus ring color              |
+| `--stuic-accordion-radius`              | `--radius-md`          | Corner rounding                               |
+| `--stuic-accordion-transition`          | `200ms`                | Open/close animation duration                 |
+| `--stuic-accordion-trigger-padding-x`   | `1rem`                 | Trigger horizontal padding                    |
+| `--stuic-accordion-trigger-padding-y`   | `0.75rem`              | Trigger vertical padding                      |
+| `--stuic-accordion-trigger-font-weight` | `--font-weight-medium` | Trigger text weight                           |
+| `--stuic-accordion-trigger-bg`          | `transparent`          | Trigger background                            |
+| `--stuic-accordion-trigger-bg-hover`    | muted mix              | Trigger hover background                      |
+| `--stuic-accordion-chevron-size`        | `16px`                 | Chevron icon size                             |
+| `--stuic-accordion-chevron-color`       | `currentColor`         | Chevron icon color                            |
+| `--stuic-accordion-content-padding-x`   | `1rem`                 | Content horizontal padding                    |
+| `--stuic-accordion-content-padding-y`   | `0.75rem`              | Content vertical padding                      |
+| `--stuic-accordion-ring-width`          | `2px`                  | Focus ring width                              |
+| `--stuic-accordion-ring-color`          | `--stuic-color-ring`   | Focus ring color                              |
