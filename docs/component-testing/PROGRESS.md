@@ -47,7 +47,7 @@ Branch: `feat/component-testing`
 
 - [x] H — `H.svelte.test.ts` (8 tests)
 - [x] KbdShortcut — `KbdShortcut.svelte.test.ts` (6 tests)
-- [ ] ButtonGroupRadio
+- [x] ButtonGroupRadio — `ButtonGroupRadio.svelte.test.ts`
 - [ ] ListItemButton
 - [ ] Card
 - [ ] TabbedMenu
