@@ -22,8 +22,8 @@ Branch: `feat/component-testing`
 | 5 | **Pill** — intent/active/dismissible event | [03](./03-component-coverage-roadmap.md) #2 | ✅ | `2992faf` |
 | 6 | **Switch** — checked binding, toggle, disabled | [03](./03-component-coverage-roadmap.md) #3 | ✅ | `6aa1771` |
 | 7 | **Spinner** — size/count/direction | [03](./03-component-coverage-roadmap.md) #4 | ✅ | `485b764` |
-| 8 | **Skeleton** — variants, reduced-motion | [03](./03-component-coverage-roadmap.md) #5 | ✅ | _this_ |
-| 9 | **DismissibleMessage** — intent, dismiss, auto-reset | [03](./03-component-coverage-roadmap.md) #6 | ⬜ | — |
+| 8 | **Skeleton** — variants, reduced-motion | [03](./03-component-coverage-roadmap.md) #5 | ✅ | `ff8bd7e` |
+| 9 | **DismissibleMessage** — intent, dismiss, auto-reset | [03](./03-component-coverage-roadmap.md) #6 | ✅ | _this_ |
 | 10 | **Avatar** — initials/img/icon fallback, autoColor | [03](./03-component-coverage-roadmap.md) #7 | ⬜ | — |
 | 11 | **Progress** — value→width/stroke (real layout) | [03](./03-component-coverage-roadmap.md) #8 | ⬜ | — |
 | 12 | **Hard proof** — anchor-position viewport clamp (rec.) *or* focus trap | [04](./04-hard-cases-and-e2e.md) | ⏸️ | — |
