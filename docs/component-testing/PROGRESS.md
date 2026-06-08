@@ -21,8 +21,8 @@ Branch: `feat/component-testing`
 | 4 | **Button** — flagship; establish assertion patterns | [03](./03-component-coverage-roadmap.md) #1 | ✅ | `9485e97` |
 | 5 | **Pill** — intent/active/dismissible event | [03](./03-component-coverage-roadmap.md) #2 | ✅ | `2992faf` |
 | 6 | **Switch** — checked binding, toggle, disabled | [03](./03-component-coverage-roadmap.md) #3 | ✅ | `6aa1771` |
-| 7 | **Spinner** — size/count/direction | [03](./03-component-coverage-roadmap.md) #4 | ✅ | _this_ |
-| 8 | **Skeleton** — variants, reduced-motion | [03](./03-component-coverage-roadmap.md) #5 | ⬜ | — |
+| 7 | **Spinner** — size/count/direction | [03](./03-component-coverage-roadmap.md) #4 | ✅ | `485b764` |
+| 8 | **Skeleton** — variants, reduced-motion | [03](./03-component-coverage-roadmap.md) #5 | ✅ | _this_ |
 | 9 | **DismissibleMessage** — intent, dismiss, auto-reset | [03](./03-component-coverage-roadmap.md) #6 | ⬜ | — |
 | 10 | **Avatar** — initials/img/icon fallback, autoColor | [03](./03-component-coverage-roadmap.md) #7 | ⬜ | — |
 | 11 | **Progress** — value→width/stroke (real layout) | [03](./03-component-coverage-roadmap.md) #8 | ⬜ | — |
@@ -50,6 +50,7 @@ Branch: `feat/component-testing`
 - **2026-06-08** — **CI: yes, minimal GitHub Actions**, added late in the sprint once a few component tests pass locally.
 - **2026-06-08** — **Config lives in `vite.config.ts`** (extend with a `test` block) rather than a separate `vitest.config.ts` — minimal change.
 - **2026-06-08** — Task 1 done: **vitest 4.1.8** installed (vite already `^7.3.5`, compatible); all 9 node suites / 59 tests pass unchanged. `--dir src/` still supported in v4.
+- **2026-06-08** — Tasks 4–8 done (Button/Pill/Switch/Spinner/Skeleton). Drafted in parallel via a subagent workflow, then each verified in isolation + a full-suite gate before commit. **`prefers-reduced-motion`** has no simple per-test API in vitest browser mode → Skeleton omits that assertion (asserts always-on markup instead); revisit if Playwright context emulation is wired up. **Snippet `text()` helper kept inline per-file** (no shared util yet) — re-evaluate if it spreads further. **`testTimeout` 2000→5000ms** (`da9805f`): a multi-click reactive test (Switch) intermittently timed out under full-suite Chromium contention while green in isolation. Added `.vitest-attachments`/`__screenshots__` to `.gitignore` (`6294e63`).
 - **2026-06-08** — Task 2 done: harness works. Deps: `@vitest/browser-playwright 4.1.8`, `playwright 1.60.0`, `vitest-browser-svelte 2.1.1`. `projects` split added to `vite.config.ts`; scripts now `test` = `vitest run` (+ `test:watch`, `test:ui`). Separator smoke test (3 assertions) passes in Chromium → **10 files / 62 tests green**, `pnpm check` clean (0 errors). **The documented SvelteKit-plugin/server-build blocker is resolved** — browser mode resolves the client build, `toHaveClass("stuic-separator")` confirms tailwind + the client runtime run. No `client`-project plugin fallback needed.
 - **⏸️ Open (task 12):** which single hard proof — anchor-position clamp (recommended, guards the `9d8c974` regression) vs focus trap.
 - **⏸️ Open (task 13):** `packageManager` field vs pinned pnpm version in the CI action; Node version to pin.
