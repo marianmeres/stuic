@@ -16,9 +16,7 @@ function rootLocator(container: HTMLElement) {
 }
 
 function bars(container: HTMLElement) {
-	return Array.from(
-		container.querySelectorAll<HTMLElement>(".stuic-spinner-bar"),
-	);
+	return Array.from(container.querySelectorAll<HTMLElement>(".stuic-spinner-bar"));
 }
 
 // jest-dom's toHaveStyle cannot parse CSS custom properties, so read the

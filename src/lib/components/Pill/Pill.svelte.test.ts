@@ -44,9 +44,7 @@ test("active reflects data-active=true", async () => {
 		active: true,
 		"data-testid": "pill",
 	});
-	await expect
-		.element(screen.getByTestId("pill"))
-		.toHaveAttribute("data-active", "true");
+	await expect.element(screen.getByTestId("pill")).toHaveAttribute("data-active", "true");
 });
 
 test("href renders an anchor with data-interactive", async () => {

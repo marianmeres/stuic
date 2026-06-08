@@ -28,17 +28,13 @@ test("renders the label track and the hidden checkbox input", async () => {
 test("checked=true is reflected in the input and the data-checked attribute", async () => {
 	const screen = render(Switch, { "data-testid": "sw", checked: true });
 	await expect.element(screen.getByRole("checkbox")).toBeChecked();
-	await expect
-		.element(screen.getByTestId("sw"))
-		.toHaveAttribute("data-checked", "true");
+	await expect.element(screen.getByTestId("sw")).toHaveAttribute("data-checked", "true");
 });
 
 test("checked=false leaves the input unchecked with data-checked=false", async () => {
 	const screen = render(Switch, { "data-testid": "sw", checked: false });
 	await expect.element(screen.getByRole("checkbox")).not.toBeChecked();
-	await expect
-		.element(screen.getByTestId("sw"))
-		.toHaveAttribute("data-checked", "false");
+	await expect.element(screen.getByTestId("sw")).toHaveAttribute("data-checked", "false");
 });
 
 test("clicking the track toggles the input checked state (reactivity proof)", async () => {
@@ -50,16 +46,12 @@ test("clicking the track toggles the input checked state (reactivity proof)", as
 	// checkbox.checked and dispatches a native "change" that drives bind:checked.
 	await screen.getByTestId("sw").click(HIT);
 	await expect.element(input).toBeChecked();
-	await expect
-		.element(screen.getByTestId("sw"))
-		.toHaveAttribute("data-checked", "true");
+	await expect.element(screen.getByTestId("sw")).toHaveAttribute("data-checked", "true");
 
 	// Toggle back.
 	await screen.getByTestId("sw").click(HIT);
 	await expect.element(input).not.toBeChecked();
-	await expect
-		.element(screen.getByTestId("sw"))
-		.toHaveAttribute("data-checked", "false");
+	await expect.element(screen.getByTestId("sw")).toHaveAttribute("data-checked", "false");
 });
 
 test("onclick callback fires once when the track is clicked", async () => {
@@ -80,9 +72,7 @@ test("disabled marks the input disabled and sets data-disabled", async () => {
 	// the disabled contract directly. The label's onclick also early-returns on
 	// `disabled`, so no toggle could occur anyway.
 	await expect.element(screen.getByRole("checkbox")).toBeDisabled();
-	await expect
-		.element(screen.getByTestId("sw"))
-		.toHaveAttribute("data-disabled", "true");
+	await expect.element(screen.getByTestId("sw")).toHaveAttribute("data-disabled", "true");
 });
 
 test("intent is reflected via the data-intent attribute", async () => {

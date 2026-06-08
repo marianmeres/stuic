@@ -8,14 +8,18 @@ import { buildPositionTryFallbacks } from "./anchor-position.js";
 const FLIPS = "flip-block, flip-inline, flip-block flip-inline";
 
 test("top/bottom append inline span-left/span-right variants", () => {
-	expect(buildPositionTryFallbacks("top")).toBe(`${FLIPS}, top span-left, top span-right`);
+	expect(buildPositionTryFallbacks("top")).toBe(
+		`${FLIPS}, top span-left, top span-right`
+	);
 	expect(buildPositionTryFallbacks("bottom")).toBe(
 		`${FLIPS}, bottom span-left, bottom span-right`
 	);
 });
 
 test("left/right append block span-top/span-bottom variants", () => {
-	expect(buildPositionTryFallbacks("left")).toBe(`${FLIPS}, left span-top, left span-bottom`);
+	expect(buildPositionTryFallbacks("left")).toBe(
+		`${FLIPS}, left span-top, left span-bottom`
+	);
 	expect(buildPositionTryFallbacks("right")).toBe(
 		`${FLIPS}, right span-top, right span-bottom`
 	);

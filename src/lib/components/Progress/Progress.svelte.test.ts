@@ -63,7 +63,10 @@ test("bar: progress is clamped to [0,100] in the inline width", async () => {
 });
 
 test("bar: classBar is merged onto the inner .bar (twMerge keeps base class)", async () => {
-	const { container } = await render(Progress, { progress: 10, classBar: "my-bar-extra" });
+	const { container } = await render(Progress, {
+		progress: 10,
+		classBar: "my-bar-extra",
+	});
 	const innerBar = el(container, ".bar");
 	await expect.element(innerBar).toHaveClass("bar");
 	await expect.element(innerBar).toHaveClass("my-bar-extra");
@@ -87,16 +90,13 @@ test("circle: progress -> stroke-dasharray (circumference) and computed stroke-d
 	// The progress arc is the LAST <circle> (a bg circle is prepended because
 	// bgStrokeColor is set). Its dasharray is the full circumference, and its
 	// dashoffset = circumference * (1 - progress/100).
-	const circles = () =>
-		container.querySelectorAll(".stuic-progress-circle svg circle");
+	const circles = () => container.querySelectorAll(".stuic-progress-circle svg circle");
 
 	// wait for the SVG to be mounted (two circles: bg + progress)
 	await expect.poll(() => circles().length).toBeGreaterThanOrEqual(2);
 
 	const arc = page.elementLocator(circles()[circles().length - 1]);
-	await expect
-		.element(arc)
-		.toHaveAttribute("stroke-dasharray", String(CIRCUMFERENCE));
+	await expect.element(arc).toHaveAttribute("stroke-dasharray", String(CIRCUMFERENCE));
 	// progress=50 -> completeness 0.5 -> offset = circumference * 0.5
 	await expect
 		.element(arc)
@@ -105,15 +105,12 @@ test("circle: progress -> stroke-dasharray (circumference) and computed stroke-d
 
 test("circle: progress=0 leaves the arc fully offset (empty ring)", async () => {
 	const { container } = await render(Progress, { type: "circle", progress: 0 });
-	const circles = () =>
-		container.querySelectorAll(".stuic-progress-circle svg circle");
+	const circles = () => container.querySelectorAll(".stuic-progress-circle svg circle");
 	await expect.poll(() => circles().length).toBeGreaterThanOrEqual(2);
 
 	const arc = page.elementLocator(circles()[circles().length - 1]);
 	// completeness 0 -> dashoffset == circumference (full circle hidden)
-	await expect
-		.element(arc)
-		.toHaveAttribute("stroke-dashoffset", String(CIRCUMFERENCE));
+	await expect.element(arc).toHaveAttribute("stroke-dashoffset", String(CIRCUMFERENCE));
 });
 
 test("class prop is merged onto the chosen variant root", async () => {
