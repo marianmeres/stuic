@@ -27,7 +27,7 @@ Branch: `feat/component-testing`
 | 10 | **Avatar** — initials/img/icon fallback, autoColor | [03](./03-component-coverage-roadmap.md) #7 | ✅ | `43ed174` |
 | 11 | **Progress** — value→width/stroke (real layout) | [03](./03-component-coverage-roadmap.md) #8 | ✅ | `c8cc0ef` |
 | 12 | **Hard proof** — anchor-position viewport clamp | [04](./04-hard-cases-and-e2e.md) | ✅ | `5ae4470` |
-| 13 | CI — minimal GitHub Actions `test.yml` (test + check jobs) | [05](./05-ci.md) | ✅ | _this_ |
+| 13 | CI — minimal GitHub Actions `test.yml` (test + check jobs) | [05](./05-ci.md) | ✅ | `a61b8cb` |
 
 **🎉 First sprint complete** (tasks 1–13). 146 tests green (node + Chromium browser), `pnpm check` clean, CI in place. Next: pick up the backlog below.
 
