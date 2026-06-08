@@ -19,8 +19,8 @@ Branch: `feat/component-testing`
 | 2 | Browser harness: add deps, `projects` config split, `playwright install chromium`, fix test scripts, Separator smoke test | [01](./01-framework-setup.md) Steps 2–5 | ✅ | `980b323` |
 | 3 | Reconcile [`docs/testing.md`](../testing.md) — add the browser-behavior layer | [02](./02-test-conventions.md) | ✅ | `977c431` |
 | 4 | **Button** — flagship; establish assertion patterns | [03](./03-component-coverage-roadmap.md) #1 | ✅ | `9485e97` |
-| 5 | **Pill** — intent/active/dismissible event | [03](./03-component-coverage-roadmap.md) #2 | ✅ | _this_ |
-| 6 | **Switch** — checked binding, toggle, disabled | [03](./03-component-coverage-roadmap.md) #3 | ⬜ | — |
+| 5 | **Pill** — intent/active/dismissible event | [03](./03-component-coverage-roadmap.md) #2 | ✅ | `2992faf` |
+| 6 | **Switch** — checked binding, toggle, disabled | [03](./03-component-coverage-roadmap.md) #3 | ✅ | _this_ |
 | 7 | **Spinner** — size/count/direction | [03](./03-component-coverage-roadmap.md) #4 | ⬜ | — |
 | 8 | **Skeleton** — variants, reduced-motion | [03](./03-component-coverage-roadmap.md) #5 | ⬜ | — |
 | 9 | **DismissibleMessage** — intent, dismiss, auto-reset | [03](./03-component-coverage-roadmap.md) #6 | ⬜ | — |
