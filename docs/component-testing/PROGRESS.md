@@ -62,7 +62,7 @@ Field\* family (all under `Input/`, co-located `*.svelte.test.ts`):
 - [x] FieldTextarea — textarea + trim/validate + autogrow (11 tests)
 - [x] FieldCheckbox — native checkbox, checked/toggle, validate-on-interaction (8 tests)
 - [x] FieldSwitch — wraps Switch in InputWrap; checked/toggle (off-center click), disabled (9 tests)
-- [ ] FieldRadios
+- [x] FieldRadios — radio group, value binding, selection moves on click (7 tests)
 - [ ] FieldSelect
 - [ ] FieldLikeButton
 - [ ] FieldPhoneNumber
