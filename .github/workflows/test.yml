@@ -1,0 +1,48 @@
+name: test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # pnpm version is read from package.json "packageManager" (pnpm@11.5.0).
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Browser-mode tests need a real Chromium (+ its OS libs) on the runner.
+      - name: Install Chromium for browser tests
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run tests (node + browser projects)
+        run: pnpm test # = "vitest run", both projects headless
+
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Type/Svelte check only. `pnpm lint` (eslint + prettier) is deferred until
+      # the repo's pre-existing lint debt is cleared — see PROGRESS.md backlog.
+      - name: svelte-check
+        run: pnpm check

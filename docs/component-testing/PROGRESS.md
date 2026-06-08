@@ -26,8 +26,10 @@ Branch: `feat/component-testing`
 | 9 | **DismissibleMessage** — intent, dismiss, auto-reset | [03](./03-component-coverage-roadmap.md) #6 | ✅ | `c520780` |
 | 10 | **Avatar** — initials/img/icon fallback, autoColor | [03](./03-component-coverage-roadmap.md) #7 | ✅ | `43ed174` |
 | 11 | **Progress** — value→width/stroke (real layout) | [03](./03-component-coverage-roadmap.md) #8 | ✅ | `c8cc0ef` |
-| 12 | **Hard proof** — anchor-position viewport clamp | [04](./04-hard-cases-and-e2e.md) | ✅ | _this_ |
-| 13 | CI — minimal GitHub Actions `test.yml` | [05](./05-ci.md) | ⬜ | — |
+| 12 | **Hard proof** — anchor-position viewport clamp | [04](./04-hard-cases-and-e2e.md) | ✅ | `5ae4470` |
+| 13 | CI — minimal GitHub Actions `test.yml` (test + check jobs) | [05](./05-ci.md) | ✅ | _this_ |
+
+**🎉 First sprint complete** (tasks 1–13). 146 tests green (node + Chromium browser), `pnpm check` clean, CI in place. Next: pick up the backlog below.
 
 ## Backlog (ranked, post-sprint)
 
@@ -38,7 +40,7 @@ Branch: `feat/component-testing`
 | 16 | Portals/focus-traps in browser mode (Modal, ModalDialog, Backdrop, Drawer, AlertConfirmPrompt) | [04](./04-hard-cases-and-e2e.md) | ⬜ |
 | 17 | Anchor-positioned menus (DropdownMenu, CommandMenu, UserAvatarMenu) + extract search logic to `_internal` | [04](./04-hard-cases-and-e2e.md) | ⬜ |
 | 18 | Standalone Playwright E2E layer (drag: Tree/FieldOptions/FieldFile; Milkdown; Checkout/auth flows) | [04](./04-hard-cases-and-e2e.md) | ⏭️ |
-| 19 | Add `pnpm check` + `pnpm lint` as a second CI job | [05](./05-ci.md) | ⬜ |
+| 19 | Clear the repo's **pre-existing lint debt** (8 eslint errors + 119 prettier files), then add a **`pnpm lint`** CI job. (`pnpm check` already runs in CI as of task 13.) | [05](./05-ci.md) | ⬜ |
 | 20 | (Maybe) visual-regression via `toMatchScreenshot`; multi-browser matrix | [00](./00-overview-and-roadmap.md) | ⏭️ |
 
 ## Decisions log
@@ -53,7 +55,7 @@ Branch: `feat/component-testing`
 - **2026-06-08** — Tasks 4–8 done (Button/Pill/Switch/Spinner/Skeleton). Drafted in parallel via a subagent workflow, then each verified in isolation + a full-suite gate before commit. **`prefers-reduced-motion`** has no simple per-test API in vitest browser mode → Skeleton omits that assertion (asserts always-on markup instead); revisit if Playwright context emulation is wired up. **Snippet `text()` helper kept inline per-file** (no shared util yet) — re-evaluate if it spreads further. **`testTimeout` 2000→5000ms** (`da9805f`): a multi-click reactive test (Switch) intermittently timed out under full-suite Chromium contention while green in isolation. Added `.vitest-attachments`/`__screenshots__` to `.gitignore` (`6294e63`).
 - **2026-06-08** — Task 2 done: harness works. Deps: `@vitest/browser-playwright 4.1.8`, `playwright 1.60.0`, `vitest-browser-svelte 2.1.1`. `projects` split added to `vite.config.ts`; scripts now `test` = `vitest run` (+ `test:watch`, `test:ui`). Separator smoke test (3 assertions) passes in Chromium → **10 files / 62 tests green**, `pnpm check` clean (0 errors). **The documented SvelteKit-plugin/server-build blocker is resolved** — browser mode resolves the client build, `toHaveClass("stuic-separator")` confirms tailwind + the client runtime run. No `client`-project plugin fallback needed.
 - **2026-06-08** — Task 12 resolved (owner): **anchor-position viewport clamp** as the single hard proof. `clampIntoViewport` gets a browser test (`utils/anchor-position.svelte.test.ts`, 8 tests — real `getBoundingClientRect` + `window.inner*`, jsdom-impossible, guards `9d8c974`); the pure `buildPositionTryFallbacks` math gets a fast node companion (`utils/anchor-position.test.ts`, 3 tests). Focus trap deferred to the portals/focus-trap backlog (#16).
-- **⏸️ Open (task 13):** `packageManager` field vs pinned pnpm version in the CI action; Node version to pin.
+- **2026-06-08** — Task 13 resolved (owner): CI is `.github/workflows/test.yml` with **two jobs** — `test` (installs Chromium via `playwright install --with-deps chromium`, runs `pnpm test`) and `check` (`pnpm check` / svelte-check). **pnpm pinned via `packageManager: "pnpm@11.5.0"`** in package.json (auto-read by `pnpm/action-setup@v4`); **Node 22** on both jobs. **`pnpm lint` deferred** (owner): the repo has pre-existing lint debt (8 eslint errors + 119 prettier files) unrelated to this sprint → folded into backlog #19 (clean up, then add the lint job) rather than shipping a red-on-arrival CI. Local parity verified: `pnpm install --frozen-lockfile` ✓, `pnpm test` (146) ✓, `pnpm check` (0 errors) ✓.
 
 ## How to resume (for a fresh conversation)
 
