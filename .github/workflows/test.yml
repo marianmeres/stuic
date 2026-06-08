@@ -42,7 +42,8 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # Type/Svelte check only. `pnpm lint` (eslint + prettier) is deferred until
-      # the repo's pre-existing lint debt is cleared — see PROGRESS.md backlog.
       - name: svelte-check
         run: pnpm check
+
+      - name: lint (eslint + prettier)
+        run: pnpm lint
