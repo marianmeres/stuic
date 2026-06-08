@@ -38,7 +38,7 @@ Branch: `feat/component-testing`
 | 14   | Rest of Tier 1 (Separator already smoke-tested · H, KbdShortcut, ButtonGroupRadio, ListItemButton, Card, TabbedMenu, IconSwap, Collapsible)                             | [03](./03-component-coverage-roadmap.md) #10–17 | ✅     |
 | 15   | Tier 2 — `FieldInput` first, then the Field\* family + OtpInput, Nav, etc.                                                                                              | [03](./03-component-coverage-roadmap.md)        | 🚧     |
 | 16   | Portals/focus-traps in browser mode (Modal, ModalDialog, Backdrop, Drawer, AlertConfirmPrompt)                                                                          | [04](./04-hard-cases-and-e2e.md)                | ✅     |
-| 17   | Anchor-positioned menus (DropdownMenu, CommandMenu, UserAvatarMenu) + extract search logic to `_internal`                                                               | [04](./04-hard-cases-and-e2e.md)                | 🚧     |
+| 17   | Anchor-positioned menus (DropdownMenu, CommandMenu, UserAvatarMenu) + extract search logic to `_internal`                                                               | [04](./04-hard-cases-and-e2e.md)                | ✅     |
 | 18   | Standalone Playwright E2E layer (drag: Tree/FieldOptions/FieldFile; Milkdown; Checkout/auth flows)                                                                      | [04](./04-hard-cases-and-e2e.md)                | ⏭️     |
 | 19   | Clear the repo's **pre-existing lint debt** (8 eslint errors + 119 prettier files), then add a **`pnpm lint`** CI job. (`pnpm check` already runs in CI as of task 13.) | [05](./05-ci.md)                                | ✅     |
 | 20   | (Maybe) visual-regression via `toMatchScreenshot`; multi-browser matrix                                                                                                 | [00](./00-overview-and-roadmap.md)              | ⏭️     |
@@ -101,12 +101,25 @@ behavioral yield; revisit in a focused follow-up. Moving on to backlog #16/#17.
 
 - [x] Extract search logic to `_internal` — `DropdownMenu/_internal/dropdown-menu-search.ts` +
       `CommandMenu/_internal/command-menu-utils.ts`, node-tested (14 tests); components refactored to import
-- [ ] DropdownMenu (browser)
-- [ ] CommandMenu (browser)
-- [ ] UserAvatarMenu (browser)
+- [x] DropdownMenu (browser) — trigger/aria-expanded, role=menu + menuitems, select+close, Escape, search filter (7 tests)
+- [x] CommandMenu (browser) — fixture + imperative open, search box, type→debounced getOptions→options, select (4 tests)
+- [x] UserAvatarMenu (browser) — authed/unauth trigger labels, header tile, Logout/Login/Register + color-scheme item (8 tests)
 
 ## Decisions log
 
+- **2026-06-08** — **Backlog #15/#16/#17 done (this session).** Tier-2 core (16 components), portals/
+  focus-traps (#16: focus-trap action proof + Backdrop/Modal/Drawer/ModalDialog/AlertConfirmPrompt), and
+  anchor menus (#17: DropdownMenu/CommandMenu/UserAvatarMenu) — all browser-mode, drafted+adversarially-
+  reviewed in parallel workflows, then verified against real Chromium + full-suite gate before per-component
+  commits. **426 tests** green; `pnpm check`/`lint`/`test` clean. Key learnings: (a) **`page.elementLocator`
+  snapshots an element by its text** — it goes stale if the element's content changes (PricingTable toggle);
+  poll the live node's `textContent` instead. (b) **A Playwright `.click()` on an element that synchronously
+  removes itself orphans a "Cancelled" rejection** (non-zero exit) — use a native `el.click()` for
+  self-closing menuitems; ModalDialog-based closes are async so they're unaffected. (c) `getByRole("list")/
+  ("listitem")` is ambiguous when a `<ul>`/`<li>` is nested — scope by class. (d) **Task 15: 5 heavy/low-yield
+  components postponed** (Nav, ThemePreview, AppShell/AppShellSimple, AssetsPreview, Notifications). (e)
+  **#17 refactor:** pure search logic extracted to `DropdownMenu/_internal/dropdown-menu-search.ts` +
+  `CommandMenu/_internal/command-menu-utils.ts`, node-tested (14 tests).
 - **2026-06-08** — **Backlog #14 done (rest of Tier 1).** 8 components, one commit each: H, KbdShortcut,
   ButtonGroupRadio, ListItemButton, Card, TabbedMenu, IconSwap, Collapsible (+64 tests → **210 total**,
   `pnpm test`/`check`/`lint` all green). Drafted+adversarially-reviewed in parallel via a subagent
