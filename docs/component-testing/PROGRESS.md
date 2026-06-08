@@ -24,8 +24,8 @@ Branch: `feat/component-testing`
 | 7 | **Spinner** — size/count/direction | [03](./03-component-coverage-roadmap.md) #4 | ✅ | `485b764` |
 | 8 | **Skeleton** — variants, reduced-motion | [03](./03-component-coverage-roadmap.md) #5 | ✅ | `ff8bd7e` |
 | 9 | **DismissibleMessage** — intent, dismiss, auto-reset | [03](./03-component-coverage-roadmap.md) #6 | ✅ | `c520780` |
-| 10 | **Avatar** — initials/img/icon fallback, autoColor | [03](./03-component-coverage-roadmap.md) #7 | ✅ | _this_ |
-| 11 | **Progress** — value→width/stroke (real layout) | [03](./03-component-coverage-roadmap.md) #8 | ⬜ | — |
+| 10 | **Avatar** — initials/img/icon fallback, autoColor | [03](./03-component-coverage-roadmap.md) #7 | ✅ | `43ed174` |
+| 11 | **Progress** — value→width/stroke (real layout) | [03](./03-component-coverage-roadmap.md) #8 | ✅ | _this_ |
 | 12 | **Hard proof** — anchor-position viewport clamp (rec.) *or* focus trap | [04](./04-hard-cases-and-e2e.md) | ⏸️ | — |
 | 13 | CI — minimal GitHub Actions `test.yml` | [05](./05-ci.md) | ⬜ | — |
 
