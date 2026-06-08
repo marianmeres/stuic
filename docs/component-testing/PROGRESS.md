@@ -35,7 +35,7 @@ Branch: `feat/component-testing`
 
 | Rank | Task                                                                                                                                                                    | Source                                          | Status |
 | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- | ------ |
-| 14   | Rest of Tier 1 (Separator already smoke-tested · H, KbdShortcut, ButtonGroupRadio, ListItemButton, Card, TabbedMenu, IconSwap, Collapsible)                             | [03](./03-component-coverage-roadmap.md) #10–17 | 🚧     |
+| 14   | Rest of Tier 1 (Separator already smoke-tested · H, KbdShortcut, ButtonGroupRadio, ListItemButton, Card, TabbedMenu, IconSwap, Collapsible)                             | [03](./03-component-coverage-roadmap.md) #10–17 | ✅     |
 | 15   | Tier 2 — `FieldInput` first, then the Field\* family + OtpInput, Nav, etc.                                                                                              | [03](./03-component-coverage-roadmap.md)        | ⬜     |
 | 16   | Portals/focus-traps in browser mode (Modal, ModalDialog, Backdrop, Drawer, AlertConfirmPrompt)                                                                          | [04](./04-hard-cases-and-e2e.md)                | ⬜     |
 | 17   | Anchor-positioned menus (DropdownMenu, CommandMenu, UserAvatarMenu) + extract search logic to `_internal`                                                               | [04](./04-hard-cases-and-e2e.md)                | ⬜     |
@@ -52,10 +52,23 @@ Branch: `feat/component-testing`
 - [x] Card — `Card.svelte.test.ts`
 - [x] TabbedMenu — `TabbedMenu.svelte.test.ts`
 - [x] IconSwap — `IconSwap.svelte.test.ts`
-- [ ] Collapsible
+- [x] Collapsible — `Collapsible.svelte.test.ts` (the browser-only star: real `scrollHeight > clientHeight`)
 
 ## Decisions log
 
+- **2026-06-08** — **Backlog #14 done (rest of Tier 1).** 8 components, one commit each: H, KbdShortcut,
+  ButtonGroupRadio, ListItemButton, Card, TabbedMenu, IconSwap, Collapsible (+64 tests → **210 total**,
+  `pnpm test`/`check`/`lint` all green). Drafted+adversarially-reviewed in parallel via a subagent
+  workflow, then verified against real Chromium + a full-suite gate before committing each. Notable
+  findings: (1) **the browser test env loads NO component/Tailwind CSS** (setupFiles is only
+  `vitest-browser-svelte`; nothing imports the stuic aggregator stylesheet) — only inline styles the
+  component emits directly are reliable. **Collapsible** therefore injects the `line-clamp-{n}` rules
+  Tailwind would generate (via `beforeAll` + a `<style>` tag) so its genuine browser-only measurement
+  (`scrollHeight > clientHeight`) can run; everything else asserts `data-*`/class presence, never
+  computed external-class styles. (2) **Card**'s `horizontal` variant auto-switches to `vertical` below
+  `horizontalThreshold` (480px) — tests pass `horizontalThreshold={0}` to assert the raw variant.
+  (3) **IconSwap** omits the motion-dependent `300ms` duration assertion (no per-test
+  `prefers-reduced-motion` API — cf. the Skeleton decision); asserts `duration:0`/easing CSS vars instead.
 - **2026-06-08** — Adopt **Vitest 4 Browser Mode + `vitest-browser-svelte` + `@vitest/browser-playwright` (Chromium)** — verified the right default for a component library whose value is DOM/layout/focus behavior the current node/server-build setup can't test.
 - **2026-06-08** — **Take the vitest 3→4 major upgrade now** (gating prerequisite) — `vitest-browser-svelte@^2` peer-requires `vitest ^4`; the vitest-3-compatible `0.1.0` is a dead-end.
 - **2026-06-08** — **Scope:** easy warm-up (Button/Pill/Switch/…) then **one** hard proof — not full coverage up front.
