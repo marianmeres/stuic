@@ -74,8 +74,13 @@ test("disabled disables the checkbox", async () => {
 
 test("validate: checking an invalid box renders the message; unchecking clears it", async () => {
 	// keyed off the element's live checked state: invalid while checked
-	const customValidator = vi.fn((_v: unknown, _ctx: unknown, el: HTMLInputElement) =>
-		el.checked ? "no good" : undefined
+	// el is typed as the union the validate action declares; narrow to read `.checked`.
+	const customValidator = vi.fn(
+		(
+			_v: unknown,
+			_ctx: unknown,
+			el: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+		) => ((el as HTMLInputElement).checked ? "no good" : undefined)
 	);
 	const screen = await render(FieldCheckbox, {
 		label: "Agree",
