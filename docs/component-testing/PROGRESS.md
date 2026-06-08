@@ -63,7 +63,7 @@ Field\* family (all under `Input/`, co-located `*.svelte.test.ts`):
 - [x] FieldCheckbox — native checkbox, checked/toggle, validate-on-interaction (8 tests)
 - [x] FieldSwitch — wraps Switch in InputWrap; checked/toggle (off-center click), disabled (9 tests)
 - [x] FieldRadios — radio group, value binding, selection moves on click (7 tests)
-- [ ] FieldSelect
+- [x] FieldSelect — select options, value binding via selectOptions, validate, optgroup (9 tests)
 - [ ] FieldLikeButton
 - [ ] FieldPhoneNumber
 - [ ] FieldKeyValues
