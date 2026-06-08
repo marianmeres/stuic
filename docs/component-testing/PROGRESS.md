@@ -46,7 +46,7 @@ Branch: `feat/component-testing`
 ### Task 14 — Tier 1 components (one commit each)
 
 - [x] H — `H.svelte.test.ts` (8 tests)
-- [ ] KbdShortcut
+- [x] KbdShortcut — `KbdShortcut.svelte.test.ts` (6 tests)
 - [ ] ButtonGroupRadio
 - [ ] ListItemButton
 - [ ] Card
