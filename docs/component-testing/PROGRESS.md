@@ -16,8 +16,8 @@ Branch: `feat/component-testing`
 | # | Task | Source | Status | Commit |
 |---|------|--------|--------|--------|
 | 1 | Upgrade vitest 3→4; confirm 9 existing node suites still green | [01](./01-framework-setup.md) Step 1 | ✅ | `71e47e2` |
-| 2 | Browser harness: add deps, `projects` config split, `playwright install chromium`, fix test scripts, Separator smoke test | [01](./01-framework-setup.md) Steps 2–5 | ✅ | _next_ |
-| 3 | Reconcile [`docs/testing.md`](../testing.md) — add the browser-behavior layer | [02](./02-test-conventions.md) | ⬜ | — |
+| 2 | Browser harness: add deps, `projects` config split, `playwright install chromium`, fix test scripts, Separator smoke test | [01](./01-framework-setup.md) Steps 2–5 | ✅ | `980b323` |
+| 3 | Reconcile [`docs/testing.md`](../testing.md) — add the browser-behavior layer | [02](./02-test-conventions.md) | ✅ | _next_ |
 | 4 | **Button** — flagship; establish assertion patterns | [03](./03-component-coverage-roadmap.md) #1 | ⬜ | — |
 | 5 | **Pill** — intent/active/dismissible event | [03](./03-component-coverage-roadmap.md) #2 | ⬜ | — |
 | 6 | **Switch** — checked binding, toggle, disabled | [03](./03-component-coverage-roadmap.md) #3 | ⬜ | — |
