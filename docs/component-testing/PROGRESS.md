@@ -37,7 +37,7 @@ Branch: `feat/component-testing`
 | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- | ------ |
 | 14   | Rest of Tier 1 (Separator already smoke-tested · H, KbdShortcut, ButtonGroupRadio, ListItemButton, Card, TabbedMenu, IconSwap, Collapsible)                             | [03](./03-component-coverage-roadmap.md) #10–17 | ✅     |
 | 15   | Tier 2 — `FieldInput` first, then the Field\* family + OtpInput, Nav, etc.                                                                                              | [03](./03-component-coverage-roadmap.md)        | 🚧     |
-| 16   | Portals/focus-traps in browser mode (Modal, ModalDialog, Backdrop, Drawer, AlertConfirmPrompt)                                                                          | [04](./04-hard-cases-and-e2e.md)                | 🚧     |
+| 16   | Portals/focus-traps in browser mode (Modal, ModalDialog, Backdrop, Drawer, AlertConfirmPrompt)                                                                          | [04](./04-hard-cases-and-e2e.md)                | ✅     |
 | 17   | Anchor-positioned menus (DropdownMenu, CommandMenu, UserAvatarMenu) + extract search logic to `_internal`                                                               | [04](./04-hard-cases-and-e2e.md)                | ⬜     |
 | 18   | Standalone Playwright E2E layer (drag: Tree/FieldOptions/FieldFile; Milkdown; Checkout/auth flows)                                                                      | [04](./04-hard-cases-and-e2e.md)                | ⏭️     |
 | 19   | Clear the repo's **pre-existing lint debt** (8 eslint errors + 119 prettier files), then add a **`pnpm lint`** CI job. (`pnpm check` already runs in CI as of task 13.) | [05](./05-ci.md)                                | ✅     |
@@ -91,11 +91,11 @@ behavioral yield; revisit in a focused follow-up. Moving on to backlog #16/#17.
 ### Task 16 — Portals / focus-traps
 
 - [x] focus-trap action — the deferred hard proof: auto-focus first + Tab/Shift+Tab wrap (5 tests)
-- [ ] Backdrop
-- [ ] Modal
-- [ ] Drawer
-- [ ] ModalDialog
-- [ ] AlertConfirmPrompt
+- [x] Backdrop — visible render, backdrop-click/escape callbacks, focus-trap, defaultPrevented guard (9 tests)
+- [x] Modal — opens dialog (role), children/header/footer, aria, Escape→onEscape+close (6 tests)
+- [x] Drawer — role=dialog/aria-modal, escape + outside callbacks, position (7 tests)
+- [x] ModalDialog — fixture + imperative open/close, focus-trap, Escape, click-outside (8 tests)
+- [x] AlertConfirmPrompt — stack-driven alert/confirm/prompt: render, focus, click resolves promise (11 tests)
 
 ## Decisions log
 
