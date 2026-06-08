@@ -71,14 +71,14 @@ Field\* family (all under `Input/`, co-located `*.svelte.test.ts`):
 
 Other Tier 2:
 
-- [ ] OtpInput (focus jumps, paste)
-- [ ] Nav (expand/collapse)
-- [ ] TypeaheadInput
-- [ ] ColorScheme (localStorage)
-- [ ] ImageCycler
-- [ ] PricingTable
-- [ ] ThemePreview
-- [ ] SlidingPanels
+- [x] OtpInput — slots, value binding, **focus jump**, onComplete, numeric sanitize (12 tests)
+- [x] TypeaheadInput — input + typeahead action (combobox), value binding, getOptions called (7 tests)
+- [x] ColorScheme — store class: toggle/reset, localStorage + `<html>.dark` class (9 tests)
+- [x] ImageCycler — single-image static contract: role=img, aria-label, data-fit, bg, snippets (5 tests)
+- [x] PricingTable — list/tiers, billing toggle switches prices, data flags, CTA callback (11 tests)
+- [x] SlidingPanels — fixture-driven imperative `show()`; post-transition panel destroy (3 tests)
+- [ ] Nav (expand/collapse) — ⏭️ _postponed: 856-line component; needs a focused session_
+- [ ] ThemePreview — ⏭️ _postponed: largely visual/presentational; low behavioral yield_
 - [ ] AppShell / AppShellSimple — _assess; may postpone (layout-heavy)_
 - [ ] AssetsPreview — _assess; may postpone (heavy)_
 - [ ] Notifications — _borderline Tier 3 (portal + timers); assess/postpone_
