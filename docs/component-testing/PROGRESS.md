@@ -36,7 +36,7 @@ Branch: `feat/component-testing`
 | Rank | Task                                                                                                                                                                    | Source                                          | Status |
 | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- | ------ |
 | 14   | Rest of Tier 1 (Separator already smoke-tested · H, KbdShortcut, ButtonGroupRadio, ListItemButton, Card, TabbedMenu, IconSwap, Collapsible)                             | [03](./03-component-coverage-roadmap.md) #10–17 | ✅     |
-| 15   | Tier 2 — `FieldInput` first, then the Field\* family + OtpInput, Nav, etc.                                                                                              | [03](./03-component-coverage-roadmap.md)        | ⬜     |
+| 15   | Tier 2 — `FieldInput` first, then the Field\* family + OtpInput, Nav, etc.                                                                                              | [03](./03-component-coverage-roadmap.md)        | 🚧     |
 | 16   | Portals/focus-traps in browser mode (Modal, ModalDialog, Backdrop, Drawer, AlertConfirmPrompt)                                                                          | [04](./04-hard-cases-and-e2e.md)                | ⬜     |
 | 17   | Anchor-positioned menus (DropdownMenu, CommandMenu, UserAvatarMenu) + extract search logic to `_internal`                                                               | [04](./04-hard-cases-and-e2e.md)                | ⬜     |
 | 18   | Standalone Playwright E2E layer (drag: Tree/FieldOptions/FieldFile; Milkdown; Checkout/auth flows)                                                                      | [04](./04-hard-cases-and-e2e.md)                | ⏭️     |
@@ -53,6 +53,35 @@ Branch: `feat/component-testing`
 - [x] TabbedMenu — `TabbedMenu.svelte.test.ts`
 - [x] IconSwap — `IconSwap.svelte.test.ts`
 - [x] Collapsible — `Collapsible.svelte.test.ts` (the browser-only star: real `scrollHeight > clientHeight`)
+
+### Task 15 — Tier 2 (Field\* family first, then OtpInput, Nav, etc.)
+
+Field\* family (all under `Input/`, co-located `*.svelte.test.ts`):
+
+- [x] FieldInput — flagship; label/for, value/type/required/disabled, trim, validate (10 tests)
+- [ ] FieldTextarea
+- [ ] FieldCheckbox
+- [ ] FieldSwitch
+- [ ] FieldRadios
+- [ ] FieldSelect
+- [ ] FieldLikeButton
+- [ ] FieldPhoneNumber
+- [ ] FieldKeyValues
+- [ ] FieldObject
+
+Other Tier 2:
+
+- [ ] OtpInput (focus jumps, paste)
+- [ ] Nav (expand/collapse)
+- [ ] TypeaheadInput
+- [ ] ColorScheme (localStorage)
+- [ ] ImageCycler
+- [ ] PricingTable
+- [ ] ThemePreview
+- [ ] SlidingPanels
+- [ ] AppShell / AppShellSimple — _assess; may postpone (layout-heavy)_
+- [ ] AssetsPreview — _assess; may postpone (heavy)_
+- [ ] Notifications — _borderline Tier 3 (portal + timers); assess/postpone_
 
 ## Decisions log
 
