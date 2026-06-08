@@ -65,9 +65,9 @@ Field\* family (all under `Input/`, co-located `*.svelte.test.ts`):
 - [x] FieldRadios — radio group, value binding, selection moves on click (7 tests)
 - [x] FieldSelect — select options, value binding via selectOptions, validate, optgroup (9 tests)
 - [x] FieldLikeButton — hidden input + Button, JSON render, built-in JSON/required validation (7 tests)
-- [ ] FieldPhoneNumber
-- [ ] FieldKeyValues
-- [ ] FieldObject
+- [x] FieldPhoneNumber — tel input + prefix picker, compose to E.164 hidden value, validation (13 tests)
+- [x] FieldKeyValues — add/remove rows, key/value → serialized JSON hidden value (9 tests)
+- [x] FieldObject — JSON tree view ↔ edit-mode textarea toggle, hidden value round-trip (7 tests)
 
 Other Tier 2:
 
