@@ -49,7 +49,7 @@ Branch: `feat/component-testing`
 - [x] KbdShortcut — `KbdShortcut.svelte.test.ts` (6 tests)
 - [x] ButtonGroupRadio — `ButtonGroupRadio.svelte.test.ts`
 - [x] ListItemButton — `ListItemButton.svelte.test.ts`
-- [ ] Card
+- [x] Card — `Card.svelte.test.ts`
 - [ ] TabbedMenu
 - [ ] IconSwap
 - [ ] Collapsible
