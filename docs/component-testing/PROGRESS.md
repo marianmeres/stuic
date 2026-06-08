@@ -37,7 +37,7 @@ Branch: `feat/component-testing`
 | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- | ------ |
 | 14   | Rest of Tier 1 (Separator already smoke-tested · H, KbdShortcut, ButtonGroupRadio, ListItemButton, Card, TabbedMenu, IconSwap, Collapsible)                             | [03](./03-component-coverage-roadmap.md) #10–17 | ✅     |
 | 15   | Tier 2 — `FieldInput` first, then the Field\* family + OtpInput, Nav, etc.                                                                                              | [03](./03-component-coverage-roadmap.md)        | 🚧     |
-| 16   | Portals/focus-traps in browser mode (Modal, ModalDialog, Backdrop, Drawer, AlertConfirmPrompt)                                                                          | [04](./04-hard-cases-and-e2e.md)                | ⬜     |
+| 16   | Portals/focus-traps in browser mode (Modal, ModalDialog, Backdrop, Drawer, AlertConfirmPrompt)                                                                          | [04](./04-hard-cases-and-e2e.md)                | 🚧     |
 | 17   | Anchor-positioned menus (DropdownMenu, CommandMenu, UserAvatarMenu) + extract search logic to `_internal`                                                               | [04](./04-hard-cases-and-e2e.md)                | ⬜     |
 | 18   | Standalone Playwright E2E layer (drag: Tree/FieldOptions/FieldFile; Milkdown; Checkout/auth flows)                                                                      | [04](./04-hard-cases-and-e2e.md)                | ⏭️     |
 | 19   | Clear the repo's **pre-existing lint debt** (8 eslint errors + 119 prettier files), then add a **`pnpm lint`** CI job. (`pnpm check` already runs in CI as of task 13.) | [05](./05-ci.md)                                | ✅     |
@@ -79,9 +79,23 @@ Other Tier 2:
 - [x] SlidingPanels — fixture-driven imperative `show()`; post-transition panel destroy (3 tests)
 - [ ] Nav (expand/collapse) — ⏭️ _postponed: 856-line component; needs a focused session_
 - [ ] ThemePreview — ⏭️ _postponed: largely visual/presentational; low behavioral yield_
-- [ ] AppShell / AppShellSimple — _assess; may postpone (layout-heavy)_
-- [ ] AssetsPreview — _assess; may postpone (heavy)_
-- [ ] Notifications — _borderline Tier 3 (portal + timers); assess/postpone_
+- [ ] AppShell / AppShellSimple — ⏭️ _postponed: layout-heavy, low behavioral yield_
+- [ ] AssetsPreview — ⏭️ _postponed: heavy; pure-logic already covered by assets-preview-utils tests_
+- [ ] Notifications — ⏭️ _postponed: borderline Tier 3 (portal + timers); has a node test already_
+
+**Task 15 status:** core done — 16 components (FieldInput + 6 Field family + 3 complex Field +
+OtpInput, TypeaheadInput, ColorScheme, ImageCycler, PricingTable, SlidingPanels). 5 postponed
+(Nav, ThemePreview, AppShell/AppShellSimple, AssetsPreview, Notifications) — heaviest / lowest
+behavioral yield; revisit in a focused follow-up. Moving on to backlog #16/#17.
+
+### Task 16 — Portals / focus-traps
+
+- [x] focus-trap action — the deferred hard proof: auto-focus first + Tab/Shift+Tab wrap (5 tests)
+- [ ] Backdrop
+- [ ] Modal
+- [ ] Drawer
+- [ ] ModalDialog
+- [ ] AlertConfirmPrompt
 
 ## Decisions log
 
