@@ -51,7 +51,7 @@ Branch: `feat/component-testing`
 - [x] ListItemButton — `ListItemButton.svelte.test.ts`
 - [x] Card — `Card.svelte.test.ts`
 - [x] TabbedMenu — `TabbedMenu.svelte.test.ts`
-- [ ] IconSwap
+- [x] IconSwap — `IconSwap.svelte.test.ts`
 - [ ] Collapsible
 
 ## Decisions log
