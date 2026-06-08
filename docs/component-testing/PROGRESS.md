@@ -20,8 +20,8 @@ Branch: `feat/component-testing`
 | 3 | Reconcile [`docs/testing.md`](../testing.md) — add the browser-behavior layer | [02](./02-test-conventions.md) | ✅ | `977c431` |
 | 4 | **Button** — flagship; establish assertion patterns | [03](./03-component-coverage-roadmap.md) #1 | ✅ | `9485e97` |
 | 5 | **Pill** — intent/active/dismissible event | [03](./03-component-coverage-roadmap.md) #2 | ✅ | `2992faf` |
-| 6 | **Switch** — checked binding, toggle, disabled | [03](./03-component-coverage-roadmap.md) #3 | ✅ | _this_ |
-| 7 | **Spinner** — size/count/direction | [03](./03-component-coverage-roadmap.md) #4 | ⬜ | — |
+| 6 | **Switch** — checked binding, toggle, disabled | [03](./03-component-coverage-roadmap.md) #3 | ✅ | `6aa1771` |
+| 7 | **Spinner** — size/count/direction | [03](./03-component-coverage-roadmap.md) #4 | ✅ | _this_ |
 | 8 | **Skeleton** — variants, reduced-motion | [03](./03-component-coverage-roadmap.md) #5 | ⬜ | — |
 | 9 | **DismissibleMessage** — intent, dismiss, auto-reset | [03](./03-component-coverage-roadmap.md) #6 | ⬜ | — |
 | 10 | **Avatar** — initials/img/icon fallback, autoColor | [03](./03-component-coverage-roadmap.md) #7 | ⬜ | — |
