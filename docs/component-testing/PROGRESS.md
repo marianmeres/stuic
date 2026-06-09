@@ -36,7 +36,7 @@ Branch: `feat/component-testing`
 | Rank | Task                                                                                                                                                                    | Source                                          | Status |
 | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- | ------ |
 | 14   | Rest of Tier 1 (Separator already smoke-tested · H, KbdShortcut, ButtonGroupRadio, ListItemButton, Card, TabbedMenu, IconSwap, Collapsible)                             | [03](./03-component-coverage-roadmap.md) #10–17 | ✅     |
-| 15   | Tier 2 — `FieldInput` first, then the Field\* family + OtpInput, Nav, etc.                                                                                              | [03](./03-component-coverage-roadmap.md)        | 🚧     |
+| 15   | Tier 2 — `FieldInput` first, then the Field\* family + OtpInput, Nav, etc.                                                                                              | [03](./03-component-coverage-roadmap.md)        | ✅     |
 | 16   | Portals/focus-traps in browser mode (Modal, ModalDialog, Backdrop, Drawer, AlertConfirmPrompt)                                                                          | [04](./04-hard-cases-and-e2e.md)                | ✅     |
 | 17   | Anchor-positioned menus (DropdownMenu, CommandMenu, UserAvatarMenu) + extract search logic to `_internal`                                                               | [04](./04-hard-cases-and-e2e.md)                | ✅     |
 | 18   | Standalone Playwright E2E layer (drag: Tree/FieldOptions/FieldFile; Milkdown; Checkout/auth flows)                                                                      | [04](./04-hard-cases-and-e2e.md)                | ⏭️     |
@@ -77,16 +77,22 @@ Other Tier 2:
 - [x] ImageCycler — single-image static contract: role=img, aria-label, data-fit, bg, snippets (5 tests)
 - [x] PricingTable — list/tiers, billing toggle switches prices, data flags, CTA callback (11 tests)
 - [x] SlidingPanels — fixture-driven imperative `show()`; post-transition panel destroy (3 tests)
-- [ ] Nav (expand/collapse) — ⏭️ _postponed: 856-line component; needs a focused session_
-- [ ] ThemePreview — ⏭️ _postponed: largely visual/presentational; low behavioral yield_
-- [ ] AppShell / AppShellSimple — ⏭️ _postponed: layout-heavy, low behavioral yield_
-- [ ] AssetsPreview — ⏭️ _postponed: heavy; pure-logic already covered by assets-preview-utils tests_
-- [ ] Notifications — ⏭️ _postponed: borderline Tier 3 (portal + timers); has a node test already_
+- [x] Nav — section title (interactive vs not), group expand/collapse + onGroupToggle, leaf href/onClick/
+      disabled variants, parent-with-children nesting, activeId/isActive auto-expand, isCollapsed (12 tests)
+- [x] ThemePreview — root class, default header vs header/sidebar/footer snippet overrides, showLabels/
+      showInputs/compact toggles, embedded sidebar Nav (8 tests)
+- [x] AppShell — slot-driven data-shell regions (conditional vs always-on), children in page-main,
+      pageFlexGrow → flex class (7 tests)
+- [x] AppShellSimple — main always renders; header/rail/aside conditional; headerStyle applied (6 tests)
+- [x] AssetsPreview — inline gallery exercises AssetsPreviewContent (name/zoom-state/dots/arrow nav) +
+      modal fixture for imperative open()/Close; hermetic 1×1-PNG data URIs (11 tests)
+- [x] Notifications — reactive stack render: role=alert + data-type per intent, dedup count badge,
+      close-button removal, noXButton, multiple/empty stacks (8 tests)
 
-**Task 15 status:** core done — 16 components (FieldInput + 6 Field family + 3 complex Field +
-OtpInput, TypeaheadInput, ColorScheme, ImageCycler, PricingTable, SlidingPanels). 5 postponed
-(Nav, ThemePreview, AppShell/AppShellSimple, AssetsPreview, Notifications) — heaviest / lowest
-behavioral yield; revisit in a focused follow-up. Moving on to backlog #16/#17.
+**Task 15 status:** ✅ DONE — 22 components. Core 16 (FieldInput + 6 Field family + 3 complex Field +
+OtpInput, TypeaheadInput, ColorScheme, ImageCycler, PricingTable, SlidingPanels) plus the final 6
+(Nav, ThemePreview, AppShell, AppShellSimple, AssetsPreview inline+modal, Notifications). The whole
+non-deferred backlog (#14–#17, #19) is now complete; only #18/#20 remain deferred.
 
 ### Task 16 — Portals / focus-traps
 
@@ -107,6 +113,26 @@ behavioral yield; revisit in a focused follow-up. Moving on to backlog #16/#17.
 
 ## Decisions log
 
+- **2026-06-09** — **Task 15 closed — the final 5 postponed components done.** Nav, ThemePreview,
+  AppShell, AppShellSimple, AssetsPreview (inline + modal), Notifications — drafted + adversarially
+  reviewed in a parallel workflow, then verified against real Chromium + the full-suite gate before
+  per-component commits. **484 tests** green; `pnpm check`/`lint`/`test` all clean. The entire
+  non-deferred backlog (#14–#17, #19) is now complete; only #18 (standalone E2E) and #20 (visual
+  regression) remain deferred. New gotchas learned: (a) **un-caught image preload rejects on dead
+  URLs** — `AssetsPreview`/`AssetsPreviewInline` call `preloadImgs(...)` without `.catch`, so a
+  network/`example.com` URL surfaces as an unhandled rejection (and isn't hermetic for CI). Fix: pass
+  `AssetPreview` objects with a real 1×1-PNG **data-URI** `url` + explicit `name`/`type:"image"` so the
+  preload resolves offline. (b) **The AssetsPreviewContent slide has a ~300ms async tail** (`await
+waitForNextRepaint()` + `sleep(300)`); if the component unmounts mid-slide, the continuation reads
+  `$state` on a torn-down scope → **`track_reactivity_loss` unhandled rejection**. Fix: after navigating,
+  poll until the slide settles (outgoing panel gone → a single `<img>`) so it finishes while mounted.
+  (c) Re-confirmed the `page.elementLocator` staleness rule — it snapshots an element by its current
+  text, so a name label that changes during navigation must be read live via `expect.poll(() =>
+el.textContent)`. (d) `AssetsPreview.open(index)` settles back to index 0 (its open-effect reads then
+  nulls `_openIdx` and re-runs) — a component quirk; the modal test asserts open()/Close only and leaves
+  index-precise nav to the inline test. (e) **Nav persists expand state in localStorage** (persistState
+  defaults true) → pass `persistState={false}` + `localStorage.clear()` in beforeEach; and never `.click()`
+  a Nav `<a href>` leaf (it navigates the page) — assert its attributes instead.
 - **2026-06-08** — **Backlog #15/#16/#17 done (this session).** Tier-2 core (16 components), portals/
   focus-traps (#16: focus-trap action proof + Backdrop/Modal/Drawer/ModalDialog/AlertConfirmPrompt), and
   anchor menus (#17: DropdownMenu/CommandMenu/UserAvatarMenu) — all browser-mode, drafted+adversarially-
