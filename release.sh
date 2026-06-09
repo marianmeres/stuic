@@ -85,12 +85,13 @@ fi
 
 echo "Version bumped to: $NEW_VERSION"
 
-# Push everything including tags
-echo "Pushing to remote..."
-git push && git push --tags
-
-# npm publish
+# npm publish (before pushing, so a publish failure leaves only local
+# commit/tag to clean up — never a public tag for an unpublished version)
 echo "Publishing to registry..."
 npm publish --access public
+
+# Push everything including tags (only reached if publish succeeded)
+echo "Pushing to remote..."
+git push && git push --tags
 
 echo "Release complete! New version: $NEW_VERSION"
