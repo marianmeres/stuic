@@ -135,8 +135,24 @@
 
 	$effect(() => () => clearTimeout(_previewSettleTimer));
 
-	// Drag guard for area clicks (prevent click after drag/pan)
-	let _wasDragged = false;
+	// ---- Tap vs drag discrimination for area activation ----
+	// Areas activate via pointer events (pointerdown/pointerup), not a synthesized
+	// `click`. On touch the synthesized click is dropped whenever the gesture involves
+	// any movement/scroll — unreliable in general, worst on inner SVG shapes (iOS
+	// Safari) — which made small, closely-spaced area taps a no-op on mobile. A tap is
+	// a pointerup landing within TAP_SLOP_PX of its pointerdown. (Mirrors Book.svelte.)
+	const TAP_SLOP_PX = 10;
+	let _tapDownX = 0;
+	let _tapDownY = 0;
+
+	function handleTapDown(e: PointerEvent) {
+		_tapDownX = e.clientX;
+		_tapDownY = e.clientY;
+	}
+
+	function isTap(e: PointerEvent): boolean {
+		return Math.hypot(e.clientX - _tapDownX, e.clientY - _tapDownY) <= TAP_SLOP_PX;
+	}
 
 	const BUTTON_CLS = "stuic-assets-preview-control pointer-events-auto p-0!";
 
@@ -279,7 +295,6 @@
 
 	// Pan/drag handlers
 	function panStart(e: MouseEvent | TouchEvent) {
-		_wasDragged = false;
 		// Detect two-finger pinch gesture
 		if ("touches" in e && e.touches.length === 2) {
 			if (noZoom) return;
@@ -336,11 +351,6 @@
 		const newPanX = startPanX + (clientX - startMouseX);
 		const newPanY = startPanY + (clientY - startMouseY);
 
-		// Track drag for area click guard
-		if (Math.abs(clientX - startMouseX) > 3 || Math.abs(clientY - startMouseY) > 3) {
-			_wasDragged = true;
-		}
-
 		if (clampPan) {
 			const clamped = getClampedPan(newPanX, newPanY);
 			panX = clamped.x;
@@ -389,10 +399,6 @@
 		}
 
 		isPanning = false;
-		// Reset _wasDragged after a microtask so onclick handlers can check it first
-		requestAnimationFrame(() => {
-			_wasDragged = false;
-		});
 	}
 
 	async function slideToIndex(targetIdx: number, direction: "next" | "prev") {
@@ -565,6 +571,7 @@
 					use:interactable
 					bind:this={containerEl}
 					class="w-full h-full overflow-hidden flex items-center justify-center relative"
+					style:touch-action="none"
 				>
 					<img
 						use:pannable
@@ -600,7 +607,6 @@
 							style:transform-origin="center center"
 						>
 							{#each previewAsset.areas as area, i (`${area.id}-${i}`)}
-								<!-- svelte-ignore a11y_click_events_have_key_events -->
 								<!-- svelte-ignore a11y_no_static_element_interactions -->
 								<rect
 									x={area.x}
@@ -608,8 +614,9 @@
 									width={area.w}
 									height={area.h}
 									class="stuic-assets-preview-area"
-									onclick={(e: MouseEvent) => {
-										if (_wasDragged) return;
+									onpointerdown={handleTapDown}
+									onpointerup={(e: PointerEvent) => {
+										if (!isTap(e)) return;
 										e.stopPropagation();
 										onAreaClick({ area, asset: previewAsset });
 									}}
