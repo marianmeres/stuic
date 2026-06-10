@@ -1,0 +1,201 @@
+/* ============================================================================
+   WHEEL PICKER COMPONENT TOKENS
+   iOS-style scrolling wheel / drum picker (UIPickerView).
+   Override globally: :root { --stuic-wheel-picker-color-selected: #f00; }
+   Override locally:  <WheelPicker style="--stuic-wheel-picker-band-bg: #0001;">
+
+   NOTE: geometry (item-height / visible-count) is set via the `itemHeight`/`visibleCount`
+   PROPS, not CSS — the component writes those vars inline (they also drive the JS scroll
+   math), so a CSS override of them is shadowed by the inline style. Set them via props.
+   ============================================================================ */
+
+:root {
+	/* Geometry (defaults; component overrides inline from props) */
+	--stuic-wheel-picker-item-height: 36px;
+	--stuic-wheel-picker-visible-count: 5;
+	--stuic-wheel-picker-min-width: 3rem;
+
+	/* Typography / color */
+	--stuic-wheel-picker-font-size: 1.125rem;
+	--stuic-wheel-picker-font-family: var(--font-sans);
+	--stuic-wheel-picker-color: var(--stuic-color-muted-foreground);
+	--stuic-wheel-picker-color-selected: var(--stuic-color-foreground);
+	--stuic-wheel-picker-font-weight-selected: 600;
+
+	/* Center selection band */
+	--stuic-wheel-picker-band-bg: color-mix(
+		in srgb,
+		var(--stuic-color-foreground) 4%,
+		transparent
+	);
+	--stuic-wheel-picker-band-border-color: var(--stuic-color-border);
+
+	/* Edge fade strength (0 = no fade, 1 = full fade to transparent at the rim) */
+	--stuic-wheel-picker-fade: 1;
+
+	/* Focus ring */
+	--stuic-wheel-picker-ring-width: 2px;
+	--stuic-wheel-picker-ring-color: var(--stuic-color-ring);
+}
+
+@layer components {
+	/* ========================================================================
+	   ROOT
+	   ======================================================================== */
+	.stuic-wheel-picker {
+		position: relative;
+		display: inline-block;
+		min-width: var(--stuic-wheel-picker-min-width);
+		font-family: var(--stuic-wheel-picker-font-family);
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	/* ========================================================================
+	   SCROLL VIEWPORT
+	   The only scrollable element. Native overflow scroll + CSS scroll-snap do
+	   the momentum + settling; JS only reads/repositions at rest.
+	   ======================================================================== */
+	.stuic-wheel-picker-scroll {
+		height: calc(
+			var(--stuic-wheel-picker-visible-count) * var(--stuic-wheel-picker-item-height)
+		);
+		overflow-x: hidden;
+		overflow-y: auto;
+
+		scroll-snap-type: y mandatory;
+		overscroll-behavior: contain; /* stop iOS rubber-band bouncing the page at the ends */
+		-webkit-overflow-scrolling: touch;
+		touch-action: pan-y;
+
+		border-radius: var(--stuic-wheel-picker-radius, var(--stuic-radius-container));
+		background: var(--stuic-wheel-picker-bg, transparent);
+
+		/* Hide scrollbar (the band + fade convey position) */
+		scrollbar-width: none;
+		-ms-overflow-style: none;
+
+		/* Edge fade — center stays fully opaque, rows dim toward the rim. The clear
+		   band is ~1 row tall (1 / visible-count of the height) around the center. */
+		--_fade-edge: calc(
+			(50% - 0.5 * var(--stuic-wheel-picker-item-height)) * var(--stuic-wheel-picker-fade)
+		);
+		-webkit-mask-image: linear-gradient(
+			to bottom,
+			transparent 0,
+			#000 var(--_fade-edge),
+			#000 calc(100% - var(--_fade-edge)),
+			transparent 100%
+		);
+		mask-image: linear-gradient(
+			to bottom,
+			transparent 0,
+			#000 var(--_fade-edge),
+			#000 calc(100% - var(--_fade-edge)),
+			transparent 100%
+		);
+	}
+
+	.stuic-wheel-picker-scroll::-webkit-scrollbar {
+		display: none;
+	}
+
+	.stuic-wheel-picker-scroll:focus {
+		outline: none;
+	}
+
+	.stuic-wheel-picker-scroll:focus-visible {
+		outline: var(--stuic-wheel-picker-ring-width) solid
+			var(--stuic-wheel-picker-ring-color);
+		outline-offset: 2px;
+	}
+
+	/* ========================================================================
+	   SPACERS — let the first/last real row reach the vertical center
+	   ======================================================================== */
+	.stuic-wheel-picker-spacer {
+		flex: 0 0 auto;
+		height: calc(
+			(var(--stuic-wheel-picker-visible-count) - 1) / 2 *
+				var(--stuic-wheel-picker-item-height)
+		);
+	}
+
+	/* ========================================================================
+	   ROWS
+	   ======================================================================== */
+	.stuic-wheel-picker-item {
+		display: flex;
+		flex-direction: column; /* stack the bold-width ghost (below) with no row-width sum */
+		align-items: center;
+		justify-content: center;
+		height: var(--stuic-wheel-picker-item-height);
+		box-sizing: border-box;
+		padding-inline: 0.75rem;
+
+		scroll-snap-align: center;
+		scroll-snap-stop: always; /* best-effort; correctness never relies on it */
+
+		font-size: var(--stuic-wheel-picker-font-size);
+		line-height: 1;
+		color: var(--stuic-wheel-picker-color);
+		white-space: nowrap;
+		user-select: none;
+		-webkit-user-select: none;
+		transition: color var(--stuic-wheel-picker-transition, var(--stuic-transition));
+	}
+
+	/* Reserve the SELECTED (bold) label width on EVERY row via a zero-height, hidden
+	   ghost, so committing a wider/narrower bold word never resizes the shrink-to-fit
+	   wheel (prevents the 1–2px container width jitter while scrolling). */
+	.stuic-wheel-picker-item::after {
+		content: attr(data-label);
+		height: 0;
+		overflow: hidden;
+		visibility: hidden;
+		pointer-events: none;
+		font-weight: var(--stuic-wheel-picker-font-weight-selected);
+	}
+
+	.stuic-wheel-picker-item[data-selected="true"] {
+		color: var(--stuic-wheel-picker-color-selected);
+		font-weight: var(--stuic-wheel-picker-font-weight-selected);
+	}
+
+	.stuic-wheel-picker-item[data-disabled="true"] {
+		opacity: 0.4;
+	}
+
+	/* ========================================================================
+	   CENTER SELECTION BAND (purely visual)
+	   ======================================================================== */
+	.stuic-wheel-picker-band {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 50%;
+		height: var(--stuic-wheel-picker-item-height);
+		transform: translateY(-50%);
+		pointer-events: none;
+		background: var(--stuic-wheel-picker-band-bg);
+		border-top: var(--stuic-wheel-picker-band-border-width, var(--stuic-border-width))
+			solid var(--stuic-wheel-picker-band-border-color);
+		border-bottom: var(--stuic-wheel-picker-band-border-width, var(--stuic-border-width))
+			solid var(--stuic-wheel-picker-band-border-color);
+	}
+
+	/* ========================================================================
+	   SCREEN-READER LIVE REGION (visually hidden)
+	   ======================================================================== */
+	.stuic-wheel-picker-sr {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0 0 0 0);
+		clip-path: inset(50%);
+		white-space: nowrap;
+		border: 0;
+	}
+}

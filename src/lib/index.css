@@ -100,6 +100,7 @@ In practice:
 @import "./components/Tree/index.css";
 @import "./components/TwCheck/index.css";
 @import "./components/UserAvatarMenu/index.css";
+@import "./components/WheelPicker/index.css";
 @import "./components/WithSidePanel/index.css";
 @import "./components/X/index.css";
 

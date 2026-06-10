@@ -69,6 +69,7 @@
         'tree',
         'tw-check',
 		'user-avatar-menu',
+		'wheel-picker',
 		'with-side-panel',
 		// 'viewport',
 		'x'
