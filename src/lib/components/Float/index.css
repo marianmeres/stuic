@@ -25,8 +25,10 @@
 		--stuic-color-surface-foreground,
 		var(--stuic-color-foreground)
 	);
-	--stuic-float-header-padding-x: 0.5rem;
-	--stuic-float-header-padding-y: 0.25rem;
+	--stuic-float-header-padding-t: 0.25rem;
+	--stuic-float-header-padding-r: 0.25rem;
+	--stuic-float-header-padding-b: 0.25rem;
+	--stuic-float-header-padding-l: 0.5rem;
 	--stuic-float-header-gap: 0.5rem;
 	--stuic-float-header-font-weight: var(--font-weight-medium);
 
@@ -75,7 +77,8 @@
 		display: flex;
 		align-items: center;
 		gap: var(--stuic-float-header-gap);
-		padding: var(--stuic-float-header-padding-y) var(--stuic-float-header-padding-x);
+		padding: var(--stuic-float-header-padding-t) var(--stuic-float-header-padding-r)
+			var(--stuic-float-header-padding-b) var(--stuic-float-header-padding-l);
 		background: var(--stuic-float-header-bg);
 		color: var(--stuic-float-header-text);
 		border-bottom: var(--stuic-float-border-width, var(--stuic-border-width)) solid
