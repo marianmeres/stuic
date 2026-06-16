@@ -2,6 +2,7 @@ export * from "./autogrow.svelte.js";
 export * from "./onboarding/onboarding.svelte.js";
 export * from "./autoscroll.js";
 export * from "./dim-behind/dim-behind.svelte.js";
+export * from "./draggable.svelte.js";
 export * from "./file-dropzone.svelte.js";
 export * from "./focus-trap.js";
 export * from "./highlight-dragover.svelte.js";

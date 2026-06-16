@@ -46,6 +46,7 @@ export * from "./components/DismissibleMessage/index.js";
 export * from "./components/Drawer/index.js";
 export * from "./components/DropdownMenu/index.js";
 export * from "./components/EmailVerifyForm/index.js";
+export * from "./components/Float/index.js";
 export * from "./components/H/index.js";
 export * from "./components/Header/index.js";
 export * from "./components/ImageCycler/index.js";

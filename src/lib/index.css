@@ -76,6 +76,7 @@ In practice:
 @import "./components/DismissibleMessage/index.css";
 @import "./components/DropdownMenu/index.css";
 @import "./components/EmailVerifyForm/index.css";
+@import "./components/Float/index.css";
 @import "./components/H/index.css";
 @import "./components/Header/index.css";
 @import "./components/ImageCycler/index.css";

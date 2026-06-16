@@ -28,6 +28,7 @@
         'drawer',
         'dropdown-menu',
 		'file-dropzone',
+		'float',
 		'h',
 		'header',
 		'hover-expandable-width',

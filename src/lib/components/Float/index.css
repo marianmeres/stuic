@@ -1,0 +1,182 @@
+/* ============================================================================
+   FLOAT COMPONENT TOKENS
+   Override globally: :root { --stuic-float-width: 360px; }
+   Override locally:  <Float style="--stuic-float-header-bg: red;" />
+   Structural tokens (radius/shadow/border-width/transition) are resolved via the
+   fallback pattern at the usage site, so per-instance overrides keep working.
+   ============================================================================ */
+
+:root {
+	/* Surface */
+	--stuic-float-bg: var(--stuic-color-background);
+	--stuic-float-text: var(--stuic-color-foreground);
+	--stuic-float-border-color: var(--stuic-color-border);
+
+	/* Stacking: floor + per-instance order offset (set inline by the component) */
+	--stuic-float-z: 50;
+
+	/* Sizing */
+	--stuic-float-width: 320px;
+	--stuic-float-body-max-height: 70vh;
+
+	/* Header */
+	--stuic-float-header-bg: var(--stuic-color-surface, var(--stuic-color-muted));
+	--stuic-float-header-text: var(
+		--stuic-color-surface-foreground,
+		var(--stuic-color-foreground)
+	);
+	--stuic-float-header-padding-x: 0.5rem;
+	--stuic-float-header-padding-y: 0.25rem;
+	--stuic-float-header-gap: 0.5rem;
+	--stuic-float-header-font-weight: var(--font-weight-medium);
+
+	/* Body */
+	--stuic-float-body-padding-x: 0.75rem;
+	--stuic-float-body-padding-y: 0.75rem;
+
+	/* Header buttons */
+	--stuic-float-btn-size: 1.75rem;
+	--stuic-float-btn-color: var(--stuic-color-muted-foreground);
+	--stuic-float-btn-color-hover: var(--stuic-color-foreground);
+	--stuic-float-btn-bg-hover: var(--stuic-color-muted);
+
+	/* Focus ring */
+	--stuic-float-ring-width: 2px;
+	--stuic-float-ring-color: var(--stuic-color-ring);
+}
+
+@layer components {
+	/* ============================================================================
+	   ROOT
+	   ============================================================================ */
+
+	.stuic-float {
+		position: fixed;
+		display: flex;
+		flex-direction: column;
+		width: var(--stuic-float-width);
+		max-width: 100vw;
+		z-index: calc(var(--stuic-float-z) + var(--stuic-float-z-order, 0));
+
+		background: var(--stuic-float-bg);
+		color: var(--stuic-float-text);
+		border: var(--stuic-float-border-width, var(--stuic-border-width)) solid
+			var(--stuic-float-border-color);
+		border-radius: var(--stuic-float-radius, var(--stuic-radius-container));
+		box-shadow: var(--stuic-float-shadow, var(--stuic-shadow-overlay));
+		overflow: hidden; /* clip header/body to the rounded corners */
+	}
+
+	/* ============================================================================
+	   HEADER (drag handle)
+	   ============================================================================ */
+
+	.stuic-float-header {
+		display: flex;
+		align-items: center;
+		gap: var(--stuic-float-header-gap);
+		padding: var(--stuic-float-header-padding-y) var(--stuic-float-header-padding-x);
+		background: var(--stuic-float-header-bg);
+		color: var(--stuic-float-header-text);
+		border-bottom: var(--stuic-float-border-width, var(--stuic-border-width)) solid
+			var(--stuic-float-border-color);
+		user-select: none;
+		touch-action: none; /* let the drag own the gesture on touch devices */
+	}
+
+	.stuic-float[data-draggable="true"] > .stuic-float-header {
+		cursor: grab;
+	}
+
+	.stuic-float[data-dragging="true"] > .stuic-float-header {
+		cursor: grabbing;
+	}
+
+	.stuic-float-icon {
+		display: inline-flex;
+		align-items: center;
+		flex-shrink: 0;
+	}
+
+	.stuic-float-title {
+		flex: 1 1 auto;
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		font-weight: var(--stuic-float-header-font-weight);
+	}
+
+	.stuic-float-actions {
+		display: flex;
+		align-items: center;
+		gap: 0.125rem;
+		flex-shrink: 0;
+	}
+
+	/* ============================================================================
+	   HEADER BUTTONS
+	   ============================================================================ */
+
+	.stuic-float-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: var(--stuic-float-btn-size);
+		height: var(--stuic-float-btn-size);
+		border: none;
+		border-radius: var(--stuic-float-btn-radius, var(--stuic-radius));
+		background: transparent;
+		color: var(--stuic-float-btn-color);
+		cursor: pointer;
+		transition:
+			background var(--stuic-float-transition, var(--stuic-transition)),
+			color var(--stuic-float-transition, var(--stuic-transition));
+	}
+
+	.stuic-float-btn:hover {
+		background: var(--stuic-float-btn-bg-hover);
+		color: var(--stuic-float-btn-color-hover);
+	}
+
+	.stuic-float-btn:focus-visible {
+		outline: var(--stuic-float-ring-width) solid var(--stuic-float-ring-color);
+		outline-offset: -2px;
+	}
+
+	.stuic-float-chevron {
+		display: inline-flex;
+		transition: transform var(--stuic-float-transition, var(--stuic-transition));
+	}
+
+	/* expanded -> chevron points up ("collapse"); minimized -> points down ("expand") */
+	.stuic-float[data-minimized="false"] .stuic-float-chevron {
+		transform: rotate(180deg);
+	}
+
+	/* ============================================================================
+	   BODY (grid-based collapse, mirrors Accordion)
+	   ============================================================================ */
+
+	.stuic-float-body-wrap {
+		display: grid;
+		grid-template-rows: 1fr;
+		transition: grid-template-rows var(--stuic-float-transition, var(--stuic-transition));
+	}
+
+	.stuic-float[data-minimized="true"] > .stuic-float-body-wrap {
+		grid-template-rows: 0fr;
+	}
+
+	.stuic-float-body-inner {
+		overflow: hidden;
+		min-height: 0;
+	}
+
+	.stuic-float-body {
+		max-height: var(--stuic-float-body-max-height);
+		overflow: auto;
+		scrollbar-width: thin;
+		padding: var(--stuic-float-body-padding-y) var(--stuic-float-body-padding-x);
+	}
+}
