@@ -10,6 +10,8 @@ export interface FieldRadiosOption {
 	label: string;
 	value?: string;
 	description?: THC;
+	/** Disable this individual option (non-interactive, skipped by keyboard nav). */
+	disabled?: boolean;
 }
 
 /**

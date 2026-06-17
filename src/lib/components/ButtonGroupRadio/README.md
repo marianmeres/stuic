@@ -29,8 +29,26 @@ A radio button group styled as a segmented button toggle. Supports keyboard navi
 // Or object
 {
   label: 'Option A',
-  value: 'a'  // optional, defaults to label
+  value: 'a',       // optional, defaults to label
+  disabled: true    // optional, disables just this option
 }
+```
+
+### Disabling individual options
+
+Set `disabled: true` on any option to make it non-interactive. Disabled options
+can't be clicked or activated and are skipped by keyboard arrow navigation. To
+disable the whole group instead, use the top-level `disabled` prop.
+
+```svelte
+<ButtonGroupRadio
+	options={[
+		{ label: "Free", value: "free" },
+		{ label: "Pro", value: "pro" },
+		{ label: "Enterprise", value: "enterprise", disabled: true },
+	]}
+	bind:value={plan}
+/>
 ```
 
 ## Usage

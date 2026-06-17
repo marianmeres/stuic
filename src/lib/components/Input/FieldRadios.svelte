@@ -115,7 +115,7 @@
 					value={o.value ?? o.label}
 					description={o.description}
 					{renderSize}
-					{disabled}
+					disabled={disabled || o.disabled}
 					{tabindex}
 					{required}
 					validate={validateProp}

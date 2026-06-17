@@ -95,7 +95,23 @@
 
 	let els = $state<Record<number, HTMLButtonElement>>({});
 
+	// An option is non-interactive if the whole group is disabled or the option
+	// itself is flagged `disabled`.
+	function is_disabled(index: number): boolean {
+		return !!disabled || !!coll.items[index]?.option.disabled;
+	}
+
+	// Find the next enabled index in `dir` (+1/-1), skipping disabled options.
+	// Does not wrap and clamps at the edges (returns `from` if none found).
+	function next_enabled_index(from: number, dir: 1 | -1): number {
+		for (let i = from + dir; i >= 0 && i < coll.size; i += dir) {
+			if (!is_disabled(i)) return i;
+		}
+		return from;
+	}
+
 	async function maybe_activate(index: number, coll: ItemColl) {
+		if (is_disabled(index)) return;
 		if ((await onButtonClick?.(index, coll)) !== false) {
 			coll.setActiveIndex(index);
 			els[index].focus();
@@ -121,7 +137,7 @@
 					classButton,
 					$coll.activeIndex === i && classButtonActive
 				)}
-				{disabled}
+				disabled={disabled || item.option.disabled}
 				type="button"
 				role="radio"
 				aria-checked={$coll.activeIndex === i}
@@ -131,10 +147,10 @@
 				bind:el={els[i]}
 				onkeydown={async (e) => {
 					if (["ArrowRight", "ArrowDown"].includes(e.key)) {
-						await maybe_activate(Math.min(i + 1, coll.size - 1), coll);
+						await maybe_activate(next_enabled_index(i, 1), coll);
 					}
 					if (["ArrowLeft", "ArrowUp"].includes(e.key)) {
-						await maybe_activate(Math.max(0, i - 1), coll);
+						await maybe_activate(next_enabled_index(i, -1), coll);
 					}
 				}}
 				id={item.id}

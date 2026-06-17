@@ -110,3 +110,38 @@ test("disabled=true disables the radios (state-only; do not click a disabled rad
 	await expect.element(screen.getByRole("radio", { name: "Apple" })).toBeDisabled();
 	await expect.element(screen.getByRole("radio", { name: "Banana" })).toBeDisabled();
 });
+
+// Per-option disable: a FieldRadiosOption can carry `disabled: true`, which disables
+// only that one radio (the group `disabled` prop disables all of them). The middle
+// option is the object form so it can carry the flag while still being addressable by
+// its label text.
+const OPTIONS_WITH_DISABLED = ["Apple", { label: "Banana", disabled: true }, "Cherry"];
+
+test("a per-option `disabled` flag disables only that radio, leaving the others enabled", async () => {
+	const screen = render(ButtonGroupRadio, { options: OPTIONS_WITH_DISABLED });
+	await expect.element(screen.getByRole("radio", { name: "Banana" })).toBeDisabled();
+	await expect.element(screen.getByRole("radio", { name: "Apple" })).not.toBeDisabled();
+	await expect.element(screen.getByRole("radio", { name: "Cherry" })).not.toBeDisabled();
+});
+
+test("keyboard navigation skips a disabled option (ArrowRight from Apple lands on Cherry, not the disabled Banana)", async () => {
+	const screen = render(ButtonGroupRadio, {
+		options: OPTIONS_WITH_DISABLED,
+		value: "Apple",
+	});
+	const apple = screen.getByRole("radio", { name: "Apple" });
+	await expect.element(apple).toHaveAttribute("aria-checked", "true");
+
+	// Each radio owns its own onkeydown handler; dispatch ArrowRight on the active one.
+	apple
+		.element()
+		.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }));
+
+	// Banana (disabled) is skipped and stays unchecked; selection lands on Cherry.
+	await expect
+		.element(screen.getByRole("radio", { name: "Cherry" }))
+		.toHaveAttribute("aria-checked", "true");
+	await expect
+		.element(screen.getByRole("radio", { name: "Banana" }))
+		.toHaveAttribute("aria-checked", "false");
+});
