@@ -12,6 +12,8 @@
 <br />
 <a href="./input/phone-number" class="underline">Phone number</a>
 <br />
+<a href="./input/money" class="underline">Money</a>
+<br />
 <a href="./input/country" class="underline">Country</a>
 <br />
 <a href="./input/validate-imperative" class="underline"

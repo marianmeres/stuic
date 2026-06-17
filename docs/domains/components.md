@@ -55,6 +55,7 @@
 | Component                                     | Purpose                                                                     |
 | --------------------------------------------- | --------------------------------------------------------------------------- |
 | Input (FieldInput, FieldSelect, etc.)         | Form fields                                                                 |
+| FieldMoney                                    | Money input storing integer minor units (e.g. cents)                        |
 | FieldPhoneNumber                              | International phone input with country picker                               |
 | FieldObject                                   | Dual-mode JSON object editor (pretty-print/raw)                             |
 | CronInput                                     | Cron expression editor with presets and validation                          |
@@ -146,8 +147,8 @@ Use `validate={false}` to bypass stuic's validation entirely.
 
 ### Per-field methods
 
-Available on `FieldInput`, `FieldTextarea`, `FieldCheckbox`, `FieldSelect`,
-`FieldFile`, `FieldObject`, `FieldAssets`, `FieldInputLocalized`,
+Available on `FieldInput`, `FieldMoney`, `FieldTextarea`, `FieldCheckbox`,
+`FieldSelect`, `FieldFile`, `FieldObject`, `FieldAssets`, `FieldInputLocalized`,
 `FieldKeyValues`, `FieldPhoneNumber`, `FieldCountry`, `FieldLikeButton`,
 `FieldRadios`, `FieldSwitch`, `FieldOptions`, and `Switch`:
 

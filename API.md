@@ -308,6 +308,26 @@ Text input field with label, error, and hint support.
 <FieldInput bind:value={name} label="Name" required />
 ```
 
+#### `FieldMoney`
+
+Money input whose canonical bindable `value` is an **integer in minor units** (e.g. cents); the visible input shows/accepts a major-unit decimal (e.g. `"19.99"`). Wraps `FieldInput`. The `name` is applied to a hidden input carrying the integer minor units (the visible input stays name-less so a form never serializes the display string). A built-in numeric guard rejects non-numeric input and enforces the optional major-unit `min` / `max`.
+
+| Prop       | Type                         | Default | Description                                           |
+| ---------- | ---------------------------- | ------- | ----------------------------------------------------- |
+| `value`    | `number \| string \| null`   | —       | Bindable amount in integer minor units (e.g. `1999`)  |
+| `scale`    | `number`                     | `100`   | Minor units per major unit (cents per dollar/euro)    |
+| `decimals` | `number`                     | `2`     | Fraction digits shown in the visible input            |
+| `name`     | `string`                     | —       | Hidden input name for form submission (integer minor) |
+| `min`      | `number`                     | —       | Optional minimum, in major units                      |
+| `max`      | `number`                     | —       | Optional maximum, in major units                      |
+| `validate` | `boolean \| ValidateOptions` | —       | `false` disables the built-in guard; object merges it |
+
+```svelte
+<FieldMoney bind:value={priceCents} label="Price" name="price" min={0} />
+```
+
+The `formatMinorUnits`, `parseToMinorUnits`, and `money` helpers are exported for display elsewhere.
+
 #### `FieldTextarea`
 
 Multi-line text input.

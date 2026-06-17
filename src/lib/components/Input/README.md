@@ -7,6 +7,7 @@ A comprehensive form input system with multiple field components, validation sup
 | Component         | Description                                          |
 | ----------------- | ---------------------------------------------------- |
 | `FieldInput`      | Text, email, password, number, and other input types |
+| `FieldMoney`      | Money amount stored as integer minor units (cents)   |
 | `FieldTextarea`   | Multi-line text input with auto-grow                 |
 | `FieldSelect`     | Dropdown select with option groups                   |
 | `FieldCheckbox`   | Single checkbox with label                           |
@@ -157,6 +158,32 @@ Component-specific targets (e.g. `classInput` for the inner `<input>`/`<select>`
 	{/snippet}
 </FieldInput>
 ```
+
+### Money Input
+
+`FieldMoney` edits a money amount whose canonical value is an **integer in minor
+units** (e.g. cents), while the user sees and types a major-unit decimal
+("12.34"). It wraps `FieldInput`, so all the common props (label, validation,
+sizing, class props, the imperative API) work as usual.
+
+```svelte
+<script lang="ts">
+	import { FieldMoney } from "stuic";
+
+	// bound value is the integer amount of minor units (e.g. 1999 = $19.99)
+	let priceCents = $state(1999);
+</script>
+
+<FieldMoney label="Price" name="price" bind:value={priceCents} min={0} />
+```
+
+The `name` is applied to a hidden input carrying the integer minor units — the
+visible input stays name-less so a `<form>` never serializes the display string.
+A built-in numeric guard rejects non-numeric input and enforces the optional
+major-unit `min` / `max`. Use `scale` / `decimals` for non-cents currencies
+(e.g. `scale={1000} decimals={3}`). The matching `formatMinorUnits`,
+`parseToMinorUnits`, and `money` helpers are exported from `@marianmeres/stuic`
+for display elsewhere.
 
 ### Left-aligned Label
 

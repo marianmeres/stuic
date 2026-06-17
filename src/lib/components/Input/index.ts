@@ -18,6 +18,10 @@ export {
 	type Props as FieldInputProps,
 } from "./FieldInput.svelte";
 export {
+	default as FieldMoney,
+	type Props as FieldMoneyProps,
+} from "./FieldMoney.svelte";
+export {
 	default as FieldLikeButton,
 	type Props as FieldLikeButtonProps,
 } from "./FieldLikeButton.svelte";
