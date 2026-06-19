@@ -72,6 +72,7 @@ test("clicking the toggle enters EDIT mode and surfaces a textarea of pretty-pri
 	const screen = await render(FieldObject, {
 		name: "obj",
 		value: '{"name":"Alice","age":30}',
+		fullscreenEdit: false, // exercise the inline editor (fullscreen is the default)
 	});
 	// VIEW mode has no editable surface (the hidden input is type=hidden, not a textbox)
 	await expect.element(screen.getByRole("textbox")).not.toBeInTheDocument();
@@ -89,6 +90,7 @@ test("editing the textarea round-trips through bind:value to the hidden input", 
 	const screen = await render(FieldObject, {
 		name: "obj",
 		value: '{"name":"Alice","age":30}',
+		fullscreenEdit: false, // inline editor
 	});
 	await screen.getByRole("button").click();
 	const textarea = screen.getByRole("textbox");
@@ -101,6 +103,7 @@ test("Apply with valid JSON returns to VIEW mode showing the new tree", async ()
 	const screen = await render(FieldObject, {
 		name: "obj",
 		value: '{"name":"Alice","age":30}',
+		fullscreenEdit: false, // inline editor (toggle button is the only button)
 	});
 	// enter EDIT
 	await screen.getByRole("button").click();
@@ -113,10 +116,79 @@ test("Apply with valid JSON returns to VIEW mode showing the new tree", async ()
 	await expect.element(screen.getByText("1")).toBeInTheDocument();
 });
 
+test("nodes beyond previewMaxDepth collapse to a keys-only summary with a more… hint", async () => {
+	const screen = await render(FieldObject, {
+		name: "obj",
+		value: '{"a":{"b":{"c":1}}}',
+		// 0 forces the top-level object itself past the cap, which is deterministic
+		// regardless of the width-derived `isNarrow` layout in the test viewport
+		// (the narrow collapse only applies at depth > 0).
+		previewMaxDepth: 0,
+	});
+	// the collapsed node shows the "more…" hint and hides the deep value
+	await expect.element(screen.getByText(/more/)).toBeInTheDocument();
+	await expect.element(screen.getByText("1")).not.toBeInTheDocument();
+});
+
+test("objects within previewMaxDepth render fully without a more… hint", async () => {
+	const screen = await render(FieldObject, {
+		name: "obj",
+		value: '{"name":"Alice","age":30}',
+	});
+	// nothing was truncated, so the value renders and no hint appears
+	await expect.element(screen.getByText("Alice")).toBeInTheDocument();
+	await expect.element(screen.getByText(/more/)).not.toBeInTheDocument();
+});
+
+test("fullscreenEdit opens the raw editor in a modal instead of inline", async () => {
+	const screen = await render(FieldObject, {
+		name: "obj",
+		value: '{"name":"Alice"}',
+		fullscreenEdit: true,
+	});
+	// nothing editable is rendered until the modal opens (hidden input is type=hidden)
+	await expect.element(screen.getByRole("textbox")).not.toBeInTheDocument();
+	// the toggle opens the modal, surfacing the editor textarea with pretty-printed JSON
+	await screen.getByRole("button").click();
+	const textarea = screen.getByRole("textbox");
+	await expect.element(textarea).toBeInTheDocument();
+	await expect
+		.poll(() => (textarea.element() as HTMLTextAreaElement).value)
+		.toContain("Alice");
+});
+
+test("fullscreen Apply with valid JSON closes the modal and commits the value", async () => {
+	const screen = await render(FieldObject, {
+		name: "obj",
+		value: '{"name":"Alice"}',
+		fullscreenEdit: true,
+	});
+	await screen.getByRole("button").click();
+	await screen.getByRole("textbox").fill('{"x":1}');
+	await screen.getByRole("button", { name: "Apply" }).click();
+	// modal closed -> back to the read-only tree showing the new value
+	await expect.element(screen.getByText("x")).toBeInTheDocument();
+	await expect.poll(() => hidden(screen.container).value).toBe('{"x":1}');
+});
+
+test("fullscreen Cancel discards edits and restores the original value", async () => {
+	const screen = await render(FieldObject, {
+		name: "obj",
+		value: '{"name":"Alice"}',
+		fullscreenEdit: true,
+	});
+	await screen.getByRole("button").click();
+	await screen.getByRole("textbox").fill('{"changed":true}');
+	await screen.getByRole("button", { name: "Cancel" }).click();
+	// the pre-edit value is restored verbatim
+	await expect.poll(() => hidden(screen.container).value).toBe('{"name":"Alice"}');
+});
+
 test("Apply with invalid JSON stays in EDIT mode and renders the validation message", async () => {
 	const screen = await render(FieldObject, {
 		name: "obj",
 		value: '{"name":"Alice"}',
+		fullscreenEdit: false, // inline editor
 	});
 	// enter EDIT
 	await screen.getByRole("button").click();

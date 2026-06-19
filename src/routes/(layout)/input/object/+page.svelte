@@ -25,6 +25,55 @@
 			billing_same: true,
 			notes: null,
 		}),
+		deeplyNested: JSON.stringify({
+			organization: {
+				name: "Acme Corp",
+				headquarters: {
+					region: {
+						country: "US",
+						state: "CA",
+						offices: {
+							main: {
+								floors: {
+									floor_3: {
+										departments: {
+											engineering: {
+												teams: {
+													platform: {
+														lead: "Ada Lovelace",
+														members: ["Grace", "Alan", "Edsger"],
+														settings: {
+															ci: {
+																provider: "github",
+																pipelines: {
+																	build: {
+																		enabled: true,
+																		timeout: 600,
+																		steps: ["lint", "test", "bundle"],
+																	},
+																	deploy: {
+																		enabled: false,
+																		approvals: 2,
+																		targets: {
+																			staging: { auto: true },
+																			production: { auto: false },
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}),
 		arrayOfObjects: JSON.stringify({
 			items: [
 				{ product: "Widget", qty: 2, price: 9.99 },
@@ -79,6 +128,48 @@
 		<pre
 			class="mt-2 overflow-auto rounded bg-neutral-100 p-2 text-xs dark:bg-neutral-800">{JSON.stringify(
 				maybeJsonParse(values.nested),
+				null,
+				2
+			)}</pre>
+	</form>
+
+	<!-- Deeply nested object -->
+	<form use:onSubmitValidityCheck class="rounded border p-4">
+		<h3 class="mb-4 text-lg font-semibold">Deeply Nested Object</h3>
+		<p class="mb-4 text-sm opacity-60">
+			Preview mode caps rendering at <code>previewMaxDepth</code> (default 4); deeper
+			nodes collapse to a keys-only summary with a <em>more&hellip;</em> hint so the tree
+			can't blow out horizontally. Clicking the edit (pencil) toggle opens the full raw
+			JSON in a full-screen editor (with Cancel to discard) — that's the default. Pass
+			<code>fullscreenEdit={false}</code> to edit inline in a textarea below the preview instead.
+		</p>
+		<FieldObject
+			bind:value={values.deeplyNested}
+			name="deeply-nested"
+			label="Organization Tree (default depth)"
+			description="Collapses past depth 4 — open the editor to see the full structure"
+		/>
+		<div class="mt-4">
+			<FieldObject
+				bind:value={values.deeplyNested}
+				name="deeply-nested-deep"
+				previewMaxDepth={2}
+				label="Same data, previewMaxDepth={2}"
+				description="Renders more levels before collapsing"
+			/>
+		</div>
+		<div class="mt-4">
+			<FieldObject
+				bind:value={values.deeplyNested}
+				name="deeply-nested-inline"
+				fullscreenEdit={false}
+				label="Same data, fullscreenEdit={false}"
+				description="Opts out of the full-screen editor — edits inline below the preview"
+			/>
+		</div>
+		<pre
+			class="mt-2 overflow-auto rounded bg-neutral-100 p-2 text-xs dark:bg-neutral-800">{JSON.stringify(
+				maybeJsonParse(values.deeplyNested),
 				null,
 				2
 			)}</pre>

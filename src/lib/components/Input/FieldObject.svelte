@@ -18,6 +18,19 @@
 		id?: string;
 		tabindex?: number;
 		renderSize?: "sm" | "md" | "lg" | string;
+		/**
+		 * Max nesting depth rendered in (read-only) preview mode before a node is
+		 * collapsed to a keys-only / `[n]` summary with a "more…" hint. Prevents
+		 * deeply nested objects from blowing out horizontally and becoming
+		 * unreadable. Has no effect on raw edit mode. Defaults to 4.
+		 */
+		previewMaxDepth?: number;
+		/**
+		 * When true (the default), the edit toggle opens the raw JSON editor in a
+		 * (near) full-screen modal — comfortable for large / deeply nested objects.
+		 * Set `false` to edit inline in a textarea below the preview instead.
+		 */
+		fullscreenEdit?: boolean;
 		required?: boolean;
 		disabled?: boolean;
 		validate?: boolean | Omit<ValidateOptions, "setValidationResult">;
@@ -38,6 +51,9 @@
 	import { validate as validateAction } from "../../actions/validate.svelte.js";
 	import { getId } from "../../utils/get-id.js";
 	import { twMerge } from "../../utils/tw-merge.js";
+	import Button from "../Button/Button.svelte";
+	import Modal from "../Modal/Modal.svelte";
+	import { Thc, isTHCNotEmpty } from "../Thc/index.js";
 	import InputWrap from "./_internal/InputWrap.svelte";
 
 	let {
@@ -49,6 +65,8 @@
 		class: classProp,
 		tabindex = 0,
 		renderSize = "sm",
+		previewMaxDepth = 4,
+		fullscreenEdit = true,
 		required = false,
 		disabled = false,
 		// Renamed local binding to avoid collision with `export function validate()` below.
@@ -113,15 +131,52 @@
 			}
 		} else {
 			validation = undefined;
-			// Pretty-print the JSON before entering edit mode
-			try {
-				const obj = JSON.parse(value || "null");
-				value = JSON.stringify(obj, null, "\t");
-			} catch {
-				// leave value as-is if not parseable
-			}
+			prettyPrint();
 			editMode = true;
 		}
+	}
+
+	/** Pretty-print `value` in place; leaves it untouched if not parseable. */
+	function prettyPrint() {
+		try {
+			value = JSON.stringify(JSON.parse(value || "null"), null, "\t");
+		} catch {
+			// not parseable — leave as-is
+		}
+	}
+
+	// --- Fullscreen modal editor (opt-in via `fullscreenEdit`) ---
+	let fsModal: Modal | undefined = $state();
+	// Snapshot of `value` captured when the modal opens, so Cancel / Escape can
+	// discard edits and restore the original (the inline editor has no cancel).
+	let fsSnapshot = "";
+
+	function openFullscreen(openerOrEvent?: MouseEvent) {
+		validation = undefined;
+		fsSnapshot = value;
+		prettyPrint();
+		fsModal?.open(openerOrEvent ?? null);
+	}
+
+	function applyFullscreen() {
+		// Same rule as the inline toggle: invalid JSON keeps the editor open.
+		try {
+			JSON.parse(value || "null");
+			validation = undefined;
+			fsModal?.close();
+		} catch {
+			validation = {
+				valid: false,
+				message: "This field requires attention. Please review and try again.",
+			};
+		}
+	}
+
+	function cancelFullscreen() {
+		// discard edits — restore the value as it was when the modal opened
+		value = fsSnapshot;
+		validation = undefined;
+		fsModal?.close();
 	}
 
 	// Validation
@@ -167,7 +222,7 @@
 	}
 
 	const TEXTAREA_CLS =
-		"w-full min-h-16 p-2 font-mono text-sm focus:outline-none focus:ring-0";
+		"w-full min-h-16 p-2 font-mono text-sm focus:outline-none focus:ring-0 scrollbar-thin";
 
 	const BTN_CLS = [
 		"toggle-btn",
@@ -198,6 +253,13 @@
 	{/if}
 {/snippet}
 
+{#snippet moreHint()}
+	<span
+		class="ml-1 align-middle text-xs italic opacity-40"
+		title="Open the editor to view the full structure">more&hellip;</span
+	>
+{/snippet}
+
 {#snippet renderValue(val: unknown, depth: number)}
 	{#if val === null || val === undefined || typeof val === "boolean" || typeof val === "number" || typeof val === "string"}
 		{@render renderPrimitive(val)}
@@ -210,6 +272,9 @@
 			<span class="break-words"
 				>{val.map((v) => (v === null ? "null" : String(v))).join(", ")}</span
 			>
+		{:else if depth >= previewMaxDepth}
+			<!-- Too deep to render legibly — collapse to count + hint -->
+			<span class="opacity-50">[{val.length}]</span>{@render moreHint()}
 		{:else}
 			<div class="flex flex-col gap-2">
 				{#each val as item, i (i)}
@@ -236,6 +301,11 @@
 			<span class="opacity-50"
 				>{"{"}&#8239;{entries.map(([k]) => k).join(", ")}&#8239;{"}"}</span
 			>
+		{:else if depth >= previewMaxDepth}
+			<!-- Too deep to render legibly — collapse to keys + hint -->
+			<span class="opacity-50"
+				>{"{"}&#8239;{entries.map(([k]) => k).join(", ")}&#8239;{"}"}</span
+			>{@render moreHint()}
 		{:else}
 			<div class={twMerge("flex flex-col", depth > 0 && "ml-2")}>
 				{#each entries as [key, v], i (key)}
@@ -310,6 +380,7 @@
 					class={TEXTAREA_CLS}
 					{tabindex}
 					{disabled}
+					wrap="off"
 					use:autogrow={() => ({ enabled: true, value })}
 				></textarea>
 			{:else}
@@ -331,7 +402,7 @@
 			type="button"
 			class={BTN_CLS}
 			bind:this={toggleBtnEl}
-			onclick={toggleMode}
+			onclick={(e) => (fullscreenEdit ? openFullscreen(e) : toggleMode())}
 			{disabled}
 			use:tooltip={() => ({
 				enabled: true,
@@ -374,3 +445,52 @@
 		};
 	}}
 />
+
+{#if fullscreenEdit}
+	<!-- Full-screen raw JSON editor (opened by the edit toggle when `fullscreenEdit`) -->
+	<Modal
+		bind:this={fsModal}
+		noClickOutsideClose
+		onEscape={() => {
+			// Escape behaves like Cancel — discard edits (the dialog closes itself)
+			value = fsSnapshot;
+			validation = undefined;
+		}}
+		classDialog="md:size-full"
+		classInner="md:h-full md:max-h-full md:min-h-0 md:w-full md:max-w-full"
+		classHeader="p-3 flex items-center gap-2 border-b border-(--stuic-color-border)"
+		classMain="p-0 flex flex-col overflow-hidden"
+		classFooter="p-3 flex items-center border-t border-(--stuic-color-border)"
+	>
+		{#snippet header()}
+			<span class="flex-1 truncate font-semibold">
+				{#if typeof label === "function"}
+					{@render label({ id })}
+				{:else if isTHCNotEmpty(label)}
+					<Thc thc={label as THC} />
+				{:else}
+					Edit JSON
+				{/if}
+			</span>
+		{/snippet}
+
+		<textarea
+			bind:value
+			{disabled}
+			wrap="off"
+			class="min-h-0 w-full flex-1 resize-none p-3 font-mono text-sm scrollbar-thin focus:outline-none focus:ring-0"
+		></textarea>
+
+		{#snippet footer()}
+			<div class="flex w-full items-center justify-between gap-3">
+				<span class="text-sm text-red-600 dark:text-red-400">
+					{#if validation && !validation.valid}{validation.message}{/if}
+				</span>
+				<div class="flex gap-2">
+					<Button type="button" variant="ghost" onclick={cancelFullscreen}>Cancel</Button>
+					<Button type="button" onclick={applyFullscreen}>Apply</Button>
+				</div>
+			</div>
+		{/snippet}
+	</Modal>
+{/if}
