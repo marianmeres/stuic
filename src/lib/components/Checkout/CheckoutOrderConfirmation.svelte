@@ -206,7 +206,9 @@
 						<div
 							class={unstyled ? undefined : "stuic-checkout-confirmation-delivery-detail"}
 						>
-							{#if order.delivery_option.price === 0}
+							{#if order.delivery_option.pending}
+								{t("checkout.summary.pending")}
+							{:else if order.delivery_option.price === 0}
 								{t("checkout.summary.free")}
 							{:else}
 								{fp(order.delivery_option.price)}
@@ -233,6 +235,7 @@
 		</CheckoutSectionHeader>
 		<CheckoutOrderSummary
 			totals={order.totals}
+			shippingPending={!!order.delivery_option?.pending}
 			formatPrice={formatPriceProp}
 			t={tProp}
 			{unstyled}

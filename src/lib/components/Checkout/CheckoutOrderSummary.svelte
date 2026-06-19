@@ -16,6 +16,15 @@
 		hasShipping?: boolean;
 
 		/**
+		 * Shipping cost is not yet known and will be quoted/calculated later
+		 * (e.g. international orders quoted by email). When true, the shipping row
+		 * shows the `checkout.summary.pending` label ("Calculated separately")
+		 * instead of "Free" or the amount — even when `totals.shipping` is 0.
+		 * Default: false
+		 */
+		shippingPending?: boolean;
+
+		/**
 		 * Format a number (in cents) to a display string.
 		 * Default: defaultFormatPrice (cents / 100, 2 decimal places)
 		 */
@@ -58,6 +67,7 @@
 	let {
 		totals,
 		hasShipping = true,
+		shippingPending = false,
 		formatPrice: formatPriceProp,
 		row,
 		extraRows,
@@ -72,6 +82,7 @@
 	let fp = $derived(formatPriceProp ?? defaultFormatPrice);
 
 	let shippingValue = $derived.by(() => {
+		if (shippingPending) return t("checkout.summary.pending");
 		if (!hasShipping) return t("checkout.summary.not_selected");
 		if (totals.shipping === 0) return t("checkout.summary.free");
 		return fp(totals.shipping);

@@ -306,7 +306,9 @@
 				<div class={unstyled ? undefined : "stuic-checkout-review-delivery"}>
 					<span>{order.delivery_option.name}</span>
 					<span>
-						{#if order.delivery_option.price === 0}
+						{#if order.delivery_option.pending}
+							{t("checkout.summary.pending")}
+						{:else if order.delivery_option.price === 0}
 							{t("checkout.summary.free")}
 						{:else}
 							{fp(order.delivery_option.price)}

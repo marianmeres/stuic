@@ -21,6 +21,7 @@ const DEFAULTS: Record<string, string> = {
 	"checkout.summary.total": "Total",
 	"checkout.summary.free": "Free",
 	"checkout.summary.not_selected": "\u2014",
+	"checkout.summary.pending": "Calculated separately",
 
 	// -- CheckoutCartReview (03) --
 	"checkout.cart.title": "Order Summary",

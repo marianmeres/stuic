@@ -220,6 +220,7 @@
 						<CheckoutOrderSummary
 							totals={order.totals}
 							hasShipping={!!order.delivery_option_id}
+							shippingPending={!!order.delivery_option?.pending}
 							{formatPrice}
 							t={tProp}
 							{unstyled}

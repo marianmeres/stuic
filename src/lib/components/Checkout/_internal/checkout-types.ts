@@ -118,6 +118,13 @@ export interface CheckoutDeliverySnapshot {
 	name: string;
 	price: number;
 	estimated_time?: string;
+	/**
+	 * Shipping cost is not yet known and will be quoted/calculated later
+	 * (e.g. international orders quoted by email after the order is placed).
+	 * When true, components render the `checkout.summary.pending` label instead
+	 * of the price or "Free", regardless of `price` being 0.
+	 */
+	pending?: boolean;
 }
 
 // ====================================================================
