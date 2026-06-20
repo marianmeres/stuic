@@ -115,9 +115,19 @@ test("clicking the beta dot navigates: name label -> 'beta.jpg' and that dot bec
 
 	await expect.poll(() => currentName(screen.container)).toBe("alpha.jpg");
 
+	// The dot's size/position comes ONLY from the component index.css, which browser
+	// tests don't load -> the dot renders as a tiny UA-default box inside a degenerate
+	// (content-height) layout. A real Playwright pointer .click() must hit-test that
+	// box, and under CI's parallel-CPU contention that actionability check flakes
+	// ("element is not stable" / the root region "intercepts pointer events"). So we
+	// drive the dot's plain `onclick={() => goTo(i)}` directly via a native DOM click
+	// on the resolved element — same wiring, zero dependence on pointer hit-testing.
+	// (Mirrors the ArrowRight test below, which dispatches its event on the element.)
 	// goTo(1) sets previewIdx synchronously; the slide animation is cosmetic, the
 	// bound index / .active dot / name label update right away (poll covers it).
-	await screen.getByRole("button", { name: "beta.jpg" }).click();
+	const betaDot = screen.getByRole("button", { name: "beta.jpg" });
+	await expect.element(betaDot).toBeInTheDocument();
+	(betaDot.element() as HTMLElement).click();
 
 	await expect.poll(() => currentName(screen.container)).toBe("beta.jpg");
 	await expect
