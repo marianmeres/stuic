@@ -40,9 +40,7 @@ test("without shippingPending, a 0 amount still reads as 'Free' (baseline unchan
 		totals: totals({ shipping: 0 }),
 	});
 	await expect.element(screen.getByText("Free")).toBeVisible();
-	await expect
-		.element(screen.getByText("Calculated separately"))
-		.not.toBeInTheDocument();
+	await expect.element(screen.getByText("Calculated separately")).not.toBeInTheDocument();
 });
 
 test("hasShipping=false shows the not-selected dash (pending takes precedence over it)", async () => {
@@ -57,7 +55,5 @@ test("hasShipping=false shows the not-selected dash (pending takes precedence ov
 		hasShipping: false,
 		shippingPending: true,
 	});
-	await expect
-		.element(pendingWins.getByText("Calculated separately"))
-		.toBeVisible();
+	await expect.element(pendingWins.getByText("Calculated separately")).toBeVisible();
 });
