@@ -27,11 +27,20 @@
 -->
 <svelte:head>
 	<script>
-		const KEY = window.__COLOR_SCHEME_KEY__ ?? "stuic-color-scheme";
-		const cls = window.document.documentElement.classList;
-		const v = localStorage.getItem(KEY);
-		if (v === "dark") cls.add("dark");
-		else if (v === "light") cls.remove("dark");
-		// else: no stored preference — leave the SSR'd class alone.
+		// Block-scoped on purpose: a classic <script>'s top-level const/let lands
+		// in the page's global lexical scope and persists even after the node is
+		// removed. If this body ever runs a second time in the same realm — e.g.
+		// Svelte re-inserting <svelte:head> while recovering from a hydration
+		// mismatch — an unscoped `const KEY` throws "Identifier 'KEY' has already
+		// been declared" and aborts hydration. The braces make re-execution a
+		// harmless no-op (and keep KEY/cls/v out of the global namespace). Do not unwrap.
+		{
+			const KEY = window.__COLOR_SCHEME_KEY__ ?? "stuic-color-scheme";
+			const cls = window.document.documentElement.classList;
+			const v = localStorage.getItem(KEY);
+			if (v === "dark") cls.add("dark");
+			else if (v === "light") cls.remove("dark");
+			// else: no stored preference — leave the SSR'd class alone.
+		}
 	</script>
 </svelte:head>
