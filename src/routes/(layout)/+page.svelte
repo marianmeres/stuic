@@ -20,6 +20,7 @@
 		'collapsible', 
         'color-scheme', 
 		'command-menu',
+		'contact-us-form',
 		'cron-input',
 		'dim-behind',
 		'dismissible-message',

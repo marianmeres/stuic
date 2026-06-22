@@ -18,6 +18,8 @@ A comprehensive form input system with multiple field components, validation sup
 | `FieldKeyValues`  | Key-value pairs editor with JSON serialization       |
 | `FieldLikeButton` | Like/favorite toggle button                          |
 | `Fieldset`        | Fieldset with legend                                 |
+| `Honeypot`        | Hidden anti-bot trap field (server-less)             |
+| `TimeTrap`        | Anti-bot submit-timing primitive (server-less)       |
 
 ## Common Props (FieldInput, FieldTextarea, FieldSelect)
 
@@ -439,3 +441,70 @@ A modal-based multi-select/single-select component with search functionality, ty
 <!-- Local customization -->
 <FieldOptions style="--stuic-field-options-divider: var(--color-red-500);" ... />
 ```
+
+---
+
+## Honeypot & TimeTrap (anti-bot primitives)
+
+Two small, **client-side, server-less** primitives for cheap spam mitigation. They produce **signals** — they do not block anything. Read the signal, then enforce on your server (the only place enforcement is trustworthy). Both are reusable on any form; [`ContactUsForm`](../ContactUsForm/README.md) composes them by default.
+
+> These stop a large share of commodity drive-by spam (no UX friction, no external dependency, no privacy/GDPR concern). They do **not** stop a targeted or headless-browser bot — for that you still want a real challenge (Cloudflare Turnstile / hCaptcha) verified server-side.
+
+### `Honeypot`
+
+A visually-hidden, `aria-hidden`, off-screen text input that real users and assistive tech never reach, but naive bots fill. A non-empty value is a strong bot signal. The hiding styles are applied **inline** so the trap stays hidden even without the library stylesheet. The input uses `autocomplete="new-password"` (the value browsers actually honor as do-not-autofill — `autocomplete="off"` is ignored on text fields) so browser/profile autofill won't write into the trap and flag a real user.
+
+```svelte
+<script lang="ts">
+	import { Honeypot } from "@marianmeres/stuic";
+
+	let trap = $state("");
+	// On submit: if trap.trim() !== "" treat as a bot (server-side).
+</script>
+
+<form onsubmit={...}>
+	<!-- ...your real fields... -->
+	<Honeypot bind:value={trap} />
+</form>
+```
+
+| Prop                 | Type          | Default                    | Description                                                                                               |
+| -------------------- | ------------- | -------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `value`              | `string`      | `""`                       | Trap value (bindable). Non-empty ⇒ likely a bot.                                                          |
+| `name`               | `string`      | `"link"`                   | Field name. Default avoids autofill tokens (`url`/`name`/`email`/…). Pick one your real form doesn't use. |
+| `label`              | `string`      | `"Leave this field empty"` | Screen-reader fallback (wrapper is `aria-hidden`).                                                        |
+| `el` / `input`       | `HTMLElement` | -                          | Bindable wrapper / input refs.                                                                            |
+| `unstyled` / `class` | -             | -                          | Drop / extend the `stuic-honeypot` class (hiding is always applied).                                      |
+
+**Method:** `isFilled(): boolean` (via `bind:this`).
+
+> **Naming caveat:** keep the field name tempting to bots but **not** a token browser autofill recognizes. Names like `url`/`website`/`email`/`name`/`phone`/`address` get autofilled into the off-screen trap from the user's saved profile, producing false positives. The default `"link"` and `autocomplete="new-password"` avoid this.
+
+### `TimeTrap`
+
+Records form mount time and flags submits that arrive faster than `minMs`. Renders a single hidden timestamp input (handy for native form POSTs) and exposes reactive `isTooFast` / `elapsedMs` bindings plus a `check()` snapshot for exact submit-time reads.
+
+```svelte
+<script lang="ts">
+	import { TimeTrap } from "@marianmeres/stuic";
+
+	let tooFast = $state(true);
+	let trap = $state<TimeTrap>();
+	// On submit: const { elapsedMs, isTooFast } = trap.check();
+</script>
+
+<TimeTrap bind:this={trap} bind:isTooFast={tooFast} minMs={2000} />
+```
+
+| Prop        | Type      | Default | Description                                                     |
+| ----------- | --------- | ------- | --------------------------------------------------------------- |
+| `minMs`     | `number`  | `2000`  | Minimum plausible human fill time (ms).                         |
+| `enabled`   | `boolean` | `true`  | When false, `isTooFast` stays `false` and no timer runs.        |
+| `isTooFast` | `boolean` | `true`  | Bindable, reactive; `true` until `minMs` elapses.               |
+| `elapsedMs` | `number`  | `0`     | Bindable; updated on the flip and on `check()`.                 |
+| `startedAt` | `number`  | -       | Bindable; epoch ms captured at mount; also in the hidden input. |
+| `name`      | `string`  | `"_ts"` | Name of the rendered hidden timestamp input.                    |
+
+**Methods:** `check(): { elapsedMs, isTooFast, startedAt }`, `reset()` (via `bind:this`).
+
+> The timestamp is a client clock and is **not** tamper-proof. Treat `isTooFast` as a heuristic and pair it with real server-side rate limiting.

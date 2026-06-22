@@ -40,6 +40,7 @@ export * from "./components/Checkout/index.js";
 export * from "./components/Collapsible/index.js";
 export * from "./components/ColorScheme/index.js";
 export * from "./components/CommandMenu/index.js";
+export * from "./components/ContactUsForm/index.js";
 export * from "./components/CronInput/index.js";
 export * from "./components/DataTable/index.js";
 export * from "./components/DismissibleMessage/index.js";

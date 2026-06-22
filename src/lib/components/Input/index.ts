@@ -12,6 +12,12 @@ export {
 	default as FieldCheckbox,
 	type Props as FieldCheckboxProps,
 } from "./FieldCheckbox.svelte";
+export { default as Honeypot, type Props as HoneypotProps } from "./Honeypot.svelte";
+export {
+	default as TimeTrap,
+	type Props as TimeTrapProps,
+	type TimeTrapSnapshot,
+} from "./TimeTrap.svelte";
 export { default as FieldFile, type Props as FieldFileProps } from "./FieldFile.svelte";
 export {
 	default as FieldInput,

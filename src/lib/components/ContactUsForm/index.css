@@ -1,0 +1,22 @@
+:root {
+	/* ContactUsForm */
+	--stuic-contact-us-form-gap: 0rem;
+}
+
+@layer components {
+	.stuic-contact-us-form {
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-contact-us-form-gap);
+	}
+
+	.stuic-contact-us-form-submit {
+		margin-top: 1.5rem;
+		margin-bottom: 1.5rem;
+	}
+}
+
+/* Tighten default FieldInput bottom margin (mb-8 → 1rem) inside the form */
+.stuic-contact-us-form .stuic-input {
+	margin-bottom: 1rem;
+}
