@@ -396,6 +396,14 @@
 		flex-shrink: 0;
 	}
 
+	/* No-intent (neutral) dot: --_color resolves to the muted token, which is also
+	   the soft variant's background — so the dot would be invisible. Use the muted
+	   foreground tone instead. Placed before the solid rule so solid keeps --_text
+	   (equal specificity, later rule wins). */
+	.stuic-pill:not([data-intent]) .stuic-pill-dot {
+		background: var(--stuic-color-muted-foreground);
+	}
+
 	/* On solid variants the bg already IS the intent color — use foreground instead. */
 	.stuic-pill[data-variant="solid"] .stuic-pill-dot {
 		background: var(--_text);
