@@ -45,6 +45,7 @@ interface AssetPreview {
 - **Touch support**: Touch gestures for pan
 - **Auto-preload**: Preloads full-resolution images when modal opens
 - **File type icons**: Displays appropriate icons for non-image files
+- **PWA safe area**: when installed/standalone, the overlay controls (close, prev/next, dots, filename) are automatically offset so they clear the status bar / notch / home indicator. The image itself stays edge-to-edge. Inert in a browser tab (`env()` → `0`); no prop required.
 
 ## Translation Keys
 

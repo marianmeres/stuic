@@ -27,4 +27,24 @@
 	.stuic-modal .main {
 		scrollbar-width: thin;
 	}
+
+	/* ============================================================================
+	   SAFE AREA (PWA installed / standalone) — automatic, full-bleed only.
+	   The Modal is full-screen below the `md` breakpoint (size-full) and a
+	   centered card at/above it (md:size-auto). Only the full-bleed case touches
+	   the device edges, so we gate on `width < 48rem` (Tailwind's md) AND
+	   standalone, and pad the bg-bearing .stuic-modal (a flex column) so its
+	   header / content / footer clear the status bar, notch and home indicator.
+	   Centered desktop modals and browser tabs (env → 0) are untouched. A
+	   consumer wanting true edge-to-edge can override padding via `class`.
+	   ============================================================================ */
+	@media (display-mode: standalone) and (width < 48rem),
+		(display-mode: fullscreen) and (width < 48rem) {
+		.stuic-modal {
+			padding-top: env(safe-area-inset-top);
+			padding-right: env(safe-area-inset-right);
+			padding-bottom: env(safe-area-inset-bottom);
+			padding-left: env(safe-area-inset-left);
+		}
+	}
 }

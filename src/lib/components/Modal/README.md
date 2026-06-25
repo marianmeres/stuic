@@ -107,6 +107,10 @@ By default, Modal is:
 - **Mobile**: Full screen with 1rem margins from viewport edges
 - **Desktop (md+)**: Centered, max-width 768px, auto height with max 80vh
 
+### PWA safe area (automatic)
+
+When the app runs installed/standalone (display-mode standalone or fullscreen) and the Modal is **full-bleed** (below the `md` breakpoint), its content is automatically padded by the device safe-area insets so the header / content / footer clear the status bar, notch and home indicator. This is **inert in a normal browser tab** (`env()` → `0`) and on **centered desktop** modals (which don't touch the edges). No prop required. To go truly edge-to-edge, override the padding on the inner panel via `class`.
+
 ## CSS Variables
 
 Override to customize appearance:

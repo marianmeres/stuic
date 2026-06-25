@@ -195,7 +195,11 @@ When a stuic app is installed and launched standalone (iOS Home Screen, Android/
 
 **Automatic:**
 
-- `Notifications` — the toast stack always keeps clear of the insets in standalone (you never want a toast under the home indicator). No prop needed; no-op in a browser tab.
+- `Notifications` — the toast stack always keeps clear of the insets in standalone (you never want a toast under the home indicator).
+- `Modal` — when full-bleed (below the `md` breakpoint, where it fills the screen), its content is padded by the insets so header / content / footer clear the system UI. Centered desktop modals are untouched.
+- `AssetsPreview` — the lightbox image stays edge-to-edge, but the overlay controls (close, prev/next, dots, filename) are offset so they clear the insets.
+
+All three are no-ops in a browser tab and need no prop.
 
 **Utility classes** — offset any edge-anchored element without writing your own `env()` rule. They are active in standalone only:
 
@@ -219,7 +223,7 @@ When a stuic app is installed and launched standalone (iOS Home Screen, Android/
 
 **Pick ONE layer.** Don't pad the same edge twice in a nesting chain. E.g. a nav `Drawer` whose content is its own stuic `Header`: put `safeArea` on the inner `Header`, not also on the drawer panel/wrapper.
 
-**Not covered:** other fixed/edge-anchored components (`Modal`/`ModalDialog` full-bleed on mobile, `Float`) do not auto-handle insets — apply a `stuic-safe-area-*` class or the variables to their content as needed.
+**Not covered:** remaining fixed/edge-anchored components (e.g. `Float`, or a bare `ModalDialog` used directly) do not auto-handle insets — apply a `stuic-safe-area-*` class or the variables to their content as needed.
 
 ## TypeScript
 

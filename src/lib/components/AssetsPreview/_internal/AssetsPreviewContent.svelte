@@ -658,8 +658,11 @@
 		<div
 			class={twMerge(
 				"absolute inset-0 flex justify-between pointer-events-none",
-				prevNextBottom ? "items-end pb-4" : "items-center"
+				prevNextBottom ? "items-end" : "items-center"
 			)}
+			style="padding-left: var(--stuic-safe-area-left, 0px); padding-right: var(--stuic-safe-area-right, 0px);{prevNextBottom
+				? ' padding-bottom: calc(1rem + var(--stuic-safe-area-bottom, 0px));'
+				: ''}"
 		>
 			<Button
 				class={twMerge(BUTTON_CLS, "ml-4", classControls)}
@@ -681,7 +684,17 @@
 		</div>
 	{/if}
 
-	<div class="absolute top-4 left-4 right-4 flex items-center justify-between gap-3">
+	<!-- Top control bar (close, download, zoom, filename). Offset by the PWA
+	     safe-area insets when installed/standalone so the controls clear the
+	     status bar / notch / side notch. The vars are 0px in a browser tab. -->
+	<div
+		class="absolute flex items-center justify-between gap-3"
+		style="
+			top: calc(1rem + var(--stuic-safe-area-top, 0px));
+			left: calc(1rem + var(--stuic-safe-area-left, 0px));
+			right: calc(1rem + var(--stuic-safe-area-right, 0px));
+		"
+	>
 		{#if !noName && previewAsset?.name}
 			<span class="stuic-assets-preview-label truncate px-1">
 				{previewAsset?.name}
@@ -767,7 +780,8 @@
 		{#if !noDots && assets.length <= 10}
 			{#if !noName && dotTooltip}
 				<div
-					class="absolute bottom-10 left-0 right-0 text-center"
+					class="absolute left-0 right-0 text-center"
+					style="bottom: calc(2.5rem + var(--stuic-safe-area-bottom, 0px));"
 					transition:fade={{ duration: 100 }}
 				>
 					<span class="stuic-assets-preview-label p-1">
@@ -775,7 +789,10 @@
 					</span>
 				</div>
 			{/if}
-			<div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3">
+			<div
+				class="absolute left-1/2 -translate-x-1/2 flex items-center gap-3"
+				style="bottom: calc(1rem + var(--stuic-safe-area-bottom, 0px));"
+			>
 				{#each assets as _, i}
 					<!-- svelte-ignore a11y_mouse_events_have_key_events -->
 					<button
@@ -793,7 +810,10 @@
 				{/each}
 			</div>
 		{:else if !noCurrentOfTotal}
-			<div class="absolute bottom-4 left-1/2 -translate-x-1/2">
+			<div
+				class="absolute left-1/2 -translate-x-1/2"
+				style="bottom: calc(1rem + var(--stuic-safe-area-bottom, 0px));"
+			>
 				<span class="stuic-assets-preview-label px-2 py-1 text-sm opacity-60">
 					{previewIdx + 1} / {assets.length}
 				</span>
