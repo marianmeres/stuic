@@ -33,3 +33,31 @@ Minimal config:
     {#snippet avatar()}<Avatar initials="MM" autoColor />{/snippet}
 </Header>
 ```
+
+## PWA safe area (`safeArea`)
+
+When your app is installed and launched standalone (iOS Home Screen, Android/desktop PWA), the web view fills the **entire** screen, so a top app bar renders _under_ the status bar / notch / Dynamic Island, where the system swallows touches — the logo and hamburger become untappable.
+
+Set `safeArea` on the **top app bar** to offset its content below the device safe-area insets. It pads the **top** (status bar / notch in portrait) plus the **left/right** insets (a side notch in landscape — both `0` in portrait). The padding lands on the **outer** `<header>` (the background-bearing, full-width element), so the brand color fills the inset strip and the inner content row keeps its own padding.
+
+```svelte
+<Header
+	projectName="App"
+	fixed
+	safeArea
+	leadingHamburger
+	onLeadingHamburger={openDrawer}
+/>
+```
+
+- **Default `false`.** No change to any existing render path. It's a **no-op in a browser tab** and on devices without an inset (`env()` → `0`).
+- The insets are only non-zero when the consuming app sets `<meta name="viewport" content="..., viewport-fit=cover">` (the app's responsibility) **and** the device has an inset.
+- **Only set it on the TOP app bar.** `Header` is reused as in-page, detail, and drawer-internal headers — those must NOT get `safeArea`, or they'd be wrongly padded.
+- **Respects `unstyled`** (skipped, like every other `data-*` toggle).
+- It is **independent of `fixed`** — you typically want both on a top app bar, but neither implies the other.
+
+### Pick ONE layer (avoid double padding)
+
+A nav **drawer** that contains its own stuic `Header` (logo + close button) is common. In that case set `safeArea` on the **inner `Header`** (so the header color fills the strip) and do **not** also offset the drawer panel — otherwise the top inset is applied twice. Each safe-area edge should be padded on exactly **one** element in any nesting chain.
+
+> The underlying mechanism (and the reusable `.stuic-safe-area-*` utility classes / `--stuic-safe-area-*` CSS variables for any other edge-anchored element) is documented in the root README under "PWA safe-area insets".

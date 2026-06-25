@@ -550,4 +550,40 @@
 			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">48rem</code>.
 		</p>
 	</section>
+
+	<hr class="border-neutral-200 dark:border-neutral-700" />
+
+	<!-- PWA safe area -->
+	<section>
+		<h2 class="text-xl font-semibold mb-2">PWA safe area (installed / standalone)</h2>
+		<p class="text-sm text-neutral-500 mb-4">
+			Set <code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">safeArea</code> on
+			the <strong>top app bar only</strong> so its content clears the status bar / notch
+			when the app runs installed (display-mode standalone or fullscreen). It pads the top
+			plus the left/right insets (a side notch in landscape) on the background-bearing
+			outer header. <strong>No visible effect in a normal browser tab</strong> — the insets
+			resolve to 0. To preview: DevTools → Rendering → "Emulate CSS media feature display-mode
+			→ standalone", with a notched device in the device toolbar.
+		</p>
+		<div class="border rounded-lg overflow-hidden">
+			<Header
+				projectName="Installed App"
+				leadingHamburger
+				onLeadingHamburger={() => alert("Open menu")}
+				items={navItems}
+				safeArea
+				class="bg-(--stuic-color-surface)"
+			>
+				{#snippet avatar()}
+					<Avatar initials="PW" size="md" autoColor />
+				{/snippet}
+			</Header>
+		</div>
+		<p class="text-xs opacity-60 mt-2">
+			Pairing caveat: if a nav <em>drawer</em> contains its own stuic
+			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">Header</code>, put
+			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">safeArea</code> on that
+			inner header — do not also offset the drawer panel, or the inset is applied twice.
+		</p>
+	</section>
 </div>

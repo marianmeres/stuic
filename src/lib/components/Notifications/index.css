@@ -230,3 +230,21 @@
 		);
 	}
 }
+
+/* ============================================================================
+   SAFE AREA (PWA installed / standalone) — automatic, not opt-in.
+   The .stuic-notifs wrap is `fixed inset-0` and carries no padding of its own
+   (the visual spacing lives on the inner `p-4` wrap), so padding it here insets
+   the whole toast region by the device safe area. This keeps toasts clear of
+   the status bar / notch / home indicator regardless of corner placement, and
+   composes with the inner p-4. Toasts should never sit under system UI, so this
+   needs no prop. No-op in a browser tab (env → 0).
+   ============================================================================ */
+@media (display-mode: standalone), (display-mode: fullscreen) {
+	.stuic-notifs {
+		padding-top: env(safe-area-inset-top);
+		padding-right: env(safe-area-inset-right);
+		padding-bottom: env(safe-area-inset-bottom);
+		padding-left: env(safe-area-inset-left);
+	}
+}

@@ -130,3 +130,48 @@ In practice:
 .scrollbar-thin {
 	scrollbar-width: thin;
 }
+
+/* ============================================================================
+   PWA SAFE-AREA INSETS (installed / standalone)
+   Unlayered (like .scrollbar-thin above) so they reliably beat a consumer's
+   Tailwind `utilities` layer — a deliberate `pt-*` elsewhere must not silently
+   win over a safe-area offset. The raw env() values self-zero in a normal
+   browser tab; they only become non-zero on a device with an inset when the
+   app declares `viewport-fit=cover` (the consuming app's responsibility).
+   ============================================================================ */
+
+/* Composable inset variables: 0px everywhere, real device insets only when the
+   app runs installed/standalone. Use these to ADD inset without clobbering an
+   element's existing padding, e.g.:
+     padding-block-start: calc(1rem + var(--stuic-safe-area-top)); */
+:root {
+	--stuic-safe-area-top: 0px;
+	--stuic-safe-area-right: 0px;
+	--stuic-safe-area-bottom: 0px;
+	--stuic-safe-area-left: 0px;
+}
+
+@media (display-mode: standalone), (display-mode: fullscreen) {
+	:root {
+		--stuic-safe-area-top: env(safe-area-inset-top);
+		--stuic-safe-area-right: env(safe-area-inset-right);
+		--stuic-safe-area-bottom: env(safe-area-inset-bottom);
+		--stuic-safe-area-left: env(safe-area-inset-left);
+	}
+
+	/* Utility classes. NB these SET the padding on their axis (they replace,
+	   not add) — apply them only to an element that does not otherwise pad that
+	   side. To ADD inset to existing padding, compose the var above instead. */
+	.stuic-safe-area-top {
+		padding-top: env(safe-area-inset-top);
+	}
+	.stuic-safe-area-right {
+		padding-right: env(safe-area-inset-right);
+	}
+	.stuic-safe-area-bottom {
+		padding-bottom: env(safe-area-inset-bottom);
+	}
+	.stuic-safe-area-left {
+		padding-left: env(safe-area-inset-left);
+	}
+}

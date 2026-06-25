@@ -183,6 +183,44 @@ Cart, Checkout (CheckoutProgress, CheckoutOrderSummary, CheckoutCartReview, Chec
 
 `autogrow` · `validate` · `focusTrap` · `autoscroll` · `dimBehind` · `fileDropzone` · `highlightDragover` · `resizableWidth` · `spotlight` · `trim` · `typeahead` · `onSubmitValidityCheck` · `popover` · `tooltip` · `createTour` / `tourStep` (onboarding)
 
+## PWA safe-area insets
+
+When a stuic app is installed and launched standalone (iOS Home Screen, Android/desktop PWA), the web view fills the entire screen, so edge-anchored chrome can render under the status bar / notch / home indicator. stuic ships an **opt-in** safe-area layer that is **inert in a normal browser tab** (`env()` → `0`) and only engages under `@media (display-mode: standalone), (display-mode: fullscreen)`.
+
+> The insets are only non-zero when your app sets `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">` (your responsibility) **and** the device has an inset.
+
+**Component props (opt-in):**
+
+- `Header` — `safeArea` offsets the top app bar below the top + side insets. See the [Header README](src/lib/components/Header/README.md). Set it only on the **top** app bar, never on in-page / detail / drawer-internal headers.
+
+**Automatic:**
+
+- `Notifications` — the toast stack always keeps clear of the insets in standalone (you never want a toast under the home indicator). No prop needed; no-op in a browser tab.
+
+**Utility classes** — offset any edge-anchored element without writing your own `env()` rule. They are active in standalone only:
+
+```html
+<header class="my-top-bar stuic-safe-area-top">…</header>
+<footer class="my-bottom-bar stuic-safe-area-bottom">…</footer>
+<!-- also: stuic-safe-area-left / stuic-safe-area-right -->
+```
+
+> ⚠️ These **set** the padding on their axis (they replace, not add). Apply them only to an element that doesn't already pad that side. To **add** inset on top of existing padding, compose the variables below instead.
+
+**CSS variables** — composable insets (`0px` everywhere, real device insets in standalone):
+
+```css
+.my-bottom-bar {
+	/* keep my own 1rem and add the home-indicator inset on top */
+	padding-bottom: calc(1rem + var(--stuic-safe-area-bottom));
+}
+/* also: --stuic-safe-area-top / --stuic-safe-area-left / --stuic-safe-area-right */
+```
+
+**Pick ONE layer.** Don't pad the same edge twice in a nesting chain. E.g. a nav `Drawer` whose content is its own stuic `Header`: put `safeArea` on the inner `Header`, not also on the drawer panel/wrapper.
+
+**Not covered:** other fixed/edge-anchored components (`Modal`/`ModalDialog` full-bleed on mobile, `Float`) do not auto-handle insets — apply a `stuic-safe-area-*` class or the variables to their content as needed.
+
 ## TypeScript
 
 All components export their Props types:

@@ -158,6 +158,15 @@
 		keepLocaleOnCollapse?: boolean;
 		/** Fixed positioning (top of viewport) */
 		fixed?: boolean;
+		/** When the app runs installed/standalone (display-mode standalone or
+		 *  fullscreen), offset the header below the device safe-area insets so its
+		 *  content (logo, hamburger) clears the status bar / notch / Dynamic Island.
+		 *  Pads the top plus the left/right insets (the latter only matter for a
+		 *  side notch in landscape — both 0 in portrait). The header's own
+		 *  background fills the inset strip. No-op in a browser tab / on devices
+		 *  without an inset. Only set this on the TOP app bar — never on in-page,
+		 *  detail, or drawer-internal headers (they'd get wrongly padded). */
+		safeArea?: boolean;
 		/** Bindable: whether the header is currently in collapsed (hamburger) mode */
 		isCollapsed?: boolean;
 		/** Bindable: whether the hamburger dropdown is currently open */
@@ -256,6 +265,7 @@
 		collapseMode = "hamburger",
 		keepLocaleOnCollapse = false,
 		fixed = false,
+		safeArea = false,
 		isCollapsed = $bindable(false),
 		isMenuOpen = $bindable(false),
 		dropdownPosition = "bottom-span-right",
@@ -462,6 +472,7 @@
 	class={_class}
 	data-fixed={!unstyled && fixed ? "" : undefined}
 	data-collapsed={!unstyled && _isCollapsed ? "" : undefined}
+	data-safe-area={!unstyled && safeArea ? "" : undefined}
 	{...rest}
 >
 	{#if children}
