@@ -16,6 +16,8 @@
 		label?: SnippetWithId | THC;
 		labelAfter?: SnippetWithId | THC;
 		inputBefore?: SnippetWithId | THC;
+		/** Rendered inside the input card, above the input row (e.g. a tab header) */
+		inputAbove?: SnippetWithId | THC;
 		children: Snippet;
 		inputAfter?: SnippetWithId | THC;
 		inputBelow?: SnippetWithId | THC;
@@ -40,6 +42,7 @@
 		label,
 		labelAfter,
 		inputBefore,
+		inputAbove,
 		children,
 		inputAfter,
 		inputBelow,
@@ -144,6 +147,7 @@
 				invalid && classInputBoxWrapInvalid
 			)}
 		>
+			{@render snippetOrThc({ id, value: inputAbove })}
 			<div class="flex">
 				{@render snippetOrThc({ id, value: inputBefore })}
 				{@render children()}

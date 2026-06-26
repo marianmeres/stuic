@@ -359,21 +359,22 @@ A modal-based multi-select/single-select component with search functionality, ty
 
 ### Props
 
-| Prop                | Type                                                       | Default    | Description                             |
-| ------------------- | ---------------------------------------------------------- | ---------- | --------------------------------------- |
-| `value`             | `string`                                                   | `"[]"`     | JSON array of selected items (bindable) |
-| `name`              | `string`                                                   | -          | Form field name                         |
-| `getOptions`        | `(q: string, current: Item[]) => Promise<{found: Item[]}>` | -          | Async function to fetch options         |
-| `cardinality`       | `number`                                                   | `Infinity` | Max selections (-1 for unlimited)       |
-| `allowUnknown`      | `boolean`                                                  | `false`    | Allow typing custom values              |
-| `renderOptionLabel` | `(item: Item) => string`                                   | -          | Custom option label renderer            |
-| `renderOptionGroup` | `(s: string) => string`                                    | -          | Custom optgroup label renderer          |
-| `renderValue`       | `(stringifiedItems: string) => string`                     | -          | Custom value display renderer           |
-| `showIconsCheckbox` | `boolean`                                                  | `true`     | Show checkbox icons in multi-select     |
-| `showIconsRadio`    | `boolean`                                                  | `false`    | Show radio icons in single-select       |
-| `searchPlaceholder` | `string`                                                   | -          | Custom search placeholder               |
-| `itemIdPropName`    | `string`                                                   | `"id"`     | Property name for item ID               |
-| `notifications`     | `NotificationsStack`                                       | -          | Notification handler for errors         |
+| Prop                | Type                                                       | Default    | Description                                                                         |
+| ------------------- | ---------------------------------------------------------- | ---------- | ----------------------------------------------------------------------------------- |
+| `value`             | `string`                                                   | `"[]"`     | JSON array of selected items (bindable)                                             |
+| `name`              | `string`                                                   | -          | Form field name                                                                     |
+| `getOptions`        | `(q: string, current: Item[]) => Promise<{found: Item[]}>` | -          | Async function to fetch options                                                     |
+| `cardinality`       | `number`                                                   | `Infinity` | Max selections (-1 for unlimited)                                                   |
+| `allowUnknown`      | `boolean`                                                  | `false`    | Allow typing custom values                                                          |
+| `ordered`           | `boolean`                                                  | `false`    | Opt-in: add an "Arrange" screen to manually order the selection (multi-select only) |
+| `renderOptionLabel` | `(item: Item) => string`                                   | -          | Custom option label renderer                                                        |
+| `renderOptionGroup` | `(s: string) => string`                                    | -          | Custom optgroup label renderer                                                      |
+| `renderValue`       | `(stringifiedItems: string) => string`                     | -          | Custom value display renderer                                                       |
+| `showIconsCheckbox` | `boolean`                                                  | `true`     | Show checkbox icons in multi-select                                                 |
+| `showIconsRadio`    | `boolean`                                                  | `false`    | Show radio icons in single-select                                                   |
+| `searchPlaceholder` | `string`                                                   | -          | Custom search placeholder                                                           |
+| `itemIdPropName`    | `string`                                                   | `"id"`     | Property name for item ID                                                           |
+| `notifications`     | `NotificationsStack`                                       | -          | Notification handler for errors                                                     |
 
 ### Class Props
 
@@ -421,6 +422,33 @@ A modal-based multi-select/single-select component with search functionality, ty
 	allowUnknown
 />
 ```
+
+### Ordering the selection (`ordered`)
+
+By default the selected items are serialized to `value` in alphabetical order. For
+relations where the order matters, opt in with `ordered` (multi-select only). This adds a
+`Pick | Arrange` tab header inside the modal. The **Arrange** screen shows the current
+selection as a flat list where each row has **Move up / down** (and, on wider screens,
+**Move to top / bottom**) plus **Remove** buttons — buttons only, no drag — and offers
+**Sort A–Z** / **Reverse** shortcuts. The order you set is what gets serialized to `value`
+on submit (and round-trips on reopen). Single-select fields ignore the prop.
+
+```svelte
+<FieldOptions
+	label="Steps (in order)"
+	name="steps"
+	bind:value
+	{getOptions}
+	cardinality={-1}
+	ordered
+/>
+```
+
+> Note: with `ordered`, **Select all** appends in the options' (alphabetical) order as a
+> starting point — use the per-row buttons or the Sort/Reverse shortcuts to arrange from
+> there. The `value` must hold full item objects (with their label), which is already the
+> default contract, so the Arrange list can render selected items even when they aren't in
+> the current search results.
 
 ### Customization Examples
 

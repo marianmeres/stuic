@@ -24,6 +24,7 @@
 		item2: "[]",
 		items: "[]",
 		items2: "[]",
+		itemsOrdered: "[]",
 	});
 
 	function renderItemOptionLabel(item: Item) {
@@ -152,6 +153,23 @@
 			validate={{ customValidator }}
 		/>
 		<pre class="text-xs">{raw(values.items2)}</pre>
+	</form>
+
+	<form use:onSubmitValidityCheck class="max-w-3xl border p-4">
+		<FieldOptions
+			class="w-full"
+			bind:value={values.itemsOrdered}
+			label="Many (ordered)"
+			name="item"
+			{notifications}
+			cardinality={-1}
+			renderOptionLabel={renderItemOptionLabel}
+			{getOptions}
+			description={`Pick several, then open the "Arrange" tab to set the order. The order you set is what gets serialized below (and sent to the server). Try "Sort A–Z" / "Reverse" too.`}
+			{itemIdPropName}
+			ordered
+		/>
+		<pre class="text-xs">{raw(values.itemsOrdered)}</pre>
 	</form>
 </div>
 

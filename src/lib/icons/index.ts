@@ -24,9 +24,11 @@ export { iconLucideTriangleAlert as iconAlertWarning } from "@marianmeres/icons-
 
 // Action Icons (Lucide)
 export { iconLucideArrowDown as iconArrowDown } from "@marianmeres/icons-fns/lucide/iconLucideArrowDown.js";
+export { iconLucideArrowDownToLine as iconArrowDownToLine } from "@marianmeres/icons-fns/lucide/iconLucideArrowDownToLine.js";
 export { iconLucideArrowLeft as iconArrowLeft } from "@marianmeres/icons-fns/lucide/iconLucideArrowLeft.js";
 export { iconLucideArrowRight as iconArrowRight } from "@marianmeres/icons-fns/lucide/iconLucideArrowRight.js";
 export { iconLucideArrowUp as iconArrowUp } from "@marianmeres/icons-fns/lucide/iconLucideArrowUp.js";
+export { iconLucideArrowUpToLine as iconArrowUpToLine } from "@marianmeres/icons-fns/lucide/iconLucideArrowUpToLine.js";
 export { iconLucideDownload as iconDownload } from "@marianmeres/icons-fns/lucide/iconLucideDownload.js";
 export { iconLucideMinus as iconMinus } from "@marianmeres/icons-fns/lucide/iconLucideMinus.js";
 export { iconLucidePlus as iconPlus } from "@marianmeres/icons-fns/lucide/iconLucidePlus.js";
