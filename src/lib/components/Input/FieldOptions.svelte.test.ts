@@ -5,7 +5,7 @@ import FieldOptions from "./FieldOptions.svelte";
 // FieldOptions is a modal-based multi/single-select. The opt-in `ordered` prop adds a
 // dedicated "Arrange" screen (a second tab in the modal) that renders the current
 // selection as a flat, manually-ordered list with per-row Move up/down/top/bottom +
-// Remove buttons, plus global "Sort A–Z" / "Reverse" shortcuts. On submit the selection
+// Remove buttons, plus global "Sort A–Z" / "Reverse" / "Shuffle" shortcuts. On submit the selection
 // is serialized to `value` in the user's chosen order.
 //
 // Testing notes:
@@ -179,6 +179,38 @@ test("Sort A–Z orders by label; Reverse reverses the current order", async () 
 	await expect
 		.poll(() => arrangeLabels(screen.container))
 		.toEqual(["Cherry", "Banana", "Apple"]);
+});
+
+test("Shuffle reorders the selection while preserving every item exactly once", async () => {
+	// pin Math.random so Fisher–Yates produces a deterministic, non-identity permutation
+	const seq = [0.99, 0.01, 0.5];
+	let i = 0;
+	const randSpy = vi
+		.spyOn(Math, "random")
+		.mockImplementation(() => seq[i++ % seq.length]);
+	try {
+		const screen = await render(FieldOptions, {
+			name: "opts",
+			value: seeded(["Apple", "Banana", "Cherry", "Date"]),
+			cardinality: -1,
+			ordered: true,
+			getOptions,
+		});
+		await open(screen);
+		await gotoArrange(screen);
+		const before = arrangeLabels(screen.container);
+
+		await screen.getByRole("button", { name: "Shuffle" }).click();
+
+		// the multiset is preserved: same items, same count, none lost or duplicated
+		await expect
+			.poll(() => [...arrangeLabels(screen.container)].sort())
+			.toEqual([...before].sort());
+		// and with the pinned seed it is a real reorder, not a no-op
+		expect(arrangeLabels(screen.container)).not.toEqual(before);
+	} finally {
+		randSpy.mockRestore();
+	}
 });
 
 test("Remove drops a row from Arrange and unchecks it on Pick", async () => {

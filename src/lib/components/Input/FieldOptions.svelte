@@ -86,7 +86,7 @@
 		/**
 		 * Opt-in: when true (and multi-select), exposes a dedicated "Arrange" screen in the
 		 * modal that lets the user manually reorder the current selection (buttons only, no
-		 * drag), plus "Sort A–Z" / "Reverse" shortcuts. The chosen order is what gets
+		 * drag), plus "Sort A–Z" / "Reverse" / "Shuffle" shortcuts. The chosen order is what gets
 		 * serialized to `value` on submit. No-op for single-select. Default `false`.
 		 */
 		ordered?: boolean;
@@ -130,6 +130,7 @@
 			arrange_help: "Reorder the selected items. Use the buttons to move them.",
 			sort_az: "Sort A–Z",
 			reverse: "Reverse",
+			shuffle: "Shuffle",
 			move_up: "Move up",
 			move_down: "Move down",
 			move_to_top: "Move to top",
@@ -140,6 +141,7 @@
 			removed_item: "Removed {{value}}",
 			sorted_az: "Sorted A to Z",
 			reversed: "Order reversed",
+			shuffled: "Order shuffled",
 		};
 		let out = m[k] ?? fallback ?? k;
 
@@ -528,6 +530,17 @@
 		liveAnnouncement = t("reversed") as string;
 	}
 
+	// random reorder (Fisher–Yates); same snapshot/clear/re-add dance as reverse()
+	function shuffle() {
+		const arr = [...selected.items];
+		for (let i = arr.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[arr[i], arr[j]] = [arr[j], arr[i]];
+		}
+		_selectedColl.clear(false).addMany(arr);
+		liveAnnouncement = t("shuffled") as string;
+	}
+
 	function enterArrange() {
 		if (!selected.items.length) return;
 		arrangeMode = true;
@@ -907,6 +920,15 @@
 										tabindex={5}
 									>
 										{@html t("reverse")}
+									</button>
+									<button
+										type="button"
+										onclick={shuffle}
+										disabled={selected.items.length < 2}
+										class="control flex items-center p-1 m-1 text-sm underline rounded stuic-field-options-control"
+										tabindex={6}
+									>
+										{@html t("shuffle")}
 									</button>
 									<span
 										class="flex-1 block justify-end text-right text-xs p-1 pr-2 stuic-field-options-muted"
