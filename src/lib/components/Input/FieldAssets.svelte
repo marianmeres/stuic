@@ -14,8 +14,10 @@
 		iconFileWord,
 		iconFileZip,
 		iconPlus as iconAdd,
+		iconChevronLeft,
+		iconChevronRight,
 	} from "$lib/icons/index.js";
-	import { onDestroy, type Snippet } from "svelte";
+	import { onDestroy, tick, type Snippet } from "svelte";
 	import { fileDropzone } from "../../actions/file-dropzone.svelte.js";
 	import { highlightDragover } from "../../actions/highlight-dragover.svelte.js";
 	import { tooltip } from "../../actions/index.js";
@@ -58,6 +60,10 @@
 			close: "Close preview window",
 			download: "Download original",
 			invalid_type: 'Some of the files are not supported. Allowed are only "{{accept}}".',
+			move_prev: "Move earlier",
+			move_next: "Move later",
+			moved_prev: "Moved {{name}} earlier",
+			moved_next: "Moved {{name}} later",
 		};
 		let out = m[k] ?? fallback ?? k;
 
@@ -167,6 +173,13 @@
 		withOnProgress?: boolean;
 		classControls?: string;
 		isLoading?: boolean;
+		/**
+		 * Opt-in: when true, each asset tile in the grid gets "Move earlier" / "Move later"
+		 * controls (shown on hover/focus) so the user can manually reorder the assets. The
+		 * chosen order is serialized to `value`. Buttons only, no drag (the field's drag is
+		 * reserved for file drops); full keyboard + aria-live announcements. Default `false`.
+		 */
+		ordered?: boolean;
 		//
 		classWrap?: string;
 	}
@@ -231,6 +244,7 @@
 		withOnProgress,
 		classControls = "",
 		isLoading = false,
+		ordered = false,
 		parseValue = (strigifiedModels: string) => {
 			const val = strigifiedModels ?? "[]";
 			try {
@@ -249,6 +263,10 @@
 	let isUploading = $state(false);
 	let cardinality = $derived(_cardinality === -1 ? Infinity : _cardinality);
 	let isMultiple = $derived(cardinality > 1);
+	// reordering ("ordered") is opt-in and only meaningful with more than one asset
+	let canArrange = $derived(ordered && isMultiple);
+	// aria-live announcement text for reorder actions
+	let liveAnnouncement = $state("");
 	let parentHiddenInputEl: HTMLInputElement | undefined = $state();
 	let hasLabel = $derived(isTHCNotEmpty(label) || typeof label === "function");
 	let inputEl = $state<HTMLInputElement>()!;
@@ -348,6 +366,44 @@
 		notifications?.info(t("deleted", { name }));
 	}
 
+	// re-focus the same logical move button on the tile that moved, so repeated presses keep
+	// walking the item; if that button is now disabled (a boundary), fall back to the enabled one.
+	// We target by the NEW index (querySelectorAll DOM order == array order) to avoid escaping
+	// blob/url ids into a CSS attribute selector.
+	function focusMovedButton(to: number, which: "prev" | "next") {
+		tick().then(() => {
+			const tile = wrapEl?.querySelectorAll<HTMLElement>("[data-asset-tile]")[to];
+			if (!tile) return;
+			let btn = tile.querySelector<HTMLButtonElement>(`[data-arrange-btn="${which}"]`);
+			if (!btn || btn.disabled) {
+				btn =
+					tile.querySelector<HTMLButtonElement>(
+						`[data-arrange-btn="prev"]:not([disabled])`
+					) ||
+					tile.querySelector<HTMLButtonElement>(
+						`[data-arrange-btn="next"]:not([disabled])`
+					);
+			}
+			btn?.focus();
+		});
+	}
+
+	// Reorder by moving the asset at `from` to `to`. Splices a copy and re-serializes (same
+	// value-driven pattern as remove_by_idx). Safe mid-upload: processAssets reconciles the
+	// resolved asset by blob-url id (findIndex), never by array position.
+	function move(from: number, to: number) {
+		if (to < 0 || to >= assets.length || from === to) return;
+		const next = [...assets];
+		const [item] = next.splice(from, 1);
+		if (!item) return;
+		next.splice(to, 0, item);
+		value = serializeValue(next);
+		liveAnnouncement = t(to < from ? "moved_prev" : "moved_next", {
+			name: item.name,
+		}) as string;
+		focusMovedButton(to, to < from ? "prev" : "next");
+	}
+
 	onDestroy(() => {
 		try {
 			assets.forEach((a) => {
@@ -369,11 +425,15 @@
 			<SpinnerCircleOscillate />
 		</div>
 	{:else}
+		{#if canArrange}
+			<!-- screen-reader announcements for reorder actions -->
+			<div class="sr-only" aria-live="polite" aria-atomic="true">{liveAnnouncement}</div>
+		{/if}
 		<div class={["p-2 flex items-center gap-0.5 flex-wrap"]}>
-			{#each assets as asset, idx}
+			{#each assets as asset, idx (asset.id)}
 				{@const { thumb, full, original } = asset_urls(asset)}
 				{@const _is_img = isImage(asset.type ?? thumb)}
-				<div class="relative group">
+				<div class="relative group" data-asset-tile>
 					<button
 						class={[objectSize, "bg-black/10 grid place-content-center", classControls]}
 						onclick={(e) => {
@@ -420,6 +480,59 @@
 							</span>
 						{/if}
 					</button>
+
+					{#if canArrange && assets.length > 1}
+						<!-- Reorder controls (sibling of the thumbnail <button>, never nested — that
+						would be invalid HTML). Hidden until the tile is hovered/focused; pointer
+						events are gated to hover/focus so an invisible control can't intercept a
+						click meant for the thumbnail, while keyboard users can still Tab to them. -->
+						<div
+							class={[
+								"absolute inset-x-0 top-0 flex items-start justify-between p-0.5",
+								"opacity-0 transition-opacity pointer-events-none",
+								"group-hover:opacity-100 focus-within:opacity-100",
+							]}
+						>
+							<button
+								type="button"
+								data-arrange-btn="prev"
+								disabled={idx === 0}
+								aria-label={t("move_prev")}
+								use:tooltip={() => ({ content: t("move_prev") })}
+								class={[
+									"grid place-content-center rounded p-0.5 bg-black/60 text-white hover:bg-black/80",
+									"pointer-events-none group-hover:pointer-events-auto focus:pointer-events-auto",
+									"disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-black/60",
+								]}
+								onclick={(e) => {
+									e.stopPropagation();
+									e.preventDefault();
+									move(idx, idx - 1);
+								}}
+							>
+								{@html iconChevronLeft({ size: 16 })}
+							</button>
+							<button
+								type="button"
+								data-arrange-btn="next"
+								disabled={idx === assets.length - 1}
+								aria-label={t("move_next")}
+								use:tooltip={() => ({ content: t("move_next") })}
+								class={[
+									"grid place-content-center rounded p-0.5 bg-black/60 text-white hover:bg-black/80",
+									"pointer-events-none group-hover:pointer-events-auto focus:pointer-events-auto",
+									"disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-black/60",
+								]}
+								onclick={(e) => {
+									e.stopPropagation();
+									e.preventDefault();
+									move(idx, idx + 1);
+								}}
+							>
+								{@html iconChevronRight({ size: 16 })}
+							</button>
+						</div>
+					{/if}
 				</div>
 			{/each}
 			<Button

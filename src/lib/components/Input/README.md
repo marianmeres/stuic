@@ -472,6 +472,33 @@ on submit (and round-trips on reopen). Single-select fields ignore the prop.
 
 ---
 
+## FieldAssets
+
+Asset/image upload field with an inline thumbnail grid and a built-in lightbox preview
+(`AssetsPreview`). Files are added via the picker button or by dragging them onto the
+field; each shows as a thumbnail with its filename (and an upload progress indicator while
+processing).
+
+### Ordering the assets (`ordered`)
+
+By default assets keep their upload order. Opt in with `ordered` to let users reorder them
+manually: each thumbnail gains **Move earlier** / **Move later** controls (revealed on
+hover/focus) that shift the asset one position in the sequence. Buttons only, no drag — the
+field's drag gesture is reserved for file drops — with full keyboard support and aria-live
+announcements. The chosen order is serialized to `value`.
+
+```svelte
+<FieldAssets
+	label="Gallery (ordered)"
+	name="gallery"
+	bind:value
+	{processAssets}
+	ordered
+/>
+```
+
+---
+
 ## Honeypot & TimeTrap (anti-bot primitives)
 
 Two small, **client-side, server-less** primitives for cheap spam mitigation. They produce **signals** — they do not block anything. Read the signal, then enforce on your server (the only place enforcement is trustworthy). Both are reusable on any form; [`ContactUsForm`](../ContactUsForm/README.md) composes them by default.

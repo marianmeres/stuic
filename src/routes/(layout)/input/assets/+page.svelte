@@ -59,6 +59,7 @@
 		{notifications}
 		accept="*"
 		required
+		ordered
 		cardinality={6}
 		processAssets={async (assets, onProgress) => {
 			clog.debug("processAssets...", assets);
