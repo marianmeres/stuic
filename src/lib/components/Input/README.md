@@ -475,9 +475,29 @@ on submit (and round-trips on reopen). Single-select fields ignore the prop.
 ## FieldAssets
 
 Asset/image upload field with an inline thumbnail grid and a built-in lightbox preview
-(`AssetsPreview`). Files are added via the picker button or by dragging them onto the
-field; each shows as a thumbnail with its filename (and an upload progress indicator while
-processing).
+(`AssetsPreview`). Files are added via the picker button, by dragging them onto the field,
+or (opt-in) by pasting from the clipboard; each shows as a thumbnail with its filename (and
+an upload progress indicator while processing).
+
+### Paste from the clipboard (`pasteable`)
+
+Opt in with `pasteable` to let users paste image/file data from the clipboard (Ctrl/Cmd-V) —
+a screenshot, a copied image, etc. It is **focus-scoped**: a paste is consumed only while the
+field (or a control inside it) holds focus. Clicking anywhere in the field focuses it, so no
+Tab is needed, and a `:focus-within` ring on the input box signals the paste-ready state.
+Pasted files go through the same path as the picker and drag-and-drop, so `accept`,
+`cardinality` and `processAssets` all apply. No-op unless `processAssets` is provided.
+
+```svelte
+<FieldAssets
+	label="Screenshots"
+	name="screenshots"
+	bind:value
+	{processAssets}
+	accept="image/*"
+	pasteable
+/>
+```
 
 ### Ordering the assets (`ordered`)
 
