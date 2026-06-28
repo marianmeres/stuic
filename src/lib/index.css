@@ -71,6 +71,7 @@ In practice:
 @import "./components/LoginOrRegisterForm/index.css";
 @import "./components/Checkout/index.css";
 @import "./components/CommandMenu/index.css";
+@import "./components/CommentInput/index.css";
 @import "./components/ContactUsForm/index.css";
 @import "./components/CronInput/index.css";
 @import "./components/DataTable/index.css";

@@ -1,0 +1,310 @@
+/******************************************************************************
+  CommentInput
+
+  A GitHub-style comment box: a raw-markdown textarea with Write/Preview tabs and
+  a submit footer. Field chrome (label/description/validation/sizing) comes from
+  the shared InputWrap, so it matches the `Field*` family; everything specific to
+  the box lives here.
+
+  Tokens follow the library convention: a component token that falls back to the
+  shared `--stuic-input-*` token, then to a global default — so the box inherits
+  input theming for free but can be retargeted on its own.
+******************************************************************************/
+
+.stuic-comment-input {
+	--_radius: var(
+		--stuic-comment-input-radius,
+		var(--stuic-input-radius, var(--stuic-radius))
+	);
+	--_border-color: var(
+		--stuic-comment-input-border,
+		var(--stuic-input-border, currentColor)
+	);
+	--_bg: var(--stuic-comment-input-bg, var(--stuic-input-bg, transparent));
+	--_pad-x: var(
+		--stuic-comment-input-padding-x,
+		var(--stuic-input-padding-x-md, 0.75rem)
+	);
+	--_pad-y: var(--stuic-comment-input-padding-y, var(--stuic-input-padding-y-md, 0.5rem));
+	--_min-height: var(--stuic-comment-input-min-height, 5rem);
+	--_font-size: var(
+		--stuic-comment-input-font-size,
+		var(--stuic-input-font-size-md, 0.9375rem)
+	);
+
+	display: flex;
+	align-items: flex-start;
+	gap: var(--stuic-comment-input-gap, 0.625rem);
+	width: 100%;
+	min-width: 0;
+}
+
+.stuic-comment-input-avatar {
+	flex: 0 0 auto;
+	padding-top: 0.125rem;
+}
+
+/* The bordered card — focus ring lives here, not on the avatar row. */
+.stuic-comment-input-editor {
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 auto;
+	min-width: 0;
+	max-width: 100%;
+	background: var(--_bg);
+	border: var(--stuic-border-width, 1px) solid var(--_border-color);
+	border-radius: var(--_radius);
+	color: var(--stuic-input-text, inherit);
+	overflow: hidden;
+	transition: border-color var(--stuic-transition, 150ms);
+}
+
+.stuic-comment-input-editor:focus-within {
+	border-color: var(
+		--stuic-comment-input-border-focus,
+		var(--stuic-input-border-focus, currentColor)
+	);
+}
+
+.stuic-comment-input.disabled {
+	opacity: 0.6;
+	pointer-events: none;
+}
+
+/* --- Tab bar -------------------------------------------------------------- */
+.stuic-comment-input-bar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.5rem;
+	padding: 0.25rem 0.375rem;
+	background: var(--stuic-comment-input-bar-bg, transparent);
+}
+
+.stuic-comment-input-tabs {
+	display: flex;
+	align-items: center;
+	gap: 0.125rem;
+}
+
+.stuic-comment-input-tabs button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	height: 2rem;
+	padding: 0 0.625rem;
+	font-size: 0.8125rem;
+	line-height: 1;
+	color: inherit;
+	opacity: 0.7;
+	background: transparent;
+	border: none;
+	border-radius: var(--stuic-radius, 0.375rem);
+	transition:
+		background-color var(--stuic-transition, 150ms),
+		opacity var(--stuic-transition, 150ms);
+}
+
+.stuic-comment-input-tabs button:hover:not(:disabled) {
+	background: var(--stuic-comment-input-tab-hover-bg, rgb(0 0 0 / 0.06));
+}
+
+.stuic-comment-input-tabs button[data-active="true"] {
+	opacity: 1;
+	font-weight: 600;
+	background: var(--stuic-comment-input-tab-active-bg, rgb(0 0 0 / 0.06));
+}
+
+.stuic-comment-input-tabs button:disabled {
+	opacity: 0.4;
+}
+
+.stuic-comment-input-hint {
+	font-size: 0.75rem;
+	opacity: 0.5;
+	padding-right: 0.25rem;
+}
+
+:root.dark .stuic-comment-input-tabs button:hover:not(:disabled),
+:root.dark .stuic-comment-input-tabs button[data-active="true"] {
+	background: var(--stuic-comment-input-tab-active-bg, rgb(255 255 255 / 0.08));
+}
+
+@media (pointer: coarse) {
+	.stuic-comment-input-tabs button {
+		height: 2.5rem;
+	}
+}
+
+/* --- Surface (textarea + preview share the same box) ---------------------- */
+.stuic-comment-input-surface {
+	min-width: 0;
+}
+
+/* The inactive tab panel is removed via the `hidden` attribute; the explicit
+   rule guarantees it collapses regardless of any utility-layer display. The
+   write panel stays in the DOM while hidden so its textarea still submits and
+   validates. */
+.stuic-comment-input-panel[hidden] {
+	display: none;
+}
+
+.stuic-comment-input-textarea {
+	display: block;
+	width: 100%;
+	min-height: var(--_min-height);
+	max-width: 100%;
+	margin: 0;
+	padding: var(--_pad-y) var(--_pad-x);
+	font-size: var(--_font-size);
+	line-height: 1.6;
+	color: inherit;
+	background: transparent;
+	border: none;
+	outline: none;
+	box-shadow: none;
+	resize: none;
+}
+
+/* --- Preview -------------------------------------------------------------- */
+.stuic-comment-input-preview {
+	min-height: var(--_min-height);
+	padding: var(--_pad-y) var(--_pad-x);
+	font-size: var(--_font-size);
+	line-height: 1.6;
+	overflow-wrap: break-word;
+}
+
+.stuic-comment-input-preview-empty {
+	opacity: 0.5;
+	font-style: italic;
+}
+
+.stuic-comment-input-preview > * + * {
+	margin-top: 0.75em;
+}
+.stuic-comment-input-preview h1 {
+	font-size: 1.5em;
+	font-weight: 700;
+	line-height: 1.2;
+}
+.stuic-comment-input-preview h2 {
+	font-size: 1.3em;
+	font-weight: 700;
+	line-height: 1.25;
+}
+.stuic-comment-input-preview h3 {
+	font-size: 1.15em;
+	font-weight: 600;
+}
+.stuic-comment-input-preview ul,
+.stuic-comment-input-preview ol {
+	padding-left: 1.5em;
+}
+.stuic-comment-input-preview ul {
+	list-style: disc;
+}
+.stuic-comment-input-preview ol {
+	list-style: decimal;
+}
+.stuic-comment-input-preview a {
+	text-decoration: underline;
+}
+.stuic-comment-input-preview blockquote {
+	padding-left: 1em;
+	border-left: 3px solid var(--_border-color);
+	opacity: 0.85;
+}
+.stuic-comment-input-preview code {
+	font-family: var(
+		--stuic-comment-input-font-mono,
+		ui-monospace,
+		SFMono-Regular,
+		Menlo,
+		monospace
+	);
+	font-size: 0.9em;
+	padding: 0.1em 0.3em;
+	border-radius: 0.25rem;
+	background: var(--stuic-comment-input-code-bg, rgb(0 0 0 / 0.06));
+}
+.stuic-comment-input-preview pre {
+	font-family: var(
+		--stuic-comment-input-font-mono,
+		ui-monospace,
+		SFMono-Regular,
+		Menlo,
+		monospace
+	);
+	padding: 0.75em 1em;
+	border-radius: var(--stuic-radius, 0.375rem);
+	background: var(--stuic-comment-input-code-bg, rgb(0 0 0 / 0.06));
+	overflow-x: auto;
+}
+.stuic-comment-input-preview pre code {
+	padding: 0;
+	background: transparent;
+}
+.stuic-comment-input-preview hr {
+	border: none;
+	border-top: var(--stuic-border-width, 1px) solid var(--_border-color);
+}
+.stuic-comment-input-preview table {
+	border-collapse: collapse;
+}
+.stuic-comment-input-preview th,
+.stuic-comment-input-preview td {
+	border: var(--stuic-border-width, 1px) solid var(--_border-color);
+	padding: 0.25em 0.5em;
+}
+
+:root.dark .stuic-comment-input-preview code,
+:root.dark .stuic-comment-input-preview pre {
+	background: var(--stuic-comment-input-code-bg, rgb(255 255 255 / 0.08));
+}
+
+/* --- Footer (button row) -------------------------------------------------- */
+.stuic-comment-input-footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.5rem;
+	padding: 0.5rem;
+}
+
+.stuic-comment-input-footer-start,
+.stuic-comment-input-footer-end {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.stuic-comment-input-footer-end {
+	margin-left: auto;
+}
+
+/* --- Size variants -------------------------------------------------------- */
+.stuic-comment-input[data-size="sm"] {
+	--_pad-x: var(--stuic-comment-input-padding-x, var(--stuic-input-padding-x-sm, 0.5rem));
+	--_pad-y: var(
+		--stuic-comment-input-padding-y,
+		var(--stuic-input-padding-y-sm, 0.375rem)
+	);
+	--_font-size: var(
+		--stuic-comment-input-font-size,
+		var(--stuic-input-font-size-sm, 0.8125rem)
+	);
+	--_min-height: var(--stuic-comment-input-min-height, 4rem);
+}
+.stuic-comment-input[data-size="lg"] {
+	--_pad-x: var(--stuic-comment-input-padding-x, var(--stuic-input-padding-x-lg, 1rem));
+	--_pad-y: var(
+		--stuic-comment-input-padding-y,
+		var(--stuic-input-padding-y-lg, 0.75rem)
+	);
+	--_font-size: var(
+		--stuic-comment-input-font-size,
+		var(--stuic-input-font-size-lg, 1.0625rem)
+	);
+	--_min-height: var(--stuic-comment-input-min-height, 7rem);
+}
