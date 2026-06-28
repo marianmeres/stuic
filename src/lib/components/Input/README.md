@@ -497,6 +497,42 @@ announcements. The chosen order is serialized to `value`.
 />
 ```
 
+### Lazy / auth-gated download (`onDownload`)
+
+By default the preview's **Download** button fetches `asset.url.original` with a plain
+unauthenticated request. When the bytes live behind an authenticated route (a Bearer
+token, a signed request, …), or you'd rather fetch them **only on download-click** instead
+of pre-resolving an object URL for every asset up front, pass `onDownload`. It receives the
+full `FieldAsset` (including `_raw`, so you can recover your own model id) plus its index,
+and replaces the default download entirely. It may be async — the button shows a busy state
+until it settles, and a rejection is caught so a failed download never breaks the preview.
+
+```svelte
+<FieldAssets
+	label="Attachments"
+	name="attachments"
+	bind:value
+	{processAssets}
+	onDownload={async (asset) => {
+		const id = (asset._raw as { model_id: string }).model_id;
+		const res = await fetch(`/todo/attachment/${id}`, {
+			headers: { Authorization: `Bearer ${token}` },
+		});
+		const objUrl = URL.createObjectURL(await res.blob());
+		const a = document.createElement("a");
+		a.href = objUrl;
+		a.download = asset.name || "download";
+		document.body.appendChild(a);
+		a.click();
+		a.remove();
+		setTimeout(() => URL.revokeObjectURL(objUrl), 10_000);
+	}}
+/>
+```
+
+> With this, non-image attachments need **no** pre-fetched object URL at all — they render
+> as a file icon and only fetch bytes when the user actually clicks Download.
+
 ---
 
 ## Honeypot & TimeTrap (anti-bot primitives)

@@ -4,13 +4,14 @@ A modal-based asset preview component for displaying images and files. Supports 
 
 ## Props
 
-| Prop             | Type                         | Default  | Description                       |
-| ---------------- | ---------------------------- | -------- | --------------------------------- |
-| `assets`         | `string[] \| AssetPreview[]` | -        | Array of assets to preview        |
-| `classControls`  | `string`                     | -        | CSS for control buttons           |
-| `t`              | `TranslateFn`                | built-in | Translation function for i18n     |
-| `onDelete`       | `(asset, index) => void`     | -        | Optional delete handler           |
-| `prevNextBottom` | `boolean`                    | `false`  | Render prev/next arrows at bottom |
+| Prop             | Type                                      | Default  | Description                                                                                                            |
+| ---------------- | ----------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `assets`         | `string[] \| AssetPreview[]`              | -        | Array of assets to preview                                                                                             |
+| `classControls`  | `string`                                  | -        | CSS for control buttons                                                                                                |
+| `t`              | `TranslateFn`                             | built-in | Translation function for i18n                                                                                          |
+| `onDelete`       | `(asset, index) => void`                  | -        | Optional delete handler                                                                                                |
+| `onDownload`     | `(asset, index) => void \| Promise<void>` | -        | Optional download handler. Replaces the default `forceDownload(url.original)` — for auth-gated or lazily-fetched bytes |
+| `prevNextBottom` | `boolean`                                 | `false`  | Render prev/next arrows at bottom                                                                                      |
 
 ## Types
 
@@ -139,6 +140,46 @@ interface AssetPreview {
 
 <AssetsPreview bind:this={preview} {assets} onDelete={handleDelete} />
 ```
+
+### With a Custom Download Handler
+
+By default the Download button calls the built-in `forceDownload(asset.url.original)`,
+which does a plain unauthenticated `fetch`. Supply `onDownload` to take over the action —
+e.g. to fetch **auth-gated** bytes (a `Authorization: Bearer …` route), or to fetch
+**lazily** only when the user actually clicks Download instead of pre-resolving an object
+URL for every asset up front. When provided, the default path is skipped entirely.
+
+The handler may be async; while the returned promise is pending the button shows a busy
+spinner and is disabled (so rapid clicks can't fire duplicate fetches). Rejections are
+caught and logged, so a failed download never breaks the preview.
+
+```svelte
+<script lang="ts">
+	import { AssetsPreview, type AssetPreview } from "stuic";
+
+	let preview: AssetsPreview;
+
+	async function handleDownload(asset: AssetPreview) {
+		// Fetch the bytes yourself (e.g. with an auth header), then save them.
+		const res = await fetch(String(asset.url.original), {
+			headers: { Authorization: `Bearer ${token}` },
+		});
+		const objUrl = URL.createObjectURL(await res.blob());
+		const a = document.createElement("a");
+		a.href = objUrl;
+		a.download = asset.name || "download";
+		document.body.appendChild(a);
+		a.click();
+		a.remove();
+		setTimeout(() => URL.revokeObjectURL(objUrl), 10_000);
+	}
+</script>
+
+<AssetsPreview bind:this={preview} {assets} onDownload={handleDownload} />
+```
+
+> Visibility of the Download button is still controlled solely by `noDownload` —
+> `onDownload` only changes _what_ the button does, not _whether_ it shows.
 
 ### With Custom Translations
 

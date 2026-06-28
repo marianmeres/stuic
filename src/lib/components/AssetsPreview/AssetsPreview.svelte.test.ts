@@ -1,5 +1,5 @@
 import { render } from "vitest-browser-svelte";
-import { expect, test } from "vitest";
+import { expect, test, vi } from "vitest";
 import Fixture from "./AssetsPreview.fixture.svelte";
 
 // AssetsPreview is the MODAL gallery: it wraps the same AssetsPreviewContent (covered
@@ -66,4 +66,22 @@ test("the Close button closes the modal", async () => {
 	await screen.getByRole("button", { name: "Close" }).click();
 
 	await expect.element(screen.getByRole("dialog")).not.toBeInTheDocument();
+});
+
+test("onDownload threads through the modal: clicking Download fires the spy with the current asset + index", async () => {
+	const onDownload = vi.fn();
+	const screen = render(Fixture, { assets: [ALPHA, BETA], onDownload });
+
+	await screen.getByTestId("opener").click();
+	await expect.element(screen.getByRole("dialog")).toBeInTheDocument();
+
+	const dl = screen.getByRole("button", { name: "Download" });
+	await expect.element(dl).toBeInTheDocument();
+	await dl.click();
+
+	expect(onDownload).toHaveBeenCalledOnce();
+	// onDownload(asset, index) — opened at default index 0 (alpha).
+	const [asset, index] = onDownload.mock.calls[0];
+	expect(index).toBe(0);
+	expect(asset).toMatchObject({ name: "alpha.jpg" });
 });

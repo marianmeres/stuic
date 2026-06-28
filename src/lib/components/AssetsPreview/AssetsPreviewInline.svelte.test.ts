@@ -204,6 +204,92 @@ test("onDelete fn renders a Delete button; clicking it fires the spy with the cu
 	expect(typeof controls?.close).toBe("function");
 });
 
+test("onDownload provided: clicking Download fires the spy with the current asset + index, and the default forceDownload path is bypassed", async () => {
+	// The default path (forceDownload) builds an <a download> and calls .click() on it.
+	// Spy on the prototype to BOTH prove the custom handler bypasses it AND suppress a
+	// real browser download. (This repo mocks via vi.fn/vi.spyOn — never module mocks.)
+	const anchorClick = vi
+		.spyOn(HTMLAnchorElement.prototype, "click")
+		.mockImplementation(() => {});
+	try {
+		const onDownload = vi.fn();
+		const screen = render(AssetsPreviewInline, { assets: [ALPHA, BETA], onDownload });
+
+		const dl = screen.getByRole("button", { name: "Download" });
+		await expect.element(dl).toBeInTheDocument();
+
+		await dl.click();
+
+		expect(onDownload).toHaveBeenCalledOnce();
+		// onDownload(asset, index) — index 0 is the current asset (alpha).
+		const [asset, index] = onDownload.mock.calls[0];
+		expect(index).toBe(0);
+		expect(asset).toMatchObject({ name: "alpha.jpg", isImage: true });
+
+		// Custom handler short-circuits the default forceDownload path entirely.
+		expect(anchorClick).not.toHaveBeenCalled();
+	} finally {
+		anchorClick.mockRestore();
+	}
+});
+
+test("no onDownload: clicking Download runs the default forceDownload path (anchor .click())", async () => {
+	const anchorClick = vi
+		.spyOn(HTMLAnchorElement.prototype, "click")
+		.mockImplementation(() => {});
+	try {
+		const screen = render(AssetsPreviewInline, { assets: [ALPHA] });
+
+		const dl = screen.getByRole("button", { name: "Download" });
+		await expect.element(dl).toBeInTheDocument();
+
+		await dl.click();
+
+		// forceDownload awaits fetch()+blob() before clicking the <a>, so poll for it.
+		await expect.poll(() => anchorClick.mock.calls.length).toBe(1);
+	} finally {
+		anchorClick.mockRestore();
+	}
+});
+
+test("async onDownload: the Download button is disabled while the promise is pending, then re-enabled once it settles", async () => {
+	let release!: () => void;
+	const pending = new Promise<void>((r) => (release = r));
+	const onDownload = vi.fn(() => pending);
+	const screen = render(AssetsPreviewInline, { assets: [ALPHA], onDownload });
+
+	const dl = screen.getByRole("button", { name: "Download" });
+	await expect.element(dl).toBeInTheDocument();
+	await expect.element(dl).not.toBeDisabled();
+
+	await dl.click();
+
+	// Busy: disabled while the returned promise is unresolved.
+	await expect.element(dl).toBeDisabled();
+	expect(onDownload).toHaveBeenCalledOnce();
+
+	// Settle -> the finally block clears the busy state and re-enables the button.
+	release();
+	await expect.element(dl).not.toBeDisabled();
+});
+
+test("async onDownload that rejects: the failure is swallowed — the button re-enables and the preview survives", async () => {
+	let reject!: (e?: unknown) => void;
+	const pending = new Promise<void>((_, r) => (reject = r));
+	const onDownload = vi.fn(() => pending);
+	const screen = render(AssetsPreviewInline, { assets: [ALPHA], onDownload });
+
+	const dl = screen.getByRole("button", { name: "Download" });
+	await dl.click();
+	await expect.element(dl).toBeDisabled();
+
+	reject(new Error("boom"));
+
+	// Recovers without tearing down the preview (the name label is still present).
+	await expect.element(dl).not.toBeDisabled();
+	await expect.poll(() => currentName(screen.container)).toBe("alpha.jpg");
+});
+
 test("ArrowRight on the root advances to the next asset (name label -> 'beta.jpg')", async () => {
 	const screen = render(AssetsPreviewInline, { assets: [ALPHA, BETA] });
 

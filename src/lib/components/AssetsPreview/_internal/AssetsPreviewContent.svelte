@@ -55,6 +55,13 @@
 				close: () => void;
 			}
 		) => void;
+		/**
+		 * Optional consumer-supplied download handler. When provided, the Download button
+		 * calls this instead of `forceDownload(asset.url.original)` — for auth-gated bytes
+		 * or lazy fetching. Receives the current preview asset + its index. May be async;
+		 * the button shows a busy/disabled state while the returned promise settles.
+		 */
+		onDownload?: (asset: AssetPreview, index: number) => void | Promise<void>;
 		/** Callback when a clickable area on an image is clicked */
 		onAreaClick?: (data: { area: AssetArea; asset: AssetPreviewNormalized }) => void;
 		onClose?: () => void;
@@ -81,10 +88,36 @@
 		classControls = "",
 		t = t_default,
 		onDelete,
+		onDownload,
 		onAreaClick,
 		onClose,
 		slideDuration = 300,
 	}: Props = $props();
+
+	// Busy state for an async `onDownload`; disables the button + shows a spinner so
+	// rapid clicks can't fire duplicate (possibly authed) fetches. Only the custom
+	// path drives this — the default `forceDownload` path is left exactly as-is.
+	let downloading = $state(false);
+
+	async function handleDownload() {
+		if (typeof onDownload === "function") {
+			try {
+				downloading = true;
+				await onDownload(previewAsset, previewIdx);
+			} catch (e) {
+				// A failed/late download must never reject up and tear down the preview.
+				clog.error("onDownload failed", e);
+			} finally {
+				downloading = false;
+			}
+			return;
+		}
+		// Default (unchanged): fetch the original bytes and force a browser download.
+		forceDownload(
+			resolveUrl(String(previewAsset.url.original), baseUrl),
+			previewAsset?.name || ""
+		);
+	}
 
 	let dotTooltip: string | undefined = $state();
 
@@ -747,12 +780,12 @@
 				<Button
 					class={twMerge(BUTTON_CLS, classControls)}
 					type="button"
+					disabled={downloading}
+					spinner={downloading}
+					spinnerOnly
 					onclick={(e) => {
 						e.preventDefault();
-						forceDownload(
-							resolveUrl(String(previewAsset.url.original), baseUrl),
-							previewAsset?.name || ""
-						);
+						handleDownload();
 					}}
 					aria-label={t("download")}
 					tooltip={t("download")}

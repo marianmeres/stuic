@@ -22,6 +22,13 @@
 				close: () => void;
 			}
 		) => void;
+		/**
+		 * Optional consumer-supplied download handler. When provided, the Download button
+		 * calls this instead of `forceDownload(asset.url.original)` — for auth-gated bytes
+		 * or lazy fetching. Receives the current asset + its index. May be async; the
+		 * button shows a busy/disabled state while the returned promise settles.
+		 */
+		onDownload?: (asset: AssetPreview, index: number) => void | Promise<void>;
 		/** optional "do not display file name" switch flag */
 		noName?: boolean;
 		/** When true (default), panning is clamped to keep image within bounds */
@@ -65,6 +72,7 @@
 		class: classProp = "",
 		classControls = "",
 		onDelete,
+		onDownload,
 		onAreaClick,
 		noName,
 		clampPan = false,
@@ -154,6 +162,7 @@
 			{classControls}
 			{t}
 			{onDelete}
+			{onDownload}
 			{noName}
 			{clampPan}
 			{noDownload}

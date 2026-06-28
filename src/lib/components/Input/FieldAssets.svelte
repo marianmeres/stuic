@@ -163,6 +163,13 @@
 		t?: TranslateFn;
 		parseValue?: (strigifiedModels: string) => FieldAsset[];
 		serializeValue?: (assets: FieldAsset[]) => string;
+		/**
+		 * See AssetsPreview.onDownload. When provided, the preview's Download button calls
+		 * this instead of `forceDownload(asset.url.original)` — for auth-gated bytes or
+		 * lazy fetching. Receives the full `FieldAsset` (incl. `_raw`) for the clicked
+		 * asset + its index. May be async; the button shows a busy state while it settles.
+		 */
+		onDownload?: (asset: FieldAsset, index: number) => void | Promise<void>;
 		notifications?: NotificationsStack;
 		cardinality?: number;
 		accept?: string;
@@ -255,6 +262,7 @@
 			}
 		},
 		serializeValue = JSON.stringify,
+		onDownload,
 		classWrap = "",
 		// ...rest
 	}: Props = $props();
@@ -718,4 +726,7 @@
 	onDelete={(_, index) => {
 		remove_by_idx(index);
 	}}
+	onDownload={onDownload
+		? (_previewAsset, idx) => onDownload(assets[idx], idx)
+		: undefined}
 />
