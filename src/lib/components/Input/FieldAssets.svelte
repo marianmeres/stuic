@@ -187,6 +187,15 @@
 		 * reserved for file drops); full keyboard + aria-live announcements. Default `false`.
 		 */
 		ordered?: boolean;
+		/**
+		 * Opt-in: allow pasting image/file data from the clipboard (Ctrl/Cmd-V) into
+		 * the field. Focus-scoped — the paste is consumed only while the field (or a
+		 * control inside it) holds focus; clicking anywhere in the field focuses it,
+		 * so no Tab is needed. Routed through the same validation + upload path as
+		 * drag and the file picker, so `accept`, `cardinality` and `processAssets`
+		 * all apply. No-op unless `processAssets` is provided. Default `false`.
+		 */
+		pasteable?: boolean;
 		//
 		classWrap?: string;
 	}
@@ -252,6 +261,7 @@
 		classControls = "",
 		isLoading = false,
 		ordered = false,
+		pasteable = false,
 		parseValue = (strigifiedModels: string) => {
 			const val = strigifiedModels ?? "[]";
 			try {
@@ -280,6 +290,10 @@
 	let inputEl = $state<HTMLInputElement>()!;
 	// Outer wrapper for scrollIntoView and focus targeting.
 	let wrapEl: HTMLDivElement | undefined = $state();
+	// The asset grid container, which lives INSIDE InputWrap's `.input-wrap` box.
+	// `focusForPaste` focuses this (not `wrapEl`, an ancestor) so the `:focus-within`
+	// ring on `.input-wrap` actually lights up on click.
+	let gridEl: HTMLDivElement | undefined = $state();
 	let hiddenInputEl: HTMLInputElement | undefined = $state();
 	let assetsPreview: AssetsPreview = $state()!;
 
@@ -412,6 +426,160 @@
 		focusMovedButton(to, to < from ? "prev" : "next");
 	}
 
+	// Funnels every file source (drop, picker, paste) through one path so they all
+	// share the same accept/cardinality checks, optimistic tiles and processAssets
+	// upload. Accepts a plain File[] too (paste builds one); the spread normalizes
+	// both it and a FileList.
+	function handleIncomingFiles(files: FileList | File[] | null, wasDrop = false) {
+		clog.debug(`processFiles`, wasDrop ? "[DROPPED]" : "", files);
+
+		// Copy the File objects into a stable array, then IMMEDIATELY release the
+		// hidden <input type="file">'s retained FileList. A native file input
+		// keeps its FileList after a selection until it is reset (form reset or
+		// `value = ""`), and its `change` event (wired by the `fileDropzone`
+		// action) calls back into this handler. Without this reset, any later
+		// stray `change` re-runs this with the SAME file still in `inputEl.files`,
+		// pushing a duplicate optimistic asset and firing a real re-upload.
+		// `onSubmitValidityCheck` used to dispatch exactly such a synthetic
+		// `change` on submit (now fixed there too — belt and braces). Clearing
+		// also restores the ability to re-select the same file twice in a row (an
+		// unchanged value emits no `change`). The blob URLs we create below are
+		// independent of the input, so clearing here is safe.
+		const incoming = [...(files ?? [])];
+		if (inputEl) inputEl.value = "";
+
+		// Nothing to consume — a cancelled picker, or a stray/synthetic `change`
+		// on an already-cleared input. Bail before touching state or calling
+		// processAssets (which would otherwise run with an empty batch).
+		if (!incoming.length) return;
+
+		if (accept && incoming.some((f) => !is_accepted_type(accept, f.type))) {
+			const msg = t("invalid_type", { accept });
+			if (notifications) notifications.error(msg);
+			else alert(msg);
+			return;
+		}
+
+		const cardErrMsg = t("cardinality_reached", { max: cardinality });
+		// `>=` (not `>`): refuse the moment the field already holds `cardinality`
+		// assets, instead of optimistically adding one past the limit and relying
+		// on the validator to reject it afterwards (the off-by-one that made the
+		// single-cardinality symptom loud).
+		if (assets.length >= cardinality) {
+			if (notifications) notifications.error(cardErrMsg);
+			else alert(cardErrMsg);
+			return;
+		}
+
+		const toBeProcessed: FieldAsset[] = [];
+
+		for (const file of incoming) {
+			if (assets.length >= cardinality) {
+				notifications ? notifications.error(cardErrMsg) : alert(cardErrMsg);
+				break;
+			}
+
+			// this create a unique blob url, which we'll use as id as well
+			const url = URL.createObjectURL(file);
+			const asset: FieldAsset = {
+				id: url,
+				url: { thumb: url, full: url, original: url },
+				type: file.type,
+				name: file.name,
+				meta: { isUploading: true },
+			};
+
+			// ASAP optimistic UI update
+			assets.push(asset);
+
+			// prepare data for server upload
+			toBeProcessed.push(asset);
+		}
+		value = serializeValue(assets);
+
+		if (typeof processAssets === "function") {
+			isUploading = true;
+			processAssets(toBeProcessed, onProgress)
+				.then((uploaded: FieldAssetWithBlobUrl[]) => {
+					// clog("uploaded", uploaded);
+					for (const ass of uploaded ?? []) {
+						ass.meta ??= {};
+						ass.meta.isUploading = false;
+						if (ass.blobUrl) {
+							const idx = assets.findIndex((a) => a.id === ass.blobUrl);
+							if (idx > -1) {
+								ass.meta ??= {};
+								ass.meta.isUploading = false;
+								assets[idx] = ass;
+							} else {
+								clog.error(`Asset idx ${idx} not found?!?`, ass);
+							}
+						} else {
+							clog.warn(`Missing blobUrl in`, ass);
+						}
+					}
+					value = serializeValue(assets);
+				})
+				.catch((e) => notifications?.error(`${e}`))
+				.finally(() => (isUploading = false));
+		}
+	}
+
+	// --- Clipboard paste (opt-in via `pasteable`) -------------------------------
+	// Focus-scoped: the paste listener lives on the field wrapper, so it only fires
+	// while the field (or a control inside it) holds focus. `focusForPaste` focuses
+	// the wrapper on any click within it, so a click + Ctrl/Cmd-V works with no Tab.
+	// Pasted files go through `handleIncomingFiles`, inheriting accept/cardinality
+	// validation and the processAssets upload — no synthetic `change` event.
+	function extractClipboardFiles(e: ClipboardEvent): File[] {
+		const dt = e.clipboardData;
+		if (!dt) return [];
+		const out: File[] = [];
+		// Prefer items (lets us keep only file-kind entries, e.g. a pasted
+		// screenshot); fall back to `.files` for browsers that only populate that.
+		for (let i = 0; i < (dt.items?.length ?? 0); i++) {
+			const it = dt.items[i];
+			if (it?.kind === "file") {
+				const f = it.getAsFile();
+				if (f) out.push(f);
+			}
+		}
+		if (!out.length && dt.files?.length) out.push(...dt.files);
+		return out;
+	}
+
+	function handlePaste(e: ClipboardEvent) {
+		if (!pasteable || typeof processAssets !== "function") return;
+		const files = extractClipboardFiles(e);
+		if (!files.length) return; // let plain-text pastes etc. pass through
+		e.preventDefault();
+		handleIncomingFiles(files);
+	}
+
+	// Focus the wrapper on any click inside it so a following paste lands here.
+	// Capture phase: fires even though the inner thumbnail/control buttons
+	// stopPropagation, and even in browsers that don't focus <button> on click
+	// (Safari/Firefox on macOS). Skipped when focus is already inside the field —
+	// paste bubbles from any focused descendant anyway.
+	function focusForPaste() {
+		if (!pasteable || !wrapEl) return;
+		if (wrapEl.contains(document.activeElement)) return;
+		// Focus a node INSIDE `.input-wrap` (the grid) so its `:focus-within` ring
+		// shows; fall back to the wrapper when the grid isn't mounted (loading).
+		(gridEl ?? wrapEl).focus({ preventScroll: true });
+	}
+
+	$effect(() => {
+		if (!pasteable || !wrapEl) return;
+		const el = wrapEl;
+		el.addEventListener("paste", handlePaste);
+		el.addEventListener("click", focusForPaste, true);
+		return () => {
+			el.removeEventListener("paste", handlePaste);
+			el.removeEventListener("click", focusForPaste, true);
+		};
+	});
+
 	onDestroy(() => {
 		try {
 			assets.forEach((a) => {
@@ -437,7 +605,11 @@
 			<!-- screen-reader announcements for reorder actions -->
 			<div class="sr-only" aria-live="polite" aria-atomic="true">{liveAnnouncement}</div>
 		{/if}
-		<div class={["p-2 flex items-center gap-0.5 flex-wrap"]}>
+		<div
+			class="p-2 flex items-center gap-0.5 flex-wrap w-full focus:outline-none"
+			bind:this={gridEl}
+			tabindex="-1"
+		>
 			{#each assets as asset, idx (asset.id)}
 				{@const { thumb, full, original } = asset_urls(asset)}
 				{@const _is_img = isImage(asset.type ?? thumb)}
@@ -571,100 +743,7 @@
 	use:fileDropzone={() => ({
 		enabled: typeof processAssets === "function",
 		inputEl,
-		processFiles(files: FileList | null, wasDrop?: boolean) {
-			clog.debug(`processFiles`, wasDrop ? "[DROPPED]" : "", files);
-
-			// Copy the File objects into a stable array, then IMMEDIATELY release the
-			// hidden <input type="file">'s retained FileList. A native file input
-			// keeps its FileList after a selection until it is reset (form reset or
-			// `value = ""`), and its `change` event (wired by the `fileDropzone`
-			// action) calls back into this handler. Without this reset, any later
-			// stray `change` re-runs processFiles with the SAME file still in
-			// `inputEl.files`, pushing a duplicate optimistic asset and firing a real
-			// re-upload. `onSubmitValidityCheck` used to dispatch exactly such a
-			// synthetic `change` on submit (now fixed there too — belt and braces).
-			// Clearing also restores the ability to re-select the same file twice in
-			// a row (an unchanged value emits no `change`). The blob URLs we create
-			// below are independent of the input, so clearing here is safe.
-			const incoming = [...(files ?? [])];
-			if (inputEl) inputEl.value = "";
-
-			// Nothing to consume — a cancelled picker, or a stray/synthetic `change`
-			// on an already-cleared input. Bail before touching state or calling
-			// processAssets (which would otherwise run with an empty batch).
-			if (!incoming.length) return;
-
-			if (accept && incoming.some((f) => !is_accepted_type(accept, f.type))) {
-				const msg = t("invalid_type", { accept });
-				if (notifications) notifications.error(msg);
-				else alert(msg);
-				return;
-			}
-
-			const cardErrMsg = t("cardinality_reached", { max: cardinality });
-			// `>=` (not `>`): refuse the moment the field already holds `cardinality`
-			// assets, instead of optimistically adding one past the limit and relying
-			// on the validator to reject it afterwards (the off-by-one that made the
-			// single-cardinality symptom loud).
-			if (assets.length >= cardinality) {
-				if (notifications) notifications.error(cardErrMsg);
-				else alert(cardErrMsg);
-				return;
-			}
-
-			const toBeProcessed: FieldAsset[] = [];
-
-			for (const file of incoming) {
-				if (assets.length >= cardinality) {
-					notifications ? notifications.error(cardErrMsg) : alert(cardErrMsg);
-					break;
-				}
-
-				// this create a unique blob url, which we'll use as id as well
-				const url = URL.createObjectURL(file);
-				const asset: FieldAsset = {
-					id: url,
-					url: { thumb: url, full: url, original: url },
-					type: file.type,
-					name: file.name,
-					meta: { isUploading: true },
-				};
-
-				// ASAP optimistic UI update
-				assets.push(asset);
-
-				// prepare data for server upload
-				toBeProcessed.push(asset);
-			}
-			value = serializeValue(assets);
-
-			if (typeof processAssets === "function") {
-				isUploading = true;
-				processAssets(toBeProcessed, onProgress)
-					.then((uploaded: FieldAssetWithBlobUrl[]) => {
-						// clog("uploaded", uploaded);
-						for (const ass of uploaded ?? []) {
-							ass.meta ??= {};
-							ass.meta.isUploading = false;
-							if (ass.blobUrl) {
-								const idx = assets.findIndex((a) => a.id === ass.blobUrl);
-								if (idx > -1) {
-									ass.meta ??= {};
-									ass.meta.isUploading = false;
-									assets[idx] = ass;
-								} else {
-									clog.error(`Asset idx ${idx} not found?!?`, ass);
-								}
-							} else {
-								clog.warn(`Missing blobUrl in`, ass);
-							}
-						}
-						value = serializeValue(assets);
-					})
-					.catch((e) => notifications?.error(`${e}`))
-					.finally(() => (isUploading = false));
-			}
-		},
+		processFiles: handleIncomingFiles,
 		allowClick: !assets?.length,
 	})}
 >
@@ -684,7 +763,11 @@
 		{classLabel}
 		{classLabelBox}
 		{classInputBox}
-		{classInputBoxWrap}
+		classInputBoxWrap={twMerge(
+			pasteable &&
+				"focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-(--stuic-color-ring)",
+			classInputBoxWrap
+		)}
 		{classInputBoxWrapInvalid}
 		{classDescBox}
 		{classDescBoxToggle}

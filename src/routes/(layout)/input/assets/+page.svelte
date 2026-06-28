@@ -60,6 +60,7 @@
 		accept="*"
 		required
 		ordered
+		pasteable
 		cardinality={6}
 		processAssets={async (assets, onProgress) => {
 			clog.debug("processAssets...", assets);
