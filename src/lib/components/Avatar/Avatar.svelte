@@ -1,10 +1,7 @@
 <script lang="ts" module>
 	export type IconFn = (opts?: { size?: number; class?: string }) => string;
 	export type AvatarFallback =
-		| "icon"
-		| "initials"
-		| { icon: IconFn }
-		| { initials: string };
+		"icon" | "initials" | { icon: IconFn } | { initials: string };
 
 	export interface Props {
 		/** Photo URL - when provided, renders in photo mode */

@@ -282,9 +282,7 @@ Note: in icon-only sidebar mode (`isCollapsed`), the section title is visually h
 	import { Nav } from "stuic";
 	import { page } from "$app/stores";
 
-	const groups = [
-		/* ... */
-	];
+	const groups = [/* ... */];
 </script>
 
 <Nav

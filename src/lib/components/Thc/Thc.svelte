@@ -57,12 +57,7 @@
 	 * ```
 	 */
 	export type THC =
-		| string
-		| WithText
-		| WithHtml
-		| WithComponent
-		| WithSnippet
-		| AsSnippet;
+		string | WithText | WithHtml | WithComponent | WithSnippet | AsSnippet;
 
 	export interface Props extends Record<string, any> {
 		thc: THC;

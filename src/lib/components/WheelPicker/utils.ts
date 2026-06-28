@@ -19,9 +19,7 @@ export interface WheelPickerOption<T = string | number> {
 
 /** What callers may pass: a bare primitive (used as both label and value) or a full option. */
 export type WheelPickerOptionInput<T = string | number> =
-	| string
-	| number
-	| WheelPickerOption<T>;
+	string | number | WheelPickerOption<T>;
 
 /** Px runway (each direction from the home tile) the loop buffer must guarantee so a
  *  realistic fling never runs off the rendered content before it comes to rest. */
