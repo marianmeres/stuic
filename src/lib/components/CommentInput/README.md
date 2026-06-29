@@ -82,43 +82,44 @@ Available items: `bold`, `italic`, `heading1`–`heading6`, `link`, `image`,
 
 ## Props
 
-| Prop                      | Type                                       | Default                   | Description                                               |
-| ------------------------- | ------------------------------------------ | ------------------------- | --------------------------------------------------------- |
-| `value`                   | `string` (bindable)                        | `""`                      | Comment content (markdown).                               |
-| `mode`                    | `"wysiwyg" \| "source"` (bindable)         | `"source"`                | Active editing surface (opens on raw markdown).           |
-| `input`                   | `HTMLDivElement` (bindable)                | —                         | The editor surface wrapper element.                       |
-| `name`                    | `string`                                   | —                         | Hidden input `name`, for native form submission.          |
-| `label`                   | `THC \| Snippet`                           | `""`                      | Field label (via InputWrap).                              |
-| `description`             | `THC \| Snippet`                           | —                         | Collapsible hint below the box.                           |
-| `placeholder`             | `string`                                   | —                         | Editor placeholder.                                       |
-| `renderSize`              | `"sm" \| "md" \| "lg" \| string`           | `"md"`                    | Size variant.                                             |
-| `required`                | `boolean`                                  | `false`                   | Mark required + enforce on validation.                    |
-| `disabled`                | `boolean`                                  | `false`                   | Disable the whole box.                                    |
-| `validate`                | `boolean \| ValidateOptions`               | —                         | Enable validation (same contract as `MarkdownEditor`).    |
-| `toolbar`                 | `boolean \| ToolbarItem[]`                 | `DEFAULT_COMMENT_TOOLBAR` | Formatting toolbar config.                                |
-| `mobileToolbar`           | `boolean \| ToolbarItem[]`                 | MarkdownEditor default    | Toolbar on touch devices.                                 |
-| `autoSourceOnMobile`      | `boolean`                                  | `true`                    | Start in source mode on mobile.                           |
-| `mobileQuery`             | `string`                                   | `(pointer: coarse) …`     | Media query defining "mobile".                            |
-| `prompt`                  | `PromptFn`                                 | `window.prompt`           | URL prompt used by the link/image buttons.                |
-| `maxHeight`               | `number \| string`                         | `32rem`                   | Cap the editing surface height (scrolls inside).          |
-| `capToParent`             | `boolean`                                  | `true`                    | Also cap the surface to the parent's available height.    |
-| `showModeToggle`          | `boolean`                                  | `true`                    | Show the WYSIWYG/Source toggle.                           |
-| `sourceLabel`             | `string`                                   | `"Source"`                | Toggle label while in WYSIWYG mode.                       |
-| `previewLabel`            | `string`                                   | `"Preview"`               | Toggle label while in source mode.                        |
-| `useShortcuts`            | `boolean`                                  | `true`                    | Wire ⌘/Ctrl+B / I / K to bold / italic / link.            |
-| `onSubmit`                | `(value: string) => void \| Promise<void>` | —                         | Submit handler. Async → spinner + disabled while pending. |
-| `onCancel`                | `() => void`                               | —                         | Cancel handler.                                           |
-| `onChange`                | `(value: string) => void`                  | —                         | Fired on every edit.                                      |
-| `submitLabel`             | `string`                                   | `"Comment"`               | Submit button label.                                      |
-| `cancelLabel`             | `string`                                   | `"Cancel"`                | Cancel button label.                                      |
-| `showSubmit`              | `boolean`                                  | `!!onSubmit`              | Show the submit button.                                   |
-| `showCancel`              | `boolean`                                  | `!!onCancel`              | Show the cancel button.                                   |
-| `submitOnModEnter`        | `boolean`                                  | `true`                    | Submit on ⌘/Ctrl+Enter.                                   |
-| `clearOnSubmit`           | `boolean`                                  | `true`                    | Clear value after a successful submit.                    |
-| `submitDisabledWhenEmpty` | `boolean`                                  | `true`                    | Disable submit when empty/whitespace.                     |
-| `busy`                    | `boolean`                                  | `false`                   | External busy state (disables box + submit).              |
-| `avatar`                  | `THC \| Snippet`                           | —                         | Optional gutter to the left of the box.                   |
-| `footer`                  | `Snippet`                                  | —                         | Extra footer content, left of the buttons.                |
+| Prop                 | Type                                       | Default                                       | Description                                                                 |
+| -------------------- | ------------------------------------------ | --------------------------------------------- | --------------------------------------------------------------------------- |
+| `value`              | `string` (bindable)                        | `""`                                          | Comment content (markdown).                                                 |
+| `mode`               | `"wysiwyg" \| "source"` (bindable)         | `"source"`                                    | Active editing surface (opens on raw markdown).                             |
+| `input`              | `HTMLDivElement` (bindable)                | —                                             | The editor surface wrapper element.                                         |
+| `name`               | `string`                                   | —                                             | Hidden input `name`, for native form submission.                            |
+| `label`              | `THC \| Snippet`                           | `""`                                          | Field label (via InputWrap).                                                |
+| `description`        | `THC \| Snippet`                           | —                                             | Collapsible hint below the box.                                             |
+| `placeholder`        | `string`                                   | —                                             | Editor placeholder.                                                         |
+| `renderSize`         | `"sm" \| "md" \| "lg" \| string`           | `"md"`                                        | Size variant.                                                               |
+| `required`           | `boolean`                                  | `false`                                       | Mark required + enforce on validation.                                      |
+| `disabled`           | `boolean`                                  | `false`                                       | Disable the whole box.                                                      |
+| `validate`           | `boolean \| ValidateOptions`               | —                                             | Enable validation (same contract as `MarkdownEditor`).                      |
+| `toolbar`            | `boolean \| ToolbarItem[]`                 | `DEFAULT_COMMENT_TOOLBAR`                     | Formatting toolbar config.                                                  |
+| `mobileToolbar`      | `boolean \| ToolbarItem[]`                 | MarkdownEditor default                        | Toolbar on touch devices.                                                   |
+| `autoSourceOnMobile` | `boolean`                                  | `true`                                        | Start in source mode on mobile.                                             |
+| `mobileQuery`        | `string`                                   | `(pointer: coarse) …`                         | Media query defining "mobile".                                              |
+| `prompt`             | `PromptFn`                                 | `window.prompt`                               | URL prompt used by the link/image buttons.                                  |
+| `maxHeight`          | `number \| string`                         | `32rem`                                       | Cap the editing surface height (scrolls inside).                            |
+| `capToParent`        | `boolean`                                  | `true`                                        | Also cap the surface to the parent's available height.                      |
+| `showModeToggle`     | `boolean`                                  | `true`                                        | Show the WYSIWYG/Source toggle.                                             |
+| `sourceLabel`        | `string`                                   | `"Source"`                                    | Toggle label while in WYSIWYG mode.                                         |
+| `previewLabel`       | `string`                                   | `"Preview"`                                   | Toggle label while in source mode.                                          |
+| `useShortcuts`       | `boolean`                                  | `true`                                        | Wire ⌘/Ctrl+B / I / K to bold / italic / link.                              |
+| `onSubmit`           | `(value: string) => void \| Promise<void>` | —                                             | Submit handler. Async → spinner + disabled while pending.                   |
+| `onCancel`           | `() => void`                               | —                                             | Cancel handler.                                                             |
+| `onChange`           | `(value: string) => void`                  | —                                             | Fired on every edit.                                                        |
+| `submitLabel`        | `string`                                   | `"Comment"`                                   | Submit button label.                                                        |
+| `cancelLabel`        | `string`                                   | `"Cancel"`                                    | Cancel button label.                                                        |
+| `showSubmit`         | `boolean`                                  | `!!onSubmit`                                  | Show the submit button.                                                     |
+| `showCancel`         | `boolean`                                  | `!!onCancel`                                  | Show the cancel button.                                                     |
+| `submitOnModEnter`   | `boolean`                                  | `true`                                        | Submit on ⌘/Ctrl+Enter.                                                     |
+| `clearOnSubmit`      | `boolean`                                  | `true`                                        | Clear value after a successful submit.                                      |
+| `blockEmptySubmit`   | `boolean`                                  | `true`                                        | Block empty/whitespace submits via the inline error (submit stays enabled). |
+| `emptyMessage`       | `string`                                   | `"Please write something before submitting."` | Inline error shown when an empty submit is blocked.                         |
+| `busy`               | `boolean`                                  | `false`                                       | External busy state (disables box + submit).                                |
+| `avatar`             | `THC \| Snippet`                           | —                                             | Optional gutter to the left of the box.                                     |
+| `footer`             | `Snippet`                                  | —                                             | Extra footer content, left of the buttons.                                  |
 
 Plus the standard `InputWrap` layout props (`labelAfter`, `below`, `labelLeft`,
 `labelLeftWidth`, `labelLeftBreakpoint`) and `class*` props (`classInput` →

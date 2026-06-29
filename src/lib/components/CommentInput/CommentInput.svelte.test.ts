@@ -65,9 +65,27 @@ test("no submit button is rendered without onSubmit", async () => {
 		.not.toBeInTheDocument();
 });
 
-test("submit is disabled while the value is empty", async () => {
-	const screen = render(CommentInput, { onSubmit: vi.fn() });
-	await expect.element(screen.getByRole("button", { name: "Comment" })).toBeDisabled();
+test("submit stays enabled while empty; an empty submit is blocked with an inline error", async () => {
+	const onSubmit = vi.fn();
+	const screen = render(CommentInput, {
+		onSubmit,
+		emptyMessage: "Write something first",
+	});
+	const submit = screen.getByRole("button", { name: "Comment" });
+	// No longer disabled just because the box is empty — it should feel alive.
+	await expect.element(submit).not.toBeDisabled();
+	await submit.click();
+	// The empty submit is refused...
+	expect(onSubmit).not.toHaveBeenCalled();
+	// ...and surfaces the native inline validation error instead of disabling.
+	await expect.element(screen.getByText("Write something first")).toBeInTheDocument();
+});
+
+test("blockEmptySubmit={false} lets an empty submit through to onSubmit", async () => {
+	const onSubmit = vi.fn();
+	const screen = render(CommentInput, { onSubmit, blockEmptySubmit: false });
+	await screen.getByRole("button", { name: "Comment" }).click();
+	expect(onSubmit).toHaveBeenCalledWith("");
 });
 
 test("submit is enabled once there is content", async () => {
@@ -83,8 +101,9 @@ test("clicking submit calls onSubmit with the value and clears on success", asyn
 	const submit = screen.getByRole("button", { name: "Comment" });
 	await submit.click();
 	expect(onSubmit).toHaveBeenCalledWith("ship it");
-	// clearOnSubmit is on by default → value is now empty → submit re-disables.
-	await expect.element(submit).toBeDisabled();
+	// clearOnSubmit is on by default → value is now empty, but the button stays
+	// enabled (emptiness no longer disables it).
+	await expect.element(submit).not.toBeDisabled();
 });
 
 test("clearOnSubmit=false keeps the value (submit stays enabled)", async () => {
@@ -127,11 +146,11 @@ test("disabled disables the toolbar buttons and the submit button", async () => 
 
 test("submit validates first: a required empty field does not call onSubmit", async () => {
 	const onSubmit = vi.fn();
-	// submitDisabledWhenEmpty:false makes the button clickable while empty, so the
-	// validation gate (not the empty gate) is what must block the submit.
+	// blockEmptySubmit:false removes the empty gate, so the validation gate (the
+	// `required` rule) is what must block the submit here.
 	const screen = render(CommentInput, {
 		required: true,
-		submitDisabledWhenEmpty: false,
+		blockEmptySubmit: false,
 		onSubmit,
 	});
 	await screen.getByRole("button", { name: "Comment" }).click();

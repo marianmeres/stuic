@@ -101,8 +101,18 @@
 		submitOnModEnter?: boolean;
 		/** Clear the value after a successful submit. Default `true`. */
 		clearOnSubmit?: boolean;
-		/** Disable the submit button when the value is empty/whitespace. Default `true`. */
-		submitDisabledWhenEmpty?: boolean;
+		/**
+		 * Block submitting an empty/whitespace comment. Default `true`. When blocked,
+		 * the native inline validation error is surfaced (the submit button stays
+		 * enabled) instead of disabling the button — a disabled submit makes the whole
+		 * box feel dead. Set `false` to let empty submits through to `onSubmit`.
+		 */
+		blockEmptySubmit?: boolean;
+		/**
+		 * Message rendered by the inline error when an empty submit is blocked (see
+		 * {@link blockEmptySubmit}). Default `"Please write something before submitting."`.
+		 */
+		emptyMessage?: string;
 		/** Externally-controlled busy state (disables the box + submit). */
 		busy?: boolean;
 		//
@@ -171,7 +181,8 @@
 		showCancel,
 		submitOnModEnter = true,
 		clearOnSubmit = true,
-		submitDisabledWhenEmpty = true,
+		blockEmptySubmit = true,
+		emptyMessage = "Please write something before submitting.",
 		busy = false,
 		//
 		labelAfter,
@@ -207,15 +218,61 @@
 	const _showSubmit = $derived(showSubmit ?? !!onSubmit);
 	const _showCancel = $derived(showCancel ?? !!onCancel);
 	const _busy = $derived(disabled || busy || submitting);
-	const canSubmit = $derived(!_busy && !(submitDisabledWhenEmpty && isEmpty));
 	// Toggling `disabled` on MarkdownEditor remounts its backend, so only feed it
 	// the externally-controlled disable (not the transient `submitting`); the
 	// footer buttons carry the in-flight state instead.
 	const editorDisabled = $derived(disabled || busy);
 
+	// Empty submits are blocked by surfacing the native inline error (NOT by
+	// disabling the button — a disabled submit makes the whole box feel dead).
+	// We arm this only for the duration of an explicit submit attempt, so a casual
+	// focus/blur of an empty box doesn't nag with an error. Plain (non-reactive)
+	// `let`: the validator closure reads it live, and we never want toggling it to
+	// recompute `_validate`.
+	let emptyCheckArmed = false;
+
+	// Validation options forwarded to MarkdownEditor. When `blockEmptySubmit` is on
+	// we splice an empty-check into the consumer's validator — preserving any custom
+	// rule plus the editor's own `required` handling — that fires only while armed.
+	const _validate = $derived.by(() => {
+		// Consumer disabled validation entirely: pass through untouched. There is no
+		// inline error to surface then; `handleSubmit` still refuses empty submits.
+		if (validateProp === false) return false;
+		if (!blockEmptySubmit) return validateProp;
+		const base: Omit<ValidateOptions, "setValidationResult"> =
+			typeof validateProp === "object" && validateProp ? validateProp : {};
+		const inner = base.customValidator;
+		return {
+			...base,
+			customValidator(
+				val: unknown,
+				ctx: Record<string, unknown> | undefined,
+				el: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+			) {
+				if (emptyCheckArmed && (val == null || String(val).trim() === "")) {
+					return emptyMessage;
+				}
+				return inner ? inner(val, ctx, el) || "" : "";
+			},
+		};
+	});
+
 	// --- Handlers -------------------------------------------------------------
 	async function handleSubmit() {
-		if (!canSubmit) return;
+		if (_busy) return;
+		// Block an empty submit by surfacing the native inline error instead of
+		// disabling the button. Arm the empty-check just for this validation pass,
+		// then focus the box so the user can start typing.
+		if (blockEmptySubmit && isEmpty) {
+			emptyCheckArmed = true;
+			try {
+				editor?.validate();
+			} finally {
+				emptyCheckArmed = false;
+			}
+			editor?.focus();
+			return;
+		}
 		// Validate before invoking the handler — the submit button bypasses any
 		// form-level submit check, so enforce it here (surfaces the inline message).
 		const res = editor?.validate();
@@ -326,7 +383,7 @@
 			disabled={editorDisabled}
 			{placeholder}
 			{renderSize}
-			validate={validateProp}
+			validate={_validate}
 			{toolbar}
 			{mobileToolbar}
 			{autoSourceOnMobile}
@@ -376,7 +433,7 @@
 							type="button"
 							intent="primary"
 							size={renderSize}
-							disabled={!canSubmit}
+							disabled={_busy}
 							spinner={submitting}
 							onclick={handleSubmit}
 						>
