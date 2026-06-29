@@ -6,6 +6,7 @@
 	} from "../../actions/validate.svelte.js";
 	import type { THC } from "../Thc/Thc.svelte";
 	import type { InputWrapClassProps } from "../Input/types.js";
+	import { DEFAULT_MOBILE_TOOLBAR } from "../MarkdownEditor/index.js";
 	import type {
 		MarkdownEditorMode,
 		ToolbarItem,
@@ -18,14 +19,18 @@
 	export type CommentInputMode = MarkdownEditorMode;
 
 	/**
-	 * Minimal default toolbar for the comment box — kept intentionally light
-	 * (GitHub-composer feel). Pass your own `toolbar` array to customize.
+	 * Default toolbar for the comment box — mirrors the reduced mobile toolbar
+	 * ({@link DEFAULT_MOBILE_TOOLBAR}) so the desktop and touch experiences stay
+	 * consistent. Pass your own `toolbar` array to customize.
 	 */
 	export const DEFAULT_COMMENT_TOOLBAR: ToolbarItem[] = [
 		"bold",
 		"italic",
+		"|",
+		"bulletList",
+		"orderedList",
+		"|",
 		"link",
-		"codeBlock",
 	];
 
 	export interface Props extends InputWrapClassProps {

@@ -51,11 +51,11 @@ console error explains why.
 
 ## Toolbar
 
-`toolbar` accepts `true` (the minimal default), `false` (hidden), or an ordered
+`toolbar` accepts `true` (the default), `false` (hidden), or an ordered
 array of items (`"|"` for a separator):
 
 ```svelte
-<!-- Minimal default: ["bold", "italic", "link", "codeBlock"] -->
+<!-- Default: ["bold", "italic", "|", "bulletList", "orderedList", "|", "link"] -->
 <CommentInput bind:value onSubmit={post} />
 
 <!-- Custom set -->
