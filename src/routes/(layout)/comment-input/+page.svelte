@@ -2,7 +2,7 @@
 	import { CommentInput, type ValidationResult } from "$lib/index.js";
 
 	// Basic, with an async submit handler.
-	let value = $state("Type some **markdown**, then hit _Preview_.");
+	let value = $state("Type some **markdown** — or use the toolbar / ⌘B.");
 	let posted = $state<string[]>([]);
 	async function post(text: string) {
 		// Simulate a network round-trip so the submit spinner is visible.
@@ -18,12 +18,10 @@
 	let field = $state<CommentInput>();
 	let lastResult = $state<ValidationResult | undefined>();
 
-	// Custom renderer (no markdown lib needed) — naive, just to show the hook.
-	let custom = $state("This preview is rendered by a **custom** renderMarkdown.");
-	const upper = (md: string) =>
-		`<p style="letter-spacing:.03em">${md.replace(/</g, "&lt;").toUpperCase()}</p>`;
+	// Custom toolbar.
+	let custom = $state("");
 
-	// Plain markdown textarea (no tabs), externally controlled busy.
+	// No toolbar (shortcuts + Source toggle only), externally controlled busy.
 	let plain = $state("");
 	let busy = $state(false);
 </script>
@@ -37,7 +35,9 @@
 			placeholder="Leave a comment…"
 			onSubmit={post}
 		/>
-		<p class="text-sm opacity-60">⌘/Ctrl + Enter submits. Clears on success.</p>
+		<p class="text-sm opacity-60">
+			⌘/Ctrl + Enter submits · ⌘/Ctrl + B / I / K format · clears on success.
+		</p>
 		{#if posted.length}
 			<ul class="space-y-2">
 				{#each posted as p}
@@ -90,20 +90,35 @@
 	</section>
 
 	<section class="space-y-4">
-		<h2 class="text-xl font-semibold">Custom renderMarkdown (no markdown lib)</h2>
-		<CommentInput bind:value={custom} label="Custom preview" renderMarkdown={upper} />
+		<h2 class="text-xl font-semibold">Custom toolbar</h2>
+		<CommentInput
+			bind:value={custom}
+			label="With lists & quotes"
+			placeholder="A fuller toolbar…"
+			toolbar={[
+				"bold",
+				"italic",
+				"|",
+				"heading2",
+				"|",
+				"bulletList",
+				"orderedList",
+				"blockquote",
+				"|",
+				"link",
+				"codeBlock",
+			]}
+			onSubmit={post}
+		/>
 	</section>
 
 	<section class="space-y-4">
-		<h2 class="text-xl font-semibold">
-			Plain markdown textarea (no tabs) + external busy
-		</h2>
+		<h2 class="text-xl font-semibold">No toolbar (shortcuts only) + external busy</h2>
 		<CommentInput
 			bind:value={plain}
-			showTabs={false}
-			showMarkdownHint={false}
+			toolbar={false}
 			label="Note"
-			placeholder="Just a markdown textarea with a submit button…"
+			placeholder="WYSIWYG with no toolbar — use ⌘B / the Source toggle…"
 			{busy}
 			onSubmit={post}
 		/>

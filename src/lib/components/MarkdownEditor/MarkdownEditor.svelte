@@ -529,6 +529,16 @@
 	export function toggleMode(): void {
 		toggleModeInternal();
 	}
+	/**
+	 * Imperatively run a toolbar command — same effect as clicking the matching
+	 * toolbar button. Useful for wiring keyboard shortcuts (e.g. ⌘/Ctrl+B) from a
+	 * host component. No-op while the backend is (re)loading. The `"|"` separator
+	 * is not a command.
+	 */
+	export function command(item: Exclude<ToolbarItem, "|">): void {
+		const btn = TOOLBAR_REGISTRY[item];
+		if (btn && activeHandle) btn.run(activeHandle.commands);
+	}
 </script>
 
 <InputWrap
