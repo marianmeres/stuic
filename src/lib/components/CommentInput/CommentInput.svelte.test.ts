@@ -10,15 +10,15 @@ import CommentInput from "./CommentInput.svelte";
 // mount. Value-dependent flows seed `value` via prop rather than typing into the
 // contenteditable surface.
 
-test("renders the minimal default toolbar (bold, italic, link, code block)", async () => {
+test("renders the default toolbar (bold, italic, bullet/ordered list, link)", async () => {
 	const screen = render(CommentInput, { label: "Comment" });
 	await expect.element(screen.getByRole("toolbar")).toBeInTheDocument();
-	for (const name of ["Bold", "Italic", "Link", "Code block"]) {
+	for (const name of ["Bold", "Italic", "Bullet list", "Ordered list", "Link"]) {
 		await expect.element(screen.getByRole("button", { name })).toBeInTheDocument();
 	}
-	// The minimal set deliberately omits these.
+	// The reduced default deliberately omits these.
 	await expect
-		.element(screen.getByRole("button", { name: "Bullet list" }))
+		.element(screen.getByRole("button", { name: "Code block" }))
 		.not.toBeInTheDocument();
 });
 
