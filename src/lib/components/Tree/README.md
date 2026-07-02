@@ -82,6 +82,12 @@ Collapsing a branch also collapses all of its descendants.
 </Tree>
 ```
 
+> **Icon sizing tip:** render `renderIcon` SVGs at their native `viewBox` size (or an
+> integer divisor of it) — e.g. `16` for Bootstrap icons (`0 0 16 16`), `24`/`16`/`12`
+> for Lucide (`0 0 24 24`). A fractional downscale (e.g. a 16-unit icon at `size: 14`)
+> renders 1px strokes at sub-pixel width, which looks like the icon is clipped ~1px —
+> most visibly on icons whose shape touches the viewBox edge, such as file glyphs.
+
 ## Props
 
 | Prop               | Type                                                 | Default           | Description                                                           |

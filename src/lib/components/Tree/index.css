@@ -117,6 +117,14 @@
 		opacity: var(--stuic-tree-icon-opacity);
 	}
 
+	/* Render icons as block so they sit on the pixel grid instead of the text
+	   baseline. Inline SVGs (the default vertical-align: baseline) land on a
+	   fractional pixel and shear ~1px off the bottom of full-viewBox glyphs
+	   (e.g. file icons whose shape touches the bottom edge). */
+	.stuic-tree-item svg {
+		display: block;
+	}
+
 	/* =============================================================================
 	   ITEM STATE STYLES
 	   ============================================================================= */

@@ -257,10 +257,10 @@
 				{#snippet renderIcon(item, _depth, isExpanded)}
 					{#if item.children.length > 0}
 						{@html isExpanded
-							? iconLucideFolderOpen({ size: 15 })
-							: iconLucideFolder({ size: 15 })}
+							? iconLucideFolderOpen({ size: 16 })
+							: iconLucideFolder({ size: 16 })}
 					{:else}
-						{@html iconBsFileEarmark({ size: 14 })}
+						{@html iconBsFileEarmark({ size: 16 })}
 					{/if}
 				{/snippet}
 			</Tree>
