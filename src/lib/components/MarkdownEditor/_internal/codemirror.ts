@@ -12,7 +12,12 @@ import { defaultKeymap, history, historyKeymap, redo, undo } from "@codemirror/c
 import { markdown } from "@codemirror/lang-markdown";
 import { languages } from "@codemirror/language-data";
 import { EditorState } from "@codemirror/state";
-import { EditorView, keymap, placeholder as cmPlaceholder } from "@codemirror/view";
+import {
+	drawSelection,
+	EditorView,
+	keymap,
+	placeholder as cmPlaceholder,
+} from "@codemirror/view";
 import type { EditorHandle, MountOptions, PromptFn } from "./types.js";
 
 /** Theme that inherits STUIC look via CSS vars rather than hard-coded values. */
@@ -26,7 +31,6 @@ const stuicTheme = EditorView.theme({
 		fontFamily:
 			"var(--stuic-markdown-editor-font-mono, ui-monospace, SFMono-Regular, Menlo, monospace)",
 		padding: "0",
-		caretColor: "currentColor",
 	},
 	"&.cm-focused": { outline: "none" },
 	".cm-line": { padding: "0" },
@@ -35,6 +39,30 @@ const stuicTheme = EditorView.theme({
 	".cm-placeholder": {
 		color: "var(--stuic-input-placeholder, currentColor)",
 		opacity: "0.5",
+	},
+	// Caret + selection are DRAWN by `drawSelection()` (see the extensions below)
+	// instead of left to the browser. The native caret is unreliable on an EMPTY
+	// document that carries a placeholder widget — Chrome/Safari won't render it
+	// (the cursor sits before a `contenteditable=false` widget with no editable
+	// text beside it) until you start typing, which reads as a broken focus.
+	// Drawing the caret ourselves fixes that. Colors use `currentColor` / a
+	// mode-neutral translucent selection on purpose: CM's own light/dark detection
+	// is inert here (STUIC themes via `:root.dark`, not CM's dark facet), so its
+	// built-in dark caret/selection colors would never kick in.
+	//
+	// `borderLeftWidth: 2px` is deliberate: CM's default ~1.2px caret lands on a
+	// fractional device-pixel boundary at many layout offsets (the cursor also
+	// carries a `-0.6px` margin) and anti-aliases into invisibility on a light
+	// background — the very "no caret" symptom this fix targets. 2px always paints.
+	".cm-cursor, .cm-dropCursor": {
+		borderLeftColor: "currentColor",
+		borderLeftWidth: "2px",
+	},
+	"& .cm-selectionBackground": {
+		background: "var(--stuic-markdown-editor-selection-bg, rgb(128 128 128 / 0.3))",
+	},
+	"&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground": {
+		background: "var(--stuic-markdown-editor-selection-bg, rgb(128 128 128 / 0.3))",
 	},
 });
 
@@ -169,6 +197,7 @@ export function mountCodeMirror(host: HTMLElement, opts: MountOptions): EditorHa
 				keymap.of([...defaultKeymap, ...historyKeymap]),
 				markdown({ codeLanguages: languages }),
 				EditorView.lineWrapping,
+				drawSelection(),
 				EditorView.editable.of(!opts.disabled),
 				EditorState.readOnly.of(!!opts.disabled),
 				...(opts.placeholder ? [cmPlaceholder(opts.placeholder)] : []),

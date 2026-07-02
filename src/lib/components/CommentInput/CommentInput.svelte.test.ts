@@ -144,6 +144,39 @@ test("disabled disables the toolbar buttons and the submit button", async () => 
 	await expect.element(screen.getByRole("button", { name: "Comment" })).toBeDisabled();
 });
 
+test("an empty source box shows a caret once focused (drawn, not native)", async () => {
+	// Regression: with a placeholder on an EMPTY document, the browser's native
+	// caret refuses to render in CodeMirror (the cursor sits before the
+	// contenteditable=false placeholder widget), so clicking an empty box looked
+	// like it hadn't focused. The source backend enables `drawSelection()`, which
+	// draws its own caret — assert that caret appears (with real height) on focus.
+	render(CommentInput, { placeholder: "Leave a comment…" });
+
+	// The CodeMirror (source) backend mounts behind a dynamic import.
+	const content = await vi.waitFor(
+		() => {
+			const el = document.querySelector<HTMLElement>(".cm-content");
+			if (!el) throw new Error("editor not mounted yet");
+			return el;
+		},
+		{ timeout: 4000 }
+	);
+
+	content.focus();
+
+	await vi.waitFor(
+		() => {
+			const caret = document.querySelector<HTMLElement>(
+				".cm-cursorLayer .cm-cursor-primary"
+			);
+			if (!caret) throw new Error("no drawn caret");
+			if (caret.getBoundingClientRect().height <= 0)
+				throw new Error("caret has no height");
+		},
+		{ timeout: 4000 }
+	);
+});
+
 test("submit validates first: a required empty field does not call onSubmit", async () => {
 	const onSubmit = vi.fn();
 	// blockEmptySubmit:false removes the empty gate, so the validation gate (the
