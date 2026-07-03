@@ -187,7 +187,7 @@
 </script>
 
 <script lang="ts">
-	import { CronParser } from "@marianmeres/cron";
+	import { CronParser } from "@marianmeres/cron-parser";
 	import {
 		validate as validateAction,
 		type ValidationResult,

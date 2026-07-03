@@ -1,6 +1,6 @@
 # CronInput
 
-A cron-expression editor with three progressive surfaces: **preset picker**, **5-field visual editor**, and **raw expression input** — plus a human-readable summary and the next-run preview. Backed by [`@marianmeres/cron`](https://www.npmjs.com/package/@marianmeres/cron).
+A cron-expression editor with three progressive surfaces: **preset picker**, **5-field visual editor**, and **raw expression input** — plus a human-readable summary and the next-run preview. Backed by [`@marianmeres/cron-parser`](https://www.npmjs.com/package/@marianmeres/cron-parser).
 
 The cron expression string is the single source of truth; field / preset / raw surfaces are all views over it. All three stay in sync automatically when the bound `value` changes.
 
@@ -109,7 +109,7 @@ The component uses `new CronParser(value)` to validate. When invalid:
 
 ## Timezone
 
-All next-run calculations use the **host's local timezone**. There is no `timezone` prop today. DST transitions are handled correctly by `@marianmeres/cron`, but the displayed "next run" will naturally follow local-time semantics.
+All next-run calculations use the **host's local timezone**. There is no `timezone` prop today. DST transitions are handled correctly by `@marianmeres/cron-parser`, but the displayed "next run" will naturally follow local-time semantics.
 
 ## Props
 

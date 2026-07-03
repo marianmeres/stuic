@@ -1,4 +1,4 @@
-import { CronParser } from "@marianmeres/cron";
+import { CronParser } from "@marianmeres/cron-parser";
 
 /**
  * A reactive helper that parses a cron expression and computes the next run time,

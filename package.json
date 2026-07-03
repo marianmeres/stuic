@@ -179,7 +179,7 @@
 	"dependencies": {
 		"@marianmeres/clog": "^3.21.0",
 		"@marianmeres/countries": "^1.0.1",
-		"@marianmeres/cron": "^2.0.1",
+		"@marianmeres/cron-parser": "^1.0.1",
 		"@marianmeres/design-tokens": "^1.12.0",
 		"@marianmeres/icons-fns": "^5.0.0",
 		"@marianmeres/item-collection": "^1.4.2",
