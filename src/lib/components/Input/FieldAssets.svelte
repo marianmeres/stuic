@@ -131,6 +131,75 @@
 		return map[getFileTypeLabel(ext ?? "unknown")] ?? iconFile;
 	}
 
+	// --- Clipboard paste plumbing (see the `pasteable` prop) -------------------
+	// All mounted pasteable instances coordinate through ONE document-level
+	// `paste` listener (installed while at least one is mounted). Document-level
+	// (rather than a listener on the field wrapper) because browsers dispatch
+	// `paste` at the focused/selection node — with focus on <body> the event
+	// never bubbles through the field, which made the feature look dead unless
+	// the field was clicked first.
+	type PasteTarget = {
+		el: HTMLElement;
+		handle: (e: ClipboardEvent) => void;
+	};
+
+	const paste_targets = new Set<PasteTarget>();
+
+	// True only when NOTHING is focused (browsers park focus on <body>/<html>).
+	// The fallback below must never fire while the user has deliberately focused
+	// some other element — a text input obviously, but also any other widget
+	// (e.g. a different, non-pasteable FieldAssets): pasting "into" the thing
+	// they focused must not teleport files to an unrelated field.
+	function is_unclaimed_focus(el: Element | null): boolean {
+		return !el || el === document.body || el === document.documentElement;
+	}
+
+	// Text-entry elements own their pastes even when they live INSIDE the field
+	// (consumer content via the label/description/below snippets) — an editor's
+	// image paste must insert into the editor, not upload into the field.
+	function is_text_entry(el: Element | null): boolean {
+		if (!el) return false;
+		if ((el as HTMLElement).isContentEditable) return true;
+		return ["INPUT", "TEXTAREA", "SELECT"].includes(el.tagName);
+	}
+
+	// A field hidden by CSS (kept-mounted inactive tab panel etc.) must not
+	// claim the no-focus fallback — the user would see nothing happen.
+	function is_visible(el: HTMLElement): boolean {
+		return el.checkVisibility?.() ?? el.offsetParent !== null;
+	}
+
+	function on_document_paste(e: ClipboardEvent) {
+		// someone (an editor, another paste handler) already claimed it
+		if (e.defaultPrevented) return;
+		const active = document.activeElement;
+		// 1) the field holding focus always wins — unless focus sits in a
+		// text-entry element nested inside it: stand down entirely
+		for (const t of paste_targets) {
+			if (t.el.contains(active)) {
+				if (is_text_entry(active)) return;
+				return t.handle(e);
+			}
+		}
+		// 2) a paste with no focus anywhere falls back to the single mounted
+		// (and visible) pasteable field, so a bare Ctrl/Cmd-V works on a freshly
+		// loaded page with no prior click. With several fields mounted the
+		// routing would be ambiguous, so focus (a click on the field) must decide.
+		if (paste_targets.size === 1 && is_unclaimed_focus(active)) {
+			const [t] = paste_targets;
+			if (is_visible(t.el)) t.handle(e);
+		}
+	}
+
+	function register_paste_target(t: PasteTarget): () => void {
+		if (!paste_targets.size) document.addEventListener("paste", on_document_paste);
+		paste_targets.add(t);
+		return () => {
+			paste_targets.delete(t);
+			if (!paste_targets.size) document.removeEventListener("paste", on_document_paste);
+		};
+	}
+
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
 	export interface Props extends InputWrapClassProps, Record<string, any> {
@@ -189,11 +258,19 @@
 		ordered?: boolean;
 		/**
 		 * Opt-in: allow pasting image/file data from the clipboard (Ctrl/Cmd-V) into
-		 * the field. Focus-scoped — the paste is consumed only while the field (or a
-		 * control inside it) holds focus; clicking anywhere in the field focuses it,
-		 * so no Tab is needed. Routed through the same validation + upload path as
-		 * drag and the file picker, so `accept`, `cardinality` and `processAssets`
-		 * all apply. No-op unless `processAssets` is provided. Default `false`.
+		 * the field. Routing: a paste is consumed while the field (or a control
+		 * inside it) holds focus — clicking anywhere in the field focuses it. On
+		 * top of that, a paste with NO focus anywhere (fresh page, focus parked on
+		 * <body>) is routed here as long as this is the only pasteable — and
+		 * visible — FieldAssets on the page, so a bare Ctrl/Cmd-V works with no
+		 * prior click. Focus elsewhere is respected and never hijacked: not a text
+		 * input/textarea/select/contenteditable (even one nested inside the field
+		 * via the label/description/below snippets), not any other widget; with
+		 * several pasteable fields mounted, click (focus) one to pick the
+		 * destination. Disabled and `isLoading` fields take no pastes. Pasted
+		 * files share the validation + upload path with drag and the file picker
+		 * (`accept`, `cardinality` and `processAssets` all apply). No-op unless
+		 * `processAssets` is provided. Default `false`.
 		 */
 		pasteable?: boolean;
 		//
@@ -526,11 +603,12 @@
 	}
 
 	// --- Clipboard paste (opt-in via `pasteable`) -------------------------------
-	// Focus-scoped: the paste listener lives on the field wrapper, so it only fires
-	// while the field (or a control inside it) holds focus. `focusForPaste` focuses
-	// the wrapper on any click within it, so a click + Ctrl/Cmd-V works with no Tab.
-	// Pasted files go through `handleIncomingFiles`, inheriting accept/cardinality
-	// validation and the processAssets upload — no synthetic `change` event.
+	// Wired through the module-level document `paste` listener (see PasteTarget
+	// above): the instance registers itself while mounted, and receives the paste
+	// when it holds focus — or, as the only mounted pasteable field, when the
+	// paste is unclaimed (focus not in a text-entry element). Pasted files go
+	// through `handleIncomingFiles`, inheriting accept/cardinality validation and
+	// the processAssets upload — no synthetic `change` event.
 	function extractClipboardFiles(e: ClipboardEvent): File[] {
 		const dt = e.clipboardData;
 		if (!dt) return [];
@@ -556,11 +634,11 @@
 		handleIncomingFiles(files);
 	}
 
-	// Focus the wrapper on any click inside it so a following paste lands here.
-	// Capture phase: fires even though the inner thumbnail/control buttons
-	// stopPropagation, and even in browsers that don't focus <button> on click
-	// (Safari/Firefox on macOS). Skipped when focus is already inside the field —
-	// paste bubbles from any focused descendant anyway.
+	// Focus the wrapper on any click inside it so a following paste routes here
+	// (the document-level listener routes by focus containment). Capture phase:
+	// fires even though the inner thumbnail/control buttons stopPropagation, and
+	// even in browsers that don't focus <button> on click (Safari/Firefox on
+	// macOS). Skipped when focus is already inside the field.
 	function focusForPaste() {
 		if (!pasteable || !wrapEl) return;
 		if (wrapEl.contains(document.activeElement)) return;
@@ -570,12 +648,17 @@
 	}
 
 	$effect(() => {
-		if (!pasteable || !wrapEl) return;
+		// disabled and still-loading fields do not take pastes at all
+		if (!pasteable || typeof processAssets !== "function" || !wrapEl) return;
+		if (disabled || isLoading) return;
 		const el = wrapEl;
-		el.addEventListener("paste", handlePaste);
+		const unregister = register_paste_target({ el, handle: handlePaste });
+		// clicking still focuses the field: gives the `:focus-within` ring (the
+		// visible "paste lands here" affordance) and lets THIS field win the
+		// routing when several pasteable fields are mounted
 		el.addEventListener("click", focusForPaste, true);
 		return () => {
-			el.removeEventListener("paste", handlePaste);
+			unregister();
 			el.removeEventListener("click", focusForPaste, true);
 		};
 	});
@@ -764,7 +847,11 @@
 		{classLabelBox}
 		{classInputBox}
 		classInputBoxWrap={twMerge(
+			// the ring is the "paste lands here" affordance — only show it when
+			// paste actually works (same gating as the paste-target registration)
 			pasteable &&
+				typeof processAssets === "function" &&
+				!disabled &&
 				"focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-(--stuic-color-ring)",
 			classInputBoxWrap
 		)}

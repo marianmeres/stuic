@@ -482,9 +482,22 @@ an upload progress indicator while processing).
 ### Paste from the clipboard (`pasteable`)
 
 Opt in with `pasteable` to let users paste image/file data from the clipboard (Ctrl/Cmd-V) —
-a screenshot, a copied image, etc. It is **focus-scoped**: a paste is consumed only while the
-field (or a control inside it) holds focus. Clicking anywhere in the field focuses it, so no
-Tab is needed, and a `:focus-within` ring on the input box signals the paste-ready state.
+a screenshot, a copied image, etc. Routing (via a single document-level listener shared by
+all mounted pasteable fields):
+
+- a paste is consumed while the field (or a control inside it) holds focus — clicking
+  anywhere in the field focuses it, and a `:focus-within` ring on the input box signals the
+  paste-ready state;
+- a paste with **no focus anywhere** (fresh page — focus parked on `<body>`) is routed to
+  the field as long as it is the _only_ pasteable (and visible) FieldAssets on the page, so
+  a bare Ctrl/Cmd-V works with no prior click;
+- focus elsewhere is respected: pasting while a text input, textarea, select,
+  contenteditable (even one nested _inside_ the field via the `label`/`description`/`below`
+  snippets) or any other widget holds focus is never hijacked. With several pasteable fields
+  mounted, an unfocused paste is ambiguous and ignored — click (focus) a field to pick the
+  destination;
+- `disabled` and `isLoading` fields take no pastes.
+
 Pasted files go through the same path as the picker and drag-and-drop, so `accept`,
 `cardinality` and `processAssets` all apply. No-op unless `processAssets` is provided.
 
