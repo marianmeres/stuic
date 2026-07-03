@@ -45,7 +45,13 @@ export default defineConfig({
 					browser: {
 						enabled: true,
 						headless: true,
-						provider: playwright(),
+						provider: playwright({
+							// lets tests put files/images on the real browser clipboard
+							// (native-path paste tests, e.g. FieldAssets `pasteable`)
+							contextOptions: {
+								permissions: ["clipboard-read", "clipboard-write"],
+							},
+						}),
 						instances: [{ browser: "chromium" }],
 					},
 				},
