@@ -79,6 +79,79 @@ test("Escape calls onEscape and closes the dialog", async () => {
 	await expect.element(screen.getByRole("dialog")).not.toBeInTheDocument();
 });
 
+test("onEscape returning false vetoes the close (modal stays open)", async () => {
+	let calls = 0;
+	const onEscape = () => {
+		calls++;
+		return false;
+	};
+	const screen = render(Modal, { visible: true, children: button("Go"), onEscape });
+	const dialog = screen.getByRole("dialog");
+	await expect.element(dialog).toBeInTheDocument();
+
+	const el = dialog.element() as HTMLDialogElement;
+	el.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+
+	// Modal.handlePreEscapeClose now forwards the return value; ModalDialog closes
+	// only on `!== false`, so `false` keeps the dialog open.
+	await expect.poll(() => calls).toBe(1);
+	await expect.element(screen.getByRole("dialog")).toBeInTheDocument();
+});
+
+test("onEscape returning true (sync) closes (only an explicit false vetoes)", async () => {
+	let calls = 0;
+	const onEscape = () => {
+		calls++;
+		return true;
+	};
+	const screen = render(Modal, { visible: true, children: button("Go"), onEscape });
+	const dialog = screen.getByRole("dialog");
+	await expect.element(dialog).toBeInTheDocument();
+
+	const el = dialog.element() as HTMLDialogElement;
+	el.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+
+	await expect.element(screen.getByRole("dialog")).not.toBeInTheDocument();
+	expect(calls).toBe(1);
+});
+
+test("onEscape resolving to false (async) vetoes the close", async () => {
+	let calls = 0;
+	const onEscape = async () => {
+		calls++;
+		return false;
+	};
+	const screen = render(Modal, { visible: true, children: button("Go"), onEscape });
+	const dialog = screen.getByRole("dialog");
+	await expect.element(dialog).toBeInTheDocument();
+
+	const el = dialog.element() as HTMLDialogElement;
+	el.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+
+	// ModalDialog._onEscapeKeydown awaits the hook; the dialog must stay open once
+	// the promise resolves to false.
+	await expect.poll(() => calls).toBe(1);
+	await expect.element(screen.getByRole("dialog")).toBeInTheDocument();
+});
+
+test("onEscape resolving to true (async) closes after the promise resolves", async () => {
+	let calls = 0;
+	const onEscape = async () => {
+		calls++;
+		return true;
+	};
+	const screen = render(Modal, { visible: true, children: button("Go"), onEscape });
+	const dialog = screen.getByRole("dialog");
+	await expect.element(dialog).toBeInTheDocument();
+
+	const el = dialog.element() as HTMLDialogElement;
+	el.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+
+	// expect.element retries absorb `await preEscapeClose` -> close() -> unmount.
+	await expect.element(screen.getByRole("dialog")).not.toBeInTheDocument();
+	expect(calls).toBe(1);
+});
+
 test("escaped key other than Escape neither fires onEscape nor closes", async () => {
 	const onEscape = vi.fn();
 	const screen = render(Modal, { visible: true, children: button("Go"), onEscape });

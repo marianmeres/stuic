@@ -58,6 +58,7 @@
 	let box = $state<HTMLDivElement>()!;
 	let _opener: undefined | null | HTMLElement = $state();
 	let _isClosing = false;
+	let _isEscaping = false;
 
 	export function open(openerOrEvent?: null | HTMLElement | MouseEvent) {
 		if (visible) return; // Already open
@@ -143,13 +144,22 @@
 			// do not allow additional onkeydown listeners on this dialog
 			e.stopImmediatePropagation();
 
-			if (!noEscapeClose) {
+			// `noEscapeClose` short-circuits (unchanged). `_isEscaping` is a
+			// re-entrancy latch: with an async `preEscapeClose` veto, a rapid
+			// second Escape would otherwise invoke the hook again and stack a
+			// duplicate confirm. It resets in `finally`, so a vetoed close can be
+			// retried on a subsequent Escape.
+			if (noEscapeClose || _isEscaping) return;
+			_isEscaping = true;
+			try {
 				// explicit false prevents close
-				let allowed = await preEscapeClose?.();
+				const allowed = await preEscapeClose?.();
 				if (allowed !== false) {
 					// `preClose` will be handled next
 					close();
 				}
+			} finally {
+				_isEscaping = false;
 			}
 		}
 	}

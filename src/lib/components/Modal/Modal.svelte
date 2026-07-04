@@ -1,6 +1,15 @@
 <script lang="ts" module>
 	import type { Snippet } from "svelte";
 
+	/**
+	 * Return type of `Modal`'s `onEscape` handler.
+	 *
+	 * Resolve to `false` to VETO the Escape-close and keep the modal open; any
+	 * other value (including `undefined`) closes as before. May be async — the
+	 * modal stays open until the returned promise resolves.
+	 */
+	export type EscapeVeto = void | boolean | Promise<void | boolean>;
+
 	export interface Props {
 		visible?: boolean;
 		children: Snippet;
@@ -18,8 +27,13 @@
 		/** ID reference for aria-describedby */
 		describedby?: string;
 		el?: HTMLDivElement;
-		/** Called when Escape key is pressed while modal is open */
-		onEscape?: () => void;
+		/**
+		 * Called when Escape is pressed while the modal is open.
+		 * Return (or resolve to) `false` to VETO the close and keep the modal
+		 * open; any other value (incl. `undefined`) closes as before. May be
+		 * async — the modal stays open until the returned promise resolves.
+		 */
+		onEscape?: () => EscapeVeto;
 		/** Disable body scroll lock when modal is open */
 		noScrollLock?: boolean;
 		/** Disable close on backdrop / outside click */
@@ -82,8 +96,11 @@
 	}
 
 	function handlePreEscapeClose() {
-		onEscape?.();
-		// return undefined to allow close (preClose will set visible = false)
+		// Forward to ModalDialog.preEscapeClose, which closes only when the result
+		// is !== false and already awaits it — so an async veto is honoured and a
+		// `false` return keeps the modal open (preClose sets visible = false only
+		// when the close is actually allowed to proceed).
+		return onEscape?.();
 	}
 </script>
 

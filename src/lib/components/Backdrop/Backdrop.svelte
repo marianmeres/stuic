@@ -15,6 +15,11 @@
 		transitionEnabled?: boolean;
 		el?: HTMLDivElement;
 		children?: Snippet;
+		/**
+		 * Fired on Escape while visible. **Notify-only** — Backdrop does not close
+		 * itself; the caller owns close via `bind:visible` or `close()`. The return
+		 * value is ignored (there is no Escape veto here, unlike `Modal.onEscape`).
+		 */
 		onEscape?: () => void;
 		onBackdropClick?: () => void;
 		visible?: boolean;

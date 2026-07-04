@@ -4,19 +4,19 @@ A styled modal dialog with optional header and footer sections. Built on top of 
 
 ## Props
 
-| Prop           | Type             | Default | Description                        |
-| -------------- | ---------------- | ------- | ---------------------------------- |
-| `visible`      | `boolean`        | `false` | Controls visibility (bindable)     |
-| `onEscape`     | `() => void`     | -       | Callback on Escape key             |
-| `noScrollLock` | `boolean`        | `false` | Disable body scroll lock           |
-| `classInner`   | `string`         | -       | CSS for inner width container      |
-| `class`        | `string`         | -       | CSS for modal box                  |
-| `classHeader`  | `string`         | -       | CSS for header section             |
-| `classMain`    | `string`         | -       | CSS for main content               |
-| `classFooter`  | `string`         | -       | CSS for footer section             |
-| `labelledby`   | `string`         | -       | ARIA labelledby ID                 |
-| `describedby`  | `string`         | -       | ARIA describedby ID                |
-| `el`           | `HTMLDivElement` | -       | Modal element reference (bindable) |
+| Prop           | Type                                                | Default | Description                                                                                                                                          |
+| -------------- | --------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `visible`      | `boolean`                                           | `false` | Controls visibility (bindable)                                                                                                                       |
+| `onEscape`     | `() => void \| boolean \| Promise<void \| boolean>` | -       | Escape handler. Return/resolve `false` to **veto** the close and keep the modal open (see below); anything else (incl. `undefined`) closes as before |
+| `noScrollLock` | `boolean`                                           | `false` | Disable body scroll lock                                                                                                                             |
+| `classInner`   | `string`                                            | -       | CSS for inner width container                                                                                                                        |
+| `class`        | `string`                                            | -       | CSS for modal box                                                                                                                                    |
+| `classHeader`  | `string`                                            | -       | CSS for header section                                                                                                                               |
+| `classMain`    | `string`                                            | -       | CSS for main content                                                                                                                                 |
+| `classFooter`  | `string`                                            | -       | CSS for footer section                                                                                                                               |
+| `labelledby`   | `string`                                            | -       | ARIA labelledby ID                                                                                                                                   |
+| `describedby`  | `string`                                            | -       | ARIA describedby ID                                                                                                                                  |
+| `el`           | `HTMLDivElement`                                    | -       | Modal element reference (bindable)                                                                                                                   |
 
 ## Snippets
 
@@ -91,6 +91,33 @@ A styled modal dialog with optional header and footer sections. Built on top of 
 	<div class="p-6">Content</div>
 </Modal>
 ```
+
+### Vetoable Escape close (confirm before dismiss)
+
+`onEscape` can **keep the modal open** by returning (or resolving to) `false` —
+useful for an "unsaved changes" guard. It may be async: the modal stays open
+until the returned promise resolves, so you can await a confirm dialog.
+
+```svelte
+<script lang="ts">
+	let modal: Modal;
+	let dirty = $state(false);
+
+	// Return false to VETO the close and keep the modal open.
+	async function requestClose(): Promise<boolean> {
+		if (dirty && !(await confirmDiscard())) return false; // veto — stay open
+		modal.close();
+		return true;
+	}
+</script>
+
+<Modal bind:this={modal} onEscape={requestClose} noClickOutsideClose>
+	<div class="p-6">Edit form with unsaved changes…</div>
+</Modal>
+```
+
+> Only the Escape path is vetoable. The Cancel button and programmatic
+> `close()` are yours to gate — run the same confirm before calling `close()`.
 
 ### Custom Sizing
 

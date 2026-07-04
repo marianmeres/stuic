@@ -5,7 +5,10 @@
 	// fixture holds the `bind:this` ref and exposes an opener button that calls
 	// `.open()`; ModalDialog props are forwarded through `...rest`. The default
 	// content (an "inside" button) is the required `children` snippet — it also
-	// gives the focus trap a real focusable element to auto-focus.
+	// gives the focus trap a real focusable element to auto-focus. A second
+	// "programmatic-close" button (kept INSIDE the dialog so it stays clickable
+	// while showModal() makes the rest of the page inert) calls `.close()` so a
+	// test can assert the programmatic close path is NOT gated by the Escape veto.
 	import ModalDialog from "./ModalDialog.svelte";
 
 	let dialog = $state<ModalDialog>();
@@ -16,4 +19,7 @@
 
 <ModalDialog bind:this={dialog} {...rest}>
 	<button data-testid="inside">Inside</button>
+	<button data-testid="programmatic-close" onclick={() => dialog?.close()}>
+		close
+	</button>
 </ModalDialog>

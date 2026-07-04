@@ -16,6 +16,11 @@
 		focusTrap?: boolean | FocusTrapOptions;
 		/** Used in `fly` config. Should match tw classes for optimal animation. May include css units. */
 		animOffset?: string | number;
+		/**
+		 * Fired on Escape while open. **Notify-only** — Drawer does not close itself
+		 * (it forwards to Backdrop); the caller owns close via `bind:visible` or
+		 * `close()`. The return value is ignored (no Escape veto, unlike `Modal`).
+		 */
 		onEscape?: () => void;
 		onOutside?: () => void;
 		noBackdropScrollLock?: boolean;
