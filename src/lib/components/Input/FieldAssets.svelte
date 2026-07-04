@@ -203,7 +203,10 @@
 		// routing would be ambiguous, so focus (a click on the field) must decide.
 		if (paste_targets.size === 1 && !is_text_entry(active)) {
 			const [t] = paste_targets;
-			if (is_visible(t.el) && (is_unclaimed_focus(active) || shares_modal(t.el, active))) {
+			if (
+				is_visible(t.el) &&
+				(is_unclaimed_focus(active) || shares_modal(t.el, active))
+			) {
 				t.handle(e);
 			}
 		}
