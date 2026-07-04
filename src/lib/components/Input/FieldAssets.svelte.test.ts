@@ -244,6 +244,79 @@ test("focus on any other element blocks the no-focus fallback (e.g. a second, no
 	expect(pasteableField.container.querySelector("[data-asset-tile]")).toBeNull();
 });
 
+test("modal-scoped fallback: focus on a non-text control inside the field's dialog still routes the paste here", async () => {
+	const processAssets = processAssetsMock();
+	const screen = await render(FieldAssets, {
+		name: "a",
+		label: "Assets",
+		value: "[]",
+		pasteable: true,
+		processAssets,
+	});
+
+	// A drawer/modal renders a [role=dialog][aria-modal=true] panel and takes
+	// focus on open, so <body> is never the active element — the no-focus
+	// fallback would never fire. Wrap the field in such a panel and park focus on
+	// a NON-text control inside it: a bare Ctrl/Cmd-V must still land here.
+	const dialog = document.createElement("div");
+	dialog.setAttribute("role", "dialog");
+	dialog.setAttribute("aria-modal", "true");
+	document.body.appendChild(dialog);
+	dialog.appendChild(screen.container);
+	const btn = document.createElement("button");
+	dialog.appendChild(btn);
+	try {
+		btn.focus();
+		expect(document.activeElement).toBe(btn);
+
+		const ev = pasteEventWithFile();
+		btn.dispatchEvent(ev); // bubbles to the document listener
+
+		expect(ev.defaultPrevented).toBe(true);
+		expect(processAssets).toHaveBeenCalledTimes(1);
+		await expect
+			.poll(() => screen.container.querySelector("[data-asset-tile]"))
+			.not.toBeNull();
+	} finally {
+		dialog.remove();
+	}
+});
+
+test("modal-scoped fallback does NOT fire for focus on a control outside the field's dialog", async () => {
+	const processAssets = processAssetsMock();
+	const screen = await render(FieldAssets, {
+		name: "a",
+		label: "Assets",
+		value: "[]",
+		pasteable: true,
+		processAssets,
+	});
+
+	// field lives in a dialog; a focused control OUTSIDE that dialog does not
+	// share the modal, so the fallback must stay conservative (no teleport)
+	const dialog = document.createElement("div");
+	dialog.setAttribute("role", "dialog");
+	dialog.setAttribute("aria-modal", "true");
+	document.body.appendChild(dialog);
+	dialog.appendChild(screen.container);
+	const outsideBtn = document.createElement("button");
+	document.body.appendChild(outsideBtn);
+	try {
+		outsideBtn.focus();
+		expect(document.activeElement).toBe(outsideBtn);
+
+		const ev = pasteEventWithFile();
+		outsideBtn.dispatchEvent(ev);
+
+		expect(ev.defaultPrevented).toBe(false);
+		expect(processAssets).not.toHaveBeenCalled();
+		expect(screen.container.querySelector("[data-asset-tile]")).toBeNull();
+	} finally {
+		dialog.remove();
+		outsideBtn.remove();
+	}
+});
+
 test("two pasteable fields: unfocused paste is ambiguous (ignored); the focused field wins", async () => {
 	const processA = processAssetsMock();
 	const processB = processAssetsMock();

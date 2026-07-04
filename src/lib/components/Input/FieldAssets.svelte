@@ -169,6 +169,19 @@
 		return el.checkVisibility?.() ?? el.offsetParent !== null;
 	}
 
+	// A modal/dialog (drawer, modal) takes focus on open, so `active` is the
+	// dialog panel — or a control inside it — and NEVER <body>. When the field
+	// lives in such a dialog, treat a non-text focus within that SAME dialog as
+	// unclaimed too, so a bare Ctrl/Cmd-V attaches with no prior click. Scoped to
+	// a shared [aria-modal]/[role=dialog] ancestor on purpose: it must not make
+	// the field greedy on ordinary (non-modal) pages, where a deliberately
+	// focused control elsewhere still owns its paste.
+	function shares_modal(fieldEl: HTMLElement, active: Element | null): boolean {
+		if (!active) return false;
+		const modal = fieldEl.closest?.("[aria-modal='true'],[role='dialog']");
+		return !!modal && modal.contains(active);
+	}
+
 	function on_document_paste(e: ClipboardEvent) {
 		// someone (an editor, another paste handler) already claimed it
 		if (e.defaultPrevented) return;
@@ -181,13 +194,18 @@
 				return t.handle(e);
 			}
 		}
-		// 2) a paste with no focus anywhere falls back to the single mounted
-		// (and visible) pasteable field, so a bare Ctrl/Cmd-V works on a freshly
-		// loaded page with no prior click. With several fields mounted the
+		// 2) fall back to the SINGLE mounted + visible pasteable field for a paste
+		// NOT owned by a focused text-entry element, when focus is EITHER unclaimed
+		// (fresh page, focus on <body>) OR parked on a non-text control inside the
+		// SAME modal/dialog as the field (the drawer/modal case: the panel or the
+		// row that opened it holds focus, so <body> is never active). A bare
+		// Ctrl/Cmd-V then works with no prior click. With several fields mounted the
 		// routing would be ambiguous, so focus (a click on the field) must decide.
-		if (paste_targets.size === 1 && is_unclaimed_focus(active)) {
+		if (paste_targets.size === 1 && !is_text_entry(active)) {
 			const [t] = paste_targets;
-			if (is_visible(t.el)) t.handle(e);
+			if (is_visible(t.el) && (is_unclaimed_focus(active) || shares_modal(t.el, active))) {
+				t.handle(e);
+			}
 		}
 	}
 
@@ -260,10 +278,13 @@
 		 * Opt-in: allow pasting image/file data from the clipboard (Ctrl/Cmd-V) into
 		 * the field. Routing: a paste is consumed while the field (or a control
 		 * inside it) holds focus — clicking anywhere in the field focuses it. On
-		 * top of that, a paste with NO focus anywhere (fresh page, focus parked on
-		 * <body>) is routed here as long as this is the only pasteable — and
-		 * visible — FieldAssets on the page, so a bare Ctrl/Cmd-V works with no
-		 * prior click. Focus elsewhere is respected and never hijacked: not a text
+		 * top of that, a bare Ctrl/Cmd-V with no prior click is routed here — as
+		 * long as this is the only pasteable + visible FieldAssets on the page —
+		 * when focus is NOT in a text-entry element and is either unclaimed (fresh
+		 * page, focus parked on <body>) or parked on a non-text control inside the
+		 * SAME modal/dialog as the field (a drawer/modal takes focus on open, so
+		 * <body> is never active there). Focus elsewhere is respected and never
+		 * hijacked: not a text
 		 * input/textarea/select/contenteditable (even one nested inside the field
 		 * via the label/description/below snippets), not any other widget; with
 		 * several pasteable fields mounted, click (focus) one to pick the
