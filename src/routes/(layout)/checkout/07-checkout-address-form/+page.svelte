@@ -4,12 +4,14 @@
 		createEmptyAddress,
 		validateAddress,
 		type CheckoutAddressData,
+		type CheckoutSubdivisionOption,
 		type CheckoutValidationError,
 	} from "$lib/index.js";
 	import { t_default } from "$lib/components/Checkout/_internal/checkout-i18n-defaults.js";
 	import Button from "$lib/components/Button/Button.svelte";
 	import FieldSwitch from "$lib/components/Input/FieldSwitch.svelte";
 	import FieldSelect from "$lib/components/Input/FieldSelect.svelte";
+	import FieldInput from "$lib/components/Input/FieldInput.svelte";
 
 	// --- Interactive demo state ---
 	let address = $state<CheckoutAddressData>(createEmptyAddress());
@@ -98,6 +100,49 @@
 		}
 		usErrors = errs;
 	}
+
+	// --- Subdivision select demo (country-aware state/region) ---
+	// stuic ships no subdivision data — these demo subsets stand in for the
+	// consumer-provided lists (e.g. the full 51-entry USPS list in a real shop).
+	const US_STATES: CheckoutSubdivisionOption[] = [
+		{ code: "AZ", name: "Arizona" },
+		{ code: "CA", name: "California" },
+		{ code: "CO", name: "Colorado" },
+		{ code: "FL", name: "Florida" },
+		{ code: "MI", name: "Michigan" },
+		{ code: "MN", name: "Minnesota" },
+		{ code: "NY", name: "New York" },
+		{ code: "OR", name: "Oregon" },
+		{ code: "TX", name: "Texas" },
+		{ code: "WA", name: "Washington" },
+	];
+	const CA_PROVINCES: CheckoutSubdivisionOption[] = [
+		{ code: "AB", name: "Alberta" },
+		{ code: "BC", name: "British Columbia" },
+		{ code: "MB", name: "Manitoba" },
+		{ code: "ON", name: "Ontario" },
+		{ code: "QC", name: "Quebec" },
+	];
+	const SUBDIVISIONS = { US: US_STATES, CA: CA_PROVINCES };
+
+	let subAddress = $state<CheckoutAddressData>({
+		...createEmptyAddress(),
+		country: "US",
+	});
+	let subRequired = $state(true);
+	let subForm = $state<CheckoutAddressForm>();
+	let subValid = $state<boolean | null>(null);
+
+	function seedSubState(v: string) {
+		subAddress.state_or_region = v;
+		subValid = null;
+	}
+
+	// --- Custom stateField snippet demo ---
+	let customStateAddress = $state<CheckoutAddressData>({
+		...createEmptyAddress(),
+		country: "US",
+	});
 
 	// --- Country options for custom selector demo (free-text fallback) ---
 	const COUNTRIES = [
@@ -350,7 +395,9 @@
 	<p class="text-sm opacity-60 mb-4">
 		<code>state_or_region</code> is visible by default but
 		<strong>not</strong> required by default — keeping the component country-agnostic. For
-		US-targeted checkouts, opt in by adding it to <code>requiredFields</code>.
+		US-targeted checkouts, opt in by adding it to <code>requiredFields</code> — or better,
+		pass <code>subdivisions</code> (see the country-aware subdivision select below), which makes
+		the field a fixed select and required automatically.
 	</p>
 
 	<div class="max-w-lg">
@@ -386,6 +433,142 @@
 				)}</pre>
 		</div>
 	{/if}
+</section>
+
+<!-- ============== SUBDIVISION SELECT ============== -->
+<section class="mb-12">
+	<h2 class="text-lg font-bold mb-2">Country-aware subdivision select</h2>
+	<p class="text-sm opacity-60 mb-4">
+		<code>subdivisions</code> — lists keyed by UPPERCASE ISO country code (demo: US + CA
+		subsets; stuic ships no data). When the selected country has a list, State / Region
+		becomes a fixed select storing the canonical <code>code</code>; other countries keep
+		free text, verbatim. While the select is active the field is required by default (<code
+			>subdivisionRequired</code
+		>). Legacy values self-heal — seed "Michigan" or "mi" and watch the live data become
+		"MI"; "Narnia" is preserved and renders unselected. Switch US → CA → US: the stored
+		code survives the round-trip.
+	</p>
+
+	<div class="max-w-full mb-4">
+		<FieldSwitch
+			bind:checked={subRequired}
+			label="subdivisionRequired"
+			name="sub-required"
+			renderSize="sm"
+		/>
+	</div>
+
+	<div class="max-w-lg">
+		<CheckoutAddressForm
+			bind:this={subForm}
+			bind:address={subAddress}
+			label="sub"
+			subdivisions={SUBDIVISIONS}
+			subdivisionRequired={subRequired}
+			preferredCountries={["US", "CA", "SK"]}
+		/>
+	</div>
+
+	<div class="mt-4 flex flex-wrap gap-2">
+		<Button size="sm" class="border px-3" onclick={() => seedSubState("Michigan")}>
+			Seed "Michigan"
+		</Button>
+		<Button size="sm" class="border px-3" onclick={() => seedSubState("mi")}>
+			Seed "mi"
+		</Button>
+		<Button size="sm" class="border px-3" onclick={() => seedSubState("Narnia")}>
+			Seed "Narnia"
+		</Button>
+		<Button size="sm" class="border px-3" onclick={() => seedSubState("")}>
+			Clear state
+		</Button>
+		<Button
+			size="sm"
+			class="border px-3"
+			onclick={() => (subValid = subForm?.validate() ?? null)}
+		>
+			validate()
+		</Button>
+		<Button
+			size="sm"
+			class="border px-3"
+			onclick={() => {
+				subAddress = { ...createEmptyAddress(), country: "US" };
+				subValid = null;
+			}}
+		>
+			Reset
+		</Button>
+	</div>
+
+	{#if subValid !== null}
+		<p class="mt-2 text-sm">
+			validate() → <code>{subValid}</code>
+		</p>
+	{/if}
+
+	<div class="mt-4">
+		<h3 class="text-sm font-semibold mb-1">Live address data:</h3>
+		<pre class="text-xs bg-muted p-3 rounded-md overflow-x-auto">{JSON.stringify(
+				subAddress,
+				null,
+				2
+			)}</pre>
+	</div>
+</section>
+
+<!-- ============== CUSTOM STATE FIELD SNIPPET ============== -->
+<section class="mb-12">
+	<h2 class="text-lg font-bold mb-2">Custom stateField snippet</h2>
+	<p class="text-sm opacity-60 mb-4">
+		<code>stateField</code> replaces the built-in field entirely (parity with
+		<code>countryField</code>) and receives the active country's <code>options</code> — or
+		<code>null</code> when free text would apply, so one snippet drives both modes. Built-in
+		reconciliation is off here; the custom control owns the value. This demo renders "Name (CODE)"
+		labels with its own empty option, and falls back to a plain input for unlisted countries.
+	</p>
+
+	<div class="max-w-lg">
+		<CheckoutAddressForm
+			bind:address={customStateAddress}
+			label="customstate"
+			subdivisions={SUBDIVISIONS}
+			preferredCountries={["US", "CA", "SK"]}
+		>
+			{#snippet stateField({ value, onchange, label: fieldLabel, id, options })}
+				{#if options}
+					<FieldSelect
+						options={[
+							{ label: "— pick —", value: "" },
+							...options.map((o) => ({ label: `${o.name} (${o.code})`, value: o.code })),
+						]}
+						{value}
+						onchange={(e) => onchange(e.currentTarget.value)}
+						label={fieldLabel}
+						{id}
+						name={id}
+					/>
+				{:else}
+					<FieldInput
+						{value}
+						oninput={(e) => onchange(e.currentTarget.value)}
+						label="{fieldLabel} (free text)"
+						{id}
+						name={id}
+					/>
+				{/if}
+			{/snippet}
+		</CheckoutAddressForm>
+	</div>
+
+	<div class="mt-4">
+		<h3 class="text-sm font-semibold mb-1">Live address data:</h3>
+		<pre class="text-xs bg-muted p-3 rounded-md overflow-x-auto">{JSON.stringify(
+				customStateAddress,
+				null,
+				2
+			)}</pre>
+	</div>
 </section>
 
 <!-- ============== WITHOUT STATE/REGION ============== -->

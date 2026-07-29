@@ -5,8 +5,10 @@
 	import type { TranslateFn } from "../../types.js";
 	import type { Props as FieldCountryProps } from "../Input/FieldCountry.svelte";
 	import type { Props as FieldPhoneNumberProps } from "../Input/FieldPhoneNumber.svelte";
+	import type { Props as FieldSelectProps } from "../Input/FieldSelect.svelte";
 	import type {
 		CheckoutAddressData,
+		CheckoutSubdivisionOption,
 		CheckoutValidationError,
 	} from "./_internal/checkout-types.js";
 
@@ -87,6 +89,71 @@
 		 */
 		countryNames?: Record<string, string>;
 
+		/**
+		 * Subdivision (state/province/region) lists keyed by UPPERCASE ISO alpha-2
+		 * country code. When the currently selected `address.country` has a
+		 * non-empty entry, the `state_or_region` field renders as a fixed select
+		 * over these options (storing the option `code`); for every other country
+		 * it stays the default free-text input, whose value is never touched.
+		 * stuic ships no subdivision data — pass exactly the countries your
+		 * checkout logic keys on (tax, shipping). Default: undefined (free text
+		 * everywhere, current behavior).
+		 *
+		 * When the built-in select is active, a stored value is reconciled
+		 * against the list: an exact `code` match (case-insensitive) is
+		 * normalized to the canonical code, an exact `name` match ("Michigan")
+		 * is rewritten to its `code` ("MI"), and anything else is left
+		 * untouched and renders as unselected — surfaced by required-validation
+		 * rather than destroyed. Reconciliation is skipped when the `stateField`
+		 * snippet replaces the field — a custom control owns its value.
+		 *
+		 * Country edits made through this form flip the mode live even for a
+		 * plain (non-`$state`) `address` object; external mutations of a plain
+		 * object are not observable — pass a `$state` object for those.
+		 */
+		subdivisions?: Record<string, CheckoutSubdivisionOption[]>;
+
+		/**
+		 * Whether `state_or_region` is required while the subdivision select is
+		 * active (i.e. the current country has a `subdivisions` entry). Also
+		 * accepts a per-country predicate receiving the UPPERCASE ISO code.
+		 * Countries without a list keep the plain `requiredFields` behavior
+		 * (as does a `requiredFields` entry for "state_or_region", which wins
+		 * regardless). Default: true.
+		 */
+		subdivisionRequired?: boolean | ((countryIso: string) => boolean);
+
+		/**
+		 * Override the state/region field with a custom control (parity with
+		 * `countryField`). When provided, replaces the built-in field in both
+		 * modes; `options` is the active country's subdivision list, or null
+		 * when the free-text input would apply.
+		 */
+		stateField?: Snippet<
+			[
+				{
+					/** Current state/region value */
+					value: string;
+					/** Called when the value changes */
+					onchange: (value: string) => void;
+					/** Error message for this field (if any) */
+					error?: string;
+					/** Field label text */
+					label: string;
+					/** HTML id attribute for the input */
+					id: string;
+					/** Active country's subdivision list, or null (free-text mode) */
+					options: CheckoutSubdivisionOption[] | null;
+				},
+			]
+		>;
+
+		/**
+		 * Extra props forwarded to the internal FieldSelect when the subdivision
+		 * select is active (parity with `countryFieldProps`).
+		 */
+		stateFieldProps?: Partial<FieldSelectProps>;
+
 		/** Extra props forwarded to the internal FieldPhoneNumber component. */
 		phoneFieldProps?: Partial<FieldPhoneNumberProps>;
 
@@ -109,6 +176,7 @@
 	import FieldCountry from "../Input/FieldCountry.svelte";
 	import FieldInput from "../Input/FieldInput.svelte";
 	import FieldPhoneNumber from "../Input/FieldPhoneNumber.svelte";
+	import FieldSelect from "../Input/FieldSelect.svelte";
 	import { validatePhoneNumber } from "../Input/phone-validation.js";
 	import { t_default } from "./_internal/checkout-i18n-defaults.js";
 	import { createEmptyAddress } from "./_internal/checkout-utils.js";
@@ -125,6 +193,10 @@
 		countryList,
 		preferredCountries,
 		countryNames,
+		subdivisions,
+		subdivisionRequired = true,
+		stateField,
+		stateFieldProps,
 		phoneFieldProps,
 		countryFieldProps,
 		t: tProp,
@@ -147,6 +219,56 @@
 	let containerWidth = $state(0);
 	let isSmall = $derived(containerWidth > 0 && containerWidth < 480);
 
+	// Subdivision select mode (see the `subdivisions` prop) --------------------
+	// Local mirror of `address.country` (writable derived). The select/input
+	// mode must react to country edits even when the consumer passed a plain
+	// (non-$state) address object, whose deep mutations Svelte cannot observe —
+	// so every country write that goes through this form also overrides the
+	// mirror directly, while reactive addresses and prop replacement resync it
+	// through the derived expression. External mutations of a plain object stay
+	// unobservable (true for every field).
+	let _country = $derived(address.country ?? "");
+
+	function setCountry(v: string) {
+		address.country = v;
+		_country = v;
+	}
+
+	let _countryCC = $derived(_country.trim().toUpperCase());
+
+	let _subdivisionList = $derived.by(() => {
+		const list = _countryCC ? subdivisions?.[_countryCC] : undefined;
+		return list?.length ? list : null;
+	});
+
+	let _subdivisionIsRequired = $derived(
+		isRequired("state_or_region") ||
+			(typeof subdivisionRequired === "function"
+				? subdivisionRequired(_countryCC)
+				: subdivisionRequired)
+	);
+
+	// Reconcile a pre-existing value whenever the built-in select becomes
+	// active: legacy free-text rows ("Michigan", "mi") self-heal to the
+	// canonical code ("MI"); anything unrecognized is left untouched (renders
+	// unselected, caught by required-validation) — never destroyed. Converges:
+	// the write triggers one re-run which then matches the code branch with
+	// nothing to change. Skipped entirely under the `stateField` snippet — a
+	// custom control owns its value (a controlled combobox writing in-progress
+	// text through `onchange` must not have it rewritten mid-typing).
+	$effect(() => {
+		if (stateField) return;
+		const list = _subdivisionList;
+		if (!list) return;
+		const raw = address.state_or_region ?? "";
+		const needle = raw.trim().toLowerCase();
+		if (!needle) return;
+		const hit =
+			list.find((o) => o.code.toLowerCase() === needle) ??
+			list.find((o) => o.name.trim().toLowerCase() === needle);
+		if (hit && raw !== hit.code) address.state_or_region = hit.code;
+	});
+
 	let _class = $derived(
 		unstyled ? classProp : twMerge("stuic-checkout-address", classProp)
 	);
@@ -154,12 +276,12 @@
 	// Imperative API ----------------------------------------------------------
 	// Field refs collected during render so consumers can trigger validation
 	// without waiting for native form submission. Refs stay undefined for
-	// fields hidden via the `fields` prop or replaced by the `countryField`
-	// snippet — `validateAllFields` skips nullish entries.
+	// fields hidden via the `fields` prop or replaced by the `countryField`/
+	// `stateField` snippets — `validateAllFields` skips nullish entries.
 	let nameField = $state<FieldInput>();
 	let streetField = $state<FieldInput>();
 	let cityField = $state<FieldInput>();
-	let stateField = $state<FieldInput>();
+	let stateFieldRef = $state<FieldInput | FieldSelect>();
 	let postalCodeField = $state<FieldInput>();
 	let countryFieldRef = $state<FieldCountry>();
 	let phoneField = $state<FieldPhoneNumber>();
@@ -170,7 +292,7 @@
 			nameField,
 			streetField,
 			cityField,
-			stateField,
+			stateFieldRef,
 			postalCodeField,
 			countryFieldRef,
 			phoneField,
@@ -276,22 +398,63 @@
 				/>
 			{/if}
 			{#if fields?.state_or_region !== false}
-				<!-- svelte-ignore binding_property_non_reactive -->
-				<FieldInput
-					bind:this={stateField}
-					bind:value={address.state_or_region}
-					label={t("checkout.address.state_or_region_label")}
-					labelLeftBreakpoint={0}
-					placeholder={t("checkout.address.state_or_region_placeholder")}
-					required={isRequired("state_or_region")}
-					name="{label}-state_or_region"
-					id="{label}-state_or_region"
-					validate={{
-						customValidator(val) {
-							return fieldError("state_or_region") || "";
+				{#if stateField}
+					{@render stateField({
+						value: address.state_or_region ?? "",
+						onchange: (v) => {
+							address.state_or_region = v;
 						},
-					}}
-				/>
+						error: fieldError("state_or_region"),
+						label: t("checkout.address.state_or_region_label"),
+						id: `${label}-state_or_region`,
+						options: _subdivisionList,
+					})}
+				{:else if _subdivisionList}
+					<FieldSelect
+						bind:this={stateFieldRef}
+						bind:value={
+							() => address.state_or_region ?? "",
+							(v) => {
+								address.state_or_region = String(v ?? "");
+							}
+						}
+						options={[
+							{
+								label: t("checkout.address.state_or_region_select_placeholder"),
+								value: "",
+							},
+							..._subdivisionList.map((o) => ({ label: o.name, value: o.code })),
+						]}
+						label={t("checkout.address.state_or_region_label")}
+						labelLeftBreakpoint={0}
+						required={_subdivisionIsRequired}
+						name="{label}-state_or_region"
+						id="{label}-state_or_region"
+						validate={{
+							customValidator(val) {
+								return fieldError("state_or_region") || "";
+							},
+						}}
+						{...stateFieldProps}
+					/>
+				{:else}
+					<!-- svelte-ignore binding_property_non_reactive -->
+					<FieldInput
+						bind:this={stateFieldRef}
+						bind:value={address.state_or_region}
+						label={t("checkout.address.state_or_region_label")}
+						labelLeftBreakpoint={0}
+						placeholder={t("checkout.address.state_or_region_placeholder")}
+						required={isRequired("state_or_region")}
+						name="{label}-state_or_region"
+						id="{label}-state_or_region"
+						validate={{
+							customValidator(val) {
+								return fieldError("state_or_region") || "";
+							},
+						}}
+					/>
+				{/if}
 			{/if}
 			{#if fields?.postal_code !== false}
 				<!-- svelte-ignore binding_property_non_reactive -->
@@ -318,19 +481,16 @@
 	{#if fields?.country !== false}
 		{#if countryField}
 			{@render countryField({
-				value: address.country,
-				onchange: (v) => {
-					address.country = v;
-				},
+				value: _country,
+				onchange: setCountry,
 				error: fieldError("country"),
 				label: t("checkout.address.country_label"),
 				id: `${label}-country`,
 			})}
 		{:else}
-			<!-- svelte-ignore binding_property_non_reactive -->
 			<FieldCountry
 				bind:this={countryFieldRef}
-				bind:value={address.country}
+				bind:value={() => _country, setCountry}
 				label={t("checkout.address.country_label")}
 				placeholder={t("checkout.address.country_placeholder")}
 				required={isRequired("country")}

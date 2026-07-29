@@ -73,6 +73,7 @@ const DEFAULTS: Record<string, string> = {
 	"checkout.address.city_placeholder": "",
 	"checkout.address.state_or_region_label": "State / Region",
 	"checkout.address.state_or_region_placeholder": "",
+	"checkout.address.state_or_region_select_placeholder": "Select…",
 	"checkout.address.postal_code_label": "Postal Code",
 	"checkout.address.postal_code_placeholder": "",
 	"checkout.address.country_label": "Country",

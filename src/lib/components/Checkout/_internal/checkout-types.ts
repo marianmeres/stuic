@@ -24,6 +24,18 @@ export interface CheckoutStep {
 // Address
 // ====================================================================
 
+/**
+ * One selectable subdivision (state/province/region) for the
+ * `CheckoutAddressForm` `subdivisions` prop. stuic ships no subdivision
+ * data — consumers pass the lists for the countries they care about.
+ */
+export interface CheckoutSubdivisionOption {
+	/** Canonical stored value — ISO 3166-2 subdivision suffix / USPS code (e.g. "MI"). */
+	code: string;
+	/** Display name (e.g. "Michigan"). */
+	name: string;
+}
+
 export interface CheckoutAddressData {
 	name: string;
 	street: string;

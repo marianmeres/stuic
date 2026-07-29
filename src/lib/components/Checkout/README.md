@@ -126,6 +126,57 @@ interface CheckoutValidationError {
 
 The step component **does not auto-advance**. It calls `onContinue` when the user clicks "Continue"; the consumer decides whether to actually advance, retry, or show errors.
 
+## Country-aware state/region select (`subdivisions`)
+
+By default `CheckoutAddressForm` renders `state_or_region` as free text. For
+countries where downstream logic keys on an exact subdivision code (US
+sales-tax tables, shipping zones), pass `subdivisions` — lists keyed by
+UPPERCASE ISO alpha-2 country code. When the selected country has an entry,
+the field swaps to a fixed select storing the canonical `code`; every other
+country keeps the free-text input, verbatim. stuic ships **no** subdivision
+data — pass exactly what your app needs:
+
+```svelte
+<CheckoutAddressForm
+	bind:address
+	subdivisions={{
+		US: [
+			{ code: "AL", name: "Alabama" },
+			{ code: "AK", name: "Alaska" },
+			// ... full USPS list
+		],
+	}}
+/>
+```
+
+Behavior details:
+
+- **Stored value is always the `code`** ("MI") — same wire shape as free text,
+  no server contract change.
+- **Prefill reconciliation:** entering select mode with a legacy value
+  self-heals it — `"mi"` → `"MI"`, `"Michigan"` → `"MI"` (written back into
+  the bound `address`). Unrecognized values are left untouched and render as
+  unselected, surfaced by validation rather than destroyed. Applies only to
+  the built-in select — the `stateField` snippet owns its value entirely.
+- **Country switching never clears the field** — a US → CA → US round-trip
+  restores "MI".
+- **Required:** while the select is active the field is required by default
+  (`subdivisionRequired`, also accepts a per-country predicate
+  `(countryIso) => boolean`). Countries without a list keep the plain
+  `requiredFields` behavior.
+- `stateFieldProps` forwards extras to the internal `FieldSelect`; the
+  `stateField` snippet replaces the field entirely (receives the active
+  `options`, or `null` in free-text mode) — parity with
+  `countryField`/`countryFieldProps`.
+- i18n: the select's empty option uses
+  `checkout.address.state_or_region_select_placeholder` (default `"Select…"`).
+- Forward through composite steps via
+  `CheckoutShippingStep.addressFormProps`.
+
+Note: the `validateAddress()` utility has no access to the `subdivisions`
+config, so it does not enforce subdivision-required — use the component's
+imperative `validate()` (step containers already do).
+
 ## Price arithmetic
 
 **All monetary values are integers in the smallest currency unit (cents).** This applies to `CheckoutOrderLineItem.price`, `CheckoutDeliveryOption.price`, `CheckoutDeliveryOption.free_above`, and every field in `CheckoutOrderTotals`.

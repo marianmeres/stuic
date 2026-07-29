@@ -99,6 +99,7 @@
 		 * Props forwarded to both inner `CheckoutAddressForm` instances (shipping
 		 * and, when visible, billing). Use this to configure `phoneFieldProps`,
 		 * `countryFieldProps`, `preferredCountries`, `countryList`, `countryNames`,
+		 * `subdivisions`, `subdivisionRequired`, `stateFieldProps`,
 		 * `requiredFields`, or `fields` without replacing the entire left column
 		 * via the `leftColumn` snippet.
 		 *

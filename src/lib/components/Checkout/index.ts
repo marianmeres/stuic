@@ -74,6 +74,7 @@ export {
 export type {
 	CheckoutStep,
 	CheckoutAddressData,
+	CheckoutSubdivisionOption,
 	CheckoutCustomerFormData,
 	CheckoutLoginFormData,
 	CheckoutOrderLineItem,
