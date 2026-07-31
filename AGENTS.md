@@ -53,6 +53,9 @@ Theme CSS files are not bundled in this package — they're provided by `@marian
 5. Create components without `unstyled`, `class`, `el` props
 6. Use `dark:` Tailwind prefix when CSS vars handle dark mode
 7. Import CSS inside components — centralize in `src/lib/index.css`
+   (**exception:** subpath-export components with optional peer deps — `MarkdownEditor`,
+   `CommentInput` — import their own `index.css` locally so their styles don't ship to
+   barrel-only consumers. Enforced by `src/lib/barrel-optional-peers.test.ts`.)
 8. Declare component tokens at `:root` that reference shared structural tokens (use fallback pattern instead)
 
 ### CSS Variable Pattern

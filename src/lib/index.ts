@@ -40,7 +40,11 @@ export * from "./components/Checkout/index.js";
 export * from "./components/Collapsible/index.js";
 export * from "./components/ColorScheme/index.js";
 export * from "./components/CommandMenu/index.js";
-export * from "./components/CommentInput/index.js";
+// NOTE: CommentInput is deliberately NOT exported here. It embeds MarkdownEditor,
+// whose optional @milkdown/* + @codemirror/* peers would then be pulled into the
+// root entry graph of every consumer. It ships as the `@marianmeres/stuic/comment-input`
+// subpath export instead, mirroring `@marianmeres/stuic/markdown-editor`.
+// Guarded by src/lib/barrel-optional-peers.test.ts — do not re-add.
 export * from "./components/ContactUsForm/index.js";
 export * from "./components/CronInput/index.js";
 export * from "./components/DataTable/index.js";

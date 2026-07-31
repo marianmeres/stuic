@@ -71,7 +71,9 @@ In practice:
 @import "./components/LoginOrRegisterForm/index.css";
 @import "./components/Checkout/index.css";
 @import "./components/CommandMenu/index.css";
-@import "./components/CommentInput/index.css";
+/* NOTE: CommentInput/index.css is deliberately NOT imported here — same reason as
+   MarkdownEditor's. It is a subpath-export component and imports its own CSS
+   locally (see components/CommentInput/index.css). Do not re-add. */
 @import "./components/ContactUsForm/index.css";
 @import "./components/CronInput/index.css";
 @import "./components/DataTable/index.css";

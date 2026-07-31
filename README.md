@@ -27,6 +27,29 @@ npm install @marianmeres/stuic
 </Modal>
 ```
 
+## Subpath exports
+
+Most of the library is on the main entry. A few things live behind subpaths:
+
+| Subpath                               | Contents                                                      |
+| ------------------------------------- | ------------------------------------------------------------- |
+| `@marianmeres/stuic`                  | Components, actions, icons, utils — everything below excepted |
+| `@marianmeres/stuic/utils`            | Utilities only, without pulling in components                 |
+| `@marianmeres/stuic/phone-validation` | Phone validation helpers                                      |
+| `@marianmeres/stuic/markdown-editor`  | `MarkdownEditor` — requires optional peer deps                |
+| `@marianmeres/stuic/comment-input`    | `CommentInput` — requires optional peer deps                  |
+
+The last two are **not** on the main entry by design: they depend on Milkdown and
+CodeMirror, which are declared as _optional_ peer dependencies. Keeping them off the
+barrel means consumers who don't use them never have to install that stack — and,
+more importantly, their builds don't fail for want of it.
+
+```ts
+import { CommentInput } from "@marianmeres/stuic/comment-input";
+```
+
+See each component's README for the peer set to install.
+
 ## Theming System
 
 STUIC uses a 4-layer CSS variable token system:

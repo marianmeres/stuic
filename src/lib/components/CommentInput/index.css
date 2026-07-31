@@ -1,6 +1,19 @@
 /******************************************************************************
   CommentInput
 
+  NOTE — intentional deviation from the usual STUIC CSS convention.
+  Every other component's `index.css` is `@import`-ed into the central
+  `src/lib/index.css`. This component is NOT: because it embeds `MarkdownEditor`
+  it is an OPTIONAL subpath export (`@marianmeres/stuic/comment-input`) kept off
+  the main barrel, so the heavy Milkdown/CodeMirror peers never reach consumers
+  who don't use it. Centralizing its CSS would ship these styles to every
+  consumer anyway. Instead `CommentInput.svelte` imports THIS file locally; the
+  package's `sideEffects` glob (all css files) keeps the import for real users.
+
+  `MarkdownEditor/index.css` arrives on its own — `MarkdownEditor.svelte`
+  imports it locally too — so do NOT `@import` it here (it would double-inject
+  for anyone using both components).
+
   A GitHub-style comment composer built on top of `MarkdownEditor` (a rich
   WYSIWYG / source surface) with an avatar gutter and a submit/cancel footer.
 

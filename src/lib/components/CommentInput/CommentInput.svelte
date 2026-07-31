@@ -143,6 +143,7 @@
 	import { Button } from "../Button/index.js";
 	import Thc from "../Thc/Thc.svelte";
 	import { MarkdownEditor } from "../MarkdownEditor/index.js";
+	import "./index.css";
 
 	let {
 		value = $bindable(""),

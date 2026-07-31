@@ -80,6 +80,17 @@ src/lib/
 
 **DO NOT** use `import './index.css'` inside component `.svelte` files.
 
+**Exception — subpath-export components.** A component whose peer dependencies are
+declared _optional_ (`MarkdownEditor`, `CommentInput`) is kept off the root barrel and
+shipped behind its own subpath export, so those peers never enter the entry graph of
+consumers who don't use it. Such a component imports its own `index.css` locally and is
+**not** `@import`-ed into `src/lib/index.css` — centralizing it would ship the styles to
+every consumer, defeating the isolation. `sideEffects: ["**/*.css"]` in `package.json`
+keeps the local import alive for real users.
+
+Both halves are enforced by `src/lib/barrel-optional-peers.test.ts` — adding such a
+component to the barrel (or its CSS to the central stylesheet) fails the suite.
+
 ---
 
 ## Data Flow
@@ -151,8 +162,19 @@ Theme CSS files are provided by the `@marianmeres/design-tokens` package (a regu
 ### Package Exports
 
 ```json
-".":            Main entry (components, utils, actions, icons, theme types)
+".":                  Main entry (components, utils, actions, icons, theme types)
+"./utils":            Utilities only
+"./phone-validation": Phone validation helpers
+"./markdown-editor":  MarkdownEditor  — optional peer deps, local CSS
+"./comment-input":    CommentInput    — optional peer deps, local CSS
 ```
+
+The last two are deliberately **off** the main entry: they reach `@milkdown/*` and
+`@codemirror/*`, which are optional peers. A consumer that has not installed those
+peers gets a hard bundler error (rolldown reports every named import from the
+unresolved stub as `MISSING_EXPORT`) if the root barrel can reach them — even though
+the editor backends sit behind `await import()`, because the specifiers are static
+literals that a bundler must still resolve at build time.
 
 ---
 

@@ -1,5 +1,8 @@
 <script lang="ts">
-	import { CommentInput, type ValidationResult } from "$lib/index.js";
+	// CommentInput is a subpath export (`@marianmeres/stuic/comment-input`), not on
+	// the main barrel — import it from its own module, like the MarkdownEditor demo.
+	import { CommentInput } from "$lib/components/CommentInput/index.js";
+	import { type ValidationResult } from "$lib/index.js";
 
 	// Basic, with an async submit handler.
 	let value = $state("Type some **markdown** — or use the toolbar / ⌘B.");

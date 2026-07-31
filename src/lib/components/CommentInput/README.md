@@ -12,9 +12,14 @@ lightweight, opinionated wrapper for the common "leave a comment / reply" use
 case: a clean minimal toolbar, an avatar, a submit button, and
 ⌘/Ctrl+Enter-to-send — without you having to wire any of it up.
 
+Because it embeds `MarkdownEditor`, it is shipped as an **optional subpath export**
+(`@marianmeres/stuic/comment-input`), separate from the main barrel — so the heavy
+editor dependencies never reach consumers who don't use it. Importing it from
+`@marianmeres/stuic` will not work.
+
 ```svelte
 <script>
-	import { CommentInput } from "@marianmeres/stuic";
+	import { CommentInput } from "@marianmeres/stuic/comment-input";
 
 	let value = $state("");
 
@@ -48,6 +53,11 @@ npm i @milkdown/core @milkdown/ctx @milkdown/plugin-history \
 This is the same peer set as `MarkdownEditor` — see its README for the
 authoritative list. If they aren't installed, the surface stays empty and a
 console error explains why.
+
+> **CSS is imported locally** by this component, not via the central
+> `src/lib/index.css`. Deliberate deviation from the usual STUIC convention,
+> required so these styles ship only to subpath users. Same as `MarkdownEditor`;
+> see `index.css` for the rationale.
 
 ## Toolbar
 
