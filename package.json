@@ -19,8 +19,9 @@
 		"test:ui": "vitest --ui",
 		"svelte-check": "svelte-check",
 		"svelte-package": "svelte-package",
-		"rp": "pnpm run build && ./release.sh patch",
-		"rpm": "pnpm run build && ./release.sh minor"
+		"rp": "pnpm run build && deno run -A jsr:@marianmeres/release patch --no-push && npm publish --access public && git push --follow-tags",
+		"rpm": "pnpm run build && deno run -A jsr:@marianmeres/release minor --no-push && npm publish --access public && git push --follow-tags",
+		"release": "deno run -A jsr:@marianmeres/release"
 	},
 	"files": [
 		"dist",
