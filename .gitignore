@@ -28,3 +28,5 @@ vite.config.ts.timestamp-*
 # Vitest browser mode (transient failure artifacts)
 .vitest-attachments
 **/__screenshots__
+
+deno.lock
