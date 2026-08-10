@@ -42,3 +42,13 @@ They are NOT included in `Omit<HTMLXAttributes, "children">` extends — they ar
 
 Components that render a custom element tree (not a single HTML element wrapper) declare
 `Props` as a plain interface without `extends Omit<HTMLXAttributes, ...>`.
+
+### Spread ordering is deliberate per component
+
+Svelte 5 rule: with spreads, the later duplicate attribute/handler wins. Slider spreads
+`{...rest}` FIRST so its functional pointer handlers cannot be clobbered by consumers;
+Switch spreads rest LAST (consumer handlers win). Both are intentional — don't "normalize".
+
+## References
+
+- [svelte-autofixer availability](reference_autofixer-availability.md) — not on npm; MCP-only; compiler-warnings + svelte-check fallback recipe

@@ -2,7 +2,7 @@
 
 ## Overview
 
-57 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
+63 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
@@ -29,6 +29,7 @@
 | Button               | Actions with intent/variant/size            |
 | ButtonGroupRadio     | Toggle group (single selection)             |
 | Switch               | Boolean toggle                              |
+| Slider               | Fancy range input (fill + optional thumb)   |
 | TwCheck              | Styled checkbox/radio                       |
 | DropdownMenu         | Popover menu                                |
 | CommandMenu          | Command palette (keyboard-driven)           |

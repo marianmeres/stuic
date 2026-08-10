@@ -175,7 +175,7 @@ FieldInput, FieldMoney, FieldTextarea, FieldSelect, FieldCheckbox, FieldRadios, 
 
 ### Buttons & Controls
 
-Button, ButtonGroupRadio, Switch, TwCheck, ListItemButton, X
+Button, ButtonGroupRadio, Switch, Slider, TwCheck, ListItemButton, X
 
 ### Feedback & Notifications
 

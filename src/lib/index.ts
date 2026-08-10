@@ -74,6 +74,7 @@ export * from "./components/PricingTable/index.js";
 export * from "./components/Progress/index.js";
 export * from "./components/Separator/index.js";
 export * from "./components/Skeleton/index.js";
+export * from "./components/Slider/index.js";
 export * from "./components/SlidingPanels/index.js";
 export * from "./components/Spinner/index.js";
 export * from "./components/Switch/index.js";

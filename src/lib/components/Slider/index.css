@@ -1,0 +1,337 @@
+/* ============================================================================
+   SLIDER COMPONENT TOKENS
+   Override globally: :root { --stuic-slider-fill: var(--color-green-500); }
+   Override locally:  <Slider style="--stuic-slider-fill: var(--color-green-500);">
+
+   Sizing (structural, override at any scope — resolved at the element):
+     --stuic-slider-thickness    cross-axis size (also set by size="sm|md|lg")
+     --stuic-slider-length       main-axis size (or use a width/height class)
+     --stuic-slider-thumb-inset  gap between thumb and track edge
+   ============================================================================ */
+
+:root {
+	/* Track (pill background) */
+	--stuic-slider-track: var(--stuic-color-muted);
+
+	/* Fill (value indicator) */
+	--stuic-slider-fill: var(--stuic-color-primary);
+
+	/* Thumb */
+	--stuic-slider-thumb: var(--color-white);
+	--stuic-slider-thumb-foreground: var(--stuic-color-foreground);
+
+	/* Tick marks (a second, fill-clipped layer keeps them readable over the fill) */
+	--stuic-slider-tick: color-mix(in srgb, var(--stuic-color-foreground) 25%, transparent);
+	--stuic-slider-tick-on-fill: color-mix(
+		in srgb,
+		var(--stuic-color-background) 55%,
+		transparent
+	);
+
+	/* Focus ring */
+	--stuic-slider-ring-width: 4px;
+	--stuic-slider-ring-color: var(--stuic-color-ring);
+}
+
+@layer components {
+	/* ============================================================================
+	   BASE / ROOT
+	   ============================================================================ */
+
+	.stuic-slider {
+		/* Internal vars (intent may override the fill) */
+		--_track: var(--stuic-slider-track);
+		--_fill: var(--stuic-slider-fill);
+		--_thumb-bg: var(--stuic-slider-thumb);
+		--_thumb-fg: var(--stuic-slider-thumb-foreground);
+		--_tick: var(--stuic-slider-tick);
+		--_tick-on-fill: var(--stuic-slider-tick-on-fill);
+		--_tick-size: var(--stuic-slider-tick-size, 4px);
+
+		/* Structural (fallbacks resolved here so scoped overrides work) */
+		--_thickness: var(--stuic-slider-thickness, 2rem);
+		--_length: var(--stuic-slider-length, 10rem);
+		--_thumb-inset: var(--stuic-slider-thumb-inset, 3px);
+		/* Main-axis extent of the fill (percentages resolve against the track,
+		   which is the containing block of both the fill and the tick layers) */
+		--_fill-len: calc(var(--_ratio) * 100%);
+
+		display: inline-block;
+		vertical-align: middle;
+		flex-shrink: 0;
+		cursor: pointer;
+	}
+
+	/* FUNCTIONAL, not cosmetic — keyed on an attribute the component always emits
+	   so it survives `unstyled`: `touch-action: none` keeps the browser from
+	   stealing touch drags for scrolling, `position: relative` anchors the
+	   absolutely-positioned track/thumb/hidden input. Attribute specificity (0,1,0)
+	   leaves it overridable by a consumer utility class (Tailwind's utilities layer
+	   beats this components layer). */
+	[data-stuic-slider] {
+		position: relative;
+		touch-action: none;
+		user-select: none;
+		-webkit-user-select: none;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	.stuic-slider[data-size="sm"] {
+		--_thickness: var(--stuic-slider-thickness, 1.25rem);
+	}
+	/* md is the base default (2rem) */
+	.stuic-slider[data-size="lg"] {
+		--_thickness: var(--stuic-slider-thickness, 3rem);
+	}
+
+	.stuic-slider[data-orientation="horizontal"] {
+		width: var(--_length);
+		height: var(--_thickness);
+	}
+	.stuic-slider[data-orientation="vertical"] {
+		width: var(--_thickness);
+		height: var(--_length);
+	}
+
+	/* Disabled */
+	.stuic-slider[data-disabled="true"] {
+		cursor: not-allowed;
+		opacity: 0.6;
+	}
+
+	/* ============================================================================
+	   TRACK + FILL
+	   ============================================================================ */
+
+	.stuic-slider > .track {
+		position: absolute;
+		inset: 0;
+		overflow: hidden;
+		border-radius: var(--stuic-slider-radius, 9999px);
+		background: var(--_track);
+		transition: box-shadow var(--stuic-slider-transition, var(--stuic-transition));
+	}
+
+	.stuic-slider .fill {
+		position: absolute;
+		background: var(--_fill);
+	}
+	/* With a value-tracking thumb, the fill reaches the far edge of the thumb */
+	.stuic-slider[data-thumb-travels="true"] {
+		--_fill-len: calc(var(--_ratio) * (100% - var(--_thickness)) + var(--_thickness));
+	}
+	.stuic-slider[data-orientation="horizontal"] .fill {
+		inset-block: 0;
+		inset-inline-start: 0;
+		width: var(--_fill-len);
+	}
+	.stuic-slider[data-orientation="vertical"] .fill {
+		inset-inline: 0;
+		bottom: 0;
+		height: var(--_fill-len);
+	}
+
+	/* Rounded leading edge ("pill inside a pill") */
+	.stuic-slider[data-fill-rounded="true"] .fill {
+		border-radius: var(--stuic-slider-fill-radius, var(--stuic-slider-radius, 9999px));
+	}
+
+	/* ============================================================================
+	   THUMB
+	   ============================================================================ */
+
+	.stuic-slider > .thumb {
+		position: absolute;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: calc(var(--_thickness) - 2 * var(--_thumb-inset));
+		height: calc(var(--_thickness) - 2 * var(--_thumb-inset));
+		border-radius: var(--stuic-slider-thumb-radius, 9999px);
+		background: var(--_thumb-bg);
+		color: var(--_thumb-fg);
+		box-shadow: var(--stuic-slider-thumb-shadow, var(--stuic-shadow));
+		/* No pointer-events rules needed: the full-size hidden input is the last
+		   child and always the topmost hit target, so the thumb never receives
+		   pointer events. Grab detection is geometric, in _onpointerdown. */
+	}
+	.stuic-slider[data-orientation="horizontal"] > .thumb {
+		inset-block-start: var(--_thumb-inset);
+		inset-inline-start: var(--_thumb-inset);
+	}
+	.stuic-slider[data-orientation="vertical"] > .thumb {
+		inset-inline-start: var(--_thumb-inset);
+		bottom: var(--_thumb-inset);
+	}
+	/* thumbPosition="value": ride the fill edge (default). thumbPosition="start"
+	   keeps the offsets above, so only the bar moves (iOS volume look). */
+	.stuic-slider[data-thumb-travels="true"][data-orientation="horizontal"] > .thumb {
+		inset-inline-start: calc(
+			var(--_thumb-inset) + (100% - var(--_thickness)) * var(--_ratio)
+		);
+	}
+	.stuic-slider[data-thumb-travels="true"][data-orientation="vertical"] > .thumb {
+		bottom: calc(var(--_thumb-inset) + (100% - var(--_thickness)) * var(--_ratio));
+	}
+	/* Smooth value movement (keyboard steps); instant while dragging */
+	.stuic-slider .fill,
+	.stuic-slider > .thumb,
+	.stuic-slider > .value {
+		transition:
+			width var(--stuic-slider-transition, var(--stuic-transition)),
+			height var(--stuic-slider-transition, var(--stuic-transition)),
+			inset-inline-start var(--stuic-slider-transition, var(--stuic-transition)),
+			bottom var(--stuic-slider-transition, var(--stuic-transition));
+	}
+	.stuic-slider[data-dragging="true"] .fill,
+	.stuic-slider[data-dragging="true"] > .thumb,
+	.stuic-slider[data-dragging="true"] > .value {
+		transition: none;
+	}
+
+	/* ============================================================================
+	   TICKS
+	   ============================================================================ */
+
+	/* Two identical tick layers clipped to complementary halves of the track: the
+	   base one covers the unfilled part, the `on-fill` one the filled part, each
+	   with its own color. A single layer would vanish into whichever it overlaps,
+	   and overlapping layers would composite (both tick colors are translucent). */
+	.stuic-slider .ticks {
+		position: absolute;
+		inset: 0;
+		transition: clip-path var(--stuic-slider-transition, var(--stuic-transition));
+	}
+	.stuic-slider[data-dragging="true"] .ticks {
+		transition: none;
+	}
+	.stuic-slider .ticks[data-on-fill="true"] .tick {
+		background: var(--_tick-on-fill);
+	}
+	.stuic-slider[data-orientation="horizontal"] .ticks {
+		clip-path: inset(0 0 0 var(--_fill-len));
+	}
+	.stuic-slider[data-orientation="horizontal"] .ticks[data-on-fill="true"] {
+		clip-path: inset(0 calc(100% - var(--_fill-len)) 0 0);
+	}
+	.stuic-slider[data-orientation="horizontal"]:dir(rtl) .ticks {
+		clip-path: inset(0 var(--_fill-len) 0 0);
+	}
+	.stuic-slider[data-orientation="horizontal"]:dir(rtl) .ticks[data-on-fill="true"] {
+		clip-path: inset(0 0 0 calc(100% - var(--_fill-len)));
+	}
+	.stuic-slider[data-orientation="vertical"] .ticks {
+		clip-path: inset(0 0 var(--_fill-len) 0);
+	}
+	.stuic-slider[data-orientation="vertical"] .ticks[data-on-fill="true"] {
+		clip-path: inset(calc(100% - var(--_fill-len)) 0 0 0);
+	}
+
+	.stuic-slider .tick {
+		position: absolute;
+		width: var(--_tick-size);
+		height: var(--_tick-size);
+		border-radius: 9999px;
+		background: var(--_tick);
+	}
+	/* Without a traveling thumb there is no thickness inset to hide behind, so the
+	   travel is inset by half a tick — otherwise the ticks at ratio 0 and 1 sit
+	   centered on the track edges and the overflow:hidden track halves them. */
+	.stuic-slider[data-orientation="horizontal"] .tick {
+		top: 50%;
+		inset-inline-start: calc(
+			var(--_tick-size) / 2 + (100% - var(--_tick-size)) * var(--_tick-ratio)
+		);
+		transform: translate(-50%, -50%);
+	}
+	.stuic-slider[data-orientation="vertical"] .tick {
+		left: 50%;
+		bottom: calc(var(--_tick-size) / 2 + (100% - var(--_tick-size)) * var(--_tick-ratio));
+		transform: translate(-50%, 50%);
+	}
+	/* With a value-tracking thumb, ticks align to the thumb-center travel */
+	.stuic-slider[data-thumb-travels="true"][data-orientation="horizontal"] .tick {
+		inset-inline-start: calc(
+			var(--_thickness) / 2 + (100% - var(--_thickness)) * var(--_tick-ratio)
+		);
+	}
+	.stuic-slider[data-thumb-travels="true"][data-orientation="vertical"] .tick {
+		bottom: calc(var(--_thickness) / 2 + (100% - var(--_thickness)) * var(--_tick-ratio));
+	}
+	/* Logical-property positioning + physical translate: flip centering in RTL */
+	.stuic-slider[data-orientation="horizontal"]:dir(rtl) .tick {
+		transform: translate(50%, -50%);
+	}
+
+	/* ============================================================================
+	   VALUE LABEL
+	   ============================================================================ */
+
+	.stuic-slider > .value {
+		position: absolute;
+		pointer-events: none;
+		white-space: nowrap;
+		font-size: var(--text-xs);
+		color: var(--stuic-color-muted-foreground);
+	}
+	.stuic-slider[data-orientation="horizontal"] > .value {
+		bottom: calc(100% + var(--stuic-slider-value-gap, 0.375rem));
+		inset-inline-start: calc(var(--_ratio) * 100%);
+		transform: translateX(-50%);
+	}
+	.stuic-slider[data-orientation="vertical"] > .value {
+		inset-inline-start: calc(100% + var(--stuic-slider-value-gap, 0.375rem));
+		bottom: calc(var(--_ratio) * 100%);
+		transform: translateY(50%);
+	}
+	.stuic-slider[data-thumb-travels="true"][data-orientation="horizontal"] > .value {
+		inset-inline-start: calc(
+			var(--_thickness) / 2 + (100% - var(--_thickness)) * var(--_ratio)
+		);
+	}
+	.stuic-slider[data-thumb-travels="true"][data-orientation="vertical"] > .value {
+		bottom: calc(var(--_thickness) / 2 + (100% - var(--_thickness)) * var(--_ratio));
+	}
+	.stuic-slider[data-orientation="horizontal"]:dir(rtl) > .value {
+		transform: translateX(50%);
+	}
+
+	/* The full-size hidden input is the topmost hit target */
+	.stuic-slider > input {
+		cursor: inherit;
+	}
+
+	/* ============================================================================
+	   FOCUS RING (keyboard-initiated focus; data-ring is set by the component —
+	   :focus-visible is unreliable for pointer-initiated programmatic focus)
+	   ============================================================================ */
+
+	.stuic-slider[data-ring="true"] > .track {
+		box-shadow: 0 0 0 var(--stuic-slider-ring-width)
+			color-mix(
+				in srgb,
+				var(--stuic-slider-ring-color) 30%,
+				var(--stuic-color-background)
+			);
+	}
+
+	/* ============================================================================
+	   INTENT COLOR MAPPING
+	   ============================================================================ */
+
+	.stuic-slider[data-intent="primary"] {
+		--_fill: var(--stuic-color-primary);
+	}
+	.stuic-slider[data-intent="accent"] {
+		--_fill: var(--stuic-color-accent);
+	}
+	.stuic-slider[data-intent="success"] {
+		--_fill: var(--stuic-color-success);
+	}
+	.stuic-slider[data-intent="warning"] {
+		--_fill: var(--stuic-color-warning);
+	}
+	.stuic-slider[data-intent="destructive"] {
+		--_fill: var(--stuic-color-destructive);
+	}
+}
