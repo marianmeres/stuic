@@ -90,6 +90,16 @@
 		 */
 		thumbPosition?: SliderThumbPosition;
 		/**
+		 * Reserve the thumb's footprint at both ends of the track: the value maps
+		 * onto the thumb-center travel, so the fill can never shrink below the
+		 * thumb (at `min` it is exactly a thumb-sized nub). `false` maps the value
+		 * linearly across the whole track instead, letting the fill collapse to
+		 * zero — only honored with `thumbPosition="start"` (a traveling thumb's
+		 * position is defined against the reserved travel) and irrelevant without
+		 * a thumb (`thumb={false}` never reserves).
+		 */
+		thumbReserve?: boolean;
+		/**
 		 * Round the fill's leading edge (instead of a flat cut), giving the
 		 * "pill inside a pill" look.
 		 */
@@ -141,6 +151,7 @@
 		valueClass,
 		thumb = true,
 		thumbPosition = "value",
+		thumbReserve = true,
 		fillRounded = false,
 		ticks,
 		valueLabel,
@@ -165,9 +176,18 @@
 	// Value at drag start — commit (change) fires only if the drag changed it.
 	let _dragStartValue = 0;
 
-	// Only a value-tracking thumb insets the usable travel; a start-pinned thumb
-	// (or none) lets the fill map linearly across the whole track.
+	// Two related but distinct concepts:
+	//  - _thumbTravels: the thumb rides the fill edge (drives only its CSS position
+	//    and the grab-offset detection).
+	//  - _thumbReserved: the thumb's footprint is reserved at both ends, so the
+	//    value maps onto the thumb-center travel and the fill/ticks/value label
+	//    follow that same travel. This is what keeps the fill from ever shrinking
+	//    below the thumb (at min it is exactly a thumb-sized nub).
+	// A traveling thumb always reserves (its position is defined against that
+	// travel); a pinned one reserves by default but can opt out via
+	// `thumbReserve={false}`, and no thumb never reserves.
 	let _thumbTravels = $derived(thumb !== false && thumbPosition === "value");
+	let _thumbReserved = $derived(thumb !== false && (_thumbTravels || thumbReserve));
 
 	// Bounds must be finite before anything else: a NaN bound would make every
 	// normalization write NaN, and NaN !== NaN would re-trigger the effect below
@@ -258,12 +278,12 @@
 		const rtl = horizontal && getComputedStyle(el!).direction === "rtl";
 		const trackLen = horizontal ? rect.width : rect.height;
 		const thickness = horizontal ? rect.height : rect.width;
-		// With a thumb, the thumb center travels within [thickness/2, len - thickness/2]
-		// (mirrors the CSS `(100% - thickness) * ratio` positioning); without it, the
-		// value maps linearly across the whole track. NOTE: this assumes the rendered
-		// cross-axis size equals --_thickness — size the cross-axis via the size
-		// presets or --stuic-slider-thickness, not via utility classes (see README).
-		const pad = _thumbTravels ? thickness / 2 : 0;
+		// With a reserved thumb the value maps onto [thickness/2, len - thickness/2]
+		// (mirrors the CSS `(100% - thickness) * ratio` sizing/positioning); without
+		// the reserve it maps linearly across the whole track. NOTE: this assumes the
+		// rendered cross-axis size equals --_thickness — size the cross-axis via the
+		// size presets or --stuic-slider-thickness, not via utility classes (see README).
+		const pad = _thumbReserved ? thickness / 2 : 0;
 		const travel = Math.max(1, trackLen - 2 * pad);
 		return { horizontal, rtl, rect, trackLen, pad, travel };
 	}
@@ -426,6 +446,7 @@
 	data-thumb={thumb !== false ? "true" : "false"}
 	data-thumb-position={thumb !== false ? thumbPosition : undefined}
 	data-thumb-travels={_thumbTravels ? "true" : "false"}
+	data-thumb-reserved={_thumbReserved ? "true" : "false"}
 	data-fill-rounded={fillRounded ? "true" : undefined}
 	data-size={!unstyled ? size : undefined}
 	data-intent={!unstyled ? intent : undefined}

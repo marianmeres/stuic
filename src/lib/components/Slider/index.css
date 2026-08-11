@@ -116,8 +116,12 @@
 		position: absolute;
 		background: var(--_fill);
 	}
-	/* With a value-tracking thumb, the fill reaches the far edge of the thumb */
-	.stuic-slider[data-thumb-travels="true"] {
+	/* With a reserved thumb (traveling OR pinned), the fill spans the thumb-center
+	   travel plus the thumb itself: it reaches the far edge of a traveling thumb and,
+	   at ratio 0, is exactly one thickness — a thumb-sized nub that the fill can
+	   never shrink below. `thumbReserve={false}` (and no thumb) falls back to the
+	   plain linear `ratio * 100%` above, which collapses to zero at min. */
+	.stuic-slider[data-thumb-reserved="true"] {
 		--_fill-len: calc(var(--_ratio) * (100% - var(--_thickness)) + var(--_thickness));
 	}
 	.stuic-slider[data-orientation="horizontal"] .fill {
@@ -164,7 +168,9 @@
 		bottom: var(--_thumb-inset);
 	}
 	/* thumbPosition="value": ride the fill edge (default). thumbPosition="start"
-	   keeps the offsets above, so only the bar moves (iOS volume look). */
+	   keeps the offsets above, so only the bar moves (iOS volume look) — note this
+	   is data-thumb-travels, NOT data-thumb-reserved: a pinned thumb reserves the
+	   travel (for the fill/ticks/value label) without moving itself. */
 	.stuic-slider[data-thumb-travels="true"][data-orientation="horizontal"] > .thumb {
 		inset-inline-start: calc(
 			var(--_thumb-inset) + (100% - var(--_thickness)) * var(--_ratio)
@@ -234,7 +240,7 @@
 		border-radius: 9999px;
 		background: var(--_tick);
 	}
-	/* Without a traveling thumb there is no thickness inset to hide behind, so the
+	/* Without a reserved thumb there is no thickness inset to hide behind, so the
 	   travel is inset by half a tick — otherwise the ticks at ratio 0 and 1 sit
 	   centered on the track edges and the overflow:hidden track halves them. */
 	.stuic-slider[data-orientation="horizontal"] .tick {
@@ -249,13 +255,13 @@
 		bottom: calc(var(--_tick-size) / 2 + (100% - var(--_tick-size)) * var(--_tick-ratio));
 		transform: translate(-50%, 50%);
 	}
-	/* With a value-tracking thumb, ticks align to the thumb-center travel */
-	.stuic-slider[data-thumb-travels="true"][data-orientation="horizontal"] .tick {
+	/* With a reserved thumb, ticks align to the thumb-center travel */
+	.stuic-slider[data-thumb-reserved="true"][data-orientation="horizontal"] .tick {
 		inset-inline-start: calc(
 			var(--_thickness) / 2 + (100% - var(--_thickness)) * var(--_tick-ratio)
 		);
 	}
-	.stuic-slider[data-thumb-travels="true"][data-orientation="vertical"] .tick {
+	.stuic-slider[data-thumb-reserved="true"][data-orientation="vertical"] .tick {
 		bottom: calc(var(--_thickness) / 2 + (100% - var(--_thickness)) * var(--_tick-ratio));
 	}
 	/* Logical-property positioning + physical translate: flip centering in RTL */
@@ -284,12 +290,12 @@
 		bottom: calc(var(--_ratio) * 100%);
 		transform: translateY(50%);
 	}
-	.stuic-slider[data-thumb-travels="true"][data-orientation="horizontal"] > .value {
+	.stuic-slider[data-thumb-reserved="true"][data-orientation="horizontal"] > .value {
 		inset-inline-start: calc(
 			var(--_thickness) / 2 + (100% - var(--_thickness)) * var(--_ratio)
 		);
 	}
-	.stuic-slider[data-thumb-travels="true"][data-orientation="vertical"] > .value {
+	.stuic-slider[data-thumb-reserved="true"][data-orientation="vertical"] > .value {
 		bottom: calc(var(--_thickness) / 2 + (100% - var(--_thickness)) * var(--_ratio));
 	}
 	.stuic-slider[data-orientation="horizontal"]:dir(rtl) > .value {

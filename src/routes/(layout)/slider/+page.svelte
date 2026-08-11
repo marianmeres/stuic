@@ -9,6 +9,8 @@
 	let ios1 = $state(100);
 	let ios2 = $state(45);
 	let ios3 = $state(20);
+	let reserved = $state(8);
+	let unreserved = $state(8);
 	let basic = $state(30);
 	let stepped = $state(4);
 	let continuous = $state(33.3);
@@ -105,6 +107,38 @@
 		thumb={volumeIcon}
 		style="--stuic-slider-thumb-inset: 0.625rem;"
 	/>
+</div>
+
+<h3 class="font-semibold mb-2">
+	Thumb reserve <code class="text-xs opacity-60">thumbReserve</code>
+</h3>
+<p class="text-sm opacity-60 mb-2">
+	A pinned thumb reserves its own footprint by default, so the bar never shrinks below it
+	(drag both down to the minimum). {"thumbReserve={false}"} restores the linear full-track mapping,
+	where the fill collapses to zero and, at low values, is shorter than the thumb.
+</p>
+<div class="flex flex-wrap items-center gap-6 mb-8">
+	<span class="flex items-center gap-2">
+		<Slider
+			size="lg"
+			fillRounded
+			thumbPosition="start"
+			bind:value={reserved}
+			label="Reserved thumb"
+		/>
+		default
+	</span>
+	<span class="flex items-center gap-2">
+		<Slider
+			size="lg"
+			fillRounded
+			thumbPosition="start"
+			thumbReserve={false}
+			bind:value={unreserved}
+			label="Unreserved thumb"
+		/>
+		{"thumbReserve={false}"}
+	</span>
 </div>
 
 <h3 class="font-semibold mb-2">

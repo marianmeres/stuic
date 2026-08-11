@@ -163,11 +163,14 @@ test("thumb=false maps the pointer linearly across the whole track", async () =>
 	// x=50 -> 50/200 = 0.25 -> 25
 	await screen.getByTestId("sl").click({ position: { x: 50, y: 30 } });
 	await expect.poll(() => input(screen).value).toBe("25");
-	// no thumb element rendered
+	// no thumb element rendered, and nothing to reserve
 	expect(screen.container.querySelector(".thumb")).toBeNull();
+	await expect
+		.element(screen.getByTestId("sl"))
+		.toHaveAttribute("data-thumb-reserved", "false");
 });
 
-test('thumbPosition="start" pins the thumb and maps the pointer linearly', async () => {
+test('thumbPosition="start" pins the thumb but still reserves its travel', async () => {
 	const screen = render(Slider, {
 		"data-testid": "sl",
 		style: H,
@@ -176,12 +179,44 @@ test('thumbPosition="start" pins the thumb and maps the pointer linearly', async
 	});
 	const root = screen.getByTestId("sl");
 	await expect.element(root).toHaveAttribute("data-thumb-position", "start");
+	// pinned: does not travel, but DOES reserve (so the fill can never shrink
+	// below the thumb and the mapping matches the default padded one)
 	await expect.element(root).toHaveAttribute("data-thumb-travels", "false");
-	// thumb still rendered, but the mapping is the un-padded (linear) one:
-	// x=50 -> 50/200 = 0.25 -> 25 (a traveling thumb would give (50-16)/168 ≈ 20)
+	await expect.element(root).toHaveAttribute("data-thumb-reserved", "true");
+	// thumb still rendered, mapping is the padded one: x=50 -> (50-16)/168 -> 20
 	expect(screen.container.querySelector(".thumb")).not.toBeNull();
 	await root.click({ position: { x: 50, y: 30 } });
+	await expect.poll(() => input(screen).value).toBe("20");
+});
+
+test("thumbReserve={false} opts a pinned thumb back into the linear mapping", async () => {
+	const screen = render(Slider, {
+		"data-testid": "sl",
+		style: H,
+		value: 0,
+		thumbPosition: "start",
+		thumbReserve: false,
+	});
+	const root = screen.getByTestId("sl");
+	await expect.element(root).toHaveAttribute("data-thumb-reserved", "false");
+	// un-padded: x=50 -> 50/200 = 0.25 -> 25
+	await root.click({ position: { x: 50, y: 30 } });
 	await expect.poll(() => input(screen).value).toBe("25");
+});
+
+test("thumbReserve={false} is ignored by a traveling thumb", async () => {
+	const screen = render(Slider, {
+		"data-testid": "sl",
+		style: H,
+		value: 0,
+		thumbReserve: false,
+	});
+	const root = screen.getByTestId("sl");
+	// the traveling thumb's CSS position is defined against the reserved travel,
+	// so opting out would detach it from the fill edge -> forced on
+	await expect.element(root).toHaveAttribute("data-thumb-reserved", "true");
+	await root.click({ position: { x: 50, y: 30 } });
+	await expect.poll(() => input(screen).value).toBe("20");
 });
 
 test('the default thumbPosition="value" travels with the value', async () => {
@@ -189,6 +224,7 @@ test('the default thumbPosition="value" travels with the value', async () => {
 	const root = screen.getByTestId("sl");
 	await expect.element(root).toHaveAttribute("data-thumb-position", "value");
 	await expect.element(root).toHaveAttribute("data-thumb-travels", "true");
+	await expect.element(root).toHaveAttribute("data-thumb-reserved", "true");
 });
 
 test("fillRounded sets the data attribute driving the rounded-fill CSS", async () => {

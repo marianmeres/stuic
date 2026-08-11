@@ -10,37 +10,38 @@ variant for custom UI (volume/brightness controls, dashboards, media players).
 
 ## Props
 
-| Prop            | Type                                                               | Default        | Description                                                                                                                                      |
-| --------------- | ------------------------------------------------------------------ | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `value`         | `number`                                                           | `min`          | Current value (bindable; non-finite / out-of-range / off-grid writes are normalized back)                                                        |
-| `min`           | `number`                                                           | `0`            | Minimum value                                                                                                                                    |
-| `max`           | `number`                                                           | `100`          | Maximum value                                                                                                                                    |
-| `step`          | `number \| "any"`                                                  | `1`            | Snap increment (`"any"` or non-positive = continuous)                                                                                            |
-| `orientation`   | `"horizontal" \| "vertical"`                                       | `"horizontal"` | Slider direction (vertical fills bottom-up)                                                                                                      |
-| `size`          | `"sm" \| "md" \| "lg" \| string`                                   | `"md"`         | Cross-axis thickness preset                                                                                                                      |
-| `intent`        | `"primary" \| "accent" \| "success" \| "warning" \| "destructive"` | -              | Semantic fill color                                                                                                                              |
-| `thumb`         | `boolean \| Snippet<[SliderRenderCtx]>`                            | `true`         | `false` hides the thumb (fill-only look), snippet renders inside thumb                                                                           |
-| `thumbPosition` | `"value" \| "start"`                                               | `"value"`      | `"value"` rides the fill edge; `"start"` pins it to the left/bottom so only the bar moves (true iOS volume look)                                 |
-| `fillRounded`   | `boolean`                                                          | `false`        | Round the fill's leading edge ("pill inside a pill")                                                                                             |
-| `ticks`         | `boolean \| number[]`                                              | -              | `true` = tick at every `step` (positive numeric step only; skipped above 101 auto ticks — pass an array), array = ticks at given in-range values |
-| `valueLabel`    | `Snippet<[SliderRenderCtx]>`                                       | -              | Floating label at the current value along the track                                                                                              |
-| `disabled`      | `boolean`                                                          | `false`        | Disable interaction                                                                                                                              |
-| `label`         | `string`                                                           | -              | Screen reader label for the underlying input                                                                                                     |
-| `id`            | `string`                                                           | -              | Id for the underlying input (enables `<label for>` association)                                                                                  |
-| `name`          | `string`                                                           | -              | Form field name for the hidden range input                                                                                                       |
-| `required`      | `boolean`                                                          | `false`        | Forwarded to the input; per HTML spec inert on range inputs (use `validate.customValidator` for custom rules)                                    |
-| `oninput`       | `(value: number) => void`                                          | -              | Fires on every value change (drag, keyboard)                                                                                                     |
-| `onchange`      | `(value: number) => void`                                          | -              | Fires when a change is committed (drag release, keyboard)                                                                                        |
-| `validate`      | `boolean \| ValidateOptions`                                       | -              | Enable validation (stuic validate action)                                                                                                        |
-| `unstyled`      | `boolean`                                                          | `false`        | Skip all default styling                                                                                                                         |
-| `class`         | `string`                                                           | -              | Classes for the root element                                                                                                                     |
-| `trackClass`    | `string`                                                           | -              | Classes for the track (pill background)                                                                                                          |
-| `fillClass`     | `string`                                                           | -              | Classes for the fill (value indicator)                                                                                                           |
-| `thumbClass`    | `string`                                                           | -              | Classes for the thumb                                                                                                                            |
-| `tickClass`     | `string`                                                           | -              | Classes for each tick mark                                                                                                                       |
-| `valueClass`    | `string`                                                           | -              | Classes for the value label wrapper                                                                                                              |
-| `el`            | `HTMLDivElement`                                                   | -              | Root element reference (bindable)                                                                                                                |
-| `inputEl`       | `HTMLInputElement`                                                 | -              | Hidden range input reference (bindable)                                                                                                          |
+| Prop            | Type                                                               | Default        | Description                                                                                                                                                                                                           |
+| --------------- | ------------------------------------------------------------------ | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `value`         | `number`                                                           | `min`          | Current value (bindable; non-finite / out-of-range / off-grid writes are normalized back)                                                                                                                             |
+| `min`           | `number`                                                           | `0`            | Minimum value                                                                                                                                                                                                         |
+| `max`           | `number`                                                           | `100`          | Maximum value                                                                                                                                                                                                         |
+| `step`          | `number \| "any"`                                                  | `1`            | Snap increment (`"any"` or non-positive = continuous)                                                                                                                                                                 |
+| `orientation`   | `"horizontal" \| "vertical"`                                       | `"horizontal"` | Slider direction (vertical fills bottom-up)                                                                                                                                                                           |
+| `size`          | `"sm" \| "md" \| "lg" \| string`                                   | `"md"`         | Cross-axis thickness preset                                                                                                                                                                                           |
+| `intent`        | `"primary" \| "accent" \| "success" \| "warning" \| "destructive"` | -              | Semantic fill color                                                                                                                                                                                                   |
+| `thumb`         | `boolean \| Snippet<[SliderRenderCtx]>`                            | `true`         | `false` hides the thumb (fill-only look), snippet renders inside thumb                                                                                                                                                |
+| `thumbPosition` | `"value" \| "start"`                                               | `"value"`      | `"value"` rides the fill edge; `"start"` pins it to the left/bottom so only the bar moves (true iOS volume look)                                                                                                      |
+| `thumbReserve`  | `boolean`                                                          | `true`         | Reserve the thumb's footprint along the track, so the fill never shrinks below the thumb. `false` = linear mapping across the full track (fill collapses to zero at `min`); only honored with `thumbPosition="start"` |
+| `fillRounded`   | `boolean`                                                          | `false`        | Round the fill's leading edge ("pill inside a pill")                                                                                                                                                                  |
+| `ticks`         | `boolean \| number[]`                                              | -              | `true` = tick at every `step` (positive numeric step only; skipped above 101 auto ticks — pass an array), array = ticks at given in-range values                                                                      |
+| `valueLabel`    | `Snippet<[SliderRenderCtx]>`                                       | -              | Floating label at the current value along the track                                                                                                                                                                   |
+| `disabled`      | `boolean`                                                          | `false`        | Disable interaction                                                                                                                                                                                                   |
+| `label`         | `string`                                                           | -              | Screen reader label for the underlying input                                                                                                                                                                          |
+| `id`            | `string`                                                           | -              | Id for the underlying input (enables `<label for>` association)                                                                                                                                                       |
+| `name`          | `string`                                                           | -              | Form field name for the hidden range input                                                                                                                                                                            |
+| `required`      | `boolean`                                                          | `false`        | Forwarded to the input; per HTML spec inert on range inputs (use `validate.customValidator` for custom rules)                                                                                                         |
+| `oninput`       | `(value: number) => void`                                          | -              | Fires on every value change (drag, keyboard)                                                                                                                                                                          |
+| `onchange`      | `(value: number) => void`                                          | -              | Fires when a change is committed (drag release, keyboard)                                                                                                                                                             |
+| `validate`      | `boolean \| ValidateOptions`                                       | -              | Enable validation (stuic validate action)                                                                                                                                                                             |
+| `unstyled`      | `boolean`                                                          | `false`        | Skip all default styling                                                                                                                                                                                              |
+| `class`         | `string`                                                           | -              | Classes for the root element                                                                                                                                                                                          |
+| `trackClass`    | `string`                                                           | -              | Classes for the track (pill background)                                                                                                                                                                               |
+| `fillClass`     | `string`                                                           | -              | Classes for the fill (value indicator)                                                                                                                                                                                |
+| `thumbClass`    | `string`                                                           | -              | Classes for the thumb                                                                                                                                                                                                 |
+| `tickClass`     | `string`                                                           | -              | Classes for each tick mark                                                                                                                                                                                            |
+| `valueClass`    | `string`                                                           | -              | Classes for the value label wrapper                                                                                                                                                                                   |
+| `el`            | `HTMLDivElement`                                                   | -              | Root element reference (bindable)                                                                                                                                                                                     |
+| `inputEl`       | `HTMLInputElement`                                                 | -              | Hidden range input reference (bindable)                                                                                                                                                                               |
 
 `SliderRenderCtx` (passed to the `thumb` and `valueLabel` snippets):
 `{ value: number; ratio: number /* 0..1 */; percent: number /* 0..100 */; dragging: boolean }`
@@ -92,6 +93,9 @@ Remaining props are spread onto the root `<div>`.
 <Slider thumb={false} bind:value={brightness} />
 ```
 
+With no thumb there is nothing to reserve: the value maps linearly across the whole
+track and the fill collapses to zero at `min`.
+
 ### True iOS volume: fixed icon at the start, only the bar moves
 
 ```svelte
@@ -116,8 +120,19 @@ Remaining props are spread onto the root `<div>`.
 </Slider>
 ```
 
-With `thumbPosition="start"` the thumb is decorative (`pointer-events: none`) and the
-value maps linearly across the full track — there is no thumb-travel inset.
+With `thumbPosition="start"` the thumb never moves — only the bar does. It is purely
+decorative (the full-size hidden input is always the topmost hit target, so the thumb
+never receives pointer events), but it still **reserves its footprint** along the track:
+the fill can never shrink below it, and at `min` it is exactly a thumb-sized nub — with
+`fillRounded`, a circle enclosing the pinned thumb, same as the default
+`thumbPosition="value"` look.
+
+Opt out with `thumbReserve={false}` for a linear mapping across the full track, where
+the fill collapses to zero at `min` (and, at low values, is shorter than the thumb):
+
+```svelte
+<Slider thumbPosition="start" thumbReserve={false} bind:value={volume} />
+```
 
 ### Steps and ticks
 
@@ -156,6 +171,10 @@ value maps linearly across the full track — there is no thumb-travel inset.
   the thumb itself does not jump (drag continues from the grab point).
 - **Keyboard**: focus and use Arrow keys / PageUp / PageDown / Home / End — native
   `input[type=range]` behavior (the real input is visually hidden but focusable).
+- **Thumb reserve**: with a thumb rendered (traveling or pinned) the value maps onto the
+  thumb-center travel — the outer half-thumb at each end of the track resolves to
+  `min`/`max`, and the fill never shrinks below the thumb. `thumb={false}` or
+  `thumbReserve={false}` maps linearly across the whole track instead.
 - **Vertical**: bottom is `min`, top is `max`; ArrowUp increases.
 - **RTL**: horizontal sliders flip automatically (logical CSS properties + pointer math).
 - **Commit semantics**: `oninput` fires only on actual value changes; `onchange` only
