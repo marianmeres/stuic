@@ -215,8 +215,11 @@ export function tooltip(anchorEl: HTMLElement, fn?: TooltipConfig) {
 	// node once init
 	// Use addAnchorName to support multiple anchor names on same element (e.g., popover + tooltip)
 	addAnchorName(anchorEl, anchorName);
+	// NOTE: aria-describedby is the only ARIA wiring a tooltip anchor should get
+	// (per the WAI-ARIA tooltip pattern). Do NOT manage aria-expanded here — it
+	// belongs to disclosure widgets (menu/combobox triggers), and writing it would
+	// clobber legitimate values set by consumers (e.g. DropdownMenu trigger props).
 	anchorEl.setAttribute("aria-describedby", id);
-	anchorEl.setAttribute("aria-expanded", "false");
 
 	const debug = (...args: unknown[]) => {
 		if (do_debug) console.debug("[tooltip]", rnd, ...args);
@@ -286,7 +289,6 @@ export function tooltip(anchorEl: HTMLElement, fn?: TooltipConfig) {
 			if (!hide_timer) {
 				debug("show...");
 				clear_show();
-				anchorEl.setAttribute("aria-expanded", "true");
 				//
 				tooltipEl.classList.add("tt-block");
 				// Backstop: the CSS @position-try fallbacks handle most edge cases,
@@ -311,7 +313,6 @@ export function tooltip(anchorEl: HTMLElement, fn?: TooltipConfig) {
 		hide_timer = setTimeout(() => {
 			debug("hide...");
 			clear_hide();
-			anchorEl.setAttribute("aria-expanded", "false");
 			tooltipEl.classList.remove("tt-visible");
 			setTimeout(() => {
 				tooltipEl.classList.remove("tt-block");

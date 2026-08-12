@@ -115,7 +115,7 @@ if (isTooltipSupported()) {
 - Requires CSS Anchor Positioning support (no fallback)
 - Shows on hover or focus with 200ms delay
 - Tooltip persists when hovering over it
-- ARIA attributes are automatically managed (`aria-describedby`, `aria-expanded`)
+- ARIA attributes are automatically managed (`aria-describedby`)
 - Maximum width is 16rem (256px) by default
 
 ## CSS Variables
