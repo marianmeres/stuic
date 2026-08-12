@@ -7,8 +7,8 @@
 :root {
 	/* Raised (default) mode: shared pill surface behind both segments */
 	--stuic-split-button-bg: var(--stuic-color-surface);
-	--stuic-split-button-padding: calc(var(--spacing) * 1);
-	--stuic-split-button-gap: calc(var(--spacing) * 0.5);
+	--stuic-split-button-padding: calc(var(--spacing) * 0); /* mm: no padding by default */
+	--stuic-split-button-gap: calc(var(--spacing) * 0); /* mm: no gap by default */
 
 	/* Divider (divided mode only) */
 	--stuic-split-button-divider-bg: var(--stuic-color-border);
