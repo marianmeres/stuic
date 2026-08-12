@@ -1,0 +1,95 @@
+/* =============================================================================
+   SPLIT BUTTON COMPONENT TOKENS
+   Override globally: :root { --stuic-split-button-bg: red; }
+   Override locally:  <SplitButton style="--stuic-split-button-bg: red;">
+   ============================================================================= */
+
+:root {
+	/* Raised (default) mode: shared pill surface behind both segments */
+	--stuic-split-button-bg: var(--stuic-color-surface);
+	--stuic-split-button-padding: calc(var(--spacing) * 1);
+	--stuic-split-button-gap: calc(var(--spacing) * 0.5);
+
+	/* Divider (divided mode only) */
+	--stuic-split-button-divider-bg: var(--stuic-color-border);
+	--stuic-split-button-divider-width: 1px;
+	--stuic-split-button-divider-inset: calc(var(--spacing) * 1.5);
+}
+
+@layer components {
+	/* ============================================================================
+	   BASE (raised mode: distinct primary button on a shared pill surface)
+	   ============================================================================ */
+
+	.stuic-split-button {
+		/* structural token resolved at element level (scoped overrides work) */
+		--_sb-radius: var(--stuic-split-button-radius, var(--stuic-radius-button));
+
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		gap: var(--stuic-split-button-gap);
+		padding: var(--stuic-split-button-padding);
+		background: var(--stuic-split-button-bg);
+		border-radius: var(--_sb-radius);
+	}
+
+	.stuic-split-button[data-rounded-full] {
+		--_sb-radius: 9999px;
+	}
+
+	/* DropdownMenu wrapper participates in the flex row */
+	.stuic-split-button > .stuic-split-button-menu {
+		display: inline-flex;
+	}
+
+	/* Icon wrappers center their svg content */
+	.stuic-split-button-icon,
+	.stuic-split-button-caret {
+		display: inline-flex;
+	}
+
+	/* Default caret rotates when the menu is open */
+	.stuic-split-button-caret {
+		transition: rotate var(--stuic-split-button-transition, var(--stuic-transition));
+	}
+	.stuic-split-button[data-open] .stuic-split-button-caret {
+		rotate: 180deg;
+	}
+
+	/* ============================================================================
+	   DIVIDED MODE (classic split button: flush segments + hairline divider)
+	   ============================================================================ */
+
+	.stuic-split-button[data-divided] {
+		gap: 0;
+		padding: 0;
+		background: transparent;
+	}
+
+	.stuic-split-button[data-divided] .stuic-split-button-divider {
+		align-self: stretch;
+		width: var(--stuic-split-button-divider-width);
+		margin-block: var(--stuic-split-button-divider-inset);
+		background: var(--stuic-split-button-divider-bg);
+	}
+
+	/* Flush inner corners, keep outer corners (placement-aware, logical = RTL-safe) */
+	.stuic-split-button[data-divided] .stuic-split-button-primary,
+	.stuic-split-button[data-divided] .stuic-split-button-secondary {
+		border-radius: 0;
+	}
+
+	.stuic-split-button[data-divided][data-placement="end"] .stuic-split-button-primary,
+	.stuic-split-button[data-divided][data-placement="start"]
+		.stuic-split-button-secondary {
+		border-start-start-radius: var(--_sb-radius);
+		border-end-start-radius: var(--_sb-radius);
+	}
+
+	.stuic-split-button[data-divided][data-placement="end"] .stuic-split-button-secondary,
+	.stuic-split-button[data-divided][data-placement="start"] .stuic-split-button-primary {
+		border-start-end-radius: var(--_sb-radius);
+		border-end-end-radius: var(--_sb-radius);
+	}
+}

@@ -63,6 +63,7 @@
 		'sliding-panels',
 		'spotlight',
 		'spinner',
+		'split-button',
 		'style-presets',
         'switch', 
 		// 'table', 

@@ -77,6 +77,7 @@ export * from "./components/Skeleton/index.js";
 export * from "./components/Slider/index.js";
 export * from "./components/SlidingPanels/index.js";
 export * from "./components/Spinner/index.js";
+export * from "./components/SplitButton/index.js";
 export * from "./components/Switch/index.js";
 export * from "./components/TabbedMenu/index.js";
 export * from "./components/Thc/index.js";
