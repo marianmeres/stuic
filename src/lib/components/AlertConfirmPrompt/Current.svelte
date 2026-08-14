@@ -39,6 +39,8 @@
 		classButtonPrimary?: string;
 		intentButtonCancel?: IntentColorKey;
 		intentButtonCustom?: IntentColorKey;
+		/** Intent of the primary (OK) button. Defaults to `"primary"`, except for the
+		 * `"warn"` variant, which defaults to `"destructive"`. */
 		intentButtonPrimary?: IntentColorKey;
 		classSpinnerBox?: string;
 		defaultIcons?: Partial<
@@ -68,12 +70,18 @@
 		classButtonPrimary,
 		intentButtonCancel,
 		intentButtonCustom,
-		intentButtonPrimary = "primary",
+		intentButtonPrimary,
 		classSpinnerBox,
 		defaultIcons = acpDefaultIcons,
 	}: Props = $props();
 
 	let current = $derived(acp?.current!);
+
+	// the "warn" variant hints a destructive action, so unless explicitly configured
+	// otherwise, render the primary button accordingly
+	let _intentButtonPrimary = $derived(
+		intentButtonPrimary ?? (current?.variant === "warn" ? "destructive" : "primary")
+	);
 
 	let iconHtml = $derived.by(() => {
 		let fn = current.iconFn as any;
@@ -235,7 +243,7 @@
 		<li class={twMerge(_classMenuLi, classMenuLi, hasCustom && classMenuLiCustom)}>
 			<CmpButtonOk
 				class={twMerge("ok", _classButton, classButton, classButtonPrimary)}
-				intent={intentButtonPrimary}
+				intent={_intentButtonPrimary}
 				disabled={isPending}
 				onclick={createOnClick("ok", current.onOk)}
 				bind:el={okButtonEl}

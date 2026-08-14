@@ -254,3 +254,44 @@ test("STACK: dismissing the current alert reveals the next queued one without cl
 	// Same <dialog> element is still mounted (it was never torn down).
 	await expect.element(page.elementLocator(el)).toBeInTheDocument();
 });
+
+// ---------------------------------------------------------------- PRIMARY INTENT
+
+// Button renders its `intent` prop as a data-intent attribute (styling only, no CSS in
+// the test env), so the intent resolution is asserted on that attribute.
+test("INTENT: the warn variant renders the OK button as destructive", async () => {
+	const acp = new AlertConfirmPromptStack();
+	const screen = render(AlertConfirmPrompt, { acp });
+
+	acp.confirm(() => {}, { title: "Delete?", variant: "warn" });
+	flushSync();
+
+	await expect.element(okBtn(screen)).toHaveAttribute("data-intent", "destructive");
+	// Only the primary button is affected.
+	await expect.element(cancelBtn(screen)).not.toHaveAttribute("data-intent");
+});
+
+test("INTENT: non-warn variants keep the primary OK button", async () => {
+	const acp = new AlertConfirmPromptStack();
+	const screen = render(AlertConfirmPrompt, { acp });
+
+	// variant defaults to "info" when not given.
+	acp.confirm(() => {}, { title: "Proceed?" });
+	flushSync();
+	await expect.element(okBtn(screen)).toHaveAttribute("data-intent", "primary");
+
+	acp.reset();
+	acp.confirm(() => {}, { title: "Boom", variant: "error" });
+	flushSync();
+	await expect.element(okBtn(screen)).toHaveAttribute("data-intent", "primary");
+});
+
+test("INTENT: an explicit intentButtonPrimary wins over the warn default", async () => {
+	const acp = new AlertConfirmPromptStack();
+	const screen = render(AlertConfirmPrompt, { acp, intentButtonPrimary: "warning" });
+
+	acp.confirm(() => {}, { title: "Delete?", variant: "warn" });
+	flushSync();
+
+	await expect.element(okBtn(screen)).toHaveAttribute("data-intent", "warning");
+});

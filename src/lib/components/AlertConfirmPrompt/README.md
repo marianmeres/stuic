@@ -4,20 +4,23 @@ A modern, customizable replacement for native browser `alert()`, `confirm()`, an
 
 ## Props
 
-| Prop                 | Type                            | Default | Description                              |
-| -------------------- | ------------------------------- | ------- | ---------------------------------------- |
-| `acp`                | `AlertConfirmPromptStack`       | -       | Stack instance managing the dialog queue |
-| `forceAsHtml`        | `boolean`                       | `false` | Render all content as HTML               |
-| `class`              | `string`                        | -       | CSS classes for the modal dialog         |
-| `classWrap`          | `string`                        | -       | CSS for outer wrapper                    |
-| `classIconBox`       | `string`                        | -       | CSS for icon container                   |
-| `classTitle`         | `string`                        | -       | CSS for title text                       |
-| `classContent`       | `string`                        | -       | CSS for content area                     |
-| `classInput`         | `string`                        | -       | CSS for prompt input field               |
-| `classButton`        | `string`                        | -       | CSS for all buttons                      |
-| `classButtonPrimary` | `string`                        | -       | CSS for OK button                        |
-| `classButtonCancel`  | `string`                        | -       | CSS for Cancel button                    |
-| `defaultIcons`       | `Record<variant, () => string>` | -       | Custom icon functions per variant        |
+| Prop                  | Type                            | Default | Description                                                                                   |
+| --------------------- | ------------------------------- | ------- | --------------------------------------------------------------------------------------------- |
+| `acp`                 | `AlertConfirmPromptStack`       | -       | Stack instance managing the dialog queue                                                      |
+| `forceAsHtml`         | `boolean`                       | `false` | Render all content as HTML                                                                    |
+| `class`               | `string`                        | -       | CSS classes for the modal dialog                                                              |
+| `classWrap`           | `string`                        | -       | CSS for outer wrapper                                                                         |
+| `classIconBox`        | `string`                        | -       | CSS for icon container                                                                        |
+| `classTitle`          | `string`                        | -       | CSS for title text                                                                            |
+| `classContent`        | `string`                        | -       | CSS for content area                                                                          |
+| `classInput`          | `string`                        | -       | CSS for prompt input field                                                                    |
+| `classButton`         | `string`                        | -       | CSS for all buttons                                                                           |
+| `classButtonPrimary`  | `string`                        | -       | CSS for OK button                                                                             |
+| `classButtonCancel`   | `string`                        | -       | CSS for Cancel button                                                                         |
+| `intentButtonPrimary` | `IntentColorKey`                | -       | Intent of the OK button; defaults to `"primary"`, or `"destructive"` for the `"warn"` variant |
+| `intentButtonCancel`  | `IntentColorKey`                | -       | Intent of the Cancel button                                                                   |
+| `intentButtonCustom`  | `IntentColorKey`                | -       | Intent of the custom button                                                                   |
+| `defaultIcons`        | `Record<variant, () => string>` | -       | Custom icon functions per variant                                                             |
 
 ## AlertConfirmPromptStack API
 
@@ -39,16 +42,16 @@ A modern, customizable replacement for native browser `alert()`, `confirm()`, an
 
 ### Dialog Options
 
-| Option        | Type                                       | Description                 |
-| ------------- | ------------------------------------------ | --------------------------- |
-| `title`       | `THC`                                      | Dialog title                |
-| `content`     | `THC`                                      | Dialog message/content      |
-| `variant`     | `"info" \| "success" \| "warn" \| "error"` | Visual style                |
-| `value`       | `any`                                      | Initial value for prompt    |
-| `labelOk`     | `THC`                                      | Custom OK button label      |
-| `labelCancel` | `THC`                                      | Custom Cancel button label  |
-| `labelCustom` | `THC`                                      | Optional third button label |
-| `onCustom`    | `(value) => void`                          | Custom button callback      |
+| Option        | Type                                       | Description                                                         |
+| ------------- | ------------------------------------------ | ------------------------------------------------------------------- |
+| `title`       | `THC`                                      | Dialog title                                                        |
+| `content`     | `THC`                                      | Dialog message/content                                              |
+| `variant`     | `"info" \| "success" \| "warn" \| "error"` | Visual style (`"warn"` also renders the OK button as `destructive`) |
+| `value`       | `any`                                      | Initial value for prompt                                            |
+| `labelOk`     | `THC`                                      | Custom OK button label                                              |
+| `labelCancel` | `THC`                                      | Custom Cancel button label                                          |
+| `labelCustom` | `THC`                                      | Optional third button label                                         |
+| `onCustom`    | `(value) => void`                          | Custom button callback                                              |
 
 ## Usage
 

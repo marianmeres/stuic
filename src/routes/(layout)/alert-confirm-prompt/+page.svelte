@@ -89,7 +89,7 @@
 			});
 		}}
 	>
-		confirm
+		confirm (destructive)
 	</Button>
 
 	<Button
