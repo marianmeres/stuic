@@ -259,7 +259,7 @@ test("STACK: dismissing the current alert reveals the next queued one without cl
 
 // Button renders its `intent` prop as a data-intent attribute (styling only, no CSS in
 // the test env), so the intent resolution is asserted on that attribute.
-test("INTENT: the warn variant renders the OK button as destructive", async () => {
+test("INTENT: the warn variant renders the OK button as destructive (confirm + prompt)", async () => {
 	const acp = new AlertConfirmPromptStack();
 	const screen = render(AlertConfirmPrompt, { acp });
 
@@ -269,6 +269,24 @@ test("INTENT: the warn variant renders the OK button as destructive", async () =
 	await expect.element(okBtn(screen)).toHaveAttribute("data-intent", "destructive");
 	// Only the primary button is affected.
 	await expect.element(cancelBtn(screen)).not.toHaveAttribute("data-intent");
+
+	acp.reset();
+	acp.prompt(() => {}, { title: "Type DELETE", variant: "warn" });
+	flushSync();
+
+	await expect.element(okBtn(screen)).toHaveAttribute("data-intent", "destructive");
+});
+
+// An alert's OK button just dismisses the dialog (onOk defaults to acp.shift), so the
+// warn *message* severity must not leak into the *action* intent.
+test("INTENT: the warn variant does NOT make an alert's OK button destructive", async () => {
+	const acp = new AlertConfirmPromptStack();
+	const screen = render(AlertConfirmPrompt, { acp });
+
+	acp.alert({ title: "Cannot close yet", variant: "warn" });
+	flushSync();
+
+	await expect.element(okBtn(screen)).toHaveAttribute("data-intent", "primary");
 });
 
 test("INTENT: non-warn variants keep the primary OK button", async () => {
@@ -294,4 +312,66 @@ test("INTENT: an explicit intentButtonPrimary wins over the warn default", async
 	flushSync();
 
 	await expect.element(okBtn(screen)).toHaveAttribute("data-intent", "warning");
+});
+
+// ---------------------------------------------------------------- PER DIALOG OVERRIDES
+
+test("INTENT: a per dialog intentButtonPrimary wins over the component prop", async () => {
+	const acp = new AlertConfirmPromptStack();
+	const screen = render(AlertConfirmPrompt, { acp, intentButtonPrimary: "accent" });
+
+	// Opting a single dialog out of the app wide setup (and out of the warn default).
+	acp.confirm(() => {}, {
+		title: "Delete?",
+		variant: "warn",
+		intentButtonPrimary: "primary",
+	});
+	flushSync();
+
+	await expect.element(okBtn(screen)).toHaveAttribute("data-intent", "primary");
+
+	// The next dialog is back to the component level prop.
+	acp.reset();
+	acp.confirm(() => {}, { title: "Proceed?" });
+	flushSync();
+
+	await expect.element(okBtn(screen)).toHaveAttribute("data-intent", "accent");
+});
+
+test("INTENT: per dialog cancel/custom intents win over the component props", async () => {
+	const acp = new AlertConfirmPromptStack();
+	const screen = render(AlertConfirmPrompt, {
+		acp,
+		intentButtonCancel: "accent",
+		intentButtonCustom: "accent",
+	});
+
+	acp.confirm(() => {}, {
+		title: "Delete?",
+		labelCustom: "Later",
+		onCustom: () => {},
+		intentButtonCancel: "warning",
+		intentButtonCustom: "success",
+	});
+	flushSync();
+
+	await expect.element(cancelBtn(screen)).toHaveAttribute("data-intent", "warning");
+	await expect
+		.element(screen.getByRole("button", { name: /^later$/i }))
+		.toHaveAttribute("data-intent", "success");
+});
+
+test("CLASS: per dialog button classes are merged on top of the component props", async () => {
+	const acp = new AlertConfirmPromptStack();
+	const screen = render(AlertConfirmPrompt, { acp, classButtonPrimary: "min-w-24" });
+
+	acp.alert({ title: "Hi", classButton: "uppercase", classButtonPrimary: "min-w-48" });
+	flushSync();
+
+	const ok = okBtn(screen);
+	// classButton applies to the dialog's buttons...
+	await expect.element(ok).toHaveClass("uppercase");
+	// ...and the per dialog primary class wins the twMerge conflict with the prop.
+	await expect.element(ok).toHaveClass("min-w-48");
+	await expect.element(ok).not.toHaveClass("min-w-24");
 });

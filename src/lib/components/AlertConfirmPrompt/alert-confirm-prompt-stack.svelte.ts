@@ -1,5 +1,6 @@
 import type { Component } from "svelte";
 import type { THC } from "../Thc/Thc.svelte";
+import type { IntentColorKey } from "../../utils/design-tokens.js";
 
 // const clog = createClog("alert-confirm-prompt-stack").debug;
 
@@ -69,6 +70,16 @@ export interface AlertConfirmPromptObj extends Record<string, any> {
 	CmpButtonOk?: Component;
 	CmpButtonCancel?: Component;
 	CmpButtonCustom?: Component;
+
+	// Per dialog button styling. Each wins over the same named `AlertConfirmPrompt`
+	// component prop (classes are merged on top of it, intents replace it).
+	classButton?: string;
+	classButtonPrimary?: string;
+	classButtonCancel?: string;
+	classButtonCustom?: string;
+	intentButtonPrimary?: IntentColorKey;
+	intentButtonCancel?: IntentColorKey;
+	intentButtonCustom?: IntentColorKey;
 }
 
 const isFn = (v: unknown) => typeof v === "function";

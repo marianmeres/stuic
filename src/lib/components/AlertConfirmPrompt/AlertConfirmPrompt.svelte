@@ -24,8 +24,9 @@
 		classButtonPrimary?: string;
 		intentButtonCancel?: IntentColorKey;
 		intentButtonCustom?: IntentColorKey;
-		/** Intent of the primary (OK) button. Defaults to `"primary"`, except for the
-		 * `"warn"` variant, which defaults to `"destructive"`. */
+		/** Intent of the primary (OK) button. Defaults to `"primary"`, except for
+		 * `"warn"` confirm/prompt dialogs, which default to `"destructive"`. A dialog
+		 * option of the same name wins over this. */
 		intentButtonPrimary?: IntentColorKey;
 		classSpinnerBox?: string;
 		defaultIcons?: Partial<

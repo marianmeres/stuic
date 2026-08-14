@@ -39,8 +39,9 @@
 		classButtonPrimary?: string;
 		intentButtonCancel?: IntentColorKey;
 		intentButtonCustom?: IntentColorKey;
-		/** Intent of the primary (OK) button. Defaults to `"primary"`, except for the
-		 * `"warn"` variant, which defaults to `"destructive"`. */
+		/** Intent of the primary (OK) button. Defaults to `"primary"`, except for
+		 * `"warn"` confirm/prompt dialogs, which default to `"destructive"`. A dialog
+		 * option of the same name wins over this. */
 		intentButtonPrimary?: IntentColorKey;
 		classSpinnerBox?: string;
 		defaultIcons?: Partial<
@@ -77,11 +78,23 @@
 
 	let current = $derived(acp?.current!);
 
-	// the "warn" variant hints a destructive action, so unless explicitly configured
-	// otherwise, render the primary button accordingly
+	// Button config is layered: the dialog object's own value (most specific) wins over
+	// the component level prop - same as CmpButtonOk/Cancel/Custom below.
+
+	// The "warn" variant hints a destructive action, so unless explicitly configured
+	// otherwise, render the primary button accordingly. Not for ALERT though: its ok
+	// button only dismisses the dialog (onOk defaults to `shift`), so there is no
+	// destructive action to signal - a warning-severity *message* is not the same
+	// thing as a destructive *action*.
 	let _intentButtonPrimary = $derived(
-		intentButtonPrimary ?? (current?.variant === "warn" ? "destructive" : "primary")
+		current?.intentButtonPrimary ??
+			intentButtonPrimary ??
+			(current?.variant === "warn" && current?.type !== ALERT ? "destructive" : "primary")
 	);
+
+	let _intentButtonCancel = $derived(current?.intentButtonCancel ?? intentButtonCancel);
+
+	let _intentButtonCustom = $derived(current?.intentButtonCustom ?? intentButtonCustom);
 
 	let iconHtml = $derived.by(() => {
 		let fn = current.iconFn as any;
@@ -219,8 +232,15 @@
 		{#if current.type !== ALERT}
 			<li class={twMerge(_classMenuLi, classMenuLi, hasCustom && classMenuLiCustom)}>
 				<CmpButtonCancel
-					class={twMerge("cancel", _classButton, classButton, classButtonCancel)}
-					intent={intentButtonCancel}
+					class={twMerge(
+						"cancel",
+						_classButton,
+						classButton,
+						classButtonCancel,
+						current.classButton,
+						current.classButtonCancel
+					)}
+					intent={_intentButtonCancel}
 					disabled={isPending}
 					onclick={createOnClick("cancel", current.onCancel)}
 				>
@@ -231,8 +251,15 @@
 		{#if hasCustom}
 			<li class={twMerge(_classMenuLi, classMenuLi, classMenuLiCustom)}>
 				<CmpButtonCustom
-					class={twMerge("custom", _classButton, classButton, classButtonCustom)}
-					intent={intentButtonCustom}
+					class={twMerge(
+						"custom",
+						_classButton,
+						classButton,
+						classButtonCustom,
+						current.classButton,
+						current.classButtonCustom
+					)}
+					intent={_intentButtonCustom}
 					disabled={isPending}
 					onclick={createOnClick("custom", current.onCustom!)}
 				>
@@ -242,7 +269,14 @@
 		{/if}
 		<li class={twMerge(_classMenuLi, classMenuLi, hasCustom && classMenuLiCustom)}>
 			<CmpButtonOk
-				class={twMerge("ok", _classButton, classButton, classButtonPrimary)}
+				class={twMerge(
+					"ok",
+					_classButton,
+					classButton,
+					classButtonPrimary,
+					current.classButton,
+					current.classButtonPrimary
+				)}
 				intent={_intentButtonPrimary}
 				disabled={isPending}
 				onclick={createOnClick("ok", current.onOk)}
