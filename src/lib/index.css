@@ -118,6 +118,9 @@ In practice:
 @import "./actions/spotlight/index.css";
 @import "./actions/tooltip/index.css";
 
+/* Layout preset CSS (classes only, no component) */
+@import "./css/frame.css";
+
 /* Base styles for STUIC components */
 @layer base {
 	button:not(:disabled),

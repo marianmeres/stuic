@@ -31,6 +31,8 @@
         'dropdown-menu',
 		'file-dropzone',
 		'float',
+		'frame',
+		'frame-nested',
 		'h',
 		'header',
 		'hover-expandable-width',

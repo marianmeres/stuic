@@ -55,6 +55,9 @@ src/lib/
 │
 ├── icons/                # Icon re-exports from @marianmeres/icons-fns
 │
+├── css/                  # CSS-only presets (classes + tokens, no JS)
+│   └── frame.css             # Ratio-locked frame (letterbox)
+│
 ├── index.css             # CENTRALIZED CSS imports
 └── index.ts              # Main barrel export
 ```
@@ -76,6 +79,9 @@ src/lib/
 @import "./components/Modal/index.css";
 @import "./components/Input/index.css";
 /* ... all component CSS ... */
+
+/* Layout preset CSS (classes only, no component) */
+@import "./css/frame.css";
 ```
 
 **DO NOT** use `import './index.css'` inside component `.svelte` files.

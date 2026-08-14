@@ -1,0 +1,109 @@
+/* ============================================================================
+   RATIO-LOCKED FRAME (letterbox)
+
+   Lock a box to an aspect ratio, size it to whichever axis binds first, centre
+   it, and let the leftover space become letterboxing.
+
+   See docs/domains/css-presets.md for the classes, the token contract and the
+   decision tree, and docs/RATIO_LOCKED_FRAME.md for the recipes and the measured
+   gotcha list — the CSS here is nine declarations; the knowledge is the deliverable.
+
+   LAYERED (unlike the `.scrollbar-thin` / `.stuic-safe-area-*` utilities at the
+   end of index.css) because these are opt-in layout presets a consumer puts on
+   their OWN element and WILL tweak: Tailwind emits
+   `@layer theme, base, components, utilities`, so a utility always wins —
+   `class="stuic-frame h-dvh overflow-y-auto bg-white"` overrides everything
+   below. That is the escape hatch, by design.
+
+   This preset deliberately ships NO background, NO containment, NO scroll
+   container and NO letterbox-bars class: `grid`, `overflow-hidden`,
+   `fixed inset-0`, `bg-*`, `contain-layout`, `contain-paint`, `@container-size`
+   and `overflow-y-auto` are all Tailwind v4 utilities (stuic already requires
+   Tailwind v4). Only the sizing formula is ours, because it is the only part
+   Tailwind cannot express.
+   ============================================================================ */
+
+@layer components {
+	/* The ratio-locked box. Centres itself in a block, grid or flex parent
+	   (`margin: auto` centres both axes in grid/flex; in normal flow the block-
+	   axis autos compute to 0 and it behaves as `margin-inline: auto`).
+
+	   One parent shape is NOT safe: a flex COLUMN. The ratio-derived height becomes
+	   the flex base size and `min-height: 0` below removes the floor that would stop
+	   it shrinking, so the frame silently goes off-ratio (measured 400x740, r=0.5405,
+	   where a grid parent gives 400x800, r=0.5). Add `shrink-0`. See G22.
+
+	   Why min() and not `max-width:100%; max-height:100%; aspect-ratio:R` — the
+	   formulation everyone tries first: `max-*` never GROWS a box, so in a
+	   centred grid/flex parent an empty frame measures 0x0, and one with content
+	   shrink-wraps that content and overflows the parent. The ratio usually
+	   survives; the SIZE is what's wrong. (There is a working `max-*` variant —
+	   it needs a positioned parent — see Recipe D in the docs.)
+
+	   `aspect-ratio` supplies the height, so the frame is ratio-locked at every
+	   viewport, with bars on exactly one axis. Deriving the width from the
+	   height and then letting `aspect-ratio` derive the height back is not
+	   circular: `width` is resolved first, `aspect-ratio` only ever fills an
+	   `auto` axis.
+
+	   `min-height: 0` and `overflow: hidden` are load-bearing for the ratio, not
+	   cosmetics: a grid/flex item's automatic minimum size overrides
+	   `aspect-ratio` outright, so a tall child stretches an otherwise correct
+	   frame off-ratio. Either one alone fixes it; both are set so a consumer's
+	   `overflow-visible` stays survivable. */
+	.stuic-frame {
+		width: var(
+			--stuic-frame-width,
+			min(100vw, calc(100dvh * (var(--stuic-frame-aspect-ratio, 1))))
+		);
+
+		/* `auto` = ratio-locked (the default). Any explicit length here WINS over
+		   `aspect-ratio` unconditionally — that is the supported way to opt into
+		   "fill the height, derive the width" inside a bail-out media query, with
+		   no `!important` and no specificity game. */
+		height: var(--stuic-frame-height, auto);
+
+		aspect-ratio: var(--stuic-frame-aspect-ratio, 1);
+		min-height: 0;
+		margin: auto;
+		overflow: hidden;
+	}
+
+	/* Opt-in: size against the nearest ANCESTOR query container instead of the
+	   viewport — the nested case (a frame under a header, inside a flex column).
+	   Combine with `.stuic-frame`; this rule must stay AFTER it in source order,
+	   since both declare `width` at equal specificity.
+
+	   REQUIRES an ancestor with `container-type: size` (Tailwind:
+	   `@container-size`). `inline-size` is NOT enough: `cqh` then falls THROUGH
+	   to the next container, or silently to the small viewport, and you get a
+	   ratio-correct but wrongly-scaled frame that overflows its parent and
+	   tracks the window as you resize. Same failure with no container ancestor
+	   at all. Size containment is safe here precisely because this frame's own
+	   height is always determined. */
+	.stuic-frame-cq {
+		width: var(
+			--stuic-frame-width,
+			min(100cqw, calc(100cqh * (var(--stuic-frame-aspect-ratio, 1))))
+		);
+	}
+
+	/* Re-align a VIEWPORT-space element onto the frame's column: a top-layer
+	   `<dialog>`, or an overlay portalled to `<body>` (stuic's popover /
+	   spotlight / dimBehind default to `document.body` — pass their `container`
+	   option instead where you can).
+
+	   The whole fallback expression is repeated on purpose. Nothing declares
+	   `--stuic-frame-width`, so a bare `var(--stuic-frame-width)` would be
+	   invalid-at-computed-value-time -> `width: auto` -> silently full-bleed. */
+	.stuic-frame-col {
+		width: min(
+			100%,
+			var(
+				--stuic-frame-width,
+				min(100vw, calc(100dvh * (var(--stuic-frame-aspect-ratio, 1))))
+			)
+		);
+		margin-inline: auto;
+	}
+}

@@ -2193,6 +2193,7 @@ Each component defines customization tokens. Override globally in `:root {}` or 
 | Cart               | `--stuic-cart-*`                | `gap`, `item-padding`, `item-radius`, `item-border-color`, `item-bg`, `thumbnail-size`, `quantity-border-color`, `remove-color`, `summary-border-color`, `compact-max-height`, `transition`                                   |
 | LoginForm          | `--stuic-login-form-*`          | `gap`, `gap-row`, `forgot-margin-y`, `forgot-margin-x`, `social-margin-top`, `social-gap`, `social-divider-color`, `social-divider-font-size`, `social-divider-margin-bottom`                                                 |
 | Checkout           | `--stuic-checkout-*`            | `input-border`, `input-bg`, `input-focus-ring`, `input-radius`, `card-border`, `card-bg`, `card-radius`, `step-gap`, `progress-*`, `summary-*`, `guest-*`, `login-*`, `address-*`, `delivery-*`, `review-*`, `confirmation-*` |
+| Frame (CSS preset) | `--stuic-frame-*`               | `aspect-ratio`, `width`, `height` — the ratio-locked frame / letterbox preset (see [CSS presets](docs/domains/css-presets.md))                                                                                                |
 
 ### CSS Variable Naming Convention
 

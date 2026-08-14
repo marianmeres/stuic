@@ -248,6 +248,78 @@ All three are no-ops in a browser tab and need no prop.
 
 **Not covered:** remaining fixed/edge-anchored components (e.g. `Float`, or a bare `ModalDialog` used directly) do not auto-handle insets — apply a `stuic-safe-area-*` class or the variables to their content as needed.
 
+## Ratio-locked frame (letterbox)
+
+Lock a box to an aspect ratio, size it to whichever axis binds first, centre it, and let the leftover space become letterboxing — a phone-proportioned column on a desktop, a portrait game board, a 16:9 scene nested under a header. The whole idea is one line:
+
+```
+width = min(available-width, available-height × ratio)   /* aspect-ratio supplies the height */
+```
+
+That formula (plus two guards nobody remembers) is all stuic ships, because it is the only part Tailwind cannot express. The letterbox parent itself is plain utilities: `grid`, `overflow-hidden`, `fixed inset-0`, `bg-*`, and — where you need them — `contain-layout contain-paint`, `overflow-y-auto`, `@container-size`.
+
+**Classes:**
+
+- `.stuic-frame` — the ratio-locked box. Sized against the viewport (`100vw` / `100dvh`), centred with `margin: auto`, `overflow: hidden`.
+- `.stuic-frame-cq` — the same box sized in container-query units, for a frame nested inside a layout rather than anchored to the window. Combine with `.stuic-frame`. **Requires** an ancestor with `container-type: size` (Tailwind `@container-size`); `inline-size` is not enough — `cqh` then falls through to the next container, or silently to the viewport, and you get a ratio-correct but wrongly-scaled frame that tracks the window as you resize.
+- `.stuic-frame-col` — re-align a viewport-space element (a top-layer `<dialog>`, or an overlay portalled to `<body>`) onto the frame's column.
+
+**Tokens** — all three are your inputs. stuic declares none of them anywhere; the defaults below live only as `var()` fallbacks at the usage sites, so a scoped override on the frame element or on any ancestor works:
+
+| Token                        | Default                             | Meaning                                                          |
+| ---------------------------- | ----------------------------------- | ---------------------------------------------------------------- |
+| `--stuic-frame-aspect-ratio` | `1`                                 | width ÷ height — anything `aspect-ratio:` accepts                |
+| `--stuic-frame-width`        | `min(100vw, 100dvh × aspect-ratio)` | wholesale width override (bail-out value: `100vw`)               |
+| `--stuic-frame-height`       | `auto` (⇒ ratio-locked)             | wholesale height override (`100dvh` ⇒ fill height, derive width) |
+
+**Viewport letterbox** — full screen, bars on exactly one axis:
+
+```svelte
+<div class="fixed inset-0 grid overflow-hidden bg-neutral-800">
+	<div
+		class="stuic-frame bg-[var(--stuic-color-surface)]"
+		style="--stuic-frame-aspect-ratio: 0.5"
+	>
+		…
+	</div>
+</div>
+```
+
+**Nested frame** — sized against its parent box instead of the window:
+
+```svelte
+<div class="flex h-dvh flex-col">
+	<header>…</header>
+	<div class="@container-size grid min-h-0 grow overflow-hidden bg-neutral-800">
+		<div
+			class="stuic-frame stuic-frame-cq bg-[var(--stuic-color-surface)]"
+			style="--stuic-frame-aspect-ratio: calc(16 / 9)"
+		>
+			…
+		</div>
+	</div>
+</div>
+```
+
+> ⚠️ **Don't reach for `max-width: 100%; max-height: 100%; aspect-ratio: R`** — the formulation everyone tries first. `max-*` never _grows_ a box, so in a centred grid/flex parent an empty frame measures **0×0**, and one with content shrink-wraps that content and overflows the parent. The ratio usually survives; the size is what's wrong.
+
+> ⚠️ **Never make the frame both the fixed containing block and the scroll container.** `contain-layout contain-paint` together with `overflow-y-auto` on the same element demotes every `position: fixed` descendant to `absolute` against the scroll origin: at `scrollTop: 600` a `Drawer` and its backdrop render at `y = -600`, so the user taps and nothing appears — and `BodyScroll` cannot rescue it, because `document.body` has nothing to scroll in that layout. Scroll an inner element instead, or keep overlays in viewport space and reconcile them with `.stuic-frame-col`.
+
+> ⚠️ **`--stuic-frame-height: 100dvh` is not ratio-locking.** An explicit height beats `aspect-ratio` unconditionally (which is exactly why the bail-out below needs no `!important`), so whenever `100vw < 100dvh × ratio` the frame degenerates to the raw viewport with zero bars on both axes. It looks perfect on a wide desktop and is wrong on the handset you were aiming at. Set it only inside a deliberate bail-out query, and gate that query on more than width:
+
+```css
+@media (max-width: 40rem) and (max-aspect-ratio: 3 / 5) {
+	:root {
+		--stuic-frame-width: 100vw;
+		--stuic-frame-height: 100dvh;
+	}
+}
+```
+
+See [CSS presets](docs/domains/css-presets.md) for the classes, the token contract and the decision tree, and [Ratio-Locked Frame](docs/RATIO_LOCKED_FRAME.md) for the full recipe set (including the unit-free `max-*` variant that _does_ work, given a positioned parent) and the measured gotcha list.
+
+> **This preset does not make stuic's own overlays frame-aware.** `Backdrop`, `Modal`, `Drawer` and `Notifications` measure in viewport units — and top-layer geometry (`showModal()`, `popover`) ignores the frame outright, even for a DOM descendant of it. The portalled actions (`popover`, `spotlight`, `dimBehind`) additionally default to `document.body`, so they leave the frame entirely. Either way they fill the window, not the frame. Pass their `container` option where one exists, apply `.stuic-frame-col`, or tweak the affected call sites.
+
 ## TypeScript
 
 All components export their Props types:

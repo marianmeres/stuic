@@ -249,6 +249,8 @@ Override locally:
 <Button style="--stuic-button-radius: 0;">Square</Button>
 ```
 
+Some token sets belong to a CSS-only preset rather than to a component — e.g. `--stuic-frame-*` (ratio-locked frame / letterbox). Those are consumer **inputs** that stuic never declares; see [CSS presets](./css-presets.md).
+
 ---
 
 ## Key Files
