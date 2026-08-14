@@ -5,7 +5,7 @@ dev/inspector tweak panel (dat.GUI / Tweakpane style). It has a header (optional
 icon, a `THC` title, an actions slot, and minimize/close buttons) and an arbitrary body.
 
 - **Positioned by params**: numeric `x`/`y` **or** a named `placement` preset (corners / edges / center).
-- **`position: fixed`** relative to the viewport, with drag **clamped** so it never leaves the screen.
+- **`position: fixed`** relative to the viewport — or to the nearest containing-block ancestor (`transform`, `contain: layout|paint`, …) when one exists — with drag **clamped** so it never leaves that box.
 - **Draggable** by the whole header (buttons excepted).
 - **Minimizable** to just the title bar (header button, double-click header, or methods).
 - **Imperative control** via a `bind:this` ref (mirrors `Modal`/`ModalDialog`).

@@ -6,6 +6,7 @@ import {
 	clampIntoViewport,
 } from "../../utils/anchor-position.js";
 import { BodyScroll } from "../../utils/body-scroll-locker.js";
+import { resolveContainerOption } from "../../utils/overlay-container.js";
 import type { THC } from "../../components/Thc/Thc.svelte";
 import SpotlightContent from "./SpotlightContent.svelte";
 
@@ -178,27 +179,71 @@ export interface SpotlightOptions {
 	autoTrack?: boolean;
 	/** Debug mode */
 	debug?: boolean;
+	/**
+	 * Where to append the overlay elements (backdrop, anchor, annotation).
+	 * Defaults to the current behavior: `document.body`. Pass a bounded shell
+	 * (framed app, embedded widget, dashboard pane) to keep the overlay inside
+	 * it — required when that shell is a stacking context, since a body-level
+	 * overlay can then only paint entirely above or entirely below it. A
+	 * function returning `null` falls back to the default.
+	 */
+	container?: HTMLElement | (() => HTMLElement | null);
 }
 
 /**
- * Builds the clip-path value for the backdrop overlay with a rounded-rectangle hole.
+ * The coordinate space the overlay's `position: fixed` elements resolve
+ * against: the viewport by default, or the padding box of a containing-block
+ * ancestor when the overlay is portalled inside one. `left`/`top` are viewport
+ * (visual) coordinates of its origin; `width`/`height` are LAYOUT-space size
+ * (what `clip-path` and `left/top` px writes are expressed in); `scaleX/Y`
+ * convert visual rect px into layout px (≠ 1 inside a scaled ancestor).
  */
-function buildClipPath(rect: DOMRect, padding: number, borderRadius: number): string {
-	const vw = window.innerWidth;
-	const vh = window.innerHeight;
-	const x = rect.left - padding;
-	const y = rect.top - padding;
-	const w = rect.width + padding * 2;
-	const h = rect.height + padding * 2;
+interface OverlayOrigin {
+	left: number;
+	top: number;
+	width: number;
+	height: number;
+	scaleX: number;
+	scaleY: number;
+}
+
+const VIEWPORT_ORIGIN = (): OverlayOrigin => ({
+	left: 0,
+	top: 0,
+	width: window.innerWidth,
+	height: window.innerHeight,
+	scaleX: 1,
+	scaleY: 1,
+});
+
+/**
+ * Builds the clip-path value for the backdrop overlay with a rounded-rectangle
+ * hole. `rect` is the target's viewport rect; `o` is the backdrop's own
+ * coordinate space (see {@link OverlayOrigin}) — clip-path coordinates are
+ * local to the backdrop element, so the hole is translated by the origin and
+ * the outer box is the backdrop's layout size.
+ */
+function buildClipPath(
+	rect: DOMRect,
+	padding: number,
+	borderRadius: number,
+	o: OverlayOrigin
+): string {
+	const ow = o.width;
+	const oh = o.height;
+	const x = (rect.left - o.left) / o.scaleX - padding;
+	const y = (rect.top - o.top) / o.scaleY - padding;
+	const w = rect.width / o.scaleX + padding * 2;
+	const h = rect.height / o.scaleY + padding * 2;
 	const r = Math.min(borderRadius, w / 2, h / 2);
 
 	if (r <= 0) {
 		// Simple rectangular hole (no rounding)
-		return `polygon(evenodd, 0 0, ${vw}px 0, ${vw}px ${vh}px, 0 ${vh}px, 0 0, ${x}px ${y}px, ${x}px ${y + h}px, ${x + w}px ${y + h}px, ${x + w}px ${y}px, ${x}px ${y}px)`;
+		return `polygon(evenodd, 0 0, ${ow}px 0, ${ow}px ${oh}px, 0 ${oh}px, 0 0, ${x}px ${y}px, ${x}px ${y + h}px, ${x + w}px ${y + h}px, ${x + w}px ${y}px, ${x}px ${y}px)`;
 	}
 
 	// Rounded rectangular hole using SVG path syntax
-	return `path(evenodd, "M 0 0 L ${vw} 0 L ${vw} ${vh} L 0 ${vh} Z M ${x + r} ${y} L ${x + w - r} ${y} A ${r} ${r} 0 0 1 ${x + w} ${y + r} L ${x + w} ${y + h - r} A ${r} ${r} 0 0 1 ${x + w - r} ${y + h} L ${x + r} ${y + h} A ${r} ${r} 0 0 1 ${x} ${y + h - r} L ${x} ${y + r} A ${r} ${r} 0 0 1 ${x + r} ${y} Z")`;
+	return `path(evenodd, "M 0 0 L ${ow} 0 L ${ow} ${oh} L 0 ${oh} Z M ${x + r} ${y} L ${x + w - r} ${y} A ${r} ${r} 0 0 1 ${x + w} ${y + r} L ${x + w} ${y + h - r} A ${r} ${r} 0 0 1 ${x + w - r} ${y + h} L ${x + r} ${y + h} A ${r} ${r} 0 0 1 ${x} ${y + h - r} L ${x} ${y + r} A ${r} ${r} 0 0 1 ${x + r} ${y} Z")`;
 }
 
 /**
@@ -316,6 +361,35 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 	}
 
 	/**
+	 * The coordinate space the overlay's fixed elements resolve against. The
+	 * backdrop is `position: fixed; inset: 0`, so its own box IS that space —
+	 * the containing block's padding box when a CB-forming ancestor exists
+	 * (overlay portalled into a contained/transformed shell via `container`),
+	 * the viewport otherwise. Measuring it handles both with no special-casing.
+	 */
+	function overlayOrigin(): OverlayOrigin {
+		if (!backdropEl) return VIEWPORT_ORIGIN();
+		const r = backdropEl.getBoundingClientRect();
+		// offsetWidth/Height are layout-space; the rect is visual — the ratio is
+		// the accumulated ancestor scale. offset* are integer-rounded, so treat
+		// sub-pixel differences as "unscaled" to avoid noise on the default path.
+		const w = backdropEl.offsetWidth || r.width;
+		const h = backdropEl.offsetHeight || r.height;
+		const sx = w && Math.abs(r.width - w) > 1 ? r.width / w : 1;
+		const sy = h && Math.abs(r.height - h) > 1 ? r.height / h : 1;
+		return { left: r.left, top: r.top, width: w, height: h, scaleX: sx, scaleY: sy };
+	}
+
+	/** Place the invisible anchor element over the (padded) hole. */
+	function positionAnchor(rect: DOMRect, padding: number, o: OverlayOrigin) {
+		if (!anchorEl) return;
+		anchorEl.style.left = `${(rect.left - o.left) / o.scaleX - padding}px`;
+		anchorEl.style.top = `${(rect.top - o.top) / o.scaleY - padding}px`;
+		anchorEl.style.width = `${rect.width / o.scaleX + padding * 2}px`;
+		anchorEl.style.height = `${rect.height / o.scaleY + padding * 2}px`;
+	}
+
+	/**
 	 * Update the clip-path hole position to match the current target rect.
 	 */
 	function updateHolePosition() {
@@ -324,18 +398,14 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 		const rect = targetEl.getBoundingClientRect();
 		const padding = currentOptions.padding ?? 8;
 		const borderRadius = currentOptions.borderRadius ?? 8;
+		const o = overlayOrigin();
 
 		debug("updateHolePosition()", rect);
 
-		backdropEl.style.clipPath = buildClipPath(rect, padding, borderRadius);
+		backdropEl.style.clipPath = buildClipPath(rect, padding, borderRadius, o);
 
 		// Update the invisible anchor element position
-		if (anchorEl) {
-			anchorEl.style.left = `${rect.left - padding}px`;
-			anchorEl.style.top = `${rect.top - padding}px`;
-			anchorEl.style.width = `${rect.width + padding * 2}px`;
-			anchorEl.style.height = `${rect.height + padding * 2}px`;
-		}
+		positionAnchor(rect, padding, o);
 
 		// Reposition / re-clamp the annotation. The fallback path recomputes its
 		// base left/top here; the anchor path is re-placed by the browser. Either
@@ -388,17 +458,21 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 	}
 
 	/**
-	 * Position annotation without CSS Anchor Positioning (fallback).
+	 * Position annotation without CSS Anchor Positioning (fallback). All values
+	 * are expressed in the overlay's coordinate space (see {@link overlayOrigin})
+	 * — for a fixed element, `left/top/right/bottom` resolve against the
+	 * containing block, which is the viewport only in the un-portalled default.
 	 */
 	function positionAnnotationFallback(rect: DOMRect, padding: number) {
 		if (!annotationEl) return;
 
 		const pos = currentOptions.position || "bottom";
 		const offset = 8; // px fallback offset
-		const x = rect.left - padding;
-		const y = rect.top - padding;
-		const w = rect.width + padding * 2;
-		const h = rect.height + padding * 2;
+		const o = overlayOrigin();
+		const x = (rect.left - o.left) / o.scaleX - padding;
+		const y = (rect.top - o.top) / o.scaleY - padding;
+		const w = rect.width / o.scaleX + padding * 2;
+		const h = rect.height / o.scaleY + padding * 2;
 
 		// Reset position
 		annotationEl.style.left = "";
@@ -409,12 +483,12 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 
 		if (pos.startsWith("top")) {
 			annotationEl.style.left = `${x}px`;
-			annotationEl.style.bottom = `${window.innerHeight - y + offset}px`;
+			annotationEl.style.bottom = `${o.height - y + offset}px`;
 		} else if (pos.startsWith("bottom")) {
 			annotationEl.style.left = `${x}px`;
 			annotationEl.style.top = `${y + h + offset}px`;
 		} else if (pos === "left") {
-			annotationEl.style.right = `${window.innerWidth - x + offset}px`;
+			annotationEl.style.right = `${o.width - x + offset}px`;
 			annotationEl.style.top = `${y}px`;
 		} else if (pos === "right") {
 			annotationEl.style.left = `${x + w + offset}px`;
@@ -435,7 +509,15 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 	 */
 	function clampAnnotationIntoViewport() {
 		if (!annotationEl || !annotationShown) return;
-		clampIntoViewport(annotationEl);
+		// Pass the empirically measured CB rect (the inset-0 backdrop's box) so
+		// the clamp uses the SAME coordinate space as the hole/anchor math even
+		// where the heuristic ancestor walk and the engine disagree (WebKit
+		// filter shells).
+		clampIntoViewport(
+			annotationEl,
+			undefined,
+			backdropEl ? backdropEl.getBoundingClientRect() : undefined
+		);
 	}
 
 	function renderContent() {
@@ -489,9 +571,13 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 		requestAnimationFrame(() => {
 			if (!isVisible) return; // may have been hidden in the meantime
 
+			const container = resolveContainerOption(currentOptions.container) ?? document.body;
 			const rect = targetEl.getBoundingClientRect();
 
-			// 1. Create backdrop overlay
+			// 1. Create backdrop overlay. Append BEFORE building the clip-path:
+			// the hole coordinates are relative to the backdrop's own box, which
+			// is only measurable once it is in the DOM (same JS turn — nothing
+			// paints unclipped).
 			backdropEl = document.createElement("div");
 			backdropEl.style.cssText = `
 				position: fixed;
@@ -503,22 +589,20 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 			backdropEl.classList.add(
 				...twMerge("stuic-spotlight-backdrop", currentOptions.classBackdrop).split(/\s/)
 			);
-			backdropEl.style.clipPath = buildClipPath(rect, padding, borderRadius);
-			document.body.appendChild(backdropEl);
+			container.appendChild(backdropEl);
+			const o = overlayOrigin();
+			backdropEl.style.clipPath = buildClipPath(rect, padding, borderRadius, o);
 
 			// 2. Create invisible anchor element for CSS Anchor Positioning
 			anchorEl = document.createElement("div");
 			anchorEl.style.cssText = `
 				position: fixed;
-				left: ${rect.left - padding}px;
-				top: ${rect.top - padding}px;
-				width: ${rect.width + padding * 2}px;
-				height: ${rect.height + padding * 2}px;
 				pointer-events: none;
 				z-index: -1;
 			`;
+			positionAnchor(rect, padding, o);
 			addAnchorName(anchorEl, anchorName);
-			document.body.appendChild(anchorEl);
+			container.appendChild(anchorEl);
 
 			// 3. Create annotation element (if content provided)
 			if (currentOptions.content) {
@@ -526,6 +610,11 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 				annotationEl.setAttribute("role", "dialog");
 
 				if (isSupported) {
+					// NOTE: keep `vw`/`vh` here — this is the ANCHORED branch, where
+					// the element's containing block is the `position-area` region (a
+					// slice of the CB, often much smaller), so `%` would shrink the
+					// annotation. Overflow is handled by position-try + the CB-aware
+					// clamp.
 					annotationEl.style.cssText = `
 						position: fixed;
 						position-anchor: ${anchorName};
@@ -546,12 +635,13 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 						).split(/\s/)
 					);
 				} else {
-					// Fallback positioning
+					// Fallback positioning. `90%` (not `90vw`): the left/top values
+					// are containing-block-relative, so the size must be too.
 					annotationEl.style.cssText = `
 						position: fixed;
 						transition-duration: ${TRANSITION}ms;
 						z-index: 50;
-						max-width: 90vw;
+						max-width: 90%;
 					`;
 					annotationEl.classList.add(
 						...twMerge(
@@ -563,7 +653,7 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 					positionAnnotationFallback(rect, padding);
 				}
 
-				document.body.appendChild(annotationEl);
+				container.appendChild(annotationEl);
 				renderContent();
 			}
 
@@ -594,9 +684,12 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 				backdropEl.addEventListener("click", onBackdropClick);
 			}
 
-			// 7. Watch for target position changes
+			// 7. Watch for target position changes — and for the overlay's own
+			// coordinate space changing size (the backdrop tracks its container,
+			// which resize/scroll listeners and target-rect comparison won't see)
 			resizeObserver = new ResizeObserver(updateHolePosition);
 			resizeObserver.observe(targetEl);
+			resizeObserver.observe(backdropEl);
 			window.addEventListener("resize", updateHolePosition);
 			window.addEventListener("scroll", updateHolePosition, true);
 
@@ -675,6 +768,7 @@ export function spotlight(targetEl: HTMLElement, fn?: () => SpotlightOptions) {
 			onHide: opts.onHide,
 			debug: opts.debug,
 			id: opts.id,
+			container: opts.container,
 		};
 
 		do_debug = !!opts.debug;

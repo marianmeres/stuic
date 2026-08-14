@@ -4,23 +4,24 @@ A Svelte action that displays an anchored popover using CSS Anchor Positioning, 
 
 ## Options
 
-| Option                | Type                 | Default     | Description                                           |
-| --------------------- | -------------------- | ----------- | ----------------------------------------------------- |
-| `enabled`             | `boolean`            | `true`      | Enable/disable popover                                |
-| `content`             | `THC \| null`        | -           | Popover content (string, HTML, component, or snippet) |
-| `position`            | `PopoverPosition`    | `"bottom"`  | Placement relative to anchor                          |
-| `trigger`             | `"click" \| "hover"` | `"click"`   | Trigger mode                                          |
-| `showDelay`           | `number`             | `100`       | Delay before showing (ms)                             |
-| `hideDelay`           | `number`             | `200`       | Delay before hiding (ms)                              |
-| `class`               | `string`             | -           | Custom CSS for popover container                      |
-| `offset`              | `string`             | `"0.25rem"` | Margin from anchor (CSS value)                        |
-| `closeOthers`         | `boolean`            | `false`     | Close other open popovers                             |
-| `closeOnClickOutside` | `boolean`            | `true`      | Close on outside click (click trigger)                |
-| `closeOnEscape`       | `boolean`            | `true`      | Close on Escape key                                   |
-| `showBackdrop`        | `boolean`            | `true`      | Show backdrop in fallback mode                        |
-| `forceFallback`       | `boolean`            | `false`     | Force centered modal mode                             |
-| `onShow`              | `() => void`         | -           | Callback when popover opens                           |
-| `onHide`              | `() => void`         | -           | Callback when popover closes                          |
+| Option                | Type                                         | Default                                       | Description                                                                                        |
+| --------------------- | -------------------------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `enabled`             | `boolean`                                    | `true`                                        | Enable/disable popover                                                                             |
+| `content`             | `THC \| null`                                | -                                             | Popover content (string, HTML, component, or snippet)                                              |
+| `position`            | `PopoverPosition`                            | `"bottom"`                                    | Placement relative to anchor                                                                       |
+| `trigger`             | `"click" \| "hover"`                         | `"click"`                                     | Trigger mode                                                                                       |
+| `showDelay`           | `number`                                     | `100`                                         | Delay before showing (ms)                                                                          |
+| `hideDelay`           | `number`                                     | `200`                                         | Delay before hiding (ms)                                                                           |
+| `class`               | `string`                                     | -                                             | Custom CSS for popover container                                                                   |
+| `offset`              | `string`                                     | `"0.25rem"`                                   | Margin from anchor (CSS value)                                                                     |
+| `closeOthers`         | `boolean`                                    | `false`                                       | Close other open popovers                                                                          |
+| `closeOnClickOutside` | `boolean`                                    | `true`                                        | Close on outside click (click trigger)                                                             |
+| `closeOnEscape`       | `boolean`                                    | `true`                                        | Close on Escape key                                                                                |
+| `showBackdrop`        | `boolean`                                    | `true`                                        | Show backdrop in fallback mode                                                                     |
+| `forceFallback`       | `boolean`                                    | `false`                                       | Force centered modal mode                                                                          |
+| `onShow`              | `() => void`                                 | -                                             | Callback when popover opens                                                                        |
+| `onHide`              | `() => void`                                 | -                                             | Callback when popover closes                                                                       |
+| `container`           | `HTMLElement \| (() => HTMLElement \| null)` | closest open `<dialog>`, else `document.body` | Where to append the popover — pass a bounded shell to keep the overlay inside its stacking context |
 
 ## Positions
 
@@ -136,6 +137,25 @@ bottom-left   bottom    bottom-right
 	})}
 >
 	Exclusive
+</button>
+```
+
+### Custom Container (Bounded Shells)
+
+When the app renders inside a bounded shell that is a stacking context and/or a
+fixed containing block (e.g. a centered frame with `contain: layout paint`, an
+embedded widget, a transformed wrapper), a body-level popover can only paint
+entirely above or below that shell. Pass `container` to keep the overlay inside
+it:
+
+```svelte
+<button
+	use:popover={() => ({
+		content: "Stays inside the frame",
+		container: () => document.querySelector(".app-frame"),
+	})}
+>
+	Framed
 </button>
 ```
 

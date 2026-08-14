@@ -67,6 +67,7 @@
 <script lang="ts">
 	import { untrack } from "svelte";
 	import { twMerge } from "../../utils/tw-merge.js";
+	import { fixedContainingBlockRect } from "../../utils/containing-block.js";
 	import { localStorageState } from "../../utils/persistent-state.svelte.js";
 	import { draggable as draggableAction } from "../../actions/draggable.svelte.js";
 	import { iconChevronDown, iconX } from "../../icons/index.js";
@@ -130,6 +131,26 @@
 
 	function viewport(): FloatSize {
 		if (typeof window === "undefined") return { width: 0, height: 0 };
+		// The panel is `position: fixed`, so its `left`/`top` (and therefore all
+		// placement/clamping math) resolve against its containing block — the
+		// viewport, unless an ancestor (`transform`, `contain: layout|paint`, …)
+		// establishes one. `x`/`y` are written as `left`/`top`, i.e. LAYOUT px,
+		// while the CB rect is visual — divide out the accumulated ancestor
+		// scale (measured on the panel itself; sub-pixel offset* rounding is
+		// treated as unscaled).
+		if (el) {
+			const cb = fixedContainingBlockRect(el);
+			const r = el.getBoundingClientRect();
+			const sx =
+				el.offsetWidth && Math.abs(r.width - el.offsetWidth) > 1
+					? r.width / el.offsetWidth
+					: 1;
+			const sy =
+				el.offsetHeight && Math.abs(r.height - el.offsetHeight) > 1
+					? r.height / el.offsetHeight
+					: 1;
+			return { width: cb.width / sx, height: cb.height / sy };
+		}
 		return { width: window.innerWidth, height: window.innerHeight };
 	}
 

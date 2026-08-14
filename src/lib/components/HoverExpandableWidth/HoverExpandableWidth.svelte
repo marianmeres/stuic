@@ -24,7 +24,10 @@
 </script>
 
 <script lang="ts">
-	import { innerHeight, innerWidth } from "svelte/reactivity/window";
+	import {
+		fixedContainingBlockAncestor,
+		fixedContainingBlockRect,
+	} from "../../utils/containing-block.js";
 	import { DevicePointer } from "../../utils/device-pointer.svelte.js";
 	import { waitForNextRepaint, waitForTransitionEnd } from "../../utils/paint.js";
 	import { prefersReducedMotion } from "../../utils/prefers-reduced-motion.svelte.js";
@@ -82,12 +85,34 @@
 		isExpanded = true;
 		isExpanding = true;
 
+		// Pin the element in place: the inset values below resolve against the
+		// containing block once `position: fixed` is applied — the viewport,
+		// unless an ancestor (`transform`, `contain: layout|paint`, …)
+		// establishes one. Insets are LAYOUT px in the CB's content space, while
+		// rects are visual: divide out the accumulated ancestor scale, add the
+		// CB's scroll offsets (a fixed element whose CB is a scroll container
+		// behaves like an absolute one — it scrolls with the content), and
+		// derive bottom/right from the CB size so the top+height+bottom
+		// constraint stays exact. With no CB ancestor this reduces to the plain
+		// viewport-edge distances.
 		box = el.getBoundingClientRect();
+		const cbEl = fixedContainingBlockAncestor(el);
+		const cb = fixedContainingBlockRect(el);
+		const sx =
+			el.offsetWidth && Math.abs(box.width - el.offsetWidth) > 1
+				? box.width / el.offsetWidth
+				: 1;
+		const sy =
+			el.offsetHeight && Math.abs(box.height - el.offsetHeight) > 1
+				? box.height / el.offsetHeight
+				: 1;
+		const top = (box.top - cb.top) / sy + (cbEl?.scrollTop ?? 0);
+		const left = (box.left - cb.left) / sx + (cbEl?.scrollLeft ?? 0);
 		const pos = {
-			top: box.top,
-			bottom: (innerHeight.current ?? 0) - box.bottom,
-			left: box.left,
-			right: (innerWidth.current ?? 0) - box.right,
+			top,
+			left,
+			bottom: cb.height / sy - top - box.height / sy,
+			right: cb.width / sx - left - box.width / sx,
 		};
 
 		// <offset-x>, <offset-y>, <blur-radius>, <spread-radius>

@@ -1,17 +1,24 @@
 import { BodyScroll } from "../../utils/body-scroll-locker.js";
+import { resolveContainerOption } from "../../utils/overlay-container.js";
 
-// --- Singleton Backdrop Manager ---
+// --- Shared Backdrop Manager (one ref-counted backdrop per container) ---
 
-let backdropEl: HTMLDivElement | null = null;
-let activeCount = 0;
+const backdrops = new Map<HTMLElement, { el: HTMLDivElement; count: number }>();
 
 const TRANSITION_SAFETY_MARGIN = 50;
 
-function getTransitionDuration(): number {
-	const raw = getComputedStyle(document.documentElement)
-		.getPropertyValue("--stuic-dim-behind-transition-duration")
-		.trim();
-	return parseFloat(raw) || 150;
+/**
+ * Actual transition duration of the backdrop element in ms — read from its
+ * computed style, which resolves the whole var chain
+ * (`--stuic-dim-behind-transition-duration`, `--stuic-transition`, …), unlike
+ * reading a single custom property off the root. Computed values serialize in
+ * seconds ("0.15s").
+ */
+function getTransitionDurationMs(el: HTMLElement): number {
+	const raw = getComputedStyle(el).transitionDuration;
+	const v = parseFloat(raw);
+	if (!Number.isFinite(v) || v < 0) return 150;
+	return raw.trim().endsWith("ms") ? v : v * 1000;
 }
 
 function getElementZIndex(): string {
@@ -22,33 +29,39 @@ function getElementZIndex(): string {
 	);
 }
 
-function showBackdrop(classBackdrop?: string) {
-	activeCount++;
-	if (activeCount === 1) {
-		backdropEl = document.createElement("div");
-		backdropEl.classList.add("stuic-dim-behind-backdrop");
+function showBackdrop(container: HTMLElement, classBackdrop?: string): HTMLDivElement {
+	let entry = backdrops.get(container);
+	if (!entry) {
+		const el = document.createElement("div");
+		el.classList.add("stuic-dim-behind-backdrop");
 		if (classBackdrop) {
-			backdropEl.classList.add(...classBackdrop.split(/\s+/).filter(Boolean));
+			el.classList.add(...classBackdrop.split(/\s+/).filter(Boolean));
 		}
-		document.body.appendChild(backdropEl);
+		container.appendChild(el);
 		// Force reflow for transition
-		void backdropEl.offsetHeight;
-		backdropEl.classList.add("dim-visible");
+		void el.offsetHeight;
+		el.classList.add("dim-visible");
+		entry = { el, count: 0 };
+		backdrops.set(container, entry);
 	}
+	entry.count++;
+	return entry.el;
 }
 
-function hideBackdrop() {
-	activeCount = Math.max(0, activeCount - 1);
-	if (activeCount === 0 && backdropEl) {
-		const el = backdropEl;
+function hideBackdrop(container: HTMLElement) {
+	const entry = backdrops.get(container);
+	if (!entry) return;
+	entry.count = Math.max(0, entry.count - 1);
+	if (entry.count === 0) {
+		// Drop the registry entry immediately so a show() during the fade-out
+		// creates a fresh backdrop instead of resurrecting the dying one.
+		backdrops.delete(container);
+		const el = entry.el;
 		el.classList.remove("dim-visible");
-		const cleanup = () => {
-			el.remove();
-			if (backdropEl === el) backdropEl = null;
-		};
+		const cleanup = () => el.remove();
 		el.addEventListener("transitionend", cleanup, { once: true });
 		// Safety fallback in case transitionend doesn't fire
-		setTimeout(cleanup, getTransitionDuration() + TRANSITION_SAFETY_MARGIN);
+		setTimeout(cleanup, getTransitionDurationMs(el) + TRANSITION_SAFETY_MARGIN);
 	}
 }
 
@@ -125,6 +138,16 @@ export interface DimBehindOptions {
 	onHide?: () => void;
 	/** Debug mode */
 	debug?: boolean;
+	/**
+	 * Where to append the backdrop. Defaults to the current behavior:
+	 * `document.body`. Pass a bounded shell (framed app, embedded widget,
+	 * dashboard pane) to keep the backdrop inside it — required when that shell
+	 * is a stacking context, since the elevated target's z-index can then only
+	 * compete with a backdrop living in the same context. Each distinct
+	 * container gets its own ref-counted backdrop. A function returning `null`
+	 * falls back to the default.
+	 */
+	container?: HTMLElement | (() => HTMLElement | null);
 }
 
 // --- Action ---
@@ -167,6 +190,12 @@ export function dimBehind(node: HTMLElement, fn?: () => DimBehindOptions) {
 	let savedZIndex = "";
 	let currentOptions: DimBehindOptions = {};
 	let do_debug = false;
+	// The container/backdrop/locks this instance acquired — captured at show()
+	// time so hide() releases exactly what was acquired even if options changed
+	// while visible.
+	let myContainer: HTMLElement | null = null;
+	let myBackdropEl: HTMLDivElement | null = null;
+	let myScrollLocked = false;
 
 	const debug = (...args: unknown[]) => {
 		if (do_debug) console.debug("[dimBehind]", ...args);
@@ -182,7 +211,7 @@ export function dimBehind(node: HTMLElement, fn?: () => DimBehindOptions) {
 	}
 
 	function onBackdropClick(e: MouseEvent) {
-		if (e.target === backdropEl) {
+		if (e.target === myBackdropEl) {
 			hide();
 		}
 	}
@@ -210,20 +239,22 @@ export function dimBehind(node: HTMLElement, fn?: () => DimBehindOptions) {
 		node.style.position = "relative";
 		node.style.zIndex = zIndex;
 
-		// Show singleton backdrop
-		showBackdrop(currentOptions.classBackdrop);
+		// Show the (per-container, ref-counted) shared backdrop
+		myContainer = resolveContainerOption(currentOptions.container) ?? document.body;
+		myBackdropEl = showBackdrop(myContainer, currentOptions.classBackdrop);
 
 		// Optional scroll lock
 		if (currentOptions.scrollLock) {
 			BodyScroll.lock();
+			myScrollLocked = true;
 		}
 
 		// Event listeners
 		if (currentOptions.closeOnEscape !== false) {
 			document.addEventListener("keydown", onEscape);
 		}
-		if (currentOptions.closeOnBackdropClick !== false && backdropEl) {
-			backdropEl.addEventListener("click", onBackdropClick);
+		if (currentOptions.closeOnBackdropClick !== false) {
+			myBackdropEl.addEventListener("click", onBackdropClick);
 		}
 
 		currentOptions.onShow?.();
@@ -245,17 +276,19 @@ export function dimBehind(node: HTMLElement, fn?: () => DimBehindOptions) {
 
 		// Remove event listeners
 		document.removeEventListener("keydown", onEscape);
-		if (backdropEl) {
-			backdropEl.removeEventListener("click", onBackdropClick);
-		}
+		myBackdropEl?.removeEventListener("click", onBackdropClick);
 
-		// Optional scroll unlock
-		if (currentOptions.scrollLock) {
+		// Release the scroll lock iff THIS instance acquired one (the option may
+		// have changed while visible)
+		if (myScrollLocked) {
 			BodyScroll.unlock();
+			myScrollLocked = false;
 		}
 
-		// Hide singleton backdrop
-		hideBackdrop();
+		// Release the shared backdrop
+		if (myContainer) hideBackdrop(myContainer);
+		myContainer = null;
+		myBackdropEl = null;
 
 		currentOptions.onHide?.();
 	}
@@ -276,6 +309,7 @@ export function dimBehind(node: HTMLElement, fn?: () => DimBehindOptions) {
 			onShow: opts.onShow,
 			onHide: opts.onHide,
 			debug: opts.debug,
+			container: opts.container,
 		};
 
 		do_debug = !!opts.debug;
@@ -304,11 +338,15 @@ export function dimBehind(node: HTMLElement, fn?: () => DimBehindOptions) {
 				node.style.position = savedPosition;
 				node.style.zIndex = savedZIndex;
 
-				if (currentOptions.scrollLock) {
+				if (myScrollLocked) {
 					BodyScroll.unlock();
+					myScrollLocked = false;
 				}
 
-				hideBackdrop();
+				myBackdropEl?.removeEventListener("click", onBackdropClick);
+				if (myContainer) hideBackdrop(myContainer);
+				myContainer = null;
+				myBackdropEl = null;
 
 				document.removeEventListener("keydown", onEscape);
 			}

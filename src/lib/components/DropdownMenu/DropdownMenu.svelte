@@ -266,6 +266,7 @@
 	import Thc from "../Thc/Thc.svelte";
 	import ListItemButton from "../ListItemButton/ListItemButton.svelte";
 	import { BodyScroll } from "../../utils/body-scroll-locker.js";
+	import { fixedContainingBlockRect } from "../../utils/containing-block.js";
 	import { waitForTwoRepaints } from "../../utils/paint.js";
 	import {
 		extractSearchableItems,
@@ -542,15 +543,17 @@
 			await waitForTwoRepaints();
 			if (!dropdownEl || !isOpen) return;
 
+			// Measure against the dropdown's containing block, not the viewport —
+			// an ancestor with e.g. `transform` or `contain: layout|paint` is what
+			// the fixed dropdown actually resolves (and gets clipped) against.
 			const rect = dropdownEl.getBoundingClientRect();
-			const viewportWidth = window.innerWidth;
-			const viewportHeight = window.innerHeight;
+			const cb = fixedContainingBlockRect(dropdownEl);
 
 			if (
-				rect.left < 0 ||
-				rect.right > viewportWidth ||
-				rect.top < 0 ||
-				rect.bottom > viewportHeight
+				rect.left < cb.left ||
+				rect.right > cb.right ||
+				rect.top < cb.top ||
+				rect.bottom > cb.bottom
 			) {
 				switchingToFallback = true;
 				runtimeFallback = true;
@@ -707,12 +710,16 @@
 			const heightStyle = searchConfig
 				? `height: ${maxHeight};`
 				: `max-height: ${maxHeight};`;
+			// `90%` (not `90vw`): the top/left/transform centering is relative to
+			// the containing block, so the size must be too — `%` resolves against
+			// the CB (identical to `vw` when the CB is the viewport, correct when
+			// an ancestor with `transform`/`contain` establishes one).
 			return `
 				position: fixed;
 				top: 50%;
 				left: 50%;
 				transform: translate(-50%, -50%);
-				max-width: 90vw;
+				max-width: 90%;
 				${heightStyle}
 				${gutterStyle}
 				z-index: 50;

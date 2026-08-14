@@ -3,6 +3,8 @@
  * tooltip).
  */
 
+import { fixedContainingBlockRect } from "./containing-block.js";
+
 /**
  * Builds the `position-try-fallbacks` value for an anchored element at a given
  * position.
@@ -30,7 +32,11 @@ export function buildPositionTryFallbacks(position: string): string {
 }
 
 /**
- * Pull an element fully into the viewport with a corrective `transform`.
+ * Pull an element fully into its containing block with a corrective
+ * `transform`. For a fixed element that is the viewport — unless an ancestor
+ * (`transform`, `contain: layout|paint`, …) establishes a containing block, in
+ * which case the element is clamped into that ancestor's box instead (see
+ * {@link fixedContainingBlockRect}).
  *
  * This is the backstop for CSS Anchor Positioning: `position-try` can only swap
  * between discrete declared positions and cannot slide a centered annotation
@@ -47,20 +53,42 @@ export function buildPositionTryFallbacks(position: string): string {
  * correction applies instantly. The caller owns the element's `transform`.
  *
  * @param el - The (anchored, position:fixed) element to clamp
- * @param margin - Minimum gap from each viewport edge, in px (default 8)
+ * @param margin - Minimum gap from each containing-block edge, in px (default 8)
+ * @param cb - Optional explicit containing-block rect (viewport/visual
+ *   coordinates). Callers that can measure the CB empirically (e.g. spotlight,
+ *   via its own `inset: 0` backdrop) pass it to stay self-consistent even
+ *   where the heuristic walker and the engine disagree (WebKit filter cases);
+ *   defaults to {@link fixedContainingBlockRect}.
  */
-export function clampIntoViewport(el: HTMLElement, margin = 8): void {
+export function clampIntoViewport(
+	el: HTMLElement,
+	margin = 8,
+	cb: DOMRectReadOnly = fixedContainingBlockRect(el)
+): void {
 	// Remove any prior correction so we measure the natural (anchored or
 	// left/top) position, then recompute from scratch.
 	el.style.transform = "";
 	const a = el.getBoundingClientRect();
-	const vw = window.innerWidth;
-	const vh = window.innerHeight;
 	let dx = 0;
 	let dy = 0;
-	if (a.left < margin) dx = margin - a.left;
-	else if (a.right > vw - margin) dx = vw - margin - a.right;
-	if (a.top < margin) dy = margin - a.top;
-	else if (a.bottom > vh - margin) dy = vh - margin - a.bottom;
-	if (dx || dy) el.style.transform = `translate(${dx}px, ${dy}px)`;
+	if (a.left < cb.left + margin) dx = cb.left + margin - a.left;
+	else if (a.right > cb.right - margin) dx = cb.right - margin - a.right;
+	if (a.top < cb.top + margin) dy = cb.top + margin - a.top;
+	else if (a.bottom > cb.bottom - margin) dy = cb.bottom - margin - a.bottom;
+	if (dx || dy) {
+		// The deltas above are visual (rect) px, but the translate applies in the
+		// element's local space — inside a scaled ancestor (`transform: scale()`
+		// zoom/preview wrapper) they differ by the accumulated scale factor.
+		// offsetWidth is integer-rounded, so treat sub-pixel differences as
+		// "unscaled" (a ratio threshold would misfire on small elements).
+		const sx =
+			el.offsetWidth && Math.abs(a.width - el.offsetWidth) > 1
+				? a.width / el.offsetWidth
+				: 1;
+		const sy =
+			el.offsetHeight && Math.abs(a.height - el.offsetHeight) > 1
+				? a.height / el.offsetHeight
+				: 1;
+		el.style.transform = `translate(${dx / sx}px, ${dy / sy}px)`;
+	}
 }

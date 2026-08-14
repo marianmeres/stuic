@@ -361,6 +361,7 @@ Use `contentBefore` for leading content (icons) and `contentAfter` for trailing 
 ## Features
 
 - **CSS Anchor Positioning**: Uses modern CSS anchor positioning with automatic fallback for unsupported browsers
+- **Containing-block aware**: Overflow detection and the fallback modal measure against the dropdown's actual containing block — inside a `transform`ed or `contain: layout|paint` shell they use the shell's box, not the viewport
 - **Full Keyboard Navigation**: Complete arrow key navigation with Home/End support
 - **Expandable Sections**: Collapsible groups with independent toggle state
 - **ARIA Compliant**: Proper menu roles and keyboard interaction

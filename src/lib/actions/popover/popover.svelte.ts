@@ -2,6 +2,8 @@ import { mount, unmount } from "svelte";
 import { twMerge } from "../../utils/tw-merge.js";
 import { addAnchorName, removeAnchorName } from "../../utils/anchor-name.js";
 import { clampIntoViewport } from "../../utils/anchor-position.js";
+import { fixedContainingBlockRect } from "../../utils/containing-block.js";
+import { resolveContainerOption } from "../../utils/overlay-container.js";
 import { iconX } from "../../icons/index.js";
 import { BodyScroll } from "../../utils/body-scroll-locker.js";
 import type { THC } from "../../components/Thc/Thc.svelte";
@@ -205,6 +207,16 @@ export interface PopoverOptions {
 	open?: boolean;
 	/** Unique ID for registry-based programmatic control (use with openPopover/closePopover/togglePopover) */
 	id?: string;
+	/**
+	 * Where to append the popover (and its fallback backdrop/wrapper). Defaults
+	 * to the current behavior: the closest open `<dialog>` ancestor, else
+	 * `document.body`. Pass a bounded shell (framed app, embedded widget,
+	 * dashboard pane) to keep the overlay inside it — required when that shell
+	 * is a stacking context, since a body-level overlay can then only paint
+	 * entirely above or entirely below it. A function returning `null` falls
+	 * back to the default.
+	 */
+	container?: HTMLElement | (() => HTMLElement | null);
 }
 
 /**
@@ -441,15 +453,21 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 		const offsetValue = currentOptions.offset || "0.25rem";
 		const useAnchorPositioning = isSupported && !currentOptions.forceFallback;
 
-		// Get appropriate container (dialog if inside one, otherwise body)
-		// This ensures popover renders in same stacking context as modal dialogs
-		const container = getPopoverContainer(anchorEl);
+		// Get appropriate container (explicit option, else dialog if inside one,
+		// otherwise body). This ensures popover renders in the same stacking
+		// context as modal dialogs / the consumer's bounded shell.
+		const container =
+			resolveContainerOption(currentOptions.container) ?? getPopoverContainer(anchorEl);
 
 		if (useAnchorPositioning) {
 			// CSS Anchor Positioning mode
 			popoverEl = document.createElement("div");
 			popoverEl.setAttribute("id", id);
 			popoverEl.setAttribute("role", "dialog");
+			// NOTE: keep `vw`/`vh` here — this is the ANCHORED branch, where the
+			// element's containing block is the `position-area` region (a slice of
+			// the CB, often much smaller than it), so `%` would shrink the popover.
+			// Overflow is handled by @position-try + the CB-aware runtime check.
 			popoverEl.style.cssText = `
 				position: fixed;
 				position-anchor: ${anchorName};
@@ -496,10 +514,13 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 			popoverEl = document.createElement("div");
 			popoverEl.setAttribute("id", id);
 			popoverEl.setAttribute("role", "dialog");
+			// `90%` (not `90vw/90vh`): resolves against the inset-0 wrapper, which
+			// spans the containing block — identical to viewport units when the CB
+			// is the viewport, correct inside a contained/transformed shell.
 			popoverEl.style.cssText = `
 				position: relative;
-				max-width: 90vw;
-				max-height: 90vh;
+				max-width: 90%;
+				max-height: 90%;
 				overflow: auto;
 				transition-duration: ${TRANSITION}ms;
 				pointer-events: auto;
@@ -557,12 +578,14 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 					// popovers anchored instead of switching them to a modal.
 					clampIntoViewport(popoverEl);
 
+					// Compare against the containing block (the viewport, unless an
+					// ancestor with `transform`/`contain` establishes one).
 					const rect = popoverEl.getBoundingClientRect();
-					const viewportWidth = window.innerWidth;
+					const cb = fixedContainingBlockRect(popoverEl);
 
 					// If it STILL overflows horizontally after clamping, the content
 					// is too wide to fit anchored — fall back to the centered modal.
-					if (rect.left < 0 || rect.right > viewportWidth) {
+					if (rect.left < cb.left || rect.right > cb.right) {
 						debug("overflow detected, switching to fallback mode");
 						switchingToFallback = true;
 
@@ -695,6 +718,7 @@ export function popover(anchorEl: HTMLElement, fn?: () => PopoverOptions) {
 			onHide: opts.onHide,
 			debug: opts.debug,
 			id: opts.id,
+			container: opts.container,
 		};
 
 		do_debug = !!opts.debug;
