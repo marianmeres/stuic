@@ -2,7 +2,7 @@
 
 ## Overview
 
-63 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
+64 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
@@ -62,6 +62,7 @@
 | CronInput                                     | Cron expression editor with presets and validation                          |
 | Fieldset                                      | Field grouping with legend                                                  |
 | FieldKeyValues                                | Key-value pair editor                                                       |
+| FieldsBuilder                                 | Field-definition list editor ("what properties does a thing have?")         |
 | FieldAssets                                   | File/asset management                                                       |
 | LoginForm, LoginFormModal                     | Standalone login form with optional modal variant                           |
 | RegisterForm                                  | Standalone registration form with declarative extra fields                  |
@@ -506,6 +507,65 @@ Dual-mode JSON object editor with pretty-print and raw edit modes.
 Features: pretty-print display with recursive depth, edit mode with auto-grow textarea, JSON syntax validation on apply, hidden input for form submission, responsive nested rendering.
 
 Exported from Input: `FieldObject`, `FieldObjectProps`.
+
+---
+
+## FieldsBuilder
+
+Composite form control for authoring an ordered list of field definitions — the end
+user (typically non-technical) answers "what properties does a thing have?": add a
+field, name it, pick its type, mark it required, reorder, delete. The bindable `value`
+is a plain `FieldDef[]`; the type palette is a required prop (`types`), never a
+built-in union. Emits a field list, NOT JSON Schema — compiling (and re-validating)
+the list is the consumer's job, server-side. Own directory: `components/FieldsBuilder/`
+(composes `InputWrap`, exports the validate quintet).
+
+### Exports
+
+| Export                                                             | Kind      | Description                                                 |
+| ------------------------------------------------------------------ | --------- | ----------------------------------------------------------- |
+| `FieldsBuilder`                                                    | component | Main component                                              |
+| `FieldsBuilderProps`                                               | type      | Props type                                                  |
+| `FieldDef`                                                         | type      | One field definition (the value unit)                       |
+| `FieldLock`                                                        | type      | Per-field edit locks                                        |
+| `FieldOptionDef`                                                   | type      | Choice-type option `{ value, label }`                       |
+| `FieldTypeDef`                                                     | type      | Palette entry                                               |
+| `FieldTypeExtraDef`                                                | type      | Palette-declared boolean extra                              |
+| `LocalizedText`                                                    | type      | `string \| Record<language, string>`                        |
+| `FIELDS_BUILDER_DEFAULT_TYPES`                                     | constant  | Starter palette (text/longtext/number/checkbox/select/date) |
+| `FIELDS_BUILDER_DEFAULT_KEY_PATTERN`                               | constant  | `/^[a-z][a-z0-9_]{0,62}$/`                                  |
+| `getLocalizedText`, `slugifyKey`, `uniqueKey`, `validateFieldDefs` | functions | Pure helpers (node-testable)                                |
+
+### Key Props
+
+| Prop                 | Type                                           | Default  | Description                                      |
+| -------------------- | ---------------------------------------------- | -------- | ------------------------------------------------ |
+| `value`              | `FieldDef[]`                                   | required | Bindable ordered field list                      |
+| `name`               | `string`                                       | required | Hidden-input name                                |
+| `types`              | `FieldTypeDef[]`                               | required | The type palette                                 |
+| `languages`          | `string[]`                                     | —        | Multi-language labels/descriptions/options       |
+| `keysImmutable`      | `boolean`                                      | `true`   | Freeze keys loaded from `value`                  |
+| `deriveKeyFromLabel` | `boolean \| (label) => string`                 | `true`   | Live slug derivation (diacritics transliterated) |
+| `reservedKeys`       | `string[] \| (key) => boolean`                 | —        | Forbidden keys (derivation auto-avoids them)     |
+| `deleteMode`         | `"mark" \| "immediate"`                        | `"mark"` | Mark+undo vs outright removal                    |
+| `onBeforeDelete`     | `(field) => void \| false \| Promise`          | —        | Delete veto (Tree `onMove`-style)                |
+| `onBeforeTypeChange` | `(field, newType) => void \| false \| Promise` | —        | Type-change veto for pre-existing fields         |
+| `preview`            | `Snippet<[{ fields }]>`                        | —        | Live preview pane (side-by-side when wide)       |
+| `maxFields`          | `number`                                       | —        | Add-limit                                        |
+
+Features: collapsed rows (label + key + type chip) expanding to the full editor;
+drag reorder + Move up/down buttons with aria-live announcements; `lock.*` per-field
+locks (label/description always editable); unknown-type rows render degraded
+read-only and round-trip untouched; per-row inline validation with
+focus-first-offender `validate()`.
+
+### CSS Tokens
+
+Prefix: `--stuic-fields-builder-*`
+
+`row-border`, `row-toggle-bg-hover`, `key-text`, `chip-bg`, `chip-text`, `chip-radius`,
+`muted-text`, `warning-text`, `error-text`, `drop-indicator-color`,
+`drop-indicator-height`, `row-opacity-dragging`, `row-opacity-deleted`, `preview-border`
 
 ---
 

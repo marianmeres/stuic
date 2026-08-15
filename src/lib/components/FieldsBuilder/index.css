@@ -1,0 +1,187 @@
+/* ============================================================================
+   FIELDS BUILDER COMPONENT TOKENS
+   Override globally: :root { --stuic-fields-builder-row-border: red; }
+   Override locally:  <FieldsBuilder style="--stuic-fields-builder-chip-bg: ..." />
+   ============================================================================ */
+
+/* prettier-ignore */
+:root {
+	--stuic-fields-builder-row-border: var(--stuic-color-border);
+	--stuic-fields-builder-row-toggle-bg-hover: var(--stuic-color-muted);
+	--stuic-fields-builder-key-text: var(--stuic-color-muted-foreground);
+	--stuic-fields-builder-chip-bg: var(--stuic-color-muted);
+	--stuic-fields-builder-chip-text: var(--stuic-color-muted-foreground);
+	--stuic-fields-builder-muted-text: var(--stuic-color-muted-foreground);
+	--stuic-fields-builder-warning-text: var(--stuic-color-surface-warning-foreground);
+	--stuic-fields-builder-error-text: var(--stuic-color-destructive);
+	--stuic-fields-builder-drop-indicator-color: var(--stuic-color-primary);
+	--stuic-fields-builder-drop-indicator-height: 2px;
+	--stuic-fields-builder-row-opacity-dragging: 0.4;
+	--stuic-fields-builder-row-opacity-deleted: 0.55;
+	--stuic-fields-builder-preview-border: var(--stuic-color-border);
+}
+
+@layer components {
+	/* =============================================================================
+	   ROWS
+	   ============================================================================= */
+
+	.stuic-fields-builder .fb-row-divider {
+		border-top: 1px solid var(--stuic-fields-builder-row-border);
+	}
+
+	.stuic-fields-builder .fb-row[data-dragging] {
+		opacity: var(--stuic-fields-builder-row-opacity-dragging);
+	}
+
+	.stuic-fields-builder .fb-row[data-drop-position="before"] {
+		box-shadow: inset 0 var(--stuic-fields-builder-drop-indicator-height) 0
+			var(--stuic-fields-builder-drop-indicator-color);
+	}
+
+	.stuic-fields-builder .fb-row[data-drop-position="after"] {
+		box-shadow: inset 0 calc(-1 * var(--stuic-fields-builder-drop-indicator-height)) 0
+			var(--stuic-fields-builder-drop-indicator-color);
+	}
+
+	.stuic-fields-builder .fb-row-deleted .fb-row-header {
+		opacity: var(--stuic-fields-builder-row-opacity-deleted);
+	}
+
+	.stuic-fields-builder .fb-row-deleted .fb-row-label {
+		text-decoration: line-through;
+	}
+
+	/* =============================================================================
+	   ROW HEADER
+	   ============================================================================= */
+
+	.stuic-fields-builder .fb-row-header {
+		padding-block: calc(var(--spacing) * 1);
+	}
+
+	.stuic-fields-builder .fb-row-toggle {
+		padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 1);
+		transition: background var(--stuic-transition);
+	}
+
+	.stuic-fields-builder .fb-row-toggle:hover:not(:disabled) {
+		background: var(--stuic-fields-builder-row-toggle-bg-hover);
+	}
+
+	.stuic-fields-builder .fb-row-toggle:disabled {
+		cursor: default;
+	}
+
+	.stuic-fields-builder .fb-row-label {
+		font-weight: 500;
+	}
+
+	.stuic-fields-builder .fb-row-required {
+		opacity: 0.5;
+	}
+
+	.stuic-fields-builder .fb-key {
+		font-family: var(--font-mono);
+		font-size: var(--text-xs);
+		color: var(--stuic-fields-builder-key-text);
+	}
+
+	.stuic-fields-builder .fb-chip {
+		background: var(--stuic-fields-builder-chip-bg);
+		color: var(--stuic-fields-builder-chip-text);
+		font-size: var(--text-xs);
+		padding: calc(var(--spacing) * 0.5) calc(var(--spacing) * 1.5);
+		border-radius: var(--stuic-fields-builder-chip-radius, var(--stuic-radius));
+		white-space: nowrap;
+	}
+
+	.stuic-fields-builder .fb-chip-warning {
+		color: var(--stuic-fields-builder-warning-text);
+	}
+
+	.stuic-fields-builder .fb-chevron {
+		opacity: 0.5;
+	}
+
+	.stuic-fields-builder .fb-handle {
+		cursor: grab;
+		opacity: 0.4;
+		touch-action: none;
+	}
+
+	.stuic-fields-builder .fb-handle:hover {
+		opacity: 1;
+	}
+
+	.stuic-fields-builder .fb-handle-spacer {
+		width: 16px;
+	}
+
+	/* =============================================================================
+	   ROW BODY (expanded editor)
+	   ============================================================================= */
+
+	.stuic-fields-builder .fb-row-body {
+		display: flex;
+		flex-direction: column;
+		gap: calc(var(--spacing) * 3);
+		padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2) calc(var(--spacing) * 3)
+			calc(var(--spacing) * 2);
+	}
+
+	.stuic-fields-builder .fb-sub-label {
+		display: block;
+		font-size: var(--text-xs);
+		font-weight: 500;
+		color: var(--stuic-fields-builder-muted-text);
+		margin-bottom: calc(var(--spacing) * 0.5);
+	}
+
+	.stuic-fields-builder .fb-hint {
+		color: var(--stuic-fields-builder-muted-text);
+	}
+
+	.stuic-fields-builder .fb-error-text {
+		color: var(--stuic-fields-builder-error-text);
+	}
+
+	.stuic-fields-builder .fb-warning-text {
+		color: var(--stuic-fields-builder-warning-text);
+	}
+
+	.stuic-fields-builder .fb-advanced-toggle {
+		color: var(--stuic-fields-builder-muted-text);
+		transition: color var(--stuic-transition);
+	}
+
+	.stuic-fields-builder .fb-advanced-toggle:hover {
+		color: var(--stuic-color-foreground);
+	}
+
+	/* =============================================================================
+	   OPTIONS EDITOR
+	   ============================================================================= */
+
+	.stuic-fields-builder .fb-option-divider {
+		border-top: 1px dashed var(--stuic-fields-builder-row-border);
+	}
+
+	/* =============================================================================
+	   PREVIEW PANE
+	   ============================================================================= */
+
+	.stuic-fields-builder .fb-preview-side {
+		border-left: 1px solid var(--stuic-fields-builder-preview-border);
+	}
+
+	.stuic-fields-builder .fb-preview-below {
+		border-top: 1px solid var(--stuic-fields-builder-preview-border);
+	}
+
+	.stuic-fields-builder .fb-preview-title {
+		color: var(--stuic-fields-builder-muted-text);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+}
