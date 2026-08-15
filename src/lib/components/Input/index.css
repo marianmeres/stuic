@@ -42,6 +42,10 @@
 	--stuic-input-font-size-lg: var(--text-lg);
 	--stuic-input-min-height-lg: 3rem;
 
+	/* Smallest font-size a text control may compute to on touch WebKit.
+	   See the "IOS ZOOM GUARD" section at the bottom of this file. */
+	--stuic-input-font-size-touch-min: 16px;
+
 	/* Range input */
 	--stuic-input-range-thumb-size: 18px;
 	--stuic-input-range-track-height: 4px;
@@ -672,5 +676,79 @@
 	.stuic-field-country .stuic-dropdown-menu-search {
 		padding-top: 0;
 		padding-bottom: 0;
+	}
+}
+
+/* ============================================================================
+   IOS ZOOM GUARD
+
+   Mobile WebKit (iOS/iPadOS) auto-zooms the viewport when a text control whose
+   computed font-size is below 16px receives focus. The `sm` size (14px) trips
+   it, so tapping into e.g. a FieldsBuilder input jumps the whole page.
+
+   Raise the font-size to at least `--stuic-input-font-size-touch-min`, but only
+   where the zoom actually happens. Two conditions, both required:
+     - `@supports (font: -apple-system-body) or (-webkit-touch-callout: none)`
+       → an Apple/WebKit engine (verified: true in WebKit, false in Blink and
+       Gecko). Two signals OR-ed because `-webkit-touch-callout` is iOS-only
+       while `-apple-system-body` covers Apple platforms generally.
+     - `@media (any-pointer: coarse)` → ...on a touch-capable device, which on
+       Apple means iOS/iPadOS. This is what excludes desktop Safari.
+
+   Desktop (incl. Safari) and Android/Blink — neither of which zooms on focus —
+   keep the original, smaller size.
+
+   `max()` respects consumer overrides of the size tokens and never shrinks a
+   control. Opt out with `--stuic-input-font-size-touch-min: 0px`.
+
+   Deliberately NOT in `@layer components`: unlayered rules beat layered ones,
+   so this also wins over the Tailwind `text-sm` utilities some components put
+   on their own raw inputs (FieldsBuilder's mono key/value inputs, ...), which
+   would otherwise stay at 14px regardless of the size tokens.
+   ============================================================================ */
+
+@supports (font: -apple-system-body) or (-webkit-touch-callout: none) {
+	@media (any-pointer: coarse) {
+		.stuic-input[data-size="sm"]
+			input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+				[type="file"]
+			),
+		.stuic-input[data-size="sm"] textarea,
+		.stuic-input[data-size="sm"] select {
+			font-size: max(
+				var(--stuic-input-font-size-touch-min),
+				var(--stuic-input-font-size-sm)
+			);
+		}
+
+		.stuic-input[data-size="md"]
+			input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+				[type="file"]
+			),
+		.stuic-input[data-size="md"] textarea,
+		.stuic-input[data-size="md"] select,
+		.stuic-input:not([data-size])
+			input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+				[type="file"]
+			),
+		.stuic-input:not([data-size]) textarea,
+		.stuic-input:not([data-size]) select {
+			font-size: max(
+				var(--stuic-input-font-size-touch-min),
+				var(--stuic-input-font-size-md)
+			);
+		}
+
+		.stuic-input[data-size="lg"]
+			input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+				[type="file"]
+			),
+		.stuic-input[data-size="lg"] textarea,
+		.stuic-input[data-size="lg"] select {
+			font-size: max(
+				var(--stuic-input-font-size-touch-min),
+				var(--stuic-input-font-size-lg)
+			);
+		}
 	}
 }

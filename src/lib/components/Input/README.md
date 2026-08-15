@@ -291,6 +291,27 @@ Each size (sm, md, lg) has corresponding tokens:
 | `--stuic-input-font-size-{size}`  | `--text-sm`             | `--text-base`           | `--text-lg`           |
 | `--stuic-input-min-height-{size}` | `2.5rem`                | `2.75rem`               | `3rem`                |
 
+#### iOS zoom guard
+
+iOS/iPadOS Safari zooms the whole page when a text control with a computed
+font-size below 16px receives focus — which the `sm` size (14px) triggers. On
+touch-capable Apple devices only, inputs, textareas and selects are therefore
+raised to at least:
+
+| Variable                            | Default | Description                                        |
+| ----------------------------------- | ------- | -------------------------------------------------- |
+| `--stuic-input-font-size-touch-min` | `16px`  | Minimum font-size on touch WebKit (iOS zoom guard) |
+
+Desktop (including macOS Safari) and Android keep the original, smaller size —
+neither zooms on focus. The guard never shrinks a control, so `md`/`lg` are
+unaffected at their default sizes. Opt out with:
+
+```css
+:root {
+	--stuic-input-font-size-touch-min: 0px;
+}
+```
+
 ### Checkbox/Radio Tokens
 
 | Variable                          | Default                | Description            |
