@@ -23,3 +23,15 @@ export {
 	type FieldDefsValidationResult,
 	type ValidateFieldDefsOptions,
 } from "./utils.js";
+
+export {
+	createFieldsBuilderT,
+	FIELDS_BUILDER_MESSAGES_EN,
+	type FieldsBuilderMessageKey,
+	type FieldsBuilderMessages,
+} from "./i18n.js";
+
+export {
+	FIELDS_BUILDER_MESSAGES_SK,
+	FIELDS_BUILDER_DEFAULT_TYPES_SK,
+} from "./i18n-sk.js";

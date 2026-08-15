@@ -161,7 +161,7 @@ not block validation. It is never silently dropped.
 | `renderSize`                                                  | `"sm" \| "md" \| "lg"`                               | `"sm"`         | InputWrap size                                         |
 | `addLabel`, `emptyMessage`                                    | `string`                                             | —              | Text overrides                                         |
 | `classRow`, `classRowHeader`, `classRowBody`, `classPreview`  | `string`                                             | —              | Class hooks                                            |
-| `t`                                                           | `TranslateFn`                                        | built-in       | i18n override for all texts                            |
+| `t`                                                           | `TranslateFn`                                        | built-in (en)  | i18n override for all texts (see below)                |
 | `disabled`, `id`, `tabindex`, `style`, `labelLeft*`, `class*` |                                                      |                | Standard `Field*`/InputWrap pass-throughs              |
 
 Imperative API (via `bind:this`), same as every `Field*`:
@@ -189,6 +189,46 @@ Per-field `lock` flags: `key`, `type`, `required`, `options`, `delete`, `reorder
 A `lock.reorder` field is position-pinned — it cannot be dragged and no other move may
 change its index. **Label and description are always editable**, even on fully locked
 fields: the consumer owns a system field's identity, the user owns what it is called.
+
+## i18n
+
+All UI texts go through the `t` prop. English is the built-in default; Slovak ships
+bundled and opt-in (importing it is what pulls it into your bundle — English-only
+consumers pay nothing).
+
+```svelte
+<script>
+	import {
+		FieldsBuilder,
+		createFieldsBuilderT,
+		FIELDS_BUILDER_MESSAGES_SK,
+		FIELDS_BUILDER_DEFAULT_TYPES_SK,
+	} from "@marianmeres/stuic";
+
+	const t = createFieldsBuilderT(FIELDS_BUILDER_MESSAGES_SK);
+</script>
+
+<FieldsBuilder bind:value name="fields" types={FIELDS_BUILDER_DEFAULT_TYPES_SK} {t} />
+```
+
+`createFieldsBuilderT(messages, fallbackMessages?)` falls back to
+`FIELDS_BUILDER_MESSAGES_EN` for any key the catalog does not define, so a partial
+catalog is fine and a raw key is never rendered — pass your own object to translate
+into a language that is not bundled, or to override individual bundled texts:
+
+```ts
+const t = createFieldsBuilderT({
+	...FIELDS_BUILDER_MESSAGES_SK,
+	label_label: "Otázka",
+});
+```
+
+Note the palette is separate: `types` is consumer-owned data, so translating the
+messages alone would leave the type select in English. `FIELDS_BUILDER_DEFAULT_TYPES_SK`
+is the Slovak twin of `FIELDS_BUILDER_DEFAULT_TYPES` (identical `type` values — the
+stored defs are unaffected by which one you pass). A palette entry's `label` /
+`description` also accept a per-language map (`{ en: "Text", sk: "Text" }`), resolved
+against `defaultLanguage`.
 
 ## Accessibility
 

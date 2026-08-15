@@ -2,6 +2,9 @@
 	import {
 		FieldsBuilder,
 		FIELDS_BUILDER_DEFAULT_TYPES,
+		FIELDS_BUILDER_DEFAULT_TYPES_SK,
+		FIELDS_BUILDER_MESSAGES_SK,
+		createFieldsBuilderT,
 		getLocalizedText,
 		type FieldDef,
 		type FieldTypeDef,
@@ -55,6 +58,21 @@
 	];
 	let value3 = $state<FieldDef[]>([
 		{ key: "name", type: "text", label: "Name", extras: { searchable: true } },
+	]);
+
+	// 4) bundled slovak catalog + slovak palette (english stays the default)
+	const tSk = createFieldsBuilderT(FIELDS_BUILDER_MESSAGES_SK);
+	let value4 = $state<FieldDef[]>([
+		{ key: "nazov", type: "text", label: "Názov", required: true },
+		{
+			key: "farba",
+			type: "select",
+			label: "Farba",
+			options: [
+				{ value: "biele", label: "Biele" },
+				{ value: "cervene", label: "Červené" },
+			],
+		},
 	]);
 </script>
 
@@ -153,6 +171,30 @@
 			/>
 			<pre class="mt-2 text-xs opacity-60 overflow-x-auto">{JSON.stringify(
 					value3,
+					null,
+					2
+				)}</pre>
+		</div>
+
+		<div>
+			<h2 class="text-lg font-semibold mb-4">Bundled Slovak localization</h2>
+			<p class="text-sm opacity-60 mb-4">
+				<code>createFieldsBuilderT(FIELDS_BUILDER_MESSAGES_SK)</code> for the UI texts,
+				<code>FIELDS_BUILDER_DEFAULT_TYPES_SK</code> for the palette. Both are opt-in imports
+				— English remains the built-in default.
+			</p>
+			<FieldsBuilder
+				bind:value={value4}
+				name="fields4"
+				label="Vlastnosti položky"
+				description="Definujte, aké vlastnosti položka má. Poradie zmeníte ťahaním alebo šípkami."
+				types={FIELDS_BUILDER_DEFAULT_TYPES_SK}
+				t={tSk}
+				required
+				maxFields={6}
+			/>
+			<pre class="mt-2 text-xs opacity-60 overflow-x-auto">{JSON.stringify(
+					value4,
 					null,
 					2
 				)}</pre>
