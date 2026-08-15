@@ -1012,11 +1012,14 @@
 												/>
 											</div>
 
-											<div class="flex flex-wrap items-start gap-x-4 gap-y-3">
-												<div class="fb-field flex-1 min-w-40">
-													<label class="fb-sub-label" for="{id}-type-{row.rid}">
-														{t("type_label")}
-													</label>
+											<div class="fb-field">
+												<label class="fb-sub-label" for="{id}-type-{row.rid}">
+													{t("type_label")}
+												</label>
+												<!-- select + Required share one row so the checkbox is
+												     centered against the control, not against the whole
+												     column (the hint/warning below would drag it down) -->
+												<div class="flex flex-wrap items-center gap-x-4 gap-y-2">
 													<select
 														id="{id}-type-{row.rid}"
 														value={row.def.type}
@@ -1024,7 +1027,7 @@
 															changeType(row, e.currentTarget.value, e.currentTarget)}
 														disabled={disabled || !!row.def.lock?.type}
 														{tabindex}
-														class={twMerge(INPUT_CLS, "w-full")}
+														class={twMerge(INPUT_CLS, "flex-1 min-w-40")}
 													>
 														{#each types as td (td.type)}
 															<option value={td.type}>
@@ -1032,23 +1035,8 @@
 															</option>
 														{/each}
 													</select>
-													{#if entry.description}
-														<div class="fb-hint text-xs mt-0.5">
-															{getLocalizedText(entry.description, _defaultLanguage)}
-														</div>
-													{/if}
-													{#if typeChanged(row)}
-														<div
-															class="fb-warning-text text-xs mt-1 flex items-start gap-1"
-														>
-															{@html iconAlertWarning({ size: 12 })}
-															<span>{t("type_change_warning")}</span>
-														</div>
-													{/if}
-												</div>
-												<div class="fb-field flex items-end self-stretch pb-1">
 													<label
-														class="stuic-checkbox flex items-center gap-2 cursor-pointer"
+														class="stuic-checkbox flex items-center gap-2 cursor-pointer shrink-0"
 													>
 														<input
 															type="checkbox"
@@ -1063,6 +1051,19 @@
 														<span class="text-sm">{t("required_label")}</span>
 													</label>
 												</div>
+												{#if entry.description}
+													<div class="fb-hint text-xs mt-0.5">
+														{getLocalizedText(entry.description, _defaultLanguage)}
+													</div>
+												{/if}
+												{#if typeChanged(row)}
+													<div
+														class="fb-warning-text text-xs mt-1 flex items-start gap-1"
+													>
+														{@html iconAlertWarning({ size: 12 })}
+														<span>{t("type_change_warning")}</span>
+													</div>
+												{/if}
 											</div>
 
 											{#if entry.supportsOptions}
