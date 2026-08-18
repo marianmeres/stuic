@@ -381,11 +381,50 @@ export function createTour(options: TourOptions) {
 		options.onEnd?.();
 	}
 
+	/**
+	 * Drop every SELECTOR-resolved target, so the next run resolves them against
+	 * the DOM as it is now.
+	 *
+	 * The registry is a cache and `advanceTo` only queries the DOM for a step it
+	 * does not already hold, so without this a second run re-uses the first
+	 * run's nodes. For a tour whose targets all sit in one stable subtree that
+	 * is harmless. For one that crosses a lazy tab, a route or a keyed block it
+	 * is fatal, and silently: a detached node's `getBoundingClientRect()` is all
+	 * zeroes, so the cutout collapses to 0x0 in the top-left corner and the
+	 * annotation follows it there. Nothing throws and nothing warns.
+	 *
+	 * Steps registered through `use:tourStep` are deliberately SPARED. The
+	 * action owns their lifetime — it registers on mount and unregisters on
+	 * destroy — so their entries are never stale, and such a step has no
+	 * `selector` to be re-resolved from: dropping one whose element is still on
+	 * screen would leave `advanceTo` nothing to find, and it would skip the step
+	 * after waiting `waitForElement` ms for a registration that already
+	 * happened. `actionRegistered` is exactly the set to spare.
+	 */
+	function clearResolvedTargets() {
+		for (const id of registry.keys()) {
+			if (!actionRegistered.has(id)) registry.delete(id);
+		}
+	}
+
 	// -- Public API ---------------------------------------------------------------------
 
+	/**
+	 * Begin the tour at its first available step.
+	 *
+	 * No-op while a tour is already running, and — if `storageKey` is set — for
+	 * anyone who has already completed or skipped it. Use {@link reset} to
+	 * clear that.
+	 *
+	 * Resolved targets are cleared HERE rather than in `reset()`, because the
+	 * staleness is per-RUN and not per-persisted-flag: a tour with no
+	 * `storageKey` is re-startable without ever calling `reset()`, and would
+	 * otherwise walk the previous run's nodes. See {@link clearResolvedTargets}.
+	 */
 	function start() {
 		if (active) return;
 		if (store && store.has(options.storageKey!)) return;
+		clearResolvedTargets();
 		options.onStart?.();
 		advanceTo(0);
 	}
@@ -405,6 +444,13 @@ export function createTour(options: TourOptions) {
 		options.onSkip?.();
 	}
 
+	/**
+	 * Forget that this tour was completed or skipped, so {@link start} runs it
+	 * again. A no-op without `storageKey` — there is nothing persisted to clear.
+	 *
+	 * It does NOT touch the resolved-target cache; `start()` does, on every run.
+	 * See {@link clearResolvedTargets} for why that is the right boundary.
+	 */
 	function reset() {
 		store?.remove(options.storageKey!);
 	}

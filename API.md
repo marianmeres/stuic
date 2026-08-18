@@ -1629,9 +1629,11 @@ Multi-step onboarding tour built on the spotlight primitive. Define steps centra
 | `onSkip`         | `() => void`                        | —         | Called when tour is skipped                      |
 | `onStepChange`   | `(step, index) => void`             | —         | Called on every step change                      |
 
-**Returns:** `{ start(), stop(), next(), prev(), skip(), reset(), reposition(), active, currentStep, currentIndex }`
+**Returns:** `{ start(), next(), prev(), skip(), reset(), reposition(), active, currentStep, currentIndex, seen }`
 
 `reposition()` forces the active step's spotlight to re-measure its target and re-apply the cutout/anchor. Useful after a layout shift the spotlight's auto-tracking can't observe (or when a step opted out of it).
+
+`reset()` clears the `storageKey` result so `start()` will run the tour again; `seen` is that flag read back. Every `start()` re-resolves `selector` steps against the current DOM, so a tour whose targets remount between runs (a lazy tab, a route, a keyed block) points at the nodes that are on screen now. Targets registered through `use:tourStep` are left to the action, which already tracks their mount and unmount.
 
 **`TourStepDef`:**
 
