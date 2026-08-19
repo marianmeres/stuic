@@ -74,6 +74,12 @@
 			],
 		},
 	]);
+
+	// 5) no top level label (just omit the `label` prop)
+	let value5 = $state<FieldDef[]>([
+		{ key: "name", type: "text", label: "Name", required: true },
+		{ key: "note", type: "longtext", label: "Note" },
+	]);
 </script>
 
 <div class="space-y-12 max-w-4xl">
@@ -195,6 +201,26 @@
 			/>
 			<pre class="mt-2 text-xs opacity-60 overflow-x-auto">{JSON.stringify(
 					value4,
+					null,
+					2
+				)}</pre>
+		</div>
+
+		<div>
+			<h2 class="text-lg font-semibold mb-4">No top-level label</h2>
+			<p class="text-sm opacity-60 mb-4">
+				The <code>label</code> prop is optional — omitting it simply renders no top-level
+				label (the label box collapses to zero height and the rows span the full width).
+				Everything else (description, validation, <code>below</code>, …) still works.
+			</p>
+			<FieldsBuilder
+				bind:value={value5}
+				name="fields5"
+				types={FIELDS_BUILDER_DEFAULT_TYPES}
+				description="The label prop was omitted here."
+			/>
+			<pre class="mt-2 text-xs opacity-60 overflow-x-auto">{JSON.stringify(
+					value5,
 					null,
 					2
 				)}</pre>
