@@ -18,6 +18,7 @@ const DEFAULTS: Record<string, string> = {
 	"register_form.password_mismatch": "Passwords do not match",
 	"register_form.field_required": "{label} is required",
 	"register_form.social_divider": "or continue with",
+	"register_form.social_divider_alt": "or",
 	"register_form.already_have_account": "Already have an account?",
 	"register_form.modal_title": "Create account",
 };

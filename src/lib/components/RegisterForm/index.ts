@@ -8,7 +8,11 @@ export {
 	type Props as RegisterFormModalProps,
 } from "./RegisterFormModal.svelte";
 
-export { createEmptyRegisterFormData } from "./_internal/register-form-utils.js";
+export {
+	createEmptyRegisterFormData,
+	validateRegisterForm,
+} from "./_internal/register-form-utils.js";
+export type { ValidateRegisterFormOptions } from "./_internal/register-form-utils.js";
 
 export type {
 	RegisterFormData,

@@ -24,32 +24,45 @@ When the active mode changes, the relevant email is **one-shot copied** to the d
 
 ## LoginOrRegisterForm — Props
 
-| Prop                 | Type                               | Default   | Description                                                                                                           |
-| -------------------- | ---------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------- |
-| `mode`               | `LoginOrRegisterFormMode`          | `"login"` | Bindable active mode.                                                                                                 |
-| `loginData`          | `LoginFormData`                    | empty     | Bindable login form data (forwarded to `LoginForm`).                                                                  |
-| `registerData`       | `RegisterFormData`                 | empty     | Bindable register form data (forwarded to `RegisterForm`).                                                            |
-| `verifyEmail`        | `string`                           | `""`      | Bindable email used by `EmailVerifyForm` (auto-seeded on transitions).                                                |
-| `onLogin`            | `(data: LoginFormData) => void`    | required  | Login submit callback.                                                                                                |
-| `onRegister`         | `(data: RegisterFormData) => void` | required  | Register submit callback.                                                                                             |
-| `onVerify`           | `(code: string) => void`           | -         | Verify submit callback (required only when using verify mode).                                                        |
-| `onResendCode`       | `() => Promise<void> \| void`      | -         | Resend handler — when set, `EmailVerifyForm` renders the resend control.                                              |
-| `isSubmitting`       | `boolean`                          | `false`   | Forwarded to all three forms.                                                                                         |
-| `onForgotPassword`   | `() => void`                       | -         | Forgot-password handler for login mode.                                                                               |
-| `loginProps`         | `Partial<LoginFormProps>`          | -         | Pass-through to the inner `LoginForm`.                                                                                |
-| `registerProps`      | `Partial<RegisterFormProps>`       | -         | Pass-through to the inner `RegisterForm`.                                                                             |
-| `verifyProps`        | `Partial<EmailVerifyFormProps>`    | -         | Pass-through to the inner `EmailVerifyForm` (e.g., `error`, `attemptsRemaining`).                                     |
-| `modeSwitcher`       | `Snippet<[{ mode, setMode, t }]>`  | -         | Override the built-in `ButtonGroupRadio` switcher.                                                                    |
-| `loginModeLabel`     | `string`                           | i18n      | Override the "Log in" tab label.                                                                                      |
-| `registerModeLabel`  | `string`                           | i18n      | Override the "Sign up" tab label.                                                                                     |
-| `socialLogins`       | `Snippet`                          | -         | Shared OAuth buttons rendered once below the active form (hidden in verify mode).                                     |
-| `socialDividerLabel` | `string \| false`                  | i18n      | Override (or hide with `false`) the divider above social buttons.                                                     |
-| `footer`             | `Snippet<[{ mode, setMode }]>`     | -         | Mode-aware footer.                                                                                                    |
-| `notifications`      | `NotificationsStack`               | -         | Forwarded to inner forms.                                                                                             |
-| `onModeChange`       | `(next, prev) => void`             | -         | Called when the active mode changes. Use to clear parent-owned mode-specific state.                                   |
-| `animateHeight`      | `boolean`                          | `true`    | Smoothly animate content height on mode/content change. Respects `prefers-reduced-motion`; no effect when `unstyled`. |
-| `t`                  | `TranslateFn`                      | English   | i18n function.                                                                                                        |
-| `unstyled` / `class` | -                                  | -         | Standard styling escape hatches.                                                                                      |
+| Prop                 | Type                               | Default    | Description                                                                                                                                           |
+| -------------------- | ---------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `mode`               | `LoginOrRegisterFormMode`          | `"login"`  | Bindable active mode.                                                                                                                                 |
+| `loginData`          | `LoginFormData`                    | empty      | Bindable login form data (forwarded to `LoginForm`).                                                                                                  |
+| `registerData`       | `RegisterFormData`                 | empty      | Bindable register form data (forwarded to `RegisterForm`).                                                                                            |
+| `verifyEmail`        | `string`                           | `""`       | Bindable email used by `EmailVerifyForm` (auto-seeded on transitions).                                                                                |
+| `onLogin`            | `(data: LoginFormData) => void`    | required   | Login submit callback.                                                                                                                                |
+| `onRegister`         | `(data: RegisterFormData) => void` | required   | Register submit callback.                                                                                                                             |
+| `onVerify`           | `(code: string) => void`           | -          | Verify submit callback (required only when using verify mode).                                                                                        |
+| `onResendCode`       | `() => Promise<void> \| void`      | -          | Resend handler — when set, `EmailVerifyForm` renders the resend control.                                                                              |
+| `isSubmitting`       | `boolean`                          | `false`    | Forwarded to all three forms.                                                                                                                         |
+| `onForgotPassword`   | `() => void`                       | -          | Forgot-password handler for login mode.                                                                                                               |
+| `loginProps`         | `Partial<LoginFormProps>`          | -          | Pass-through to the inner `LoginForm`.                                                                                                                |
+| `registerProps`      | `Partial<RegisterFormProps>`       | -          | Pass-through to the inner `RegisterForm`.                                                                                                             |
+| `verifyProps`        | `Partial<EmailVerifyFormProps>`    | -          | Pass-through to the inner `EmailVerifyForm` (e.g., `error`, `attemptsRemaining`).                                                                     |
+| `modeSwitcher`       | `Snippet<[{ mode, setMode, t }]>`  | -          | Override the built-in `ButtonGroupRadio` switcher.                                                                                                    |
+| `loginModeLabel`     | `string`                           | i18n       | Override the "Log in" tab label.                                                                                                                      |
+| `registerModeLabel`  | `string`                           | i18n       | Override the "Sign up" tab label.                                                                                                                     |
+| `socialLogins`       | `Snippet`                          | -          | Shared OAuth buttons rendered once below the active form (hidden in verify mode).                                                                     |
+| `socialPosition`     | `"top" \| "bottom"`                | `"bottom"` | `"top"` renders the shared social block between the mode switcher and the form, divider **below** the buttons.                                        |
+| `socialDividerLabel` | `string \| false`                  | i18n       | Override (or hide with `false`) the divider. Defaults to `social_divider` ("or continue with") at the bottom, `social_divider_alt` ("or") at the top. |
+| `footer`             | `Snippet<[{ mode, setMode }]>`     | -          | Mode-aware footer.                                                                                                                                    |
+| `notifications`      | `NotificationsStack`               | -          | Forwarded to inner forms.                                                                                                                             |
+| `onModeChange`       | `(next, prev) => void`             | -          | Called when the active mode changes. Use to clear parent-owned mode-specific state.                                                                   |
+| `animateHeight`      | `boolean`                          | `true`     | Smoothly animate content height on mode/content change. Respects `prefers-reduced-motion`; no effect when `unstyled`.                                 |
+| `t`                  | `TranslateFn`                      | English    | i18n function.                                                                                                                                        |
+| `unstyled` / `class` | -                                  | -          | Standard styling escape hatches.                                                                                                                      |
+
+> The composite owns the shared social block, so `socialLogins`, `socialPosition`, `socialDividerLabel` (and `formData` / `onSubmit` / `isSubmitting` / `t` / `notifications` / `footer`) are **excluded** from `loginProps` / `registerProps` — passing one there would type-check and then do nothing.
+
+### Imperative methods (via `bind:this`)
+
+All three delegate to whichever inner form is currently mounted.
+
+| Method                      | Returns   | Purpose                                                                         |
+| --------------------------- | --------- | ------------------------------------------------------------------------------- |
+| `validate()`                | `boolean` | Runs the active form's validators. `true` if valid (or nothing is mounted yet). |
+| `scrollToFirstError(opts?)` | `boolean` | Scrolls + focuses the active form's first invalid field.                        |
+| `focusField(name)`          | `boolean` | Focuses a field by name (implemented by `RegisterForm`; `false` elsewhere).     |
 
 ## LoginOrRegisterFormModal — extra props
 
@@ -67,7 +80,7 @@ Inherits all `LoginOrRegisterForm` props, plus:
 | `onClose`             | `() => false \| void` | -                                                              | Pre-close hook. Return `false` to prevent close.                        |
 | `noClickOutsideClose` | `boolean`             | `true`                                                         | Disable backdrop-click close (default-on to protect typed credentials). |
 
-**Methods:** `open(openerOrEvent?)`, `close()` — exposed via `bind:this`.
+**Methods:** `open(openerOrEvent?)`, `close()`, plus the inner form's `validate()`, `scrollToFirstError(opts?)` and `focusField(name)` — all exposed via `bind:this`. The three forwarded ones are no-ops (`true` / `false` / `false`) while the modal is closed, since no form is mounted then.
 
 ## Usage
 
@@ -141,12 +154,14 @@ Prefix: `--stuic-login-or-register-form-*`
 | ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `--stuic-login-or-register-form-gap`                          | Vertical gap                                                                                                                                                                                                                |
 | `--stuic-login-or-register-form-switcher-margin-bottom`       | Spacing below the mode switcher                                                                                                                                                                                             |
-| `--stuic-login-or-register-form-social-margin-top`            | Margin above social block                                                                                                                                                                                                   |
+| `--stuic-login-or-register-form-social-margin-top`            | Margin above social block (default position)                                                                                                                                                                                |
+| `--stuic-login-or-register-form-social-margin-bottom`         | Margin below social block (`socialPosition="top"`)                                                                                                                                                                          |
 | `--stuic-login-or-register-form-social-gap`                   | Gap between social buttons                                                                                                                                                                                                  |
 | `--stuic-login-or-register-form-social-divider-color`         | Divider text color                                                                                                                                                                                                          |
 | `--stuic-login-or-register-form-social-divider-line-color`    | Divider line color                                                                                                                                                                                                          |
 | `--stuic-login-or-register-form-social-divider-font-size`     | Divider text size                                                                                                                                                                                                           |
-| `--stuic-login-or-register-form-social-divider-margin-bottom` | Divider bottom margin                                                                                                                                                                                                       |
+| `--stuic-login-or-register-form-social-divider-margin-bottom` | Divider bottom margin (default position)                                                                                                                                                                                    |
+| `--stuic-login-or-register-form-social-divider-margin-top`    | Divider top margin (`socialPosition="top"`)                                                                                                                                                                                 |
 | `--stuic-login-or-register-form-height-transition-duration`   | Height animation duration (`animateHeight`)                                                                                                                                                                                 |
 | `--stuic-login-or-register-form-height-transition-easing`     | Height animation easing (`animateHeight`)                                                                                                                                                                                   |
 | `--stuic-login-or-register-form-height-clip-margin`           | `overflow-clip-margin` while the height animates — how far focus rings / borders may paint past the clip edge so they aren't sliced mid-transition. Default `0.5rem`; raise it if inner controls have larger rings/shadows. |
@@ -162,6 +177,7 @@ Prefix: `--stuic-login-or-register-form-*`
 | `login_or_register_form.modal_title_register` | `Create account`    |
 | `login_or_register_form.modal_title_verify`   | `Verify your email` |
 | `login_or_register_form.social_divider`       | `or continue with`  |
+| `login_or_register_form.social_divider_alt`   | `or`                |
 
 ## See also
 

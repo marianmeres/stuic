@@ -78,6 +78,7 @@
 			| "registerProps"
 			| "verifyProps"
 			| "socialLogins"
+			| "socialPosition"
 			| "socialDividerLabel"
 			| "footer"
 			| "modeSwitcher"
@@ -445,6 +446,7 @@
 			registerModeLabel={loginOrRegisterModal.registerModeLabel}
 			verifyModeLabel={loginOrRegisterModal.verifyModeLabel}
 			socialLogins={loginOrRegisterModal.socialLogins}
+			socialPosition={loginOrRegisterModal.socialPosition}
 			socialDividerLabel={loginOrRegisterModal.socialDividerLabel}
 			footer={loginOrRegisterModal.footer}
 			{notifications}

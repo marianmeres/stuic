@@ -11,6 +11,10 @@
 
 	export type LoginOrRegisterFormMode = "login" | "register" | "verify";
 
+	// The composite owns these — the inner forms never see them, so passing one
+	// through `loginProps` / `registerProps` would type-check and then do nothing.
+	// `socialPosition` is in the list for exactly that reason: the shared social
+	// block is rendered HERE, so the inner RegisterForm's own copy is inert.
 	type InnerPropsCommonOmit =
 		| "formData"
 		| "onSubmit"
@@ -18,6 +22,7 @@
 		| "t"
 		| "notifications"
 		| "socialLogins"
+		| "socialPosition"
 		| "socialDividerLabel"
 		| "footer";
 
@@ -103,6 +108,17 @@
 		socialLogins?: Snippet;
 
 		/**
+		 * Where the shared social block sits relative to the active form:
+		 * - `"bottom"` (default) — below the form, divider ABOVE the buttons
+		 * - `"top"` — between the mode switcher and the form, divider BELOW them
+		 *
+		 * `"top"` suits identity-first signup, where the provider button is an
+		 * alternative to the credentials rather than to the whole form.
+		 * Default: "bottom"
+		 */
+		socialPosition?: "top" | "bottom";
+
+		/**
 		 * Override the divider label above social login buttons.
 		 * Default: i18n key "login_or_register_form.social_divider".
 		 * Set to `false` to hide the divider while still rendering socialLogins.
@@ -177,6 +193,7 @@
 		loginModeLabel,
 		registerModeLabel,
 		socialLogins,
+		socialPosition = "bottom",
 		socialDividerLabel,
 		footer,
 		notifications,
@@ -243,6 +260,7 @@
 				scrollToFirstError?(
 					opts?: Parameters<typeof scrollToFirstInvalidField>[1]
 				): boolean;
+				focusField?(name: string): boolean;
 		  }
 		| undefined {
 		if (mode === "login") return loginFormRef;
@@ -269,7 +287,54 @@
 	): boolean {
 		return _activeForm()?.scrollToFirstError?.(opts) ?? false;
 	}
+
+	/**
+	 * Focus a field by name on the active inner form (currently only
+	 * `RegisterForm` implements it). Returns false if the active form doesn't
+	 * support it or the field is not rendered.
+	 */
+	export function focusField(name: string): boolean {
+		return _activeForm()?.focusField?.(name) ?? false;
+	}
 </script>
+
+{#snippet socialDivider(position: "top" | "bottom")}
+	<div class={unstyled ? undefined : "stuic-login-or-register-form-social-divider"}>
+		<span>
+			{typeof socialDividerLabel === "string"
+				? socialDividerLabel
+				: t(
+						position === "top"
+							? "login_or_register_form.social_divider_alt"
+							: "login_or_register_form.social_divider"
+					)}
+		</span>
+	</div>
+{/snippet}
+
+<!--
+	Shared social logins — hidden in verify mode (OAuth doesn't apply
+	mid-verification). Same markup from either position; only the divider flips
+	sides so it always faces the form.
+-->
+{#snippet socialBlock(position: "top" | "bottom")}
+	{#if socialLogins && mode !== "verify"}
+		<div
+			class={unstyled ? undefined : "stuic-login-or-register-form-social"}
+			data-position={unstyled ? undefined : position}
+		>
+			{#if socialDividerLabel !== false && position === "bottom"}
+				{@render socialDivider(position)}
+			{/if}
+			<div class={unstyled ? undefined : "stuic-login-or-register-form-social-buttons"}>
+				{@render socialLogins()}
+			</div>
+			{#if socialDividerLabel !== false && position === "top"}
+				{@render socialDivider(position)}
+			{/if}
+		</div>
+	{/if}
+{/snippet}
 
 {#snippet formContent()}
 	<!-- Mode switcher (verify mode is never rendered as a tab — it's an outcome state) -->
@@ -288,6 +353,11 @@
 				/>
 			{/if}
 		</div>
+	{/if}
+
+	<!-- Shared social logins above the active form -->
+	{#if socialPosition === "top"}
+		{@render socialBlock("top")}
 	{/if}
 
 	<!-- Active form -->
@@ -329,22 +399,9 @@
 		{/if}
 	</div>
 
-	<!-- Shared social logins (hidden in verify mode — OAuth doesn't apply mid-verification) -->
-	{#if socialLogins && mode !== "verify"}
-		<div class={unstyled ? undefined : "stuic-login-or-register-form-social"}>
-			{#if socialDividerLabel !== false}
-				<div class={unstyled ? undefined : "stuic-login-or-register-form-social-divider"}>
-					<span>
-						{typeof socialDividerLabel === "string"
-							? socialDividerLabel
-							: t("login_or_register_form.social_divider")}
-					</span>
-				</div>
-			{/if}
-			<div class={unstyled ? undefined : "stuic-login-or-register-form-social-buttons"}>
-				{@render socialLogins()}
-			</div>
-		</div>
+	<!-- Shared social logins below the active form (default) -->
+	{#if socialPosition !== "top"}
+		{@render socialBlock("bottom")}
 	{/if}
 
 	<!-- Footer -->

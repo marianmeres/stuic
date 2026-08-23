@@ -7,6 +7,7 @@
 		RegisterFormValidationError,
 	} from "./_internal/register-form-types.js";
 	import type { NotificationsStack } from "../Notifications/notifications-stack.svelte.js";
+	import type { Props as InnerProps } from "./RegisterForm.svelte";
 
 	export interface Props {
 		/** Bindable register data. Default: createEmptyRegisterFormData() */
@@ -18,6 +19,12 @@
 		/** Whether the form is currently submitting (disables CTA) */
 		isSubmitting?: boolean;
 
+		/**
+		 * Consumer-owned reason to refuse submission (stale token, unchecked terms,
+		 * async check in flight…). Also blocks `onSubmit`. Default: false
+		 */
+		submitDisabled?: boolean;
+
 		/** Field-specific validation errors (e.g., from server) */
 		errors?: RegisterFormValidationError[];
 
@@ -27,11 +34,33 @@
 		 */
 		error?: string;
 
+		/** Render the built-in email field (unmounted when false). Default: true */
+		showEmail?: boolean;
+
+		/** Render the built-in password field (unmounted when false). Default: true */
+		showPassword?: boolean;
+
 		/** Show password confirmation field. Default: true */
 		showPasswordConfirm?: boolean;
 
 		/** Minimum password length. Default: 8 */
 		passwordMinLength?: number;
+
+		/**
+		 * Rendered at the credentials position. Combined with `showEmail` /
+		 * `showPassword` = false it replaces the credential block (identity-first
+		 * signup, invite summary, magic-link explainer).
+		 */
+		credentialsSlot?: InnerProps["credentialsSlot"];
+
+		/** Passthrough props for the built-in email field. */
+		emailFieldProps?: InnerProps["emailFieldProps"];
+
+		/** Passthrough props for the built-in password field. */
+		passwordFieldProps?: InnerProps["passwordFieldProps"];
+
+		/** Passthrough props for the built-in confirm field. */
+		passwordConfirmFieldProps?: InnerProps["passwordConfirmFieldProps"];
 
 		/** Declarative extra fields */
 		extraFields?: RegisterFieldConfig[];
@@ -59,6 +88,12 @@
 		 * Social/OAuth login buttons rendered below the primary form.
 		 */
 		socialLogins?: Snippet;
+
+		/**
+		 * Where the social block sits relative to the credentials.
+		 * `"top"` renders it above them (divider below the buttons). Default: "bottom"
+		 */
+		socialPosition?: "top" | "bottom";
 
 		/**
 		 * Override the divider label above social login buttons.
@@ -110,21 +145,30 @@
 	import { createEmptyRegisterFormData } from "./_internal/register-form-utils.js";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import H from "../H/H.svelte";
+	import type { scrollToFirstInvalidField } from "../../utils/validate-fields.js";
 
 	let {
 		formData = $bindable(createEmptyRegisterFormData()),
 		onSubmit,
 		isSubmitting = false,
+		submitDisabled,
 		errors,
 		error,
+		showEmail,
+		showPassword,
 		showPasswordConfirm,
 		passwordMinLength,
+		credentialsSlot,
+		emailFieldProps,
+		passwordFieldProps,
+		passwordConfirmFieldProps,
 		extraFields,
 		extraFieldsSlot,
 		submitLabel,
 		submittingLabel,
 		submitButton,
 		socialLogins,
+		socialPosition,
 		socialDividerLabel,
 		footer,
 		notifications,
@@ -143,6 +187,7 @@
 	let t = $derived(tProp ?? t_default);
 
 	let modal: Modal = $state()!;
+	let form = $state<RegisterForm>();
 
 	export function open(openerOrEvent?: null | HTMLElement | MouseEvent) {
 		modal.open(openerOrEvent);
@@ -150,6 +195,30 @@
 
 	export function close() {
 		modal.close();
+	}
+
+	// Same imperative API the inner form exposes, forwarded. The form only exists
+	// while the modal is open, so all three are no-ops when it is closed.
+
+	/**
+	 * Run every field's validator. Returns true if all valid — including when the
+	 * modal is closed and there is no form to ask, so check `visible` first if
+	 * that distinction matters.
+	 */
+	export function validate(): boolean {
+		return form?.validate() ?? true;
+	}
+
+	/** Scroll + focus the first invalid field. Call after `validate()`. */
+	export function scrollToFirstError(
+		opts?: Parameters<typeof scrollToFirstInvalidField>[1]
+	): boolean {
+		return form?.scrollToFirstError(opts) ?? false;
+	}
+
+	/** Focus a field by name. Returns false if it is not currently rendered. */
+	export function focusField(name: string): boolean {
+		return form?.focusField(name) ?? false;
 	}
 </script>
 
@@ -187,19 +256,28 @@
 
 	<div class="p-6 pt-3">
 		<RegisterForm
+			bind:this={form}
 			bind:formData
 			{onSubmit}
 			{isSubmitting}
+			{submitDisabled}
 			{errors}
 			{error}
+			{showEmail}
+			{showPassword}
 			{showPasswordConfirm}
 			{passwordMinLength}
+			{credentialsSlot}
+			{emailFieldProps}
+			{passwordFieldProps}
+			{passwordConfirmFieldProps}
 			{extraFields}
 			{extraFieldsSlot}
 			{submitLabel}
 			{submittingLabel}
 			{submitButton}
 			{socialLogins}
+			{socialPosition}
 			{socialDividerLabel}
 			{footer}
 			{notifications}

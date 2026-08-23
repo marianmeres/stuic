@@ -16,6 +16,10 @@
 	--stuic-login-or-register-form-social-divider-line-color: var(--stuic-color-border);
 	--stuic-login-or-register-form-social-divider-font-size: var(--text-sm);
 	--stuic-login-or-register-form-social-divider-margin-bottom: 0.75rem;
+
+	/* Social login section when placed above the form (socialPosition="top") */
+	--stuic-login-or-register-form-social-margin-bottom: 1.5rem;
+	--stuic-login-or-register-form-social-divider-margin-top: 0.75rem;
 }
 
 @layer components {
@@ -89,5 +93,19 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--stuic-login-or-register-form-social-gap);
+	}
+
+	/* socialPosition="top" — the block sits above the form, so the margin and the
+	   divider both mirror. `[data-position="bottom"]` is intentionally unstyled:
+	   the default render stays byte-for-byte what it always was. */
+	.stuic-login-or-register-form-social[data-position="top"] {
+		margin-top: 0;
+		margin-bottom: var(--stuic-login-or-register-form-social-margin-bottom);
+	}
+
+	.stuic-login-or-register-form-social[data-position="top"]
+		.stuic-login-or-register-form-social-divider {
+		margin-top: var(--stuic-login-or-register-form-social-divider-margin-top);
+		margin-bottom: 0;
 	}
 }

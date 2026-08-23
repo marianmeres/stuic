@@ -15,7 +15,11 @@ export interface RegisterFormValidationError {
 
 /** Declarative descriptor for a consumer-defined FieldInput-style extra field. */
 export interface RegisterFieldConfig {
-	/** Key under formData.extra where the value lives. Must be unique. */
+	/**
+	 * Key under formData.extra where the value lives. Must be unique.
+	 * `"email"`, `"password"` and `"passwordConfirm"` are reserved by the core
+	 * fields — reusing one makes `focusField()` target the core field instead.
+	 */
 	name: string;
 	/** Visible label (already translated; RegisterForm does not apply `t()` here). */
 	label: string;
@@ -24,7 +28,13 @@ export interface RegisterFieldConfig {
 	placeholder?: string;
 	required?: boolean;
 	autocomplete?: HTMLInputAttributes["autocomplete"];
-	/** Initial value to seed into formData.extra[name] if undefined. */
+	/**
+	 * Initial value seeded into `formData.extra[name]` when that key is null-ish.
+	 * Seeded raw (your type is preserved), while user edits always write strings —
+	 * so prefer a string here for FieldInput-rendered extras, otherwise a numeric
+	 * seed reaches `validate` / `onSubmit` as a number before the first edit and
+	 * as a string after it.
+	 */
 	initialValue?: unknown;
 	/**
 	 * Synchronous validator. Return empty string / undefined for "valid".

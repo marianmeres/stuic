@@ -32,9 +32,11 @@
 	let showExtraSlot = $state(true);
 	let showFooter = $state(true);
 	let showSocialLogins = $state(true);
+	let socialOnTop = $state(false);
 	let showExternalErrors = $state(false);
 	let showGeneralError = $state(false);
 	let showPasswordConfirm = $state(true);
+	let submitDisabled = $state(false);
 
 	const sampleExtraFields: RegisterFieldConfig[] = [
 		{
@@ -83,6 +85,66 @@
 	let generalError = $derived(
 		showGeneralError ? "Registration failed — please try again" : undefined
 	);
+
+	// --- Identity-first demo state ---
+	// The account identity is established by an external party (OAuth provider,
+	// invite, magic link) BEFORE the account exists, so the credential fields are
+	// unmounted and replaced by `credentialsSlot`. The workspace id is required on
+	// both paths, so it sits above the choice (socialPosition="top").
+	let identity = $state<{ provider: string; email: string } | null>(null);
+	let identityExpired = $state(false);
+	let identityForm = $state<RegisterForm>();
+	let identityData = $state<RegisterFormData>(createEmptyRegisterFormData());
+	let identityErrors = $state<{ field: string; message: string }[]>([]);
+	let identitySubmitted = $state<RegisterFormData | null>(null);
+
+	const SLUG_RE = /^[a-z0-9][a-z0-9-]{1,30}[a-z0-9]$/;
+
+	const identityExtraFields: RegisterFieldConfig[] = [
+		{
+			name: "workspace_id",
+			label: "Workspace id",
+			position: "top",
+			required: true,
+			// seeded into formData.extra on mount (not just displayed)
+			initialValue: "acme",
+			validate: (v) =>
+				SLUG_RE.test(
+					String(v ?? "")
+						.trim()
+						.toLowerCase()
+				)
+					? undefined
+					: "Lowercase letters, digits and dashes (3–32 chars).",
+			props: {
+				description: `Try "taken" to see a server-side field error.`,
+				autocomplete: "off",
+				autocapitalize: "none",
+				spellcheck: false,
+			},
+		},
+	];
+
+	function confirmIdentity(provider: string) {
+		identity = { provider, email: `jane@${provider.toLowerCase()}.example.com` };
+		identityErrors = [];
+		// the provider button the user just clicked is about to unmount — without
+		// this, focus falls to <body> and the next Tab restarts at the document top
+		identityForm?.focusField("workspace_id");
+	}
+
+	function handleIdentitySubmit(data: RegisterFormData) {
+		identitySubmitted = JSON.parse(JSON.stringify(data));
+		// pretend the server rejects this particular workspace id
+		if (String(data.extra?.workspace_id ?? "") === "taken") {
+			identityErrors = [
+				{ field: "workspace_id", message: "That workspace id is already taken" },
+			];
+			identityForm?.focusField("workspace_id");
+		} else {
+			identityErrors = [];
+		}
+	}
 
 	// --- Modal demo state ---
 	let registerModal: RegisterFormModal = $state()!;
@@ -145,6 +207,18 @@
 			renderSize="sm"
 		/>
 		<FieldSwitch
+			bind:checked={socialOnTop}
+			label={`socialPosition="top"`}
+			name="social-on-top"
+			renderSize="sm"
+		/>
+		<FieldSwitch
+			bind:checked={submitDisabled}
+			label="submitDisabled"
+			name="submit-disabled"
+			renderSize="sm"
+		/>
+		<FieldSwitch
 			bind:checked={showExternalErrors}
 			label="Inject field error (email)"
 			name="show-external-errors"
@@ -170,11 +244,13 @@
 			onSubmit={handleSubmit}
 			{isSubmitting}
 			{showPasswordConfirm}
+			{submitDisabled}
 			errors={externalErrorsComputed}
 			error={generalError}
 			extraFields={showExtraFields ? sampleExtraFields : undefined}
 			extraFieldsSlot={showExtraSlot ? termsSlot : undefined}
 			socialLogins={showSocialLogins ? socialButtons : undefined}
+			socialPosition={socialOnTop ? "top" : "bottom"}
 		>
 			{#snippet footer()}
 				{#if showFooter}
@@ -236,6 +312,63 @@
 			socialLogins={socialButtons}
 		/>
 	</div>
+</section>
+
+<!-- ============== IDENTITY-FIRST ============== -->
+<section class="mb-12">
+	<h2 class="text-lg font-bold mb-2">Identity-first signup</h2>
+	<p class="text-sm opacity-60 mb-4">
+		<code>socialPosition="top"</code> puts the provider buttons above the credentials (the
+		workspace id is required on both paths, so it stays above the choice). Confirming an
+		identity unmounts the credential fields via
+		<code>showEmail</code>/<code>showPassword</code> and replaces them with
+		<code>credentialsSlot</code>. Submitting <code>taken</code> as the workspace id returns
+		a server-side field error — edit the field and submit again to see it clear itself.
+	</p>
+
+	<div class="max-w-sm mb-4 space-y-2">
+		<FieldSwitch
+			bind:checked={identityExpired}
+			label="Identity expired (submitDisabled)"
+			name="identity-expired"
+			renderSize="sm"
+		/>
+	</div>
+
+	<div class="max-w-lg">
+		<RegisterForm
+			bind:this={identityForm}
+			bind:formData={identityData}
+			onSubmit={handleIdentitySubmit}
+			errors={identityErrors}
+			showEmail={!identity}
+			showPassword={!identity}
+			showPasswordConfirm={false}
+			socialPosition="top"
+			socialLogins={identity ? undefined : identityProviders}
+			socialDividerLabel="or use an email and password"
+			credentialsSlot={identity ? identityRow : undefined}
+			emailFieldProps={{ label: "Owner email" }}
+			passwordFieldProps={{
+				label: "Password",
+				description: "At least 8 characters.",
+			}}
+			submitDisabled={identityExpired}
+			submitLabel="Create workspace"
+			extraFields={identityExtraFields}
+		/>
+	</div>
+
+	{#if identitySubmitted}
+		<div class="mt-4">
+			<h3 class="text-sm font-semibold mb-1">Last submitted data:</h3>
+			<pre class="text-xs bg-muted p-3 rounded-md overflow-x-auto">{JSON.stringify(
+					identitySubmitted,
+					null,
+					2
+				)}</pre>
+		</div>
+	{/if}
 </section>
 
 <!-- ============== MODAL ============== -->
@@ -304,6 +437,41 @@
 	<Button variant="outline" class="w-full" onclick={() => alert("Apple signup")}>
 		{@html iconApple()} Sign up with Apple
 	</Button>
+{/snippet}
+
+{#snippet identityProviders()}
+	<Button variant="outline" class="w-full" onclick={() => confirmIdentity("Google")}>
+		{@html iconGoogle()} Continue with Google
+	</Button>
+	<Button variant="outline" class="w-full" onclick={() => confirmIdentity("Apple")}>
+		{@html iconApple()} Continue with Apple
+	</Button>
+{/snippet}
+
+{#snippet identityRow()}
+	<div class="mb-4 rounded-md border border-border p-3 text-sm">
+		<div class="flex items-center justify-between gap-4">
+			<div>
+				<div class="opacity-60 text-xs">Signing up with {identity?.provider}</div>
+				<div class="font-medium">{identity?.email}</div>
+			</div>
+			<button
+				type="button"
+				class="underline whitespace-nowrap"
+				onclick={() => {
+					identity = null;
+					identityExpired = false;
+				}}
+			>
+				Use a different account
+			</button>
+		</div>
+		{#if identityExpired}
+			<div class="text-xs text-destructive mt-2">
+				This confirmation has expired — please confirm the account again.
+			</div>
+		{/if}
+	</div>
 {/snippet}
 
 {#snippet termsSlot({

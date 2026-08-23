@@ -49,8 +49,10 @@
 		registerModeLabel?: string;
 		verifyModeLabel?: string;
 
-		/** Shared social logins (rendered below the active form). */
+		/** Shared social logins (rendered below the active form by default). */
 		socialLogins?: Snippet;
+		/** Place the shared social block above the form instead. Default: "bottom" */
+		socialPosition?: InnerProps["socialPosition"];
 		socialDividerLabel?: string | false;
 
 		/** Footer snippet. Receives mode + setter. */
@@ -114,6 +116,7 @@
 	import { createEmptyRegisterFormData } from "../RegisterForm/_internal/register-form-utils.js";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import H from "../H/H.svelte";
+	import type { scrollToFirstInvalidField } from "../../utils/validate-fields.js";
 
 	let {
 		mode = $bindable("login"),
@@ -134,6 +137,7 @@
 		registerModeLabel,
 		verifyModeLabel,
 		socialLogins,
+		socialPosition,
 		socialDividerLabel,
 		footer,
 		notifications,
@@ -164,6 +168,7 @@
 	);
 
 	let modal: Modal = $state()!;
+	let form = $state<LoginOrRegisterForm>();
 
 	export function open(openerOrEvent?: null | HTMLElement | MouseEvent) {
 		modal.open(openerOrEvent);
@@ -171,6 +176,30 @@
 
 	export function close() {
 		modal.close();
+	}
+
+	// Same imperative API the inner composite exposes, forwarded. The form only
+	// exists while the modal is open, so all three are no-ops when it is closed.
+
+	/**
+	 * Run the active inner form's validators. Returns true if valid — including
+	 * when the modal is closed and there is no form to ask, so check `visible`
+	 * first if that distinction matters.
+	 */
+	export function validate(): boolean {
+		return form?.validate() ?? true;
+	}
+
+	/** Scroll + focus the active form's first invalid field. Call after `validate()`. */
+	export function scrollToFirstError(
+		opts?: Parameters<typeof scrollToFirstInvalidField>[1]
+	): boolean {
+		return form?.scrollToFirstError(opts) ?? false;
+	}
+
+	/** Focus a field by name on the active form (register mode only). */
+	export function focusField(name: string): boolean {
+		return form?.focusField(name) ?? false;
 	}
 
 	// Reset terminal `verify` state when the modal *closes* — otherwise a
@@ -222,6 +251,7 @@
 
 	<div class="p-6 pt-3">
 		<LoginOrRegisterForm
+			bind:this={form}
 			bind:mode
 			bind:loginData
 			bind:registerData
@@ -240,6 +270,7 @@
 			{registerModeLabel}
 			{verifyModeLabel}
 			{socialLogins}
+			{socialPosition}
 			{socialDividerLabel}
 			{footer}
 			{notifications}

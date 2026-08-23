@@ -6,6 +6,7 @@ const DEFAULTS: Record<string, string> = {
 	"login_or_register_form.mode_register": "Sign up",
 	"login_or_register_form.mode_verify": "Verify",
 	"login_or_register_form.social_divider": "or continue with",
+	"login_or_register_form.social_divider_alt": "or",
 	"login_or_register_form.modal_title_login": "Log In",
 	"login_or_register_form.modal_title_register": "Create account",
 	"login_or_register_form.modal_title_verify": "Verify your email",

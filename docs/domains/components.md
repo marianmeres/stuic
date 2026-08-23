@@ -188,6 +188,8 @@ expose:
 | `validate()`                | `boolean` | Run every inner field's validator. `true` if all valid.                       |
 | `scrollToFirstError(opts?)` | `boolean` | Scroll the first invalid field into view + focus it. Call after `validate()`. |
 
+`focusField(name)` (`boolean`) is additionally available on `RegisterForm`, `RegisterFormModal`, `LoginOrRegisterForm` and `LoginOrRegisterFormModal` — the composites delegate to the active inner form, so it returns `false` in login / verify mode.
+
 ```svelte
 <script>
 	let loginForm = $state<LoginForm>();
@@ -298,6 +300,8 @@ Prefix: `--stuic-login-form-*`
 
 Standalone registration form. Mirrors `LoginForm` conventions: `formData`, `onSubmit`, validation, errors, i18n, notifications, social-logins. Adds declarative `extraFields` (top/bottom positioning, custom validators) and an `extraFieldsSlot` escape hatch (e.g., terms checkbox).
 
+Also covers **identity-first signup** (identity established by an OAuth provider / invite / magic link before the account exists): `showEmail` / `showPassword` unmount the credential fields, `credentialsSlot` replaces them, `socialPosition="top"` moves the provider buttons above the credentials.
+
 ### Exports
 
 | Export                        | Kind      | Description                                   |
@@ -307,33 +311,44 @@ Standalone registration form. Mirrors `LoginForm` conventions: `formData`, `onSu
 | `RegisterFormData`            | type      | `{ email, password, passwordConfirm, extra }` |
 | `RegisterFormValidationError` | type      | `{ field, message }`                          |
 | `RegisterFieldConfig`         | type      | Declarative extra-field descriptor            |
+| `ValidateRegisterFormOptions` | type      | Options for `validateRegisterForm`            |
 | `createEmptyRegisterFormData` | function  | Factory for an empty `RegisterFormData`       |
+| `validateRegisterForm`        | function  | `(data, t?, extraFields?, opts?) => Error[]`  |
 
 ### Key Props
 
-| Prop                  | Type                            | Default  | Description                             |
-| --------------------- | ------------------------------- | -------- | --------------------------------------- |
-| `formData`            | `RegisterFormData`              | empty    | Bindable form data                      |
-| `onSubmit`            | `(data) => void`                | required | Submit callback                         |
-| `isSubmitting`        | `boolean`                       | `false`  | Disables CTA                            |
-| `errors`              | `RegisterFormValidationError[]` | `[]`     | Field-specific server errors            |
-| `error`               | `string`                        | —        | General error (alert above form)        |
-| `showPasswordConfirm` | `boolean`                       | `true`   | Render password-confirm field           |
-| `passwordMinLength`   | `number`                        | `8`      | Min password length (input + validator) |
-| `extraFields`         | `RegisterFieldConfig[]`         | `[]`     | Declarative extra fields (top/bottom)   |
-| `extraFieldsSlot`     | `Snippet`                       | —        | Escape-hatch for non-FieldInput extras  |
-| `submitButton`        | `Snippet`                       | —        | Custom CTA section                      |
-| `socialLogins`        | `Snippet`                       | —        | OAuth buttons below form                |
-| `footer`              | `Snippet`                       | —        | Content below form                      |
-| `notifications`       | `NotificationsStack`            | —        | Route errors to notifications           |
-| `compact`             | `boolean`                       | `false`  | Compact layout                          |
-| `t`                   | `TranslateFn`                   | built-in | Translation function                    |
+| Prop                                                                   | Type                            | Default    | Description                                                             |
+| ---------------------------------------------------------------------- | ------------------------------- | ---------- | ----------------------------------------------------------------------- |
+| `formData`                                                             | `RegisterFormData`              | empty      | Bindable form data                                                      |
+| `onSubmit`                                                             | `(data) => void`                | required   | Submit callback                                                         |
+| `isSubmitting`                                                         | `boolean`                       | `false`    | Disables CTA                                                            |
+| `submitDisabled`                                                       | `boolean`                       | `false`    | Consumer-owned block: disables CTA + blocks submit                      |
+| `errors`                                                               | `RegisterFormValidationError[]` | `[]`       | Server field errors — self-clearing (see below)                         |
+| `error`                                                                | `string`                        | —          | General error (alert above form)                                        |
+| `showEmail`                                                            | `boolean`                       | `true`     | Render (mount) the email field                                          |
+| `showPassword`                                                         | `boolean`                       | `true`     | Render (mount) the password + confirm fields                            |
+| `showPasswordConfirm`                                                  | `boolean`                       | `true`     | Render password-confirm field                                           |
+| `passwordMinLength`                                                    | `number`                        | `8`        | Min password length (input + validator)                                 |
+| `credentialsSlot`                                                      | `Snippet`                       | —          | Content at the credentials position                                     |
+| `emailFieldProps` / `passwordFieldProps` / `passwordConfirmFieldProps` | `Partial<FieldInputProps>`      | —          | Passthrough props per core field (`validate` composed, `value` ignored) |
+| `extraFields`                                                          | `RegisterFieldConfig[]`         | `[]`       | Declarative extra fields (top/bottom)                                   |
+| `extraFieldsSlot`                                                      | `Snippet`                       | —          | Escape-hatch for non-FieldInput extras                                  |
+| `submitButton`                                                         | `Snippet`                       | —          | Custom CTA section                                                      |
+| `socialLogins`                                                         | `Snippet`                       | —          | OAuth buttons                                                           |
+| `socialPosition`                                                       | `"top" \| "bottom"`             | `"bottom"` | Social block above the credentials or after the CTA                     |
+| `footer`                                                               | `Snippet`                       | —          | Content below form                                                      |
+| `notifications`                                                        | `NotificationsStack`            | —          | Route errors to notifications                                           |
+| `t`                                                                    | `TranslateFn`                   | built-in   | Translation function                                                    |
+
+**Imperative** (`bind:this`): `validate()`, `scrollToFirstError(opts?)`, `focusField(name)` — also forwarded by `RegisterFormModal`.
+
+**`errors` lifecycle:** an entry whose `field` this form renders is tied to that field's value at delivery and self-clears (message + submit block) once the user edits it. An entry for anything else — a field you render yourself from a slot, or a core field switched off by `showEmail` / `showPassword` / `showPasswordConfirm` — keeps blocking until the consumer removes it, since no edit here can answer it. `LoginForm`, `ContactUsForm` and `CheckoutGuestForm` share the prop name but not the self-clearing behavior.
 
 ### CSS Tokens
 
 Prefix: `--stuic-register-form-*`
 
-`gap`, `gap-row`, `social-margin-top`, `social-gap`, `social-divider-color`, `social-divider-line-color`, `social-divider-font-size`, `social-divider-margin-bottom`
+`gap`, `gap-row`, `social-margin-top`, `social-margin-bottom`, `social-gap`, `social-divider-color`, `social-divider-line-color`, `social-divider-font-size`, `social-divider-margin-bottom`, `social-divider-margin-top`
 
 ---
 
@@ -353,25 +368,26 @@ Composite form that toggles between `LoginForm`, `RegisterForm`, and (since 3.71
 
 ### Key Props
 
-| Prop            | Type                            | Default   | Description                                                                |
-| --------------- | ------------------------------- | --------- | -------------------------------------------------------------------------- |
-| `mode`          | `LoginOrRegisterFormMode`       | `"login"` | Bindable active mode                                                       |
-| `loginData`     | `LoginFormData`                 | empty     | Bindable login form data                                                   |
-| `registerData`  | `RegisterFormData`              | empty     | Bindable register form data                                                |
-| `verifyEmail`   | `string`                        | `""`      | Bindable email used by EmailVerifyForm (auto-seeded on transitions)        |
-| `onLogin`       | `(data) => void`                | required  | Login submit callback                                                      |
-| `onRegister`    | `(data) => void`                | required  | Register submit callback                                                   |
-| `onVerify`      | `(code: string) => void`        | —         | Verify submit callback (required only when using verify mode)              |
-| `onResendCode`  | `() => Promise<void> \| void`   | —         | Resend handler — when set, EmailVerifyForm renders the resend control      |
-| `loginProps`    | `Partial<LoginFormProps>`       | —         | Pass-through to inner LoginForm                                            |
-| `registerProps` | `Partial<RegisterFormProps>`    | —         | Pass-through to inner RegisterForm                                         |
-| `verifyProps`   | `Partial<EmailVerifyFormProps>` | —         | Pass-through to inner EmailVerifyForm (e.g., `error`, `attemptsRemaining`) |
-| `modeSwitcher`  | `Snippet`                       | —         | Override the built-in ButtonGroupRadio                                     |
-| `socialLogins`  | `Snippet`                       | —         | Shared OAuth buttons (hidden in verify mode)                               |
-| `footer`        | `Snippet<[{ mode, setMode }]>`  | —         | Mode-aware footer                                                          |
-| `isSubmitting`  | `boolean`                       | `false`   | Forwarded to all three forms                                               |
-| `notifications` | `NotificationsStack`            | —         | Routes errors to notifications                                             |
-| `t`             | `TranslateFn`                   | built-in  | Translation function                                                       |
+| Prop             | Type                            | Default    | Description                                                                |
+| ---------------- | ------------------------------- | ---------- | -------------------------------------------------------------------------- |
+| `mode`           | `LoginOrRegisterFormMode`       | `"login"`  | Bindable active mode                                                       |
+| `loginData`      | `LoginFormData`                 | empty      | Bindable login form data                                                   |
+| `registerData`   | `RegisterFormData`              | empty      | Bindable register form data                                                |
+| `verifyEmail`    | `string`                        | `""`       | Bindable email used by EmailVerifyForm (auto-seeded on transitions)        |
+| `onLogin`        | `(data) => void`                | required   | Login submit callback                                                      |
+| `onRegister`     | `(data) => void`                | required   | Register submit callback                                                   |
+| `onVerify`       | `(code: string) => void`        | —          | Verify submit callback (required only when using verify mode)              |
+| `onResendCode`   | `() => Promise<void> \| void`   | —          | Resend handler — when set, EmailVerifyForm renders the resend control      |
+| `loginProps`     | `Partial<LoginFormProps>`       | —          | Pass-through to inner LoginForm                                            |
+| `registerProps`  | `Partial<RegisterFormProps>`    | —          | Pass-through to inner RegisterForm                                         |
+| `verifyProps`    | `Partial<EmailVerifyFormProps>` | —          | Pass-through to inner EmailVerifyForm (e.g., `error`, `attemptsRemaining`) |
+| `modeSwitcher`   | `Snippet`                       | —          | Override the built-in ButtonGroupRadio                                     |
+| `socialLogins`   | `Snippet`                       | —          | Shared OAuth buttons (hidden in verify mode)                               |
+| `socialPosition` | `"top" \| "bottom"`             | `"bottom"` | Shared social block above the active form or below it                      |
+| `footer`         | `Snippet<[{ mode, setMode }]>`  | —          | Mode-aware footer                                                          |
+| `isSubmitting`   | `boolean`                       | `false`    | Forwarded to all three forms                                               |
+| `notifications`  | `NotificationsStack`            | —          | Routes errors to notifications                                             |
+| `t`              | `TranslateFn`                   | built-in   | Translation function                                                       |
 
 ### Modal additions (`LoginOrRegisterFormModal`)
 
@@ -388,7 +404,7 @@ Inherits all `LoginOrRegisterForm` props, plus:
 
 Prefix: `--stuic-login-or-register-form-*`
 
-`gap`, `switcher-margin-bottom`, `social-margin-top`, `social-gap`, `social-divider-*`
+`gap`, `switcher-margin-bottom`, `social-margin-top`, `social-margin-bottom`, `social-gap`, `social-divider-*`
 
 ### i18n
 
