@@ -194,6 +194,10 @@
 		scrollToFirstInvalidField,
 		validateAllFields,
 	} from "../../utils/validate-fields.js";
+	import {
+		createExternalFieldErrors,
+		repaintFieldErrors,
+	} from "../../utils/field-errors.svelte.js";
 
 	let {
 		formData = $bindable(createEmptyRegisterFormData()),
@@ -286,96 +290,32 @@
 		});
 	});
 
-	// --- server-supplied (`errors`) staleness ---------------------------------
-	//
-	// `errors` is consumer-owned: this form can render it but cannot clear it.
-	// That used to wedge the form permanently — the per-field `customValidator`
-	// kept reporting the server error no matter what the user typed, so
-	// `onSubmitValidityCheck` routed every subsequent submit to `submit_invalid`
-	// and `onSubmit` was never called again. The consumer's own "clear errors on
-	// submit" code could not help: their submit handler is exactly what was being
-	// suppressed.
-	//
-	// Fix: remember the field values that were on screen when a set of errors was
-	// delivered. An error on a field this form renders stays "live" while that
-	// field still holds that value, and goes stale once the user edits it —
-	// dropped from the inline messages AND from the submit gate. Same lifecycle
-	// `internalErrors` already have. (Typing the rejected value back in makes it
-	// live again, which is correct: that exact value is known-bad.) Errors on
-	// anything else keep their old, blocking-until-you-clear-it behavior.
-
-	/** Content (not array identity, not order) of the external errors. */
-	function _errorsKey(errs: RegisterFormValidationError[]): string {
-		return JSON.stringify(errs.map((e) => [e.field, e.message]).sort());
-	}
-
-	/** Is this error's field one this form renders — i.e. can the user fix it here? */
-	function _isRenderedField(field: string): boolean {
-		if (field === "email") return showEmail;
-		if (field === "password") return showPassword;
-		if (field === "passwordConfirm") return renderPasswordConfirm;
-		return extraFields.some((f) => f.name === field);
-	}
-
-	/** Comparable current value for a rendered field's name. */
-	function _valueOf(field: string): string {
-		if (field === "email") return formData.email ?? "";
-		if (field === "password") return formData.password ?? "";
-		if (field === "passwordConfirm") return formData.passwordConfirm ?? "";
-		const v = formData.extra?.[field];
-		return v == null ? "" : String(v);
-	}
-
-	// Reassigned wholesale, never mutated — that is what makes it reactive, so a
-	// plain Map is correct here (SvelteMap would only add overhead).
-	let errorsSnapshot = $state.raw<Map<string, string>>(new Map());
-
-	// Set when `onSubmit` actually fires; cleared when a new snapshot is taken.
-	// Lets an IDENTICAL error redelivered after a resubmit count as a fresh
-	// delivery (its content key is unchanged, so content comparison alone would
-	// wrongly keep suppressing it). Deliberately NOT `$state`: it must not
-	// re-trigger the snapshot effect below.
-	let _submittedSinceSnapshot = false;
-	let _lastErrorsKey: string | null = null;
-
-	// Snapshot on delivery. Keyed on the errors' CONTENT, not the array identity —
-	// consumers routinely pass an inline literal / freshly derived array, whose
-	// identity changes on every parent re-render; re-snapshotting mid-typing would
-	// resurrect the error and restore the deadlock.
-	$effect(() => {
-		const key = _errorsKey(externalErrors);
-		untrack(() => {
-			if (key === _lastErrorsKey && !_submittedSinceSnapshot) return;
-			_lastErrorsKey = key;
-			_submittedSinceSnapshot = false;
-			const snap = new Map<string, string>();
-			for (const e of externalErrors) {
-				if (_isRenderedField(e.field)) snap.set(e.field, _valueOf(e.field));
-			}
-			errorsSnapshot = snap;
-		});
+	// Give the consumer-owned `errors` prop a lifecycle: an error on a field this
+	// form renders self-clears once the user edits that field; an error on
+	// anything else keeps blocking until the consumer drops it. See
+	// `createExternalFieldErrors` for the full rationale.
+	const external = createExternalFieldErrors({
+		errors: () => externalErrors,
+		isRendered(field) {
+			if (field === "email") return showEmail;
+			if (field === "password") return showPassword;
+			if (field === "passwordConfirm") return renderPasswordConfirm;
+			return extraFields.some((f) => f.name === field);
+		},
+		valueOf(field) {
+			if (field === "email") return formData.email ?? "";
+			if (field === "password") return formData.password ?? "";
+			if (field === "passwordConfirm") return formData.passwordConfirm ?? "";
+			const v = formData.extra?.[field];
+			return v == null ? "" : String(v);
+		},
 	});
-
-	let liveExternalErrors = $derived(
-		externalErrors.filter((e) => {
-			// An error on a field this form does NOT render is the consumer's to
-			// show (via `fieldError()` inside their own slot) and the consumer's to
-			// clear — there is no edit here that could answer it. It keeps blocking,
-			// exactly as it always has. Only errors the user can actually act on
-			// self-clear; anything else would let the form post past a block the
-			// consumer deliberately set (an unchecked terms box, a failed captcha).
-			if (!_isRenderedField(e.field)) return true;
-			const snapped = errorsSnapshot.get(e.field);
-			// no snapshot yet (first paint, before the effect above runs) => live
-			return snapped === undefined || snapped === _valueOf(e.field);
-		})
-	);
 
 	// Merge internal + external errors; external takes precedence per field
 	let allErrors = $derived.by(() => {
 		const map = new Map<string, string>();
 		for (const e of internalErrors) map.set(e.field, e.message);
-		for (const e of liveExternalErrors) map.set(e.field, e.message);
+		for (const e of external.live) map.set(e.field, e.message);
 		return [...map.entries()].map(([field, message]) => ({ field, message }));
 	});
 
@@ -431,8 +371,8 @@
 		});
 		internalErrors = validationErrors;
 
-		if (validationErrors.length === 0 && liveExternalErrors.length === 0) {
-			_submittedSinceSnapshot = true;
+		if (validationErrors.length === 0 && external.live.length === 0) {
+			external.markSubmitted();
 			onSubmit(formData);
 		}
 	}
@@ -484,23 +424,10 @@
 		return extraFields.some((f) => f.name === name) ? extraFieldRefs[name] : undefined;
 	}
 
-	// Surface a newly-arrived error message without waiting for the user's next
-	// interaction. Inline messages are rendered by each field's own validation run
-	// (the `validate` action fires on change/blur), so an error that appears AFTER
-	// the validators last ran stayed invisible until the next keystroke or CTA
-	// click. That hit both sources: `validateRegisterForm`'s result, which is
-	// computed on `submit_valid` — i.e. after the validity walk has already run
-	// every field's validator — and a server `errors` delivery, which lands once
-	// the submit is over. Either way the first click produced a button that did
-	// nothing, with no message anywhere. `untrack` so this only re-runs when the
-	// error set itself changes.
-	$effect(() => {
-		const named = allErrors.map((e) => e.field);
-		if (!named.length) return;
-		untrack(() => {
-			for (const name of named) _fieldByName(name)?.validate?.();
-		});
-	});
+	// Paint newly-arrived error messages without waiting for the user's next
+	// interaction — otherwise the first failed click is a button that does
+	// nothing, with no message anywhere.
+	repaintFieldErrors(() => allErrors, _fieldByName);
 
 	/**
 	 * Run every field's validator and render any inline errors. Returns true
@@ -511,7 +438,7 @@
 		// through `handleSubmitValid`, so it has to arm the same "a round-trip is
 		// starting" flag — otherwise a byte-identical repeat rejection would be
 		// mistaken for the previous, already-answered one and stay suppressed.
-		_submittedSinceSnapshot = true;
+		external.markSubmitted();
 		return validateAllFields(_fields());
 	}
 

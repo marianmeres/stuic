@@ -210,6 +210,63 @@ without filtering first.
 
 ---
 
+## Server-Error Lifecycle (.svelte.ts)
+
+Used by every STUIC form that takes an `errors` prop (`LoginForm`,
+`RegisterForm`, `ContactUsForm`, `CheckoutGuestForm`) — and available for your
+own forms.
+
+| Util                        | Purpose                                                                                  |
+| --------------------------- | ---------------------------------------------------------------------------------------- |
+| `createExternalFieldErrors` | Gives a consumer-owned `errors` prop a lifecycle: entries on rendered fields self-clear. |
+| `repaintFieldErrors`        | Paints a field's message as soon as the error exists, not on the next interaction.       |
+| `FieldError` (interface)    | `{ field, message }` — every form's `*ValidationError` satisfies it.                     |
+
+`errors` is consumer-owned: a form can render it but cannot clear it. Taken
+literally that wedges the form — the field's `customValidator` keeps reporting
+the server error whatever the user types, so every later submit is routed to
+`submit_invalid` and the consumer's own handler (the one that would have cleared
+the errors) never runs. `createExternalFieldErrors` remembers the value each
+field held when a set of errors arrived and drops an entry once the user edits
+that field; entries for fields the form does not render keep applying, since no
+edit there can answer them.
+
+`repaintFieldErrors` covers the other half: inline messages come from each
+field's own validation run (on `change` / first blur), so a form-level validator
+result — computed _after_ the submit-time validity walk already re-ran every
+field — used to paint nothing at all on the first click.
+
+```svelte
+<script lang="ts">
+	import {
+		createExternalFieldErrors,
+		repaintFieldErrors,
+	} from "@marianmeres/stuic/utils";
+
+	let { errors: externalErrors = [], formData = $bindable(initial) } = $props();
+
+	const external = createExternalFieldErrors({
+		errors: () => externalErrors,
+		isRendered: (f) => f === "email" || f === "password",
+		valueOf: (f) => formData[f] ?? "",
+	});
+
+	let allErrors = $derived([...internalErrors, ...external.live]);
+	repaintFieldErrors(() => allErrors, fieldByName);
+
+	function submit() {
+		if (!internalErrors.length && !external.live.length) {
+			external.markSubmitted(); // arms identical-repeat detection
+			onSubmit(formData);
+		}
+	}
+</script>
+```
+
+Both register `$effect`s, so call them during component initialization.
+
+---
+
 ## Key Files
 
 | File                                     | Purpose                                      |

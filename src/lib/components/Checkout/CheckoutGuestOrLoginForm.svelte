@@ -81,6 +81,7 @@
 			| "socialPosition"
 			| "socialDividerLabel"
 			| "footer"
+			| "animateHeight"
 			| "modeSwitcher"
 			| "loginModeLabel"
 			| "registerModeLabel"
@@ -448,6 +449,7 @@
 			socialLogins={loginOrRegisterModal.socialLogins}
 			socialPosition={loginOrRegisterModal.socialPosition}
 			socialDividerLabel={loginOrRegisterModal.socialDividerLabel}
+			animateHeight={loginOrRegisterModal.animateHeight}
 			footer={loginOrRegisterModal.footer}
 			{notifications}
 			title={loginOrRegisterModal.title}

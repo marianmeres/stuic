@@ -279,7 +279,7 @@ Notes:
 - Errors are painted as soon as they arrive; no extra click is needed.
 - Staleness is keyed on the errors' _content_, not the array identity, so passing a freshly built array on every render (`errors={cond ? [{...}] : []}`) is safe.
 - An identical error redelivered after a resubmit is treated as fresh, so a second rejection with the same message shows up again. If you post from your own handler instead of `onSubmit`, call `validate()` first — that is what marks the round trip.
-- The other STUIC forms (`LoginForm`, `ContactUsForm`, `CheckoutGuestForm`) share the `errors` prop name but **not** this lifecycle yet: theirs stay until the consumer clears them.
+- `LoginForm`, `ContactUsForm` and `CheckoutGuestForm` behave identically — they share the same `createExternalFieldErrors` implementation.
 
 ## CSS Variables
 

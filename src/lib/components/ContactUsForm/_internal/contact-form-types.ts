@@ -49,7 +49,12 @@ export interface ContactFieldConfig {
 	placeholder?: string;
 	required?: boolean;
 	autocomplete?: HTMLInputAttributes["autocomplete"];
-	/** Initial value to seed into `formData.extra[name]` if undefined. */
+	/**
+	 * Initial value seeded into `formData.extra[name]` when that key is null-ish.
+	 * Seeded raw (your type is preserved), while user edits always write strings —
+	 * so prefer a string here, otherwise a numeric seed reaches `validate` /
+	 * `onSubmit` as a number before the first edit and as a string after it.
+	 */
 	initialValue?: unknown;
 	/**
 	 * Synchronous validator. Return empty string / undefined for "valid".

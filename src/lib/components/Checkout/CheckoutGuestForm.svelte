@@ -70,7 +70,12 @@
 </script>
 
 <script lang="ts">
+	import { untrack } from "svelte";
 	import { twMerge } from "../../utils/tw-merge.js";
+	import {
+		createExternalFieldErrors,
+		repaintFieldErrors,
+	} from "../../utils/field-errors.svelte.js";
 	import {
 		scrollToFirstInvalidField,
 		validateAllFields,
@@ -83,6 +88,7 @@
 	import Button from "../Button/Button.svelte";
 	import FieldInput from "../Input/FieldInput.svelte";
 	import FieldPhoneNumber from "../Input/FieldPhoneNumber.svelte";
+	import { validatePhoneNumber } from "../Input/phone-validation.js";
 
 	let {
 		formData = $bindable(createEmptyCustomerFormData()),
@@ -110,11 +116,58 @@
 	// Internal validation errors (set on submit)
 	let internalErrors = $state<CheckoutValidationError[]>([]);
 
+	/** Is this field currently rendered? (B2B block + per-field `fields` opt-outs) */
+	function _isRendered(field: string): boolean {
+		switch (field) {
+			case "email":
+				return true;
+			case "first_name":
+			case "last_name":
+			case "phone":
+				return fields?.[field] !== false;
+			case "company_name":
+			case "tax_id":
+			case "vat_number":
+				return showB2bFields && fields?.[field] !== false;
+			default:
+				return false;
+		}
+	}
+
+	// Clear internal field errors as soon as the user edits the form, so a previous
+	// failed submit's errors don't linger after the user has fixed them — matching
+	// the other STUIC forms. `untrack` the read+write so this effect re-runs only
+	// on formData changes, not when handleSubmit sets internalErrors.
+	$effect(() => {
+		void formData.email;
+		void formData.first_name;
+		void formData.last_name;
+		void formData.phone;
+		void formData.company_name;
+		void formData.tax_id;
+		void formData.vat_number;
+		untrack(() => {
+			if (internalErrors.length) internalErrors = [];
+		});
+	});
+
+	// Give the consumer-owned `errors` prop a lifecycle: an entry for a field this
+	// form renders self-clears once the user edits it, instead of blocking submit
+	// forever through the gate below (the consumer's own handler, which would have
+	// cleared the errors, is exactly what was being suppressed). Entries for
+	// anything else keep blocking until the consumer drops them.
+	const external = createExternalFieldErrors({
+		errors: () => externalErrors,
+		isRendered: _isRendered,
+		valueOf: (field) =>
+			(formData as unknown as Record<string, string | undefined>)[field] ?? "",
+	});
+
 	// Merge internal + external errors; external takes precedence per field
 	let allErrors = $derived.by(() => {
 		const map = new Map<string, string>();
 		for (const e of internalErrors) map.set(e.field, e.message);
-		for (const e of externalErrors) map.set(e.field, e.message);
+		for (const e of external.live) map.set(e.field, e.message);
 		return [...map.entries()].map(([field, message]) => ({ field, message }));
 	});
 
@@ -132,7 +185,8 @@
 
 		internalErrors = validationErrors;
 
-		if (validationErrors.length === 0 && externalErrors.length === 0) {
+		if (validationErrors.length === 0 && external.live.length === 0) {
+			external.markSubmitted();
 			onSubmit(formData);
 		}
 	}
@@ -167,11 +221,41 @@
 		];
 	}
 
+	function _fieldByName(name: string) {
+		if (!_isRendered(name)) return undefined;
+		switch (name) {
+			case "email":
+				return emailField;
+			case "first_name":
+				return firstNameField;
+			case "last_name":
+				return lastNameField;
+			case "phone":
+				return phoneField;
+			case "company_name":
+				return companyNameField;
+			case "tax_id":
+				return taxIdField;
+			case "vat_number":
+				return vatNumberField;
+			default:
+				return undefined;
+		}
+	}
+
+	// Paint newly-arrived error messages without waiting for the user's next
+	// interaction — otherwise a failed validation (or a server `errors` delivery)
+	// blocked the submit with no message anywhere.
+	repaintFieldErrors(() => allErrors, _fieldByName);
+
 	/**
 	 * Run every visible field's validator and render any inline errors.
 	 * Returns true if all fields are valid.
 	 */
 	export function validate(): boolean {
+		// Consumers posting from their own handler never reach `handleSubmit`, so
+		// this has to arm the same "a round-trip is starting" flag.
+		external.markSubmitted();
 		return validateAllFields(_fields());
 	}
 
@@ -201,9 +285,11 @@
 	{...rest}
 >
 	<!--
-		svelte-ignore binding_property_non_reactive:
-		formData is a $bindable prop — deep reactivity depends on the consumer
-		passing a $state() object. The bindings work correctly regardless.
+		NOTE on `binding_property_non_reactive`: formData is a $bindable prop — deep
+		reactivity depends on the consumer passing a $state() object. The bindings
+		work correctly regardless; the per-field directives below silence the hint.
+		(This block intentionally does NOT start with the literal directive word so
+		it isn't parsed as one — every following word would become a bogus code.)
 	-->
 	<!-- Email (always shown, always required) -->
 	<!-- svelte-ignore binding_property_non_reactive -->
@@ -235,6 +321,11 @@
 					labelLeftBreakpoint={0}
 					placeholder={t("checkout.guest.first_name_placeholder")}
 					name="checkout-guest-first-name"
+					validate={{
+						customValidator() {
+							return fieldError("first_name") || "";
+						},
+					}}
 				/>
 			{/if}
 			{#if fields?.last_name !== false}
@@ -246,6 +337,11 @@
 					labelLeftBreakpoint={0}
 					placeholder={t("checkout.guest.last_name_placeholder")}
 					name="checkout-guest-last-name"
+					validate={{
+						customValidator() {
+							return fieldError("last_name") || "";
+						},
+					}}
 				/>
 			{/if}
 		</div>
@@ -261,6 +357,14 @@
 			placeholder={t("checkout.guest.phone_placeholder")}
 			name="checkout-guest-phone"
 			labelLeftBreakpoint={0}
+			validate={{
+				// FieldPhoneNumber's customValidator REPLACES its built-in
+				// `validatePhoneNumber`, so surface the server error and then
+				// delegate rather than knocking phone validation out.
+				customValidator(val, ctx, el) {
+					return fieldError("phone") || validatePhoneNumber(val, ctx, el) || "";
+				},
+			}}
 			{...phoneFieldProps}
 		/>
 	{/if}
@@ -280,6 +384,11 @@
 						label={t("checkout.guest.company_name_label")}
 						name="checkout-guest-company-name"
 						labelLeftBreakpoint={0}
+						validate={{
+							customValidator() {
+								return fieldError("company_name") || "";
+							},
+						}}
 					/>
 				{/if}
 				{#if fields?.tax_id !== false || fields?.vat_number !== false}
@@ -291,6 +400,11 @@
 								bind:value={formData.tax_id}
 								label={t("checkout.guest.tax_id_label")}
 								name="checkout-guest-tax-id"
+								validate={{
+									customValidator() {
+										return fieldError("tax_id") || "";
+									},
+								}}
 							/>
 						{/if}
 						{#if fields?.vat_number !== false}
@@ -300,6 +414,11 @@
 								bind:value={formData.vat_number}
 								label={t("checkout.guest.vat_number_label")}
 								name="checkout-guest-vat-number"
+								validate={{
+									customValidator() {
+										return fieldError("vat_number") || "";
+									},
+								}}
 							/>
 						{/if}
 					</div>

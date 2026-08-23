@@ -132,6 +132,10 @@
 		scrollToFirstInvalidField,
 		validateAllFields,
 	} from "../../utils/validate-fields.js";
+	import {
+		createExternalFieldErrors,
+		repaintFieldErrors,
+	} from "../../utils/field-errors.svelte.js";
 
 	let {
 		formData = $bindable(createEmptyContactFormData()),
@@ -217,11 +221,70 @@
 		});
 	});
 
+	// Seed `ContactFieldConfig.initialValue` into `formData.extra`. `extraValue()`
+	// only ever used it as a *display* fallback, so an untouched field with a
+	// required `initialValue` failed validation ("… is required") while its value
+	// sat plainly visible in the input, and an untouched optional one submitted
+	// `undefined`. Never clobbers a value the consumer already provided. `.pre` so
+	// the seed lands before first paint; the bare `formData.extra` read tracks a
+	// wholesale replacement of the container without tracking the per-key writes.
+	$effect.pre(() => {
+		const seeds = extraFields
+			.filter((f) => f.initialValue != null)
+			.map((f) => [f.name, f.initialValue] as const);
+		void formData.extra;
+		if (!seeds.length) return;
+		untrack(() => {
+			if (!formData.extra) formData.extra = {};
+			for (const [name, initialValue] of seeds) {
+				if (formData.extra[name] == null) formData.extra[name] = initialValue;
+			}
+		});
+	});
+
+	// Give the consumer-owned `errors` prop a lifecycle: an entry for a field this
+	// form renders self-clears once the user edits it, instead of wedging the form
+	// forever (the field's customValidator kept reporting it, so every later
+	// submit was routed to `submit_invalid` — including the consumer's own handler
+	// that would have cleared the errors). Entries for anything else keep blocking
+	// until the consumer drops them. See `createExternalFieldErrors`.
+	const external = createExternalFieldErrors({
+		errors: () => externalErrors,
+		isRendered(field) {
+			if (field === "name") return showName;
+			if (field === "phone") return showPhone;
+			if (field === "subject") return subjectShown;
+			if (field === "company") return showCompany;
+			if (field === "email" || field === "message") return true;
+			return extraFields.some((f) => f.name === field);
+		},
+		valueOf(field) {
+			switch (field) {
+				case "name":
+					return formData.name ?? "";
+				case "email":
+					return formData.email ?? "";
+				case "phone":
+					return formData.phone ?? "";
+				case "subject":
+					return formData.subject ?? "";
+				case "company":
+					return formData.company ?? "";
+				case "message":
+					return formData.message ?? "";
+				default: {
+					const v = formData.extra?.[field];
+					return v == null ? "" : String(v);
+				}
+			}
+		},
+	});
+
 	// Merge internal + external errors; external takes precedence per field.
 	let allErrors = $derived.by(() => {
 		const map = new Map<string, string>();
 		for (const e of internalErrors) map.set(e.field, e.message);
-		for (const e of externalErrors) map.set(e.field, e.message);
+		for (const e of external.live) map.set(e.field, e.message);
 		return [...map.entries()].map(([field, message]) => ({ field, message }));
 	});
 
@@ -274,7 +337,8 @@
 
 		// Report-only on bot signals: we still submit when field validation passes
 		// and hand the consumer the botCheck to enforce server-side.
-		if (validationErrors.length === 0 && externalErrors.length === 0) {
+		if (validationErrors.length === 0 && external.live.length === 0) {
+			external.markSubmitted();
 			onSubmit(formData, buildBotCheck());
 		}
 	}
@@ -298,8 +362,10 @@
 	);
 
 	// Imperative API ----------------------------------------------------------
-	let topFieldRefs: (FieldInput | undefined)[] = $state([]);
-	let bottomFieldRefs: (FieldInput | undefined)[] = $state([]);
+	// Extra-field refs are keyed by `cfg.name`, NOT by `{#each}` index: the each
+	// block is keyed by name, so an index-based array pointed at the wrong
+	// component after any reorder of `extraFields`.
+	let extraFieldRefs = $state<Record<string, FieldInput | undefined>>({});
 	let nameField = $state<FieldInput>();
 	let emailField = $state<FieldInput>();
 	let phoneField = $state<FieldInput>();
@@ -309,22 +375,53 @@
 
 	function _fields() {
 		return [
-			...topFieldRefs,
+			...topFields.map((f) => extraFieldRefs[f.name]),
 			...(showName ? [nameField] : []),
 			emailField,
 			...(showPhone ? [phoneField] : []),
 			...(showCompany ? [companyField] : []),
 			...(subjectShown ? [subjectField] : []),
 			messageField,
-			...bottomFieldRefs,
+			...bottomFields.map((f) => extraFieldRefs[f.name]),
 		];
 	}
+
+	function _fieldByName(name: string) {
+		switch (name) {
+			case "name":
+				return showName ? nameField : undefined;
+			case "email":
+				return emailField;
+			case "phone":
+				return showPhone ? phoneField : undefined;
+			case "company":
+				return showCompany ? companyField : undefined;
+			case "subject":
+				return subjectShown ? subjectField : undefined;
+			case "message":
+				return messageField;
+			default:
+				return extraFields.some((f) => f.name === name)
+					? extraFieldRefs[name]
+					: undefined;
+		}
+	}
+
+	// Paint newly-arrived error messages without waiting for the user's next
+	// interaction. `validateContactForm` runs on `submit_valid` — after the
+	// validity walk has already re-run every field's validator — and a server
+	// `errors` delivery lands once the submit is over, so without this the first
+	// failed click was a button that did nothing, with no message anywhere.
+	repaintFieldErrors(() => allErrors, _fieldByName);
 
 	/**
 	 * Run every visible field's validator and render any inline errors. Returns
 	 * true if all fields are valid. Useful from custom submit handlers.
 	 */
 	export function validate(): boolean {
+		// Consumers posting from their own handler never reach `handleSubmitValid`,
+		// so this has to arm the same "a round-trip is starting" flag.
+		external.markSubmitted();
 		return validateAllFields(_fields());
 	}
 
@@ -344,9 +441,9 @@
 	<DismissibleMessage message={error} intent="destructive" />
 
 	<!-- Top-position extra fields -->
-	{#each topFields as cfg, i (cfg.name)}
+	{#each topFields as cfg (cfg.name)}
 		<FieldInput
-			bind:this={topFieldRefs[i]}
+			bind:this={extraFieldRefs[cfg.name]}
 			value={extraValue(cfg)}
 			oninput={(e: Event) =>
 				setExtraValue(cfg, (e.currentTarget as HTMLInputElement).value)}
@@ -511,9 +608,9 @@
 	/>
 
 	<!-- Bottom-position extra fields (default) -->
-	{#each bottomFields as cfg, i (cfg.name)}
+	{#each bottomFields as cfg (cfg.name)}
 		<FieldInput
-			bind:this={bottomFieldRefs[i]}
+			bind:this={extraFieldRefs[cfg.name]}
 			value={extraValue(cfg)}
 			oninput={(e: Event) =>
 				setExtraValue(cfg, (e.currentTarget as HTMLInputElement).value)}

@@ -342,7 +342,7 @@ Also covers **identity-first signup** (identity established by an OAuth provider
 
 **Imperative** (`bind:this`): `validate()`, `scrollToFirstError(opts?)`, `focusField(name)` — also forwarded by `RegisterFormModal`.
 
-**`errors` lifecycle:** an entry whose `field` this form renders is tied to that field's value at delivery and self-clears (message + submit block) once the user edits it. An entry for anything else — a field you render yourself from a slot, or a core field switched off by `showEmail` / `showPassword` / `showPasswordConfirm` — keeps blocking until the consumer removes it, since no edit here can answer it. `LoginForm`, `ContactUsForm` and `CheckoutGuestForm` share the prop name but not the self-clearing behavior.
+**`errors` lifecycle** (shared by `LoginForm`, `RegisterForm`, `ContactUsForm` and `CheckoutGuestForm` — see `createExternalFieldErrors` in [utils](./utils.md)): an entry whose `field` the form renders is tied to that field's value at delivery and self-clears (message + submit block) once the user edits it. An entry for anything else — a field you render yourself from a slot, or one switched off by a `show*` / `fields` prop — keeps blocking until the consumer removes it, since no edit there can answer it. Messages are painted as soon as they exist, so a failed submit never leaves a CTA that silently does nothing.
 
 ### CSS Tokens
 

@@ -63,7 +63,7 @@ interface ContactFieldConfig {
 | `formData`           | `ContactFormData`                                            | empty    | Bindable form data.                                                                                                 |
 | `onSubmit`           | `(data: ContactFormData, botCheck: ContactBotCheck) => void` | required | Called after client-side validation passes. `botCheck` is report-only.                                              |
 | `isSubmitting`       | `boolean`                                                    | `false`  | Disables the CTA during submission.                                                                                 |
-| `errors`             | `ContactFormValidationError[]`                               | `[]`     | Field-specific server errors (merged with internal validation).                                                     |
+| `errors`             | `ContactFormValidationError[]`                               | `[]`     | Field-specific server errors (merged with internal validation); self-clearing (see below).                          |
 | `error`              | `string`                                                     | -        | General error rendered as a `DismissibleMessage` above the form.                                                    |
 | `showName`           | `boolean`                                                    | `false`  | Render the Name field.                                                                                              |
 | `requireName`        | `boolean`                                                    | `true`   | Require Name (only applies when shown).                                                                             |
@@ -192,6 +192,21 @@ automatically; the bound value is still the chosen string in `formData.subject`)
 	]}
 />
 ```
+
+## Server-supplied errors
+
+`errors` is consumer-owned — the form renders it but cannot clear it. An entry for a field **this form renders** is therefore tied to the value that field held when the error arrived, and goes **stale** as soon as the user edits it: it stops blocking submit and disappears from the inline messages on that field's next validation run. Typing the rejected value back in makes it live again.
+
+The rule in one line: **errors the user can fix here clear themselves; everything else is yours to clear.** Without the first half the form used to wedge permanently after any server-side field error — the consumer's own "clear errors on submit" code cannot help, because their submit handler is exactly what was being suppressed.
+
+Notes:
+
+- An error whose `field` isn't rendered here keeps blocking until you drop it from `errors`. Nothing in the form can answer it, and auto-clearing it would let the form post past a block you set deliberately.
+- Messages are painted as soon as they arrive; no extra click is needed.
+- Staleness is keyed on the errors' _content_, not the array identity, so passing a freshly built array on every render is safe. An identical error redelivered after a resubmit is treated as fresh.
+- If you post from your own handler instead of `onSubmit`, call `validate()` first — that is what marks the round trip.
+
+Shared with the other STUIC forms via `createExternalFieldErrors` (see the [utils domain](../../../docs/domains/utils.md)).
 
 ## CSS Variables
 

@@ -85,6 +85,10 @@
 		scrollToFirstInvalidField,
 		validateAllFields,
 	} from "../../utils/validate-fields.js";
+	import {
+		createExternalFieldErrors,
+		repaintFieldErrors,
+	} from "../../utils/field-errors.svelte.js";
 	import Button from "../Button/Button.svelte";
 	import DismissibleMessage from "../DismissibleMessage/DismissibleMessage.svelte";
 	import FieldCheckbox from "../Input/FieldCheckbox.svelte";
@@ -135,11 +139,23 @@
 	// Internal validation errors (set on submit)
 	let internalErrors = $state<LoginFormValidationError[]>([]);
 
+	// Give the consumer-owned `errors` prop a lifecycle: an entry for a field this
+	// form renders self-clears once the user edits it, instead of wedging the form
+	// forever (the field's customValidator kept reporting it, so every later
+	// submit was routed to `submit_invalid` — including the consumer's own handler
+	// that would have cleared the errors). Entries for anything else keep blocking
+	// until the consumer drops them. See `createExternalFieldErrors`.
+	const external = createExternalFieldErrors({
+		errors: () => externalErrors,
+		isRendered: (field) => field === "email" || field === "password",
+		valueOf: (field) => (field === "email" ? formData.email : formData.password) ?? "",
+	});
+
 	// Merge internal + external errors; external takes precedence per field
 	let allErrors = $derived.by(() => {
 		const map = new Map<string, string>();
 		for (const e of internalErrors) map.set(e.field, e.message);
-		for (const e of externalErrors) map.set(e.field, e.message);
+		for (const e of external.live) map.set(e.field, e.message);
 		return [...map.entries()].map(([field, message]) => ({ field, message }));
 	});
 
@@ -180,7 +196,8 @@
 		// 		validationErrors.length === 0 && externalErrors.length === 0,
 		// });
 
-		if (validationErrors.length === 0 && externalErrors.length === 0) {
+		if (validationErrors.length === 0 && external.live.length === 0) {
+			external.markSubmitted();
 			onSubmit(formData);
 		}
 	}
@@ -228,11 +245,27 @@
 		return [emailField, passwordField];
 	}
 
+	function _fieldByName(name: string): FieldInput | undefined {
+		if (name === "email") return emailField;
+		if (name === "password") return passwordField;
+		return undefined;
+	}
+
+	// Paint newly-arrived error messages without waiting for the user's next
+	// interaction. `validateLoginForm` runs on `submit_valid` — after the validity
+	// walk has already re-run every field's validator — and a server `errors`
+	// delivery lands once the submit is over, so without this the first failed
+	// click was a button that did nothing, with no message anywhere.
+	repaintFieldErrors(() => allErrors, _fieldByName);
+
 	/**
 	 * Run every field's validator and render any inline errors. Returns true
 	 * if all fields are valid. Useful from custom submit handlers.
 	 */
 	export function validate(): boolean {
+		// Consumers posting from their own handler never reach `handleSubmitValid`,
+		// so this has to arm the same "a round-trip is starting" flag.
+		external.markSubmitted();
 		return validateAllFields(_fields());
 	}
 
@@ -252,9 +285,11 @@
 	<DismissibleMessage message={error} intent="destructive" />
 
 	<!--
-		svelte-ignore binding_property_non_reactive:
-		formData is a $bindable prop — deep reactivity depends on the consumer
-		passing a $state() object. The bindings work correctly regardless.
+		NOTE on `binding_property_non_reactive`: formData is a $bindable prop — deep
+		reactivity depends on the consumer passing a $state() object. The bindings
+		work correctly regardless; the per-field directives below silence the hint.
+		(This block intentionally does NOT start with the literal directive word so
+		it isn't parsed as one — every following word would become a bogus code.)
 	-->
 	<!-- Email -->
 	<!-- svelte-ignore binding_property_non_reactive -->
