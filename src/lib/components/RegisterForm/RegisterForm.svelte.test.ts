@@ -331,6 +331,109 @@ test("unstyled suppresses the social classes and data-position", async () => {
 	await expect.element(screen.getByTestId("social-button")).toBeInTheDocument();
 });
 
+// ------------------------------------------------------ topFieldsSeparator --
+
+const TOP_FIELD = [
+	{ name: "tenant", label: "Workspace id", position: "top" },
+] as RegisterFieldConfig[];
+
+const topGroup = (container: HTMLElement) =>
+	container.querySelector(".stuic-register-form-fields-top");
+
+const hasSeparator = (container: HTMLElement) =>
+	topGroup(container)?.hasAttribute("data-separator") ?? false;
+
+test("top fields are wrapped in a group, with no separator by default", async () => {
+	const { screen } = renderHarness({ onSubmit: noop, extraFields: TOP_FIELD });
+	const group = topGroup(screen.container)!;
+	expect(group).not.toBeNull();
+	// the field lives inside the wrapper, not as a sibling of it
+	expect(group.querySelector('input[name="register-extra-tenant"]')).not.toBeNull();
+	// nothing but plain inputs below -> no rule through the middle of the column
+	expect(hasSeparator(screen.container)).toBe(false);
+});
+
+test("no top fields -> no group wrapper at all", async () => {
+	const { screen } = renderHarness({
+		onSubmit: noop,
+		extraFields: [{ name: "company", label: "Company" }] as RegisterFieldConfig[],
+	});
+	expect(topGroup(screen.container)).toBeNull();
+});
+
+test("the separator turns itself on when the top social block follows", async () => {
+	const { screen } = renderHarness({
+		onSubmit: noop,
+		extraFields: TOP_FIELD,
+		socialPosition: "top",
+		withSocialLogins: true,
+	});
+	expect(hasSeparator(screen.container)).toBe(true);
+});
+
+test("...but not when the same block sits at the bottom", async () => {
+	const { screen } = renderHarness({
+		onSubmit: noop,
+		extraFields: TOP_FIELD,
+		withSocialLogins: true,
+	});
+	expect(hasSeparator(screen.container)).toBe(false);
+});
+
+test("the separator turns itself on when credentialsSlot replaces the credentials", async () => {
+	const { screen } = renderHarness({
+		onSubmit: noop,
+		extraFields: TOP_FIELD,
+		withCredentialsSlot: true,
+		showEmail: false,
+		showPassword: false,
+	});
+	expect(hasSeparator(screen.container)).toBe(true);
+});
+
+test("...but not when credentialsSlot merely accompanies the credentials", async () => {
+	const { screen } = renderHarness({
+		onSubmit: noop,
+		extraFields: TOP_FIELD,
+		withCredentialsSlot: true,
+	});
+	expect(hasSeparator(screen.container)).toBe(false);
+});
+
+test("topFieldsSeparator overrides the automatic decision both ways", async () => {
+	const forcedOn = renderHarness({
+		onSubmit: noop,
+		extraFields: TOP_FIELD,
+		topFieldsSeparator: true,
+	});
+	expect(hasSeparator(forcedOn.screen.container)).toBe(true);
+
+	const forcedOff = renderHarness({
+		onSubmit: noop,
+		extraFields: TOP_FIELD,
+		socialPosition: "top",
+		withSocialLogins: true,
+		topFieldsSeparator: false,
+	});
+	expect(hasSeparator(forcedOff.screen.container)).toBe(false);
+});
+
+test("unstyled suppresses the group class and data-separator", async () => {
+	const { screen } = renderHarness({
+		onSubmit: noop,
+		extraFields: TOP_FIELD,
+		socialPosition: "top",
+		withSocialLogins: true,
+		unstyled: true,
+	});
+	expect(topGroup(screen.container)).toBeNull();
+	expect(screen.container.querySelector("[data-separator]")).toBeNull();
+	// the field itself is still there
+	expect(
+		screen.container.querySelector('input[name="register-extra-tenant"]')
+	).not.toBeNull();
+});
+
 // ---------------------------------------------------------- submitDisabled --
 
 test("submitDisabled disables the CTA and blocks onSubmit entirely", async () => {

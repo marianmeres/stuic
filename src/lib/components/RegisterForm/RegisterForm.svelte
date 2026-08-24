@@ -124,6 +124,24 @@
 			]
 		>;
 
+		/**
+		 * Close the top-position extra fields with a section break — a hairline
+		 * rule plus extra space below the group.
+		 *
+		 * Those fields are the ones required whichever way the user signs up (a
+		 * workspace id, an invite code), so what follows them in an identity-first
+		 * layout is a *choice*: provider buttons, or a block standing in for the
+		 * credentials. At the form's ordinary field rhythm the last of them reads
+		 * as a caption for the first button below it — the break makes the group a
+		 * section of its own instead.
+		 *
+		 * Default: auto — on when the top fields are followed by the top-position
+		 * social block or by a `credentialsSlot` that has replaced the credentials
+		 * entirely; off otherwise, since a plain column of inputs does not want a
+		 * rule drawn through the middle of it.
+		 */
+		topFieldsSeparator?: boolean;
+
 		/** Override CTA label */
 		submitLabel?: string;
 
@@ -217,6 +235,7 @@
 		passwordConfirmFieldProps,
 		extraFields = [],
 		extraFieldsSlot,
+		topFieldsSeparator,
 		submitLabel,
 		submittingLabel,
 		submitButton,
@@ -248,6 +267,16 @@
 	// without the password it confirms is meaningless (and would still be
 	// validated against it).
 	let renderPasswordConfirm = $derived(showPassword && showPasswordConfirm);
+
+	// The section break below the top fields earns its place only when the next
+	// thing down is NOT another plain input: the top social block, or a slot that
+	// has taken the credentials' place. Anywhere else the form is a single column
+	// of fields and a rule through the middle of it is noise.
+	let renderTopFieldsSeparator = $derived(
+		topFieldsSeparator ??
+			((socialPosition === "top" && !!socialLogins) ||
+				(!!credentialsSlot && !showEmail && !showPassword))
+	);
 
 	// Internal validation errors (set on submit)
 	let internalErrors = $state<RegisterFormValidationError[]>([]);
@@ -511,28 +540,37 @@
 	<!-- General error alert -->
 	<DismissibleMessage message={error} intent="destructive" />
 
-	<!-- Top-position extra fields -->
-	{#each topFields as cfg (cfg.name)}
-		<FieldInput
-			bind:this={extraFieldRefs[cfg.name]}
-			value={extraValue(cfg)}
-			oninput={(e: Event) =>
-				setExtraValue(cfg, (e.currentTarget as HTMLInputElement).value)}
-			label={cfg.label}
-			type={cfg.type ?? "text"}
-			placeholder={cfg.placeholder}
-			autocomplete={cfg.autocomplete}
-			required={cfg.required}
-			name={`register-extra-${cfg.name}`}
-			labelLeftBreakpoint={0}
-			validate={{
-				customValidator() {
-					return fieldError(cfg.name) || "";
-				},
-			}}
-			{...cfg.props}
-		/>
-	{/each}
+	<!-- Top-position extra fields. Wrapped as a group so `topFieldsSeparator` can
+	     close it off from the sign-up choice below — the wrapper is inert without
+	     `data-separator`, the fields keep their own rhythm. -->
+	{#if topFields.length}
+		<div
+			class={unstyled ? undefined : "stuic-register-form-fields-top"}
+			data-separator={unstyled || !renderTopFieldsSeparator ? undefined : ""}
+		>
+			{#each topFields as cfg (cfg.name)}
+				<FieldInput
+					bind:this={extraFieldRefs[cfg.name]}
+					value={extraValue(cfg)}
+					oninput={(e: Event) =>
+						setExtraValue(cfg, (e.currentTarget as HTMLInputElement).value)}
+					label={cfg.label}
+					type={cfg.type ?? "text"}
+					placeholder={cfg.placeholder}
+					autocomplete={cfg.autocomplete}
+					required={cfg.required}
+					name={`register-extra-${cfg.name}`}
+					labelLeftBreakpoint={0}
+					validate={{
+						customValidator() {
+							return fieldError(cfg.name) || "";
+						},
+					}}
+					{...cfg.props}
+				/>
+			{/each}
+		</div>
+	{/if}
 
 	<!-- Social logins above the credentials -->
 	{#if socialPosition === "top"}

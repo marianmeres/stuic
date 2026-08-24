@@ -40,35 +40,36 @@ interface RegisterFieldConfig {
 
 ## RegisterForm — Props
 
-| Prop                        | Type                                    | Default    | Description                                                                                                                                           |
-| --------------------------- | --------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `formData`                  | `RegisterFormData`                      | empty      | Bindable form data.                                                                                                                                   |
-| `onSubmit`                  | `(data: RegisterFormData) => void`      | required   | Called after client-side validation passes.                                                                                                           |
-| `isSubmitting`              | `boolean`                               | `false`    | Disables the CTA during submission.                                                                                                                   |
-| `submitDisabled`            | `boolean`                               | `false`    | Consumer-owned submit block. Disables the CTA **and** blocks `onSubmit`.                                                                              |
-| `errors`                    | `RegisterFormValidationError[]`         | `[]`       | Field-specific server errors (merged with internal validation). See [Server errors](#server-supplied-errors).                                         |
-| `error`                     | `string`                                | -          | General error rendered as a `DismissibleMessage` above the form.                                                                                      |
-| `showEmail`                 | `boolean`                               | `true`     | Render the email field. `false` **unmounts** it and skips its validation.                                                                             |
-| `showPassword`              | `boolean`                               | `true`     | Render the password field (and, transitively, the confirm field).                                                                                     |
-| `showPasswordConfirm`       | `boolean`                               | `true`     | Render the password-confirm field. Subordinate to `showPassword`.                                                                                     |
-| `passwordMinLength`         | `number`                                | `8`        | Minimum password length (fed into both the FieldInput attribute and the validator).                                                                   |
-| `credentialsSlot`           | `Snippet<[{ formData, fieldError }]>`   | -          | Rendered at the credentials position (after the core fields, before bottom extra fields).                                                             |
-| `emailFieldProps`           | `Partial<FieldInputProps>`              | -          | Passthrough props for the built-in email field.                                                                                                       |
-| `passwordFieldProps`        | `Partial<FieldInputProps>`              | -          | Passthrough props for the built-in password field.                                                                                                    |
-| `passwordConfirmFieldProps` | `Partial<FieldInputProps>`              | -          | Passthrough props for the built-in confirm field.                                                                                                     |
-| `extraFields`               | `RegisterFieldConfig[]`                 | `[]`       | Declarative extra fields. Rendered as `FieldInput`s positioned top or bottom.                                                                         |
-| `extraFieldsSlot`           | `Snippet<[{ formData, fieldError }]>`   | -          | Escape hatch for non-FieldInput extras. Rendered after declarative bottom fields.                                                                     |
-| `submitLabel`               | `string`                                | i18n       | Override the CTA label.                                                                                                                               |
-| `submittingLabel`           | `string`                                | i18n       | Override the CTA label while submitting.                                                                                                              |
-| `submitButton`              | `Snippet<[{ isSubmitting, disabled }]>` | -          | Override the entire CTA section. `disabled` is `isSubmitting \|\| submitDisabled`.                                                                    |
-| `socialLogins`              | `Snippet`                               | -          | Social/OAuth buttons. A divider is shown when set.                                                                                                    |
-| `socialPosition`            | `"top" \| "bottom"`                     | `"bottom"` | `"top"` renders the block above the credentials, with the divider **below** the buttons.                                                              |
-| `socialDividerLabel`        | `string \| false`                       | i18n       | Override (or hide with `false`) the divider. Defaults to `social_divider` ("or continue with") at the bottom, `social_divider_alt` ("or") at the top. |
-| `footer`                    | `Snippet`                               | -          | Content below the form (e.g., "Already have an account? Log in").                                                                                     |
-| `notifications`             | `NotificationsStack`                    | -          | When set, general errors are also pushed via `notifications.error()`.                                                                                 |
-| `t`                         | `TranslateFn`                           | English    | i18n function.                                                                                                                                        |
-| `unstyled` / `class`        | -                                       | -          | Standard styling escape hatches.                                                                                                                      |
-| `el`                        | `HTMLFormElement`                       | -          | Bindable form element.                                                                                                                                |
+| Prop                        | Type                                    | Default    | Description                                                                                                                                                           |
+| --------------------------- | --------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `formData`                  | `RegisterFormData`                      | empty      | Bindable form data.                                                                                                                                                   |
+| `onSubmit`                  | `(data: RegisterFormData) => void`      | required   | Called after client-side validation passes.                                                                                                                           |
+| `isSubmitting`              | `boolean`                               | `false`    | Disables the CTA during submission.                                                                                                                                   |
+| `submitDisabled`            | `boolean`                               | `false`    | Consumer-owned submit block. Disables the CTA **and** blocks `onSubmit`.                                                                                              |
+| `errors`                    | `RegisterFormValidationError[]`         | `[]`       | Field-specific server errors (merged with internal validation). See [Server errors](#server-supplied-errors).                                                         |
+| `error`                     | `string`                                | -          | General error rendered as a `DismissibleMessage` above the form.                                                                                                      |
+| `showEmail`                 | `boolean`                               | `true`     | Render the email field. `false` **unmounts** it and skips its validation.                                                                                             |
+| `showPassword`              | `boolean`                               | `true`     | Render the password field (and, transitively, the confirm field).                                                                                                     |
+| `showPasswordConfirm`       | `boolean`                               | `true`     | Render the password-confirm field. Subordinate to `showPassword`.                                                                                                     |
+| `passwordMinLength`         | `number`                                | `8`        | Minimum password length (fed into both the FieldInput attribute and the validator).                                                                                   |
+| `credentialsSlot`           | `Snippet<[{ formData, fieldError }]>`   | -          | Rendered at the credentials position (after the core fields, before bottom extra fields).                                                                             |
+| `emailFieldProps`           | `Partial<FieldInputProps>`              | -          | Passthrough props for the built-in email field.                                                                                                                       |
+| `passwordFieldProps`        | `Partial<FieldInputProps>`              | -          | Passthrough props for the built-in password field.                                                                                                                    |
+| `passwordConfirmFieldProps` | `Partial<FieldInputProps>`              | -          | Passthrough props for the built-in confirm field.                                                                                                                     |
+| `extraFields`               | `RegisterFieldConfig[]`                 | `[]`       | Declarative extra fields. Rendered as `FieldInput`s positioned top or bottom.                                                                                         |
+| `extraFieldsSlot`           | `Snippet<[{ formData, fieldError }]>`   | -          | Escape hatch for non-FieldInput extras. Rendered after declarative bottom fields.                                                                                     |
+| `topFieldsSeparator`        | `boolean`                               | auto       | Section rule below the top-position extra fields. Auto-on when they are followed by the top social block or by a `credentialsSlot` that has replaced the credentials. |
+| `submitLabel`               | `string`                                | i18n       | Override the CTA label.                                                                                                                                               |
+| `submittingLabel`           | `string`                                | i18n       | Override the CTA label while submitting.                                                                                                                              |
+| `submitButton`              | `Snippet<[{ isSubmitting, disabled }]>` | -          | Override the entire CTA section. `disabled` is `isSubmitting \|\| submitDisabled`.                                                                                    |
+| `socialLogins`              | `Snippet`                               | -          | Social/OAuth buttons. A divider is shown when set.                                                                                                                    |
+| `socialPosition`            | `"top" \| "bottom"`                     | `"bottom"` | `"top"` renders the block above the credentials, with the divider **below** the buttons.                                                                              |
+| `socialDividerLabel`        | `string \| false`                       | i18n       | Override (or hide with `false`) the divider. Defaults to `social_divider` ("or continue with") at the bottom, `social_divider_alt` ("or") at the top.                 |
+| `footer`                    | `Snippet`                               | -          | Content below the form (e.g., "Already have an account? Log in").                                                                                                     |
+| `notifications`             | `NotificationsStack`                    | -          | When set, general errors are also pushed via `notifications.error()`.                                                                                                 |
+| `t`                         | `TranslateFn`                           | English    | i18n function.                                                                                                                                                        |
+| `unstyled` / `class`        | -                                       | -          | Standard styling escape hatches.                                                                                                                                      |
+| `el`                        | `HTMLFormElement`                       | -          | Bindable form element.                                                                                                                                                |
 
 ### Imperative methods (via `bind:this`)
 
@@ -82,7 +83,7 @@ interface RegisterFieldConfig {
 
 ```
 general error alert (`error`)
-top-position extra fields
+top-position extra fields    ← wrapped as a group, optionally closed with a section rule
 social block            ← only when socialPosition="top" (divider BELOW the buttons)
 email / password / confirm   ← each present only if its show* prop is true
 credentialsSlot
@@ -214,6 +215,8 @@ Once an external party has confirmed who the user is, the credential fields are 
 
 Call `form.focusField("tenant_id")` right after the provider confirms: the button the user clicked is about to unmount, and without an explicit move focus falls to `<body>` — a keyboard user's next Tab restarts at the top of the document.
 
+Those top-position fields are closed off with a section rule here, automatically. At the form's ordinary field rhythm the last of them sits one field-gap above the first provider button and reads as a caption for it; the break says instead that the fields are settled and what follows is a choice. It turns itself on exactly when the fields are followed by something that is not another input — the top social block, or a `credentialsSlot` standing in for the whole credential block — so it survives the switch from "pick a provider" to "signing up as jane@…" without the layout moving. `topFieldsSeparator={true | false}` overrides the decision in either direction.
+
 Other shapes the same three props cover:
 
 | Flow                       | Props                                       |
@@ -299,10 +302,15 @@ Prefix: `--stuic-register-form-*`
 | `--stuic-register-form-social-divider-margin-top`    | Divider top margin (`socialPosition="top"`)        |
 | `--stuic-register-form-credentials-margin-bottom`    | Bottom margin of the `credentialsSlot` wrapper     |
 | `--stuic-register-form-field-margin-bottom`          | Bottom margin of each field inside the form        |
+| `--stuic-register-form-fields-top-padding-bottom`    | Space added above the top-fields section rule      |
+| `--stuic-register-form-fields-top-margin-bottom`     | Space below the top-fields section rule            |
+| `--stuic-register-form-fields-top-border-color`      | Color of the top-fields section rule               |
 
 The social block carries `data-position="top" \| "bottom"` (suppressed under `unstyled`) if you want to target either placement from your own CSS. Note that the `top` variant hard-resets `margin-top` to `0`, so `--stuic-register-form-social-margin-top` applies to the default position only.
 
 `credentialsSlot` content is wrapped in `.stuic-register-form-credentials` (suppressed under `unstyled`) so it inherits the same bottom rhythm the fields have — the form itself is a zero-gap flex column.
+
+Top-position extra fields are wrapped in `.stuic-register-form-fields-top` (suppressed under `unstyled`), which carries `data-separator` when the rule is on. The wrapper is otherwise inert — the fields keep their own margins — so targeting `[data-separator]` is the way to restyle the break without touching the ungrouped case. The default padding stacks on top of the last field's own `margin-bottom`, which is why the two spacing tokens are not equal.
 
 ## Gotchas
 

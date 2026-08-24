@@ -75,6 +75,9 @@
 			]
 		>;
 
+		/** Section break below the top-position extra fields. Default: auto. */
+		topFieldsSeparator?: InnerProps["topFieldsSeparator"];
+
 		/** Override CTA label */
 		submitLabel?: string;
 
@@ -164,6 +167,7 @@
 		passwordConfirmFieldProps,
 		extraFields,
 		extraFieldsSlot,
+		topFieldsSeparator,
 		submitLabel,
 		submittingLabel,
 		submitButton,
@@ -273,6 +277,7 @@
 			{passwordConfirmFieldProps}
 			{extraFields}
 			{extraFieldsSlot}
+			{topFieldsSeparator}
 			{submitLabel}
 			{submittingLabel}
 			{submitButton}

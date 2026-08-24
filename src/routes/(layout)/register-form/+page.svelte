@@ -146,6 +146,45 @@
 		}
 	}
 
+	// --- "Workspace id, no choice below" demo state ---
+	// Same field, but the credentials below it are plain inputs — so the auto
+	// separator stays off and the field is simply the first row of the column.
+	let forceTopSeparator = $state(false);
+
+	const workspaceIdField: RegisterFieldConfig = {
+		name: "workspace_id",
+		label: "Workspace id",
+		position: "top",
+		required: true,
+		props: {
+			description: "Your team's URL: acme.example.com",
+			autocomplete: "off",
+			autocapitalize: "none",
+			spellcheck: false,
+		},
+	};
+
+	// --- Invite-first demo state ---
+	// No provider buttons at all: the invite itself is the identity, so the
+	// credentials are replaced wholesale and the separator is auto-on.
+	const invite = { email: "jane@corp.com", by: "Tom Ford" };
+
+	// --- Grouped top fields demo state ---
+	const workspaceGroupFields: RegisterFieldConfig[] = [
+		{
+			name: "workspace_name",
+			label: "Workspace name",
+			position: "top",
+			required: true,
+			initialValue: "Acme Inc.",
+		},
+		{
+			...workspaceIdField,
+			initialValue: "acme",
+			props: { ...workspaceIdField.props, description: "acme.example.com" },
+		},
+	];
+
 	// --- Modal demo state ---
 	let registerModal: RegisterFormModal = $state()!;
 	let modalSubmitCount = $state(0);
@@ -325,6 +364,11 @@
 		<code>credentialsSlot</code>. Submitting <code>taken</code> as the workspace id returns
 		a server-side field error — edit the field and submit again to see it clear itself.
 	</p>
+	<p class="text-sm opacity-60 mb-4">
+		Because the top-position fields are followed by a <em>choice</em> of sign-up path
+		rather than by another input, they are closed off with a section rule — see
+		<code>topFieldsSeparator</code> (auto here).
+	</p>
 
 	<div class="max-w-sm mb-4 space-y-2">
 		<FieldSwitch
@@ -369,6 +413,80 @@
 				)}</pre>
 		</div>
 	{/if}
+</section>
+
+<!-- ============== WORKSPACE ID, NO CHOICE BELOW ============== -->
+<section class="mb-12">
+	<h2 class="text-lg font-bold mb-2">Workspace id above plain credentials</h2>
+	<p class="text-sm opacity-60 mb-4">
+		The same top-position field, but what follows it is just more inputs — so the
+		automatic <code>topFieldsSeparator</code> stays <strong>off</strong> and the field is simply
+		the first row of one column. Flip the switch to force the rule on anyway.
+	</p>
+
+	<div class="max-w-sm mb-4">
+		<FieldSwitch
+			bind:checked={forceTopSeparator}
+			label={`topFieldsSeparator={true}`}
+			name="force-top-separator"
+			renderSize="sm"
+		/>
+	</div>
+
+	<div class="max-w-lg">
+		<RegisterForm
+			onSubmit={(data) => alert("Submitted: " + data.email)}
+			extraFields={[workspaceIdField]}
+			topFieldsSeparator={forceTopSeparator ? true : undefined}
+			submitLabel="Create workspace"
+			socialLogins={socialButtons}
+		/>
+	</div>
+</section>
+
+<!-- ============== INVITE-FIRST ============== -->
+<section class="mb-12">
+	<h2 class="text-lg font-bold mb-2">Invite-first (no provider buttons)</h2>
+	<p class="text-sm opacity-60 mb-4">
+		The invite token is the identity, so there is nothing to choose: no
+		<code>socialLogins</code> at all, and <code>credentialsSlot</code> replaces the credentials
+		outright. The separator is still auto-on — the workspace id is a field the user fills in,
+		the block below it is not.
+	</p>
+
+	<div class="max-w-lg">
+		<RegisterForm
+			onSubmit={(data) => alert("Workspace: " + data.extra?.workspace_id)}
+			showEmail={false}
+			showPassword={false}
+			extraFields={[{ ...workspaceIdField, initialValue: "acme" }]}
+			credentialsSlot={inviteRow}
+			submitLabel="Accept invite"
+		/>
+	</div>
+</section>
+
+<!-- ============== GROUPED TOP FIELDS ============== -->
+<section class="mb-12">
+	<h2 class="text-lg font-bold mb-2">Several top fields as one group</h2>
+	<p class="text-sm opacity-60 mb-4">
+		The rule closes the whole top-position <em>group</em>, not each field — the fields
+		keep their normal rhythm between themselves and the break lands once, below the last
+		of them.
+	</p>
+
+	<div class="max-w-lg">
+		<RegisterForm
+			onSubmit={(data) => alert("Submitted: " + data.email)}
+			extraFields={workspaceGroupFields}
+			showPasswordConfirm={false}
+			socialPosition="top"
+			socialLogins={plainProviders}
+			socialDividerLabel="or use an email and password"
+			emailFieldProps={{ label: "Owner email" }}
+			submitLabel="Create workspace"
+		/>
+	</div>
 </section>
 
 <!-- ============== MODAL ============== -->
@@ -448,6 +566,15 @@
 	</Button>
 {/snippet}
 
+{#snippet plainProviders()}
+	<Button variant="outline" class="w-full" onclick={() => alert("Google signup")}>
+		{@html iconGoogle()} Continue with Google
+	</Button>
+	<Button variant="outline" class="w-full" onclick={() => alert("Apple signup")}>
+		{@html iconApple()} Continue with Apple
+	</Button>
+{/snippet}
+
 {#snippet identityRow()}
 	<div class="mb-4 rounded-md border border-border p-3 text-sm">
 		<div class="flex items-center justify-between gap-4">
@@ -471,6 +598,16 @@
 				This confirmation has expired — please confirm the account again.
 			</div>
 		{/if}
+	</div>
+{/snippet}
+
+{#snippet inviteRow()}
+	<div class="mb-4 rounded-md border border-border p-3 text-sm">
+		<div class="opacity-60 text-xs">Invited by {invite.by}</div>
+		<div class="font-medium">{invite.email}</div>
+		<div class="opacity-60 text-xs mt-1">
+			You'll set a password after accepting the invite.
+		</div>
 	</div>
 {/snippet}
 

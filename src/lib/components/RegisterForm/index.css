@@ -18,6 +18,13 @@
 	/* credentialsSlot wrapper + the per-field rhythm inside the form */
 	--stuic-register-form-credentials-margin-bottom: 1rem;
 	--stuic-register-form-field-margin-bottom: 1rem;
+
+	/* Section break below the top-position extra fields (`topFieldsSeparator`).
+	   The padding stacks on top of the last field's own margin-bottom, so the
+	   default reads as 1.5rem of air on either side of the rule. */
+	--stuic-register-form-fields-top-padding-bottom: 0.5rem;
+	--stuic-register-form-fields-top-margin-bottom: 1.5rem;
+	--stuic-register-form-fields-top-border-color: var(--stuic-color-border);
 }
 
 @layer components {
@@ -37,6 +44,17 @@
 	   rhythm the fields get. */
 	.stuic-register-form-credentials {
 		margin-bottom: var(--stuic-register-form-credentials-margin-bottom);
+	}
+
+	/* Top-position extra fields. The group wrapper is deliberately inert until
+	   `data-separator` is set — those fields are otherwise just the first rows of
+	   the same single column, and a rule through the middle of a column of inputs
+	   is noise. With it, the group becomes its own section: what follows is a
+	   choice of sign-up path, not another field. */
+	.stuic-register-form-fields-top[data-separator] {
+		padding-bottom: var(--stuic-register-form-fields-top-padding-bottom);
+		margin-bottom: var(--stuic-register-form-fields-top-margin-bottom);
+		border-bottom: 1px solid var(--stuic-register-form-fields-top-border-color);
 	}
 
 	/* Social login container */
