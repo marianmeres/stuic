@@ -128,17 +128,16 @@
 		 * Close the top-position extra fields with a section break — a hairline
 		 * rule plus extra space below the group.
 		 *
-		 * Those fields are the ones required whichever way the user signs up (a
-		 * workspace id, an invite code), so what follows them in an identity-first
-		 * layout is a *choice*: provider buttons, or a block standing in for the
-		 * credentials. At the form's ordinary field rhythm the last of them reads
-		 * as a caption for the first button below it — the break makes the group a
-		 * section of its own instead.
+		 * A field is at the top position because it is about something other than
+		 * the credentials (a workspace id, an invite code, an org name), so the
+		 * group is drawn as its own section. Without the break the last of them
+		 * sits at the ordinary field gap above whatever comes next and reads as a
+		 * caption for it — a label over the first provider button, or just another
+		 * row of the credential column.
 		 *
-		 * Default: auto — on when the top fields are followed by the top-position
-		 * social block or by a `credentialsSlot` that has replaced the credentials
-		 * entirely; off otherwise, since a plain column of inputs does not want a
-		 * rule drawn through the middle of it.
+		 * Default: true whenever there is at least one top-position field,
+		 * regardless of what follows. Set `false` for a form whose top fields
+		 * really do belong to the same column as the credentials.
 		 */
 		topFieldsSeparator?: boolean;
 
@@ -268,15 +267,15 @@
 	// validated against it).
 	let renderPasswordConfirm = $derived(showPassword && showPasswordConfirm);
 
-	// The section break below the top fields earns its place only when the next
-	// thing down is NOT another plain input: the top social block, or a slot that
-	// has taken the credentials' place. Anywhere else the form is a single column
-	// of fields and a rule through the middle of it is noise.
-	let renderTopFieldsSeparator = $derived(
-		topFieldsSeparator ??
-			((socialPosition === "top" && !!socialLogins) ||
-				(!!credentialsSlot && !showEmail && !showPassword))
-	);
+	// A field at the top position is there because it is about something other
+	// than the credentials — the workspace, the invite, the org — so it is closed
+	// off as its own section whichever way the sign-up continues below it.
+	// Deliberately NOT conditioned on what follows (provider buttons, a
+	// credentialsSlot, plain inputs): the last top field otherwise sits one field
+	// gap above the next thing and reads as a caption for it either way, and a
+	// rule that comes and goes with an unrelated prop is not explicable from the
+	// call site. `topFieldsSeparator={false}` opts out.
+	let renderTopFieldsSeparator = $derived(topFieldsSeparator ?? true);
 
 	// Internal validation errors (set on submit)
 	let internalErrors = $state<RegisterFormValidationError[]>([]);

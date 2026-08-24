@@ -37,6 +37,7 @@
 	let showGeneralError = $state(false);
 	let showPasswordConfirm = $state(true);
 	let submitDisabled = $state(false);
+	let topFieldsSeparator = $state(true);
 
 	const sampleExtraFields: RegisterFieldConfig[] = [
 		{
@@ -146,10 +147,11 @@
 		}
 	}
 
-	// --- "Workspace id, no choice below" demo state ---
-	// Same field, but the credentials below it are plain inputs — so the auto
-	// separator stays off and the field is simply the first row of the column.
-	let forceTopSeparator = $state(false);
+	// --- "Workspace id above plain credentials" demo state ---
+	// Nothing between the field and the credentials — no provider buttons, no
+	// slot — and the section rule is still there, because it is about the group
+	// above it, not about what follows.
+	let topSeparator = $state(true);
 
 	const workspaceIdField: RegisterFieldConfig = {
 		name: "workspace_id",
@@ -166,7 +168,7 @@
 
 	// --- Invite-first demo state ---
 	// No provider buttons at all: the invite itself is the identity, so the
-	// credentials are replaced wholesale and the separator is auto-on.
+	// credentials are replaced wholesale.
 	const invite = { email: "jane@corp.com", by: "Tom Ford" };
 
 	// --- Grouped top fields demo state ---
@@ -252,6 +254,12 @@
 			renderSize="sm"
 		/>
 		<FieldSwitch
+			bind:checked={topFieldsSeparator}
+			label="topFieldsSeparator (rule below firstName)"
+			name="top-fields-separator"
+			renderSize="sm"
+		/>
+		<FieldSwitch
 			bind:checked={submitDisabled}
 			label="submitDisabled"
 			name="submit-disabled"
@@ -290,6 +298,7 @@
 			extraFieldsSlot={showExtraSlot ? termsSlot : undefined}
 			socialLogins={showSocialLogins ? socialButtons : undefined}
 			socialPosition={socialOnTop ? "top" : "bottom"}
+			{topFieldsSeparator}
 		>
 			{#snippet footer()}
 				{#if showFooter}
@@ -365,9 +374,9 @@
 		a server-side field error — edit the field and submit again to see it clear itself.
 	</p>
 	<p class="text-sm opacity-60 mb-4">
-		Because the top-position fields are followed by a <em>choice</em> of sign-up path
-		rather than by another input, they are closed off with a section rule — see
-		<code>topFieldsSeparator</code> (auto here).
+		The top-position fields are closed off with a section rule: they are about the
+		workspace, not about the account, so they read as their own section rather than as a
+		caption for the first provider button. See <code>topFieldsSeparator</code>.
 	</p>
 
 	<div class="max-w-sm mb-4 space-y-2">
@@ -419,16 +428,18 @@
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Workspace id above plain credentials</h2>
 	<p class="text-sm opacity-60 mb-4">
-		The same top-position field, but what follows it is just more inputs — so the
-		automatic <code>topFieldsSeparator</code> stays <strong>off</strong> and the field is simply
-		the first row of one column. Flip the switch to force the rule on anyway.
+		Nothing sits between the field and the credentials here — no provider buttons, no slot
+		— and the rule is still drawn. It follows the top-position group, not whatever happens
+		to come after it, so it does not appear and disappear as an unrelated prop changes.
+		Flip the switch for <code>topFieldsSeparator={false}</code>, for a form whose top
+		fields really do belong to the credential column.
 	</p>
 
 	<div class="max-w-sm mb-4">
 		<FieldSwitch
-			bind:checked={forceTopSeparator}
-			label={`topFieldsSeparator={true}`}
-			name="force-top-separator"
+			bind:checked={topSeparator}
+			label="topFieldsSeparator"
+			name="top-separator"
 			renderSize="sm"
 		/>
 	</div>
@@ -437,7 +448,7 @@
 		<RegisterForm
 			onSubmit={(data) => alert("Submitted: " + data.email)}
 			extraFields={[workspaceIdField]}
-			topFieldsSeparator={forceTopSeparator ? true : undefined}
+			topFieldsSeparator={topSeparator}
 			submitLabel="Create workspace"
 			socialLogins={socialButtons}
 		/>
@@ -450,8 +461,8 @@
 	<p class="text-sm opacity-60 mb-4">
 		The invite token is the identity, so there is nothing to choose: no
 		<code>socialLogins</code> at all, and <code>credentialsSlot</code> replaces the credentials
-		outright. The separator is still auto-on — the workspace id is a field the user fills in,
-		the block below it is not.
+		outright. The workspace id is still a field the user fills in and the block below it is
+		not, so the section rule holds the two apart.
 	</p>
 
 	<div class="max-w-lg">

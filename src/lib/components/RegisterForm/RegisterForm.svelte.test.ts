@@ -343,14 +343,13 @@ const topGroup = (container: HTMLElement) =>
 const hasSeparator = (container: HTMLElement) =>
 	topGroup(container)?.hasAttribute("data-separator") ?? false;
 
-test("top fields are wrapped in a group, with no separator by default", async () => {
+test("top fields are wrapped in a group and separated by default", async () => {
 	const { screen } = renderHarness({ onSubmit: noop, extraFields: TOP_FIELD });
 	const group = topGroup(screen.container)!;
 	expect(group).not.toBeNull();
 	// the field lives inside the wrapper, not as a sibling of it
 	expect(group.querySelector('input[name="register-extra-tenant"]')).not.toBeNull();
-	// nothing but plain inputs below -> no rule through the middle of the column
-	expect(hasSeparator(screen.container)).toBe(false);
+	expect(hasSeparator(screen.container)).toBe(true);
 });
 
 test("no top fields -> no group wrapper at all", async () => {
@@ -361,61 +360,46 @@ test("no top fields -> no group wrapper at all", async () => {
 	expect(topGroup(screen.container)).toBeNull();
 });
 
-test("the separator turns itself on when the top social block follows", async () => {
-	const { screen } = renderHarness({
-		onSubmit: noop,
-		extraFields: TOP_FIELD,
-		socialPosition: "top",
-		withSocialLogins: true,
-	});
-	expect(hasSeparator(screen.container)).toBe(true);
+test("the separator does not depend on what follows the group", async () => {
+	// what sits below the top fields varies wildly across the identity-first
+	// flows — provider buttons, a slot standing in for the credentials, or just
+	// the credentials themselves. The break is about the group above it, so none
+	// of these may switch it off.
+	const cases: Record<string, Record<string, unknown>> = {
+		"plain credentials, no social": {},
+		"social at the bottom": { withSocialLogins: true },
+		"social at the top": { socialPosition: "top", withSocialLogins: true },
+		"credentialsSlot replacing the credentials": {
+			withCredentialsSlot: true,
+			showEmail: false,
+			showPassword: false,
+		},
+		"credentialsSlot alongside the credentials": { withCredentialsSlot: true },
+		"no social, no credentials at all": { showEmail: false, showPassword: false },
+	};
+	for (const [label, props] of Object.entries(cases)) {
+		const { screen } = renderHarness({
+			onSubmit: noop,
+			extraFields: TOP_FIELD,
+			...props,
+		});
+		expect(hasSeparator(screen.container), label).toBe(true);
+	}
 });
 
-test("...but not when the same block sits at the bottom", async () => {
+test("topFieldsSeparator={false} opts out", async () => {
 	const { screen } = renderHarness({
-		onSubmit: noop,
-		extraFields: TOP_FIELD,
-		withSocialLogins: true,
-	});
-	expect(hasSeparator(screen.container)).toBe(false);
-});
-
-test("the separator turns itself on when credentialsSlot replaces the credentials", async () => {
-	const { screen } = renderHarness({
-		onSubmit: noop,
-		extraFields: TOP_FIELD,
-		withCredentialsSlot: true,
-		showEmail: false,
-		showPassword: false,
-	});
-	expect(hasSeparator(screen.container)).toBe(true);
-});
-
-test("...but not when credentialsSlot merely accompanies the credentials", async () => {
-	const { screen } = renderHarness({
-		onSubmit: noop,
-		extraFields: TOP_FIELD,
-		withCredentialsSlot: true,
-	});
-	expect(hasSeparator(screen.container)).toBe(false);
-});
-
-test("topFieldsSeparator overrides the automatic decision both ways", async () => {
-	const forcedOn = renderHarness({
-		onSubmit: noop,
-		extraFields: TOP_FIELD,
-		topFieldsSeparator: true,
-	});
-	expect(hasSeparator(forcedOn.screen.container)).toBe(true);
-
-	const forcedOff = renderHarness({
 		onSubmit: noop,
 		extraFields: TOP_FIELD,
 		socialPosition: "top",
 		withSocialLogins: true,
 		topFieldsSeparator: false,
 	});
-	expect(hasSeparator(forcedOff.screen.container)).toBe(false);
+	expect(hasSeparator(screen.container)).toBe(false);
+	// the fields themselves are untouched
+	expect(
+		topGroup(screen.container)!.querySelector('input[name="register-extra-tenant"]')
+	).not.toBeNull();
 });
 
 test("unstyled suppresses the group class and data-separator", async () => {

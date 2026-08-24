@@ -75,7 +75,7 @@
 			]
 		>;
 
-		/** Section break below the top-position extra fields. Default: auto. */
+		/** Section break below the top-position extra fields. Default: true. */
 		topFieldsSeparator?: InnerProps["topFieldsSeparator"];
 
 		/** Override CTA label */

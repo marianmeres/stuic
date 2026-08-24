@@ -300,7 +300,7 @@ Prefix: `--stuic-login-form-*`
 
 Standalone registration form. Mirrors `LoginForm` conventions: `formData`, `onSubmit`, validation, errors, i18n, notifications, social-logins. Adds declarative `extraFields` (top/bottom positioning, custom validators) and an `extraFieldsSlot` escape hatch (e.g., terms checkbox).
 
-Also covers **identity-first signup** (identity established by an OAuth provider / invite / magic link before the account exists): `showEmail` / `showPassword` unmount the credential fields, `credentialsSlot` replaces them, `socialPosition="top"` moves the provider buttons above the credentials, and the top-position extra fields (workspace id, invite code — required on every path) are closed off with a section rule so they don't read as a caption for the first provider button (`topFieldsSeparator`, auto).
+Also covers **identity-first signup** (identity established by an OAuth provider / invite / magic link before the account exists): `showEmail` / `showPassword` unmount the credential fields, `credentialsSlot` replaces them, `socialPosition="top"` moves the provider buttons above the credentials, and the top-position extra fields (workspace id, invite code — required on every path) are closed off with a section rule so they don't read as a caption for the first provider button (`topFieldsSeparator`, on by default whenever such a field exists).
 
 ### Exports
 
@@ -317,29 +317,29 @@ Also covers **identity-first signup** (identity established by an OAuth provider
 
 ### Key Props
 
-| Prop                                                                   | Type                            | Default    | Description                                                                      |
-| ---------------------------------------------------------------------- | ------------------------------- | ---------- | -------------------------------------------------------------------------------- |
-| `formData`                                                             | `RegisterFormData`              | empty      | Bindable form data                                                               |
-| `onSubmit`                                                             | `(data) => void`                | required   | Submit callback                                                                  |
-| `isSubmitting`                                                         | `boolean`                       | `false`    | Disables CTA                                                                     |
-| `submitDisabled`                                                       | `boolean`                       | `false`    | Consumer-owned block: disables CTA + blocks submit                               |
-| `errors`                                                               | `RegisterFormValidationError[]` | `[]`       | Server field errors — self-clearing (see below)                                  |
-| `error`                                                                | `string`                        | —          | General error (alert above form)                                                 |
-| `showEmail`                                                            | `boolean`                       | `true`     | Render (mount) the email field                                                   |
-| `showPassword`                                                         | `boolean`                       | `true`     | Render (mount) the password + confirm fields                                     |
-| `showPasswordConfirm`                                                  | `boolean`                       | `true`     | Render password-confirm field                                                    |
-| `passwordMinLength`                                                    | `number`                        | `8`        | Min password length (input + validator)                                          |
-| `credentialsSlot`                                                      | `Snippet`                       | —          | Content at the credentials position                                              |
-| `emailFieldProps` / `passwordFieldProps` / `passwordConfirmFieldProps` | `Partial<FieldInputProps>`      | —          | Passthrough props per core field (`validate` composed, `value` ignored)          |
-| `extraFields`                                                          | `RegisterFieldConfig[]`         | `[]`       | Declarative extra fields (top/bottom)                                            |
-| `extraFieldsSlot`                                                      | `Snippet`                       | —          | Escape-hatch for non-FieldInput extras                                           |
-| `topFieldsSeparator`                                                   | `boolean`                       | auto       | Section rule below the top-position extra fields (auto-on when a choice follows) |
-| `submitButton`                                                         | `Snippet`                       | —          | Custom CTA section                                                               |
-| `socialLogins`                                                         | `Snippet`                       | —          | OAuth buttons                                                                    |
-| `socialPosition`                                                       | `"top" \| "bottom"`             | `"bottom"` | Social block above the credentials or after the CTA                              |
-| `footer`                                                               | `Snippet`                       | —          | Content below form                                                               |
-| `notifications`                                                        | `NotificationsStack`            | —          | Route errors to notifications                                                    |
-| `t`                                                                    | `TranslateFn`                   | built-in   | Translation function                                                             |
+| Prop                                                                   | Type                            | Default    | Description                                                               |
+| ---------------------------------------------------------------------- | ------------------------------- | ---------- | ------------------------------------------------------------------------- |
+| `formData`                                                             | `RegisterFormData`              | empty      | Bindable form data                                                        |
+| `onSubmit`                                                             | `(data) => void`                | required   | Submit callback                                                           |
+| `isSubmitting`                                                         | `boolean`                       | `false`    | Disables CTA                                                              |
+| `submitDisabled`                                                       | `boolean`                       | `false`    | Consumer-owned block: disables CTA + blocks submit                        |
+| `errors`                                                               | `RegisterFormValidationError[]` | `[]`       | Server field errors — self-clearing (see below)                           |
+| `error`                                                                | `string`                        | —          | General error (alert above form)                                          |
+| `showEmail`                                                            | `boolean`                       | `true`     | Render (mount) the email field                                            |
+| `showPassword`                                                         | `boolean`                       | `true`     | Render (mount) the password + confirm fields                              |
+| `showPasswordConfirm`                                                  | `boolean`                       | `true`     | Render password-confirm field                                             |
+| `passwordMinLength`                                                    | `number`                        | `8`        | Min password length (input + validator)                                   |
+| `credentialsSlot`                                                      | `Snippet`                       | —          | Content at the credentials position                                       |
+| `emailFieldProps` / `passwordFieldProps` / `passwordConfirmFieldProps` | `Partial<FieldInputProps>`      | —          | Passthrough props per core field (`validate` composed, `value` ignored)   |
+| `extraFields`                                                          | `RegisterFieldConfig[]`         | `[]`       | Declarative extra fields (top/bottom)                                     |
+| `extraFieldsSlot`                                                      | `Snippet`                       | —          | Escape-hatch for non-FieldInput extras                                    |
+| `topFieldsSeparator`                                                   | `boolean`                       | `true`     | Section rule closing the top-position extra-field group; `false` opts out |
+| `submitButton`                                                         | `Snippet`                       | —          | Custom CTA section                                                        |
+| `socialLogins`                                                         | `Snippet`                       | —          | OAuth buttons                                                             |
+| `socialPosition`                                                       | `"top" \| "bottom"`             | `"bottom"` | Social block above the credentials or after the CTA                       |
+| `footer`                                                               | `Snippet`                       | —          | Content below form                                                        |
+| `notifications`                                                        | `NotificationsStack`            | —          | Route errors to notifications                                             |
+| `t`                                                                    | `TranslateFn`                   | built-in   | Translation function                                                      |
 
 **Imperative** (`bind:this`): `validate()`, `scrollToFirstError(opts?)`, `focusField(name)` — also forwarded by `RegisterFormModal`.
 

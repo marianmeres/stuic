@@ -46,11 +46,10 @@
 		margin-bottom: var(--stuic-register-form-credentials-margin-bottom);
 	}
 
-	/* Top-position extra fields. The group wrapper is deliberately inert until
-	   `data-separator` is set — those fields are otherwise just the first rows of
-	   the same single column, and a rule through the middle of a column of inputs
-	   is noise. With it, the group becomes its own section: what follows is a
-	   choice of sign-up path, not another field. */
+	/* Top-position extra fields. `data-separator` is on unless the consumer opts
+	   out, so the group reads as its own section rather than as the first rows of
+	   the credential column; the wrapper is inert without it, leaving the fields
+	   their own margins. */
 	.stuic-register-form-fields-top[data-separator] {
 		padding-bottom: var(--stuic-register-form-fields-top-padding-bottom);
 		margin-bottom: var(--stuic-register-form-fields-top-margin-bottom);
