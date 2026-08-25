@@ -3,6 +3,7 @@ import { expect, test, vi } from "vitest";
 import { page, userEvent } from "vitest/browser";
 import { createRawSnippet } from "svelte";
 import DataTable, { type DataTableColumn } from "./DataTable.svelte";
+import { createPagingStore } from "@marianmeres/paging-store";
 
 // The browser test viewport is 414x896 — below Tailwind's `md` — so DataTable would
 // always pick the mobile card layout. `Breakpoint` derives from `window.innerWidth`
@@ -360,4 +361,126 @@ test("without rowHref / rowActivatable the row markup is unchanged", async () =>
 	expect(tr.hasAttribute("aria-label")).toBe(false);
 	expect(tr.querySelector("a")).toBe(null);
 	expect(tr.getAttribute("data-clickable")).toBe("true");
+});
+
+// ============================================================================
+// selection bar (reserveBatchBar)
+// ============================================================================
+
+// NOTE: these assert the DOM invariant — one bar element that survives every
+// selection state change. The *height* invariant that actually stops the jump is
+// CSS (`--stuic-data-table-batch-min-height`), and component tests don't load
+// index.css, so that half is verified against the running dev page instead.
+
+const bar = () => document.querySelector<HTMLElement>(".stuic-data-table-batch");
+const batchActionsSnippet = createRawSnippet(
+	(args: () => { effectiveCount: number }) => ({
+		render: () => `<span data-actions>${args().effectiveCount} picked</span>`,
+	})
+);
+// 2 rows on screen out of 10 -- enough for the select-all-across-pages offer
+const PAGING = createPagingStore({ total: 10, limit: 2 }).get();
+
+test("the selection bar is reserved (and idle) before anything is selected", async () => {
+	render(DataTable, {
+		columns: COLUMNS,
+		data: DATA,
+		getRowId,
+		selectable: true,
+		batchActions: batchActionsSnippet,
+	});
+	await expect.element(page.getByRole("table")).toBeInTheDocument();
+
+	expect(bar()?.getAttribute("data-idle")).toBe("true");
+	expect(bar()?.textContent?.trim()).toBe("No rows selected");
+	expect(bar()?.querySelector("[data-actions]")).toBe(null);
+});
+
+test("selecting swaps the bar's content in place, keeping the same element", async () => {
+	render(DataTable, {
+		columns: COLUMNS,
+		data: DATA,
+		getRowId,
+		selectable: true,
+		batchActions: batchActionsSnippet,
+	});
+	await expect.element(page.getByRole("table")).toBeInTheDocument();
+
+	const before = bar();
+	const cb = rows()[0].querySelector<HTMLInputElement>('input[type="checkbox"]')!;
+	cb.click();
+	await vi.waitFor(() => expect(bar()?.querySelector("[data-actions]")).not.toBe(null));
+
+	// same node, not a remount — that is what keeps the table from moving
+	expect(bar()).toBe(before);
+	expect(bar()?.hasAttribute("data-idle")).toBe(false);
+	expect(bar()?.querySelector("[data-actions]")?.textContent).toBe("1 picked");
+});
+
+test("reserveBatchBar={false} restores the pop-in behaviour", async () => {
+	render(DataTable, {
+		columns: COLUMNS,
+		data: DATA,
+		getRowId,
+		selectable: true,
+		reserveBatchBar: false,
+		batchActions: batchActionsSnippet,
+	});
+	await expect.element(page.getByRole("table")).toBeInTheDocument();
+
+	expect(bar()).toBe(null);
+	rows()[0].querySelector<HTMLInputElement>('input[type="checkbox"]')!.click();
+	await vi.waitFor(() => expect(bar()).not.toBe(null));
+	expect(bar()?.querySelector("[data-actions]")?.textContent).toBe("1 picked");
+});
+
+test("no bar at all when there is nothing to put in it", async () => {
+	render(DataTable, { columns: COLUMNS, data: DATA, getRowId, selectable: true });
+	await expect.element(page.getByRole("table")).toBeInTheDocument();
+
+	expect(bar()).toBe(null);
+	rows()[0].querySelector<HTMLInputElement>('input[type="checkbox"]')!.click();
+	await vi.waitFor(() => expect(rows()[0].getAttribute("data-selected")).toBe("true"));
+	expect(bar()).toBe(null);
+});
+
+test("without a batchActions snippet the bar reports the count itself", async () => {
+	render(DataTable, {
+		columns: COLUMNS,
+		data: DATA,
+		getRowId,
+		selectable: true,
+		allowSelectAllPages: true,
+		paging: PAGING,
+	});
+	await expect.element(page.getByRole("table")).toBeInTheDocument();
+
+	expect(bar()?.textContent?.trim()).toBe("No rows selected");
+	rows()[0].querySelector<HTMLInputElement>('input[type="checkbox"]')!.click();
+	await vi.waitFor(() => expect(bar()?.textContent?.trim()).toBe("1 selected"));
+});
+
+test("the select-all offer renders inside the same bar, not as a second block", async () => {
+	render(DataTable, {
+		columns: COLUMNS,
+		data: DATA,
+		getRowId,
+		selectable: true,
+		allowSelectAllPages: true,
+		paging: PAGING,
+		batchActions: batchActionsSnippet,
+	});
+	await expect.element(page.getByRole("table")).toBeInTheDocument();
+
+	const before = bar();
+	// header checkbox selects the whole page, which reveals the offer
+	document.querySelector<HTMLInputElement>('thead input[type="checkbox"]')!.click();
+	await vi.waitFor(() =>
+		expect(bar()?.querySelector(".stuic-data-table-batch-select-all")).not.toBe(null)
+	);
+
+	expect(bar()).toBe(before);
+	expect(bar()?.getAttribute("data-select-all")).toBe("true");
+	expect(document.querySelectorAll(".stuic-data-table-batch").length).toBe(1);
+	expect(bar()?.textContent).toContain("Select all 10 results");
 });

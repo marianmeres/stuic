@@ -64,6 +64,30 @@ DataTable integrates with [`@marianmeres/paging-store`](https://github.com/maria
 
 Shift+click a checkbox to toggle a range of rows from the last clicked checkbox to the current one. Disabled rows in the range are skipped. The anchor resets when `data` changes (e.g. on page navigation).
 
+#### The selection bar holds its place
+
+Everything selection-related lives in one strip above the table: the status while nothing
+is selected, your `batchActions` while something is, and the select-all-across-pages offer
+on its trailing edge. That strip is rendered from the start and keeps a constant height
+(`reserveBatchBar`, on by default), so checking the first row swaps its contents instead
+of pushing the table down.
+
+- The height comes from `--stuic-data-table-batch-min-height`, sized to a `size="sm"`
+  Button. Batch actions built from bigger controls need that token raised, or the bar
+  grows when they appear — which is the jump all over again.
+- Idle, the bar is transparent (`--stuic-data-table-batch-bg-idle`) so a permanently
+  reserved strip doesn't shout; it takes on `--stuic-data-table-batch-bg` once something
+  is selected and `--stuic-data-table-select-all-bg` while the select-all offer is up.
+- The bar only exists when there is something to reserve room for — `selectable` plus
+  either a `batchActions` snippet or `allowSelectAllPages`. `selectable` on its own
+  renders no bar.
+- `reserveBatchBar={false}` restores the old behaviour: the bar appears only once it has
+  content.
+
+Without a `batchActions` snippet the bar still reports the count itself
+(`t("x_rows_selected")` / `t("no_rows_selected")`). With one, the snippet replaces that
+status entirely — render your own count next to the buttons.
+
 ### Select All Across Pages
 
 When your data is paged, DataTable can offer a "select all results" affordance that expands selection beyond the current page. Enable it with `allowSelectAllPages`. When the user opts in, selection flips to **all-pages mode**: every row is implicitly selected, and `excluded` holds IDs the user has explicitly deselected.
@@ -115,7 +139,7 @@ function deleteSelection({ selectedAll, excluded }) {
 
 New records inserted while all-pages mode is active are implicitly selected (they aren't in `excluded`). This matches the conventional intent — "delete everything matching X" should include matches that arrive before the operation runs. If you need snapshot-at-click semantics, capture a timestamp or ID list in your consumer.
 
-**Customising the banner:** the default banner uses the built-in `t()` keys `select_all_on_page_x`, `select_all_results`, `all_results_selected`, and `clear_selection`. Override markup entirely with the `selectAllBanner` snippet:
+**Customising the offer:** the default offer renders on the trailing edge of the selection bar and uses the built-in `t()` keys `select_all_on_page_x`, `select_all_results`, `all_results_selected`, and `clear_selection`. Override its markup entirely with the `selectAllBanner` snippet (which renders in the same slot — it is no longer a standalone block below the batch bar):
 
 ```svelte
 <DataTable
@@ -301,6 +325,7 @@ Replace the entire `<tr>` on desktop. When this snippet is provided, DataTable d
 | `allowSelectAllPages` | `boolean`                             | `false`       | Show a banner offering "select all results" across paged data              |
 | `selectedAll`         | `boolean`                             | `false`       | All-pages mode flag (bindable). In this mode `excluded` drives selection   |
 | `excluded`            | `Set<string \| number>`               | `new Set()`   | Deselected row IDs while in all-pages mode (bindable)                      |
+| `reserveBatchBar`     | `boolean`                             | `true`        | Keep the selection bar in the layout while nothing is selected             |
 | `onRowClick`          | `(row, index) => void`                | -             | Row click callback                                                         |
 | `rowHref`             | `(row, index) => string \| undefined` | -             | Wrap the lead cell's content in an `<a href>` (keyboard/⌘-click reachable) |
 | `rowHrefColumn`       | `string`                              | first column  | Which column is the lead cell for `rowHref`                                |
@@ -313,8 +338,8 @@ Replace the entire `<tr>` on desktop. When this snippet is provided, DataTable d
 | `cell`                | `Snippet`                             | -             | Custom cell renderer (desktop + mobile)                                    |
 | `row`                 | `Snippet`                             | -             | Custom desktop `<tr>` renderer (overrides default row)                     |
 | `mobileRow`           | `Snippet`                             | -             | Custom mobile card renderer                                                |
-| `batchActions`        | `Snippet`                             | -             | Batch action bar content                                                   |
-| `selectAllBanner`     | `Snippet`                             | -             | Override default "select all across pages" banner                          |
+| `batchActions`        | `Snippet`                             | -             | Selection bar content while something is selected                          |
+| `selectAllBanner`     | `Snippet`                             | -             | Override default "select all across pages" offer                           |
 | `empty`               | `Snippet`                             | -             | Custom empty state                                                         |
 | `unstyled`            | `boolean`                             | `false`       | Skip default styling                                                       |
 | `class`               | `string`                              | -             | Additional CSS classes                                                     |
@@ -348,36 +373,83 @@ Replace the entire `<tr>` on desktop. When this snippet is provided, DataTable d
 | `hideOnMobile` | `boolean`                       | `false`  | Hide in mobile view                       |
 | `renderValue`  | `(value, row) => string`        | -        | Value formatter                           |
 
+## i18n
+
+All built-in texts go through the `t` prop. English is the built-in default; Slovak ships
+bundled and opt-in (importing it is what pulls it into your bundle — English-only
+consumers pay nothing).
+
+```svelte
+<script>
+	import {
+		DataTable,
+		createDataTableT,
+		DATA_TABLE_MESSAGES_SK,
+	} from "@marianmeres/stuic";
+
+	const t = createDataTableT(DATA_TABLE_MESSAGES_SK);
+</script>
+
+<DataTable {columns} {data} {t} />
+```
+
+`createDataTableT(messages, fallbackMessages?)` falls back to `DATA_TABLE_MESSAGES_EN` for
+any key the catalog does not define, so a partial catalog is fine and a raw key is never
+rendered — pass your own object to translate into a language that is not bundled, or to
+override individual bundled texts:
+
+```ts
+const t = createDataTableT({ ...DATA_TABLE_MESSAGES_SK, no_data: "Nič tu nie je" });
+```
+
+| Key                    | English                            | Used by                              |
+| ---------------------- | ---------------------------------- | ------------------------------------ |
+| `previous_page`        | Prev                               | Paging                               |
+| `next_page`            | Next                               | Paging                               |
+| `page_x_of_y`          | Page {page} of {pageCount}         | Paging                               |
+| `no_data`              | No data                            | Empty state (no `empty` snippet)     |
+| `select_all_rows`      | Select all rows on this page       | Header checkbox `aria-label`         |
+| `select_row`           | Select row                         | Row checkbox `aria-label`            |
+| `no_rows_selected`     | No rows selected                   | Idle selection bar                   |
+| `x_rows_selected`      | {count} selected                   | Selection bar without `batchActions` |
+| `select_all_on_page_x` | All {count} on this page selected. | Select-all offer                     |
+| `select_all_results`   | Select all {totalCount} results    | Select-all offer                     |
+| `all_results_selected` | All {totalCount} results selected. | Select-all offer, all-pages mode     |
+| `clear_selection`      | Clear selection                    | Select-all offer, all-pages mode     |
+
 ## CSS Variables
 
-| Variable                                       | Default                               | Description                  |
-| ---------------------------------------------- | ------------------------------------- | ---------------------------- |
-| `--stuic-data-table-radius`                    | `var(--radius-md)`                    | Border radius                |
-| `--stuic-data-table-border-color`              | `var(--stuic-color-border)`           | Border color                 |
-| `--stuic-data-table-header-bg`                 | `var(--stuic-color-muted)`            | Header background            |
-| `--stuic-data-table-header-color`              | `var(--stuic-color-muted-foreground)` | Header text                  |
-| `--stuic-data-table-header-font-size`          | `0.875rem`                            | Header font size             |
-| `--stuic-data-table-header-font-weight`        | `var(--font-weight-semibold)`         | Header font weight           |
-| `--stuic-data-table-header-padding-x`          | `0.75rem`                             | Header horizontal padding    |
-| `--stuic-data-table-header-padding-y`          | `0.5rem`                              | Header vertical padding      |
-| `--stuic-data-table-row-bg`                    | `transparent`                         | Row background               |
-| `--stuic-data-table-row-bg-hover`              | `var(--stuic-color-muted)`            | Row hover background         |
-| `--stuic-data-table-row-bg-selected`           | `color-mix(primary 10%)`              | Selected row background      |
-| `--stuic-data-table-row-border-color`          | `var(--stuic-color-border)`           | Row border color             |
-| `--stuic-data-table-row-link-color`            | `inherit`                             | `rowHref` anchor color       |
-| `--stuic-data-table-row-link-decoration`       | `none`                                | `rowHref` anchor decoration  |
-| `--stuic-data-table-row-link-decoration-hover` | `underline`                           | …on hover                    |
-| `--stuic-data-table-row-ring-width`            | `3px`                                 | Activatable row focus ring   |
-| `--stuic-data-table-row-ring-color`            | `var(--stuic-color-ring)`             | Activatable row ring color   |
-| `--stuic-data-table-cell-padding-x`            | `0.75rem`                             | Cell horizontal padding      |
-| `--stuic-data-table-cell-padding-y`            | `0.75rem`                             | Cell vertical padding        |
-| `--stuic-data-table-cell-font-size`            | `0.875rem`                            | Cell font size               |
-| `--stuic-data-table-loading-opacity`           | `0.5`                                 | Loading state opacity        |
-| `--stuic-data-table-card-bg`                   | `var(--stuic-color-background)`       | Mobile card background       |
-| `--stuic-data-table-card-border-color`         | `var(--stuic-color-border)`           | Mobile card border           |
-| `--stuic-data-table-card-radius`               | `var(--radius-md)`                    | Mobile card radius           |
-| `--stuic-data-table-card-padding`              | `0.75rem`                             | Mobile card padding          |
-| `--stuic-data-table-card-gap`                  | `0.5rem`                              | Gap between mobile cards     |
-| `--stuic-data-table-select-all-bg`             | `color-mix(primary 10%)`              | Select-all banner background |
-| `--stuic-data-table-select-all-padding-x`      | `0.75rem`                             | Banner horizontal padding    |
-| `--stuic-data-table-select-all-padding-y`      | `0.5rem`                              | Banner vertical padding      |
+| Variable                                       | Default                               | Description                       |
+| ---------------------------------------------- | ------------------------------------- | --------------------------------- |
+| `--stuic-data-table-radius`                    | `var(--radius-md)`                    | Border radius                     |
+| `--stuic-data-table-border-color`              | `var(--stuic-color-border)`           | Border color                      |
+| `--stuic-data-table-header-bg`                 | `var(--stuic-color-muted)`            | Header background                 |
+| `--stuic-data-table-header-color`              | `var(--stuic-color-muted-foreground)` | Header text                       |
+| `--stuic-data-table-header-font-size`          | `0.875rem`                            | Header font size                  |
+| `--stuic-data-table-header-font-weight`        | `var(--font-weight-semibold)`         | Header font weight                |
+| `--stuic-data-table-header-padding-x`          | `0.75rem`                             | Header horizontal padding         |
+| `--stuic-data-table-header-padding-y`          | `0.5rem`                              | Header vertical padding           |
+| `--stuic-data-table-row-bg`                    | `transparent`                         | Row background                    |
+| `--stuic-data-table-row-bg-hover`              | `var(--stuic-color-muted)`            | Row hover background              |
+| `--stuic-data-table-row-bg-selected`           | `color-mix(primary 10%)`              | Selected row background           |
+| `--stuic-data-table-row-border-color`          | `var(--stuic-color-border)`           | Row border color                  |
+| `--stuic-data-table-row-link-color`            | `inherit`                             | `rowHref` anchor color            |
+| `--stuic-data-table-row-link-decoration`       | `none`                                | `rowHref` anchor decoration       |
+| `--stuic-data-table-row-link-decoration-hover` | `underline`                           | …on hover                         |
+| `--stuic-data-table-row-ring-width`            | `3px`                                 | Activatable row focus ring        |
+| `--stuic-data-table-row-ring-color`            | `var(--stuic-color-ring)`             | Activatable row ring color        |
+| `--stuic-data-table-cell-padding-x`            | `0.75rem`                             | Cell horizontal padding           |
+| `--stuic-data-table-cell-padding-y`            | `0.75rem`                             | Cell vertical padding             |
+| `--stuic-data-table-cell-font-size`            | `0.875rem`                            | Cell font size                    |
+| `--stuic-data-table-loading-opacity`           | `0.5`                                 | Loading state opacity             |
+| `--stuic-data-table-card-bg`                   | `var(--stuic-color-background)`       | Mobile card background            |
+| `--stuic-data-table-card-border-color`         | `var(--stuic-color-border)`           | Mobile card border                |
+| `--stuic-data-table-card-radius`               | `var(--radius-md)`                    | Mobile card radius                |
+| `--stuic-data-table-card-padding`              | `0.75rem`                             | Mobile card padding               |
+| `--stuic-data-table-card-gap`                  | `0.5rem`                              | Gap between mobile cards          |
+| `--stuic-data-table-batch-bg`                  | `var(--stuic-color-muted)`            | Selection bar background          |
+| `--stuic-data-table-batch-bg-idle`             | `transparent`                         | …while nothing is selected        |
+| `--stuic-data-table-batch-padding-x`           | `0.75rem`                             | Selection bar h. padding          |
+| `--stuic-data-table-batch-padding-y`           | `0.5rem`                              | Selection bar v. padding          |
+| `--stuic-data-table-batch-min-height`          | `sm Button + padding`                 | Reserved selection bar height     |
+| `--stuic-data-table-select-all-bg`             | `color-mix(primary 10%)`              | …while the select-all offer is up |

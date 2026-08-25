@@ -4,35 +4,8 @@
 	import type { PagingCalcResult } from "@marianmeres/paging-store";
 	import type { THC } from "../Thc/index.js";
 	import type { TranslateFn } from "../../types.js";
-	import { isPlainObject } from "../../utils/is-plain-object.js";
-	import { replaceMap } from "../../utils/replace-map.js";
-
-	// i18n ready
-	function t_default(
-		k: string,
-		values: false | null | undefined | Record<string, string | number> = null,
-		fallback: string | boolean = "",
-		_i18nSpanWrap: boolean = true
-	) {
-		const m: Record<string, string> = {
-			previous_page: "Prev",
-			next_page: "Next",
-			page_x_of_y: "Page {page} of {pageCount}",
-			no_data: "No data",
-			select_all_rows: "Select all rows on this page",
-			select_row: "Select row",
-			select_all_on_page_x: "All {count} on this page selected.",
-			select_all_results: "Select all {totalCount} results",
-			all_results_selected: "All {totalCount} results selected.",
-			clear_selection: "Clear selection",
-		};
-		let out = m[k] ?? fallback ?? k;
-		return isPlainObject(values)
-			? replaceMap(out, values as any, {
-					preSearchKeyTransform: (k) => `{${k}}`,
-				})
-			: out;
-	}
+	// i18n ready -- see ./i18n.ts (english, built-in) and ./i18n-sk.ts (opt-in slovak)
+	import { DATA_TABLE_MESSAGES_EN, t_default } from "./i18n.js";
 
 	export interface DataTableColumn<T = Record<string, any>> {
 		/** Property key to extract from row data (supports dot-notation: "data.name") */
@@ -94,6 +67,20 @@
 		selectedAll?: boolean;
 		/** Set of row IDs explicitly deselected while in all-pages mode (bindable) */
 		excluded?: Set<string | number>;
+
+		/**
+		 * Keep the selection bar -- the strip above the table holding the idle status,
+		 * `batchActions`, and the select-all-across-pages offer -- in the layout at all
+		 * times, so checking the first row does not shove the table down. While nothing
+		 * is selected it reads `t("no_rows_selected")`.
+		 *
+		 * Only meaningful when `selectable` is on AND there is something to reserve room
+		 * for (a `batchActions` snippet or `allowSelectAllPages`); with neither, no bar
+		 * is rendered at all.
+		 *
+		 * Set `false` for the pop-in behaviour: the bar appears only once it has content.
+		 */
+		reserveBatchBar?: boolean;
 
 		/** Callback when a row is clicked */
 		onRowClick?: (row: T, index: number) => void;
@@ -173,7 +160,8 @@
 			]
 		>;
 		/**
-		 * Batch actions bar snippet (shown when items are selected).
+		 * Content of the selection bar while something is selected. Replaces the default
+		 * "{count} selected" status, so render your own count alongside the buttons.
 		 *
 		 * Note: in all-pages mode (`selectedAll === true`) `selectedRows` only contains
 		 * rows from the current page that aren't excluded. Off-page rows are not
@@ -195,8 +183,8 @@
 			]
 		>;
 		/**
-		 * Custom "select all results across pages" banner. When omitted, a default
-		 * banner is rendered.
+		 * Custom "select all results across pages" offer, rendered on the trailing edge
+		 * of the selection bar. When omitted, a default one is rendered.
 		 */
 		selectAllBanner?: Snippet<
 			[
@@ -250,6 +238,7 @@
 		allowSelectAllPages = false,
 		selectedAll = $bindable(false),
 		excluded = $bindable(new Set()),
+		reserveBatchBar = true,
 		onRowClick,
 		rowHref,
 		rowHrefColumn,
@@ -395,6 +384,30 @@
 		return allOnPageSelected;
 	});
 
+	// The default selection status, shown when there is no `batchActions` snippet to take
+	// its place. Both keys post-date the component, so a consumer `t` written against an
+	// older version does not know them -- and one that answers an unknown key with ""
+	// would leave the reserved bar visibly blank. Hence the explicit english fallbacks
+	// (pre-interpolated, since a `t` may hand a fallback straight back untouched), which
+	// every other, older key can do without.
+	let statusText = $derived(
+		effectiveCount > 0
+			? t(
+					"x_rows_selected",
+					{ count: effectiveCount },
+					DATA_TABLE_MESSAGES_EN.x_rows_selected.replace("{count}", `${effectiveCount}`)
+				)
+			: t("no_rows_selected", null, DATA_TABLE_MESSAGES_EN.no_rows_selected)
+	);
+
+	// The bar only exists if something can appear in it; `reserveBatchBar` then decides
+	// whether it holds its place while that something is absent.
+	let hasBatchBar = $derived(selectable && (!!batchActions || allowSelectAllPages));
+	let showBatchBar = $derived(
+		hasBatchBar &&
+			(reserveBatchBar || showSelectAllBanner || (effectiveCount > 0 && !!batchActions))
+	);
+
 	// --- Row click / activation ---
 
 	// A row is a big target that legitimately contains its own controls. Anything that
@@ -489,47 +502,62 @@
 	{/if}
 {/snippet}
 
-<!-- Batch action bar -->
-{#if selectable && effectiveCount > 0 && batchActions}
-	<div class={!unstyled ? "stuic-data-table-batch" : undefined}>
-		{@render batchActions({
-			selected,
-			selectedRows,
-			selectedAll,
-			excluded,
-			effectiveCount,
-			totalCount,
-			clearSelection: clearAllSelection,
-		})}
-	</div>
-{/if}
-
-<!-- Select-all-across-pages banner -->
-{#if showSelectAllBanner && paging}
-	{#if selectAllBanner}
-		{@render selectAllBanner({
-			selectedAll,
-			effectiveCount,
-			totalCount: paging.total,
-			pageCount: data.length,
-			selectAll: enterSelectAll,
-			clearSelection: clearAllSelection,
-		})}
-	{:else}
-		<div class={!unstyled ? "stuic-data-table-select-all-banner" : undefined}>
-			{#if selectedAll}
-				<span>{t("all_results_selected", { totalCount: paging.total })}</span>
-				<Button variant="ghost" size="sm" onclick={clearAllSelection}>
-					{t("clear_selection")}
-				</Button>
+<!--
+	Selection bar -- one strip carrying the selection status, the consumer's
+	`batchActions`, and the select-all-across-pages offer. Deliberately a single element
+	rather than a stack of independent conditionals: each of those appearing on its own
+	reflows everything below it, which is exactly the jump `reserveBatchBar` exists to
+	prevent. Sits outside the root container so the loading overlay doesn't cover it.
+-->
+{#if showBatchBar}
+	<div
+		class={!unstyled ? "stuic-data-table-batch" : undefined}
+		data-idle={!unstyled && effectiveCount === 0 ? "true" : undefined}
+		data-select-all={!unstyled && showSelectAllBanner ? "true" : undefined}
+	>
+		<div class={!unstyled ? "stuic-data-table-batch-main" : undefined}>
+			{#if effectiveCount > 0 && batchActions}
+				{@render batchActions({
+					selected,
+					selectedRows,
+					selectedAll,
+					excluded,
+					effectiveCount,
+					totalCount,
+					clearSelection: clearAllSelection,
+				})}
 			{:else}
-				<span>{t("select_all_on_page_x", { count: data.length })}</span>
-				<Button variant="ghost" size="sm" onclick={enterSelectAll}>
-					{t("select_all_results", { totalCount: paging.total })}
-				</Button>
+				<span class={!unstyled ? "stuic-data-table-batch-status" : undefined}>
+					{statusText}
+				</span>
 			{/if}
 		</div>
-	{/if}
+
+		{#if showSelectAllBanner && paging}
+			<div class={!unstyled ? "stuic-data-table-batch-select-all" : undefined}>
+				{#if selectAllBanner}
+					{@render selectAllBanner({
+						selectedAll,
+						effectiveCount,
+						totalCount: paging.total,
+						pageCount: data.length,
+						selectAll: enterSelectAll,
+						clearSelection: clearAllSelection,
+					})}
+				{:else if selectedAll}
+					<span>{t("all_results_selected", { totalCount: paging.total })}</span>
+					<Button variant="ghost" size="sm" onclick={clearAllSelection}>
+						{t("clear_selection")}
+					</Button>
+				{:else}
+					<span>{t("select_all_on_page_x", { count: data.length })}</span>
+					<Button variant="ghost" size="sm" onclick={enterSelectAll}>
+						{t("select_all_results", { totalCount: paging.total })}
+					</Button>
+				{/if}
+			</div>
+		{/if}
+	</div>
 {/if}
 
 <!-- Root container -->

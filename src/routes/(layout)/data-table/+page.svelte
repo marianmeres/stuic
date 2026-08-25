@@ -1,5 +1,11 @@
 <script lang="ts">
-	import { DataTable, Button, type DataTableColumn } from "$lib/index.js";
+	import {
+		DataTable,
+		Button,
+		createDataTableT,
+		DATA_TABLE_MESSAGES_SK,
+		type DataTableColumn,
+	} from "$lib/index.js";
 	import { createPagingStore, type PagingCalcResult } from "@marianmeres/paging-store";
 
 	// --- Sample data ---
@@ -154,6 +160,7 @@
 	// --- Selection example ---
 	let selected = $state(new Set<string | number>());
 	let lastAction = $state("");
+	let reserveBatchBar = $state(true);
 
 	// --- Select-all-across-pages example ---
 	const SELECT_ALL_PAGE_SIZE = 4;
@@ -176,6 +183,16 @@
 
 	// --- Row click example ---
 	let clickedRow = $state<User | null>(null);
+
+	// --- i18n example ---
+	const tSk = createDataTableT(DATA_TABLE_MESSAGES_SK);
+	const skPagingStore = createPagingStore({ total: ALL_USERS.length, limit: PAGE_SIZE });
+	let skPaging = $state<PagingCalcResult>(skPagingStore.get());
+	skPagingStore.subscribe((v) => (skPaging = v));
+	let skPagedData = $derived(
+		ALL_USERS.slice(skPaging.offset, skPaging.offset + skPaging.limit)
+	);
+	let skSelected = $state(new Set<string | number>());
 
 	// --- Keyboard-reachable rows example ---
 	let activatedRow = $state<User | null>(null);
@@ -278,6 +295,15 @@
 
 <!-- ============== WITH SELECTION ============== -->
 <h2 class="text-lg font-bold mb-4">With Selection & Batch Actions</h2>
+<p class="text-sm opacity-70 mb-4">
+	The selection bar keeps its place while nothing is selected (<code>reserveBatchBar</code
+	>, on by default), so ticking the first checkbox doesn't shove the table down. Turn it
+	off to see the old pop-in.
+</p>
+<label class="flex items-center gap-2 text-sm mb-4">
+	<input type="checkbox" bind:checked={reserveBatchBar} />
+	<code>reserveBatchBar</code>
+</label>
 <div class="max-w-4xl">
 	<DataTable
 		{columns}
@@ -285,6 +311,7 @@
 		getRowId={(row) => row.id}
 		selectable
 		selectOnRowClick
+		{reserveBatchBar}
 		bind:selected
 	>
 		{#snippet cell({ column, value })}
@@ -398,6 +425,37 @@
 	{#if selectAllLastAction}
 		<p class="mt-2 text-sm text-green-600">{selectAllLastAction}</p>
 	{/if}
+</div>
+
+<hr class="my-8" />
+
+<!-- ============== I18N ============== -->
+<h2 class="text-lg font-bold mb-4">Localization (bundled Slovak catalog)</h2>
+<p class="text-sm opacity-70 mb-4">
+	Every built-in string goes through <code>t()</code>. The Slovak catalog ships with the
+	package — <code>createDataTableT(DATA_TABLE_MESSAGES_SK)</code> — and a partial catalog of
+	your own falls back to English key by key.
+</p>
+<div>
+	<DataTable
+		{columns}
+		data={skPagedData}
+		getRowId={(row) => row.id}
+		paging={skPaging}
+		onPageChange={(offset) => skPagingStore.update({ offset })}
+		selectable
+		bind:selected={skSelected}
+		t={tSk}
+	>
+		{#snippet batchActions({ effectiveCount, clearSelection })}
+			<span class="text-sm font-medium"
+				>{tSk("x_rows_selected", { count: effectiveCount })}</span
+			>
+			<Button size="sm" variant="ghost" onclick={clearSelection}>
+				{tSk("clear_selection")}
+			</Button>
+		{/snippet}
+	</DataTable>
 </div>
 
 <hr class="my-8" />

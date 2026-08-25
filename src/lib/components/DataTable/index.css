@@ -42,15 +42,19 @@
 	--stuic-data-table-paging-gap: 0.5rem;
 	--stuic-data-table-paging-padding-y: 0.75rem;
 
-	/* Batch action bar */
+	/* Selection (batch action) bar */
 	--stuic-data-table-batch-bg: var(--stuic-color-muted);
+	/* Nothing selected -- the bar is only holding its place, so it stays quiet. */
+	--stuic-data-table-batch-bg-idle: var(--stuic-color-muted);
 	--stuic-data-table-batch-padding-x: 0.75rem;
-	--stuic-data-table-batch-padding-y: 0.5rem;
+	--stuic-data-table-batch-padding-y: 0.25rem;
+	/* Sized to a `size="sm"` Button so the idle and active states are the same height. */
+	--stuic-data-table-batch-min-height: calc(var(--stuic-button-min-height-sm, 2.75rem) + var(--stuic-data-table-batch-padding-y) * 2);
+	/*  */
+	--stuic-data-table-batch-margin: 0 0 0.125rem 0;
 
-	/* Select-all-across-pages banner */
+	/* Select-all-across-pages offer (rendered inside the selection bar) */
 	--stuic-data-table-select-all-bg: color-mix(in srgb, var(--stuic-color-primary) 10%, var(--stuic-color-background));
-	--stuic-data-table-select-all-padding-x: 0.75rem;
-	--stuic-data-table-select-all-padding-y: 0.5rem;
 
 	/* Checkbox column */
 	--stuic-data-table-checkbox-width: 3rem;
@@ -238,34 +242,52 @@
 	   BATCH ACTION BAR
 	   ============================================================================ */
 
+	/*
+	   The min-height is the whole point of the reserved bar: an idle line of text is
+	   shorter than a row of buttons, so without it the table would still shift -- just
+	   by less. Keep it in sync with whatever button size the batch actions use.
+	*/
 	.stuic-data-table-batch {
 		display: flex;
 		align-items: center;
+		justify-content: space-between;
+		flex-wrap: wrap;
 		gap: var(--stuic-data-table-paging-gap);
+		min-height: var(--stuic-data-table-batch-min-height);
 		padding: var(--stuic-data-table-batch-padding-y)
 			var(--stuic-data-table-batch-padding-x);
 		background: var(--stuic-data-table-batch-bg);
 		border-radius: var(--stuic-data-table-radius, var(--stuic-radius));
-		margin-bottom: 0.5rem;
+		margin: var(--stuic-data-table-batch-margin, 0);
+		transition: background var(--stuic-data-table-transition, var(--stuic-transition));
 	}
 
-	/* ============================================================================
-	   SELECT-ALL-ACROSS-PAGES BANNER
-	   ============================================================================ */
+	.stuic-data-table-batch[data-idle="true"] {
+		background: var(--stuic-data-table-batch-bg-idle);
+	}
 
-	.stuic-data-table-select-all-banner {
+	/* The select-all offer is the one state worth actively drawing attention to. */
+	.stuic-data-table-batch[data-select-all="true"] {
+		background: var(--stuic-data-table-select-all-bg);
+	}
+
+	.stuic-data-table-batch-main,
+	.stuic-data-table-batch-select-all {
 		display: flex;
 		align-items: center;
-		justify-content: center;
+		flex-wrap: wrap;
 		gap: var(--stuic-data-table-paging-gap);
-		padding: var(--stuic-data-table-select-all-padding-y)
-			var(--stuic-data-table-select-all-padding-x);
-		background: var(--stuic-data-table-select-all-bg);
-		border-radius: var(--stuic-data-table-radius, var(--stuic-radius));
-		margin-bottom: 0.5rem;
+	}
+
+	.stuic-data-table-batch-select-all {
+		margin-left: auto;
 		font-size: var(--stuic-data-table-cell-font-size);
 		color: var(--stuic-data-table-header-color);
-		text-align: center;
+	}
+
+	.stuic-data-table-batch-status {
+		font-size: var(--stuic-data-table-cell-font-size);
+		color: var(--stuic-data-table-header-color);
 	}
 
 	/* ============================================================================
