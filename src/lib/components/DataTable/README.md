@@ -143,6 +143,89 @@ New records inserted while all-pages mode is active are implicitly selected (the
 
 **Filter changes:** when filters change in the consumer, reset the bound selection stores (`selected`, `selectedAll`, `excluded`) explicitly — DataTable doesn't track which filter produced the current state.
 
+### Clickable Rows That Work Without a Mouse
+
+`onRowClick` alone makes a row **mouse-only** on the desktop table layout: a `<tr>` is not
+focusable, so nothing about the row is reachable by keyboard. (The mobile card layout has
+always been fine — it is a `<div role="button">`.) Two opt-in props close that gap, and
+they are not alternatives:
+
+| Your row action is…             | Use              |
+| ------------------------------- | ---------------- |
+| a navigation (it has a URL)     | `rowHref`        |
+| anything else (drawer, expand…) | `rowActivatable` |
+
+#### `rowHref` — the lead cell becomes a real link
+
+```svelte
+<DataTable
+	{columns}
+	{data}
+	getRowId={(row) => row.id}
+	rowHref={(row) => `/users/${row.id}`}
+/>
+```
+
+The content of the row's **lead cell** (the first column by default, or `rowHrefColumn`)
+is wrapped in an `<a href>` — including whatever your `cell` snippet renders for it, and
+respecting the column's `renderValue`. A link gets, for free and correctly: keyboard focus
+in the right tab order, `Enter`, ⌘/middle-click and "open in new tab", "copy link address",
+and a screen-reader announcement of _where it goes_ rather than an anonymous "button".
+
+Return `undefined` for a row with no destination (a placeholder, a row still minting its
+id) — that row's lead cell renders exactly as it would without `rowHref`.
+
+`rowHref` composes with `onRowClick`: the row click handler ignores clicks originating
+inside an anchor, so the two never double-fire. The consequence is worth stating — a plain
+click **on the lead cell** navigates via the href and does _not_ call `onRowClick`, so point
+both at the same destination.
+
+On mobile the same field is linked. If the lead column is `hideOnMobile`, the card links its
+first visible field instead, rather than silently dropping the anchor.
+
+By default the link looks like the text it replaced (`color: inherit`, no underline until
+hover) — a table where every lead cell is blue-and-underlined is a worse table. Three CSS
+variables and `classRowLink` are there if you disagree.
+
+#### `rowActivatable` — the `<tr>` itself
+
+For a row whose action has no address:
+
+```svelte
+<DataTable
+	{columns}
+	{data}
+	onRowClick={(row) => openDrawer(row)}
+	rowActivatable
+	rowLabel={(row) => `Open ${row.name}`}
+/>
+```
+
+The `<tr>` gets `tabindex="0"`, an optional `aria-label` from `rowLabel`, and a
+`:focus-visible` ring. It is a no-op unless `onRowClick` or `selectOnRowClick` is set.
+
+Two deliberate choices, so nobody "fixes" them later:
+
+- **No `role="button"` on the `<tr>`.** A `<tr>` carries an implicit `row` role that the
+  table's own structure depends on. Overriding it detaches the row from the table for
+  assistive technology — row/column counts stop making sense and cell-by-cell navigation
+  breaks. The row stays a row; it merely becomes focusable. (The mobile card is a `<div>`,
+  so `role="button"` is correct _there_.)
+- **`Enter` only, no `Space`.** `Space` on a focused row scrolls the page, and a row is not
+  a button — taking `Space` away from a table is a worse trade than the one the card makes.
+
+With `selectable` + `selectOnRowClick`, `Enter` toggles selection _and_ fires `onRowClick`,
+matching the mobile card.
+
+#### Both are opt-in
+
+With neither prop set, the rendered markup is exactly what it was before they existed. A
+consumer who replaces the whole `<tr>` with the `row` snippet opts out of both and owns the
+keyboard story themselves.
+
+Interactive descendants always win: a click, `Enter` or `Space` that originates inside a
+`<button>`, an `<a>` or a checkbox in the row is that control's business, not the row's.
+
 ### Custom Cell Rendering
 
 The `cell` snippet is used for both desktop and mobile layouts. Use the `variant` param if rendering differs per layout.
@@ -204,33 +287,38 @@ Replace the entire `<tr>` on desktop. When this snippet is provided, DataTable d
 
 ## Props
 
-| Prop                  | Type                               | Default       | Description                                                              |
-| --------------------- | ---------------------------------- | ------------- | ------------------------------------------------------------------------ |
-| `columns`             | `DataTableColumn<T>[]`             | required      | Column definitions                                                       |
-| `data`                | `T[]`                              | required      | Array of row data                                                        |
-| `getRowId`            | `(row, index) => string \| number` | `(_, i) => i` | Row ID extractor                                                         |
-| `paging`              | `PagingCalcResult`                 | -             | Paging state (from `@marianmeres/paging-store`)                          |
-| `onPageChange`        | `(offset: number) => void`         | -             | Called with the new offset when the user navigates pages                 |
-| `selectable`          | `boolean`                          | `false`       | Enable selection checkboxes                                              |
-| `selected`            | `Set<string \| number>`            | `new Set()`   | Selected row IDs (bindable)                                              |
-| `selectOnRowClick`    | `boolean`                          | `false`       | Clicking anywhere on a row toggles its selection                         |
-| `selectDisabledBy`    | `(row, index) => boolean`          | -             | Return `true` to disable selection for a specific row                    |
-| `allowSelectAllPages` | `boolean`                          | `false`       | Show a banner offering "select all results" across paged data            |
-| `selectedAll`         | `boolean`                          | `false`       | All-pages mode flag (bindable). In this mode `excluded` drives selection |
-| `excluded`            | `Set<string \| number>`            | `new Set()`   | Deselected row IDs while in all-pages mode (bindable)                    |
-| `onRowClick`          | `(row, index) => void`             | -             | Row click callback                                                       |
-| `loading`             | `boolean`                          | `false`       | Show loading overlay                                                     |
-| `small`               | `boolean`                          | `false`       | Force mobile/card layout regardless of viewport                          |
-| `t`                   | `TranslateFn`                      | built-in      | Optional translation function                                            |
-| `cell`                | `Snippet`                          | -             | Custom cell renderer (desktop + mobile)                                  |
-| `row`                 | `Snippet`                          | -             | Custom desktop `<tr>` renderer (overrides default row)                   |
-| `mobileRow`           | `Snippet`                          | -             | Custom mobile card renderer                                              |
-| `batchActions`        | `Snippet`                          | -             | Batch action bar content                                                 |
-| `selectAllBanner`     | `Snippet`                          | -             | Override default "select all across pages" banner                        |
-| `empty`               | `Snippet`                          | -             | Custom empty state                                                       |
-| `unstyled`            | `boolean`                          | `false`       | Skip default styling                                                     |
-| `class`               | `string`                           | -             | Additional CSS classes                                                   |
-| `el`                  | `HTMLDivElement`                   | -             | Bindable element ref                                                     |
+| Prop                  | Type                                  | Default       | Description                                                                |
+| --------------------- | ------------------------------------- | ------------- | -------------------------------------------------------------------------- |
+| `columns`             | `DataTableColumn<T>[]`                | required      | Column definitions                                                         |
+| `data`                | `T[]`                                 | required      | Array of row data                                                          |
+| `getRowId`            | `(row, index) => string \| number`    | `(_, i) => i` | Row ID extractor                                                           |
+| `paging`              | `PagingCalcResult`                    | -             | Paging state (from `@marianmeres/paging-store`)                            |
+| `onPageChange`        | `(offset: number) => void`            | -             | Called with the new offset when the user navigates pages                   |
+| `selectable`          | `boolean`                             | `false`       | Enable selection checkboxes                                                |
+| `selected`            | `Set<string \| number>`               | `new Set()`   | Selected row IDs (bindable)                                                |
+| `selectOnRowClick`    | `boolean`                             | `false`       | Clicking anywhere on a row toggles its selection                           |
+| `selectDisabledBy`    | `(row, index) => boolean`             | -             | Return `true` to disable selection for a specific row                      |
+| `allowSelectAllPages` | `boolean`                             | `false`       | Show a banner offering "select all results" across paged data              |
+| `selectedAll`         | `boolean`                             | `false`       | All-pages mode flag (bindable). In this mode `excluded` drives selection   |
+| `excluded`            | `Set<string \| number>`               | `new Set()`   | Deselected row IDs while in all-pages mode (bindable)                      |
+| `onRowClick`          | `(row, index) => void`                | -             | Row click callback                                                         |
+| `rowHref`             | `(row, index) => string \| undefined` | -             | Wrap the lead cell's content in an `<a href>` (keyboard/⌘-click reachable) |
+| `rowHrefColumn`       | `string`                              | first column  | Which column is the lead cell for `rowHref`                                |
+| `classRowLink`        | `string`                              | -             | Extra classes for the `rowHref` anchor                                     |
+| `rowActivatable`      | `boolean`                             | `false`       | Make the desktop `<tr>` focusable + `Enter`-activatable (no `role`)        |
+| `rowLabel`            | `(row, index) => string \| undefined` | -             | Accessible name for an activatable row                                     |
+| `loading`             | `boolean`                             | `false`       | Show loading overlay                                                       |
+| `small`               | `boolean`                             | `false`       | Force mobile/card layout regardless of viewport                            |
+| `t`                   | `TranslateFn`                         | built-in      | Optional translation function                                              |
+| `cell`                | `Snippet`                             | -             | Custom cell renderer (desktop + mobile)                                    |
+| `row`                 | `Snippet`                             | -             | Custom desktop `<tr>` renderer (overrides default row)                     |
+| `mobileRow`           | `Snippet`                             | -             | Custom mobile card renderer                                                |
+| `batchActions`        | `Snippet`                             | -             | Batch action bar content                                                   |
+| `selectAllBanner`     | `Snippet`                             | -             | Override default "select all across pages" banner                          |
+| `empty`               | `Snippet`                             | -             | Custom empty state                                                         |
+| `unstyled`            | `boolean`                             | `false`       | Skip default styling                                                       |
+| `class`               | `string`                              | -             | Additional CSS classes                                                     |
+| `el`                  | `HTMLDivElement`                      | -             | Bindable element ref                                                       |
 
 ### Snippet signatures
 
@@ -262,29 +350,34 @@ Replace the entire `<tr>` on desktop. When this snippet is provided, DataTable d
 
 ## CSS Variables
 
-| Variable                                  | Default                               | Description                  |
-| ----------------------------------------- | ------------------------------------- | ---------------------------- |
-| `--stuic-data-table-radius`               | `var(--radius-md)`                    | Border radius                |
-| `--stuic-data-table-border-color`         | `var(--stuic-color-border)`           | Border color                 |
-| `--stuic-data-table-header-bg`            | `var(--stuic-color-muted)`            | Header background            |
-| `--stuic-data-table-header-color`         | `var(--stuic-color-muted-foreground)` | Header text                  |
-| `--stuic-data-table-header-font-size`     | `0.875rem`                            | Header font size             |
-| `--stuic-data-table-header-font-weight`   | `var(--font-weight-semibold)`         | Header font weight           |
-| `--stuic-data-table-header-padding-x`     | `0.75rem`                             | Header horizontal padding    |
-| `--stuic-data-table-header-padding-y`     | `0.5rem`                              | Header vertical padding      |
-| `--stuic-data-table-row-bg`               | `transparent`                         | Row background               |
-| `--stuic-data-table-row-bg-hover`         | `var(--stuic-color-muted)`            | Row hover background         |
-| `--stuic-data-table-row-bg-selected`      | `color-mix(primary 10%)`              | Selected row background      |
-| `--stuic-data-table-row-border-color`     | `var(--stuic-color-border)`           | Row border color             |
-| `--stuic-data-table-cell-padding-x`       | `0.75rem`                             | Cell horizontal padding      |
-| `--stuic-data-table-cell-padding-y`       | `0.75rem`                             | Cell vertical padding        |
-| `--stuic-data-table-cell-font-size`       | `0.875rem`                            | Cell font size               |
-| `--stuic-data-table-loading-opacity`      | `0.5`                                 | Loading state opacity        |
-| `--stuic-data-table-card-bg`              | `var(--stuic-color-background)`       | Mobile card background       |
-| `--stuic-data-table-card-border-color`    | `var(--stuic-color-border)`           | Mobile card border           |
-| `--stuic-data-table-card-radius`          | `var(--radius-md)`                    | Mobile card radius           |
-| `--stuic-data-table-card-padding`         | `0.75rem`                             | Mobile card padding          |
-| `--stuic-data-table-card-gap`             | `0.5rem`                              | Gap between mobile cards     |
-| `--stuic-data-table-select-all-bg`        | `color-mix(primary 10%)`              | Select-all banner background |
-| `--stuic-data-table-select-all-padding-x` | `0.75rem`                             | Banner horizontal padding    |
-| `--stuic-data-table-select-all-padding-y` | `0.5rem`                              | Banner vertical padding      |
+| Variable                                       | Default                               | Description                  |
+| ---------------------------------------------- | ------------------------------------- | ---------------------------- |
+| `--stuic-data-table-radius`                    | `var(--radius-md)`                    | Border radius                |
+| `--stuic-data-table-border-color`              | `var(--stuic-color-border)`           | Border color                 |
+| `--stuic-data-table-header-bg`                 | `var(--stuic-color-muted)`            | Header background            |
+| `--stuic-data-table-header-color`              | `var(--stuic-color-muted-foreground)` | Header text                  |
+| `--stuic-data-table-header-font-size`          | `0.875rem`                            | Header font size             |
+| `--stuic-data-table-header-font-weight`        | `var(--font-weight-semibold)`         | Header font weight           |
+| `--stuic-data-table-header-padding-x`          | `0.75rem`                             | Header horizontal padding    |
+| `--stuic-data-table-header-padding-y`          | `0.5rem`                              | Header vertical padding      |
+| `--stuic-data-table-row-bg`                    | `transparent`                         | Row background               |
+| `--stuic-data-table-row-bg-hover`              | `var(--stuic-color-muted)`            | Row hover background         |
+| `--stuic-data-table-row-bg-selected`           | `color-mix(primary 10%)`              | Selected row background      |
+| `--stuic-data-table-row-border-color`          | `var(--stuic-color-border)`           | Row border color             |
+| `--stuic-data-table-row-link-color`            | `inherit`                             | `rowHref` anchor color       |
+| `--stuic-data-table-row-link-decoration`       | `none`                                | `rowHref` anchor decoration  |
+| `--stuic-data-table-row-link-decoration-hover` | `underline`                           | …on hover                    |
+| `--stuic-data-table-row-ring-width`            | `3px`                                 | Activatable row focus ring   |
+| `--stuic-data-table-row-ring-color`            | `var(--stuic-color-ring)`             | Activatable row ring color   |
+| `--stuic-data-table-cell-padding-x`            | `0.75rem`                             | Cell horizontal padding      |
+| `--stuic-data-table-cell-padding-y`            | `0.75rem`                             | Cell vertical padding        |
+| `--stuic-data-table-cell-font-size`            | `0.875rem`                            | Cell font size               |
+| `--stuic-data-table-loading-opacity`           | `0.5`                                 | Loading state opacity        |
+| `--stuic-data-table-card-bg`                   | `var(--stuic-color-background)`       | Mobile card background       |
+| `--stuic-data-table-card-border-color`         | `var(--stuic-color-border)`           | Mobile card border           |
+| `--stuic-data-table-card-radius`               | `var(--radius-md)`                    | Mobile card radius           |
+| `--stuic-data-table-card-padding`              | `0.75rem`                             | Mobile card padding          |
+| `--stuic-data-table-card-gap`                  | `0.5rem`                              | Gap between mobile cards     |
+| `--stuic-data-table-select-all-bg`             | `color-mix(primary 10%)`              | Select-all banner background |
+| `--stuic-data-table-select-all-padding-x`      | `0.75rem`                             | Banner horizontal padding    |
+| `--stuic-data-table-select-all-padding-y`      | `0.5rem`                              | Banner vertical padding      |

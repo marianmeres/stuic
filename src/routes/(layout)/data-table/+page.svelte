@@ -177,6 +177,9 @@
 	// --- Row click example ---
 	let clickedRow = $state<User | null>(null);
 
+	// --- Keyboard-reachable rows example ---
+	let activatedRow = $state<User | null>(null);
+
 	// --- Loading example ---
 	let isLoading = $state(false);
 
@@ -411,6 +414,58 @@
 	{#if clickedRow}
 		<p class="mt-2 text-sm">
 			Clicked: <strong>{clickedRow.name}</strong> ({clickedRow.email})
+		</p>
+	{/if}
+</div>
+
+<hr class="my-8" />
+
+<!-- ============== KEYBOARD REACHABLE ROWS ============== -->
+<h2 class="text-lg font-bold mb-4">Keyboard-Reachable Rows</h2>
+<p class="text-sm opacity-70 mb-4">
+	A row that is clickable by mouse only is unreachable by keyboard. Tab through both
+	tables below.
+</p>
+
+<h3 class="text-sm font-semibold mb-2">
+	<code>rowHref</code> — when the row action is a navigation
+</h3>
+<p class="text-sm opacity-70 mb-4">
+	The lead cell becomes a real anchor: focusable, <kbd>Enter</kbd>-activatable,
+	⌘/middle-clickable, and announced with its destination. Nothing else about the row
+	changes.
+</p>
+<div class="max-w-4xl">
+	<DataTable
+		columns={basicColumns}
+		data={ALL_USERS.slice(0, 5)}
+		getRowId={(row) => row.id}
+		rowHref={(row) => `#user-${row.id}`}
+		rowHrefColumn="name"
+	/>
+</div>
+
+<h3 class="text-sm font-semibold mt-8 mb-2">
+	<code>rowActivatable</code> — when it is not
+</h3>
+<p class="text-sm opacity-70 mb-4">
+	The <code>&lt;tr&gt;</code> itself becomes focusable (no <code>role="button"</code> —
+	that would detach the row from the table for assistive tech) and
+	<kbd>Enter</kbd> fires <code>onRowClick</code>. <kbd>Space</kbd> deliberately still scrolls
+	the page.
+</p>
+<div class="max-w-4xl">
+	<DataTable
+		columns={basicColumns}
+		data={ALL_USERS.slice(0, 5)}
+		getRowId={(row) => row.id}
+		onRowClick={(row) => (activatedRow = row)}
+		rowActivatable
+		rowLabel={(row) => `Open ${row.name}`}
+	/>
+	{#if activatedRow}
+		<p class="mt-2 text-sm">
+			Activated: <strong>{activatedRow.name}</strong>
 		</p>
 	{/if}
 </div>

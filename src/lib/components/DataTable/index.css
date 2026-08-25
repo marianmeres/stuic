@@ -24,6 +24,15 @@
 	--stuic-data-table-row-bg-selected: color-mix(in srgb, var(--stuic-color-primary) 10%, var(--stuic-color-background));
 	--stuic-data-table-row-border-color: var(--stuic-color-border);
 
+	/* Row link (rowHref) — defaults to "looks like the text it replaced" */
+	--stuic-data-table-row-link-color: inherit;
+	--stuic-data-table-row-link-decoration: none;
+	--stuic-data-table-row-link-decoration-hover: underline;
+
+	/* Focus ring for an activatable row (rowActivatable) */
+	--stuic-data-table-row-ring-width: 3px;
+	--stuic-data-table-row-ring-color: var(--stuic-color-ring);
+
 	/* Cell */
 	--stuic-data-table-cell-padding-x: 0.75rem;
 	--stuic-data-table-cell-padding-y: 0.75rem;
@@ -150,6 +159,31 @@
 			var(--stuic-color-primary) 18%,
 			var(--stuic-color-background)
 		);
+	}
+
+	/*
+	   `rowActivatable` puts tabindex on the <tr>, and a focusable element with no
+	   visible ring is worse than no tabindex at all. The negative offset keeps the
+	   ring inside the row box — an outset ring on a <tr> is clipped unpredictably
+	   by border-collapse.
+	*/
+	.stuic-data-table tbody tr:focus-visible {
+		outline: var(--stuic-data-table-row-ring-width) solid
+			var(--stuic-data-table-row-ring-color);
+		outline-offset: calc(var(--stuic-data-table-row-ring-width) * -1);
+	}
+
+	/* ============================================================================
+	   ROW LINK (rowHref)
+	   ============================================================================ */
+
+	.stuic-data-table-row-link {
+		color: var(--stuic-data-table-row-link-color);
+		text-decoration: var(--stuic-data-table-row-link-decoration);
+	}
+
+	.stuic-data-table-row-link:hover {
+		text-decoration: var(--stuic-data-table-row-link-decoration-hover);
 	}
 
 	/* ============================================================================
