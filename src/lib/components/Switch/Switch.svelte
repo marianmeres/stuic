@@ -19,7 +19,12 @@
 		class?: string;
 		/** Classes for the toggle dot/knob element */
 		dotClass?: string;
-		/** Screen reader label (visually hidden) */
+		/**
+		 * Accessible name for the switch, rendered as `aria-label` on the interactive
+		 * element. An explicit `aria-label`/`aria-labelledby` passed by the caller wins.
+		 * Required unless the switch is named some other way - `role="switch"` takes its
+		 * name from the author only, never from its content.
+		 */
 		label?: string;
 		required?: boolean;
 		disabled?: boolean;
@@ -125,11 +130,27 @@
 	}
 </script>
 
+<!--
+	The <label> is the interactive element here: it is focusable, keyboard operable and
+	carries the whole toggle interaction, so it - not the hidden checkbox - is what must
+	be announced. Hence `role="switch"` + the aria state below. The inner checkbox stays
+	as the form value carrier only (aria-hidden, see there).
+
+	Note that `role` on a <label> is not allowed by ARIA-in-HTML (the element maps to no
+	role); it is nevertheless honoured by browsers/AT and is the least invasive way to
+	name and announce this control without restructuring the markup.
+-->
 <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions  -->
 <label
 	bind:this={wrap}
 	class={twMerge("stuic-switch m-2", _preset.size[size], classProp)}
+	role="switch"
+	aria-checked={!!checked}
+	aria-disabled={disabled || undefined}
+	aria-required={required || undefined}
+	aria-invalid={_validation && !_validation.valid ? "true" : undefined}
+	aria-label={label}
 	data-checked={checked}
 	data-disabled={disabled}
 	data-intent={intent}
@@ -165,11 +186,18 @@
 			{@render off?.()}
 		{/if}
 	</span>
+	<!--
+		Value carrier only: it holds the checked state for form submission and native
+		validation. `aria-hidden` keeps it out of the a11y tree so the switch above is
+		the single announced control (it is never focused - `tabindex="-1"` and every
+		focus() call targets the wrapper).
+	-->
 	<input
 		bind:checked
 		bind:this={checkbox}
 		type="checkbox"
 		class="opacity-0 size-0"
+		aria-hidden="true"
 		{disabled}
 		{required}
 		{name}

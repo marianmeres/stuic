@@ -10,7 +10,7 @@ A toggle switch component with size variants, semantic intents, keyboard support
 | `size`     | `"sm" \| "md" \| "lg" \| "xl" \| string`                           | `"lg"`  | Switch size                                  |
 | `intent`   | `"primary" \| "accent" \| "success" \| "warning" \| "destructive"` | -       | Semantic color intent                        |
 | `name`     | `string`                                                           | -       | Form field name for hidden checkbox          |
-| `label`    | `string`                                                           | -       | Screen reader label (visually hidden)        |
+| `label`    | `string`                                                           | -       | Accessible name (rendered as `aria-label`)   |
 | `required` | `boolean`                                                          | `false` | Mark as required                             |
 | `disabled` | `boolean`                                                          | `false` | Disable toggle                               |
 | `tabindex` | `number`                                                           | `0`     | Tab index                                    |
@@ -142,3 +142,30 @@ A toggle switch component with size variants, semantic intents, keyboard support
 
 - **Space**: Toggle switch
 - **Enter**: Toggle switch
+
+## Accessibility
+
+The interactive element is the switch track itself (the root `<label class="stuic-switch">`):
+it is focusable, keyboard operable, and carries `role="switch"` plus the state - `aria-checked`,
+and `aria-disabled` / `aria-required` / `aria-invalid` when they apply.
+
+**Always give it a name.** `role="switch"` takes its accessible name from the author only, never
+from its content, so a switch without one is announced as an unnamed control:
+
+```svelte
+<!-- name it directly … -->
+<Switch label="Published" bind:checked={published} />
+
+<!-- … or point at existing visible text -->
+<span id="pub-label">Published</span>
+<Switch aria-labelledby="pub-label" bind:checked={published} />
+```
+
+An explicit `aria-label` / `aria-labelledby` wins over the `label` prop.
+[`FieldSwitch`](../Input/README.md#switch) wires its own visible label up automatically.
+
+The inner `<input type="checkbox">` is the form value carrier only (submission, `name`,
+`required`, native validation) and is `aria-hidden` so that the switch is the single announced
+control. It is therefore **not** reachable via role-based queries - locate it structurally
+(`container.querySelector('input[type="checkbox"]')`) and use `getByRole("switch")` for the
+control itself.
