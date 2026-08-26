@@ -38,7 +38,7 @@
 		{ key: "legacy_blob", type: "wormhole", label: "Legacy blob" },
 	]);
 
-	// 3) custom palette with a boolean extra + veto hooks
+	// 3) custom palette with boolean / string / select extras + veto hooks
 	const customTypes: FieldTypeDef[] = [
 		{
 			type: "text",
@@ -54,10 +54,50 @@
 				},
 			],
 		},
-		...FIELDS_BUILDER_DEFAULT_TYPES.filter((t) => t.type !== "text"),
+		{
+			type: "number",
+			label: "Number",
+			description: "A numeric value",
+			extras: [
+				{
+					key: "unit",
+					label: "Unit",
+					description: "Rendered after the number (e.g. % vol, kJ, mm).",
+					type: "string",
+					placeholder: "e.g. % vol",
+					maxlength: 16,
+				},
+				{
+					key: "group",
+					label: "Group",
+					description: "Which panel this value is rendered in.",
+					type: "select",
+					placeholder: "— none —",
+					options: [
+						{ value: "nutrition", label: "Nutrition declaration" },
+						{ value: "analytics", label: "Analytics" },
+					],
+				},
+			],
+		},
+		...FIELDS_BUILDER_DEFAULT_TYPES.filter(
+			(t) => t.type !== "text" && t.type !== "number"
+		),
 	];
 	let value3 = $state<FieldDef[]>([
 		{ key: "name", type: "text", label: "Name", extras: { searchable: true } },
+		{
+			key: "alcohol",
+			type: "number",
+			label: "Alcoholic strength",
+			extras: { unit: "% vol" },
+		},
+		{
+			key: "energy",
+			type: "number",
+			label: "Energy",
+			extras: { unit: "kJ", group: "nutrition" },
+		},
 	]);
 
 	// 4) bundled slovak catalog + slovak palette (english stays the default)
@@ -159,7 +199,7 @@
 
 		<div>
 			<h2 class="text-lg font-semibold mb-4">
-				Custom palette (boolean extra) + veto hooks
+				Custom palette (boolean / string / select extras) + veto hooks
 			</h2>
 			<FieldsBuilder
 				bind:value={value3}

@@ -420,9 +420,33 @@
 		syncToValue();
 	}
 
-	function setExtra(row: Row, key: string, checked: boolean) {
-		row.def.extras = { ...(row.def.extras ?? {}), [key]: checked };
+	// `undefined` REMOVES the key (and an emptied bag removes `extras` itself):
+	// "no value" must have exactly one representation downstream — a consumer
+	// reading `extras.unit` to decide whether to render a suffix should never
+	// have to special-case `""`, nor a `{}` that means nothing.
+	function setExtra(row: Row, key: string, value: unknown) {
+		const next = { ...(row.def.extras ?? {}) };
+		if (value === undefined) delete next[key];
+		else next[key] = value;
+		row.def.extras = Object.keys(next).length ? next : undefined;
 		syncToValue();
+	}
+
+	/** Display value of a string/select extra (a non-string is shown, not eaten). */
+	function extraText(row: Row, key: string): string {
+		const v = row.def.extras?.[key];
+		return v == null ? "" : String(v);
+	}
+
+	// while typing, the RAW value is stored (trimming here would fight the
+	// caret: a written-back trimmed value makes a trailing space untypable) —
+	// only the emptiness test is trimmed; `onchange` normalizes on commit
+	function onExtraStringInput(row: Row, key: string, raw: string) {
+		setExtra(row, key, raw.trim() ? raw : undefined);
+	}
+
+	function onExtraStringChange(row: Row, key: string, raw: string) {
+		setExtra(row, key, raw.trim() || undefined);
 	}
 
 	function typeChanged(row: Row): boolean {
@@ -642,6 +666,8 @@
 						".fb-options .fb-option-value, .fb-options .fb-add-option-btn"
 					)
 					?.focus?.();
+			} else if (errs.extras) {
+				rowEls[row.rid]?.querySelector<HTMLElement>(".fb-extra-input")?.focus?.();
 			}
 		});
 	}
@@ -734,6 +760,7 @@
 							{@const showLabelError = !!(attempted && errs?.label)}
 							{@const showKeyError = !!(errs?.key && (attempted || row.keyEdited))}
 							{@const showOptionsError = !!(attempted && errs?.options)}
+							{@const showExtrasError = !!(attempted && errs?.extras)}
 							{@const canDrag =
 								!disabled && !row.deleted && !row.def.lock?.reorder && rows.length > 1}
 							<div
@@ -807,7 +834,7 @@
 												{getLocalizedText(entry.label, _defaultLanguage)}
 											</span>
 										{/if}
-										{#if (showLabelError || showKeyError || showOptionsError) && !row.deleted}
+										{#if (showLabelError || showKeyError || showOptionsError || showExtrasError) && !row.deleted}
 											<span class="fb-error-text shrink-0">
 												<span aria-hidden="true"
 													>{@html iconAlertWarning({ size: 14 })}</span
@@ -1035,36 +1062,120 @@
 											{/if}
 
 											{#if entry.extras?.length}
-												<div class="fb-field flex flex-col gap-1.5">
-													{#each entry.extras as ex (ex.key)}
-														<label
-															class="stuic-checkbox flex items-start gap-2 cursor-pointer"
-														>
-															<!--
-																Display the ACTUAL def value only (no `?? ex.default`
-																fallback): defaults are materialized into `extras` on
-																add/type-change, but a def loaded without the key must
-																not render checked while emitting nothing — the
-																checkbox must always match what `value` says.
-															-->
-															<input
-																type="checkbox"
-																checked={!!row.def.extras?.[ex.key]}
-																onchange={(e) =>
-																	setExtra(row, ex.key, e.currentTarget.checked)}
-																{disabled}
-																{tabindex}
-															/>
-															<span class="text-sm">
-																{getLocalizedText(ex.label, _defaultLanguage)}
-																{#if ex.description}
-																	<span class="fb-hint block text-xs">
-																		{getLocalizedText(ex.description, _defaultLanguage)}
-																	</span>
+												<!--
+													Every arm displays the ACTUAL def value only (no
+													`?? ex.default` fallback): defaults are materialized into
+													`extras` on add/type-change, but a def loaded without the
+													key must not render as if it held the default while
+													emitting nothing — the control must always match what
+													`value` says.
+												-->
+												<div class="fb-extras fb-field flex flex-col gap-2.5">
+													{#each entry.extras as ex, exIdx (ex.key)}
+														{#if ex.type === "string" || ex.type === "select"}
+															{@const exId = `${id}-extra-${row.rid}-${exIdx}`}
+															{@const exValue = extraText(row, ex.key)}
+															<div class="fb-extra">
+																<label class="fb-sub-label" for={exId}>
+																	{getLocalizedText(ex.label, _defaultLanguage)}
+																</label>
+																{#if ex.type === "string"}
+																	<input
+																		id={exId}
+																		type="text"
+																		class={twMerge(INPUT_CLS, "fb-extra-input w-full")}
+																		value={exValue}
+																		maxlength={ex.maxlength}
+																		placeholder={getLocalizedText(
+																			ex.placeholder,
+																			_defaultLanguage
+																		) || undefined}
+																		oninput={(e) =>
+																			onExtraStringInput(
+																				row,
+																				ex.key,
+																				e.currentTarget.value
+																			)}
+																		onchange={(e) =>
+																			onExtraStringChange(
+																				row,
+																				ex.key,
+																				e.currentTarget.value
+																			)}
+																		{disabled}
+																		{tabindex}
+																		aria-invalid={showExtrasError || undefined}
+																		aria-describedby={showExtrasError
+																			? `${id}-extras-err-${row.rid}`
+																			: undefined}
+																	/>
+																{:else}
+																	<select
+																		id={exId}
+																		class={twMerge(INPUT_CLS, "fb-extra-input w-full")}
+																		value={exValue}
+																		onchange={(e) =>
+																			setExtra(
+																				row,
+																				ex.key,
+																				e.currentTarget.value || undefined
+																			)}
+																		{disabled}
+																		{tabindex}
+																	>
+																		<option value="">
+																			{getLocalizedText(ex.placeholder, _defaultLanguage)}
+																		</option>
+																		{#each ex.options as opt (opt.value)}
+																			<option value={opt.value}>
+																				{getLocalizedText(opt.label, _defaultLanguage)}
+																			</option>
+																		{/each}
+																		<!-- a stored value outside the declared list stays
+																		     visible and round-trips (same stance as an
+																		     unknown field type) -->
+																		{#if exValue && !ex.options.some((o) => o.value === exValue)}
+																			<option value={exValue}>{exValue}</option>
+																		{/if}
+																	</select>
 																{/if}
-															</span>
-														</label>
+																{#if ex.description}
+																	<div class="fb-hint text-xs mt-0.5">
+																		{getLocalizedText(ex.description, _defaultLanguage)}
+																	</div>
+																{/if}
+															</div>
+														{:else}
+															<label
+																class="stuic-checkbox fb-extra flex items-start gap-2 cursor-pointer"
+															>
+																<input
+																	type="checkbox"
+																	checked={!!row.def.extras?.[ex.key]}
+																	onchange={(e) =>
+																		setExtra(row, ex.key, e.currentTarget.checked)}
+																	{disabled}
+																	{tabindex}
+																/>
+																<span class="text-sm">
+																	{getLocalizedText(ex.label, _defaultLanguage)}
+																	{#if ex.description}
+																		<span class="fb-hint block text-xs">
+																			{getLocalizedText(ex.description, _defaultLanguage)}
+																		</span>
+																	{/if}
+																</span>
+															</label>
+														{/if}
 													{/each}
+													{#if showExtrasError}
+														<div
+															id="{id}-extras-err-{row.rid}"
+															class="fb-error-text text-sm"
+														>
+															{errs?.extras}
+														</div>
+													{/if}
 												</div>
 											{/if}
 

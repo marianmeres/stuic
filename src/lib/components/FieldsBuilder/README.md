@@ -60,8 +60,9 @@ Value membership rules:
   **retained** on the def (switching back restores them); consumers compiling the list
   should ignore `options` on non-choice types.
 - Palette `extras` defaults are materialized into `def.extras` when a field is added
-  or its type changes; a def loaded _without_ an extra's key renders unchecked — the
-  checkbox always reflects what `value` actually contains, never a phantom default.
+  or its type changes; a def loaded _without_ an extra's key renders empty/unchecked —
+  the control always reflects what `value` actually contains, never a phantom default.
+  Extras are **retained** across a type change too (same rule as `options`).
 
 ## The palette
 
@@ -72,16 +73,68 @@ interface FieldTypeDef {
 	description?: LocalizedText;
 	icon?: string | Snippet; // html string or snippet, shown in the row's type chip
 	supportsOptions?: boolean; // renders the option editor
-	extras?: {
-		key: string;
-		label: LocalizedText;
-		description?: LocalizedText;
-		type: "boolean"; // v1: booleans only (a checkbox per extra)
-		default?: boolean;
-	}[];
+	extras?: FieldTypeExtraDef[]; // per-type controls, see below
 	preview?: Snippet<[FieldDef]>; // per-type preview of a single field
 }
 ```
+
+## Extras
+
+`extras` declares extra per-field controls, each stored under `FieldDef.extras[key]`.
+The component never interprets the values — it renders a control per declaration and
+round-trips whatever is there. Discriminated by `type`:
+
+```ts
+type FieldTypeExtraDef =
+	| { key; label; description?; type: "boolean"; default?: boolean }
+	| {
+			key;
+			label;
+			description?;
+			type: "string";
+			default?: string;
+			placeholder?: LocalizedText;
+			maxlength?: number;
+	  }
+	| {
+			key;
+			label;
+			description?;
+			type: "select";
+			default?: string;
+			placeholder?: LocalizedText;
+			options: { value: string; label: LocalizedText }[];
+	  };
+```
+
+```ts
+{
+	type: "number",
+	label: "Number",
+	extras: [
+		// rendered after the number on the consumer's own page: "12.5 % vol"
+		{ key: "unit", label: "Unit", type: "string", placeholder: "e.g. % vol", maxlength: 16 },
+		{ key: "group", label: "Group", type: "select", placeholder: "— none —",
+		  options: [{ value: "nutrition", label: "Nutrition declaration" }] },
+	],
+}
+```
+
+- **Empty means absent.** Emptying a `string` extra or picking a `select`'s blank entry
+  **removes the key** (and removes `extras` itself once the bag is empty) rather than
+  storing `""` — "no unit" has exactly one representation downstream. Consequence worth
+  knowing: a `default` becomes eligible for re-seeding again, so a cleared extra
+  reappears if the field's type is changed away and back.
+- **Whitespace is trimmed on commit, not while typing** — trimming on every keystroke
+  would make a trailing space untypable.
+- **`maxlength` is checked twice** — the input's attribute bounds typing, and
+  `validateFieldDefs` re-checks the stored value (the attribute does not constrain a
+  programmatically seeded or imported one) and reports it as a row error.
+- **A `select` value outside the declared `options` is preserved** and rendered as its
+  own entry, the same stance the component takes on an unknown field `type` — it stays
+  visible and round-trips instead of being silently coerced to blank.
+- Extras have **no per-extra lock**; `FieldLock` does not cover them (the whole editor
+  still honours `disabled`).
 
 `FIELDS_BUILDER_DEFAULT_TYPES` ships a small general-purpose palette
 (text / longtext / number / checkbox / select / date) for demos and unopinionated

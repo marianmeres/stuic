@@ -8,7 +8,11 @@ export type {
 	FieldLock,
 	FieldOptionDef,
 	FieldTypeDef,
+	FieldTypeExtraBaseDef,
+	FieldTypeExtraBooleanDef,
 	FieldTypeExtraDef,
+	FieldTypeExtraSelectDef,
+	FieldTypeExtraStringDef,
 	LocalizedText,
 } from "./types.js";
 

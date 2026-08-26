@@ -192,6 +192,48 @@ test("validateFieldDefs: choice types need >=1 option with non-empty unique valu
 	);
 });
 
+test("validateFieldDefs: string extras are bounded by `maxlength` (booleans/selects are not)", () => {
+	const types = [
+		{
+			type: "number",
+			label: "Number",
+			extras: [
+				{ key: "unit", label: "Unit", type: "string" as const, maxlength: 5 },
+				{ key: "note", label: "Note", type: "string" as const },
+				{ key: "flag", label: "Flag", type: "boolean" as const },
+			],
+		},
+		...TYPES.filter((td) => td.type !== "number"),
+	];
+	const num = (extras?: Record<string, unknown>) =>
+		def({ key: "energy", label: "Energy", type: "number", extras });
+
+	assert.equal(validateFieldDefs([num({ unit: "kJ" })], { types }).valid, true);
+	assert.equal(
+		validateFieldDefs([num({ unit: "kilojoules" })], { types }).rowErrors[0]?.extras,
+		"err_extra_maxlength"
+	);
+	// the message names the offending extra
+	assert.equal(
+		validateFieldDefs([num({ unit: "kilojoules" })], {
+			types,
+			t: (k, v) => `${k}:${v?.label}:${v?.max}`,
+		}).message,
+		"err_extra_maxlength:Unit:5"
+	);
+	// no `maxlength` declared -> unbounded
+	assert.equal(
+		validateFieldDefs([num({ note: "x".repeat(500) })], { types }).valid,
+		true
+	);
+	// a non-string value under a string extra round-trips instead of erroring
+	assert.equal(validateFieldDefs([num({ unit: 1234567890 })], { types }).valid, true);
+	// absent extras are not an error (extras are never required)
+	assert.equal(validateFieldDefs([num(undefined)], { types }).valid, true);
+	// and without a palette there is nothing to validate against
+	assert.equal(validateFieldDefs([num({ unit: "kilojoules" })]).valid, true);
+});
+
 test("validateFieldDefs: unknown types round-trip without blocking, keys still occupy the key space", () => {
 	const res = validateFieldDefs(
 		[def({ key: "mystery", label: "", type: "wormhole" }), def({ key: "color" })],

@@ -421,6 +421,163 @@ test("extras: a loaded def without the extra key shows unchecked (display matche
 	await expect.poll(() => emitted(screen.container)[0]?.extras).toBe(undefined);
 });
 
+const STRING_EXTRA_TYPES = [
+	{
+		type: "number",
+		label: "Number",
+		extras: [
+			{
+				key: "unit",
+				label: "Unit",
+				type: "string" as const,
+				default: "kJ",
+				placeholder: "e.g. % vol",
+				maxlength: 5,
+			},
+			{
+				key: "group",
+				label: "Group",
+				type: "select" as const,
+				placeholder: "none",
+				options: [
+					{ value: "nutrition", label: "Nutrition" },
+					{ value: "analytics", label: "Analytics" },
+				],
+			},
+		],
+	},
+	...TYPES.filter((td) => td.type !== "number"),
+];
+
+test("extras (string): default seeded on add, typed value round-trips, clearing REMOVES the key", async () => {
+	const screen = await render(FieldsBuilder, {
+		...baseProps(),
+		types: STRING_EXTRA_TYPES,
+	});
+	await screen.getByRole("button", { name: "Add field" }).click();
+	await screen.getByLabelText("Type").selectOptions("number");
+	await screen.getByLabelText("Label").fill("Energy");
+	// the string default is materialized just like a boolean one
+	await expect.poll(() => emitted(screen.container)[0]?.extras).toEqual({ unit: "kJ" });
+
+	const unit = screen.getByLabelText("Unit");
+	await unit.fill("kcal");
+	await expect.poll(() => emitted(screen.container)[0]?.extras).toEqual({ unit: "kcal" });
+
+	// emptied -> the key is GONE (not `""`), and the emptied bag itself is gone
+	await unit.fill("");
+	await expect.poll(() => emitted(screen.container)[0]?.extras).toBe(undefined);
+	// ... and the field itself is untouched
+	await expect.poll(() => emitted(screen.container)[0]?.key).toBe("energy");
+});
+
+test("extras (string): a loaded def without the key renders empty, not as the default", async () => {
+	const screen = await render(FieldsBuilder, {
+		...baseProps([{ key: "energy", type: "number", label: "Energy" }]),
+		types: STRING_EXTRA_TYPES,
+	});
+	await screen.getByRole("button", { name: /Energy/ }).click();
+	await expect.element(screen.getByLabelText("Unit")).toHaveValue("");
+	// and rendering did not silently mutate the value
+	await expect.poll(() => emitted(screen.container)[0]?.extras).toBe(undefined);
+});
+
+test("extras (string): a whitespace-only value removes the key; surrounding space is trimmed on commit", async () => {
+	const screen = await render(FieldsBuilder, {
+		...baseProps([
+			{ key: "energy", type: "number", label: "Energy", extras: { unit: "kJ" } },
+		]),
+		types: STRING_EXTRA_TYPES,
+	});
+	await screen.getByRole("button", { name: /Energy/ }).click();
+	const unit = screen.getByLabelText("Unit");
+	await unit.fill("   ");
+	await expect.poll(() => emitted(screen.container)[0]?.extras).toBe(undefined);
+	// raw while typing (trimming there would fight the caret) ...
+	await unit.fill(" kJ ");
+	await expect.poll(() => emitted(screen.container)[0]?.extras).toEqual({ unit: " kJ " });
+	// ... normalized on commit
+	(unit.element() as HTMLInputElement).blur();
+	await expect.poll(() => emitted(screen.container)[0]?.extras).toEqual({ unit: "kJ" });
+});
+
+test("extras (string): the value survives a field type change, like options", async () => {
+	const screen = await render(FieldsBuilder, {
+		...baseProps([
+			{ key: "energy", type: "number", label: "Energy", extras: { unit: "kJ" } },
+		]),
+		types: STRING_EXTRA_TYPES,
+	});
+	await screen.getByRole("button", { name: /Energy/ }).click();
+	await screen.getByLabelText("Type").selectOptions("text");
+	// the control is gone (the text type declares no extras), the data is not
+	await expect.poll(() => emitted(screen.container)[0]?.type).toBe("text");
+	await expect.poll(() => emitted(screen.container)[0]?.extras).toEqual({ unit: "kJ" });
+	await screen.getByLabelText("Type").selectOptions("number");
+	await expect.element(screen.getByLabelText("Unit")).toHaveValue("kJ");
+});
+
+test("extras (select): renders the declared options, selecting round-trips, empty removes the key", async () => {
+	const screen = await render(FieldsBuilder, {
+		...baseProps([{ key: "energy", type: "number", label: "Energy" }]),
+		types: STRING_EXTRA_TYPES,
+	});
+	await screen.getByRole("button", { name: /Energy/ }).click();
+	const group = screen.getByLabelText("Group");
+	await expect.element(group).toHaveValue("");
+	await group.selectOptions("nutrition");
+	await expect
+		.poll(() => emitted(screen.container)[0]?.extras)
+		.toEqual({ group: "nutrition" });
+	await group.selectOptions("");
+	await expect.poll(() => emitted(screen.container)[0]?.extras).toBe(undefined);
+});
+
+test("extras (select): a stored value outside the declared list stays visible and round-trips", async () => {
+	const screen = await render(FieldsBuilder, {
+		...baseProps([
+			{ key: "energy", type: "number", label: "Energy", extras: { group: "legacy" } },
+		]),
+		types: STRING_EXTRA_TYPES,
+	});
+	await screen.getByRole("button", { name: /Energy/ }).click();
+	// not coerced to the empty entry — the user can SEE what is stored
+	await expect.element(screen.getByLabelText("Group")).toHaveValue("legacy");
+	await expect
+		.poll(() => emitted(screen.container)[0]?.extras)
+		.toEqual({ group: "legacy" });
+});
+
+test("extras (string): a seeded over-maxlength value is flagged by validate() on its row", async () => {
+	const screen = await render(FieldsBuilder, {
+		...baseProps([
+			{ key: "color", type: "text", label: "Color" },
+			// too long for `maxlength: 5` — the input attribute never saw this
+			// value, so only re-checking in validate() catches it
+			{
+				key: "energy",
+				type: "number",
+				label: "Energy",
+				extras: { unit: "kilojoules" },
+			},
+		]),
+		types: STRING_EXTRA_TYPES,
+	});
+	const res = screen.component.validate();
+	expect(res?.valid).toBe(false);
+	expect(res?.message).toBe("Unit is too long (max 5 characters)");
+	// the offending row auto-expanded and shows the error inline, next to the
+	// control that carries it
+	await expect
+		.poll(
+			() => screen.container.querySelector(".fb-extras .fb-error-text")?.textContent ?? ""
+		)
+		.toContain("Unit is too long (max 5 characters)");
+	// typing it down to length clears it
+	await screen.getByLabelText("Unit").fill("kJ");
+	expect(screen.component.validate()?.valid).toBe(true);
+});
+
 test("async (Promise<false>) and throwing onBeforeDelete both veto", async () => {
 	const asyncVeto = vi.fn(async () => false as const);
 	const screen = await render(FieldsBuilder, {

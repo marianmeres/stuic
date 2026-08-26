@@ -81,6 +81,8 @@ export interface FieldDefRowErrors {
 	label?: string;
 	key?: string;
 	options?: string;
+	/** First offending extra of the row (its label is in the message). */
+	extras?: string;
 }
 
 export interface FieldDefsValidationResult {
@@ -98,7 +100,7 @@ export interface ValidateFieldDefsOptions {
 	 * must never block the rest of the list), but their keys still count toward
 	 * uniqueness.
 	 */
-	types?: Pick<FieldTypeDef, "type" | "supportsOptions">[];
+	types?: Pick<FieldTypeDef, "type" | "supportsOptions" | "extras">[];
 	keyPattern?: RegExp;
 	keyMaxLength?: number;
 	reservedKeys?: string[] | ((key: string) => boolean);
@@ -111,7 +113,7 @@ export interface ValidateFieldDefsOptions {
 /**
  * Validate a list of field defs: label non-empty, key present/pattern/length/
  * unique/not-reserved, choice types have at least one option with non-empty
- * unique values, `maxFields` not exceeded.
+ * unique values, string extras within `maxlength`, `maxFields` not exceeded.
  *
  * This is client-side convenience only — a consumer persisting the list MUST
  * re-validate server-side; this function is not a security boundary.
@@ -170,6 +172,23 @@ export function validateFieldDefs(
 				put(i, "options", t("err_option_value_required"));
 			} else if (new Set(values).size !== values.length) {
 				put(i, "options", t("err_option_value_duplicate"));
+			}
+		}
+
+		// `maxlength` is re-checked here on purpose: the input's attribute stops
+		// typing, it does not bound a seeded or pasted-then-mutated value
+		for (const ex of typeMap?.get(d.type)?.extras ?? []) {
+			if (ex.type !== "string" || !ex.maxlength) continue;
+			const v = d.extras?.[ex.key];
+			if (typeof v === "string" && v.length > ex.maxlength) {
+				put(
+					i,
+					"extras",
+					t("err_extra_maxlength", {
+						label: getLocalizedText(ex.label, opts.defaultLanguage),
+						max: ex.maxlength,
+					})
+				);
 			}
 		}
 	});

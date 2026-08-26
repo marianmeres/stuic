@@ -65,6 +65,7 @@ export const FIELDS_BUILDER_MESSAGES_SK: FieldsBuilderMessages = {
 	err_options_required: "Pridajte aspoň jednu možnosť",
 	err_option_value_required: "Každá možnosť musí mať hodnotu",
 	err_option_value_duplicate: "Hodnoty možností musia byť jedinečné",
+	err_extra_maxlength: "{{label}} — hodnota je príliš dlhá (max. {{max}} znakov)",
 	err_max_fields: "Maximálny počet polí je {{max}}",
 };
 

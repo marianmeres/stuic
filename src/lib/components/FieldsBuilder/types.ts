@@ -44,25 +44,66 @@ export interface FieldDef {
 	 */
 	options?: FieldOptionDef[];
 	/**
-	 * Per-type extra flags, driven by the palette entry's `extras`. An open bag
+	 * Per-type extra values, driven by the palette entry's `extras`. An open bag
 	 * on purpose — the component never interprets these, it only renders a
-	 * control per declared extra and round-trips the value.
+	 * control per declared extra and round-trips the value. Like `options`,
+	 * extras of a previous type are RETAINED when the type changes.
 	 */
 	extras?: Record<string, unknown>;
 	/** What the user may NOT change. Absent = fully editable. */
 	lock?: FieldLock;
 }
 
-/** An extra per-field control declared by a palette entry (v1: booleans only). */
-export interface FieldTypeExtraDef {
+/** Shared shape of every extra per-field control declared by a palette entry. */
+export interface FieldTypeExtraBaseDef {
 	/** Stored under `FieldDef.extras[key]`. */
 	key: string;
 	label: LocalizedText;
 	description?: LocalizedText;
-	/** v1: booleans only (rendered as a checkbox). */
+}
+
+/** A yes/no extra — rendered as a checkbox. */
+export interface FieldTypeExtraBooleanDef extends FieldTypeExtraBaseDef {
 	type: "boolean";
 	default?: boolean;
 }
+
+/**
+ * A short free-text extra (a unit, a suffix, a format hint...) — rendered as a
+ * single-line text input. An emptied value REMOVES `extras[key]` rather than
+ * storing `""`, so "no value" has exactly one representation downstream.
+ */
+export interface FieldTypeExtraStringDef extends FieldTypeExtraBaseDef {
+	type: "string";
+	default?: string;
+	placeholder?: LocalizedText;
+	/**
+	 * Enforced by the input's `maxlength` attribute AND re-checked by
+	 * `validateFieldDefs` (the attribute does not bound a programmatically
+	 * seeded value).
+	 */
+	maxlength?: number;
+}
+
+/**
+ * One of a fixed list of values — rendered as a select. Selecting the empty
+ * entry REMOVES `extras[key]`. A stored value that is not among `options` is
+ * kept and rendered as-is (never silently coerced away).
+ */
+export interface FieldTypeExtraSelectDef extends FieldTypeExtraBaseDef {
+	type: "select";
+	default?: string;
+	options: FieldOptionDef[];
+	/** Label of the "nothing selected" entry. Default: blank. */
+	placeholder?: LocalizedText;
+}
+
+/**
+ * An extra per-field control declared by a palette entry, rendered into
+ * `FieldDef.extras[key]`. Discriminated by `type`.
+ */
+export type FieldTypeExtraDef =
+	FieldTypeExtraBooleanDef | FieldTypeExtraStringDef | FieldTypeExtraSelectDef;
 
 /** One entry of the type palette (the `types` prop). */
 export interface FieldTypeDef {

@@ -60,6 +60,7 @@ export const FIELDS_BUILDER_MESSAGES_EN = {
 	err_options_required: "Add at least one choice",
 	err_option_value_required: "Every choice needs a value",
 	err_option_value_duplicate: "Choice values must be unique",
+	err_extra_maxlength: "{{label}} is too long (max {{max}} characters)",
 	err_max_fields: "Maximum number of fields is {{max}}",
 };
 
