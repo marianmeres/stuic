@@ -1,6 +1,7 @@
 <script lang="ts" module>
 	import type { Snippet } from "svelte";
 	import type { ValidateOptions } from "../../actions/validate.svelte.js";
+	import type { SwitchIntent } from "../Switch/Switch.svelte";
 	import type { THC } from "../Thc/Thc.svelte";
 	import type { InputWrapClassProps } from "./types.js";
 
@@ -32,6 +33,25 @@
 		classInput?: string;
 		style?: string;
 		renderValue?: (rawValue: any) => string;
+		//
+		// Below: forwarded as-is to the underlying <Switch>.
+		//
+		/** Semantic color intent of the switch */
+		intent?: SwitchIntent;
+		/**
+		 * Size of the switch itself. Deliberately separate from `renderSize`, which sizes
+		 * the InputWrap shell (label, description, spacing) around it.
+		 */
+		switchSize?: "xs" | "sm" | "md" | "lg" | string;
+		/** Classes for the switch's toggle dot/knob element */
+		dotClass?: string;
+		/** Snippet to render inside the dot when checked */
+		on?: Snippet;
+		/** Snippet to render inside the dot when unchecked */
+		off?: Snippet;
+		/** Async validation before toggle - return false to prevent change */
+		preHook?: (current: boolean) => Promise<false | any>;
+		onclick?: (event: MouseEvent) => void;
 	}
 </script>
 
@@ -72,6 +92,15 @@
 		labelLeftBreakpoint = 480,
 		//
 		classInput,
+		//
+		intent,
+		switchSize = "md",
+		dotClass,
+		on,
+		off,
+		preHook,
+		onclick,
+		//
 		classLabel,
 		classLabelBox,
 		classInputBox,
@@ -150,13 +179,30 @@
 	classInputBoxWrap={twMerge("input-wrap-transparent", classInputBoxWrap)}
 	{style}
 >
+	<!--
+		`aria-labelledby` (not the InputWrap's `for={id}`) is what names the switch: the
+		<Switch> root is itself a <label>, so a `for` pointing at it would not associate,
+		and its inner checkbox is aria-hidden. Matches InputWrap's own `{id}-label`, and
+		only when there is a label to point at.
+	-->
 	<Switch
 		bind:this={switchRef}
 		bind:checked
 		{name}
 		{required}
 		{disabled}
+		{intent}
+		{dotClass}
+		{on}
+		{off}
+		{preHook}
+		{onclick}
+		{tabindex}
+		size={switchSize}
+		class={classInput}
+		aria-labelledby={label ? `${id}-label` : undefined}
 		validate={validateProp}
 		{setValidationResult}
+		{...rest}
 	/>
 </InputWrap>

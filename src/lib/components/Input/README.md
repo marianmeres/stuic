@@ -148,6 +148,38 @@ Component-specific targets (e.g. `classInput` for the inner `<input>`/`<select>`
 <FieldCheckbox label="I agree to the terms" bind:checked={agreed} required />
 ```
 
+### Switch
+
+`FieldSwitch` wraps a [`Switch`](../Switch/README.md) in the standard field scaffolding
+(label, description, validation box) and forwards the switch's own props to it.
+
+```svelte
+<script lang="ts">
+	import { FieldSwitch } from "stuic";
+
+	let published = $state(false);
+</script>
+
+<FieldSwitch
+	label="Published"
+	description="Whether the public page resolves."
+	intent="success"
+	bind:checked={published}
+/>
+```
+
+| Prop                                                                | Goes to                                                              |
+| ------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `intent`, `dotClass`, `on`, `off`, `preHook`, `onclick`, `tabindex` | the inner `<Switch>`                                                 |
+| `classInput`                                                        | the inner `<Switch>`'s class                                         |
+| `switchSize`                                                        | the switch's own size (`"xs" \| "sm" \| "md" \| "lg"`, default `md`) |
+| `renderSize`                                                        | the surrounding field shell only — it does **not** size the switch   |
+| everything else unrecognized (`...rest`)                            | the inner `<Switch>`                                                 |
+
+The visible label names the control via `aria-labelledby` (the switch is announced as
+`switch, on/off` with that name). Clicking the label text does not toggle — the switch's
+own root is a `<label>`, so an HTML `for` association is not possible; click the switch.
+
 ### Input with Addons
 
 ```svelte

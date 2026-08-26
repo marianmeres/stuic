@@ -117,8 +117,13 @@
 		)}
 	>
 		{#if label}
+			<!--
+				The `{id}-label` id is what controls that cannot be reached by `for`
+				(e.g. FieldSwitch's <Switch>) point their `aria-labelledby` at.
+			-->
 			<label
 				for={id}
+				id="{id}-label"
 				class={twMerge(
 					"block flex-1 px-2 mb-1 text-base",
 					required && "after:content-['*'] after:opacity-40 after:pl-1",
