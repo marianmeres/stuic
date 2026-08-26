@@ -180,14 +180,13 @@
 		{#if !expanded || !_hasMultiple}
 			{@render langInput(_defaultLanguage, true)}
 		{:else}
-			<div class="expanded-wrap">
-				{#each sortedLanguages as lang, idx (lang)}
-					<div
-						class={twMerge(
-							"flex-1 flex gap-2 items-center pl-2",
-							idx > 0 && "entry-divider"
-						)}
-					>
+			<!-- no `.expanded-wrap`/`.entry-divider` chrome here (unlike
+			     FieldInputLocalized): these inputs carry their own border, so a
+			     divider line and the wrap's right edge would only add noise —
+			     plain spacing separates the rows instead -->
+			<div class="flex flex-col gap-1.5">
+				{#each sortedLanguages as lang (lang)}
+					<div class="flex-1 flex gap-2 items-center pl-2">
 						<div
 							class={twMerge(
 								"lang-label",
