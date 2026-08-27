@@ -68,6 +68,7 @@
 		'spinner',
 		'split-button',
 		'style-presets',
+		'svg-circle',
         'switch', 
 		// 'table', 
 		'tabbed-menu',

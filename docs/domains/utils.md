@@ -110,7 +110,7 @@ const search = debounce((query: string) => {
 | `colors`       | Color manipulation              |
 | `avatarColors` | Deterministic avatar colors     |
 | `paint`        | HSL color generation            |
-| `svgCircle`    | SVG circle path                 |
+| `svgCircle`    | SVG progress ring (DOM node)    |
 | `oscillate`    | Value oscillation for animation |
 
 ### Example: Class Merging

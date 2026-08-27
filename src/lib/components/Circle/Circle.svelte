@@ -1,5 +1,24 @@
+<script lang="ts" module>
+	import type { SvgCircleOptions } from "../../utils/svg-circle.js";
+
+	export interface Props extends Partial<SvgCircleOptions> {
+		/** Inline styles for the container element */
+		style?: string;
+		/**
+		 * CSS classes for the `<svg>` element (forwarded to the helper's `class`
+		 * option). Since the stroke is `currentColor`, a text color utility here
+		 * colors the ring.
+		 */
+		circleClass?: string;
+		/** Inline styles for the `<circle>` element */
+		circleStyle?: string;
+		/** Transition duration in ms on the stroke-dashoffset */
+		animateCompletenessMs?: number;
+	}
+</script>
+
 <script lang="ts">
-	import { svgCircle, type SvgCircleOptions } from "../../utils/svg-circle.js";
+	import { svgCircle } from "../../utils/svg-circle.js";
 	import { twMerge } from "../../utils/tw-merge.js";
 
 	let {
@@ -14,13 +33,7 @@
 		circleClass,
 		circleStyle = "",
 		animateCompletenessMs = 0,
-	}: Partial<SvgCircleOptions> & {
-		style?: string;
-		circleClass?: string;
-		circleStyle?: string;
-		// transition duration in ms on the stroke-dashoffset
-		animateCompletenessMs?: number;
-	} = $props();
+	}: Props = $props();
 
 	let container: HTMLDivElement = $state()!;
 
@@ -42,10 +55,12 @@
 	);
 
 	$effect(() => {
-		container.appendChild(circle.svg);
-		return () => {
-			circle.svg.remove();
-		};
+		// Capture the current instance: `circle` is a derived, so reading it again in the
+		// teardown would resolve to the freshly rebuilt svg and leave the previous node
+		// behind (stacking one <svg> per structural prop change).
+		const { svg } = circle;
+		container.appendChild(svg);
+		return () => svg.remove();
 	});
 
 	$effect(() => {

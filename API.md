@@ -582,11 +582,13 @@ Closeable message banner with intent styling.
 
 #### `Progress`
 
-Progress bar.
+Progress bar or circle.
 
-| Prop    | Type     | Default | Description              |
-| ------- | -------- | ------- | ------------------------ |
-| `value` | `number` | `0`     | Current progress (0-100) |
+| Prop       | Type                | Default | Description                       |
+| ---------- | ------------------- | ------- | --------------------------------- |
+| `progress` | `number`            | `0`     | Current progress (0-100, clamped) |
+| `type`     | `"bar" \| "circle"` | `"bar"` | Rendering variant                 |
+| `classBar` | `string`            | -       | Classes for the inner fill (bar)  |
 
 #### `Spinner`
 
@@ -1206,12 +1208,26 @@ Responsive wrapper around Book that intelligently switches between book mode (du
 
 #### `Circle`
 
-SVG-based circular progress indicator with configurable stroke width and rotation.
+SVG-based circular progress indicator (a Svelte wrapper around the [`svgCircle`](#svgcircleoptions)
+utility). The svg fills its container over a fixed `100x100` viewBox, so the container
+sets the size and `strokeWidth` is in viewBox units. The stroke is `currentColor`.
 
-| Prop          | Type     | Default | Description            |
-| ------------- | -------- | ------- | ---------------------- |
-| `value`       | `number` | `0`     | Progress value (0-100) |
-| `strokeWidth` | `number` | `8`     | Stroke width           |
+| Prop                    | Type      | Default | Description                                                      |
+| ----------------------- | --------- | ------- | ---------------------------------------------------------------- |
+| `completeness`          | `number`  | `1`     | Progress from 0 to 1 (clamped)                                   |
+| `strokeWidth`           | `number`  | `10`    | Stroke width in viewBox units (radius = `50 - strokeWidth / 2`)  |
+| `strokeWidthRatio`      | `number`  | `0`     | Caps `strokeWidth` at this fraction of the radius (`0` = no cap) |
+| `bgStrokeColor`         | `string`  | -       | CSS color of the background ring behind the arc                  |
+| `roundedEdges`          | `boolean` | `true`  | Rounded (vs butt) stroke line caps                               |
+| `rotate`                | `number`  | `0`     | Rotation in degrees (arc starts at 3 o'clock; `-90` = top)       |
+| `animateCompletenessMs` | `number`  | `0`     | CSS transition duration on `stroke-dashoffset` (ms)              |
+| `class` / `style`       | `string`  | -       | Container div class / inline style                               |
+| `circleClass`           | `string`  | -       | Classes for the `<svg>` element                                  |
+| `circleStyle`           | `string`  | -       | Inline styles for the `<circle>` element                         |
+
+```svelte
+<Circle completeness={0.75} rotate={-90} bgStrokeColor="#e5e5e5" class="size-16" />
+```
 
 #### `H`
 
@@ -1935,9 +1951,48 @@ Generate deterministic avatar colors from a name string.
 
 HSL color generation.
 
-#### `svgCircle(radius, strokeWidth)`
+#### `svgCircle(options?)`
 
-Generate SVG circle path data.
+Build an SVG ring as a plain DOM node, with setters to update it in place. Framework
+agnostic - it returns the element, mounting it is up to the caller. Used by `Circle` and
+`Progress` internally.
+
+The svg is `width/height: 100%` over a fixed `100x100` viewBox, so the container decides
+the rendered size; `strokeWidth` is in viewBox units and the radius is derived from it
+(`50 - strokeWidth / 2`).
+
+**Options** (all optional):
+
+| Option             | Type      | Default | Description                                                      |
+| ------------------ | --------- | ------- | ---------------------------------------------------------------- |
+| `completeness`     | `number`  | `1`     | Arc length from 0 to 1 (clamped)                                 |
+| `strokeWidth`      | `number`  | `10`    | Stroke width in viewBox units                                    |
+| `strokeWidthRatio` | `number`  | `0`     | Caps `strokeWidth` at this fraction of the radius (`0` = no cap) |
+| `rotate`           | `number`  | `0`     | Rotation in degrees, modulo 360 (arc starts at 3 o'clock)        |
+| `roundedEdges`     | `boolean` | `true`  | Rounded (vs butt) line caps                                      |
+| `bgStrokeColor`    | `string`  | -       | CSS color of a full background ring behind the arc               |
+| `class`            | `string`  | -       | Classes for the `<svg>` element                                  |
+| `circleStyle`      | `string`  | -       | Inline styles for the `<circle>` element                         |
+| `radius`           | `number`  | -       | Currently ignored (derived from the viewBox and stroke width)    |
+
+**Returns:** `{ svg: SVGSVGElement, setCompleteness(v: number): void, setRotate(deg: number): void }`
+
+The setters mutate the existing element - reach for them instead of rebuilding when only
+the progress or rotation changes.
+
+```ts
+import { svgCircle } from "@marianmeres/stuic";
+
+const { svg, setCompleteness } = svgCircle({
+	completeness: 0.75,
+	strokeWidth: 8,
+	rotate: -90,
+	bgStrokeColor: "#e5e5e5",
+});
+container.appendChild(svg);
+
+setCompleteness(0.9); // no rebuild
+```
 
 #### `oscillate(min, max, step)`
 
