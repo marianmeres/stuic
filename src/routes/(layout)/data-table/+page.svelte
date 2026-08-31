@@ -180,6 +180,9 @@
 	let selectAllMode = $state(false);
 	let excludedExample = $state(new Set<string | number>());
 	let selectAllLastAction = $state("");
+	// The motivating case for `showPager`: this page already has its own pager (below),
+	// so the built-in one would just say the same thing twice.
+	let selectAllShowPager = $state(true);
 
 	// --- Row click example ---
 	let clickedRow = $state<User | null>(null);
@@ -362,6 +365,16 @@
 	from <code>selected</code>. Off-page rows are implicitly selected — execute batch
 	operations as server-side filter queries, not by iterating IDs.
 </p>
+<p class="text-sm opacity-70 mb-4">
+	The banner needs <code>paging</code> — it is what tells the table there are results off
+	screen. Untick <code>showPager</code> to keep feeding it while suppressing the built-in pager,
+	for a page that already pages the data from its own control (the plain one below stands in
+	for it).
+</p>
+<label class="flex items-center gap-2 text-sm mb-4">
+	<input type="checkbox" bind:checked={selectAllShowPager} />
+	<code>showPager</code>
+</label>
 <div>
 	<DataTable
 		{columns}
@@ -369,6 +382,7 @@
 		getRowId={(row) => row.id}
 		paging={selectAllPaging}
 		onPageChange={(offset) => selectAllPagingStore.update({ offset })}
+		showPager={selectAllShowPager}
 		selectable
 		allowSelectAllPages
 		bind:selected={selectedAllExample}
@@ -422,6 +436,31 @@
 			<Button size="sm" variant="ghost" onclick={clearSelection}>Clear</Button>
 		{/snippet}
 	</DataTable>
+	{#if !selectAllShowPager}
+		<div class="mt-2 flex items-center gap-3 text-sm">
+			<Button
+				size="sm"
+				variant="ghost"
+				disabled={!selectAllPaging.hasPrevious}
+				onclick={() =>
+					selectAllPagingStore.update({ offset: selectAllPaging.previousOffset })}
+			>
+				&lsaquo; Prev
+			</Button>
+			<span class="opacity-70">
+				Page {selectAllPaging.currentPage} of {selectAllPaging.pageCount} (my own pager)
+			</span>
+			<Button
+				size="sm"
+				variant="ghost"
+				disabled={!selectAllPaging.hasNext}
+				onclick={() =>
+					selectAllPagingStore.update({ offset: selectAllPaging.nextOffset })}
+			>
+				Next &rsaquo;
+			</Button>
+		</div>
+	{/if}
 	{#if selectAllLastAction}
 		<p class="mt-2 text-sm text-green-600">{selectAllLastAction}</p>
 	{/if}

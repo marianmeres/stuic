@@ -46,6 +46,35 @@ DataTable integrates with [`@marianmeres/paging-store`](https://github.com/maria
 />
 ```
 
+A single-page result renders no pager -- there is nothing to page through.
+
+#### Bringing your own pager
+
+`paging` does two unrelated jobs: it renders the built-in pager, and it feeds the
+select-all-across-pages banner, `effectiveCount` and `totalCount`. `showPager={false}`
+asks for the second without the first, for a page that already pages the data from its own
+control (one with a rows-per-page selector, say):
+
+```svelte
+<DataTable
+	{columns}
+	{data}
+	paging={pagingResult}
+	showPager={false}
+	selectable
+	allowSelectAllPages
+/>
+
+<MyOwnPager … />
+```
+
+The pager node is then absent from the DOM, not hidden -- it takes no space and holds no
+focusable buttons. `onPageChange` never fires while it is hidden (nothing else calls it),
+so your own control is the single thing driving the offset; don't wire both.
+
+(The node's class stays `.stuic-data-table-paging` and its `--stuic-data-table-paging-*`
+tokens are unchanged -- `showPager` names the control, the CSS names the region.)
+
 ### With Selection
 
 ```svelte
@@ -311,39 +340,40 @@ Replace the entire `<tr>` on desktop. When this snippet is provided, DataTable d
 
 ## Props
 
-| Prop                  | Type                                  | Default       | Description                                                                |
-| --------------------- | ------------------------------------- | ------------- | -------------------------------------------------------------------------- |
-| `columns`             | `DataTableColumn<T>[]`                | required      | Column definitions                                                         |
-| `data`                | `T[]`                                 | required      | Array of row data                                                          |
-| `getRowId`            | `(row, index) => string \| number`    | `(_, i) => i` | Row ID extractor                                                           |
-| `paging`              | `PagingCalcResult`                    | -             | Paging state (from `@marianmeres/paging-store`)                            |
-| `onPageChange`        | `(offset: number) => void`            | -             | Called with the new offset when the user navigates pages                   |
-| `selectable`          | `boolean`                             | `false`       | Enable selection checkboxes                                                |
-| `selected`            | `Set<string \| number>`               | `new Set()`   | Selected row IDs (bindable)                                                |
-| `selectOnRowClick`    | `boolean`                             | `false`       | Clicking anywhere on a row toggles its selection                           |
-| `selectDisabledBy`    | `(row, index) => boolean`             | -             | Return `true` to disable selection for a specific row                      |
-| `allowSelectAllPages` | `boolean`                             | `false`       | Show a banner offering "select all results" across paged data              |
-| `selectedAll`         | `boolean`                             | `false`       | All-pages mode flag (bindable). In this mode `excluded` drives selection   |
-| `excluded`            | `Set<string \| number>`               | `new Set()`   | Deselected row IDs while in all-pages mode (bindable)                      |
-| `reserveBatchBar`     | `boolean`                             | `true`        | Keep the selection bar in the layout while nothing is selected             |
-| `onRowClick`          | `(row, index) => void`                | -             | Row click callback                                                         |
-| `rowHref`             | `(row, index) => string \| undefined` | -             | Wrap the lead cell's content in an `<a href>` (keyboard/⌘-click reachable) |
-| `rowHrefColumn`       | `string`                              | first column  | Which column is the lead cell for `rowHref`                                |
-| `classRowLink`        | `string`                              | -             | Extra classes for the `rowHref` anchor                                     |
-| `rowActivatable`      | `boolean`                             | `false`       | Make the desktop `<tr>` focusable + `Enter`-activatable (no `role`)        |
-| `rowLabel`            | `(row, index) => string \| undefined` | -             | Accessible name for an activatable row                                     |
-| `loading`             | `boolean`                             | `false`       | Show loading overlay                                                       |
-| `small`               | `boolean`                             | `false`       | Force mobile/card layout regardless of viewport                            |
-| `t`                   | `TranslateFn`                         | built-in      | Optional translation function                                              |
-| `cell`                | `Snippet`                             | -             | Custom cell renderer (desktop + mobile)                                    |
-| `row`                 | `Snippet`                             | -             | Custom desktop `<tr>` renderer (overrides default row)                     |
-| `mobileRow`           | `Snippet`                             | -             | Custom mobile card renderer                                                |
-| `batchActions`        | `Snippet`                             | -             | Selection bar content while something is selected                          |
-| `selectAllBanner`     | `Snippet`                             | -             | Override default "select all across pages" offer                           |
-| `empty`               | `Snippet`                             | -             | Custom empty state                                                         |
-| `unstyled`            | `boolean`                             | `false`       | Skip default styling                                                       |
-| `class`               | `string`                              | -             | Additional CSS classes                                                     |
-| `el`                  | `HTMLDivElement`                      | -             | Bindable element ref                                                       |
+| Prop                  | Type                                  | Default       | Description                                                                          |
+| --------------------- | ------------------------------------- | ------------- | ------------------------------------------------------------------------------------ |
+| `columns`             | `DataTableColumn<T>[]`                | required      | Column definitions                                                                   |
+| `data`                | `T[]`                                 | required      | Array of row data                                                                    |
+| `getRowId`            | `(row, index) => string \| number`    | `(_, i) => i` | Row ID extractor                                                                     |
+| `paging`              | `PagingCalcResult`                    | -             | Paging state (from `@marianmeres/paging-store`)                                      |
+| `onPageChange`        | `(offset: number) => void`            | -             | Called with the new offset when the user navigates pages                             |
+| `showPager`           | `boolean`                             | `true`        | Render the built-in pager. `false` keeps `paging` feeding the select-all banner only |
+| `selectable`          | `boolean`                             | `false`       | Enable selection checkboxes                                                          |
+| `selected`            | `Set<string \| number>`               | `new Set()`   | Selected row IDs (bindable)                                                          |
+| `selectOnRowClick`    | `boolean`                             | `false`       | Clicking anywhere on a row toggles its selection                                     |
+| `selectDisabledBy`    | `(row, index) => boolean`             | -             | Return `true` to disable selection for a specific row                                |
+| `allowSelectAllPages` | `boolean`                             | `false`       | Show a banner offering "select all results" across paged data                        |
+| `selectedAll`         | `boolean`                             | `false`       | All-pages mode flag (bindable). In this mode `excluded` drives selection             |
+| `excluded`            | `Set<string \| number>`               | `new Set()`   | Deselected row IDs while in all-pages mode (bindable)                                |
+| `reserveBatchBar`     | `boolean`                             | `true`        | Keep the selection bar in the layout while nothing is selected                       |
+| `onRowClick`          | `(row, index) => void`                | -             | Row click callback                                                                   |
+| `rowHref`             | `(row, index) => string \| undefined` | -             | Wrap the lead cell's content in an `<a href>` (keyboard/⌘-click reachable)           |
+| `rowHrefColumn`       | `string`                              | first column  | Which column is the lead cell for `rowHref`                                          |
+| `classRowLink`        | `string`                              | -             | Extra classes for the `rowHref` anchor                                               |
+| `rowActivatable`      | `boolean`                             | `false`       | Make the desktop `<tr>` focusable + `Enter`-activatable (no `role`)                  |
+| `rowLabel`            | `(row, index) => string \| undefined` | -             | Accessible name for an activatable row                                               |
+| `loading`             | `boolean`                             | `false`       | Show loading overlay                                                                 |
+| `small`               | `boolean`                             | `false`       | Force mobile/card layout regardless of viewport                                      |
+| `t`                   | `TranslateFn`                         | built-in      | Optional translation function                                                        |
+| `cell`                | `Snippet`                             | -             | Custom cell renderer (desktop + mobile)                                              |
+| `row`                 | `Snippet`                             | -             | Custom desktop `<tr>` renderer (overrides default row)                               |
+| `mobileRow`           | `Snippet`                             | -             | Custom mobile card renderer                                                          |
+| `batchActions`        | `Snippet`                             | -             | Selection bar content while something is selected                                    |
+| `selectAllBanner`     | `Snippet`                             | -             | Override default "select all across pages" offer                                     |
+| `empty`               | `Snippet`                             | -             | Custom empty state                                                                   |
+| `unstyled`            | `boolean`                             | `false`       | Skip default styling                                                                 |
+| `class`               | `string`                              | -             | Additional CSS classes                                                               |
+| `el`                  | `HTMLDivElement`                      | -             | Bindable element ref                                                                 |
 
 ### Snippet signatures
 

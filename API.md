@@ -1087,19 +1087,20 @@ Swap visibility between N states with opacity transitions. Commonly used for ham
 
 Responsive data table with paging, row selection, batch actions, and mobile card view.
 
-| Prop               | Type                                          | Default  | Description                                         |
-| ------------------ | --------------------------------------------- | -------- | --------------------------------------------------- |
-| `columns`          | `DataTableColumn<T>[]`                        | required | Column definitions                                  |
-| `data`             | `T[]`                                         | required | Row data objects                                    |
-| `getRowId`         | `(row: T, index: number) => string \| number` | index    | Unique row ID extractor                             |
-| `paging`           | `PagingCalcResult`                            | —        | Paging calculation from `@marianmeres/paging-store` |
-| `onPageChange`     | `(offset: number) => void`                    | —        | Page navigation callback                            |
-| `selectable`       | `boolean`                                     | `false`  | Enable row selection checkboxes                     |
-| `selected`         | `Set<string \| number>`                       | —        | Bindable set of selected row IDs                    |
-| `selectOnRowClick` | `boolean`                                     | `false`  | Toggle selection on row click                       |
-| `onRowClick`       | `(row: T, index: number) => void`             | —        | Row click callback                                  |
-| `loading`          | `boolean`                                     | `false`  | Show loading overlay                                |
-| `t`                | `TranslateFn`                                 | built-in | Translation function for i18n                       |
+| Prop               | Type                                          | Default  | Description                                                  |
+| ------------------ | --------------------------------------------- | -------- | ------------------------------------------------------------ |
+| `columns`          | `DataTableColumn<T>[]`                        | required | Column definitions                                           |
+| `data`             | `T[]`                                         | required | Row data objects                                             |
+| `getRowId`         | `(row: T, index: number) => string \| number` | index    | Unique row ID extractor                                      |
+| `paging`           | `PagingCalcResult`                            | —        | Paging calculation from `@marianmeres/paging-store`          |
+| `onPageChange`     | `(offset: number) => void`                    | —        | Page navigation callback                                     |
+| `showPager`        | `boolean`                                     | `true`   | Render the built-in pager (`false` keeps `paging` data only) |
+| `selectable`       | `boolean`                                     | `false`  | Enable row selection checkboxes                              |
+| `selected`         | `Set<string \| number>`                       | —        | Bindable set of selected row IDs                             |
+| `selectOnRowClick` | `boolean`                                     | `false`  | Toggle selection on row click                                |
+| `onRowClick`       | `(row: T, index: number) => void`             | —        | Row click callback                                           |
+| `loading`          | `boolean`                                     | `false`  | Show loading overlay                                         |
+| `t`                | `TranslateFn`                                 | built-in | Translation function for i18n                                |
 
 **Snippets:** `cell`, `batchActions`, `empty`, `mobileRow`
 

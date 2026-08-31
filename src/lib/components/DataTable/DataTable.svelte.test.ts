@@ -484,3 +484,60 @@ test("the select-all offer renders inside the same bar, not as a second block", 
 	expect(document.querySelectorAll(".stuic-data-table-batch").length).toBe(1);
 	expect(bar()?.textContent).toContain("Select all 10 results");
 });
+
+// ============================================================================
+// showPager — `paging` feeds the selection machinery, the pager is a separate ask
+// ============================================================================
+
+const pager = () => document.querySelector<HTMLElement>(".stuic-data-table-paging");
+
+test("paging renders the built-in pager by default", async () => {
+	render(DataTable, {
+		columns: COLUMNS,
+		data: DATA,
+		getRowId,
+		selectable: true,
+		allowSelectAllPages: true,
+		paging: PAGING,
+	});
+	await expect.element(page.getByRole("table")).toBeInTheDocument();
+
+	expect(pager()).not.toBe(null);
+	expect(pager()?.textContent).toContain("Page 1 of 5");
+});
+
+test("showPager={false} hides the pager but keeps the select-all offer", async () => {
+	render(DataTable, {
+		columns: COLUMNS,
+		data: DATA,
+		getRowId,
+		selectable: true,
+		allowSelectAllPages: true,
+		paging: PAGING,
+		showPager: false,
+	});
+	await expect.element(page.getByRole("table")).toBeInTheDocument();
+
+	// not `display: none` -- the node is absent, so it holds no space and no tab stop
+	expect(pager()).toBe(null);
+
+	// the banner still needs `paging`, and still gets it
+	rows()[0].querySelector<HTMLInputElement>('input[type="checkbox"]')!.click();
+	rows()[1].querySelector<HTMLInputElement>('input[type="checkbox"]')!.click();
+	await vi.waitFor(() => expect(bar()?.textContent).toContain("Select all 10"));
+});
+
+test("showPager={true} still renders no pager for a single-page result", async () => {
+	// 2 rows out of 2 -- one page, nothing to page through
+	const onePage = createPagingStore({ total: 2, limit: 2 }).get();
+	render(DataTable, {
+		columns: COLUMNS,
+		data: DATA,
+		getRowId,
+		paging: onePage,
+		showPager: true,
+	});
+	await expect.element(page.getByRole("table")).toBeInTheDocument();
+
+	expect(pager()).toBe(null);
+});

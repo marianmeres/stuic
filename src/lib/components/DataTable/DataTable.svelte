@@ -41,6 +41,18 @@
 		paging?: PagingCalcResult;
 		/** Callback when the user navigates to a different page (receives new offset) */
 		onPageChange?: (offset: number) => void;
+		/**
+		 * Render the built-in pager. Set `false` to keep feeding `paging` -- which the
+		 * select-all-across-pages banner, `effectiveCount` and `totalCount` need -- while
+		 * paging the data from your own control elsewhere on the page.
+		 *
+		 * With the pager hidden `onPageChange` never fires (nothing else calls it), so the
+		 * caller's own control is the single thing driving the offset -- don't wire both.
+		 *
+		 * Orthogonal to the existing "one page of results needs no pager" rule: a single-page
+		 * `paging` renders no pager either way.
+		 */
+		showPager?: boolean;
 
 		/** Enable row selection checkboxes */
 		selectable?: boolean;
@@ -231,6 +243,7 @@
 		getRowId = (_row: T, index: number) => index,
 		paging,
 		onPageChange,
+		showPager = true,
 		selectable = false,
 		selected = $bindable(new Set()),
 		selectOnRowClick = false,
@@ -265,7 +278,9 @@
 	let isDesktop = $derived(small ? false : bp.md);
 
 	// --- Paging ---
-	let showPaging = $derived(paging != null && paging.pageCount > 1);
+	// The prop only ADDs to the existing rule -- a single-page result still renders no
+	// pager, regardless of `showPager`.
+	let renderPager = $derived(showPager && paging != null && paging.pageCount > 1);
 
 	// --- Selection ---
 	let allRowIds = $derived(data.map((row, i) => getRowId(row, i)));
@@ -752,7 +767,7 @@
 	{/if}
 
 	<!-- Paging -->
-	{#if showPaging && paging}
+	{#if renderPager && paging}
 		<div class={!unstyled ? "stuic-data-table-paging" : undefined}>
 			<Button
 				variant="ghost"
