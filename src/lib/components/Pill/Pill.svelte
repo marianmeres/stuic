@@ -116,7 +116,10 @@
 		onclick={handleDismiss}
 		{disabled}
 	>
-		<X strokeWidth={2} />
+		<!-- The icon box is sized in CSS (tokens); the X itself just fills it. -->
+		<span class="stuic-pill-dismiss-icon" aria-hidden="true">
+			<X class="size-full" strokeWidth={2.5} />
+		</span>
 	</button>
 {/snippet}
 

@@ -21,6 +21,12 @@
 	/* Status dot */
 	--stuic-pill-dot-size: 0.5rem;
 
+	/* Dismiss (X) button: a full-height square flush with the pill's end edge */
+	--stuic-pill-dismiss-min-size: 1.5rem; /* touch target floor (24px), whatever the pill size */
+	--stuic-pill-dismiss-icon-size: 1.125em; /* the X glyph box, relative to the pill font size */
+	--stuic-pill-dismiss-bg-hover: color-mix(in srgb, currentColor 12%, transparent);
+	--stuic-pill-dismiss-bg-active: color-mix(in srgb, currentColor 20%, transparent);
+
 	/* Size: sm */
 	--stuic-pill-padding-x-sm: 0.5rem;
 	--stuic-pill-padding-y-sm: 0.125rem;
@@ -145,13 +151,36 @@
 		min-height: var(--stuic-pill-min-height-lg);
 	}
 
-	/* Dismissible pills: drop vertical padding — the X button already provides
-	   visual height, extra padding-y just makes them oversized. */
-	.stuic-pill[data-dismissible="true"][data-size="sm"],
-	.stuic-pill[data-dismissible="true"][data-size="md"],
-	.stuic-pill[data-dismissible="true"][data-size="lg"] {
+	/* Dismissible pills: drop vertical + end padding — the X button spans the full
+	   height and sits flush with the end edge (its hover surface IS the end cap),
+	   so any padding there would only make the pill oversized. */
+	.stuic-pill[data-dismissible="true"] {
 		padding-top: 0;
 		padding-bottom: 0;
+		padding-inline-end: 0;
+	}
+
+	/* The X button is a square whose side follows the pill's min-height, but never
+	   drops below the touch-target floor (so sm pills keep a 24px X). */
+	.stuic-pill[data-dismissible="true"][data-size="sm"] {
+		--_dismiss-size: max(
+			var(--stuic-pill-min-height-sm),
+			var(--stuic-pill-dismiss-min-size)
+		);
+	}
+
+	.stuic-pill[data-dismissible="true"][data-size="md"] {
+		--_dismiss-size: max(
+			var(--stuic-pill-min-height-md),
+			var(--stuic-pill-dismiss-min-size)
+		);
+	}
+
+	.stuic-pill[data-dismissible="true"][data-size="lg"] {
+		--_dismiss-size: max(
+			var(--stuic-pill-min-height-lg),
+			var(--stuic-pill-dismiss-min-size)
+		);
 	}
 
 	/* ============================================================================
@@ -448,31 +477,45 @@
 		cursor: not-allowed;
 	}
 
-	/* Dismiss X button */
+	/* Dismiss X button: a full-height square segment flush with the pill's end edge.
+	   The whole square (not just the glyph) is the hover/press surface — the same
+	   treatment as SplitButton's secondary trigger. Radius is inherited from the pill,
+	   so on rounded-full pills the hover surface coincides with the end cap. */
 	.stuic-pill-dismiss {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
+		align-self: stretch;
+		min-width: var(--_dismiss-size, var(--stuic-pill-dismiss-min-size));
+		min-height: var(--_dismiss-size, var(--stuic-pill-dismiss-min-size));
 		appearance: none;
 		background: transparent;
 		border: 0;
+		border-radius: inherit;
 		padding: 0;
 		margin: 0;
 		color: inherit;
 		cursor: pointer;
 		opacity: 0.7;
-		transition: opacity var(--stuic-pill-transition, var(--stuic-transition));
+		transition:
+			opacity var(--stuic-pill-transition, var(--stuic-transition)),
+			background var(--stuic-pill-transition, var(--stuic-transition));
 		flex-shrink: 0;
 	}
 
 	.stuic-pill-dismiss:hover:not(:disabled) {
 		opacity: 1;
+		background: var(--stuic-pill-dismiss-bg-hover);
 	}
 
+	.stuic-pill-dismiss:active:not(:disabled) {
+		background: var(--stuic-pill-dismiss-bg-active);
+	}
+
+	/* Flush with the pill edge, so the ring goes inside the square */
 	.stuic-pill-dismiss:focus-visible {
 		outline: var(--stuic-pill-ring-width) solid var(--_ring, var(--stuic-pill-ring-color));
-		outline-offset: 1px;
-		border-radius: 9999px;
+		outline-offset: calc(-1 * var(--stuic-pill-ring-width));
 	}
 
 	.stuic-pill-dismiss:disabled {
@@ -480,14 +523,10 @@
 		cursor: not-allowed;
 	}
 
-	.stuic-pill-dismiss svg {
-		width: 1em;
-		height: 1em;
-	}
-
-	/* Tighten dismiss icon size per pill size */
-	.stuic-pill[data-size="sm"] .stuic-pill-dismiss svg {
-		width: 0.875em;
-		height: 0.875em;
+	/* The glyph box — deliberately smaller than the button, which keeps the target. */
+	.stuic-pill-dismiss-icon {
+		display: inline-flex;
+		width: var(--stuic-pill-dismiss-icon-size);
+		height: var(--stuic-pill-dismiss-icon-size);
 	}
 }

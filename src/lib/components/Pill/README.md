@@ -173,6 +173,15 @@ A small rounded inline element for tags, badges, status indicators, and filter c
 | `--stuic-pill-gap`          | `0.375rem`             | Gap between dot/before/children/after/dismiss           |
 | `--stuic-pill-dot-size`     | `0.5rem`               | Status dot diameter                                     |
 
+### Dismiss Button Tokens
+
+| Variable                         | Default                                             | Description                                                         |
+| -------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------- |
+| `--stuic-pill-dismiss-min-size`  | `1.5rem`                                            | Touch-target floor for the X button (its square never gets smaller) |
+| `--stuic-pill-dismiss-icon-size` | `1.125em`                                           | Size of the X glyph box (relative to the pill font size)            |
+| `--stuic-pill-dismiss-bg-hover`  | `color-mix(in srgb, currentColor 12%, transparent)` | Hover background of the whole X square                              |
+| `--stuic-pill-dismiss-bg-active` | `color-mix(in srgb, currentColor 20%, transparent)` | Pressed background of the whole X square                            |
+
 ### Size Tokens
 
 Each size (sm, md, lg) has corresponding tokens:
@@ -182,7 +191,10 @@ Each size (sm, md, lg) has corresponding tokens:
 - `--stuic-pill-font-size-{size}`
 - `--stuic-pill-min-height-{size}`
 
-Dismissible pills override `padding-y` to `0` (the X button defines the height).
+Dismissible pills override `padding-y` and `padding-inline-end` to `0`: the X button is a
+full-height square (side = the pill's `min-height`, floored at `--stuic-pill-dismiss-min-size`)
+sitting flush with the pill's end edge, and the whole square is the hover/press surface — not just
+the glyph. Its corners inherit the pill radius, so on rounded pills the hover surface is the end cap.
 
 ### Intent Color Tokens
 

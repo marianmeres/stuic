@@ -446,17 +446,16 @@ A modal-based multi-select/single-select component with search functionality, ty
 
 #### Component Tokens
 
-| Variable                                           | Default                          | Description                                                |
-| -------------------------------------------------- | -------------------------------- | ---------------------------------------------------------- |
-| `--stuic-field-options-divider`                    | `--stuic-color-border`           | Divider/separator color                                    |
-| `--stuic-field-options-control-text`               | `--stuic-color-muted-foreground` | Control button text color                                  |
-| `--stuic-field-options-control-text-hover`         | `--stuic-color-foreground`       | Control button hover text color                            |
-| `--stuic-field-options-control-ring`               | `--stuic-color-ring`             | Control button focus ring                                  |
-| `--stuic-field-options-muted-text`                 | `--stuic-color-muted-foreground` | Muted/secondary text color                                 |
-| `--stuic-field-options-optgroup-text`              | `--stuic-color-muted-foreground` | Option group label color                                   |
-| `--stuic-field-options-chips-gap`                  | `0.25rem`                        | Gap between chips (`chips` mode)                           |
-| `--stuic-field-options-chip-dismiss-padding-touch` | `0.375rem`                       | Extra × hit-area padding on coarse pointers (`chips` mode) |
-| `--stuic-field-options-chips-placeholder-text`     | `--stuic-input-placeholder`      | Placeholder color of an empty `chips` row                  |
+| Variable                                       | Default                          | Description                               |
+| ---------------------------------------------- | -------------------------------- | ----------------------------------------- |
+| `--stuic-field-options-divider`                | `--stuic-color-border`           | Divider/separator color                   |
+| `--stuic-field-options-control-text`           | `--stuic-color-muted-foreground` | Control button text color                 |
+| `--stuic-field-options-control-text-hover`     | `--stuic-color-foreground`       | Control button hover text color           |
+| `--stuic-field-options-control-ring`           | `--stuic-color-ring`             | Control button focus ring                 |
+| `--stuic-field-options-muted-text`             | `--stuic-color-muted-foreground` | Muted/secondary text color                |
+| `--stuic-field-options-optgroup-text`          | `--stuic-color-muted-foreground` | Option group label color                  |
+| `--stuic-field-options-chips-gap`              | `0.25rem`                        | Gap between chips (`chips` mode)          |
+| `--stuic-field-options-chips-placeholder-text` | `--stuic-input-placeholder`      | Placeholder color of an empty `chips` row |
 
 ### Usage
 
@@ -533,8 +532,8 @@ order. `renderValue` is ignored in this mode; labels come from `renderOptionLabe
 />
 ```
 
-On coarse pointers (touch) each × gets an enlarged hit area
-(`--stuic-field-options-chip-dismiss-padding-touch`) without changing the chip's visual size.
+Each chip's × is a full-height 24px square (the Pill's own touch-target floor,
+`--stuic-pill-dismiss-min-size`), so no extra hit-area padding is needed on touch devices.
 Typing directly into the field (an inline combobox) is deliberately not part of this mode — the
 modal remains the single place where options are searched and picked, which is what keeps the
 field usable under a soft keyboard.
