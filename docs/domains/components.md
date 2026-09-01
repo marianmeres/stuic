@@ -2,7 +2,7 @@
 
 ## Overview
 
-71 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
+72 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
@@ -25,20 +25,21 @@
 
 ### Interactive
 
-| Component            | Purpose                                                                            |
-| -------------------- | ---------------------------------------------------------------------------------- |
-| Button               | Actions with intent/variant/size                                                   |
-| ButtonGroupRadio     | Toggle group (single selection)                                                    |
-| Switch               | Boolean toggle                                                                     |
-| Slider               | Fancy range input (fill + optional thumb)                                          |
-| TwCheck              | Styled checkbox/radio                                                              |
-| DropdownMenu         | Popover menu                                                                       |
-| CommandMenu          | Command palette (keyboard-driven)                                                  |
-| Pagination           | Standalone pager: compact prev/next or windowed page numbers; DataTable-compatible |
-| Stepper              | Numbered step indicator for wizard/checkout flows; optional click navigation       |
-| TypeaheadInput       | Autocomplete input                                                                 |
-| ColorScheme          | Dark/light mode management with persistence                                        |
-| HoverExpandableWidth | Width-expanding container on hover                                                 |
+| Component            | Purpose                                                                                   |
+| -------------------- | ----------------------------------------------------------------------------------------- |
+| Button               | Actions with intent/variant/size                                                          |
+| ButtonGroupRadio     | Toggle group (single selection)                                                           |
+| Switch               | Boolean toggle                                                                            |
+| Slider               | Fancy range input (fill + optional thumb)                                                 |
+| TwCheck              | Styled checkbox/radio                                                                     |
+| DropdownMenu         | Popover menu                                                                              |
+| ContextMenu          | Right-click / long-press menu at the cursor (the DropdownMenu engine + trigger semantics) |
+| CommandMenu          | Command palette (keyboard-driven)                                                         |
+| Pagination           | Standalone pager: compact prev/next or windowed page numbers; DataTable-compatible        |
+| Stepper              | Numbered step indicator for wizard/checkout flows; optional click navigation              |
+| TypeaheadInput       | Autocomplete input                                                                        |
+| ColorScheme          | Dark/light mode management with persistence                                               |
+| HoverExpandableWidth | Width-expanding container on hover                                                        |
 
 ### Feedback
 
@@ -872,6 +873,46 @@ Prefix: `--stuic-card-*`
 
 ---
 
+## ContextMenu
+
+Right-click / long-press triggered menu positioned at the pointer. Wraps content into a context target area: `contextmenu` (right-click), long-press (touch/pen, via the `longPress` attachment), or Shift+F10 / the menu key open the menu anchored at the interaction point (an invisible 0×0 fixed anchor the underlying DropdownMenu positions against). The menu panel **is** a `DropdownMenu` — item model, keyboard navigation, search, overflow handling, and theming (`--stuic-dropdown-menu-*`) all come from there.
+
+### Exports
+
+| Export                     | Kind      | Description                                          |
+| -------------------------- | --------- | ---------------------------------------------------- |
+| `ContextMenu`              | component | Main component                                       |
+| `ContextMenuProps`         | type      | Props type                                           |
+| `ContextMenuItem`          | type      | Alias of `DropdownMenuItem` (full item model)        |
+| `ContextMenuActionItem`    | type      | Alias of `DropdownMenuActionItem`                    |
+| `ContextMenuPosition`      | type      | Alias of `DropdownMenuPosition`                      |
+| `ContextMenuSearchConfig`  | type      | Alias of `DropdownMenuSearchConfig`                  |
+| `createContextMenuT`       | function  | Builds the `t` prop from a (partial) message catalog |
+| `CONTEXT_MENU_MESSAGES_EN` | constant  | Built-in English catalog (also the fallback)         |
+| `CONTEXT_MENU_MESSAGES_SK` | constant  | Bundled Slovak catalog (opt-in)                      |
+| `ContextMenuMessageKey`    | type      | Message key union                                    |
+| `ContextMenuMessages`      | type      | One locale's catalog                                 |
+
+### Key Props
+
+| Prop        | Type                  | Default               | Description                                                                             |
+| ----------- | --------------------- | --------------------- | --------------------------------------------------------------------------------------- |
+| `items`     | `ContextMenuItem[]`   | —                     | Menu items (the DropdownMenu item model)                                                |
+| `children`  | `Snippet`             | —                     | The right-clickable / long-pressable target area content                                |
+| `isOpen`    | `boolean`             | `false`               | Bindable; programmatic `true` anchors at the target area                                |
+| `disabled`  | `boolean`             | `false`               | Triggers inert — the native context menu works again                                    |
+| `longPress` | `number \| false`     | `500`                 | Long-press duration ms (touch/pen); `false` disables                                    |
+| `position`  | `ContextMenuPosition` | `"bottom-span-right"` | Placement relative to the pointer (below-right = native convention); flips at the edges |
+| `t`         | `TranslateFn`         | English               | Localizes the sr-only menu label (`createContextMenuT`)                                 |
+
+Pass-throughs to the underlying DropdownMenu: `offset` (default `"0px"`), `maxHeight`, `closeOnSelect`, `closeOnClickOutside`, `closeOnEscape`, `search`, `showBackdrop`, `scrollbarGutter`, `noScrollLock`, `forceFallback`, `onOpen`/`onClose`/`onSelect`, and the menu part classes (`classDropdown`, `classItem`, …). Class slots on the wrapper: `class`. Bindables: `el` (target wrapper), `dropdownEl` (open menu). Data attributes on the wrapper: `data-open` (while open), `data-longpress` (long-press enabled — drives the CSS suppressing the platform's own long-press behaviors).
+
+### CSS Tokens
+
+None of its own — theme the menu via `--stuic-dropdown-menu-*`. `.stuic-context-menu` is the target area hook; `[data-open]` styles it while the menu is open.
+
+---
+
 ## EmptyState
 
 Icon + title + description + CTA placeholder for empty lists, tables, and search results. Centered, non-interactive; the CTA area is a snippet filled with consumer `Button`s/links. Pairs naturally with `DataTable` ("no rows") and search UIs ("no results").
@@ -962,20 +1003,20 @@ Numbered multi-step progress header for wizard/checkout flows. Accessible `<nav>
 
 ### Exports
 
-| Export                | Kind      | Description                                                      |
-| --------------------- | --------- | ---------------------------------------------------------------- |
-| `Stepper`             | component | Main component                                                   |
-| `StepperProps`        | type      | Props type                                                       |
-| `StepperStep`         | type      | `{ label, description?, icon?, error?, disabled? }`              |
-| `StepperStepState`    | type      | `"completed" \| "current" \| "upcoming"`                         |
-| `StepperOrientation`  | type      | `"horizontal" \| "vertical"`                                     |
-| `StepperLabelPosition`| type      | `"end" \| "below"`                                               |
-| `StepperClickable`    | type      | `"none" \| "completed" \| "all"`                                 |
-| `createStepperT`      | function  | Builds the `t` prop from a (partial) message catalog             |
-| `STEPPER_MESSAGES_EN` | constant  | Built-in English catalog (also the fallback)                     |
-| `STEPPER_MESSAGES_SK` | constant  | Bundled Slovak catalog (opt-in)                                  |
-| `StepperMessageKey`   | type      | Message key union                                                |
-| `StepperMessages`     | type      | One locale's catalog                                             |
+| Export                 | Kind      | Description                                          |
+| ---------------------- | --------- | ---------------------------------------------------- |
+| `Stepper`              | component | Main component                                       |
+| `StepperProps`         | type      | Props type                                           |
+| `StepperStep`          | type      | `{ label, description?, icon?, error?, disabled? }`  |
+| `StepperStepState`     | type      | `"completed" \| "current" \| "upcoming"`             |
+| `StepperOrientation`   | type      | `"horizontal" \| "vertical"`                         |
+| `StepperLabelPosition` | type      | `"end" \| "below"`                                   |
+| `StepperClickable`     | type      | `"none" \| "completed" \| "all"`                     |
+| `createStepperT`       | function  | Builds the `t` prop from a (partial) message catalog |
+| `STEPPER_MESSAGES_EN`  | constant  | Built-in English catalog (also the fallback)         |
+| `STEPPER_MESSAGES_SK`  | constant  | Bundled Slovak catalog (opt-in)                      |
+| `StepperMessageKey`    | type      | Message key union                                    |
+| `StepperMessages`      | type      | One locale's catalog                                 |
 
 ### Key Props
 

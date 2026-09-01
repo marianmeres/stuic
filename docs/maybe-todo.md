@@ -42,9 +42,10 @@ Checked first, to avoid false positives:
    numbered step indicator with completed/current/upcoming/error states, optional
    click navigation, horizontal (labels end/below) + vertical orientations; `current`
    is a zero-based index matching `@marianmeres/wizard`'s `step.index`.
-5. **ContextMenu** — right-click / long-press triggered menu. `DropdownMenu` gets ~80%
-   there; the missing 20% is trigger semantics (position at cursor, `contextmenu`
-   event, long-press on touch).
+5. ~~**ContextMenu**~~ — ✅ shipped (see `src/lib/components/ContextMenu/`): wraps the
+   `DropdownMenu` engine behind context-menu trigger semantics — positions at the
+   cursor via a 0×0 fixed anchor, `contextmenu` event, long-press on touch/pen (new
+   reusable `longPress` attachment), Shift+F10 / menu key.
 6. ~~**EmptyState**~~ — ✅ shipped (see `src/lib/components/EmptyState/`): icon +
    title + description + CTA placeholder for empty lists/tables/search results.
 7. **Rating (stars)** — display + input variants. `FieldLikeButton` is adjacent but not

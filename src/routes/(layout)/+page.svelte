@@ -23,6 +23,7 @@
 		'command-menu',
 		'comment-input',
 		'contact-us-form',
+		'context-menu',
 		'cron-input',
 		'dim-behind',
 		'dismissible-message',

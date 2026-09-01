@@ -48,6 +48,7 @@ export * from "./components/CommandMenu/index.js";
 // subpath export instead, mirroring `@marianmeres/stuic/markdown-editor`.
 // Guarded by src/lib/barrel-optional-peers.test.ts — do not re-add.
 export * from "./components/ContactUsForm/index.js";
+export * from "./components/ContextMenu/index.js";
 export * from "./components/CronInput/index.js";
 export * from "./components/DataTable/index.js";
 export * from "./components/DismissibleMessage/index.js";

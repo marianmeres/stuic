@@ -1,0 +1,26 @@
+/* =============================================================================
+   CONTEXT MENU COMPONENT
+   The menu panel itself IS a DropdownMenu — theme it via the
+   --stuic-dropdown-menu-* tokens. This file only styles the target area.
+   ============================================================================= */
+
+@layer components {
+	.stuic-context-menu {
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	/* Long-press enabled: keep the platform from hijacking the press.
+	   -webkit-touch-callout blocks iOS's link/image callout on long-press;
+	   user-select (coarse pointers only) blocks the text-selection long-press —
+	   desktop text selection inside the area stays intact. */
+	.stuic-context-menu[data-longpress] {
+		-webkit-touch-callout: none;
+	}
+
+	@media (pointer: coarse) {
+		.stuic-context-menu[data-longpress] {
+			user-select: none;
+			-webkit-user-select: none;
+		}
+	}
+}

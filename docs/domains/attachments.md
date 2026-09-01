@@ -18,6 +18,7 @@ re-exported from the package root (`src/lib/index.ts`).
 | Attachment   | Purpose                                                      | File             |
 | ------------ | ------------------------------------------------------------ | ---------------- |
 | `autoHeight` | Animate a host's height to its single child's natural height | `auto-height.ts` |
+| `longPress`  | Detect a touch/pen long-press on the host (factory)          | `long-press.ts`  |
 
 ---
 
@@ -105,6 +106,41 @@ inline `height` and `overflow`):
 
 ---
 
+## `longPress`
+
+Factory returning an attachment that calls `onLongPress(pointerdownEvent)` when a primary
+touch/pen pointer stays down for `duration` ms (default 500) without moving beyond
+`moveTolerance` px (default 10). Used by `ContextMenu` for its touch trigger; reusable for
+any press-and-hold interaction.
+
+```svelte
+<script>
+	import { longPress } from "@marianmeres/stuic";
+</script>
+
+<div {@attach longPress({ onLongPress: (e) => openAt(e.clientX, e.clientY) })}>...</div>
+```
+
+Semantics worth knowing:
+
+- **Disarms itself** on pointer up/cancel, movement beyond the tolerance (a scroll), and on
+  a native `contextmenu` event on the host — Android synthesizes one on long-press by
+  itself, so a host handling `contextmenu` never gets both paths for one gesture.
+- **Swallows the follow-up click** some platforms fire when the finger lifts after a fired
+  long-press (`suppressClick: false` opts out), so it can't activate whatever sits under
+  it. The suppress window closes right after the gesture ends — a later genuine click is
+  never eaten.
+- **Does not prevent the platform's own long-press UI** — that's CSS the consumer owns on
+  the host: `-webkit-touch-callout: none` (iOS link/image callout) and `user-select: none`
+  (text-selection long-press; scope it to `@media (pointer: coarse)` to keep desktop text
+  selection working — see `ContextMenu/index.css` for the pattern).
+- `pointerTypes` defaults to `["touch", "pen"]` — mouse users have right-click.
+
+Options: `onLongPress` (required), `duration`, `moveTolerance`, `pointerTypes`,
+`suppressClick`.
+
+---
+
 ## Attachment File Pattern
 
 An attachment is a function `(node) => cleanup?`, typed `Attachment<T>` from `svelte/attachments`.
@@ -135,7 +171,8 @@ it needs `$state` / `$derived` / a nested `$effect`.
 
 ## Key Files
 
-| File                               | Purpose                     |
-| ---------------------------------- | --------------------------- |
-| src/lib/attachments/index.ts       | All attachment exports      |
-| src/lib/attachments/auto-height.ts | Height-animation attachment |
+| File                               | Purpose                        |
+| ---------------------------------- | ------------------------------ |
+| src/lib/attachments/index.ts       | All attachment exports         |
+| src/lib/attachments/auto-height.ts | Height-animation attachment    |
+| src/lib/attachments/long-press.ts  | Long-press detection (factory) |
