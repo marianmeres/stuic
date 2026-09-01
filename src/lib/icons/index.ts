@@ -49,6 +49,7 @@ export { iconLucideEllipsisVertical as iconEllipsisVertical } from "@marianmeres
 export { iconLucideGrip as iconGrip } from "@marianmeres/icons-fns/lucide/iconLucideGrip.js";
 export { iconLucideGripHorizontal as iconGripHorizontal } from "@marianmeres/icons-fns/lucide/iconLucideGripHorizontal.js";
 export { iconLucideGripVertical as iconGripVertical } from "@marianmeres/icons-fns/lucide/iconLucideGripVertical.js";
+export { iconLucideInbox as iconInbox } from "@marianmeres/icons-fns/lucide/iconLucideInbox.js";
 export { iconLucideLanguages as iconLanguages } from "@marianmeres/icons-fns/lucide/iconLucideLanguages.js";
 export { iconLucideList as iconList } from "@marianmeres/icons-fns/lucide/iconLucideList.js";
 export { iconLucideLogOut as iconLogOut } from "@marianmeres/icons-fns/lucide/iconLucideLogOut.js";

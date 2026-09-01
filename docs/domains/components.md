@@ -2,7 +2,7 @@
 
 ## Overview
 
-64 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
+67 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
@@ -83,6 +83,7 @@
 | AnimatedElipsis     | Loading dots animation                                                                               |
 | IconSwap            | N-state visibility swap with opacity transitions (e.g. hamburger/X)                                  |
 | DataTable           | Responsive data table with paging, selection, batch actions                                          |
+| EmptyState          | Icon + title + description + CTA placeholder for empty lists/tables/search results                   |
 | ThemePreview        | Theme color swatches                                                                                 |
 | AssetsPreview       | Modal-based asset/file preview with zoom, pan, swipe, area clicking                                  |
 | AssetsPreviewInline | Always-visible (non-modal) asset preview with same feature set                                       |
@@ -821,6 +822,41 @@ Snippets: `children`, `renderImage`, `renderBadge`, `renderContent`, `renderFoot
 Prefix: `--stuic-card-*`
 
 `bg`, `bg-hover`, `border`, `border-hover`, `padding`, `content-gap`, `image-aspect-ratio`, `image-object-fit`, `image-width-horizontal`, `radius`, `shadow`, `shadow-hover`, `ring-width`, `ring-color`, `eyebrow-font-size`, `eyebrow-text`, `title-font-size`, `title-font-weight`, `title-text`, `description-font-size`, `description-text`, `opacity-disabled`
+
+---
+
+## EmptyState
+
+Icon + title + description + CTA placeholder for empty lists, tables, and search results. Centered, non-interactive; the CTA area is a snippet filled with consumer `Button`s/links. Pairs naturally with `DataTable` ("no rows") and search UIs ("no results").
+
+### Exports
+
+| Export              | Kind      | Description                        |
+| ------------------- | --------- | ---------------------------------- |
+| `EmptyState`        | component | Main component                     |
+| `EmptyStateProps`   | type      | Props type                         |
+| `EmptyStateVariant` | type      | `"plain" \| "outline" \| "dashed"` |
+| `EmptyStateSize`    | type      | `"sm" \| "md" \| "lg"`             |
+
+### Key Props
+
+| Prop          | Type                               | Default   | Description                                       |
+| ------------- | ---------------------------------- | --------- | ------------------------------------------------- |
+| `icon`        | `THC`                              | —         | Icon area content (e.g. `{ html: iconSearch() }`) |
+| `title`       | `THC`                              | —         | Title headline                                    |
+| `description` | `THC`                              | —         | Supporting text below the title                   |
+| `variant`     | `"plain" \| "outline" \| "dashed"` | `"plain"` | Container treatment (bordered box or none)        |
+| `size`        | `"sm" \| "md" \| "lg"`             | `"md"`    | Padding, icon and typography scale                |
+
+Snippets: `actions` (CTA area), `renderIcon` (icon override), `children` (full layout override). Class slots: `class`, `classIcon`, `classTitle`, `classDescription`, `classActions`. No implicit ARIA role — pass `role="status"` when the empty state replaces content dynamically.
+
+### CSS Tokens
+
+Prefix: `--stuic-empty-state-*`
+
+`gap`, `padding-{sm,md,lg}`, `icon-size-{sm,md,lg}`, `icon-text`, `icon-opacity`, `icon-margin-bottom`, `title-font-size-{sm,md,lg}`, `title-font-weight`, `title-text`, `description-font-size-{sm,md,lg}`, `description-text`, `description-max-width`, `actions-gap`, `actions-margin-top`, `bg`, `border`, `border-width`, `radius`
+
+Falls back to shared structural tokens `--stuic-border-width` and `--stuic-radius-container` (outline/dashed variants).
 
 ---
 

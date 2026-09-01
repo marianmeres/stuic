@@ -1,0 +1,154 @@
+/* ============================================================================
+   EMPTY STATE COMPONENT TOKENS
+   Override globally: :root { --stuic-empty-state-icon-size-md: 4rem; }
+   Override locally:  <EmptyState style="--stuic-empty-state-gap: 1rem;">
+   ============================================================================ */
+
+/* prettier-ignore */
+:root {
+	--stuic-empty-state-gap: 0.5rem;
+
+	/* Size: sm */
+	--stuic-empty-state-padding-sm: 1.5rem;
+	--stuic-empty-state-icon-size-sm: 2rem;
+	--stuic-empty-state-title-font-size-sm: var(--text-base);
+	--stuic-empty-state-description-font-size-sm: var(--text-xs);
+
+	/* Size: md */
+	--stuic-empty-state-padding-md: 3rem;
+	--stuic-empty-state-icon-size-md: 2.5rem;
+	--stuic-empty-state-title-font-size-md: var(--text-lg);
+	--stuic-empty-state-description-font-size-md: var(--text-sm);
+
+	/* Size: lg */
+	--stuic-empty-state-padding-lg: 4rem;
+	--stuic-empty-state-icon-size-lg: 3rem;
+	--stuic-empty-state-title-font-size-lg: var(--text-xl);
+	--stuic-empty-state-description-font-size-lg: var(--text-base);
+
+	/* Icon */
+	--stuic-empty-state-icon-text: var(--stuic-color-muted-foreground);
+	--stuic-empty-state-icon-opacity: 0.8;
+	--stuic-empty-state-icon-margin-bottom: 0.25rem;
+
+	/* Typography */
+	--stuic-empty-state-title-font-weight: var(--font-weight-semibold);
+	--stuic-empty-state-title-text: var(--stuic-color-foreground);
+	--stuic-empty-state-description-text: var(--stuic-color-muted-foreground);
+	--stuic-empty-state-description-max-width: 45ch;
+
+	/* Actions */
+	--stuic-empty-state-actions-gap: 0.5rem;
+	--stuic-empty-state-actions-margin-top: 1rem;
+
+	/* Outline/dashed variants */
+	--stuic-empty-state-bg: transparent;
+	--stuic-empty-state-border: var(--stuic-color-border);
+}
+
+@layer components {
+	/* ============================================================================
+	   BASE STYLES
+	   ============================================================================ */
+
+	.stuic-empty-state {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		width: 100%;
+		gap: var(--stuic-empty-state-gap);
+		background: var(--stuic-empty-state-bg);
+	}
+
+	/* ============================================================================
+	   SIZE VARIANTS
+	   Each size sets the scale via internal CSS vars consumed by the child areas.
+	   ============================================================================ */
+
+	.stuic-empty-state[data-size="sm"] {
+		padding: var(--stuic-empty-state-padding-sm);
+		--_icon-size: var(--stuic-empty-state-icon-size-sm);
+		--_title-font-size: var(--stuic-empty-state-title-font-size-sm);
+		--_description-font-size: var(--stuic-empty-state-description-font-size-sm);
+	}
+
+	.stuic-empty-state[data-size="md"] {
+		padding: var(--stuic-empty-state-padding-md);
+		--_icon-size: var(--stuic-empty-state-icon-size-md);
+		--_title-font-size: var(--stuic-empty-state-title-font-size-md);
+		--_description-font-size: var(--stuic-empty-state-description-font-size-md);
+	}
+
+	.stuic-empty-state[data-size="lg"] {
+		padding: var(--stuic-empty-state-padding-lg);
+		--_icon-size: var(--stuic-empty-state-icon-size-lg);
+		--_title-font-size: var(--stuic-empty-state-title-font-size-lg);
+		--_description-font-size: var(--stuic-empty-state-description-font-size-lg);
+	}
+
+	/* ============================================================================
+	   CONTAINER VARIANTS
+	   plain (default): no box. outline/dashed: bordered container.
+	   ============================================================================ */
+
+	.stuic-empty-state[data-variant="outline"],
+	.stuic-empty-state[data-variant="dashed"] {
+		border: var(--stuic-empty-state-border-width, var(--stuic-border-width)) solid
+			var(--stuic-empty-state-border);
+		border-radius: var(--stuic-empty-state-radius, var(--stuic-radius-container));
+	}
+
+	.stuic-empty-state[data-variant="dashed"] {
+		border-style: dashed;
+	}
+
+	/* ============================================================================
+	   ICON AREA
+	   ============================================================================ */
+
+	.stuic-empty-state-icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--stuic-empty-state-icon-text);
+		opacity: var(--stuic-empty-state-icon-opacity);
+		margin-bottom: var(--stuic-empty-state-icon-margin-bottom);
+	}
+
+	/* Normalize any passed svg icon to the size preset (like DismissibleMessage) */
+	.stuic-empty-state-icon svg {
+		width: var(--_icon-size);
+		height: var(--_icon-size);
+	}
+
+	/* ============================================================================
+	   TITLE + DESCRIPTION
+	   ============================================================================ */
+
+	.stuic-empty-state-title {
+		font-size: var(--_title-font-size);
+		font-weight: var(--stuic-empty-state-title-font-weight);
+		color: var(--stuic-empty-state-title-text);
+	}
+
+	.stuic-empty-state-description {
+		font-size: var(--_description-font-size);
+		color: var(--stuic-empty-state-description-text);
+		max-width: var(--stuic-empty-state-description-max-width);
+	}
+
+	/* ============================================================================
+	   ACTIONS (CTA)
+	   ============================================================================ */
+
+	.stuic-empty-state-actions {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		gap: var(--stuic-empty-state-actions-gap);
+		margin-top: var(--stuic-empty-state-actions-margin-top);
+	}
+}

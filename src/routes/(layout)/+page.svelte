@@ -29,6 +29,7 @@
         // 'drag-drop', 
         'drawer',
         'dropdown-menu',
+		'empty-state',
 		'fields-builder',
 		'file-dropzone',
 		'float',
