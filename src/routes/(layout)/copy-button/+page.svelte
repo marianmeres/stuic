@@ -52,6 +52,30 @@
 
 	<hr class="border-neutral-200 dark:border-neutral-700" />
 
+	<!-- Tooltip -->
+	<section>
+		<h2 class="text-xl font-semibold mb-2">Tooltip</h2>
+		<p class="text-sm text-neutral-500 mb-4">
+			Icon-only buttons get a state-aware tooltip out of the box ("Copy" → "Copied",
+			updated live while showing). Hover, then click. A <code>label</code> turns it off
+			unless
+			<code>tooltip</code> is set.
+		</p>
+		<div class="flex flex-wrap items-center gap-3">
+			<CopyButton text={apiKey} variant="outline" />
+			<CopyButton text={apiKey} variant="outline" tooltip="Copy API key" />
+			<CopyButton
+				text={apiKey}
+				variant="outline"
+				tooltip={() => ({ position: "bottom", class: "font-mono" })}
+			/>
+			<CopyButton text={shareUrl} label="Copy link" variant="outline" tooltip />
+			<CopyButton text={apiKey} variant="outline" tooltip={false} />
+		</div>
+	</section>
+
+	<hr class="border-neutral-200 dark:border-neutral-700" />
+
 	<!-- Notify -->
 	<section>
 		<h2 class="text-xl font-semibold mb-2">Notify when copied</h2>

@@ -949,6 +949,7 @@ Click-to-copy button with built-in feedback. It IS a `Button` (same intent/varia
 | `onCopied`                          | `(text) => void`                            | —                  | After a successful copy                                                  |
 | `onError`                           | `(error) => void`                           | —                  | After a failed copy                                                      |
 | `onclick`                           | `(e) => void`                               | —                  | Runs first; `preventDefault()` skips the copy                            |
+| `tooltip`                           | `boolean \| string \| TooltipConfig`        | icon-only: `true`  | State-aware tooltip ("Copy" → "Copied"), live while showing              |
 | `variant` / `size`                  | Button's                                    | `"ghost"` / `"sm"` | Defaults differ from Button                                              |
 | `t`                                 | `TranslateFn`                               | English            | i18n                                                                     |
 

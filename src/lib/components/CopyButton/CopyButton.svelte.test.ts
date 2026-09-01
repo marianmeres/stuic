@@ -281,6 +281,75 @@ test("children snippet replaces the default content and receives the state", asy
 });
 
 // ============================================================================
+// tooltip
+// ============================================================================
+
+// The stuic tooltip action appends a [role=tooltip] to <body> ~200ms after hover.
+const tooltipText = () => document.querySelector("[role=tooltip]")?.textContent?.trim();
+const settle = () => new Promise((r) => setTimeout(r, 450));
+
+test("icon-only: tooltip on by default, reads 'Copy' and flips to 'Copied' live after a click", async () => {
+	stubClipboard();
+	const { container } = await render(CopyButton, { text: "x", feedbackDuration: 0 });
+	const b = btn(container);
+	await page.elementLocator(b).hover();
+	await expect.poll(tooltipText, { timeout: 2000 }).toBe("Copy");
+	// the pointer stays on the button, so the open tooltip must update in place
+	await click(b);
+	await expect.poll(tooltipText, { timeout: 2000 }).toBe("Copied");
+});
+
+test("tooltip=false disables it; a label disables it by default; tooltip=true re-enables", async () => {
+	const off = await render(CopyButton, { text: "x", tooltip: false });
+	await page.elementLocator(btn(off.container)).hover();
+	await settle();
+	expect(document.querySelector("[role=tooltip]")).toBeNull();
+	off.unmount();
+
+	const labeled = await render(CopyButton, { text: "x", label: "Copy link" });
+	await page.elementLocator(btn(labeled.container)).hover();
+	await settle();
+	expect(document.querySelector("[role=tooltip]")).toBeNull();
+	labeled.unmount();
+
+	const forced = await render(CopyButton, {
+		text: "x",
+		label: "Copy link",
+		tooltip: true,
+	});
+	await page.elementLocator(btn(forced.container)).hover();
+	await expect.poll(tooltipText, { timeout: 2000 }).toBe("Copy");
+});
+
+test("tooltip as a string replaces the idle text only; a TooltipConfig without content gets the state text", async () => {
+	stubClipboard();
+	const str = await render(CopyButton, {
+		text: "x",
+		tooltip: "Copy API key",
+		feedbackDuration: 0,
+	});
+	const b = btn(str.container);
+	await page.elementLocator(b).hover();
+	await expect.poll(tooltipText, { timeout: 2000 }).toBe("Copy API key");
+	await click(b);
+	await expect.poll(tooltipText, { timeout: 2000 }).toBe("Copied");
+	str.unmount();
+
+	const cfg = await render(CopyButton, {
+		text: "x",
+		label: "Copy",
+		tooltip: () => ({ position: "bottom" }),
+	});
+	await page.elementLocator(btn(cfg.container)).hover();
+	await expect.poll(tooltipText, { timeout: 2000 }).toBe("Copy");
+	expect(
+		(document.querySelector("[role=tooltip]") as HTMLElement).style.getPropertyValue(
+			"position-area"
+		)
+	).toBe("bottom");
+});
+
+// ============================================================================
 // i18n
 // ============================================================================
 

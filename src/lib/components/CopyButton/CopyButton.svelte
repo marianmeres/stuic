@@ -4,6 +4,7 @@
 	import type { THC } from "../Thc/Thc.svelte";
 	import type { TranslateFn } from "../../types.js";
 	import type { Props as ButtonProps } from "../Button/Button.svelte";
+	import type { TooltipConfig } from "../../actions/tooltip/tooltip.svelte.js";
 
 	/** Feedback phase the button is in. Exposed as `data-state` and to `children`. */
 	export type CopyButtonState = "idle" | "copied" | "error";
@@ -24,6 +25,7 @@
 		| "nav"
 		| "spinner"
 		| "spinnerOnly"
+		| "tooltip"
 	> {
 		/**
 		 * The text to copy. A getter is resolved on click (sync or async) — use it for
@@ -65,6 +67,16 @@
 		 * copy for this click.
 		 */
 		onclick?: (e: MouseEvent) => void;
+		/**
+		 * Tooltip (the stuic `tooltip` action), state-aware: it reads "Copy" while idle
+		 * and flips to "Copied" / "Copy failed" with the feedback — live, while it is
+		 * showing. `true` uses those localized texts; a string replaces the idle text
+		 * only; a `TooltipConfig` gives full control (position, class, …) and only
+		 * falls back to the state text when it returns no `content`; `false` disables.
+		 * Default: on for icon-only buttons, off when a `label` or `children` already
+		 * carry the feedback.
+		 */
+		tooltip?: boolean | string | TooltipConfig;
 		/** i18n translate function (see `createCopyButtonT`) */
 		t?: TranslateFn;
 		/** Override the whole button content; receives the current feedback state. */
@@ -98,6 +110,7 @@
 		onCopied,
 		onError,
 		onclick,
+		tooltip: tooltipProp,
 		t = t_default,
 		children,
 		intent,
@@ -196,9 +209,28 @@
 
 	let _iconOnly = $derived(!children && !label);
 
-	let _ariaLabel = $derived(
+	// The localized text for the current phase — the icon-only accessible name and
+	// the default tooltip content.
+	let _stateText = $derived(
 		phase === "copied" ? t("copied") : phase === "error" ? t("copy_failed") : t("copy")
 	);
+
+	// One stable config closure (the tooltip action keeps the function it was mounted
+	// with and re-reads it reactively) that branches on the prop inside.
+	const _tooltipConfig: TooltipConfig = () => {
+		if (tooltipProp === false || (tooltipProp === undefined && !_iconOnly)) {
+			return { enabled: false };
+		}
+		if (typeof tooltipProp === "function") {
+			const cfg = tooltipProp();
+			return { ...cfg, content: cfg.content ?? _stateText };
+		}
+		return {
+			enabled: true,
+			content:
+				phase === "idle" && typeof tooltipProp === "string" ? tooltipProp : _stateText,
+		};
+	};
 
 	let _class = $derived(unstyled ? classProp : twMerge("stuic-copy-button", classProp));
 	let _classIcon = $derived(
@@ -232,7 +264,8 @@
 	iconButton={_iconOnly}
 	{disabled}
 	{unstyled}
-	aria-label={_iconOnly ? _ariaLabel : undefined}
+	aria-label={_iconOnly ? _stateText : undefined}
+	tooltip={_tooltipConfig}
 	data-state={phase}
 	onclick={handleClick}
 	children={content}

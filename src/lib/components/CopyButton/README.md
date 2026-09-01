@@ -27,6 +27,7 @@ Everything `Button` accepts (except the toggle/link/spinner extras) plus:
 | `onCopied`         | `(text: string) => void`                    | -                  | Fired after a successful copy with the copied text                                              |
 | `onError`          | `(error: unknown) => void`                  | -                  | Fired when the copy failed (clipboard unavailable / denied, getter threw)                       |
 | `onclick`          | `(e: MouseEvent) => void`                   | -                  | Runs before copying; `e.preventDefault()` skips the copy                                        |
+| `tooltip`          | `boolean \| string \| TooltipConfig`        | icon-only: `true`  | State-aware tooltip ("Copy" → "Copied"); see below                                              |
 | `t`                | `TranslateFn`                               | English            | i18n (see below)                                                                                |
 | `variant`          | `ButtonVariant`                             | `"ghost"`          | Button variant (CopyButton's default differs from Button's `"solid"`)                           |
 | `size`             | `ButtonSize`                                | `"sm"`             | Button size (CopyButton's default differs from Button's `"md"`)                                 |
@@ -71,6 +72,33 @@ Everything `Button` accepts (except the toggle/link/spinner extras) plus:
 	size="md"
 />
 ```
+
+### Tooltip
+
+Icon-only buttons get a tooltip out of the box (the stuic `tooltip` action): it reads
+"Copy" on hover and flips to "Copied" / "Copy failed" live, while it is showing. With a
+`label` or `children` the visible text already carries the feedback, so the tooltip is
+off unless asked for.
+
+```svelte
+<!-- default for icon-only: "Copy" → "Copied" -->
+<CopyButton text={apiKey} />
+
+<!-- custom idle text; the feedback texts stay localized -->
+<CopyButton text={apiKey} tooltip="Copy API key" />
+
+<!-- labeled button, tooltip forced on -->
+<CopyButton text={url} label="Copy link" tooltip />
+
+<!-- full control: any TooltipConfig; without `content` it still gets the state text -->
+<CopyButton text={apiKey} tooltip={() => ({ position: "bottom", class: "font-mono" })} />
+
+<!-- off -->
+<CopyButton text={apiKey} tooltip={false} />
+```
+
+Tooltips follow the global `setTooltipsEnabled()` switch (auto-off on touch devices) and
+need CSS anchor positioning in the browser, like every stuic tooltip.
 
 ### Notify when copied
 
@@ -188,7 +216,8 @@ keys fall back to English.
 ## Accessibility
 
 - Icon-only mode gets an `aria-label` that tracks the state (`Copy` → `Copied` /
-  `Copy failed`). With a `label`, the visible text is the name.
+  `Copy failed`) plus a tooltip with the same text. With a `label`, the visible text is
+  the name.
 - A visually hidden `role="status"` live region next to the button announces the
   outcome, so screen-reader users hear "Copied" without the icon.
 - The feedback intent swap is a color cue only — the icon and the text change too.
