@@ -23,7 +23,7 @@
 
 ```
 src/lib/
-├── components/     # 67 component directories
+├── components/     # 68 component directories
 ├── actions/        # 15 Svelte actions (use: directives)
 ├── attachments/    # Svelte attachments ({@attach} — preferred for new DOM helpers)
 ├── utils/          # 44 utility modules
@@ -55,8 +55,8 @@ Theme CSS files are not bundled in this package — they're provided by `@marian
 6. Use `dark:` Tailwind prefix when CSS vars handle dark mode
 7. Import CSS inside components — centralize in `src/lib/index.css`
    (**exception:** subpath-export components with optional peer deps — `MarkdownEditor`,
-   `CommentInput` — import their own `index.css` locally so their styles don't ship to
-   barrel-only consumers. Enforced by `src/lib/barrel-optional-peers.test.ts`.)
+   `CommentInput`, `TrendChart` — import their own `index.css` locally so their styles
+   don't ship to barrel-only consumers. Enforced by `src/lib/barrel-optional-peers.test.ts`.)
 8. Declare component tokens at `:root` that reference shared structural tokens (use fallback pattern instead)
 
 ### CSS Variable Pattern
@@ -129,7 +129,7 @@ Global tokens that control cross-component visual properties. Defined in `src/li
 
 ### Domain Docs
 
-- [Components](./docs/domains/components.md) — 67 component directories, Props pattern, snippets
+- [Components](./docs/domains/components.md) — 68 component directories, Props pattern, snippets
 - [Theming](./docs/domains/theming.md) — CSS tokens, dark mode, themes
 - [CSS presets](./docs/domains/css-presets.md) — ratio-locked frame (letterbox), safe-area, scrollbar
 - [Actions](./docs/domains/actions.md) — 15 Svelte directives

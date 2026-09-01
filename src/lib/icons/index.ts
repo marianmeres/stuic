@@ -33,6 +33,8 @@ export { iconLucideDownload as iconDownload } from "@marianmeres/icons-fns/lucid
 export { iconLucideMinus as iconMinus } from "@marianmeres/icons-fns/lucide/iconLucideMinus.js";
 export { iconLucidePlus as iconPlus } from "@marianmeres/icons-fns/lucide/iconLucidePlus.js";
 export { iconLucideTrash2 as iconTrash } from "@marianmeres/icons-fns/lucide/iconLucideTrash2.js";
+export { iconLucideTrendingDown as iconTrendingDown } from "@marianmeres/icons-fns/lucide/iconLucideTrendingDown.js";
+export { iconLucideTrendingUp as iconTrendingUp } from "@marianmeres/icons-fns/lucide/iconLucideTrendingUp.js";
 export { iconLucideZoomIn as iconZoomIn } from "@marianmeres/icons-fns/lucide/iconLucideZoomIn.js";
 export { iconLucideZoomOut as iconZoomOut } from "@marianmeres/icons-fns/lucide/iconLucideZoomOut.js";
 

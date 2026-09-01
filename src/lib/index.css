@@ -103,6 +103,7 @@ In practice:
 @import "./components/Slider/index.css";
 @import "./components/Spinner/index.css";
 @import "./components/SplitButton/index.css";
+@import "./components/Stat/index.css";
 @import "./components/Switch/index.css";
 @import "./components/TabbedMenu/index.css";
 @import "./components/ThemePreview/index.css";

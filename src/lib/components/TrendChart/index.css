@@ -1,0 +1,51 @@
+/******************************************************************************
+  TrendChart
+
+  NOTE — intentional deviation from the usual STUIC CSS convention.
+  Every other component's `index.css` is `@import`-ed into the central
+  `src/lib/index.css`. This component is NOT: it is an OPTIONAL subpath export
+  (`@marianmeres/stuic/trend-chart`) kept off the main barrel so its
+  `@marianmeres/trend-chart` peer dependency stays opt-in. Centralizing its
+  CSS would ship these styles to every consumer, defeating that. Instead
+  `TrendChart.svelte` imports THIS file locally; the package's `sideEffects`
+  glob (all css files) keeps the import for real users.
+
+  Theming: the underlying chart renders its colors wrapped in
+  `var(--trend-chart-*, fallback)` (its `cssVars` option, on by default in the
+  DOM renderer). Mapping those vars to STUIC theme tokens here is what makes
+  the chart follow the active theme — dark mode included — with zero options.
+******************************************************************************/
+
+@layer components {
+	.stuic-trend-chart {
+		/* The chart measures its container — it must have a real size. */
+		width: 100%;
+		height: var(--stuic-trend-chart-height, 8rem);
+
+		/* Map the chart's own CSS hooks to STUIC theme tokens. */
+		--trend-chart-line: var(--stuic-trend-chart-line, var(--stuic-color-primary));
+		--trend-chart-fill: var(--stuic-trend-chart-fill, var(--stuic-color-primary));
+		--trend-chart-grid: var(--stuic-trend-chart-grid, var(--stuic-color-border));
+		--trend-chart-label: var(
+			--stuic-trend-chart-label,
+			var(--stuic-color-muted-foreground)
+		);
+		--trend-chart-font: var(--stuic-trend-chart-font, var(--font-sans));
+		--trend-chart-end-dot-ring: var(
+			--stuic-trend-chart-end-dot-ring,
+			var(--stuic-color-background)
+		);
+		--trend-chart-annotation: var(
+			--stuic-trend-chart-annotation,
+			var(--stuic-color-warning)
+		);
+		--trend-chart-annotation-halo: var(
+			--stuic-trend-chart-annotation-halo,
+			var(--stuic-color-background)
+		);
+	}
+
+	.stuic-trend-chart[data-sparkline] {
+		height: var(--stuic-trend-chart-height-sparkline, 2.5rem);
+	}
+}

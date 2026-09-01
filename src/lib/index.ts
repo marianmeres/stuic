@@ -81,10 +81,16 @@ export * from "./components/Slider/index.js";
 export * from "./components/SlidingPanels/index.js";
 export * from "./components/Spinner/index.js";
 export * from "./components/SplitButton/index.js";
+export * from "./components/Stat/index.js";
 export * from "./components/Switch/index.js";
 export * from "./components/TabbedMenu/index.js";
 export * from "./components/Thc/index.js";
 export * from "./components/ThemePreview/index.js";
+// NOTE: TrendChart is deliberately NOT exported here. It statically imports the
+// optional @marianmeres/trend-chart peer, which would then be pulled into the
+// root entry graph of every consumer. It ships as the `@marianmeres/stuic/trend-chart`
+// subpath export instead, mirroring `@marianmeres/stuic/markdown-editor`.
+// Guarded by src/lib/barrel-optional-peers.test.ts — do not re-add.
 export * from "./components/Tree/index.js";
 export * from "./components/TwCheck/index.js";
 export * from "./components/TypeaheadInput/index.js";

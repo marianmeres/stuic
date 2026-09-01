@@ -72,6 +72,9 @@ importers:
       '@marianmeres/random-human-readable':
         specifier: ^1.10.2
         version: 1.10.2
+      '@marianmeres/trend-chart':
+        specifier: ^0.5.0
+        version: 0.5.0
       '@milkdown/core':
         specifier: ^7.22.1
         version: 7.22.1
@@ -597,6 +600,9 @@ packages:
 
   '@marianmeres/tree@2.3.0':
     resolution: {integrity: sha512-A+y5u7HvKsdfruOhutpVGRV4f88UTyw1R/X7Hy3jpErc/3xsejQCd/RMwbdmh0mW1/kbNhWX+RUFr4EXAOG1vQ==}
+
+  '@marianmeres/trend-chart@0.5.0':
+    resolution: {integrity: sha512-WHuo4yjFOHtQHh+fqvIPlPO6A//QdUfVCoGnTpqbyNxDEYVXYqaqgiaX1DMVMkqUMGvHLUd+VwgBi9TbxKmdHA==}
 
   '@marijn/find-cluster-break@1.0.4':
     resolution: {integrity: sha512-Wy0V7+SGUjnF9/TkiM1hKVDPj7jKXduPNboMVtHTA8dySMURWqfg/JZ9E2Sq8JgSJmkl7k7Qe9FLeMSrSraWmQ==}
@@ -2829,6 +2835,8 @@ snapshots:
       '@marianmeres/store': 3.0.1
 
   '@marianmeres/tree@2.3.0': {}
+
+  '@marianmeres/trend-chart@0.5.0': {}
 
   '@marijn/find-cluster-break@1.0.4': {}
 

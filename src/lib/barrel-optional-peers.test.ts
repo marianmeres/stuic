@@ -30,11 +30,15 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const SRC_LIB = HERE;
 const REPO_ROOT = resolve(HERE, "../..");
 
-/** Peer namespaces that are declared optional and must stay off the root graph. */
-const OPTIONAL_PEER_RE = /^@(milkdown|codemirror)\//;
+/** Peer specifiers that are declared optional and must stay off the root graph. */
+const OPTIONAL_PEER_RE = /^@(milkdown|codemirror)\/|^@marianmeres\/trend-chart(\/|$)/;
 
-/** Component dirs that are subpath-only. Reaching either from the barrel is the bug. */
-const SUBPATH_ONLY = ["components/MarkdownEditor", "components/CommentInput"];
+/** Component dirs that are subpath-only. Reaching any from the barrel is the bug. */
+const SUBPATH_ONLY = [
+	"components/MarkdownEditor",
+	"components/CommentInput",
+	"components/TrendChart",
+];
 
 // --- module graph walker ----------------------------------------------------
 // Deliberately hand-rolled rather than asking a bundler: this must work with no
@@ -139,6 +143,14 @@ describe("root barrel isolation from optional peer deps", () => {
 				f.endsWith("MarkdownEditor/_internal/milkdown.ts")
 			)
 		).toBe(true);
+	});
+
+	test("walker finds @marianmeres/trend-chart when entering at its subpath", () => {
+		// Anti-vacuity for the non-editor optional peer: the TrendChart subpath
+		// statically imports it, so the walker must see it there.
+		const via = walk(resolve(SRC_LIB, "components/TrendChart/index.ts"));
+		const peers = [...via.bare].filter((s) => OPTIONAL_PEER_RE.test(s));
+		expect(peers).toContain("@marianmeres/trend-chart");
 	});
 
 	test("no optional editor peer is reachable from src/lib/index.ts", () => {

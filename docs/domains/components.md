@@ -94,6 +94,8 @@
 | Separator           | Horizontal/vertical separator line                                                                   |
 | Thc                 | Flexible renderer for text, HTML, components, or snippets                                            |
 | Card                | Flexible card with image, title, footer; vertical/horizontal layout                                  |
+| Stat                | KPI/stat card: label + value + delta with trend arrow and semantic coloring                          |
+| TrendChart          | Svelte wrapper for `@marianmeres/trend-chart` (subpath-only: `@marianmeres/stuic/trend-chart`)       |
 | Tree                | Hierarchical tree view with keyboard nav and drag-and-drop                                           |
 | X                   | Styled close/multiply SVG icon                                                                       |
 | ImageCycler         | Auto-cycling image carousel with fade transitions and preloading                                     |

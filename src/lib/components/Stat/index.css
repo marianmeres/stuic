@@ -1,0 +1,217 @@
+/* ============================================================================
+   STAT COMPONENT TOKENS
+   Override globally: :root { --stuic-stat-radius: 0; }
+   Override locally:  <Stat style="--stuic-stat-value-font-size: 3rem;">
+   ============================================================================ */
+
+:root {
+	--stuic-stat-bg: var(--stuic-color-card, var(--stuic-color-background));
+	--stuic-stat-bg-hover: var(--stuic-color-card-hover, var(--stuic-color-muted));
+	--stuic-stat-border: var(--stuic-color-border);
+	--stuic-stat-border-hover: var(--stuic-color-border-hover);
+
+	/* Layout */
+	--stuic-stat-padding: 1rem;
+	--stuic-stat-gap: 0.375rem;
+	--stuic-stat-meta-gap: 0.5rem;
+	--stuic-stat-delta-gap: 0.25rem;
+
+	/* Label */
+	--stuic-stat-label-font-size: var(--text-sm);
+	--stuic-stat-label-font-weight: var(--font-weight-medium);
+	--stuic-stat-label-text: var(--stuic-color-muted-foreground);
+
+	/* Value */
+	--stuic-stat-value-font-size: var(--text-2xl);
+	--stuic-stat-value-font-weight: var(--font-weight-semibold);
+	--stuic-stat-value-line-height: 1.2;
+	--stuic-stat-value-text: var(--stuic-color-foreground);
+
+	/* Delta */
+	--stuic-stat-delta-font-size: var(--text-sm);
+	--stuic-stat-delta-font-weight: var(--font-weight-medium);
+	--stuic-stat-delta-text-success: var(--stuic-color-success);
+	--stuic-stat-delta-text-destructive: var(--stuic-color-destructive);
+	--stuic-stat-delta-text-warning: var(--stuic-color-warning);
+	--stuic-stat-delta-text-neutral: var(--stuic-color-muted-foreground);
+
+	/* Hint */
+	--stuic-stat-hint-font-size: var(--text-sm);
+	--stuic-stat-hint-text: var(--stuic-color-muted-foreground);
+
+	/* Icon */
+	--stuic-stat-icon-text: var(--stuic-color-muted-foreground);
+
+	/* Focus ring */
+	--stuic-stat-ring-width: 3px;
+	--stuic-stat-ring-color: var(--stuic-color-ring);
+
+	/* Disabled */
+	--stuic-stat-opacity-disabled: 0.5;
+}
+
+@layer components {
+	/* ============================================================================
+	   BASE STYLES
+	   ============================================================================ */
+
+	.stuic-stat {
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-stat-gap);
+		width: 100%;
+		height: 100%;
+		padding: var(--stuic-stat-padding);
+		background: var(--stuic-stat-bg);
+		border: var(--stuic-stat-border-width, var(--stuic-border-width)) solid
+			var(--stuic-stat-border);
+		border-radius: var(--stuic-stat-radius, var(--stuic-radius-container));
+		box-shadow: var(--stuic-stat-shadow, var(--stuic-shadow));
+		transition:
+			background var(--stuic-stat-transition, var(--stuic-transition)),
+			border-color var(--stuic-stat-transition, var(--stuic-transition)),
+			box-shadow var(--stuic-stat-transition, var(--stuic-transition));
+		text-decoration: none;
+		color: inherit;
+		text-align: start;
+	}
+
+	/* Reset button styling */
+	button.stuic-stat {
+		font: inherit;
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	/* ============================================================================
+	   INTERACTIVE HOVER (only when href or onclick)
+	   ============================================================================ */
+
+	.stuic-stat[data-interactive]:hover:not([data-disabled]) {
+		background: var(--stuic-stat-bg-hover);
+		border-color: var(--stuic-stat-border-hover);
+		box-shadow: var(--stuic-stat-shadow-hover, var(--stuic-shadow-hover));
+		cursor: pointer;
+	}
+
+	/* ============================================================================
+	   FOCUS
+	   ============================================================================ */
+
+	.stuic-stat:focus-visible {
+		outline: var(--stuic-stat-ring-width) solid var(--stuic-stat-ring-color);
+		outline-offset: 0px;
+	}
+
+	/* ============================================================================
+	   DISABLED
+	   ============================================================================ */
+
+	.stuic-stat[data-disabled] {
+		opacity: var(--stuic-stat-opacity-disabled);
+		cursor: not-allowed;
+		pointer-events: none;
+	}
+
+	/* ============================================================================
+	   HEADER (label + icon)
+	   ============================================================================ */
+
+	.stuic-stat-header {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 0.5rem;
+	}
+
+	.stuic-stat-label {
+		font-size: var(--stuic-stat-label-font-size);
+		font-weight: var(--stuic-stat-label-font-weight);
+		color: var(--stuic-stat-label-text);
+	}
+
+	.stuic-stat-icon {
+		color: var(--stuic-stat-icon-text);
+		flex-shrink: 0;
+	}
+
+	/* ============================================================================
+	   VALUE
+	   ============================================================================ */
+
+	.stuic-stat-value {
+		font-size: var(--stuic-stat-value-font-size);
+		font-weight: var(--stuic-stat-value-font-weight);
+		line-height: var(--stuic-stat-value-line-height);
+		color: var(--stuic-stat-value-text);
+		font-variant-numeric: tabular-nums;
+	}
+
+	/* ============================================================================
+	   META (delta + hint)
+	   ============================================================================ */
+
+	.stuic-stat-meta {
+		display: flex;
+		align-items: baseline;
+		flex-wrap: wrap;
+		gap: var(--stuic-stat-meta-gap);
+	}
+
+	/* Deliberately NOT a flex container. A flex box exports its FIRST item's
+	   baseline, which here is the arrow — and a replaced <svg> has no text
+	   baseline, so it synthesizes one from its bottom edge. Centered on the line
+	   that edge sits ~0.2em below the delta text's baseline, and the row's
+	   baseline alignment then pushed the hint down by that much. Inline layout
+	   exports the text baseline, so delta text and hint sit on the same line. */
+	.stuic-stat-delta {
+		font-size: var(--stuic-stat-delta-font-size);
+		font-weight: var(--stuic-stat-delta-font-weight);
+	}
+
+	/* Delta color by resolved trend intent (root data attribute) */
+	.stuic-stat[data-trend-intent="success"] .stuic-stat-delta {
+		color: var(--stuic-stat-delta-text-success);
+	}
+
+	.stuic-stat[data-trend-intent="destructive"] .stuic-stat-delta {
+		color: var(--stuic-stat-delta-text-destructive);
+	}
+
+	.stuic-stat[data-trend-intent="warning"] .stuic-stat-delta {
+		color: var(--stuic-stat-delta-text-warning);
+	}
+
+	.stuic-stat[data-trend-intent="neutral"] .stuic-stat-delta {
+		color: var(--stuic-stat-delta-text-neutral);
+	}
+
+	.stuic-stat-trend-arrow {
+		display: inline-block;
+		margin-inline-end: var(--stuic-stat-delta-gap);
+		/* Optical centering: a 1em icon reads as centered on the text when its
+		   box hangs slightly below the baseline. */
+		vertical-align: -0.125em;
+	}
+
+	/* display:block so the icon defines no inner line box — the wrapper's
+	   baseline stays its bottom edge, which is what vertical-align shifts. */
+	.stuic-stat-trend-arrow svg {
+		display: block;
+		width: 1em;
+		height: 1em;
+	}
+
+	.stuic-stat-hint {
+		font-size: var(--stuic-stat-hint-font-size);
+		color: var(--stuic-stat-hint-text);
+	}
+
+	/* ============================================================================
+	   FOOTER
+	   ============================================================================ */
+
+	.stuic-stat-footer {
+		margin-top: auto;
+	}
+}
