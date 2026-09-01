@@ -2,7 +2,7 @@
 
 ## Overview
 
-73 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
+74 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
@@ -100,6 +100,7 @@
 | Thc                 | Flexible renderer for text, HTML, components, or snippets                                            |
 | Card                | Flexible card with image, title, footer; vertical/horizontal layout                                  |
 | Stat                | KPI/stat card: label + value + delta with trend arrow and semantic coloring                          |
+| Timeline            | Vertical event list on a rail: dot/icon/custom markers, inline or opposite time, alternate layout    |
 | TrendChart          | Svelte wrapper for `@marianmeres/trend-chart` (subpath-only: `@marianmeres/stuic/trend-chart`)       |
 | Tree                | Hierarchical tree view with keyboard nav and drag-and-drop                                           |
 | X                   | Styled close/multiply SVG icon                                                                       |
@@ -1088,6 +1089,43 @@ Snippets: `renderIndicator` (bubble override, receives `{ index, step, state }`)
 Prefix: `--stuic-stepper-*`
 
 `gap`, `gap-vertical`, `connector-min-length`, `indicator-size`, `indicator-border-width`, `indicator-radius`, `indicator-font-size`, `indicator-font-weight`, `indicator-{bg,text,border}{,-current,-completed,-error}`, `label-font-size`, `label-font-weight`, `label-text{,-current,-completed,-error}`, `description-font-size`, `description-text`, `connector-thickness`, `connector-bg{,-completed}`, `ring-width`, `ring-color`, `opacity-disabled`
+
+---
+
+## Timeline
+
+Vertical event list with markers on a rail — activity feeds, audit logs, order tracking, history pages. A real `<ol>` (explicit `role="list"`); every item has a marker (small dot, icon bubble when `item.icon` is set, or anything via `renderMarker`), an optional time label, title, description and footer. Data-driven (`items`), static by design — no "current" step (use `Stepper` vertical for progress flows). The list is a CSS grid with `subgrid` items, so the rail and the optional time column align across items without fixed widths; the rail line runs behind the markers and a background-colored ring separates them.
+
+### Exports
+
+| Export                 | Kind      | Description                                                         |
+| ---------------------- | --------- | ------------------------------------------------------------------- |
+| `Timeline`             | component | Main component                                                      |
+| `TimelineProps`        | type      | Props type                                                          |
+| `TimelineItem`         | type      | `{ title?, description?, time?, datetime?, icon?, intent?, href? }` |
+| `TimelineAlign`        | type      | `"start" \| "alternate"`                                            |
+| `TimelineTimePosition` | type      | `"inline" \| "opposite"`                                            |
+| `TimelineMarkerKind`   | type      | `"dot" \| "icon" \| "custom"` (the marker's `data-marker`)          |
+| `TimelineSnippetArg`   | type      | `{ item, index }` — argument of all three snippets                  |
+
+### Key Props
+
+| Prop           | Type                      | Default    | Description                                                                   |
+| -------------- | ------------------------- | ---------- | ----------------------------------------------------------------------------- |
+| `items`        | `TimelineItem[]`          | required   | The events, in display order (title/description/time/icon are THC)            |
+| `align`        | `"start" \| "alternate"`  | `"start"`  | Rail on the start side, or centered rail with content alternating sides       |
+| `timePosition` | `"inline" \| "opposite"`  | `"inline"` | Time above the title inside the content, or in its own column across the rail |
+| `formatTime`   | `(datetime, item) => THC` | —          | Fallback label for items with `datetime` but no `time`                        |
+
+`item.datetime` (string or `Date`, serialized to ISO) renders the label as `<time datetime>`; without it the label is a `<span>`. `item.intent` (`IntentColorKey`) fills the dot / soft-tints the bubble. `item.href` renders the title as a link.
+
+Snippets (all receive `{ item, index }`): `renderMarker` (replaces every marker, `data-marker="custom"`), `renderItem` (replaces the whole content cell), `renderFooter` (per-item area under the description). Class slots: `class`, `classItem`, `classMarker`, `classContent`, `classTime`, `classTitle`, `classDescription`, `classFooter`. Markers are `aria-hidden`.
+
+### CSS Tokens
+
+Prefix: `--stuic-timeline-*`
+
+`gap`, `gap-vertical`, `line-height`, `connector-thickness`, `connector-bg`, `marker-size`, `marker-bg`, `marker-size-icon`, `marker-bg-icon`, `marker-text-icon`, `marker-icon-size`, `marker-radius`, `marker-ring-width`, `marker-ring-color`, `time-font-size`, `time-text`, `title-font-size`, `title-font-weight`, `title-text`, `description-font-size`, `description-text`, `description-margin-top`, `footer-gap`, `footer-margin-top`
 
 ---
 

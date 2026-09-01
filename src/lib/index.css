@@ -112,6 +112,7 @@ In practice:
 @import "./components/Switch/index.css";
 @import "./components/TabbedMenu/index.css";
 @import "./components/ThemePreview/index.css";
+@import "./components/Timeline/index.css";
 @import "./components/Tree/index.css";
 @import "./components/TwCheck/index.css";
 @import "./components/UserAvatarMenu/index.css";

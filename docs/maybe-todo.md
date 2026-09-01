@@ -59,8 +59,11 @@ Checked first, to avoid false positives:
    `WithSidePanel`, and `persistent-state` already provide the pieces.
 9. **Range slider (dual-thumb)** — `Slider` is deliberately single-value; a min/max
    range variant (price filters etc.) is a recurring ask.
-10. **Timeline / activity feed** — vertical event list with markers; common in
-    admin/audit views.
+10. ~~**Timeline / activity feed**~~ — ✅ shipped (see `src/lib/components/Timeline/`):
+    vertical event list on a rail with dot / icon-bubble / custom (snippet) markers,
+    per-item intent, `<time datetime>` support with an optional formatter, inline or
+    opposite time column, `start` / `alternate` alignment; `subgrid` keeps the columns
+    aligned without fixed widths.
 11. ~~**Stat / KPI card**~~ — ✅ shipped (see `src/lib/components/Stat/`): label +
     value + delta with trend arrow and semantic coloring (`trendIntent` for
     down-is-good metrics), hint, corner icon, footer/sparkline area.

@@ -1,0 +1,311 @@
+/* ============================================================================
+   TIMELINE COMPONENT TOKENS
+   Override globally: :root { --stuic-timeline-marker-size: 1rem; }
+   Override locally:  <Timeline style="--stuic-timeline-gap-vertical: 1rem;">
+   ============================================================================ */
+
+/* prettier-ignore */
+:root {
+	/* Layout */
+	--stuic-timeline-gap: 1rem;                /* column gap: opposite ↔ rail ↔ content */
+	--stuic-timeline-gap-vertical: 1.5rem;     /* distance between items */
+	--stuic-timeline-line-height: 1.5rem;      /* first-line box the marker centers on */
+
+	/* Connector (the vertical rail line) */
+	--stuic-timeline-connector-thickness: 2px;
+	--stuic-timeline-connector-bg: var(--stuic-color-border);
+
+	/* Marker: dot (no icon) */
+	--stuic-timeline-marker-size: 0.75rem;
+	--stuic-timeline-marker-bg: var(--stuic-color-muted-foreground);
+
+	/* Marker: icon bubble (item.icon) and custom (renderMarker) */
+	--stuic-timeline-marker-size-icon: 2rem;
+	--stuic-timeline-marker-bg-icon: var(--stuic-color-muted);
+	--stuic-timeline-marker-text-icon: var(--stuic-color-muted-foreground);
+	--stuic-timeline-marker-icon-size: 1rem;   /* svg inside the bubble */
+
+	/* Marker ring: separates the marker from the line running behind it */
+	--stuic-timeline-marker-ring-width: 2px;
+	--stuic-timeline-marker-ring-color: var(--stuic-color-background);
+
+	/* Time */
+	--stuic-timeline-time-font-size: var(--text-sm);
+	--stuic-timeline-time-text: var(--stuic-color-muted-foreground);
+
+	/* Title */
+	--stuic-timeline-title-font-size: var(--text-base);
+	--stuic-timeline-title-font-weight: var(--font-weight-medium);
+	--stuic-timeline-title-text: var(--stuic-color-foreground);
+
+	/* Description */
+	--stuic-timeline-description-font-size: var(--text-sm);
+	--stuic-timeline-description-text: var(--stuic-color-muted-foreground);
+	--stuic-timeline-description-margin-top: 0.125rem;
+
+	/* Footer */
+	--stuic-timeline-footer-gap: 0.5rem;
+	--stuic-timeline-footer-margin-top: 0.5rem;
+}
+
+@layer components {
+	/* ============================================================================
+	   BASE — the list is a grid; every item is a subgrid row, so the rail (and
+	   the opposite time column) line up across items regardless of content.
+	   ============================================================================ */
+
+	.stuic-timeline {
+		display: grid;
+		column-gap: var(--stuic-timeline-gap);
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.stuic-timeline[data-align="start"][data-time-position="inline"] {
+		grid-template-columns: auto minmax(0, 1fr);
+	}
+
+	.stuic-timeline[data-align="start"][data-time-position="opposite"] {
+		grid-template-columns: auto auto minmax(0, 1fr);
+	}
+
+	.stuic-timeline[data-align="alternate"] {
+		grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+	}
+
+	.stuic-timeline-item {
+		display: grid;
+		grid-column: 1 / -1;
+		grid-template-columns: subgrid;
+		padding-bottom: var(--stuic-timeline-gap-vertical);
+	}
+
+	.stuic-timeline-item:last-child {
+		padding-bottom: 0;
+	}
+
+	/* every cell sits on the item's single row; columns are assigned below */
+	.stuic-timeline-opposite,
+	.stuic-timeline-rail,
+	.stuic-timeline-content {
+		grid-row: 1;
+		min-width: 0;
+	}
+
+	/* ============================================================================
+	   COLUMN PLACEMENT
+	   ============================================================================ */
+
+	/* start + inline: rail | content */
+	.stuic-timeline[data-align="start"][data-time-position="inline"] .stuic-timeline-rail {
+		grid-column: 1;
+	}
+	.stuic-timeline[data-align="start"][data-time-position="inline"]
+		.stuic-timeline-content {
+		grid-column: 2;
+	}
+
+	/* start + opposite: time | rail | content */
+	.stuic-timeline[data-align="start"][data-time-position="opposite"]
+		.stuic-timeline-opposite {
+		grid-column: 1;
+		text-align: end;
+	}
+	.stuic-timeline[data-align="start"][data-time-position="opposite"]
+		.stuic-timeline-rail {
+		grid-column: 2;
+	}
+	.stuic-timeline[data-align="start"][data-time-position="opposite"]
+		.stuic-timeline-content {
+		grid-column: 3;
+	}
+
+	/* alternate: centered rail; odd items → content end side, even → start side */
+	.stuic-timeline[data-align="alternate"] .stuic-timeline-rail {
+		grid-column: 2;
+	}
+	.stuic-timeline[data-align="alternate"]
+		.stuic-timeline-item:nth-child(odd)
+		.stuic-timeline-content {
+		grid-column: 3;
+	}
+	.stuic-timeline[data-align="alternate"]
+		.stuic-timeline-item:nth-child(odd)
+		.stuic-timeline-opposite {
+		grid-column: 1;
+		text-align: end;
+	}
+	.stuic-timeline[data-align="alternate"]
+		.stuic-timeline-item:nth-child(even)
+		.stuic-timeline-content {
+		grid-column: 1;
+		text-align: end;
+	}
+	.stuic-timeline[data-align="alternate"]
+		.stuic-timeline-item:nth-child(even)
+		.stuic-timeline-opposite {
+		grid-column: 3;
+	}
+	.stuic-timeline[data-align="alternate"]
+		.stuic-timeline-item:nth-child(even)
+		.stuic-timeline-footer {
+		justify-content: flex-end;
+	}
+
+	/* ============================================================================
+	   RAIL + CONNECTOR
+	   The line runs behind the marker in two halves (top → marker center, marker
+	   center → bottom) so no item needs to know its neighbour's marker size. The
+	   marker's center is always at half the first-line height.
+	   ============================================================================ */
+
+	.stuic-timeline-rail {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.stuic-timeline-rail::before,
+	.stuic-timeline-rail::after {
+		content: "";
+		position: absolute;
+		left: 50%;
+		width: var(--stuic-timeline-connector-thickness);
+		transform: translateX(-50%);
+		background: var(--stuic-timeline-connector-bg);
+	}
+
+	.stuic-timeline-rail::before {
+		top: 0;
+		height: calc(var(--stuic-timeline-line-height) / 2);
+	}
+
+	/* the item's bottom padding (gap-vertical) lies outside the grid row, so reach
+	   through it — the next item's ::before picks the line up at its top edge */
+	.stuic-timeline-rail::after {
+		top: calc(var(--stuic-timeline-line-height) / 2);
+		bottom: calc(-1 * var(--stuic-timeline-gap-vertical));
+	}
+
+	.stuic-timeline-item:first-child .stuic-timeline-rail::before,
+	.stuic-timeline-item:last-child .stuic-timeline-rail::after {
+		display: none;
+	}
+
+	/* ============================================================================
+	   MARKER
+	   ============================================================================ */
+
+	.stuic-timeline-marker {
+		position: relative;
+		z-index: 1;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+		box-sizing: border-box;
+		width: var(--_marker-size);
+		height: var(--_marker-size);
+		/* center on the first line of the content (may go negative for big markers) */
+		margin-top: calc((var(--stuic-timeline-line-height) - var(--_marker-size)) / 2);
+		border-radius: var(--stuic-timeline-marker-radius, calc(infinity * 1px));
+		box-shadow: 0 0 0 var(--stuic-timeline-marker-ring-width)
+			var(--stuic-timeline-marker-ring-color);
+	}
+
+	.stuic-timeline-marker[data-marker="dot"] {
+		--_marker-size: var(--stuic-timeline-marker-size);
+		background: var(--stuic-timeline-marker-bg);
+	}
+
+	.stuic-timeline-marker[data-marker="icon"] {
+		--_marker-size: var(--stuic-timeline-marker-size-icon);
+		background: var(--stuic-timeline-marker-bg-icon);
+		color: var(--stuic-timeline-marker-text-icon);
+	}
+
+	.stuic-timeline-marker[data-marker="icon"] svg {
+		display: block;
+		width: var(--stuic-timeline-marker-icon-size);
+		height: var(--stuic-timeline-marker-icon-size);
+	}
+
+	/* custom (renderMarker): only the box — the snippet brings its own look */
+	.stuic-timeline-marker[data-marker="custom"] {
+		--_marker-size: var(--stuic-timeline-marker-size-icon);
+	}
+
+	/* ============================================================================
+	   INTENT — dot fills with the color, the bubble takes a soft tint
+	   ============================================================================ */
+
+	.stuic-timeline-item[data-intent="primary"] {
+		--_intent: var(--stuic-color-primary);
+	}
+	.stuic-timeline-item[data-intent="accent"] {
+		--_intent: var(--stuic-color-accent);
+	}
+	.stuic-timeline-item[data-intent="destructive"] {
+		--_intent: var(--stuic-color-destructive);
+	}
+	.stuic-timeline-item[data-intent="warning"] {
+		--_intent: var(--stuic-color-warning);
+	}
+	.stuic-timeline-item[data-intent="success"] {
+		--_intent: var(--stuic-color-success);
+	}
+
+	.stuic-timeline-item[data-intent] .stuic-timeline-marker[data-marker="dot"] {
+		background: var(--_intent);
+	}
+
+	.stuic-timeline-item[data-intent] .stuic-timeline-marker[data-marker="icon"] {
+		background: color-mix(in srgb, var(--_intent) 15%, var(--stuic-color-background));
+		color: var(--_intent);
+	}
+
+	/* ============================================================================
+	   CONTENT: time, title, description, footer
+	   ============================================================================ */
+
+	.stuic-timeline-time {
+		display: block;
+		font-size: var(--stuic-timeline-time-font-size);
+		line-height: var(--stuic-timeline-line-height);
+		color: var(--stuic-timeline-time-text);
+	}
+
+	.stuic-timeline-title {
+		font-size: var(--stuic-timeline-title-font-size);
+		font-weight: var(--stuic-timeline-title-font-weight);
+		line-height: var(--stuic-timeline-line-height);
+		color: var(--stuic-timeline-title-text);
+		overflow-wrap: anywhere;
+	}
+
+	.stuic-timeline-link {
+		color: inherit;
+		text-decoration: none;
+	}
+
+	.stuic-timeline-link:hover {
+		text-decoration: underline;
+	}
+
+	.stuic-timeline-description {
+		margin-top: var(--stuic-timeline-description-margin-top);
+		font-size: var(--stuic-timeline-description-font-size);
+		color: var(--stuic-timeline-description-text);
+		overflow-wrap: anywhere;
+	}
+
+	.stuic-timeline-footer {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--stuic-timeline-footer-gap);
+		margin-top: var(--stuic-timeline-footer-margin-top);
+	}
+}

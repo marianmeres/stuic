@@ -81,6 +81,7 @@
 		'tabbed-menu',
         'thc', 
         'theme-preview', 
+		'timeline',
         'tooltip',
 		'trend-chart',
         'tree',

@@ -91,6 +91,7 @@ export * from "./components/Switch/index.js";
 export * from "./components/TabbedMenu/index.js";
 export * from "./components/Thc/index.js";
 export * from "./components/ThemePreview/index.js";
+export * from "./components/Timeline/index.js";
 // NOTE: TrendChart is deliberately NOT exported here. It statically imports the
 // optional @marianmeres/trend-chart peer, which would then be pulled into the
 // root entry graph of every consumer. It ships as the `@marianmeres/stuic/trend-chart`
