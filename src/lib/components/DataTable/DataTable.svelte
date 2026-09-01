@@ -235,6 +235,8 @@
 	import { Breakpoint } from "../../utils/breakpoint.svelte.js";
 	import Spinner from "../Spinner/Spinner.svelte";
 	import Button from "../Button/Button.svelte";
+	import EmptyState from "../EmptyState/EmptyState.svelte";
+	import Pagination from "../Pagination/Pagination.svelte";
 	import Thc, { isTHCNotEmpty, getTHCStringContent } from "../Thc/Thc.svelte";
 
 	let {
@@ -518,6 +520,25 @@
 {/snippet}
 
 <!--
+	The empty state, shared by both layouts. The built-in one is an `EmptyState`; its
+	typography is pulled back to table chrome (muted, cell-sized, no headline weight) by
+	the `--stuic-empty-state-*` overrides in index.css, so it reads exactly as the bare
+	`t("no_data")` string it replaces. An `empty` snippet still replaces it whole.
+-->
+{#snippet emptyBody()}
+	{#if empty}
+		{@render empty()}
+	{:else}
+		<EmptyState
+			title={t("no_data")}
+			size="sm"
+			{unstyled}
+			class={!unstyled ? "stuic-data-table-empty-state" : undefined}
+		/>
+	{/if}
+{/snippet}
+
+<!--
 	Selection bar -- one strip carrying the selection status, the consumer's
 	`batchActions`, and the select-all-across-pages offer. Deliberately a single element
 	rather than a stack of independent conditionals: each of those appearing on its own
@@ -668,11 +689,7 @@
 								colspan={columns.length + (selectable ? 1 : 0)}
 								class={!unstyled ? "stuic-data-table-empty" : undefined}
 							>
-								{#if empty}
-									{@render empty()}
-								{:else}
-									{t("no_data")}
-								{/if}
+								{@render emptyBody()}
 							</td>
 						</tr>
 					{/each}
@@ -749,11 +766,7 @@
 				{/if}
 			{:else}
 				<div class={!unstyled ? "stuic-data-table-empty" : undefined}>
-					{#if empty}
-						{@render empty()}
-					{:else}
-						{t("no_data")}
-					{/if}
+					{@render emptyBody()}
 				</div>
 			{/each}
 		</div>
@@ -766,30 +779,24 @@
 		</div>
 	{/if}
 
-	<!-- Paging -->
+	<!--
+		Paging -- the built-in pager IS a `Pagination` in its default "compact" variant,
+		which is exactly the prev / "Page X of Y" / next control this used to inline.
+		`.stuic-data-table-paging` moves onto its `<nav>` rather than wrapping it, so the
+		region keeps its class (and its `--stuic-data-table-paging-*` tokens, re-pointed
+		at Pagination's in index.css) without an extra node.
+
+		Note `Pagination`'s own single-page rule is left at its default: `renderPager`
+		already encodes it, plus `showPager`.
+	-->
 	{#if renderPager && paging}
-		<div class={!unstyled ? "stuic-data-table-paging" : undefined}>
-			<Button
-				variant="ghost"
-				size="sm"
-				disabled={!paging.hasPrevious}
-				onclick={() => onPageChange?.(paging!.previousOffset)}
-				aria-label={t("previous_page")}
-			>
-				&lsaquo; {t("previous_page")}
-			</Button>
-			<span class={!unstyled ? "stuic-data-table-paging-info" : undefined}>
-				{t("page_x_of_y", { page: paging.currentPage, pageCount: paging.pageCount })}
-			</span>
-			<Button
-				variant="ghost"
-				size="sm"
-				disabled={!paging.hasNext}
-				onclick={() => onPageChange?.(paging!.nextOffset)}
-				aria-label={t("next_page")}
-			>
-				{t("next_page")} &rsaquo;
-			</Button>
-		</div>
+		<Pagination
+			{paging}
+			{onPageChange}
+			{t}
+			{unstyled}
+			class={!unstyled ? "stuic-data-table-paging" : undefined}
+			classInfo={!unstyled ? "stuic-data-table-paging-info" : undefined}
+		/>
 	{/if}
 </div>

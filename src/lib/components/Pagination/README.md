@@ -1,7 +1,7 @@
 # Pagination
 
 Standalone pagination control for lists, search results, and custom views. Two
-variants: `compact` — prev / "Page X of Y" / next, exactly the pager `DataTable`
+variants: `compact` — prev / "Page X of Y" / next, which _is_ the pager `DataTable`
 renders internally — and `numbers` — windowed page-number buttons with ellipsis gaps
 (the classic `1 … 4 5 6 … 20`).
 

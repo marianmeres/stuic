@@ -224,18 +224,31 @@
 	   PAGING
 	   ============================================================================ */
 
+	/*
+	   The built-in pager IS a `Pagination` (compact variant), so these two classes now
+	   sit on Pagination's own nodes alongside `.stuic-pagination`. They add the region's
+	   top padding (which Pagination has no notion of) and re-point Pagination's tokens
+	   at the table's -- as custom properties rather than plain declarations on purpose:
+	   an existing `--stuic-data-table-paging-*` / `--stuic-data-table-cell-font-size`
+	   override keeps driving the pager, with no dependence on which of the two
+	   same-specificity rules happens to win the cascade. The layout declarations below
+	   are a deliberate duplicate of Pagination's own, so the region class stays
+	   self-sufficient.
+	*/
 	.stuic-data-table-paging {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		gap: var(--stuic-data-table-paging-gap);
 		padding-top: var(--stuic-data-table-paging-padding-y);
+
+		--stuic-pagination-gap: var(--stuic-data-table-paging-gap);
 	}
 
 	.stuic-data-table-paging-info {
-		font-size: var(--stuic-data-table-cell-font-size);
-		color: var(--stuic-data-table-header-color);
 		white-space: nowrap;
+
+		--stuic-pagination-info-font-size: var(--stuic-data-table-cell-font-size);
+		--stuic-pagination-info-text: var(--stuic-data-table-header-color);
 	}
 
 	/* ============================================================================
@@ -320,6 +333,31 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+	}
+
+	/*
+	   The built-in empty state is an `EmptyState`, which brings its own padding -- which
+	   would otherwise stack on the container's. Keyed on the marker class rather than on
+	   `.stuic-empty-state` so that an `empty` snippet rendering an EmptyState of its own
+	   is left alone: it keeps the container padding it has always had, and the
+	   component's own look.
+	*/
+	.stuic-data-table-empty:has(> .stuic-data-table-empty-state) {
+		padding: 0;
+	}
+
+	/*
+	   Pull the built-in EmptyState back to table chrome: the "No data" line is a cell
+	   note, not a headline. Fed from the tokens the rest of the table uses, so it stays
+	   in sync with a consumer's overrides.
+	*/
+	.stuic-data-table-empty-state {
+		--stuic-empty-state-padding-sm: 2rem;
+		--stuic-empty-state-title-font-size-sm: var(--stuic-data-table-cell-font-size);
+		/* NOT `inherit`: a CSS-wide keyword in a custom property applies to the property
+		   itself, so it would inherit the :root value (semibold) rather than the cell's. */
+		--stuic-empty-state-title-font-weight: normal;
+		--stuic-empty-state-title-text: var(--stuic-data-table-header-color);
 	}
 
 	/* ============================================================================

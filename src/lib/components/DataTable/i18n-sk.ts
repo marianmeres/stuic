@@ -19,6 +19,7 @@ export const DATA_TABLE_MESSAGES_SK: DataTableMessages = {
 	previous_page: "Späť",
 	next_page: "Ďalej",
 	page_x_of_y: "Strana {page} z {pageCount}",
+	pagination: "Stránkovanie",
 	no_data: "Žiadne údaje",
 	select_all_rows: "Vybrať všetky riadky na tejto strane",
 	select_row: "Vybrať riadok",

@@ -541,3 +541,147 @@ test("showPager={true} still renders no pager for a single-page result", async (
 
 	expect(pager()).toBe(null);
 });
+
+// ============================================================================
+// Pagination / EmptyState delegation — the pager IS a Pagination, the built-in
+// empty state IS an EmptyState. Both regions keep their old classes, texts and
+// callback contract; these pin that down.
+// ============================================================================
+
+test("the pager is a Pagination, and still reports the same offsets", async () => {
+	const seen: number[] = [];
+	// page 2 of 5 (total 10, limit 2) — both directions are live
+	const middle = createPagingStore({ total: 10, limit: 2, offset: 2 }).get();
+	render(DataTable, {
+		columns: COLUMNS,
+		data: DATA,
+		getRowId,
+		paging: middle,
+		onPageChange: (offset: number) => seen.push(offset),
+	});
+	await expect.element(page.getByRole("table")).toBeInTheDocument();
+
+	const nav = pager()!;
+	expect(nav.tagName).toBe("NAV");
+	expect(nav.classList.contains("stuic-pagination")).toBe(true);
+	expect(nav.getAttribute("data-variant")).toBe("compact");
+	expect(nav.querySelector(".stuic-data-table-paging-info")?.textContent?.trim()).toBe(
+		"Page 2 of 5"
+	);
+
+	const buttons = [...nav.querySelectorAll("button")];
+	expect(buttons.length).toBe(2);
+	expect(buttons[0].getAttribute("aria-label")).toBe("Prev");
+	expect(buttons[1].getAttribute("aria-label")).toBe("Next");
+
+	buttons[0].click();
+	buttons[1].click();
+	// exactly what `paging.previousOffset` / `paging.nextOffset` hold
+	await vi.waitFor(() =>
+		expect(seen).toEqual([middle.previousOffset, middle.nextOffset])
+	);
+});
+
+test("the pager's edge buttons stay disabled (no onPageChange on the first page)", async () => {
+	const seen: number[] = [];
+	render(DataTable, {
+		columns: COLUMNS,
+		data: DATA,
+		getRowId,
+		paging: PAGING,
+		onPageChange: (offset: number) => seen.push(offset),
+	});
+	await expect.element(page.getByRole("table")).toBeInTheDocument();
+
+	const buttons = [...pager()!.querySelectorAll("button")];
+	expect(buttons[0].disabled).toBe(true);
+	expect(buttons[1].disabled).toBe(false);
+	buttons[0].click();
+	expect(seen).toEqual([]);
+});
+
+test("the pager renders the DataTable `t` (no separate Pagination catalog)", async () => {
+	render(DataTable, {
+		columns: COLUMNS,
+		data: DATA,
+		getRowId,
+		paging: PAGING,
+		t: (k: string, values?: false | null | Record<string, string | number>) =>
+			({
+				previous_page: "Späť",
+				next_page: "Ďalej",
+				page_x_of_y: `Strana ${(values || {}).page} z ${(values || {}).pageCount}`,
+				pagination: "Stránkovanie",
+			})[k] ?? "",
+	});
+	await expect.element(page.getByRole("table")).toBeInTheDocument();
+
+	expect(pager()?.getAttribute("aria-label")).toBe("Stránkovanie");
+	expect(pager()?.textContent).toContain("Strana 1 z 5");
+	expect(pager()?.textContent).toContain("Späť");
+	expect(pager()?.textContent).toContain("Ďalej");
+});
+
+const emptyCell = () => document.querySelector<HTMLElement>(".stuic-data-table-empty");
+
+test("the built-in empty state is an EmptyState titled `no_data` (desktop)", async () => {
+	render(DataTable, { columns: COLUMNS, data: [], getRowId });
+	await expect.element(page.getByRole("table")).toBeInTheDocument();
+
+	const cell = emptyCell()!;
+	expect(cell.tagName).toBe("TD");
+	expect(cell.getAttribute("colspan")).toBe("2");
+
+	const es = cell.querySelector(".stuic-data-table-empty-state")!;
+	expect(es).not.toBe(null);
+	expect(es.classList.contains("stuic-empty-state")).toBe(true);
+	expect(es.getAttribute("data-size")).toBe("sm");
+	expect(es.querySelector(".stuic-empty-state-title")?.textContent?.trim()).toBe(
+		"No data"
+	);
+});
+
+test("the built-in empty state renders the same way in the mobile card layout", async () => {
+	render(DataTable, { columns: COLUMNS, data: [], getRowId, small: true });
+	await vi.waitFor(() => expect(emptyCell()).not.toBe(null));
+
+	const cell = emptyCell()!;
+	expect(cell.tagName).toBe("DIV");
+	expect(
+		cell
+			.querySelector(".stuic-data-table-empty-state .stuic-empty-state-title")
+			?.textContent?.trim()
+	).toBe("No data");
+});
+
+test("an `empty` snippet still replaces the built-in one entirely", async () => {
+	render(DataTable, {
+		columns: COLUMNS,
+		data: [],
+		getRowId,
+		empty: createRawSnippet(() => ({ render: () => `<p>Nothing here</p>` })),
+	});
+	await expect.element(page.getByRole("table")).toBeInTheDocument();
+
+	expect(emptyCell()?.textContent?.trim()).toBe("Nothing here");
+	// no EmptyState, so the container keeps its own padding (see index.css `:has()`)
+	expect(emptyCell()?.querySelector(".stuic-data-table-empty-state")).toBe(null);
+});
+
+test("unstyled drops the wrapper classes from both delegated regions", async () => {
+	render(DataTable, {
+		columns: COLUMNS,
+		data: [],
+		getRowId,
+		paging: PAGING,
+		unstyled: true,
+	});
+	await expect.element(page.getByRole("table")).toBeInTheDocument();
+
+	expect(pager()).toBe(null);
+	expect(document.querySelector(".stuic-pagination")).toBe(null);
+	expect(document.querySelector(".stuic-empty-state")).toBe(null);
+	// the pager and the empty state are still there, just unstyled
+	expect(document.querySelector("nav")?.textContent).toContain("Page 1 of 5");
+	expect(document.querySelector("tbody td")?.textContent?.trim()).toBe("No data");
+});

@@ -582,6 +582,15 @@
 
 <!-- ============== EMPTY STATE ============== -->
 <h2 class="text-lg font-bold mb-4">Empty State</h2>
+<p class="text-sm opacity-60 mb-4">
+	The built-in one is an <code>EmptyState</code> titled with the <code>no_data</code>
+	message.
+</p>
+<div class="max-w-3xl mb-8">
+	<DataTable columns={basicColumns} data={[]} />
+</div>
+
+<p class="text-sm opacity-60 mb-4">The <code>empty</code> snippet replaces it.</p>
 <div class="max-w-3xl">
 	<DataTable columns={basicColumns} data={[]}>
 		{#snippet empty()}

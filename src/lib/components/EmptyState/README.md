@@ -84,6 +84,29 @@ snippet you fill with your own `Button`s or links. Pairs naturally with `DataTab
 
 ### With DataTable
 
+`DataTable` already renders an `EmptyState` (titled with its `no_data` message) when it
+has no rows. Its `empty` snippet replaces that one, which is where an icon, a
+description and a CTA go:
+
+```svelte
+<DataTable {columns} {data}>
+	{#snippet empty()}
+		<EmptyState
+			icon={{ html: iconFile() }}
+			title="No documents"
+			description="Documents you upload will show up here."
+		>
+			{#snippet actions()}
+				<Button intent="primary">Upload</Button>
+			{/snippet}
+		</EmptyState>
+	{/snippet}
+</DataTable>
+```
+
+Swapping the whole table out is the other option — when the empty case should not look
+like a table at all (no header row, no pager):
+
 ```svelte
 {#if !rows.length}
 	<EmptyState

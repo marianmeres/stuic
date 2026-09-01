@@ -75,6 +75,50 @@ so your own control is the single thing driving the offset; don't wire both.
 (The node's class stays `.stuic-data-table-paging` and its `--stuic-data-table-paging-*`
 tokens are unchanged -- `showPager` names the control, the CSS names the region.)
 
+### What the built-in pager and empty state are made of
+
+Neither is bespoke markup any more:
+
+- the pager is a [`Pagination`](../Pagination/README.md) in its default `"compact"`
+  variant, rendered with `.stuic-data-table-paging` on its own `<nav>`;
+- the default empty state (no `empty` snippet) is an
+  [`EmptyState`](../EmptyState/README.md) at `size="sm"`, carrying the marker class
+  `.stuic-data-table-empty-state` inside the usual `.stuic-data-table-empty` cell.
+
+The table's `--stuic-data-table-*` tokens are re-pointed at the inner components' own
+tokens, so an existing override still drives them, and the `t` you pass `DataTable` is
+the one the pager uses -- the shared `previous_page`, `next_page` and `page_x_of_y`
+keys are identical in both catalogs, so nothing to wire.
+
+Two things did change:
+
+- the pager is a `<nav>` landmark named by the new `pagination` key, where it used to
+  be a plain `<div>`. Same buttons, same labels, same `onPageChange` offsets;
+- the built-in empty state now gets the `2rem` of padding `.stuic-data-table-empty` has
+  always declared. On desktop it never actually got it (the more specific
+  `.stuic-data-table td` padding rule won), so that cell is taller than it was, and now
+  matches the mobile card layout, which already had it. Typography is unchanged.
+
+An `empty` snippet is untouched by any of this -- it replaces the built-in `EmptyState`
+outright and keeps the container padding it has always had. Rendering your own
+`EmptyState` in it is a perfectly good way to get an icon, a description and a CTA:
+
+```svelte
+<DataTable {columns} {data}>
+	{#snippet empty()}
+		<EmptyState
+			icon={{ html: iconSearch({ size: 48 }) }}
+			title="No matches"
+			description="Try widening the filter."
+		>
+			{#snippet actions()}
+				<Button onclick={resetFilters}>Reset filters</Button>
+			{/snippet}
+		</EmptyState>
+	{/snippet}
+</DataTable>
+```
+
 ### With Selection
 
 ```svelte
@@ -437,6 +481,7 @@ const t = createDataTableT({ ...DATA_TABLE_MESSAGES_SK, no_data: "Nič tu nie je
 | `previous_page`        | Prev                               | Paging                               |
 | `next_page`            | Next                               | Paging                               |
 | `page_x_of_y`          | Page {page} of {pageCount}         | Paging                               |
+| `pagination`           | Pagination                         | Pager `<nav>` `aria-label`           |
 | `no_data`              | No data                            | Empty state (no `empty` snippet)     |
 | `select_all_rows`      | Select all rows on this page       | Header checkbox `aria-label`         |
 | `select_row`           | Select row                         | Row checkbox `aria-label`            |

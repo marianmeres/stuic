@@ -12,6 +12,9 @@ export const DATA_TABLE_MESSAGES_EN = {
 	previous_page: "Prev",
 	next_page: "Next",
 	page_x_of_y: "Page {page} of {pageCount}",
+	// The pager is a `Pagination`; this is its `<nav>` accessible name. Identical to
+	// `PAGINATION_MESSAGES_EN` so one merged catalog can still serve both components.
+	pagination: "Pagination",
 	no_data: "No data",
 	select_all_rows: "Select all rows on this page",
 	select_row: "Select row",
