@@ -1,0 +1,84 @@
+/* ============================================================================
+   BREADCRUMBS COMPONENT TOKENS
+   Override globally: :root { --stuic-breadcrumbs-gap: 0.5rem; }
+   Override locally:  <Breadcrumbs style="--stuic-breadcrumbs-font-size: 1rem;">
+   ============================================================================ */
+
+/* prettier-ignore */
+:root {
+	--stuic-breadcrumbs-gap: 0.375rem;
+	--stuic-breadcrumbs-font-size: var(--text-sm);
+
+	/* links + plain (non-current) crumbs + inherited by the ellipsis button */
+	--stuic-breadcrumbs-text: var(--stuic-color-muted-foreground);
+	--stuic-breadcrumbs-text-hover: var(--stuic-color-foreground);
+
+	/* the current (last) crumb */
+	--stuic-breadcrumbs-text-current: var(--stuic-color-foreground);
+	--stuic-breadcrumbs-font-weight-current: 500;
+
+	--stuic-breadcrumbs-separator-text: var(--stuic-color-muted-foreground);
+}
+
+@layer components {
+	.stuic-breadcrumbs-list {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: var(--stuic-breadcrumbs-gap);
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		font-size: var(--stuic-breadcrumbs-font-size);
+	}
+
+	.stuic-breadcrumbs-item {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--stuic-breadcrumbs-gap);
+		color: var(--stuic-breadcrumbs-text);
+	}
+
+	.stuic-breadcrumbs-link {
+		color: inherit;
+		text-decoration: none;
+		transition: color var(--stuic-breadcrumbs-transition, var(--stuic-transition));
+	}
+
+	.stuic-breadcrumbs-link:hover {
+		color: var(--stuic-breadcrumbs-text-hover);
+		text-decoration: underline;
+	}
+
+	.stuic-breadcrumbs-current {
+		color: var(--stuic-breadcrumbs-text-current);
+		font-weight: var(--stuic-breadcrumbs-font-weight-current);
+	}
+
+	/* current crumb that is also a link keeps its current color on hover */
+	.stuic-breadcrumbs-link.stuic-breadcrumbs-current:hover {
+		color: var(--stuic-breadcrumbs-text-current);
+	}
+
+	.stuic-breadcrumbs-separator {
+		color: var(--stuic-breadcrumbs-separator-text);
+		user-select: none;
+	}
+
+	.stuic-breadcrumbs-ellipsis {
+		appearance: none;
+		background: none;
+		border: none;
+		padding: 0;
+		margin: 0;
+		font: inherit;
+		color: inherit;
+		cursor: pointer;
+		line-height: 1;
+		transition: color var(--stuic-breadcrumbs-transition, var(--stuic-transition));
+	}
+
+	.stuic-breadcrumbs-ellipsis:hover {
+		color: var(--stuic-breadcrumbs-text-hover);
+	}
+}

@@ -31,6 +31,7 @@ export * from "./components/AssetsPreview/index.js";
 export * from "./components/Avatar/index.js";
 export * from "./components/Backdrop/index.js";
 export * from "./components/Book/index.js";
+export * from "./components/Breadcrumbs/index.js";
 export * from "./components/Button/index.js";
 export * from "./components/ButtonGroupRadio/index.js";
 export * from "./components/Cart/index.js";

@@ -29,8 +29,9 @@ Checked first, to avoid false positives:
    A `FieldDate` / `FieldDateRange` would slot naturally next to `FieldMoney` /
    `FieldPhoneNumber`. Most work of anything on this list, but also the absence
    consumers will actually notice.
-2. **Breadcrumbs** — trivial to build, universally expected in admin UIs, absent.
-   Quick win.
+2. ~~**Breadcrumbs**~~ — ✅ shipped (see `src/lib/components/Breadcrumbs/`):
+   APG nav/ol trail, collapsible long trails, schema.org `BreadcrumbList` JSON-LD
+   helpers (`breadcrumbsJsonLd` / `breadcrumbsJsonLdScript` + inline `jsonLd` prop).
 3. ~~**Pagination (standalone)**~~ — ✅ shipped (see `src/lib/components/Pagination/`):
    compact (the `DataTable` pager) + windowed page-numbers variants, consumes the same
    `PagingCalcResult` as `DataTable` so one paging store can feed both.

@@ -2,7 +2,7 @@
 
 ## Overview
 
-67 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
+70 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
@@ -20,6 +20,7 @@
 | SlidingPanels            | Panel transitions                                  |
 | TabbedMenu               | Tab navigation                                     |
 | Nav                      | Navigation wrapper                                 |
+| Breadcrumbs              | Breadcrumb trail (collapse + JSON-LD helpers)      |
 | WithSidePanel            | Two-column layout with collapsible/resizable panel |
 
 ### Interactive
@@ -789,6 +790,48 @@ Components use private CSS vars (`--_*`) set by intent/variant:
 	color: var(--_text);
 }
 ```
+
+---
+
+## Breadcrumbs
+
+Breadcrumb navigation trail — `<nav aria-label>` + ordered list (the WAI-ARIA APG pattern) with the last crumb marked `aria-current="page"`. Long trails optionally collapse their middle into an expandable ellipsis button (`maxItems` + `itemsBeforeCollapse`/`itemsAfterCollapse`; a new `items` array re-collapses). Ships schema.org `BreadcrumbList` JSON-LD helpers for SEO — usable standalone in `<svelte:head>` or rendered inline by the component via the `jsonLd` prop.
+
+### Exports
+
+| Export                     | Kind      | Description                                                       |
+| -------------------------- | --------- | ----------------------------------------------------------------- |
+| `Breadcrumbs`              | component | Main component                                                    |
+| `BreadcrumbsProps`         | type      | Props type                                                        |
+| `BreadcrumbItem`           | type      | `{ label: string; href?: string }`                                |
+| `breadcrumbsJsonLd`        | function  | Builds the schema.org `BreadcrumbList` object                     |
+| `breadcrumbsJsonLdScript`  | function  | Full `<script type="application/ld+json">` string, `{@html}`-safe |
+| `BreadcrumbsJsonLdOptions` | type      | `{ baseUrl? }` — resolves relative hrefs to absolute URLs         |
+| `BreadcrumbListJsonLd`     | type      | The JSON-LD output shape (+ `BreadcrumbListItemJsonLd`)           |
+| `createBreadcrumbsT`       | function  | Builds the `t` prop from a (partial) message catalog              |
+| `BREADCRUMBS_MESSAGES_EN`  | constant  | Built-in English catalog (also the fallback)                      |
+| `BREADCRUMBS_MESSAGES_SK`  | constant  | Bundled Slovak catalog (opt-in)                                   |
+| `BreadcrumbsMessageKey`    | type      | Message key union                                                 |
+| `BreadcrumbsMessages`      | type      | One locale's catalog                                              |
+
+### Key Props
+
+| Prop                                       | Type                     | Default | Description                                           |
+| ------------------------------------------ | ------------------------ | ------- | ----------------------------------------------------- |
+| `items`                                    | `BreadcrumbItem[]`       | —       | The trail, first-to-current; last item = current page |
+| `separator`                                | `string`                 | `"/"`   | Separator text (or the `renderSeparator` snippet)     |
+| `maxItems`                                 | `number`                 | `0`     | Collapse when longer than this; `0` never collapses   |
+| `itemsBeforeCollapse`/`itemsAfterCollapse` | `number`                 | `1`/`1` | Crumbs kept visible around the ellipsis               |
+| `jsonLd`                                   | `boolean \| { baseUrl }` | `false` | Render `BreadcrumbList` JSON-LD along with the trail  |
+| `t`                                        | `TranslateFn`            | English | i18n (`createBreadcrumbsT`)                           |
+
+Snippets: `renderItem` (`(item, index, isLast)`), `renderSeparator`. Class slots: `class`, `classItem`, `classLink`, `classCurrent`, `classSeparator`. Data attributes: `data-current` on the current `<li>`.
+
+### CSS Tokens
+
+Prefix: `--stuic-breadcrumbs-*`
+
+`gap`, `font-size`, `text`, `text-hover`, `text-current`, `font-weight-current`, `separator-text`, `transition` (falls back to `--stuic-transition`)
 
 ---
 
