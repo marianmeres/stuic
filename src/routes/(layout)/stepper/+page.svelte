@@ -133,8 +133,8 @@
 		<h2 class="text-xl font-semibold mb-2">Custom Icons + Indicator Override</h2>
 		<p class="text-sm text-neutral-500 mb-4">
 			Per-step <code>icon</code> (raw svg string, e.g. an icons-fns result) replaces the
-			number — completed/error markers still win; the <code>renderIndicator</code> snippet
-			overrides the bubble content entirely (second example).
+			number — completed/error markers still win; the <code>renderIndicator</code> snippet overrides
+			the bubble content entirely (second example).
 		</p>
 		<Stepper
 			class="mb-8"
