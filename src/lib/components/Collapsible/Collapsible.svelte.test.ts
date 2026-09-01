@@ -72,7 +72,7 @@ test("renders the root and content wrapper with the clamped line-clamp class", a
 	await expect.element(content).toHaveClass("line-clamp-1");
 });
 
-test("OVERFLOW: long text + lines=1 + narrow width -> toggle appears with collapsed indicator", async () => {
+test("OVERFLOW: long text + lines=1 + narrow width -> toggle appears with the default chevron", async () => {
 	// The jsdom-impossible read: real Chromium lays out the wrapped long string,
 	// the $effect sees scrollHeight > clientHeight, needsCollapse flips true, and
 	// the toggle button is conditionally rendered.
@@ -87,15 +87,21 @@ test("OVERFLOW: long text + lines=1 + narrow width -> toggle appears with collap
 	await expect.element(toggle).toBeInTheDocument();
 	await expect.element(toggle).toHaveClass("stuic-collapsible-toggle");
 
-	// collapsed -> default collapsed indicator "↓"
-	await expect.element(toggle).toHaveTextContent("↓");
+	// default indicator is the rotating chevron (an <svg>), not a text arrow. The
+	// 180deg rotation itself is CSS keyed off aria-expanded, which the browser test
+	// env does not load (see the beforeAll note) — assert the state attribute that
+	// drives it instead.
+	expect(toggle.element().querySelector("svg.stuic-collapsible-chevron")).not.toBeNull();
+	await expect.element(toggle).toHaveAttribute("aria-expanded", "false");
+	// the chevron is decorative; the button carries the accessible name
+	await expect.element(toggle).toHaveAccessibleName("More...");
 
 	// content is still clamped while collapsed
 	const content = el(container, ".stuic-collapsible > div > div");
 	await expect.element(content).toHaveClass("line-clamp-1");
 });
 
-test("EXPAND: clicking the toggle removes the clamp and flips the indicator to ↑", async () => {
+test("EXPAND: clicking the toggle removes the clamp and flips aria-expanded", async () => {
 	const { container, getByRole } = await render(Collapsible, {
 		children: text(LONG),
 		lines: 1,
@@ -112,8 +118,158 @@ test("EXPAND: clicking the toggle removes the clamp and flips the indicator to �
 
 	// expanded -> clamp class is dropped (no line-clamp-1)...
 	await expect.element(content).not.toHaveClass("line-clamp-1");
-	// ...and the indicator becomes the expanded "↑"
+	// ...and the chevron's rotation hook + accessible name follow the state
+	await expect.element(toggle).toHaveAttribute("aria-expanded", "true");
+	await expect.element(toggle).toHaveAccessibleName("Less...");
+});
+
+test("TEXT INDICATORS: passing either indicator opts out of the chevron", async () => {
+	const { getByRole } = await render(Collapsible, {
+		children: text(LONG),
+		lines: 1,
+		style: "width: 200px",
+		collapsedIndicator: "▼",
+		expandedIndicator: "▲",
+	});
+
+	const toggle = getByRole("button");
+	await expect.element(toggle).toBeInTheDocument();
+	expect(toggle.element().querySelector("svg.stuic-collapsible-chevron")).toBeNull();
+	await expect.element(toggle).toHaveTextContent("▼");
+
+	await toggle.click();
+	await expect.element(toggle).toHaveTextContent("▲");
+});
+
+test("TEXT INDICATORS: one custom indicator -> the other keeps its legacy arrow", async () => {
+	const { getByRole } = await render(Collapsible, {
+		children: text(LONG),
+		lines: 1,
+		style: "width: 200px",
+		collapsedIndicator: "more...",
+	});
+
+	const toggle = getByRole("button");
+	await expect.element(toggle).toBeInTheDocument();
+	expect(toggle.element().querySelector("svg.stuic-collapsible-chevron")).toBeNull();
+	await expect.element(toggle).toHaveTextContent("more...");
+
+	await toggle.click();
 	await expect.element(toggle).toHaveTextContent("↑");
+});
+
+test('toggleAlign="top-when-expanded": row flips items-end -> items-start only while expanded', async () => {
+	const { container, getByRole } = await render(Collapsible, {
+		children: text(LONG),
+		lines: 1,
+		style: "width: 200px",
+		toggleAlign: "top-when-expanded",
+	});
+
+	const row = el(container, ".stuic-collapsible > div");
+	await expect.element(row).toHaveClass("items-end");
+
+	const toggle = getByRole("button");
+	await expect.element(toggle).toBeInTheDocument();
+	await toggle.click();
+
+	await expect.element(row).toHaveClass("items-start");
+	await expect.element(row).not.toHaveClass("items-end");
+
+	// ...and back down when collapsed again
+	await toggle.click();
+	await expect.element(row).toHaveClass("items-end");
+	await expect.element(row).not.toHaveClass("items-start");
+});
+
+test('toggleAlign="top": row is items-start in BOTH states', async () => {
+	const { container, getByRole } = await render(Collapsible, {
+		children: text(LONG),
+		lines: 1,
+		style: "width: 200px",
+		toggleAlign: "top",
+	});
+
+	const row = el(container, ".stuic-collapsible > div");
+	// already top-aligned while collapsed — this is what separates "top" from
+	// "top-when-expanded"
+	await expect.element(row).toHaveClass("items-start");
+	await expect.element(row).not.toHaveClass("items-end");
+
+	const toggle = getByRole("button");
+	await expect.element(toggle).toBeInTheDocument();
+	await toggle.click();
+
+	await expect.element(row).toHaveClass("items-start");
+	await expect.element(row).not.toHaveClass("items-end");
+});
+
+test("toggleAlign defaults to bottom in both states", async () => {
+	const { container, getByRole } = await render(Collapsible, {
+		children: text(LONG),
+		lines: 1,
+		style: "width: 200px",
+	});
+
+	const row = el(container, ".stuic-collapsible > div");
+	await expect.element(row).toHaveClass("items-end");
+
+	const toggle = getByRole("button");
+	await expect.element(toggle).toBeInTheDocument();
+	await toggle.click();
+
+	await expect.element(row).toHaveClass("items-end");
+	await expect.element(row).not.toHaveClass("items-start");
+});
+
+test("animate=false renders NO viewport wrapper (default DOM is unchanged)", async () => {
+	const { container } = await render(Collapsible, {
+		children: text(LONG),
+		lines: 1,
+		style: "width: 200px",
+	});
+
+	await expect
+		.poll(() => container.querySelector(".stuic-collapsible > div > div"))
+		.not.toBeNull();
+	expect(container.querySelector(".stuic-collapsible-viewport")).toBeNull();
+	// the clamped content div is still the direct flex child
+	const content = el(container, ".stuic-collapsible > div > div");
+	await expect.element(content).toHaveClass("line-clamp-1");
+});
+
+test("ANIMATE: viewport wrapper is inserted and autoHeight locks its height in px", async () => {
+	// Another genuinely browser-only assertion: the `autoHeight` attachment reads
+	// the inner element's offsetHeight (0 under jsdom) and writes it back as an
+	// inline `height`, which is what the CSS height transition interpolates.
+	const { container, getByRole } = await render(Collapsible, {
+		children: text(LONG),
+		lines: 1,
+		style: "width: 200px",
+		animate: true,
+	});
+
+	const viewport = el(container, ".stuic-collapsible-viewport");
+	await expect.element(viewport).toBeInTheDocument();
+	await expect.element(viewport).toHaveClass("flex-1");
+
+	// the clamped content is now nested one level deeper, inside the viewport
+	const content = el(container, ".stuic-collapsible-viewport > div");
+	await expect.element(content).toHaveClass("line-clamp-1");
+
+	// height locked from `auto` to a real px value on mount
+	const collapsedH = () =>
+		parseFloat((viewport.element() as HTMLElement).style.height || "0");
+	await expect.poll(collapsedH).toBeGreaterThan(0);
+	const before = collapsedH();
+
+	const toggle = getByRole("button");
+	await expect.element(toggle).toBeInTheDocument();
+	await toggle.click();
+
+	// unclamping grows the measured inner -> the ResizeObserver re-measure (deferred
+	// one frame) drives the viewport height up to the full content height
+	await expect.poll(collapsedH).toBeGreaterThan(before);
 });
 
 test("FITS: short text in one line -> needsCollapse false -> NO toggle button", async () => {

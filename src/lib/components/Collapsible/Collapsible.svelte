@@ -2,9 +2,20 @@
 	import type { Snippet } from "svelte";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import { tooltip } from "../../actions/index.js";
+	import { autoHeight } from "../../attachments/index.js";
+	import { iconChevronDown } from "../../icons/index.js";
 	import { isPlainObject } from "../../utils/is-plain-object.js";
 	import { replaceMap } from "../../utils/replace-map.js";
 	import type { TranslateFn } from "../../types.js";
+
+	/**
+	 * Vertical alignment of the toggle button relative to the content:
+	 * - `"bottom"` — always next to the last (clamped) line. Default, historical behavior.
+	 * - `"top"` — always at the top of the content, in both states.
+	 * - `"top-when-expanded"` — bottom while collapsed, top once expanded, so the toggle
+	 *   does not run away down a long expanded block.
+	 */
+	export type CollapsibleToggleAlign = "bottom" | "top" | "top-when-expanded";
 
 	export interface Props {
 		/** Content to display */
@@ -13,10 +24,29 @@
 		lines?: number;
 		/** Expanded state (bindable) */
 		expanded?: boolean;
-		/** Collapsed indicator character (default: "↓") */
+		/**
+		 * Collapsed indicator character. Omit both indicators (the default) to get the
+		 * rotating chevron; providing either one switches to plain text indicators
+		 * (the omitted one falls back to the legacy "↓"/"↑" arrow).
+		 */
 		collapsedIndicator?: string;
-		/** Expanded indicator character (default: "↑") */
+		/**
+		 * Expanded indicator character. Omit both indicators (the default) to get the
+		 * rotating chevron; providing either one switches to plain text indicators
+		 * (the omitted one falls back to the legacy "↓"/"↑" arrow).
+		 */
 		expandedIndicator?: string;
+		/**
+		 * Opt-in: smoothly animate the height between the collapsed and expanded state
+		 * instead of snapping. Respects `prefers-reduced-motion` (snaps when reduce is
+		 * set). Default: false.
+		 */
+		animate?: boolean;
+		/**
+		 * Opt-in: where to vertically align the toggle button. Default: `"bottom"`
+		 * (always next to the last clamped line — the historical behavior).
+		 */
+		toggleAlign?: CollapsibleToggleAlign;
 		/** Container class */
 		class?: string;
 		/** Content wrapper class */
@@ -53,8 +83,10 @@
 		children,
 		lines = 1,
 		expanded = $bindable(false),
-		collapsedIndicator = "↓",
-		expandedIndicator = "↑",
+		collapsedIndicator,
+		expandedIndicator,
+		animate = false,
+		toggleAlign = "bottom",
 		class: classProp,
 		classContent,
 		classToggle,
@@ -80,7 +112,33 @@
 		const l = Math.abs(lines);
 		return l > 10 ? 10 : l;
 	});
+
+	// The rotating chevron is the default indicator. Passing either custom indicator
+	// opts back into plain text; the unspecified one keeps its historical arrow.
+	let useChevron = $derived(
+		collapsedIndicator === undefined && expandedIndicator === undefined
+	);
+	let textIndicator = $derived(
+		expanded ? (expandedIndicator ?? "↑") : (collapsedIndicator ?? "↓")
+	);
+
+	let label = $derived(expanded ? t("less") : t("more"));
+
+	let _align = $derived(
+		toggleAlign === "top" || (toggleAlign === "top-when-expanded" && expanded)
+			? "items-start"
+			: "items-end"
+	);
 </script>
+
+{#snippet content()}
+	<div
+		bind:this={contentEl}
+		class={twMerge("flex-1", !expanded && `line-clamp-${_lines}`, classContent)}
+	>
+		{@render children()}
+	</div>
+{/snippet}
 
 <div
 	bind:this={el}
@@ -88,13 +146,17 @@
 	class={twMerge("stuic-collapsible", classProp)}
 	{style}
 >
-	<div class="flex items-end">
-		<div
-			bind:this={contentEl}
-			class={twMerge("flex-1", !expanded && `line-clamp-${_lines}`, classContent)}
-		>
-			{@render children()}
-		</div>
+	<div class={twMerge("flex", _align)}>
+		{#if animate}
+			<!-- Height-animated viewport: `autoHeight` drives this box to the natural
+			     height of the (un)clamped content and clips while it transits. Only
+			     rendered when the opt-in is active, so the default output is unchanged. -->
+			<div class="stuic-collapsible-viewport flex-1" {@attach autoHeight}>
+				{@render content()}
+			</div>
+		{:else}
+			{@render content()}
+		{/if}
 		{#if needsCollapse}
 			<button
 				type="button"
@@ -102,12 +164,19 @@
 					"stuic-collapsible-toggle cursor-pointer -my-1 -mr-2",
 					classToggle
 				)}
+				aria-expanded={expanded}
+				aria-label={label}
 				onclick={() => (expanded = !expanded)}
-				use:tooltip={() => ({
-					content: expanded ? t("less") : t("more"),
-				})}
+				use:tooltip={() => ({ content: label })}
 			>
-				{expanded ? expandedIndicator : collapsedIndicator}
+				{#if useChevron}
+					{@html iconChevronDown({
+						class: "stuic-collapsible-chevron",
+						"aria-hidden": "true",
+					})}
+				{:else}
+					{textIndicator}
+				{/if}
 			</button>
 		{/if}
 	</div>

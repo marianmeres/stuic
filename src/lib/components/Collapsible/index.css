@@ -11,6 +11,10 @@
 	--stuic-collapsible-toggle-padding-x: calc(var(--spacing) * 2);
 	--stuic-collapsible-toggle-padding-y: calc(var(--spacing) * 1);
 
+	/* Chevron indicator (default) */
+	--stuic-collapsible-chevron-size: 16px;
+	--stuic-collapsible-chevron-color: currentColor;
+
 	/* Focus ring (uses theme token) */
 	--stuic-collapsible-ring-width: 2px;
 	--stuic-collapsible-ring-color: var(--stuic-color-ring);
@@ -35,5 +39,39 @@
 	.stuic-collapsible-toggle:focus-visible {
 		outline: var(--stuic-collapsible-ring-width) solid var(--stuic-collapsible-ring-color);
 		outline-offset: 2px;
+	}
+
+	/* ============================================================================
+	   CHEVRON INDICATOR (default)
+	   ============================================================================ */
+
+	.stuic-collapsible-chevron {
+		display: block;
+		flex-shrink: 0;
+		width: var(--stuic-collapsible-chevron-size);
+		height: var(--stuic-collapsible-chevron-size);
+		color: var(--stuic-collapsible-chevron-color);
+	}
+
+	.stuic-collapsible-toggle[aria-expanded="true"] .stuic-collapsible-chevron {
+		transform: rotate(180deg);
+	}
+
+	/* ============================================================================
+	   HEIGHT-ANIMATED VIEWPORT (opt-in via the `animate` prop)
+
+	   The `autoHeight` attachment owns this element's inline `height` (and the
+	   `overflow: clip` it applies *only* while that height transitions), so the
+	   transition below is the entire opt-in. Without it the height simply snaps.
+	   ============================================================================ */
+
+	@media (prefers-reduced-motion: no-preference) {
+		.stuic-collapsible-viewport {
+			transition: height var(--stuic-collapsible-transition, var(--stuic-transition));
+		}
+
+		.stuic-collapsible-chevron {
+			transition: transform var(--stuic-collapsible-transition, var(--stuic-transition));
+		}
 	}
 }
