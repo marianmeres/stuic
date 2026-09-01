@@ -18,7 +18,8 @@ Checked first, to avoid false positives:
 - **Table pagination** — built into `DataTable` (`showpager`)
 - **Multi-select / tags input** — `FieldOptions` (async `getOptions` search, typeahead,
   `cardinality`, option groups, `allowUnknown` for ad-hoc values, `ordered` for manual
-  arrangement). See the note at the bottom on the inline-chip presentation variant.
+  arrangement, `chips` for the inline tag form factor). See the note at the bottom on
+  the inline-chip presentation.
 - **File dropzone** — `actions/file-dropzone` + `FieldFile` / `FieldAssets`
 
 ## Tier 1 — staples nearly every comparable library ships
@@ -82,16 +83,36 @@ Checked first, to avoid false positives:
 ## Note: inline-chip presentation of FieldOptions
 
 Initially listed as a Tier-1 "tags input" gap; retracted — `FieldOptions` covers the
-capability. What stuic lacks is at most the _inline chip form factor_: chips inside the
-field with per-chip remove ×, a text input riding alongside, suggestions in a popover
-without leaving the page. Faster for dense desktop/admin work; the existing modal flow
-is arguably better on mobile.
+capability. What stuic lacked was the _inline chip form factor_. That splits into two
+separable halves, and only the second one has a mobile problem:
 
-If ever built, the design to argue for: a presentation mode of `FieldOptions` (the
-selection model — `ItemCollection`, `cardinality`, `allowUnknown` — is already there),
-not a new component. Inline combobox on pointer devices, delegating to the existing
-modal on touch/small screens (`breakpoint.svelte.ts` + `device-pointer.svelte.ts`
-enable the switch).
+1. ~~**Chips as the field's display**~~ — ✅ shipped (`FieldOptions` `chips` prop, see
+   `Input/README.md`): the closed field shows the selection as removable `Pill` chips
+   (per-chip ×, focus kept in the field, `change` dispatched so validation re-runs) plus a
+   trailing button that opens the existing modal; the empty part of the row opens it too.
+   Internally a `FieldLikeButton` sibling (`Input/_internal/FieldLikeChips.svelte`) — the
+   chips carry their own buttons, so they cannot live inside the `<button>` trigger. Works
+   on every device; the one touch concern (× target size) is handled with a padded hit
+   area on `pointer: coarse`.
+2. **Inline adding** (type into the field, suggestions, Enter commits) — not built. This is
+   where every mobile hazard lives (see the reality check below). The design to argue for,
+   if ever built:
+   - a presentation mode of `FieldOptions`, not a new component — the selection model
+     (`ItemCollection`, `cardinality`, `allowUnknown`, `ordered`) is already there. But the
+     engine is currently bound to the modal lifecycle (hydrate on open, fetch while
+     visible, clear on submit) and would need extracting into a shared `.svelte.ts` class
+     rather than more branches in the 1250-line file; that is the real cost
+   - no floating listbox popover: reuse the existing `typeahead` action (ghost text, Tab
+     accepts, Enter commits, Backspace at position 0 removes the last chip via
+     `onDeleteRequest`). No anchored dropdown means the soft-keyboard hazard disappears by
+     construction; the modal stays the browse path via the trailing button. A real list
+     popover can be added later behind the same prop if ghost text proves insufficient
+   - gate it on the `md` breakpoint (`breakpoint.svelte.ts`), not on `DevicePointer` —
+     that util uses `any-pointer`, so a touchscreen laptop counts as coarse and an iPad
+     with a trackpad as fine; the breakpoint is deterministic and testable in the browser
+     suite. If pointer detection is wanted as well, it should be the primary
+     `pointer: coarse`
+   - below the breakpoint, delegate to the modal — i.e. exactly the shipped `chips` mode
 
 Mobile reality check for the inline variant, if it were ever made touch-capable
 instead of delegating:

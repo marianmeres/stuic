@@ -25,6 +25,8 @@
 		items: "[]",
 		items2: "[]",
 		itemsOrdered: "[]",
+		itemsChips: "[]",
+		itemChips: "[]",
 	});
 
 	function renderItemOptionLabel(item: Item) {
@@ -170,6 +172,43 @@
 			ordered
 		/>
 		<pre class="text-xs">{raw(values.itemsOrdered)}</pre>
+	</form>
+
+	<form use:onSubmitValidityCheck class="max-w-3xl border p-4">
+		<FieldOptions
+			class="w-full"
+			bind:value={values.itemsChips}
+			label="Many (chips, ordered, any)"
+			name="item"
+			{notifications}
+			cardinality={-1}
+			renderOptionLabel={renderItemOptionLabel}
+			{getOptions}
+			description={`The selection is shown as inline chips ("chips" mode). Remove one with its ×, add more via the trailing button (or click the empty part of the row) — picking still happens in the modal. With "ordered", the chips follow the arranged order.`}
+			{itemIdPropName}
+			ordered
+			chips
+			allowUnknown
+		/>
+		<pre class="text-xs">{raw(values.itemsChips)}</pre>
+	</form>
+
+	<form use:onSubmitValidityCheck class="max-w-3xl border p-4">
+		<FieldOptions
+			class="w-full"
+			bind:value={values.itemChips}
+			label="One (chips)"
+			name="item"
+			{notifications}
+			cardinality={1}
+			renderOptionLabel={renderItemOptionLabel}
+			{getOptions}
+			description={`Single-select in "chips" mode with a primary chip intent.`}
+			{itemIdPropName}
+			chips
+			chipIntent="primary"
+		/>
+		<pre class="text-xs">{raw(values.itemChips)}</pre>
 	</form>
 </div>
 

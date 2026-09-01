@@ -42,6 +42,8 @@
 		dismissible?: boolean;
 		/** Called when X is clicked. Stops propagation so parent onclick is unaffected. */
 		ondismiss?: (e: MouseEvent) => void;
+		/** Accessible name of the built-in X dismiss button */
+		dismissLabel?: string;
 		/** Status dot rendered before content (uses current intent color) */
 		dot?: boolean;
 		/** Content rendered before children */
@@ -76,6 +78,7 @@
 		disabled,
 		dismissible = false,
 		ondismiss,
+		dismissLabel = "Dismiss",
 		dot = false,
 		contentBefore,
 		contentAfter,
@@ -109,7 +112,7 @@
 	<button
 		type="button"
 		class="stuic-pill-dismiss"
-		aria-label="Dismiss"
+		aria-label={dismissLabel}
 		onclick={handleDismiss}
 		{disabled}
 	>

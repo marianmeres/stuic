@@ -311,3 +311,172 @@ test("ordered: in-progress picks survive a re-search (rehydrate gating)", async 
 		)
 		.toBe("true");
 });
+
+// --- `chips` display mode ---
+// The closed field renders the selection as removable Pill chips (label + a "Remove X"
+// button each) plus a trailing "Choose..." button that opens the same modal. Removing a
+// chip edits `value` directly (no modal), fires onChange and dispatches `change` on the
+// hidden input so validation re-runs.
+
+const settle = () => new Promise((r) => setTimeout(r, 50));
+
+function chipLabels(container: HTMLElement): string[] {
+	return [...container.querySelectorAll(".stuic-pill")].map(
+		(p) => p.textContent?.trim() ?? ""
+	);
+}
+
+test("chips: one removable Pill per selected item, in value order; no joined text", async () => {
+	const screen = await render(FieldOptions, {
+		name: "opts",
+		value: seeded(["Cherry", "Apple"]),
+		cardinality: -1,
+		getOptions,
+		chips: true,
+	});
+	await expect.poll(() => chipLabels(screen.container)).toEqual(["Cherry", "Apple"]);
+	await expect
+		.element(screen.getByRole("button", { name: "Remove Apple" }))
+		.toBeInTheDocument();
+	expect(screen.container.textContent).not.toContain("Cherry, Apple");
+});
+
+test("chips: an empty selection shows the placeholder", async () => {
+	const screen = await render(FieldOptions, {
+		name: "opts",
+		value: "[]",
+		cardinality: -1,
+		getOptions,
+		chips: true,
+	});
+	await expect.element(screen.getByText("Nothing selected")).toBeInTheDocument();
+	expect(chipLabels(screen.container)).toEqual([]);
+});
+
+test("chips: removing a chip writes value, fires onChange and `change` on the hidden input", async () => {
+	const onChange = vi.fn();
+	const screen = await render(FieldOptions, {
+		name: "opts",
+		value: seeded(["Apple", "Banana"]),
+		cardinality: -1,
+		getOptions,
+		chips: true,
+		onChange,
+	});
+	const hidden = screen.container.querySelector(
+		'input[type="hidden"]'
+	) as HTMLInputElement;
+	const changes: string[] = [];
+	hidden.addEventListener("change", () => changes.push(hidden.value));
+
+	await screen.getByRole("button", { name: "Remove Apple" }).click();
+
+	await expect.poll(() => chipLabels(screen.container)).toEqual(["Banana"]);
+	await expect.poll(() => onChange.mock.calls.length).toBe(1);
+	expect(onChange.mock.calls[0][0]).toBe(seeded(["Banana"]));
+	expect(hidden.value).toBe(seeded(["Banana"]));
+	await expect.poll(() => changes).toEqual([seeded(["Banana"])]);
+});
+
+test("chips: the trailing button opens the picker modal", async () => {
+	const screen = await render(FieldOptions, {
+		name: "opts",
+		value: seeded(["Apple"]),
+		cardinality: -1,
+		getOptions,
+		chips: true,
+	});
+	expect(screen.container.querySelector("dialog")).toBeNull();
+	await screen.getByRole("button", { name: "Choose..." }).click();
+	await expect
+		.element(screen.getByRole("button", { name: "Submit" }))
+		.toBeInTheDocument();
+});
+
+test("chips: the empty part of the row opens the picker; a chip itself does not", async () => {
+	const screen = await render(FieldOptions, {
+		name: "opts",
+		value: seeded(["Apple"]),
+		cardinality: -1,
+		getOptions,
+		chips: true,
+	});
+	const row = screen.container.querySelector<HTMLElement>(".stuic-field-options-chips")!;
+	// a click landing on the chip is not an "open"
+	screen.container.querySelector<HTMLElement>(".stuic-pill")!.click();
+	await settle();
+	expect(screen.container.querySelector("dialog")).toBeNull();
+
+	row.click();
+	await expect
+		.element(screen.getByRole("button", { name: "Submit" }))
+		.toBeInTheDocument();
+});
+
+test("chips: disabled disables every Remove and the open button", async () => {
+	const screen = await render(FieldOptions, {
+		name: "opts",
+		value: seeded(["Apple", "Banana"]),
+		cardinality: -1,
+		getOptions,
+		chips: true,
+		disabled: true,
+	});
+	await expect
+		.element(screen.getByRole("button", { name: "Remove Apple" }))
+		.toBeDisabled();
+	await expect
+		.element(screen.getByRole("button", { name: "Remove Banana" }))
+		.toBeDisabled();
+	await expect.element(screen.getByRole("button", { name: "Choose..." })).toBeDisabled();
+});
+
+test("chips: a removal re-runs validation against the new value", async () => {
+	const screen = await render(FieldOptions, {
+		name: "opts",
+		value: seeded(["Apple"]),
+		cardinality: -1,
+		getOptions,
+		chips: true,
+		validate: {
+			customValidator: (v: unknown) => (JSON.parse(String(v)).length ? "" : "empty"),
+		},
+	});
+	expect(screen.container.querySelector(".validation-box")).toBeNull();
+	await screen.getByRole("button", { name: "Remove Apple" }).click();
+	await expect.element(screen.getByText(/requires attention/)).toBeInTheDocument();
+});
+
+test("chips: focus lands on the open button after removing the last chip", async () => {
+	const screen = await render(FieldOptions, {
+		name: "opts",
+		value: seeded(["Apple"]),
+		cardinality: -1,
+		getOptions,
+		chips: true,
+	});
+	await screen.getByRole("button", { name: "Remove Apple" }).click();
+	await expect
+		.poll(() => document.activeElement?.getAttribute("aria-label"))
+		.toBe("Choose...");
+});
+
+test("chips + ordered: the chips show the arranged order after Submit", async () => {
+	const screen = await render(FieldOptions, {
+		name: "opts",
+		value: seeded(["Apple", "Banana"]),
+		cardinality: -1,
+		ordered: true,
+		getOptions,
+		chips: true,
+	});
+	await expect.poll(() => chipLabels(screen.container)).toEqual(["Apple", "Banana"]);
+
+	await screen.getByRole("button", { name: "Choose..." }).click();
+	await gotoArrange(screen);
+	rowButton(screen.container, 0, "down")!.click(); // -> [Banana, Apple]
+	await expect.poll(() => arrangeLabels(screen.container)).toEqual(["Banana", "Apple"]);
+	await screen.getByRole("button", { name: "Submit" }).click();
+
+	await expect.poll(() => chipLabels(screen.container)).toEqual(["Banana", "Apple"]);
+});

@@ -408,48 +408,55 @@ Components use data attributes for CSS styling:
 
 ## FieldOptions
 
-A modal-based multi-select/single-select component with search functionality, typeahead support, and option grouping.
+A modal-based multi-select/single-select component with search functionality, typeahead support, and option grouping. The closed field can show the selection as inline removable chips (`chips`).
 
 ### Props
 
-| Prop                | Type                                                       | Default    | Description                                                                         |
-| ------------------- | ---------------------------------------------------------- | ---------- | ----------------------------------------------------------------------------------- |
-| `value`             | `string`                                                   | `"[]"`     | JSON array of selected items (bindable)                                             |
-| `name`              | `string`                                                   | -          | Form field name                                                                     |
-| `getOptions`        | `(q: string, current: Item[]) => Promise<{found: Item[]}>` | -          | Async function to fetch options                                                     |
-| `cardinality`       | `number`                                                   | `Infinity` | Max selections (-1 for unlimited)                                                   |
-| `allowUnknown`      | `boolean`                                                  | `false`    | Allow typing custom values                                                          |
-| `ordered`           | `boolean`                                                  | `false`    | Opt-in: add an "Arrange" screen to manually order the selection (multi-select only) |
-| `renderOptionLabel` | `(item: Item) => string`                                   | -          | Custom option label renderer                                                        |
-| `renderOptionGroup` | `(s: string) => string`                                    | -          | Custom optgroup label renderer                                                      |
-| `renderValue`       | `(stringifiedItems: string) => string`                     | -          | Custom value display renderer                                                       |
-| `showIconsCheckbox` | `boolean`                                                  | `true`     | Show checkbox icons in multi-select                                                 |
-| `showIconsRadio`    | `boolean`                                                  | `false`    | Show radio icons in single-select                                                   |
-| `searchPlaceholder` | `string`                                                   | -          | Custom search placeholder                                                           |
-| `itemIdPropName`    | `string`                                                   | `"id"`     | Property name for item ID                                                           |
-| `notifications`     | `NotificationsStack`                                       | -          | Notification handler for errors                                                     |
+| Prop                | Type                                                       | Default    | Description                                                                              |
+| ------------------- | ---------------------------------------------------------- | ---------- | ---------------------------------------------------------------------------------------- |
+| `value`             | `string`                                                   | `"[]"`     | JSON array of selected items (bindable)                                                  |
+| `name`              | `string`                                                   | -          | Form field name                                                                          |
+| `getOptions`        | `(q: string, current: Item[]) => Promise<{found: Item[]}>` | -          | Async function to fetch options                                                          |
+| `cardinality`       | `number`                                                   | `Infinity` | Max selections (-1 for unlimited)                                                        |
+| `allowUnknown`      | `boolean`                                                  | `false`    | Allow typing custom values                                                               |
+| `ordered`           | `boolean`                                                  | `false`    | Opt-in: add an "Arrange" screen to manually order the selection (multi-select only)      |
+| `chips`             | `boolean`                                                  | `false`    | Opt-in: show the selection as inline removable chips; picking still happens in the modal |
+| `classChip`         | `string`                                                   | -          | Classes for each chip (`chips` mode)                                                     |
+| `chipIntent`        | `IntentColorKey`                                           | -          | Pill intent of the chips (`chips` mode)                                                  |
+| `renderOptionLabel` | `(item: Item) => string`                                   | -          | Custom option label renderer                                                             |
+| `renderOptionGroup` | `(s: string) => string`                                    | -          | Custom optgroup label renderer                                                           |
+| `renderValue`       | `(stringifiedItems: string) => string`                     | -          | Custom value display renderer                                                            |
+| `showIconsCheckbox` | `boolean`                                                  | `true`     | Show checkbox icons in multi-select                                                      |
+| `showIconsRadio`    | `boolean`                                                  | `false`    | Show radio icons in single-select                                                        |
+| `searchPlaceholder` | `string`                                                   | -          | Custom search placeholder                                                                |
+| `itemIdPropName`    | `string`                                                   | `"id"`     | Property name for item ID                                                                |
+| `notifications`     | `NotificationsStack`                                       | -          | Notification handler for errors                                                          |
 
 ### Class Props
 
-| Prop                | Target                       |
-| ------------------- | ---------------------------- |
-| `classOption`       | Option item (ListItemButton) |
-| `classOptionActive` | Active/selected option       |
-| `classOptgroup`     | Option group label           |
-| `classModalField`   | Modal field wrapper          |
+| Prop                | Target                           |
+| ------------------- | -------------------------------- |
+| `classOption`       | Option item (ListItemButton)     |
+| `classOptionActive` | Active/selected option           |
+| `classOptgroup`     | Option group label               |
+| `classModalField`   | Modal field wrapper              |
+| `classChip`         | Each chip (Pill) in `chips` mode |
 
 ### CSS Variables
 
 #### Component Tokens
 
-| Variable                                   | Default                          | Description                     |
-| ------------------------------------------ | -------------------------------- | ------------------------------- |
-| `--stuic-field-options-divider`            | `--stuic-color-border`           | Divider/separator color         |
-| `--stuic-field-options-control-text`       | `--stuic-color-muted-foreground` | Control button text color       |
-| `--stuic-field-options-control-text-hover` | `--stuic-color-foreground`       | Control button hover text color |
-| `--stuic-field-options-control-ring`       | `--stuic-color-ring`             | Control button focus ring       |
-| `--stuic-field-options-muted-text`         | `--stuic-color-muted-foreground` | Muted/secondary text color      |
-| `--stuic-field-options-optgroup-text`      | `--stuic-color-muted-foreground` | Option group label color        |
+| Variable                                           | Default                          | Description                                                |
+| -------------------------------------------------- | -------------------------------- | ---------------------------------------------------------- |
+| `--stuic-field-options-divider`                    | `--stuic-color-border`           | Divider/separator color                                    |
+| `--stuic-field-options-control-text`               | `--stuic-color-muted-foreground` | Control button text color                                  |
+| `--stuic-field-options-control-text-hover`         | `--stuic-color-foreground`       | Control button hover text color                            |
+| `--stuic-field-options-control-ring`               | `--stuic-color-ring`             | Control button focus ring                                  |
+| `--stuic-field-options-muted-text`                 | `--stuic-color-muted-foreground` | Muted/secondary text color                                 |
+| `--stuic-field-options-optgroup-text`              | `--stuic-color-muted-foreground` | Option group label color                                   |
+| `--stuic-field-options-chips-gap`                  | `0.25rem`                        | Gap between chips (`chips` mode)                           |
+| `--stuic-field-options-chip-dismiss-padding-touch` | `0.375rem`                       | Extra × hit-area padding on coarse pointers (`chips` mode) |
+| `--stuic-field-options-chips-placeholder-text`     | `--stuic-input-placeholder`      | Placeholder color of an empty `chips` row                  |
 
 ### Usage
 
@@ -502,6 +509,35 @@ on submit (and round-trips on reopen). Single-select fields ignore the prop.
 > there. The `value` must hold full item objects (with their label), which is already the
 > default contract, so the Arrange list can render selected items even when they aren't in
 > the current search results.
+
+### Chips display (`chips`)
+
+By default the closed field is a button showing the selection as comma-joined text. Opt in
+with `chips` to show it as inline, individually removable `Pill` chips instead — the tags form
+factor. Picking still happens in the same modal: open it with the trailing button, or by
+clicking the empty part of the row. Each chip's × removes that item immediately (writes
+`value`, fires `onChange`, re-runs validation) without opening the modal, and keyboard focus
+stays in the field. Chips render in `value` order, so with `ordered` they mirror the arranged
+order. `renderValue` is ignored in this mode; labels come from `renderOptionLabel`.
+
+```svelte
+<FieldOptions
+	label="Tags"
+	name="tags"
+	bind:value
+	{getOptions}
+	cardinality={-1}
+	allowUnknown
+	chips
+	chipIntent="primary"
+/>
+```
+
+On coarse pointers (touch) each × gets an enlarged hit area
+(`--stuic-field-options-chip-dismiss-padding-touch`) without changing the chip's visual size.
+Typing directly into the field (an inline combobox) is deliberately not part of this mode — the
+modal remains the single place where options are searched and picked, which is what keeps the
+field usable under a soft keyboard.
 
 ### Customization Examples
 

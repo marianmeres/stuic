@@ -102,3 +102,14 @@ test("dismiss click fires ondismiss once and does NOT fire pill onclick (stopPro
 	expect(ondismiss).toHaveBeenCalledOnce();
 	expect(onclick).not.toHaveBeenCalled();
 });
+
+test("dismissible: dismissLabel sets the X button's accessible name", async () => {
+	const screen = render(Pill, {
+		children: text("Tag"),
+		dismissible: true,
+		dismissLabel: "Remove Tag",
+	});
+	await expect
+		.element(screen.getByRole("button", { name: "Remove Tag" }))
+		.toBeInTheDocument();
+});

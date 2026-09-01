@@ -99,6 +99,12 @@ interface InputWrapClassProps {
 
 Previously most fields only accepted 5–7 of these. You can now pass any of them to **FieldInput, FieldTextarea, FieldSelect, FieldSwitch, FieldFile, FieldLikeButton, FieldObject, FieldOptions, FieldAssets, FieldPhoneNumber, FieldInputLocalized, FieldKeyValues** uniformly. `FieldCheckbox` and `FieldRadios` use bespoke layouts and keep their own narrower class-prop surface.
 
+### FieldOptions
+
+`chips` prop (opt-in): the closed field shows the selection as inline, removable `Pill` chips plus a trailing button that opens the usual modal. Removing a chip writes `value` and fires `onChange` without the modal. Companion props `classChip` / `chipIntent`; `renderValue` is ignored in this mode. The default rendering is unchanged.
+
+`Pill` gained `dismissLabel` — the accessible name of its × button (default `"Dismiss"`).
+
 ### Checkout
 
 New util:

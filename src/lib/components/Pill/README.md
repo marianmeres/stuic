@@ -4,27 +4,28 @@ A small rounded inline element for tags, badges, status indicators, and filter c
 
 ## Props
 
-| Prop            | Type                                                               | Default  | Description                                                           |
-| --------------- | ------------------------------------------------------------------ | -------- | --------------------------------------------------------------------- |
-| `intent`        | `"primary" \| "accent" \| "destructive" \| "warning" \| "success"` | -        | Semantic color intent                                                 |
-| `variant`       | `"solid" \| "outline" \| "ghost" \| "soft" \| "link"`              | `"soft"` | Visual variant (how colors are applied)                               |
-| `size`          | `"sm" \| "md" \| "lg"`                                             | `"md"`   | Pill size                                                             |
-| `muted`         | `boolean`                                                          | `false`  | Reduce emphasis (lower opacity)                                       |
-| `active`        | `boolean`                                                          | `false`  | Selected/active state (filter-chip behavior)                          |
-| `roundedFull`   | `boolean`                                                          | `true`   | Fully rounded corners (9999px). Set `false` to use the element radius |
-| `block`         | `boolean`                                                          | `false`  | Render as block-level flex (full width). `inline-flex` by default     |
-| `unstyled`      | `boolean`                                                          | `false`  | Skip all default styling                                              |
-| `href`          | `string`                                                           | -        | Render as `<a>` with this URL                                         |
-| `target`        | `string`                                                           | -        | Link target (only when `href` is set)                                 |
-| `onclick`       | `(e: MouseEvent) => void`                                          | -        | Render as `<button>` with this handler (when no `href`)               |
-| `disabled`      | `boolean`                                                          | -        | Disabled state (interactive variants only)                            |
-| `dismissible`   | `boolean`                                                          | `false`  | Show built-in X dismiss button                                        |
-| `ondismiss`     | `(e: MouseEvent) => void`                                          | -        | Called when X is clicked. Stops propagation                           |
-| `dot`           | `boolean`                                                          | `false`  | Status dot rendered before content                                    |
-| `contentBefore` | `THC`                                                              | -        | Content rendered before children                                      |
-| `contentAfter`  | `THC`                                                              | -        | Content rendered after children                                       |
-| `el`            | `HTMLElement`                                                      | -        | Element reference (bindable)                                          |
-| `class`         | `string`                                                           | -        | Additional CSS classes                                                |
+| Prop            | Type                                                               | Default     | Description                                                           |
+| --------------- | ------------------------------------------------------------------ | ----------- | --------------------------------------------------------------------- |
+| `intent`        | `"primary" \| "accent" \| "destructive" \| "warning" \| "success"` | -           | Semantic color intent                                                 |
+| `variant`       | `"solid" \| "outline" \| "ghost" \| "soft" \| "link"`              | `"soft"`    | Visual variant (how colors are applied)                               |
+| `size`          | `"sm" \| "md" \| "lg"`                                             | `"md"`      | Pill size                                                             |
+| `muted`         | `boolean`                                                          | `false`     | Reduce emphasis (lower opacity)                                       |
+| `active`        | `boolean`                                                          | `false`     | Selected/active state (filter-chip behavior)                          |
+| `roundedFull`   | `boolean`                                                          | `true`      | Fully rounded corners (9999px). Set `false` to use the element radius |
+| `block`         | `boolean`                                                          | `false`     | Render as block-level flex (full width). `inline-flex` by default     |
+| `unstyled`      | `boolean`                                                          | `false`     | Skip all default styling                                              |
+| `href`          | `string`                                                           | -           | Render as `<a>` with this URL                                         |
+| `target`        | `string`                                                           | -           | Link target (only when `href` is set)                                 |
+| `onclick`       | `(e: MouseEvent) => void`                                          | -           | Render as `<button>` with this handler (when no `href`)               |
+| `disabled`      | `boolean`                                                          | -           | Disabled state (interactive variants only)                            |
+| `dismissible`   | `boolean`                                                          | `false`     | Show built-in X dismiss button                                        |
+| `ondismiss`     | `(e: MouseEvent) => void`                                          | -           | Called when X is clicked. Stops propagation                           |
+| `dismissLabel`  | `string`                                                           | `"Dismiss"` | Accessible name of the X dismiss button                               |
+| `dot`           | `boolean`                                                          | `false`     | Status dot rendered before content                                    |
+| `contentBefore` | `THC`                                                              | -           | Content rendered before children                                      |
+| `contentAfter`  | `THC`                                                              | -           | Content rendered after children                                       |
+| `el`            | `HTMLElement`                                                      | -           | Element reference (bindable)                                          |
+| `class`         | `string`                                                           | -           | Additional CSS classes                                                |
 
 ## Element Resolution
 

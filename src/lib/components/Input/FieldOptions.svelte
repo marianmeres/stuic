@@ -20,6 +20,7 @@
 		type ValidationResult,
 	} from "../../actions/validate.svelte.js";
 	import type { TranslateFn } from "../../types.js";
+	import type { IntentColorKey } from "../../utils/design-tokens.js";
 	import { getId } from "../../utils/get-id.js";
 	import { isPlainObject } from "../../utils/is-plain-object.js";
 	import { maybeJsonParse } from "../../utils/maybe-json-parse.js";
@@ -36,6 +37,7 @@
 	import X from "../X/X.svelte";
 	import InputWrap from "./_internal/InputWrap.svelte";
 	import FieldLikeButton from "./FieldLikeButton.svelte";
+	import FieldLikeChips, { type FieldLikeChip } from "./_internal/FieldLikeChips.svelte";
 	import ListItemButton from "../ListItemButton/ListItemButton.svelte";
 	import type { InputWrapClassProps } from "./types.js";
 
@@ -90,6 +92,18 @@
 		 * serialized to `value` on submit. No-op for single-select. Default `false`.
 		 */
 		ordered?: boolean;
+		/**
+		 * Opt-in: render the current selection as inline, individually removable chips
+		 * (`Pill`s) instead of the comma-joined text button. Picking still happens in the
+		 * modal (opened by the trailing button, or by clicking the empty part of the row);
+		 * removing a chip writes `value` immediately, without the modal. `renderValue` is
+		 * ignored in this mode (labels come from `renderOptionLabel`). Default `false`.
+		 */
+		chips?: boolean;
+		/** Classes for each chip (`chips` mode only) */
+		classChip?: string;
+		/** Pill intent of the chips (`chips` mode only) */
+		chipIntent?: IntentColorKey;
 		showIconsCheckbox?: boolean;
 		showIconsRadio?: boolean;
 		searchPlaceholder?: string;
@@ -124,6 +138,10 @@
 			no_results: "No results found.",
 			add_new: 'Add "{{value}}"...',
 			click_add_new: "You must add the value to continue",
+			// chips display mode
+			chips_placeholder: "Nothing selected",
+			chips_open: "Choose...",
+			chips_remove: "Remove {{value}}",
 			//
 			pick_tab: "Pick",
 			arrange_tab: "Arrange ({{value}})",
@@ -214,6 +232,9 @@
 		renderOptionGroup = (s: string) => `${s}`.replaceAll("_", " "),
 		allowUnknown = false,
 		ordered = false,
+		chips = false,
+		classChip,
+		chipIntent,
 		showIconsCheckbox = true,
 		showIconsRadio = false,
 		searchPlaceholder,
@@ -229,8 +250,9 @@
 		modal = modalDialog;
 	});
 
-	// Imperative API delegates to the inner FieldLikeButton trigger.
-	let triggerRef: FieldLikeButton | undefined = $state();
+	// Imperative API delegates to the inner trigger (FieldLikeButton, or FieldLikeChips in
+	// `chips` mode) — both expose the same methods.
+	let triggerRef: FieldLikeButton | FieldLikeChips | undefined = $state();
 
 	/** Trigger validation now. Renders the inline message if invalid. */
 	export function validate(): ValidationResult | undefined {
@@ -604,6 +626,38 @@
 		});
 	}
 
+	// --- chips (inline display of the selection) ---
+
+	// straight from `value`, in value order — so with `ordered` the arranged order is what
+	// the user sees; labels go through the same renderer as the modal's options
+	let chipItems: FieldLikeChip[] = $derived.by(() => {
+		if (!chips) return [];
+		const parsed = maybeJsonParse(value || "[]");
+		if (!Array.isArray(parsed)) return [];
+		return parsed
+			.filter((item) => item != null)
+			.map((item: Item, i: number) => {
+				const label = _renderOptionLabel(item);
+				return {
+					// index-suffixed so a (malformed) duplicate id can't break the keyed each
+					key: `${item[itemIdPropName] ?? ""}__${i}`,
+					label,
+					removeLabel: t("chips_remove", { value: label }),
+				};
+			});
+	});
+
+	// removing a chip is an immediate, modal-less edit of `value` + the same change
+	// notification the modal submit does (so validation re-runs)
+	function removeChip(_chip: FieldLikeChip, index: number) {
+		const parsed = maybeJsonParse(value || "[]");
+		if (!Array.isArray(parsed)) return;
+		const items = parsed.filter((item) => item != null);
+		value = JSON.stringify(items.filter((_, i) => i !== index));
+		_dispatch_change_to_owner();
+		onChange?.(value);
+	}
+
 	// "outer" submit - will set the outer bound value (always string) and close modal...
 	// further process is left on the consumer
 	function submit() {
@@ -712,6 +766,42 @@
 <div>
 	{#if trigger}
 		{@render trigger({ value, modal: modalDialog })}
+	{:else if chips}
+		<FieldLikeChips
+			bind:this={triggerRef}
+			bind:value
+			bind:input={parentHiddenInputEl}
+			chips={chipItems}
+			{name}
+			class={classProp}
+			{label}
+			{description}
+			{labelLeft}
+			{labelAfter}
+			{below}
+			{labelLeftWidth}
+			{labelLeftBreakpoint}
+			{classLabel}
+			{classLabelBox}
+			{classInputBox}
+			{classInputBoxWrap}
+			{classInputBoxWrapInvalid}
+			{classDescBox}
+			{classDescBoxToggle}
+			{classBelowBox}
+			{classValidationBox}
+			{style}
+			validate={wrappedValidate}
+			{required}
+			{disabled}
+			{tabindex}
+			{classChip}
+			{chipIntent}
+			placeholder={t("chips_placeholder")}
+			openLabel={t("chips_open")}
+			onOpen={() => modalDialog?.open()}
+			onRemove={removeChip}
+		/>
 	{:else}
 		<FieldLikeButton
 			bind:this={triggerRef}
