@@ -15,6 +15,7 @@ const SRC_LIB = resolve(import.meta.dirname);
 const SUBPATH_ONLY = [
 	"components/MarkdownEditor/index.css",
 	"components/CommentInput/index.css",
+	"components/TrendChart/index.css",
 ];
 
 /** A commented-out `@import` is the likelier human error than a deleted one, and the
