@@ -1,0 +1,50 @@
+/* ============================================================================
+   PAGINATION COMPONENT TOKENS
+   Override globally: :root { --stuic-pagination-gap: 1rem; }
+   Override locally:  <Pagination style="--stuic-pagination-button-min-width: 2rem;">
+   ============================================================================ */
+
+/* prettier-ignore */
+:root {
+	--stuic-pagination-gap: 0.5rem;
+
+	/* Keeps single-character buttons («, ‹, page numbers) square-ish and aligned.
+	   Sized to the `size="sm"` Button height. Text buttons (Prev/Next) simply exceed it. */
+	--stuic-pagination-button-min-width: var(--stuic-button-min-height-sm, 2.75rem);
+
+	/* "Page X of Y" info */
+	--stuic-pagination-info-font-size: var(--text-sm);
+	--stuic-pagination-info-text: var(--stuic-color-muted-foreground);
+
+	/* Ellipsis gap (numbers variant) */
+	--stuic-pagination-ellipsis-text: var(--stuic-color-muted-foreground);
+}
+
+@layer components {
+	.stuic-pagination {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: var(--stuic-pagination-gap);
+	}
+
+	.stuic-pagination-button {
+		min-width: var(--stuic-pagination-button-min-width);
+	}
+
+	.stuic-pagination-info {
+		font-size: var(--stuic-pagination-info-font-size);
+		color: var(--stuic-pagination-info-text);
+		white-space: nowrap;
+	}
+
+	.stuic-pagination-ellipsis {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: var(--stuic-pagination-button-min-width);
+		color: var(--stuic-pagination-ellipsis-text);
+		user-select: none;
+	}
+}

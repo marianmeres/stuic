@@ -55,6 +55,7 @@
 		'onboarding',
 		'otp-input',
 		// 'on-outside',
+		'pagination',
 		'pill',
 		'popover',
 		'pricing-table',

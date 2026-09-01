@@ -24,18 +24,19 @@
 
 ### Interactive
 
-| Component            | Purpose                                     |
-| -------------------- | ------------------------------------------- |
-| Button               | Actions with intent/variant/size            |
-| ButtonGroupRadio     | Toggle group (single selection)             |
-| Switch               | Boolean toggle                              |
-| Slider               | Fancy range input (fill + optional thumb)   |
-| TwCheck              | Styled checkbox/radio                       |
-| DropdownMenu         | Popover menu                                |
-| CommandMenu          | Command palette (keyboard-driven)           |
-| TypeaheadInput       | Autocomplete input                          |
-| ColorScheme          | Dark/light mode management with persistence |
-| HoverExpandableWidth | Width-expanding container on hover          |
+| Component            | Purpose                                                                            |
+| -------------------- | ---------------------------------------------------------------------------------- |
+| Button               | Actions with intent/variant/size                                                   |
+| ButtonGroupRadio     | Toggle group (single selection)                                                    |
+| Switch               | Boolean toggle                                                                     |
+| Slider               | Fancy range input (fill + optional thumb)                                          |
+| TwCheck              | Styled checkbox/radio                                                              |
+| DropdownMenu         | Popover menu                                                                       |
+| CommandMenu          | Command palette (keyboard-driven)                                                  |
+| Pagination           | Standalone pager: compact prev/next or windowed page numbers; DataTable-compatible |
+| TypeaheadInput       | Autocomplete input                                                                 |
+| ColorScheme          | Dark/light mode management with persistence                                        |
+| HoverExpandableWidth | Width-expanding container on hover                                                 |
 
 ### Feedback
 
@@ -859,6 +860,55 @@ Prefix: `--stuic-empty-state-*`
 `gap`, `padding-{sm,md,lg}`, `icon-size-{sm,md,lg}`, `icon-text`, `icon-opacity`, `icon-margin-bottom`, `title-font-size-{sm,md,lg}`, `title-font-weight`, `title-text`, `description-font-size-{sm,md,lg}`, `description-text`, `description-max-width`, `actions-gap`, `actions-margin-top`, `bg`, `border`, `border-width`, `radius`
 
 Falls back to shared structural tokens `--stuic-border-width` and `--stuic-radius-container` (outline/dashed variants).
+
+---
+
+## Pagination
+
+Standalone pagination for lists, search results, and custom views. Two variants: `compact` (prev / "Page X of Y" / next — the pager `DataTable` renders internally) and `numbers` (windowed page-number buttons with ellipsis gaps). Consumes the same `PagingCalcResult` from `@marianmeres/paging-store` that `DataTable` does, so one paging store can feed both (`<DataTable showPager={false} />` + standalone `Pagination`); `total`/`limit`/`offset` convenience props compute paging internally for quick standalone use.
+
+### Exports
+
+| Export                   | Kind      | Description                                          |
+| ------------------------ | --------- | ---------------------------------------------------- |
+| `Pagination`             | component | Main component                                       |
+| `PaginationProps`        | type      | Props type                                           |
+| `PaginationVariant`      | type      | `"compact" \| "numbers"`                             |
+| `paginationRange`        | function  | Pure windowing helper behind the numbers variant     |
+| `PaginationRangeItem`    | type      | `number \| "ellipsis"`                               |
+| `PaginationRangeOptions` | type      | `{ siblingCount?, boundaryCount? }`                  |
+| `createPaginationT`      | function  | Builds the `t` prop from a (partial) message catalog |
+| `PAGINATION_MESSAGES_EN` | constant  | Built-in English catalog (also the fallback)         |
+| `PAGINATION_MESSAGES_SK` | constant  | Bundled Slovak catalog (opt-in)                      |
+| `PaginationMessageKey`   | type      | Message key union                                    |
+| `PaginationMessages`     | type      | One locale's catalog                                 |
+
+### Key Props
+
+| Prop                     | Type                     | Default     | Description                                                                  |
+| ------------------------ | ------------------------ | ----------- | ---------------------------------------------------------------------------- |
+| `paging`                 | `PagingCalcResult`       | —           | Paging metadata (`DataTable`-compatible); wins over `total`/`limit`/`offset` |
+| `total`/`limit`/`offset` | `number`                 | —/`10`/`0`  | Convenience alternative to `paging` (computed via `calculatePaging`)         |
+| `onPageChange`           | `(offset, page) => void` | —           | New offset (`DataTable`'s signature as first arg) + 1-based target page      |
+| `variant`                | `"compact" \| "numbers"` | `"compact"` | Prev/info/next, or windowed page-number buttons                              |
+| `siblingCount`           | `number`                 | `1`         | Numbers: pages always shown around the current page                          |
+| `boundaryCount`          | `number`                 | `1`         | Numbers: pages always shown at the start and end                             |
+| `showFirstLast`          | `boolean`                | `false`     | First/last jump buttons (« »)                                                |
+| `showInfo`               | `boolean`                | per variant | "Page X of Y" info (`true` for compact, `false` for numbers)                 |
+| `hideSinglePage`         | `boolean`                | `true`      | Render nothing when there is at most one page (the `DataTable` rule)         |
+| `disabled`               | `boolean`                | `false`     | Disable all controls (e.g. while loading)                                    |
+| `size`                   | `ButtonSize`             | `"sm"`      | Size preset of the inner Buttons                                             |
+| `t`                      | `TranslateFn`            | English     | i18n; `previous_page`/`next_page`/`page_x_of_y` keys match `DataTable`'s     |
+
+Snippets: `renderInfo` (info override, receives `PagingCalcResult`). Class slots: `class`, `classButton`, `classButtonCurrent`, `classInfo`. Renders a `<nav aria-label>` landmark; the current page button carries `aria-current="page"`.
+
+### CSS Tokens
+
+Prefix: `--stuic-pagination-*`
+
+`gap`, `button-min-width`, `info-font-size`, `info-text`, `ellipsis-text`
+
+`button-min-width` defaults to `--stuic-button-min-height-sm` so single-character buttons stay square-ish.
 
 ---
 
