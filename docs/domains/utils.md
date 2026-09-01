@@ -2,7 +2,7 @@
 
 ## Overview
 
-44 utility modules for common tasks. Organized by category.
+45 utility modules for common tasks. Organized by category.
 
 ---
 
@@ -35,11 +35,13 @@ theme.value = "dark";
 
 ## DOM Utilities
 
-| Util               | Purpose                  |
-| ------------------ | ------------------------ |
-| `qsa`              | querySelectorAll wrapper |
-| `bodyScrollLocker` | Lock/unlock body scroll  |
-| `getId`            | Generate unique IDs      |
+| Util                         | Purpose                                                          |
+| ---------------------------- | ---------------------------------------------------------------- |
+| `qsa`                        | querySelectorAll wrapper                                         |
+| `bodyScrollLocker`           | Lock/unlock body scroll                                          |
+| `getId`                      | Generate unique IDs                                              |
+| `copyToClipboard`            | Write text to the clipboard (async API + `execCommand` fallback) |
+| `isCopyToClipboardSupported` | Whether any clipboard write path exists (false during SSR)       |
 
 ---
 

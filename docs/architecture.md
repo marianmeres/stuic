@@ -48,7 +48,7 @@ src/lib/
 │   ├── *.ts                  # Traditional actions
 │   └── index.ts              # Barrel export
 │
-├── utils/                # 44 utility modules
+├── utils/                # 45 utility modules
 │   ├── *.svelte.ts           # Reactive utilities
 │   ├── *.ts                  # Pure functions
 │   └── index.ts              # Barrel export

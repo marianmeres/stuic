@@ -24,6 +24,7 @@
 		'comment-input',
 		'contact-us-form',
 		'context-menu',
+		'copy-button',
 		'cron-input',
 		'dim-behind',
 		'dismissible-message',

@@ -23,10 +23,10 @@
 
 ```
 src/lib/
-├── components/     # 72 component directories
+├── components/     # 73 component directories
 ├── actions/        # 15 Svelte actions (use: directives)
 ├── attachments/    # Svelte attachments ({@attach} — preferred for new DOM helpers)
-├── utils/          # 44 utility modules
+├── utils/          # 45 utility modules
 ├── icons/          # Icon re-exports from @marianmeres/icons-fns
 ├── css/            # CSS-only presets (ratio-locked frame / letterbox)
 ├── index.css       # Centralized CSS imports
@@ -129,12 +129,12 @@ Global tokens that control cross-component visual properties. Defined in `src/li
 
 ### Domain Docs
 
-- [Components](./docs/domains/components.md) — 72 component directories, Props pattern, snippets
+- [Components](./docs/domains/components.md) — 73 component directories, Props pattern, snippets
 - [Theming](./docs/domains/theming.md) — CSS tokens, dark mode, themes
 - [CSS presets](./docs/domains/css-presets.md) — ratio-locked frame (letterbox), safe-area, scrollbar
 - [Actions](./docs/domains/actions.md) — 15 Svelte directives
 - [Attachments](./docs/domains/attachments.md) — `{@attach}` DOM helpers (preferred for new ones)
-- [Utils](./docs/domains/utils.md) — 44 utility modules
+- [Utils](./docs/domains/utils.md) — 45 utility modules
 
 ### Reference
 

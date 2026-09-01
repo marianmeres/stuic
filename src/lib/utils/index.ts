@@ -2,6 +2,7 @@ export * from "./avatar-colors.js";
 export * from "./body-scroll-locker.js";
 export * from "./breakpoint.svelte.js";
 export * from "./colors.js";
+export * from "./copy-to-clipboard.js";
 export * from "./debounce.js";
 export * from "./design-tokens.js";
 export * from "./device-pointer.svelte.js";

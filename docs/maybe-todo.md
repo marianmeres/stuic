@@ -63,9 +63,11 @@ Checked first, to avoid false positives:
 11. ~~**Stat / KPI card**~~ — ✅ shipped (see `src/lib/components/Stat/`): label +
     value + delta with trend arrow and semantic coloring (`trendIntent` for
     down-is-good metrics), hint, corner icon, footer/sparkline area.
-12. **CopyButton** — small click-to-copy with success feedback. Clipboard usage exists
-    inside components (`FieldPhoneNumber`, `FieldAssets`, `OtpInput`) but there is no
-    reusable primitive.
+12. ~~**CopyButton**~~ — ✅ shipped (see `src/lib/components/CopyButton/`): a
+    `Button` that copies `text` (string or sync/async getter) with copied/error
+    feedback (icon + intent swap, localized label/name, sr live announcement),
+    `onCopied` / `onError` callbacks; the write is the reusable `copyToClipboard()`
+    util (async Clipboard API + `execCommand` fallback) in `utils/`.
 13. **ColorPicker** — beyond native `type="color"`: swatch palette + custom input.
     Given stuic's theming/design-tokens focus, a swatch picker would be on-brand.
 

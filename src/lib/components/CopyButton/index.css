@@ -1,0 +1,67 @@
+/* ============================================================================
+   COPY BUTTON COMPONENT TOKENS
+   The button itself IS a Button — colors, sizes, radius and focus ring theme via
+   the --stuic-button-* tokens. These tokens only cover the icon and the feedback
+   "pop" when the state flips to copied/error.
+   Override globally: :root { --stuic-copy-button-icon-size: 1em; }
+   Override locally:  <CopyButton style="--stuic-copy-button-icon-size: 1em;">
+   ============================================================================ */
+
+/* prettier-ignore */
+:root {
+	/* Icon (any svg inside the icon wrapper is normalized to this) */
+	--stuic-copy-button-icon-size: 1.25em;
+
+	/* Feedback pop: the icon scales up from this factor when the state changes */
+	--stuic-copy-button-icon-pop-duration: 200ms;
+	--stuic-copy-button-icon-pop-scale: 0.6;
+}
+
+@layer components {
+	/* ============================================================================
+	   ICON
+	   ============================================================================ */
+
+	.stuic-copy-button-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex: none;
+	}
+
+	.stuic-copy-button-icon svg {
+		width: var(--stuic-copy-button-icon-size);
+		height: var(--stuic-copy-button-icon-size);
+	}
+
+	/* ============================================================================
+	   FEEDBACK POP
+	   Runs once when [data-state] flips to copied/error (the selector starts
+	   matching). Re-clicking within the feedback window keeps the state and so
+	   does not replay it.
+	   ============================================================================ */
+
+	.stuic-copy-button[data-state="copied"] .stuic-copy-button-icon,
+	.stuic-copy-button[data-state="error"] .stuic-copy-button-icon {
+		animation: stuic-copy-button-icon-pop var(--stuic-copy-button-icon-pop-duration)
+			ease-out;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.stuic-copy-button[data-state="copied"] .stuic-copy-button-icon,
+		.stuic-copy-button[data-state="error"] .stuic-copy-button-icon {
+			animation: none;
+		}
+	}
+}
+
+@keyframes stuic-copy-button-icon-pop {
+	from {
+		transform: scale(var(--stuic-copy-button-icon-pop-scale));
+		opacity: 0.4;
+	}
+	to {
+		transform: scale(1);
+		opacity: 1;
+	}
+}

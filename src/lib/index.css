@@ -77,6 +77,7 @@ In practice:
    locally (see components/CommentInput/index.css). Do not re-add. */
 @import "./components/ContactUsForm/index.css";
 @import "./components/ContextMenu/index.css";
+@import "./components/CopyButton/index.css";
 @import "./components/CronInput/index.css";
 @import "./components/DataTable/index.css";
 @import "./components/DismissibleMessage/index.css";

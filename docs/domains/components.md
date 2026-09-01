@@ -2,7 +2,7 @@
 
 ## Overview
 
-72 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
+73 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
@@ -28,6 +28,7 @@
 | Component            | Purpose                                                                                   |
 | -------------------- | ----------------------------------------------------------------------------------------- |
 | Button               | Actions with intent/variant/size                                                          |
+| CopyButton           | Click-to-copy Button with copied/error feedback; `copyToClipboard()` util for code        |
 | ButtonGroupRadio     | Toggle group (single selection)                                                           |
 | Switch               | Boolean toggle                                                                            |
 | Slider               | Fancy range input (fill + optional thumb)                                                 |
@@ -910,6 +911,54 @@ Pass-throughs to the underlying DropdownMenu: `offset` (default `"0px"`), `maxHe
 ### CSS Tokens
 
 None of its own — theme the menu via `--stuic-dropdown-menu-*`. `.stuic-context-menu` is the target area hook; `[data-open]` styles it while the menu is open.
+
+---
+
+## CopyButton
+
+Click-to-copy button with built-in feedback. It IS a `Button` (same intent/variant/size/theming) that writes `text` to the clipboard on click, flips to a "copied" state for `feedbackDuration` ms (check icon, `success` intent, localized label / accessible name, visually hidden `role="status"` announcement) and reports the outcome via `onCopied` / `onError`. A failed write (clipboard unavailable, denied, getter threw) is the "error" state (× icon, `destructive` intent). Icon-only by default; `label` (THC or `true`) adds a visible label. The write itself is the `copyToClipboard()` util (async Clipboard API + `execCommand("copy")` fallback), usable without the button.
+
+### Exports
+
+| Export                       | Kind      | Description                                                   |
+| ---------------------------- | --------- | ------------------------------------------------------------- |
+| `CopyButton`                 | component | Main component                                                |
+| `CopyButtonProps`            | type      | Props type                                                    |
+| `CopyButtonState`            | type      | `"idle" \| "copied" \| "error"`                               |
+| `CopyButtonText`             | type      | `string \| (() => string \| Promise<string>)`                 |
+| `createCopyButtonT`          | function  | Builds the `t` prop from a (partial) message catalog          |
+| `COPY_BUTTON_MESSAGES_EN`    | constant  | Built-in English catalog (also the fallback)                  |
+| `COPY_BUTTON_MESSAGES_SK`    | constant  | Bundled Slovak catalog (opt-in)                               |
+| `CopyButtonMessageKey`       | type      | Message key union (`copy`, `copied`, `copy_failed`)           |
+| `CopyButtonMessages`         | type      | One locale's catalog                                          |
+| `copyToClipboard`            | function  | (utils) `(text) => Promise<void>` — the write the button does |
+| `isCopyToClipboardSupported` | function  | (utils) any clipboard write path available? (false in SSR)    |
+
+### Key Props
+
+| Prop                                | Type                                        | Default            | Description                                                              |
+| ----------------------------------- | ------------------------------------------- | ------------------ | ------------------------------------------------------------------------ |
+| `text`                              | `string \| () => string \| Promise<string>` | required           | What to copy; a getter is resolved on click                              |
+| `label`                             | `THC \| true`                               | —                  | Visible label; omit for icon-only (aria-label from `t`), `true` = "Copy" |
+| `labelCopied`                       | `THC`                                       | `t("copied")`      | Label while copied                                                       |
+| `labelError`                        | `THC`                                       | `t("copy_failed")` | Label while in error                                                     |
+| `icon` / `iconCopied` / `iconError` | `string \| false`                           | copy / check / ×   | Icons per state; `icon={false}` = no icons                               |
+| `feedbackDuration`                  | `number`                                    | `2000`             | ms the feedback stays; `0` = until the next click                        |
+| `intentCopied`                      | `IntentColorKey \| false`                   | `"success"`        | Intent while copied; `false` keeps `intent`                              |
+| `intentError`                       | `IntentColorKey \| false`                   | `"destructive"`    | Intent while in error; `false` keeps `intent`                            |
+| `onCopied`                          | `(text) => void`                            | —                  | After a successful copy                                                  |
+| `onError`                           | `(error) => void`                           | —                  | After a failed copy                                                      |
+| `onclick`                           | `(e) => void`                               | —                  | Runs first; `preventDefault()` skips the copy                            |
+| `variant` / `size`                  | Button's                                    | `"ghost"` / `"sm"` | Defaults differ from Button                                              |
+| `t`                                 | `TranslateFn`                               | English            | i18n                                                                     |
+
+Snippets: `children` (full content override, receives `{ state, copied }`). Class slots: `class`, `classIcon`, `classLabel`. `data-state` is kept even when `unstyled` (it is behavior, not styling).
+
+### CSS Tokens
+
+Prefix: `--stuic-copy-button-*` (the surface themes via `--stuic-button-*`)
+
+`icon-size`, `icon-pop-duration`, `icon-pop-scale`
 
 ---
 
