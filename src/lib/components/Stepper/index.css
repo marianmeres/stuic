@@ -1,0 +1,302 @@
+/* ============================================================================
+   STEPPER COMPONENT TOKENS
+   Override globally: :root { --stuic-stepper-indicator-size: 2.5rem; }
+   Override locally:  <Stepper style="--stuic-stepper-connector-thickness: 4px;">
+   ============================================================================ */
+
+/* prettier-ignore */
+:root {
+	/* Layout */
+	--stuic-stepper-gap: 0.75rem;                  /* indicator↔label + step↔connector */
+	--stuic-stepper-gap-vertical: 1.75rem;         /* vertical: distance between steps */
+	--stuic-stepper-connector-min-length: 1.5rem;  /* horizontal: shortest connector */
+
+	/* Indicator bubble */
+	--stuic-stepper-indicator-size: 2rem;
+	--stuic-stepper-indicator-border-width: 2px;
+	--stuic-stepper-indicator-font-size: var(--text-sm);
+	--stuic-stepper-indicator-font-weight: var(--font-weight-medium);
+	--stuic-stepper-indicator-bg: transparent;
+	--stuic-stepper-indicator-text: var(--stuic-color-muted-foreground);
+	--stuic-stepper-indicator-border: var(--stuic-color-border);
+	--stuic-stepper-indicator-bg-current: transparent;
+	--stuic-stepper-indicator-text-current: var(--stuic-color-primary);
+	--stuic-stepper-indicator-border-current: var(--stuic-color-primary);
+	--stuic-stepper-indicator-bg-completed: var(--stuic-color-primary);
+	--stuic-stepper-indicator-text-completed: var(--stuic-color-primary-foreground);
+	--stuic-stepper-indicator-border-completed: var(--stuic-color-primary);
+	--stuic-stepper-indicator-bg-error: var(--stuic-color-destructive);
+	--stuic-stepper-indicator-text-error: var(--stuic-color-destructive-foreground);
+	--stuic-stepper-indicator-border-error: var(--stuic-color-destructive);
+
+	/* Label */
+	--stuic-stepper-label-font-size: var(--text-base);
+	--stuic-stepper-label-font-weight: var(--font-weight-medium);
+	--stuic-stepper-label-text: var(--stuic-color-muted-foreground);
+	--stuic-stepper-label-text-current: var(--stuic-color-foreground);
+	--stuic-stepper-label-text-completed: var(--stuic-color-foreground);
+	--stuic-stepper-label-text-error: var(--stuic-color-destructive);
+
+	/* Description */
+	--stuic-stepper-description-font-size: var(--text-sm);
+	--stuic-stepper-description-text: var(--stuic-color-muted-foreground);
+
+	/* Connector line */
+	--stuic-stepper-connector-thickness: 2px;
+	--stuic-stepper-connector-bg: var(--stuic-color-border);
+	--stuic-stepper-connector-bg-completed: var(--stuic-color-primary);
+
+	/* Focus ring */
+	--stuic-stepper-ring-width: 3px;
+	--stuic-stepper-ring-color: var(--stuic-color-ring);
+
+	/* Disabled */
+	--stuic-stepper-opacity-disabled: 0.5;
+}
+
+@layer components {
+	/* ============================================================================
+	   BASE
+	   ============================================================================ */
+
+	.stuic-stepper[data-disabled] {
+		opacity: var(--stuic-stepper-opacity-disabled);
+	}
+
+	.stuic-stepper-list {
+		display: flex;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.stuic-stepper-item[data-disabled] {
+		opacity: var(--stuic-stepper-opacity-disabled);
+	}
+
+	/* ============================================================================
+	   TRIGGER (the step content — <button> when interactive, <div> otherwise)
+	   ============================================================================ */
+
+	.stuic-stepper-trigger {
+		display: flex;
+		align-items: center;
+		gap: var(--stuic-stepper-gap);
+		text-align: start;
+		min-width: 0;
+	}
+
+	button.stuic-stepper-trigger {
+		font: inherit;
+		color: inherit;
+		background: none;
+		border: 0;
+		padding: 0;
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	button.stuic-stepper-trigger:disabled {
+		cursor: default;
+	}
+
+	button.stuic-stepper-trigger:focus-visible {
+		outline: var(--stuic-stepper-ring-width) solid var(--stuic-stepper-ring-color);
+		outline-offset: 2px;
+		border-radius: var(--stuic-stepper-radius, var(--stuic-radius));
+	}
+
+	/* clickable affordance: label picks up the emphasized color */
+	button.stuic-stepper-trigger:not(:disabled):hover .stuic-stepper-label {
+		color: var(--stuic-stepper-label-text-current);
+	}
+
+	/* ============================================================================
+	   INDICATOR
+	   ============================================================================ */
+
+	.stuic-stepper-indicator {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+		width: var(--stuic-stepper-indicator-size);
+		height: var(--stuic-stepper-indicator-size);
+		border-radius: var(--stuic-stepper-indicator-radius, calc(infinity * 1px));
+		border: var(--stuic-stepper-indicator-border-width) solid
+			var(--stuic-stepper-indicator-border);
+		background: var(--stuic-stepper-indicator-bg);
+		color: var(--stuic-stepper-indicator-text);
+		font-size: var(--stuic-stepper-indicator-font-size);
+		font-weight: var(--stuic-stepper-indicator-font-weight);
+		transition:
+			background var(--stuic-stepper-transition, var(--stuic-transition)),
+			border-color var(--stuic-stepper-transition, var(--stuic-transition)),
+			color var(--stuic-stepper-transition, var(--stuic-transition));
+	}
+
+	.stuic-stepper-indicator svg {
+		display: block;
+		width: 1.25em;
+		height: 1.25em;
+	}
+
+	.stuic-stepper-item[data-state="current"] .stuic-stepper-indicator {
+		background: var(--stuic-stepper-indicator-bg-current);
+		border-color: var(--stuic-stepper-indicator-border-current);
+		color: var(--stuic-stepper-indicator-text-current);
+	}
+
+	.stuic-stepper-item[data-state="completed"] .stuic-stepper-indicator {
+		background: var(--stuic-stepper-indicator-bg-completed);
+		border-color: var(--stuic-stepper-indicator-border-completed);
+		color: var(--stuic-stepper-indicator-text-completed);
+	}
+
+	/* error wins over any state */
+	.stuic-stepper-item[data-error] .stuic-stepper-indicator {
+		background: var(--stuic-stepper-indicator-bg-error);
+		border-color: var(--stuic-stepper-indicator-border-error);
+		color: var(--stuic-stepper-indicator-text-error);
+	}
+
+	/* ============================================================================
+	   TEXT (label + description)
+	   ============================================================================ */
+
+	.stuic-stepper-text {
+		display: flex;
+		flex-direction: column;
+		gap: 0.125rem;
+		min-width: 0;
+	}
+
+	.stuic-stepper-label {
+		font-size: var(--stuic-stepper-label-font-size);
+		font-weight: var(--stuic-stepper-label-font-weight);
+		color: var(--stuic-stepper-label-text);
+		transition: color var(--stuic-stepper-transition, var(--stuic-transition));
+	}
+
+	.stuic-stepper-item[data-state="current"] .stuic-stepper-label {
+		color: var(--stuic-stepper-label-text-current);
+	}
+
+	.stuic-stepper-item[data-state="completed"] .stuic-stepper-label {
+		color: var(--stuic-stepper-label-text-completed);
+	}
+
+	.stuic-stepper-item[data-error] .stuic-stepper-label {
+		color: var(--stuic-stepper-label-text-error);
+	}
+
+	.stuic-stepper-description {
+		font-size: var(--stuic-stepper-description-font-size);
+		color: var(--stuic-stepper-description-text);
+	}
+
+	/* ============================================================================
+	   CONNECTOR
+	   ============================================================================ */
+
+	.stuic-stepper-connector {
+		background: var(--stuic-stepper-connector-bg);
+		transition: background var(--stuic-stepper-transition, var(--stuic-transition));
+	}
+
+	.stuic-stepper-connector[data-state="completed"] {
+		background: var(--stuic-stepper-connector-bg-completed);
+	}
+
+	/* ============================================================================
+	   HORIZONTAL (labels at the end — default)
+	   ============================================================================ */
+
+	.stuic-stepper[data-orientation="horizontal"] .stuic-stepper-list {
+		flex-direction: row;
+		align-items: center;
+		gap: var(--stuic-stepper-gap);
+	}
+
+	.stuic-stepper[data-orientation="horizontal"] .stuic-stepper-item {
+		display: flex;
+		align-items: center;
+		gap: var(--stuic-stepper-gap);
+		flex: 1;
+		min-width: 0;
+	}
+
+	/* the last step carries no connector — don't stretch it */
+	.stuic-stepper[data-orientation="horizontal"] .stuic-stepper-item:last-child {
+		flex: none;
+	}
+
+	.stuic-stepper[data-orientation="horizontal"] .stuic-stepper-connector {
+		flex: 1;
+		min-width: var(--stuic-stepper-connector-min-length);
+		height: var(--stuic-stepper-connector-thickness);
+	}
+
+	/* ============================================================================
+	   HORIZONTAL, LABELS BELOW (classic checkout header)
+	   ============================================================================ */
+
+	.stuic-stepper[data-label-position="below"] .stuic-stepper-item {
+		align-items: flex-start;
+	}
+
+	.stuic-stepper[data-label-position="below"] .stuic-stepper-trigger {
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+	}
+
+	.stuic-stepper[data-label-position="below"] .stuic-stepper-text {
+		align-items: center;
+	}
+
+	/* keep the connector on the indicator's horizontal axis */
+	.stuic-stepper[data-label-position="below"] .stuic-stepper-connector {
+		margin-top: calc(
+			(var(--stuic-stepper-indicator-size) - var(--stuic-stepper-connector-thickness)) / 2
+		);
+	}
+
+	/* ============================================================================
+	   VERTICAL
+	   ============================================================================ */
+
+	.stuic-stepper[data-orientation="vertical"] .stuic-stepper-list {
+		flex-direction: column;
+	}
+
+	.stuic-stepper[data-orientation="vertical"] .stuic-stepper-item {
+		position: relative;
+		padding-bottom: var(--stuic-stepper-gap-vertical);
+	}
+
+	.stuic-stepper[data-orientation="vertical"] .stuic-stepper-item:last-child {
+		padding-bottom: 0;
+	}
+
+	/* top-align so a multi-line description grows downward, not around the bubble */
+	.stuic-stepper[data-orientation="vertical"] .stuic-stepper-trigger {
+		align-items: flex-start;
+	}
+
+	/* ...while a single-line label still centers against the bubble */
+	.stuic-stepper[data-orientation="vertical"] .stuic-stepper-text {
+		min-height: var(--stuic-stepper-indicator-size);
+		justify-content: center;
+	}
+
+	.stuic-stepper[data-orientation="vertical"] .stuic-stepper-connector {
+		position: absolute;
+		inset-inline-start: calc(
+			(var(--stuic-stepper-indicator-size) - var(--stuic-stepper-connector-thickness)) / 2
+		);
+		top: calc(var(--stuic-stepper-indicator-size) + 0.25rem);
+		bottom: 0.25rem;
+		width: var(--stuic-stepper-connector-thickness);
+	}
+}

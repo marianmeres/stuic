@@ -71,6 +71,7 @@
 		'spinner',
 		'split-button',
 		'stat',
+		'stepper',
 		'style-presets',
 		'svg-circle',
         'switch', 

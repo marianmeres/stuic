@@ -2,7 +2,7 @@
 
 ## Overview
 
-70 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
+71 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
@@ -35,6 +35,7 @@
 | DropdownMenu         | Popover menu                                                                       |
 | CommandMenu          | Command palette (keyboard-driven)                                                  |
 | Pagination           | Standalone pager: compact prev/next or windowed page numbers; DataTable-compatible |
+| Stepper              | Numbered step indicator for wizard/checkout flows; optional click navigation       |
 | TypeaheadInput       | Autocomplete input                                                                 |
 | ColorScheme          | Dark/light mode management with persistence                                        |
 | HoverExpandableWidth | Width-expanding container on hover                                                 |
@@ -952,6 +953,50 @@ Prefix: `--stuic-pagination-*`
 `gap`, `button-min-width`, `info-font-size`, `info-text`, `ellipsis-text`
 
 `button-min-width` defaults to `--stuic-button-min-height-sm` so single-character buttons stay square-ish.
+
+---
+
+## Stepper
+
+Numbered multi-step progress header for wizard/checkout flows. Accessible `<nav>` landmark with an ordered list: completed steps get a check mark and filled connector, the current step is highlighted (`aria-current="step"`), upcoming steps stay muted; per-step `error` renders a destructive "×". Display-only by default; `onSelect` makes steps clickable (completed-only by default, `clickable="all"` for free navigation). `current` is a zero-based index — exactly `@marianmeres/wizard`'s `step.index` (`steps.length` = all done).
+
+### Exports
+
+| Export                | Kind      | Description                                                      |
+| --------------------- | --------- | ---------------------------------------------------------------- |
+| `Stepper`             | component | Main component                                                   |
+| `StepperProps`        | type      | Props type                                                       |
+| `StepperStep`         | type      | `{ label, description?, icon?, error?, disabled? }`              |
+| `StepperStepState`    | type      | `"completed" \| "current" \| "upcoming"`                         |
+| `StepperOrientation`  | type      | `"horizontal" \| "vertical"`                                     |
+| `StepperLabelPosition`| type      | `"end" \| "below"`                                               |
+| `StepperClickable`    | type      | `"none" \| "completed" \| "all"`                                 |
+| `createStepperT`      | function  | Builds the `t` prop from a (partial) message catalog             |
+| `STEPPER_MESSAGES_EN` | constant  | Built-in English catalog (also the fallback)                     |
+| `STEPPER_MESSAGES_SK` | constant  | Bundled Slovak catalog (opt-in)                                  |
+| `StepperMessageKey`   | type      | Message key union                                                |
+| `StepperMessages`     | type      | One locale's catalog                                             |
+
+### Key Props
+
+| Prop            | Type                             | Default        | Description                                                                          |
+| --------------- | -------------------------------- | -------------- | ------------------------------------------------------------------------------------ |
+| `steps`         | `(StepperStep \| string)[]`      | required       | The steps; plain strings are shorthand for `{ label }` (labels/descriptions are THC) |
+| `current`       | `number`                         | `0`            | Zero-based current step index; `steps.length` = all completed; clamped               |
+| `onSelect`      | `(index, step) => void`          | —              | Navigation callback; when present, steps render as buttons                           |
+| `clickable`     | `"none" \| "completed" \| "all"` | `"completed"`  | Click policy (the current step never fires)                                          |
+| `orientation`   | `"horizontal" \| "vertical"`     | `"horizontal"` | Layout direction                                                                     |
+| `labelPosition` | `"end" \| "below"`               | `"end"`        | Horizontal only: labels beside the indicator or centered below it                    |
+| `disabled`      | `boolean`                        | `false`        | Disable all interaction                                                              |
+| `t`             | `TranslateFn`                    | English        | i18n: landmark label + sr-only step announcements ("Step X of Y", Completed/Failed)  |
+
+Snippets: `renderIndicator` (bubble override, receives `{ index, step, state }`). Class slots: `class`, `classStep`, `classIndicator`, `classLabel`, `classDescription`, `classConnector`. Indicator bubbles are `aria-hidden` — visually hidden text announces position + state instead.
+
+### CSS Tokens
+
+Prefix: `--stuic-stepper-*`
+
+`gap`, `gap-vertical`, `connector-min-length`, `indicator-size`, `indicator-border-width`, `indicator-radius`, `indicator-font-size`, `indicator-font-weight`, `indicator-{bg,text,border}{,-current,-completed,-error}`, `label-font-size`, `label-font-weight`, `label-text{,-current,-completed,-error}`, `description-font-size`, `description-text`, `connector-thickness`, `connector-bg{,-completed}`, `ring-width`, `ring-color`, `opacity-disabled`
 
 ---
 

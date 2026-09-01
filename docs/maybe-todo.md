@@ -38,9 +38,10 @@ Checked first, to avoid false positives:
 
 ## Tier 2 — very common, clear use cases
 
-4. **Stepper / step indicator** — numbered multi-step progress header for
-   wizard/checkout flows. `@marianmeres/wizard` covers the state machine and stuic has
-   `Checkout`, but there is no visual stepper.
+4. ~~**Stepper / step indicator**~~ — ✅ shipped (see `src/lib/components/Stepper/`):
+   numbered step indicator with completed/current/upcoming/error states, optional
+   click navigation, horizontal (labels end/below) + vertical orientations; `current`
+   is a zero-based index matching `@marianmeres/wizard`'s `step.index`.
 5. **ContextMenu** — right-click / long-press triggered menu. `DropdownMenu` gets ~80%
    there; the missing 20% is trigger semantics (position at cursor, `contextmenu`
    event, long-press on touch).
