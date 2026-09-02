@@ -88,6 +88,7 @@ export * from "./components/Slider/index.js";
 export * from "./components/SlidingPanels/index.js";
 export * from "./components/Spinner/index.js";
 export * from "./components/SplitButton/index.js";
+export * from "./components/SplitPane/index.js";
 export * from "./components/Stat/index.js";
 export * from "./components/Stepper/index.js";
 export * from "./components/Switch/index.js";

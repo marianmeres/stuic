@@ -8,24 +8,24 @@
 
 ## Available Actions
 
-| Action                    | Purpose                                                       | File                                 |
-| ------------------------- | ------------------------------------------------------------- | ------------------------------------ |
-| `validate`                | Form field validation with i18n support                       | `validate.svelte.ts`                 |
-| `focusTrap`               | Keyboard focus containment (modals/dialogs)                   | `focus-trap.ts`                      |
-| `autogrow`                | Auto-resize textarea to content                               | `autogrow.svelte.ts`                 |
-| `autoscroll`              | Auto-scroll container to bottom                               | `autoscroll.ts`                      |
-| `dimBehind`               | Dim everything behind a target element (simplified spotlight) | `dim-behind/`                        |
-| `fileDropzone`            | Drag-and-drop file handling                                   | `file-dropzone.svelte.ts`            |
-| `highlightDragover`       | Visual feedback on drag-over                                  | `highlight-dragover.svelte.ts`       |
-| `resizableWidth`          | Draggable width resizing                                      | `resizable-width.svelte.ts`          |
-| `draggable`               | Pointer-delta drag handle (consumer owns the movement)        | `draggable.svelte.ts`                |
-| `trim`                    | Auto-trim whitespace from input                               | `trim.svelte.ts`                     |
-| `typeahead`               | Advanced autocomplete behavior                                | `typeahead.svelte.ts`                |
-| `onSubmitValidityCheck`   | Form submit validation                                        | `on-submit-validity-check.svelte.ts` |
-| `popover`                 | Popover positioning                                           | `popover/`                           |
-| `spotlight`               | Spotlight/coach mark overlay with cutout hole                 | `spotlight/`                         |
-| `tooltip`                 | Tooltip positioning and display                               | `tooltip/`                           |
-| `createTour` / `tourStep` | Multi-step onboarding tour (built on spotlight)               | `onboarding/`                        |
+| Action                    | Purpose                                                                 | File                                 |
+| ------------------------- | ----------------------------------------------------------------------- | ------------------------------------ |
+| `validate`                | Form field validation with i18n support                                 | `validate.svelte.ts`                 |
+| `focusTrap`               | Keyboard focus containment (modals/dialogs)                             | `focus-trap.ts`                      |
+| `autogrow`                | Auto-resize textarea to content                                         | `autogrow.svelte.ts`                 |
+| `autoscroll`              | Auto-scroll container to bottom                                         | `autoscroll.ts`                      |
+| `dimBehind`               | Dim everything behind a target element (simplified spotlight)           | `dim-behind/`                        |
+| `fileDropzone`            | Drag-and-drop file handling                                             | `file-dropzone.svelte.ts`            |
+| `highlightDragover`       | Visual feedback on drag-over                                            | `highlight-dragover.svelte.ts`       |
+| `resizableWidth`          | Draggable width resizing (thin wrapper over the `resizable` attachment) | `resizable-width.svelte.ts`          |
+| `draggable`               | Pointer-delta drag handle (consumer owns the movement)                  | `draggable.svelte.ts`                |
+| `trim`                    | Auto-trim whitespace from input                                         | `trim.svelte.ts`                     |
+| `typeahead`               | Advanced autocomplete behavior                                          | `typeahead.svelte.ts`                |
+| `onSubmitValidityCheck`   | Form submit validation                                                  | `on-submit-validity-check.svelte.ts` |
+| `popover`                 | Popover positioning                                                     | `popover/`                           |
+| `spotlight`               | Spotlight/coach mark overlay with cutout hole                           | `spotlight/`                         |
+| `tooltip`                 | Tooltip positioning and display                                         | `tooltip/`                           |
+| `createTour` / `tourStep` | Multi-step onboarding tour (built on spotlight)                         | `onboarding/`                        |
 
 ---
 

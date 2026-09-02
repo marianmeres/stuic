@@ -57,9 +57,14 @@ Checked first, to avoid false positives:
 
 ## Tier 3 — common, but judge by actual app needs
 
-8. **SplitPane / resizable panels** — general two-pane draggable splitter
-   (horizontal/vertical, min/max, persisted size). `actions/resizable-width`,
-   `WithSidePanel`, and `persistent-state` already provide the pieces.
+8. ~~**SplitPane / resizable panels**~~ — ✅ shipped (see `src/lib/components/SplitPane/`
+   and `src/lib/attachments/resizable.ts`): the `resizable-width` action generalised into a
+   `resizable` attachment (`axis: "x" | "y"`, `px` / `%`, `min` / `max`, `key` persistence,
+   `handle` for an own separator, `onInit` api) whose handle is an ARIA window splitter
+   (arrows / Home / End / Enter); `resizableWidth` stays as a thin wrapper over it, so
+   `WithSidePanel` got the keyboard for free. `SplitPane` wraps it: `start` / `end`
+   snippets, `orientation`, `primary`, `bind:size`, `reset()`, `disabled`, tokens, `t` with
+   Slovak bundled.
 9. ~~**Range slider (dual-thumb)**~~ — ✅ shipped (see `src/lib/components/RangeSlider/`):
    `Slider`'s two-value sibling — `bind:start` / `bind:end` on one track with the fill
    between them; nearest-thumb press, grab-to-drag, thumbs never cross (`minRange`),

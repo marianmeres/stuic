@@ -15,10 +15,11 @@ re-exported from the package root (`src/lib/index.ts`).
 
 ## Available Attachments
 
-| Attachment   | Purpose                                                      | File             |
-| ------------ | ------------------------------------------------------------ | ---------------- |
-| `autoHeight` | Animate a host's height to its single child's natural height | `auto-height.ts` |
-| `longPress`  | Detect a touch/pen long-press on the host (factory)          | `long-press.ts`  |
+| Attachment   | Purpose                                                                   | File             |
+| ------------ | ------------------------------------------------------------------------- | ---------------- |
+| `autoHeight` | Animate a host's height to its single child's natural height              | `auto-height.ts` |
+| `longPress`  | Detect a touch/pen long-press on the host (factory)                       | `long-press.ts`  |
+| `resizable`  | Drag / keyboard resizable width or height, ARIA window splitter (factory) | `resizable.ts`   |
 
 ---
 
@@ -141,6 +142,67 @@ Options: `onLongPress` (required), `duration`, `moveTolerance`, `pointerTypes`,
 
 ---
 
+## `resizable`
+
+Factory returning an attachment that makes the host's **width** (`axis: "x"`, default) or
+**height** (`axis: "y"`) resizable by dragging its edge. The generalised core of the older
+`resizableWidth` action (now a thin wrapper over it) and of the `SplitPane` component.
+
+```svelte
+<script>
+	import { resizable } from "@marianmeres/stuic";
+</script>
+
+<!-- a draggable sidebar width -->
+<div class="flex">
+	<aside {@attach resizable({ initial: 300, min: 200, max: 600, key: "sidebar" })}>
+		…
+	</aside>
+	<main class="flex-1">…</main>
+</div>
+
+<!-- a draggable height, in % of the (definite-height) parent -->
+<div class="flex flex-col h-96">
+	<div {@attach resizable({ axis: "y", units: "%", initial: 40, max: 80 })}>…</div>
+	<div class="flex-1">…</div>
+</div>
+```
+
+Semantics worth knowing:
+
+- **The handle is an ARIA window splitter** — focusable `role="separator"` with
+  `aria-orientation`, `aria-label` (`label`, default "Resize"), `aria-valuenow` / `min` /
+  `max` / `valuetext` in `units` and `aria-controls` → the host (which gets an id if it has
+  none). Arrow keys along the axis move it by `step` (default `10` px / `1` %; Shift ×10),
+  Home / End go to `min` / `max` (or 0 / the container), Enter — like double-click — resets.
+  Pointer Events with capture cover mouse, touch and pen; `data-resizing` sits on the handle
+  while a drag is in progress, and the body gets a resize cursor + `user-select: none`.
+- **Created or provided handle.** By default a thin strip with a grip is appended inside the
+  host on the resized edge (`reverse` moves it to the start edge — left / top — and inverts
+  the drag, for a host sitting at the end of its container) and the host becomes
+  `position: relative`. Pass `handle` to drive an element of your own instead (a sibling
+  separator, say — what `SplitPane` does): it receives the semantics, the listeners and
+  `touch-action: none`, no styling; everything is restored on cleanup.
+- **Sizes are in `units`**: `px`, or `%` of the parent element along the axis (the parent
+  needs a definite height for `axis: "y"` + `%`). `min` / `max` clamp every path — drag,
+  keys, `api.set()`.
+- **`initial` vs stored.** `initial` (`0` = leave the CSS size alone) applies on setup unless
+  a size is stored under `key` (`resizable-width-<key>` / `resizable-height-<key>`;
+  `sessionStorage` by default, `storage: "local"` for localStorage). Reset restores
+  `resetTo`, which defaults to `initial`.
+- **Imperative api** through `onInit(api)`: `api.set(size)` (clamped, persisted, announced,
+  reported), `api.reset()`, `api.current`.
+- **Reactivity.** Options read in the template expression re-run the attachment, as do
+  reactive reads inside an options _function_ (`resizable(() => ({ … }))`). A re-run tears
+  the handle down and re-applies the (stored or initial) size, so don't feed it state that the
+  drag itself writes — read that with `untrack`, or pass it as `initial` once.
+
+Options: `enabled`, `axis`, `initial`, `min`, `max`, `units`, `reverse`, `key`, `storage`,
+`step`, `label`, `resetTo`, `handle`, `handleClass`, `handleDragClass`, `onResize`, `onInit`,
+`debug`.
+
+---
+
 ## Attachment File Pattern
 
 An attachment is a function `(node) => cleanup?`, typed `Attachment<T>` from `svelte/attachments`.
@@ -171,8 +233,9 @@ it needs `$state` / `$derived` / a nested `$effect`.
 
 ## Key Files
 
-| File                               | Purpose                        |
-| ---------------------------------- | ------------------------------ |
-| src/lib/attachments/index.ts       | All attachment exports         |
-| src/lib/attachments/auto-height.ts | Height-animation attachment    |
-| src/lib/attachments/long-press.ts  | Long-press detection (factory) |
+| File                               | Purpose                            |
+| ---------------------------------- | ---------------------------------- |
+| src/lib/attachments/index.ts       | All attachment exports             |
+| src/lib/attachments/auto-height.ts | Height-animation attachment        |
+| src/lib/attachments/long-press.ts  | Long-press detection (factory)     |
+| src/lib/attachments/resizable.ts   | Resizable width / height (factory) |

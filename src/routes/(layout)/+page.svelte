@@ -75,6 +75,7 @@
 		'spotlight',
 		'spinner',
 		'split-button',
+		'split-pane',
 		'stat',
 		'stepper',
 		'style-presets',

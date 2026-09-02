@@ -2,26 +2,27 @@
 
 ## Overview
 
-77 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
+78 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
 ### Layout
 
-| Component                | Purpose                                            |
-| ------------------------ | -------------------------------------------------- |
-| AppShell, AppShellSimple | Page layouts with header/sidebar/content           |
-| Header                   | Responsive nav header with hamburger collapse      |
-| Modal, ModalDialog       | Overlay containers                                 |
-| Drawer                   | Side panel overlay                                 |
-| Backdrop                 | Semi-transparent overlay with escape/focus trap    |
-| Collapsible              | Expandable sections                                |
-| Accordion                | Exclusive/multi-open expandable sections           |
-| SlidingPanels            | Panel transitions                                  |
-| TabbedMenu               | Tab navigation                                     |
-| Nav                      | Navigation wrapper                                 |
-| Breadcrumbs              | Breadcrumb trail (collapse + JSON-LD helpers)      |
-| WithSidePanel            | Two-column layout with collapsible/resizable panel |
+| Component                | Purpose                                                                    |
+| ------------------------ | -------------------------------------------------------------------------- |
+| AppShell, AppShellSimple | Page layouts with header/sidebar/content                                   |
+| Header                   | Responsive nav header with hamburger collapse                              |
+| Modal, ModalDialog       | Overlay containers                                                         |
+| Drawer                   | Side panel overlay                                                         |
+| Backdrop                 | Semi-transparent overlay with escape/focus trap                            |
+| Collapsible              | Expandable sections                                                        |
+| Accordion                | Exclusive/multi-open expandable sections                                   |
+| SlidingPanels            | Panel transitions                                                          |
+| TabbedMenu               | Tab navigation                                                             |
+| Nav                      | Navigation wrapper                                                         |
+| Breadcrumbs              | Breadcrumb trail (collapse + JSON-LD helpers)                              |
+| WithSidePanel            | Two-column layout with collapsible/resizable panel                         |
+| SplitPane                | Two panes, a draggable keyboard-operable separator (horizontal / vertical) |
 
 ### Interactive
 
@@ -1145,6 +1146,51 @@ Class slots: `class`, `classItem`, `classIcon`. Reserved root handlers: `onkeydo
 Prefix: `--stuic-rating-*`
 
 `size` (unset; `size` presets 1.125 / 1.5 / 2rem), `gap`, `icon-color`, `icon-color-empty`, `icon-scale-hover`, `ring-width`, `ring-color`, `radius`, `transition`, `opacity-disabled`
+
+---
+
+## SplitPane
+
+Two panes with one draggable separator between them — `horizontal` puts them side by side and resizes the primary pane's width, `vertical` stacks them and resizes its height; the other pane flexes into the rest (`min-width/height: 0`, `overflow: auto`, so long content scrolls inside a pane). Nestable. Built on the `resizable` attachment with the separator as its `handle`, so the separator is an ARIA window splitter: focusable `role="separator"`, `aria-orientation`, `aria-valuenow` / `min` / `max` in `units`, `aria-controls` → the primary pane; arrows along the axis (Shift ×10), Home / End to the bounds, Enter (or double-click) resets; Pointer Events with capture for mouse / touch / pen. `bind:size` mirrors every resize and writing it resizes (clamped, persisted, announced); a size stored under `key` wins on mount and is written back; `reset()` (and Enter) restore the size the component mounted with. `disabled` keeps the layout and renders the separator inert.
+
+### Exports
+
+| Export                   | Kind      | Description                                          |
+| ------------------------ | --------- | ---------------------------------------------------- |
+| `SplitPane`              | component | Main component                                       |
+| `SplitPaneProps`         | type      | Props type                                           |
+| `SplitPaneOrientation`   | type      | `"horizontal" \| "vertical"`                         |
+| `SplitPanePrimary`       | type      | `"start" \| "end"`                                   |
+| `createSplitPaneT`       | function  | Builds the `t` prop from a (partial) message catalog |
+| `SPLIT_PANE_MESSAGES_EN` | constant  | Built-in English catalog (also the fallback)         |
+| `SPLIT_PANE_MESSAGES_SK` | constant  | Bundled Slovak catalog (opt-in)                      |
+| `SplitPaneMessageKey`    | type      | Message key union                                    |
+| `SplitPaneMessages`      | type      | One locale's catalog                                 |
+
+### Key Props
+
+| Prop              | Type                                        | Default             | Description                                                                                                          |
+| ----------------- | ------------------------------------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `start` / `end`   | `Snippet`                                   | —                   | The two panes' content (left / right, or top / bottom when vertical)                                                 |
+| `orientation`     | `"horizontal" \| "vertical"`                | `"horizontal"`      | Side by side (a width) or stacked (a height — the container then needs a definite height)                            |
+| `primary`         | `"start" \| "end"`                          | `"start"`           | Which pane carries the size; the other one fills the rest (`end` puts the separator on the second pane's start edge) |
+| `size`            | `number`                                    | `50`                | Bindable size of the primary pane in `units`; a stored size wins on mount; writes are clamped and written back       |
+| `units`           | `"%" \| "px"`                               | `"%"`               | Of the container, or px                                                                                              |
+| `min` / `max`     | `number`                                    | `0` / `0`           | Bounds in `units` (`0` = none; `%` caps at 100)                                                                      |
+| `step`            | `number`                                    | `1` (%) / `10` (px) | Keyboard step; Shift ×10                                                                                             |
+| `key` / `storage` | `string \| number` / `"local" \| "session"` | — / `"session"`     | Persist the size (`resizable-width-<key>` / `resizable-height-<key>`)                                                |
+| `disabled`        | `boolean`                                   | `false`             | Inert separator (no drag / keys / focus, no grip); the layout stays and `size` writes still land                     |
+| `label`           | `string`                                    | `t("resize")`       | Accessible name of the separator                                                                                     |
+| `onResize`        | `(info: ResizableInfo) => void`             | —                   | Every applied size: mount, drag, keys, reset, `size` writes                                                          |
+| `t`               | `TranslateFn`                               | English             | The separator's default name ("Resize")                                                                              |
+
+Class slots: `class`, `startClass`, `endClass`, `separatorClass`. Imperative `reset()` via `bind:this`. Bindable `el` / `separatorEl`. Root data attributes: `data-orientation`, `data-disabled`; the panes carry `data-pane="start|end"` and the sized one `data-primary`; the separator `data-separator`, plus `data-resizing` while dragged. The size lands as an inline `width` / `height` on the primary pane (survives `unstyled`).
+
+### CSS Tokens
+
+Prefix: `--stuic-split-pane-*`
+
+`separator-color`, `separator-color-hover` (hover / focus / drag), `separator-thickness`, `separator-hit-area` (invisible grab zone on each side), `grip-color`, `grip-color-hover`, `grip-border-color`, `grip-length`, `grip-thickness`, `grip-radius`, `ring-color`, `transition` (falls back to `--stuic-transition`). The defaults reproduce the `resizable` attachment's built-in handle (a faint 1px line, a small rounded grip; `:root.dark` variants), palette-based rather than theme-based
 
 ---
 

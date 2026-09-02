@@ -114,6 +114,25 @@ Expandable sections with exclusive or multi-open modes.
 
 Responsive two-column layout with collapsible side panel, resizable width, and mobile-aware slide transitions.
 
+#### `SplitPane`
+
+Two panes with a draggable, keyboard-operable separator (ARIA window splitter) — `horizontal` (side by side, a width) or `vertical` (stacked, a height); nestable. Built on the `resizable` attachment.
+
+| Prop            | Type                         | Default        | Description                                                               |
+| --------------- | ---------------------------- | -------------- | ------------------------------------------------------------------------- |
+| `start` / `end` | `Snippet`                    | —              | The two panes' content                                                    |
+| `orientation`   | `"horizontal" \| "vertical"` | `"horizontal"` | Resize a width (side by side) or a height (stacked)                       |
+| `primary`       | `"start" \| "end"`           | `"start"`      | Which pane carries the size; the other one fills the rest                 |
+| `size`          | `number`                     | `50`           | Bindable size of the primary pane in `units`; a stored size wins on mount |
+| `units`         | `"%" \| "px"`                | `"%"`          | Of the container, or px                                                   |
+| `min` / `max`   | `number`                     | `0`            | Bounds in `units` (`0` = none)                                            |
+| `key`           | `string \| number`           | —              | Persist the size (`storage`: `"session"` default, or `"local"`)           |
+| `disabled`      | `boolean`                    | `false`        | Inert separator, layout kept                                              |
+| `label` / `t`   | `string` / `TranslateFn`     | `"Resize"`     | Accessible name of the separator (Slovak catalog bundled)                 |
+| `onResize`      | `(info) => void`             | —              | Every applied size                                                        |
+
+Imperative `reset()` restores the mount size. Class slots `startClass` / `endClass` / `separatorClass`.
+
 #### `Collapsible`
 
 Expandable/collapsible content sections.
@@ -1606,10 +1625,12 @@ Visual feedback (class toggle) on drag-over.
 
 ### `resizableWidth`
 
-Make an element's width draggable.
+Make an element's width draggable. A thin wrapper over the `resizable` attachment (`axis: "x"`, see [Attachments](#attachments)) — the handle is a keyboard-operable `role="separator"`, `min` / `max` clamp, `key` persists.
 
 ```svelte
-<div use:resizableWidth={() => ({ minWidth: 200, maxWidth: 600 })}>Resizable</div>
+<div use:resizableWidth={() => ({ initial: 300, min: 200, max: 600, key: "sidebar" })}>
+	Resizable
+</div>
 ```
 
 ### `trim`
@@ -1801,6 +1822,37 @@ Multi-step onboarding tour built on the spotlight primitive. Define steps centra
 When a step has `selector`, the tour uses `document.querySelector(selector)` to find the target element. If the element isn't in the DOM yet, the tour polls periodically until `waitForElement` ms elapse (same timeout as `use:tourStep`). Steps without `selector` continue to use `use:tourStep` as before — both mechanisms coexist freely.
 
 ---
+
+## Attachments
+
+Svelte `{@attach}` helpers — the preferred form for new DOM behavior (reactive, composable, forwardable through components). Imported from the package root like everything else.
+
+### `autoHeight`
+
+Animates the host's height to its single child's natural height (pair it with a CSS `height` transition).
+
+```svelte
+<div class="viewport" {@attach autoHeight}>
+	<div>…variable-height content…</div>
+</div>
+```
+
+### `longPress`
+
+Factory: calls `onLongPress` when a touch / pen pointer stays down for `duration` ms (default 500) without moving beyond `moveTolerance` px.
+
+```svelte
+<div {@attach longPress({ onLongPress: (e) => openAt(e.clientX, e.clientY) })}>…</div>
+```
+
+### `resizable`
+
+Factory: drag-resizable width (`axis: "x"`) or height (`axis: "y"`) with an ARIA window-splitter handle (arrows / Home / End / Enter), `min` / `max`, `px` or `%` of the parent, persisted under `key`; `handle` drives an element of your own, `onInit` hands out `set()` / `reset()`.
+
+```svelte
+<aside {@attach resizable({ initial: 300, min: 200, max: 600, key: "sidebar" })}>…</aside>
+<div {@attach resizable({ axis: "y", units: "%", initial: 40 })}>…</div>
+```
 
 ## Utilities
 
@@ -2328,6 +2380,7 @@ Each component defines customization tokens. Override globally in `:root {}` or 
 | Switch             | `--stuic-switch-*`              | `accent`                                                                                                                                                                                                                      |
 | Slider             | `--stuic-slider-*`              | `track`, `fill`, `thumb`, `tick`, `tick-on-fill`, `thickness`, `length`, `radius`, `fill-radius`                                                                                                                              |
 | RangeSlider        | `--stuic-range-slider-*`        | `track`, `fill`, `thumb`, `tick`, `tick-on-fill`, `thickness`, `length`, `radius`, `fill-radius`, `ring-width`, `ring-color`                                                                                                  |
+| SplitPane          | `--stuic-split-pane-*`          | `separator-color`, `separator-color-hover`, `separator-thickness`, `separator-hit-area`, `grip-color`, `grip-color-hover`, `grip-border-color`, `grip-length`, `grip-thickness`, `grip-radius`, `ring-color`, `transition`    |
 | Input              | `--stuic-input-*`               | `accent`, `accent-error`                                                                                                                                                                                                      |
 | Progress           | `--stuic-progress-*`            | `bg`, `accent`                                                                                                                                                                                                                |
 | ListItemButton     | `--stuic-list-item-button-*`    | `bg`, `text`, `border`, `bg-hover`, `text-hover`                                                                                                                                                                              |

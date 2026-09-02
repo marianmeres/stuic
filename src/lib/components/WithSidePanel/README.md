@@ -7,22 +7,22 @@ auto-hides when the container width falls below a configurable threshold
 
 ## Props
 
-| Prop                 | Type                                        | Default   | Description                                      |
-| -------------------- | ------------------------------------------- | --------- | ------------------------------------------------ |
-| `children`           | `Snippet`                                   | —         | Main content                                     |
-| `side`               | `Snippet`                                   | —         | Side panel content                               |
-| `position`           | `"left" \| "right"`                         | `"left"`  | Side panel position                              |
-| `width`              | `string`                                    | `"300px"` | Side panel width (CSS value, px or %)            |
-| `threshold`          | `number`                                    | `768`     | Container width (px) below which side auto-hides |
-| `transition`         | `boolean`                                   | `true`    | Enable Svelte slide transition                   |
-| `transitionDuration` | `number`                                    | `200`     | Transition duration in ms                        |
-| `open`               | `boolean`                                   | `true`    | Desktop visibility state (bindable)              |
-| `resizable`          | `boolean \| Partial<ResizableWidthOptions>` | `false`   | Enable drag-resizable side panel                 |
-| `classMain`          | `string`                                    | —         | Custom class for main content div                |
-| `classSide`          | `string`                                    | —         | Custom class for side panel div                  |
-| `class`              | `string`                                    | —         | Custom class for wrapper div                     |
-| `unstyled`           | `boolean`                                   | `false`   | Skip all default styling                         |
-| `el`                 | `HTMLDivElement`                            | —         | Bindable wrapper element reference               |
+| Prop                 | Type                                        | Default   | Description                                                                              |
+| -------------------- | ------------------------------------------- | --------- | ---------------------------------------------------------------------------------------- |
+| `children`           | `Snippet`                                   | —         | Main content                                                                             |
+| `side`               | `Snippet`                                   | —         | Side panel content                                                                       |
+| `position`           | `"left" \| "right"`                         | `"left"`  | Side panel position                                                                      |
+| `width`              | `string`                                    | `"300px"` | Side panel width (CSS value, px or %)                                                    |
+| `threshold`          | `number`                                    | `768`     | Container width (px) below which side auto-hides                                         |
+| `transition`         | `boolean`                                   | `true`    | Enable Svelte slide transition                                                           |
+| `transitionDuration` | `number`                                    | `200`     | Transition duration in ms                                                                |
+| `open`               | `boolean`                                   | `true`    | Desktop visibility state (bindable)                                                      |
+| `resizable`          | `boolean \| Partial<ResizableWidthOptions>` | `false`   | Enable drag-resizable side panel (the edge handle is also a keyboard-operable separator) |
+| `classMain`          | `string`                                    | —         | Custom class for main content div                                                        |
+| `classSide`          | `string`                                    | —         | Custom class for side panel div                                                          |
+| `class`              | `string`                                    | —         | Custom class for wrapper div                                                             |
+| `unstyled`           | `boolean`                                   | `false`   | Skip all default styling                                                                 |
+| `el`                 | `HTMLDivElement`                            | —         | Bindable wrapper element reference                                                       |
 
 ## API (via `bind:this`)
 
@@ -66,6 +66,9 @@ auto-hides when the container width falls below a configurable threshold
 ```
 
 ### Resizable
+
+The edge handle is a focusable `role="separator"` (the `resizable` attachment's): arrow keys
+resize it (Shift ×10), Home / End go to `min` / `max`, Enter or double-click resets.
 
 ```svelte
 <WithSidePanel resizable={{ min: 200, max: 500, key: "sidebar", storage: "local" }}>

@@ -1,0 +1,153 @@
+/* ============================================================================
+   SPLIT PANE COMPONENT TOKENS
+   Override globally: :root { --stuic-split-pane-separator-color: red; }
+   Override locally:  <SplitPane style="--stuic-split-pane-separator-color: red;" />
+
+   The defaults reproduce the `resizable` attachment's built-in handle (the one
+   `resizableWidth` / `WithSidePanel` show): a faint 1px line with a small rounded grip.
+   ============================================================================ */
+
+:root {
+	/* the separator line */
+	--stuic-split-pane-separator-color: rgb(0 0 0 / 0.2);
+	/* … while hovered, focused or dragged */
+	--stuic-split-pane-separator-color-hover: rgb(0 0 0 / 0.3);
+	--stuic-split-pane-separator-thickness: 1px;
+	/* invisible grab zone added on each side of the line */
+	--stuic-split-pane-separator-hit-area: 4px;
+	/* the centered grip on the line */
+	--stuic-split-pane-grip-color: var(--color-gray-300);
+	--stuic-split-pane-grip-color-hover: var(--color-gray-400);
+	--stuic-split-pane-grip-border-color: rgb(0 0 0 / 0.2);
+	--stuic-split-pane-grip-length: 20px;
+	--stuic-split-pane-grip-thickness: 9px;
+	--stuic-split-pane-grip-radius: 0.25rem;
+	--stuic-split-pane-ring-color: var(--stuic-color-ring);
+}
+
+:root.dark {
+	--stuic-split-pane-separator-color: rgb(255 255 255 / 0.1);
+	--stuic-split-pane-separator-color-hover: rgb(255 255 255 / 0.2);
+	--stuic-split-pane-grip-color: var(--color-gray-600);
+	--stuic-split-pane-grip-color-hover: var(--color-gray-500);
+	--stuic-split-pane-grip-border-color: rgb(255 255 255 / 0.2);
+}
+
+@layer components {
+	/* fills its container (a definite container height is what makes the panes scroll
+	   instead of growing — and what `%` resolves against when vertical) */
+	.stuic-split-pane {
+		display: flex;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+	}
+
+	.stuic-split-pane[data-orientation="horizontal"] {
+		flex-direction: row;
+	}
+
+	.stuic-split-pane[data-orientation="vertical"] {
+		flex-direction: column;
+	}
+
+	/* the non-primary pane fills what is left and may shrink below its content */
+	.stuic-split-pane-pane {
+		flex: 1 1 0%;
+		min-width: 0;
+		min-height: 0;
+		overflow: auto;
+	}
+
+	/* the primary pane is exactly its (inline) width / height */
+	.stuic-split-pane-pane[data-primary] {
+		flex: 0 0 auto;
+	}
+
+	.stuic-split-pane-separator {
+		position: relative;
+		z-index: 1;
+		flex: 0 0 var(--stuic-split-pane-separator-thickness);
+		background: var(--stuic-split-pane-separator-color);
+		touch-action: none;
+		user-select: none;
+		outline: none;
+		transition: background-color
+			var(--stuic-split-pane-transition, var(--stuic-transition));
+	}
+
+	.stuic-split-pane[data-orientation="horizontal"] > .stuic-split-pane-separator {
+		cursor: col-resize;
+	}
+
+	.stuic-split-pane[data-orientation="vertical"] > .stuic-split-pane-separator {
+		cursor: row-resize;
+	}
+
+	/* grab zone: wider than the line, invisible, paints above the panes (z-index) */
+	.stuic-split-pane-separator::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+	}
+
+	.stuic-split-pane[data-orientation="horizontal"] > .stuic-split-pane-separator::before {
+		inset-inline: calc(-1 * var(--stuic-split-pane-separator-hit-area));
+	}
+
+	.stuic-split-pane[data-orientation="vertical"] > .stuic-split-pane-separator::before {
+		inset-block: calc(-1 * var(--stuic-split-pane-separator-hit-area));
+	}
+
+	/* grip: a small rounded tab centered on the line */
+	.stuic-split-pane-separator::after {
+		content: "";
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		translate: -50% -50%;
+		box-sizing: border-box;
+		border: 1px solid var(--stuic-split-pane-grip-border-color);
+		border-radius: var(--stuic-split-pane-grip-radius);
+		background: var(--stuic-split-pane-grip-color);
+		transition: background-color
+			var(--stuic-split-pane-transition, var(--stuic-transition));
+	}
+
+	.stuic-split-pane[data-orientation="horizontal"] > .stuic-split-pane-separator::after {
+		width: var(--stuic-split-pane-grip-thickness);
+		height: var(--stuic-split-pane-grip-length);
+	}
+
+	.stuic-split-pane[data-orientation="vertical"] > .stuic-split-pane-separator::after {
+		width: var(--stuic-split-pane-grip-length);
+		height: var(--stuic-split-pane-grip-thickness);
+	}
+
+	.stuic-split-pane-separator:hover,
+	.stuic-split-pane-separator:focus-visible,
+	.stuic-split-pane-separator[data-resizing] {
+		background: var(--stuic-split-pane-separator-color-hover);
+	}
+
+	.stuic-split-pane-separator:hover::after,
+	.stuic-split-pane-separator:focus-visible::after,
+	.stuic-split-pane-separator[data-resizing]::after {
+		background: var(--stuic-split-pane-grip-color-hover);
+	}
+
+	.stuic-split-pane-separator:focus-visible {
+		outline: 2px solid var(--stuic-split-pane-ring-color);
+		outline-offset: 0;
+	}
+
+	/* inert: a plain divider */
+	.stuic-split-pane[data-disabled] > .stuic-split-pane-separator {
+		cursor: default;
+		background: var(--stuic-split-pane-separator-color);
+	}
+
+	.stuic-split-pane[data-disabled] > .stuic-split-pane-separator::after {
+		display: none;
+	}
+}

@@ -167,7 +167,7 @@ See [API.md](API.md) for the full list of exported theme types (`ThemeSchema`, `
 
 ### Layout & Overlays
 
-AppShell, Accordion, Backdrop, Modal, ModalDialog, Drawer, Collapsible, Header, SlidingPanels, Nav, WithSidePanel
+AppShell, Accordion, Backdrop, Modal, ModalDialog, Drawer, Collapsible, Header, SlidingPanels, Nav, WithSidePanel, SplitPane
 
 ### Forms & Inputs
 
@@ -205,6 +205,18 @@ Cart, Checkout (CheckoutProgress, CheckoutOrderSummary, CheckoutCartReview, Chec
 ```
 
 `autogrow` · `validate` · `focusTrap` · `autoscroll` · `dimBehind` · `fileDropzone` · `highlightDragover` · `resizableWidth` · `spotlight` · `trim` · `typeahead` · `onSubmitValidityCheck` · `popover` · `tooltip` · `createTour` / `tourStep` (onboarding)
+
+## Attachments
+
+Svelte `{@attach}` helpers — preferred over new actions (reactive, composable, forwardable).
+
+```svelte
+<div {@attach autoHeight}>…</div>
+<aside {@attach resizable({ initial: 300, min: 200, max: 600, key: "sidebar" })}>…</aside>
+<div {@attach longPress({ onLongPress: (e) => openAt(e.clientX, e.clientY) })}>…</div>
+```
+
+`autoHeight` · `longPress` · `resizable`
 
 ## PWA safe-area insets
 
