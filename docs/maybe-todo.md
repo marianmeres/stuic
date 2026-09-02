@@ -49,8 +49,11 @@ Checked first, to avoid false positives:
    reusable `longPress` attachment), Shift+F10 / menu key.
 6. ~~**EmptyState**~~ — ✅ shipped (see `src/lib/components/EmptyState/`): icon +
    title + description + CTA placeholder for empty lists/tables/search results.
-7. **Rating (stars)** — display + input variants. `FieldLikeButton` is adjacent but not
-   this.
+7. ~~**Rating (stars)**~~ — ✅ shipped (see `src/lib/components/Rating/`): input
+   (radiogroup of per-star radios, half steps, hover preview, click-again-to-clear,
+   keyboard, hidden input + `validate` with `required`) and `readonly` display
+   (`role="img"`, fractional fill); custom `icon` / `iconEmpty`, `intent`, sizes,
+   `t` texts with Slovak bundled.
 
 ## Tier 3 — common, but judge by actual app needs
 

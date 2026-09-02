@@ -1,0 +1,170 @@
+/* ============================================================================
+   RATING COMPONENT TOKENS
+   Override globally: :root { --stuic-rating-icon-color: gold; }
+   Override locally:  <Rating style="--stuic-rating-size: 2.5rem;">
+   ============================================================================ */
+
+/* prettier-ignore */
+:root {
+	/* Layout — `--stuic-rating-size` is intentionally unset: the `size` presets
+	   below provide the defaults, and setting it overrides whichever preset is on. */
+	--stuic-rating-gap: 0.125rem;
+
+	/* Symbol colors — the filled color is a fixed "star amber" on purpose (like
+	   every comparable library): it must read as a rating on any theme, including
+	   the monochrome ones where the warning intent is grey. Use `intent` (or
+	   override this token) to color by theme instead. The empty layer is a faint
+	   tint of the surrounding text color, so it adapts to light/dark. */
+	--stuic-rating-icon-color: #f59e0b;
+	--stuic-rating-icon-color-empty: color-mix(in srgb, currentColor 20%, transparent);
+
+	/* Hover preview */
+	--stuic-rating-icon-scale-hover: 1.15;
+
+	/* Focus ring */
+	--stuic-rating-ring-width: 3px;
+	--stuic-rating-ring-color: var(--stuic-color-ring);
+
+	/* Disabled */
+	--stuic-rating-opacity-disabled: 0.5;
+}
+
+@layer components {
+	/* ============================================================================
+	   BASE
+	   ============================================================================ */
+
+	.stuic-rating {
+		--_size: var(--stuic-rating-size, 1.5rem);
+		--_color: var(--stuic-rating-icon-color);
+		display: inline-flex;
+		align-items: center;
+		gap: var(--stuic-rating-gap);
+		vertical-align: middle;
+		/* keep the scaled hover symbol from being clipped by an ancestor */
+		line-height: 1;
+	}
+
+	.stuic-rating[data-size="sm"] {
+		--_size: var(--stuic-rating-size, 1.125rem);
+	}
+	/* md is the base default (1.5rem) */
+	.stuic-rating[data-size="lg"] {
+		--_size: var(--stuic-rating-size, 2rem);
+	}
+
+	.stuic-rating[data-disabled] {
+		opacity: var(--stuic-rating-opacity-disabled);
+	}
+
+	/* ============================================================================
+	   INTENT (colors the filled layer)
+	   ============================================================================ */
+
+	.stuic-rating[data-intent="primary"] {
+		--_color: var(--stuic-color-primary);
+	}
+	.stuic-rating[data-intent="accent"] {
+		--_color: var(--stuic-color-accent);
+	}
+	.stuic-rating[data-intent="success"] {
+		--_color: var(--stuic-color-success);
+	}
+	.stuic-rating[data-intent="warning"] {
+		--_color: var(--stuic-color-warning);
+	}
+	.stuic-rating[data-intent="destructive"] {
+		--_color: var(--stuic-color-destructive);
+	}
+
+	/* ============================================================================
+	   ITEM (one symbol: icon stack + hit zones)
+	   ============================================================================ */
+
+	.stuic-rating-item {
+		position: relative;
+		display: inline-block;
+		flex-shrink: 0;
+		width: var(--_size);
+		height: var(--_size);
+		transition: transform var(--stuic-rating-transition, var(--stuic-transition));
+	}
+
+	.stuic-rating-item[data-hover] {
+		transform: scale(var(--stuic-rating-icon-scale-hover));
+	}
+
+	/* ============================================================================
+	   ICON STACK — the empty symbol underneath, the filled one clipped on top.
+	   `--stuic-rating-fill` (0–100%) is set inline per item by the component.
+	   ============================================================================ */
+
+	.stuic-rating-icon {
+		position: absolute;
+		inset: 0;
+		display: block;
+		color: var(--stuic-rating-icon-color-empty);
+	}
+
+	.stuic-rating-icon svg {
+		display: block;
+		width: var(--_size);
+		height: var(--_size);
+	}
+
+	.stuic-rating-icon-empty,
+	.stuic-rating-icon-fill {
+		position: absolute;
+		inset-block: 0;
+		inset-inline-start: 0;
+		width: 100%;
+	}
+
+	/* The clip: a block child sits at the inline-start edge and overflows toward
+	   inline-end, so the visible part is the start side in LTR and RTL alike. */
+	.stuic-rating-icon-fill {
+		width: var(--stuic-rating-fill, 0%);
+		overflow: hidden;
+		color: var(--_color);
+		transition: width var(--stuic-rating-transition, var(--stuic-transition));
+	}
+
+	/* ============================================================================
+	   ZONE (the transparent radio button over a symbol, or over half of it)
+	   ============================================================================ */
+
+	.stuic-rating-zone {
+		position: absolute;
+		inset: 0;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		background: none;
+		appearance: none;
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	.stuic-rating-zone[data-half="start"] {
+		inset-inline-end: 50%;
+	}
+
+	.stuic-rating-zone[data-half="end"] {
+		inset-inline-start: 50%;
+	}
+
+	.stuic-rating-zone:disabled {
+		cursor: default;
+	}
+
+	.stuic-rating-zone:focus-visible {
+		outline: none;
+	}
+
+	/* the ring goes around the whole symbol, not the (half) zone */
+	.stuic-rating-item:has(.stuic-rating-zone:focus-visible) {
+		outline: var(--stuic-rating-ring-width) solid var(--stuic-rating-ring-color);
+		outline-offset: 2px;
+		border-radius: var(--stuic-rating-radius, var(--stuic-radius));
+	}
+}

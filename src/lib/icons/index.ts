@@ -68,6 +68,10 @@ export { iconLucideUser as iconUser } from "@marianmeres/icons-fns/lucide/iconLu
 export { iconLucideX as iconX } from "@marianmeres/icons-fns/lucide/iconLucideX.js";
 export { iconLucidePencil as iconPencil } from "@marianmeres/icons-fns/lucide/iconLucidePencil.js";
 
+// Rating Icons (Bootstrap)
+export { iconBsStar as iconStar } from "@marianmeres/icons-fns/bootstrap/iconBsStar.js";
+export { iconBsStarFill as iconStarFill } from "@marianmeres/icons-fns/bootstrap/iconBsStarFill.js";
+
 // Markdown Editor / formatting toolbar Icons (Lucide)
 // (bullet list reuses `iconList` and horizontal rule reuses `iconMinus` above)
 export { iconLucideBold as iconBold } from "@marianmeres/icons-fns/lucide/iconLucideBold.js";

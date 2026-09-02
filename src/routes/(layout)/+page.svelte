@@ -64,6 +64,7 @@
 		'popover',
 		'pricing-table',
 		'progress',
+		'rating',
 		'register-form',
 		'resizable-width',
 		'separator', 

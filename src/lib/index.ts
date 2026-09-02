@@ -80,6 +80,7 @@ export * from "./components/Pagination/index.js";
 export * from "./components/Pill/index.js";
 export * from "./components/PricingTable/index.js";
 export * from "./components/Progress/index.js";
+export * from "./components/Rating/index.js";
 export * from "./components/Separator/index.js";
 export * from "./components/Skeleton/index.js";
 export * from "./components/Slider/index.js";

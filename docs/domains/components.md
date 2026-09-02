@@ -2,7 +2,7 @@
 
 ## Overview
 
-75 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
+76 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
@@ -25,22 +25,23 @@
 
 ### Interactive
 
-| Component            | Purpose                                                                                   |
-| -------------------- | ----------------------------------------------------------------------------------------- |
-| Button               | Actions with intent/variant/size                                                          |
-| CopyButton           | Click-to-copy Button with copied/error feedback; `copyToClipboard()` util for code        |
-| ButtonGroupRadio     | Toggle group (single selection)                                                           |
-| Switch               | Boolean toggle                                                                            |
-| Slider               | Fancy range input (fill + optional thumb)                                                 |
-| TwCheck              | Styled checkbox/radio                                                                     |
-| DropdownMenu         | Popover menu                                                                              |
-| ContextMenu          | Right-click / long-press menu at the cursor (the DropdownMenu engine + trigger semantics) |
-| CommandMenu          | Command palette (keyboard-driven)                                                         |
-| Pagination           | Standalone pager: compact prev/next or windowed page numbers; DataTable-compatible        |
-| Stepper              | Numbered step indicator for wizard/checkout flows; optional click navigation              |
-| TypeaheadInput       | Autocomplete input                                                                        |
-| ColorScheme          | Dark/light mode management with persistence                                               |
-| HoverExpandableWidth | Width-expanding container on hover                                                        |
+| Component            | Purpose                                                                                         |
+| -------------------- | ----------------------------------------------------------------------------------------------- |
+| Button               | Actions with intent/variant/size                                                                |
+| CopyButton           | Click-to-copy Button with copied/error feedback; `copyToClipboard()` util for code              |
+| ButtonGroupRadio     | Toggle group (single selection)                                                                 |
+| Switch               | Boolean toggle                                                                                  |
+| Slider               | Fancy range input (fill + optional thumb)                                                       |
+| Rating               | Star rating: radiogroup input (half steps, hover preview, form + validate) or read-only display |
+| TwCheck              | Styled checkbox/radio                                                                           |
+| DropdownMenu         | Popover menu                                                                                    |
+| ContextMenu          | Right-click / long-press menu at the cursor (the DropdownMenu engine + trigger semantics)       |
+| CommandMenu          | Command palette (keyboard-driven)                                                               |
+| Pagination           | Standalone pager: compact prev/next or windowed page numbers; DataTable-compatible              |
+| Stepper              | Numbered step indicator for wizard/checkout flows; optional click navigation                    |
+| TypeaheadInput       | Autocomplete input                                                                              |
+| ColorScheme          | Dark/light mode management with persistence                                                     |
+| HoverExpandableWidth | Width-expanding container on hover                                                              |
 
 ### Feedback
 
@@ -152,7 +153,7 @@ Use `validate={false}` to bypass stuic's validation entirely.
 
 > **Why default-on?** Hidden-input field components (`FieldPhoneNumber`,
 > `FieldCountry`, `FieldObject`, `FieldAssets`, `FieldInputLocalized`,
-> `FieldKeyValues`, `FieldLikeButton`, `FieldDate`, `FieldDateRange`) _must_ be default-on because hidden
+> `FieldKeyValues`, `FieldLikeButton`, `FieldDate`, `FieldDateRange`, `Rating`) _must_ be default-on because hidden
 > inputs are excluded from native browser constraint validation — without the
 > stuic action enforcing `required` in a `customValidator`, the attribute is a
 > silent no-op. Plain-input field components were harmonized to the same
@@ -1048,6 +1049,51 @@ Prefix: `--stuic-pagination-*`
 `gap`, `button-min-width`, `info-font-size`, `info-text`, `ellipsis-text`
 
 `button-min-width` defaults to `--stuic-button-min-height-sm` so single-character buttons stay square-ish.
+
+---
+
+## Rating
+
+Star rating — input and display in one. Input mode is a `role="radiogroup"` of `role="radio"` buttons (one per symbol, two with `allowHalf`), each labeled "N of M stars": hover preview, roving tabindex + arrow/Home/End/Delete keys, click-the-selected-again-to-clear (`allowClear`), a hidden input for `name`/value and the `validate` action with `required` enforced (hidden inputs skip native constraint validation). `readonly` is the display variant: `role="img"` with the value announcement, any fraction rendered (4.2 → a 20% fifth star). Symbols are two stacked copies of an svg (empty muted below, filled clipped to the value on top), so any `currentColor` icon works; the filled color is a fixed star amber by design (theme-independent — monochrome themes grey out the warning intent), `intent` colors by theme instead.
+
+### Exports
+
+| Export               | Kind      | Description                                            |
+| -------------------- | --------- | ------------------------------------------------------ |
+| `Rating`             | component | Main component                                         |
+| `RatingProps`        | type      | Props type                                             |
+| `RatingSize`         | type      | `"sm" \| "md" \| "lg"`                                 |
+| `RatingItemState`    | type      | `"full" \| "partial" \| "empty"` (symbol `data-state`) |
+| `createRatingT`      | function  | Builds the `t` prop from a (partial) message catalog   |
+| `RATING_MESSAGES_EN` | constant  | Built-in English catalog (also the fallback)           |
+| `RATING_MESSAGES_SK` | constant  | Bundled Slovak catalog (opt-in)                        |
+| `RatingMessageKey`   | type      | Message key union                                      |
+| `RatingMessages`     | type      | One locale's catalog                                   |
+
+`iconStar` / `iconStarFill` (Bootstrap) are on the icons barrel — the filled one is the default symbol, the outline one the usual `iconEmpty`.
+
+### Key Props
+
+| Prop                                                  | Type                      | Default | Description                                                                                                                                    |
+| ----------------------------------------------------- | ------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `value`                                               | `number`                  | `0`     | Bindable; 0 = none. Rendered clamped to `[0, max]`, snapped to whole/half in input mode                                                        |
+| `max`                                                 | `number`                  | `5`     | Number of symbols                                                                                                                              |
+| `allowHalf`                                           | `boolean`                 | `false` | Half-symbol values (two hit zones per symbol, arrows step 0.5)                                                                                 |
+| `allowClear`                                          | `boolean`                 | `true`  | Re-click the selected symbol / Delete / Backspace → 0                                                                                          |
+| `readonly`                                            | `boolean`                 | `false` | Display variant (`role="img"`, fractional fill, no input)                                                                                      |
+| `intent`                                              | `IntentColorKey`          | —       | Theme color of the filled symbols (unset = fixed amber `--stuic-rating-icon-color`)                                                            |
+| `icon` / `iconEmpty`                                  | `string`                  | star    | Raw svg/html of the filled / empty symbol (empty defaults to the same icon, muted)                                                             |
+| `name`, `required`, `validate`, `setValidationResult` |                           |         | Form integration — same contract as the `Field*` components; imperative `validate()` / `clearValidation()` / `getValidation()` via `bind:this` |
+| `onchange`                                            | `(value: number) => void` | —       | User-driven value changes                                                                                                                      |
+| `t`                                                   | `TranslateFn`             | English | i18n: group label, "{value} of {max} stars" announcements, required message                                                                    |
+
+Class slots: `class`, `classItem`, `classIcon`. Reserved root handlers: `onkeydown`, `onpointerleave`. The component writes `--stuic-rating-fill` (0–100%) inline on every symbol wrapper (survives `unstyled`).
+
+### CSS Tokens
+
+Prefix: `--stuic-rating-*`
+
+`size` (unset; `size` presets 1.125 / 1.5 / 2rem), `gap`, `icon-color`, `icon-color-empty`, `icon-scale-hover`, `ring-width`, `ring-color`, `radius`, `transition`, `opacity-disabled`
 
 ---
 
