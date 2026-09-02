@@ -60,8 +60,11 @@ Checked first, to avoid false positives:
 8. **SplitPane / resizable panels** — general two-pane draggable splitter
    (horizontal/vertical, min/max, persisted size). `actions/resizable-width`,
    `WithSidePanel`, and `persistent-state` already provide the pieces.
-9. **Range slider (dual-thumb)** — `Slider` is deliberately single-value; a min/max
-   range variant (price filters etc.) is a recurring ask.
+9. ~~**Range slider (dual-thumb)**~~ — ✅ shipped (see `src/lib/components/RangeSlider/`):
+   `Slider`'s two-value sibling — `bind:start` / `bind:end` on one track with the fill
+   between them; nearest-thumb press, grab-to-drag, thumbs never cross (`minRange`),
+   per-thumb keyboard via two hidden range inputs (`nameStart` / `nameEnd`), ticks,
+   value labels, `validate` with the pair, `t` thumb names with Slovak bundled.
 10. ~~**Timeline / activity feed**~~ — ✅ shipped (see `src/lib/components/Timeline/`):
     vertical event list on a rail with dot / icon-bubble / custom (snippet) markers,
     per-item intent, `<time datetime>` support with an optional formatter, inline or

@@ -23,7 +23,7 @@
 
 ```
 src/lib/
-├── components/     # 76 component directories
+├── components/     # 77 component directories
 ├── actions/        # 16 Svelte actions (use: directives)
 ├── attachments/    # Svelte attachments ({@attach} — preferred for new DOM helpers)
 ├── utils/          # 55 utility modules (48 on the barrel)
@@ -131,7 +131,7 @@ Global tokens that control cross-component visual properties. Defined in `src/li
 
 ### Domain Docs
 
-- [Components](./docs/domains/components.md) — 76 component directories, Props pattern, snippets
+- [Components](./docs/domains/components.md) — 77 component directories, Props pattern, snippets
 - [Theming](./docs/domains/theming.md) — CSS tokens, dark mode, themes
 - [CSS presets](./docs/domains/css-presets.md) — ratio-locked frame (letterbox), safe-area, scrollbar
 - [Actions](./docs/domains/actions.md) — 16 Svelte directives

@@ -103,6 +103,7 @@ In practice:
 @import "./components/Pill/index.css";
 @import "./components/PricingTable/index.css";
 @import "./components/Progress/index.css";
+@import "./components/RangeSlider/index.css";
 @import "./components/Rating/index.css";
 @import "./components/Separator/index.css";
 @import "./components/Skeleton/index.css";

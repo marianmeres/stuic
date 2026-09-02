@@ -175,7 +175,7 @@ FieldInput, FieldMoney, FieldDate, FieldDateRange, Calendar, FieldTextarea, Fiel
 
 ### Buttons & Controls
 
-Button, ButtonGroupRadio, Switch, Slider, TwCheck, ListItemButton, X
+Button, ButtonGroupRadio, Switch, Slider, RangeSlider, TwCheck, ListItemButton, X
 
 ### Feedback & Notifications
 

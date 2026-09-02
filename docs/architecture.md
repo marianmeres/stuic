@@ -36,7 +36,7 @@ Layer 4: Internal Vars        (--_bg, --_text, --_border)
 
 ```
 src/lib/
-├── components/           # 76 component directories
+├── components/           # 77 component directories
 │   └── {Name}/
 │       ├── {Name}.svelte     # Main component
 │       ├── index.ts          # Exports

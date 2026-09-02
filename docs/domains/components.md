@@ -2,7 +2,7 @@
 
 ## Overview
 
-76 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
+77 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
@@ -32,6 +32,7 @@
 | ButtonGroupRadio     | Toggle group (single selection)                                                                 |
 | Switch               | Boolean toggle                                                                                  |
 | Slider               | Fancy range input (fill + optional thumb)                                                       |
+| RangeSlider          | Dual-thumb Slider: `start` ≤ `end` on one track, no crossing, `minRange`, two hidden inputs     |
 | Rating               | Star rating: radiogroup input (half steps, hover preview, form + validate) or read-only display |
 | TwCheck              | Styled checkbox/radio                                                                           |
 | DropdownMenu         | Popover menu                                                                                    |
@@ -1049,6 +1050,56 @@ Prefix: `--stuic-pagination-*`
 `gap`, `button-min-width`, `info-font-size`, `info-text`, `ellipsis-text`
 
 `button-min-width` defaults to `--stuic-button-min-height-sm` so single-character buttons stay square-ish.
+
+---
+
+## RangeSlider
+
+The dual-thumb sibling of `Slider`: two values (`start` ≤ `end`) on one track, the fill spanning the selected range — price filters, "between" queries, min/max limits. Same construction: the root owns the pointer machinery (the nearest thumb jumps to a track press, grabbing a thumb drags it from the grab point, thumbs never cross — `minRange` apart when set; two stacked thumbs are told apart by the side that is pressed or, when pressed on, by the first move's direction), while two visually hidden native `<input type="range">` — one per thumb, each covering the track from its end up to the midpoint between the thumbs — provide per-thumb keyboard interaction, the slider roles for assistive tech (explore-by-touch lands on the slider of the side touched) and form participation (`nameStart` / `nameEnd`). The bound ends are two plain numbers (`bind:start` / `bind:end`, the `FieldDateRange` shape); non-finite / out-of-range / off-grid writes are normalized back into the bindings and a reversed pair is reordered.
+
+### Exports
+
+| Export                     | Kind      | Description                                                       |
+| -------------------------- | --------- | ----------------------------------------------------------------- |
+| `RangeSlider`              | component | Main component                                                    |
+| `RangeSliderProps`         | type      | Props type                                                        |
+| `RangeSliderIntent`        | type      | Fill intent union                                                 |
+| `RangeSliderOrientation`   | type      | `"horizontal" \| "vertical"`                                      |
+| `RangeSliderThumb`         | type      | `"start" \| "end"`                                                |
+| `RangeSliderValue`         | type      | `{ start: number; end: number }` — callback and validator payload |
+| `RangeSliderRenderCtx`     | type      | Snippet context (one render per thumb)                            |
+| `createRangeSliderT`       | function  | Builds the `t` prop from a (partial) message catalog              |
+| `RANGE_SLIDER_MESSAGES_EN` | constant  | Built-in English catalog (also the fallback)                      |
+| `RANGE_SLIDER_MESSAGES_SK` | constant  | Bundled Slovak catalog (opt-in)                                   |
+| `RangeSliderMessageKey`    | type      | Message key union                                                 |
+| `RangeSliderMessages`      | type      | One locale's catalog                                              |
+
+### Key Props
+
+| Prop                                   | Type                                                         | Default                             | Description                                                                                                                   |
+| -------------------------------------- | ------------------------------------------------------------ | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `start` / `end`                        | `number`                                                     | `min` / `max`                       | Bindable ends — always finite, in range, on grid, ordered and `minRange` apart (writes are normalized back)                   |
+| `min` / `max` / `step`                 | `number` / `number` / `number \| "any"`                      | `0` / `100` / `1`                   | Bounds and snap increment (`"any"` = continuous)                                                                              |
+| `minRange`                             | `number`                                                     | `0`                                 | Minimum distance between the values; rounded up onto the step grid, capped at the span                                        |
+| `orientation`                          | `"horizontal" \| "vertical"`                                 | `"horizontal"`                      | Vertical fills bottom-up                                                                                                      |
+| `size` / `intent`                      | `"sm" \| "md" \| "lg"` / intent                              | `"md"` / —                          | Thickness preset; fill color                                                                                                  |
+| `thumb`                                | `boolean \| Snippet<[RangeSliderRenderCtx]>`                 | `true`                              | `false` = fill-only (linear mapping); a snippet renders inside each thumb, `ctx.thumb` says which                             |
+| `fillRounded` / `ticks` / `valueLabel` |                                                              |                                     | As on `Slider`; value labels render once per thumb (they overlap when the thumbs are close)                                   |
+| `label` / `labelStart` / `labelEnd`    | `string`                                                     | — / `t("minimum")` / `t("maximum")` | Group name (`role="group"`); accessible names of the two inputs                                                               |
+| `nameStart` / `nameEnd`                | `string`                                                     | —                                   | Form field names of the hidden inputs                                                                                         |
+| `oninput` / `onchange`                 | `(value: RangeSliderValue, thumb: RangeSliderThumb) => void` | —                                   | Every change / every commit, with the pair and the thumb that moved (native-faithful: an unchanged commit fires nothing)      |
+| `validate` / `setValidationResult`     |                                                              |                                     | Validate action on the start input, re-run on either thumb's commit; **`customValidator` receives the `{ start, end }` pair** |
+| `t`                                    | `TranslateFn`                                                | English                             | Default thumb names ("Minimum" / "Maximum")                                                                                   |
+
+Class slots: `class`, `trackClass`, `fillClass`, `thumbClass`, `tickClass`, `valueClass`. Reserved root handlers: `onpointerdown/move/up/cancel`. Imperative `validate()` / `clearValidation()` / `getValidation()` / `focus()` / `scrollIntoView()` via `bind:this`. Root data attributes: `data-thumbs` (`"true"` / `"false"`), `data-dragging` / `data-ring` / `data-active-thumb` (each naming a thumb), plus `data-orientation`, `data-size`, `data-intent`, `data-disabled`, `data-fill-rounded`; thumbs, value labels and inputs carry `data-thumb="start|end"`, tick layers `data-layer="before|on-fill|after"`. The per-thumb ratios and their midpoint are written inline as `--_ratio-start` / `--_ratio-end` / `--_mid` (survive `unstyled`; the functional CSS — `touch-action`, the inputs' hit areas — hangs off `data-stuic-range-slider`).
+
+### CSS Tokens
+
+Prefix: `--stuic-range-slider-*`
+
+`track`, `fill`, `thumb`, `thumb-foreground`, `tick`, `tick-on-fill`, `tick-size`, `ring-width`, `ring-color`, `thickness` (`size` presets 1.25 / 2 / 3rem), `length`, `thumb-inset`, `radius`, `fill-radius`, `thumb-radius`, `thumb-shadow`, `value-gap`, `transition`
+
+Deliberately its own token set, not derived from `--stuic-slider-*` (a theme restyles both explicitly). Falls back to shared `--stuic-shadow` and `--stuic-transition`.
 
 ---
 
