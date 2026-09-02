@@ -1,5 +1,7 @@
 <script lang="ts">
 	import {
+		createFieldOptionsT,
+		FIELD_OPTIONS_MESSAGES_SK,
 		maybeJsonParse,
 		Notifications,
 		NotificationsStack,
@@ -27,6 +29,14 @@
 		itemsOrdered: "[]",
 		itemsChips: "[]",
 		itemChips: "[]",
+		itemsI18n: "[]",
+	});
+
+	// bundled Slovak, with the two chips texts reworded for this particular field
+	const tSk = createFieldOptionsT({
+		...FIELD_OPTIONS_MESSAGES_SK,
+		chips_placeholder: "Ľubovoľné mesto",
+		chips_open: "Upraviť mestá",
 	});
 
 	function renderItemOptionLabel(item: Item) {
@@ -209,6 +219,24 @@
 			chipIntent="primary"
 		/>
 		<pre class="text-xs">{raw(values.itemChips)}</pre>
+	</form>
+
+	<form use:onSubmitValidityCheck class="max-w-3xl border p-4">
+		<FieldOptions
+			class="w-full"
+			bind:value={values.itemsI18n}
+			label="Many (chips, i18n)"
+			name="item"
+			{notifications}
+			cardinality={-1}
+			renderOptionLabel={renderItemOptionLabel}
+			{getOptions}
+			description={`Everything goes through "t": createFieldOptionsT({ ...FIELD_OPTIONS_MESSAGES_SK, chips_placeholder, chips_open }). The bundled Slovak catalog with two texts reworded for this field — a partial catalog falls back to English per key.`}
+			{itemIdPropName}
+			t={tSk}
+			chips
+		/>
+		<pre class="text-xs">{raw(values.itemsI18n)}</pre>
 	</form>
 </div>
 

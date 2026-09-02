@@ -39,6 +39,15 @@ export {
 } from "./FieldOptions.svelte";
 
 export {
+	createFieldOptionsT,
+	FIELD_OPTIONS_MESSAGES_EN,
+	type FieldOptionsMessageKey,
+	type FieldOptionsMessages,
+} from "./field-options-i18n.js";
+
+export { FIELD_OPTIONS_MESSAGES_SK } from "./field-options-i18n-sk.js";
+
+export {
 	default as FieldRadios,
 	type Props as FieldRadiosProps,
 } from "./FieldRadios.svelte";

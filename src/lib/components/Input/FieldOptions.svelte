@@ -22,11 +22,9 @@
 	import type { TranslateFn } from "../../types.js";
 	import type { IntentColorKey } from "../../utils/design-tokens.js";
 	import { getId } from "../../utils/get-id.js";
-	import { isPlainObject } from "../../utils/is-plain-object.js";
 	import { maybeJsonParse } from "../../utils/maybe-json-parse.js";
 	import { waitForNextRepaint } from "../../utils/paint.js";
 	import { qsa } from "../../utils/qsa.js";
-	import { replaceMap } from "../../utils/replace-map.js";
 	import { strHash } from "../../utils/str-hash.js";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import Button from "../Button/Button.svelte";
@@ -40,6 +38,7 @@
 	import FieldLikeChips, { type FieldLikeChip } from "./_internal/FieldLikeChips.svelte";
 	import ListItemButton from "../ListItemButton/ListItemButton.svelte";
 	import type { InputWrapClassProps } from "./types.js";
+	import { t_default } from "./field-options-i18n.js";
 
 	export interface Option {
 		label: string;
@@ -110,60 +109,6 @@
 		name: string;
 		itemIdPropName?: string;
 		onChange?: (value: string) => void;
-	}
-
-	// i18n ready
-	function t_default(
-		k: string,
-		values: false | null | undefined | Record<string, string | number> = null,
-		fallback: string | boolean = "",
-		i18nSpanWrap: boolean = true
-	) {
-		const m: Record<string, string> = {
-			field_req_att: "This field requires attention. Please review and try again.",
-			cardinality_of: "of max",
-			cardinality_selected: "selected",
-			submit: "Submit",
-			select_all: "Select all",
-			clear_all: "Clear selected",
-			clear: "Clear",
-			search_placeholder: "Type to search...",
-			search_submit_placeholder: "Type to search and submit...",
-			cardinality_full: "Max selection reached",
-			select_from_list: "Please select from the list only",
-			x_close: "Clear input or close [esc]",
-			close: "Close [esc]",
-			unknown_allowed: "Select or type and submit",
-			unknown_not_allowed: "Select from the list",
-			no_results: "No results found.",
-			add_new: 'Add "{{value}}"...',
-			click_add_new: "You must add the value to continue",
-			// chips display mode
-			chips_placeholder: "Nothing selected",
-			chips_open: "Choose...",
-			chips_remove: "Remove {{value}}",
-			//
-			pick_tab: "Pick",
-			arrange_tab: "Arrange ({{value}})",
-			arrange_help: "Reorder the selected items. Use the buttons to move them.",
-			sort_az: "Sort A–Z",
-			reverse: "Reverse",
-			shuffle: "Shuffle",
-			move_up: "Move up",
-			move_down: "Move down",
-			move_to_top: "Move to top",
-			move_to_bottom: "Move to bottom",
-			remove_item: "Remove",
-			moved_up: "Moved {{value}} up",
-			moved_down: "Moved {{value}} down",
-			removed_item: "Removed {{value}}",
-			sorted_az: "Sorted A to Z",
-			reversed: "Order reversed",
-			shuffled: "Order shuffled",
-		};
-		let out = m[k] ?? fallback ?? k;
-
-		return isPlainObject(values) ? replaceMap(out, values as any) : out;
 	}
 </script>
 

@@ -538,6 +538,84 @@ Typing directly into the field (an inline combobox) is deliberately not part of 
 modal remains the single place where options are searched and picked, which is what keeps the
 field usable under a soft keyboard.
 
+### i18n
+
+All built-in texts go through the `t` prop. English is the built-in default; Slovak ships
+bundled and opt-in (importing it is what pulls it into your bundle — English-only consumers
+pay nothing).
+
+```svelte
+<script>
+	import {
+		FieldOptions,
+		createFieldOptionsT,
+		FIELD_OPTIONS_MESSAGES_SK,
+	} from "@marianmeres/stuic";
+
+	const t = createFieldOptionsT(FIELD_OPTIONS_MESSAGES_SK);
+</script>
+
+<FieldOptions name="tags" bind:value {getOptions} {t} />
+```
+
+`createFieldOptionsT(messages, fallbackMessages?)` falls back to
+`FIELD_OPTIONS_MESSAGES_EN` for any key the catalog does not define, so a partial catalog is
+fine and a raw key is never rendered — pass your own object to translate into a language
+that is not bundled, or to override individual texts. This matters most with `chips`, where
+`chips_placeholder`, `chips_open` and `chips_remove` end up in the **closed field**, on the
+page, next to your own copy (a filter with nothing selected is not "nothing selected", it is
+_everything_):
+
+```ts
+// reword two strings, keep English everywhere else
+const t = createFieldOptionsT({ chips_placeholder: "Any tag", chips_open: "Edit tags" });
+
+// or: full Slovak, plus a field specific tweak
+const t = createFieldOptionsT({
+	...FIELD_OPTIONS_MESSAGES_SK,
+	chips_placeholder: "Bez štítkov",
+});
+```
+
+Placeholders are mustache-style (`{{value}}`).
+
+| Key                         | English                                                     | Used by                             |
+| --------------------------- | ----------------------------------------------------------- | ----------------------------------- |
+| `field_req_att`             | This field requires attention. Please review and try again. | Validation message                  |
+| `chips_placeholder`         | Nothing selected                                            | Empty `chips` row                   |
+| `chips_open`                | Choose...                                                   | `chips` trailing button (+ tooltip) |
+| `chips_remove`              | Remove {{value}}                                            | Each chip's × accessible name       |
+| `search_placeholder`        | Type to search...                                           | Modal search input                  |
+| `search_submit_placeholder` | Type to search and submit...                                | Modal search input (`allowUnknown`) |
+| `x_close`                   | Clear input or close [esc]                                  | Search input's × tooltip            |
+| `close`                     | Close [esc]                                                 | Modal close button tooltip          |
+| `submit`                    | Submit                                                      | Modal submit button                 |
+| `select_all`                | Select all                                                  | Modal control                       |
+| `clear_all` / `clear`       | Clear selected / Clear                                      | Modal control (multi / single)      |
+| `cardinality_of`            | of max                                                      | Selection counter                   |
+| `cardinality_selected`      | selected                                                    | Selection counter                   |
+| `cardinality_full`          | Max selection reached                                       | Notification                        |
+| `no_results`                | No results found.                                           | Empty options list                  |
+| `add_new`                   | Add "{{value}}"...                                          | `allowUnknown` add row              |
+| `click_add_new`             | You must add the value to continue                          | Notification                        |
+| `select_from_list`          | Please select from the list only                            | Notification                        |
+| `unknown_allowed`           | Select or type and submit                                   | Modal footer hint                   |
+| `unknown_not_allowed`       | Select from the list                                        | Modal footer hint                   |
+| `pick_tab` / `arrange_tab`  | Pick / Arrange ({{value}})                                  | `ordered` tab header                |
+| `arrange_help`              | Reorder the selected items. Use the buttons to move them.   | `ordered` screen hint               |
+| `sort_az`                   | Sort A–Z                                                    | `ordered` shortcut                  |
+| `reverse`                   | Reverse                                                     | `ordered` shortcut                  |
+| `shuffle`                   | Shuffle                                                     | `ordered` shortcut                  |
+| `move_up` / `move_down`     | Move up / Move down                                         | `ordered` row buttons               |
+| `move_to_top`               | Move to top                                                 | `ordered` row button                |
+| `move_to_bottom`            | Move to bottom                                              | `ordered` row button                |
+| `remove_item`               | Remove                                                      | `ordered` row button                |
+| `moved_up` / `moved_down`   | Moved {{value}} up / Moved {{value}} down                   | Screen reader announcement          |
+| `removed_item`              | Removed {{value}}                                           | Screen reader announcement          |
+| `sorted_az`                 | Sorted A to Z                                               | Screen reader announcement          |
+| `reversed`                  | Order reversed                                              | Screen reader announcement          |
+| `shuffled`                  | Order shuffled                                              | Screen reader announcement          |
+
 ### Customization Examples
 
 ```css
