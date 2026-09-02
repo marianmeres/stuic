@@ -1,0 +1,307 @@
+/* ============================================================================
+   CALENDAR COMPONENT TOKENS
+   Override globally: :root { --stuic-calendar-day-size: 3rem; }
+   Override locally:  <Calendar style="--stuic-calendar-day-radius: 9999px;">
+   ============================================================================ */
+
+/* prettier-ignore */
+:root {
+	--stuic-calendar-bg: transparent;
+	--stuic-calendar-text: var(--stuic-color-foreground);
+	--stuic-calendar-font-family: var(--font-sans);
+
+	/* Layout */
+	--stuic-calendar-gap: 1.5rem;             /* between months (`months > 1`) */
+	--stuic-calendar-header-gap: 0.25rem;
+	--stuic-calendar-header-margin-bottom: 0.5rem;
+	--stuic-calendar-footer-gap: 0.5rem;
+	--stuic-calendar-footer-margin-top: 0.5rem;
+
+	/* Day cell (min 44px on touch, see below) */
+	--stuic-calendar-day-size: 2.5rem;
+	--stuic-calendar-day-font-size: var(--text-sm);
+	--stuic-calendar-day-font-weight: var(--font-weight-normal);
+	--stuic-calendar-day-text: var(--stuic-color-foreground);
+	--stuic-calendar-day-bg-hover: var(--stuic-color-muted);
+	--stuic-calendar-day-text-outside: var(--stuic-color-muted-foreground);
+	--stuic-calendar-day-opacity-outside: 0.6;
+	--stuic-calendar-day-opacity-disabled: 0.35;
+
+	/* Selection */
+	--stuic-calendar-day-bg-selected: var(--stuic-color-primary);
+	--stuic-calendar-day-text-selected: var(--stuic-color-primary-foreground);
+	--stuic-calendar-day-bg-selected-hover: var(--stuic-color-primary-hover, var(--stuic-color-primary));
+	--stuic-calendar-day-bg-range: color-mix(in oklab, var(--stuic-color-primary) 15%, transparent);
+	--stuic-calendar-day-text-range: var(--stuic-color-foreground);
+	--stuic-calendar-day-bg-preview: color-mix(in oklab, var(--stuic-color-primary) 8%, transparent);
+
+	/* Today */
+	--stuic-calendar-today-text: var(--stuic-color-primary);
+	--stuic-calendar-today-font-weight: var(--font-weight-semibold);
+
+	/* Weekday header row + week-number column */
+	--stuic-calendar-weekday-text: var(--stuic-color-muted-foreground);
+	--stuic-calendar-weekday-font-size: var(--text-xs);
+	--stuic-calendar-weekday-font-weight: var(--font-weight-medium);
+	--stuic-calendar-week-number-text: var(--stuic-color-muted-foreground);
+	--stuic-calendar-week-number-font-size: var(--text-xs);
+
+	/* Caption (month + year) */
+	--stuic-calendar-caption-text: var(--stuic-color-foreground);
+	--stuic-calendar-caption-font-size: var(--text-base);
+	--stuic-calendar-caption-font-weight: var(--font-weight-semibold);
+
+	/* Caption dropdowns (`captionLayout="dropdown"`) */
+	--stuic-calendar-select-bg: var(--stuic-color-input, transparent);
+	--stuic-calendar-select-text: var(--stuic-color-foreground);
+	--stuic-calendar-select-border: var(--stuic-color-border);
+
+	/* Focus ring */
+	--stuic-calendar-ring-width: 2px;
+	--stuic-calendar-ring-color: var(--stuic-color-ring);
+}
+
+/* Touch: keep every day a comfortable 44px target */
+@media (pointer: coarse) {
+	:root {
+		--stuic-calendar-day-size: 2.75rem;
+	}
+}
+
+@layer components {
+	/* ============================================================================
+	   ROOT
+	   ============================================================================ */
+
+	.stuic-calendar {
+		display: inline-flex;
+		flex-direction: column;
+		max-width: 100%;
+		background: var(--stuic-calendar-bg);
+		color: var(--stuic-calendar-text);
+		font-family: var(--stuic-calendar-font-family);
+		user-select: none;
+		-webkit-user-select: none;
+	}
+
+	.stuic-calendar[data-disabled] {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+
+	.stuic-calendar-months {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--stuic-calendar-gap);
+		max-width: 100%;
+	}
+
+	.stuic-calendar-month {
+		display: flex;
+		flex-direction: column;
+		max-width: 100%;
+	}
+
+	/* ============================================================================
+	   HEADER (prev | caption | next)
+	   ============================================================================ */
+
+	.stuic-calendar-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--stuic-calendar-header-gap);
+		margin-bottom: var(--stuic-calendar-header-margin-bottom);
+	}
+
+	.stuic-calendar-caption {
+		flex: 1;
+		min-width: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.25rem;
+		text-align: center;
+		color: var(--stuic-calendar-caption-text);
+		font-size: var(--stuic-calendar-caption-font-size);
+		font-weight: var(--stuic-calendar-caption-font-weight);
+		line-height: 1.25;
+	}
+
+	/* keeps the caption centered on months without a prev/next button */
+	.stuic-calendar-nav-placeholder {
+		display: inline-block;
+		width: 2.75rem;
+		flex-shrink: 0;
+	}
+
+	.stuic-calendar-select {
+		appearance: auto;
+		font: inherit;
+		font-size: var(--text-sm);
+		font-weight: var(--stuic-calendar-caption-font-weight);
+		color: var(--stuic-calendar-select-text);
+		background: var(--stuic-calendar-select-bg);
+		border: var(--stuic-calendar-border-width, var(--stuic-border-width)) solid
+			var(--stuic-calendar-select-border);
+		border-radius: var(--stuic-calendar-select-radius, var(--stuic-radius));
+		padding: 0.25rem 0.5rem;
+		max-width: 100%;
+		min-width: 0;
+		cursor: pointer;
+	}
+
+	.stuic-calendar-select:focus-visible {
+		outline: var(--stuic-calendar-ring-width) solid var(--stuic-calendar-ring-color);
+		outline-offset: 1px;
+	}
+
+	/* ============================================================================
+	   GRID
+	   ============================================================================ */
+
+	.stuic-calendar-grid {
+		border-collapse: separate;
+		border-spacing: 0;
+		table-layout: fixed;
+		width: auto;
+	}
+
+	.stuic-calendar-weekday {
+		width: var(--stuic-calendar-day-size);
+		padding: 0 0 0.25rem;
+		text-align: center;
+		color: var(--stuic-calendar-weekday-text);
+		font-size: var(--stuic-calendar-weekday-font-size);
+		font-weight: var(--stuic-calendar-weekday-font-weight);
+		text-transform: none;
+	}
+
+	.stuic-calendar-week-number {
+		width: var(--stuic-calendar-day-size);
+		padding: 0 0.25rem 0 0;
+		text-align: center;
+		vertical-align: middle;
+		color: var(--stuic-calendar-week-number-text);
+		font-size: var(--stuic-calendar-week-number-font-size);
+		font-variant-numeric: tabular-nums;
+	}
+
+	.stuic-calendar-cell {
+		width: var(--stuic-calendar-day-size);
+		height: var(--stuic-calendar-day-size);
+		padding: 0;
+		text-align: center;
+		vertical-align: middle;
+	}
+
+	/* Range band: painted on the CELL so it runs edge to edge between days */
+	.stuic-calendar-cell[data-in-range] {
+		background: var(--stuic-calendar-day-bg-range);
+	}
+
+	.stuic-calendar-cell[data-preview]:not([data-in-range]) {
+		background: var(--stuic-calendar-day-bg-preview);
+	}
+
+	.stuic-calendar-cell[data-range-start] {
+		border-start-start-radius: var(--stuic-calendar-day-radius, var(--stuic-radius));
+		border-end-start-radius: var(--stuic-calendar-day-radius, var(--stuic-radius));
+	}
+
+	.stuic-calendar-cell[data-range-end] {
+		border-start-end-radius: var(--stuic-calendar-day-radius, var(--stuic-radius));
+		border-end-end-radius: var(--stuic-calendar-day-radius, var(--stuic-radius));
+	}
+
+	/* ============================================================================
+	   DAY BUTTON
+	   ============================================================================ */
+
+	.stuic-calendar-day {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		height: var(--stuic-calendar-day-size);
+		margin: 0;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		color: var(--stuic-calendar-day-text);
+		font: inherit;
+		font-size: var(--stuic-calendar-day-font-size);
+		font-weight: var(--stuic-calendar-day-font-weight);
+		font-variant-numeric: tabular-nums;
+		line-height: 1;
+		border-radius: var(--stuic-calendar-day-radius, var(--stuic-radius));
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+		transition:
+			background var(--stuic-calendar-transition, var(--stuic-transition)),
+			color var(--stuic-calendar-transition, var(--stuic-transition));
+	}
+
+	.stuic-calendar-day:hover:not([aria-disabled="true"]):not([data-selected]) {
+		background: var(--stuic-calendar-day-bg-hover);
+	}
+
+	.stuic-calendar-day:focus-visible {
+		outline: var(--stuic-calendar-ring-width) solid var(--stuic-calendar-ring-color);
+		outline-offset: -1px;
+		z-index: 1;
+	}
+
+	.stuic-calendar-day[data-outside] {
+		color: var(--stuic-calendar-day-text-outside);
+		opacity: var(--stuic-calendar-day-opacity-outside);
+	}
+
+	.stuic-calendar-day[data-weekend] {
+		color: var(--stuic-calendar-day-text-weekend, var(--stuic-calendar-day-text));
+	}
+
+	.stuic-calendar-day[data-today] {
+		color: var(--stuic-calendar-today-text);
+		font-weight: var(--stuic-calendar-today-font-weight);
+	}
+
+	.stuic-calendar-day[data-in-range] {
+		color: var(--stuic-calendar-day-text-range);
+	}
+
+	.stuic-calendar-day[data-selected] {
+		background: var(--stuic-calendar-day-bg-selected);
+		color: var(--stuic-calendar-day-text-selected);
+		opacity: 1;
+	}
+
+	.stuic-calendar-day[data-selected]:hover:not([aria-disabled="true"]) {
+		background: var(--stuic-calendar-day-bg-selected-hover);
+	}
+
+	.stuic-calendar-day[aria-disabled="true"] {
+		opacity: var(--stuic-calendar-day-opacity-disabled);
+		cursor: not-allowed;
+	}
+
+	/* ============================================================================
+	   FOOTER
+	   ============================================================================ */
+
+	.stuic-calendar-footer {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		gap: var(--stuic-calendar-footer-gap);
+		margin-top: var(--stuic-calendar-footer-margin-top);
+	}
+
+	.stuic-calendar-footer-actions {
+		display: flex;
+		align-items: center;
+		gap: var(--stuic-calendar-footer-gap);
+	}
+}

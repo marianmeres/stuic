@@ -329,6 +329,96 @@ Money input whose canonical bindable `value` is an **integer in minor units** (e
 
 The `formatMinorUnits`, `parseToMinorUnits`, and `money` helpers are exported for display elsewhere.
 
+#### `Calendar`
+
+Accessible month grid for picking a single date (`value`) or an inclusive range (`start` + `end`) — every value an ISO `YYYY-MM-DD` string. Roving-tabindex keyboard grid (arrows, Home/End, PageUp/PageDown ± Shift, Enter), `min` / `max` / `isDateDisabled`, several `months` side by side, `captionLayout="dropdown"` (native month + year selects), ISO week numbers, fixed 6-week height, a `renderDay` snippet, `locale` for the Intl day/month names and `t` for the UI texts (Slovak bundled). Date math from `@marianmeres/calendar-utils`. Used inside `FieldDate` / `FieldDateRange`; usable inline on its own.
+
+| Prop                     | Type                                 | Default    | Description                                                            |
+| ------------------------ | ------------------------------------ | ---------- | ---------------------------------------------------------------------- |
+| `mode`                   | `"single" \| "range"`                | `"single"` | Bind `value`, or `start` + `end`                                       |
+| `value`                  | `string \| null`                     | `null`     | Bindable selected date (single)                                        |
+| `start`, `end`           | `string \| null`                     | `null`     | Bindable range ends (range)                                            |
+| `view`                   | `{ year, month }`                    | selection  | Bindable first displayed month                                         |
+| `months`                 | `number`                             | `1`        | Consecutive months side by side                                        |
+| `min`, `max`             | `string \| null`                     | —          | Selectable window (inclusive); days and navigation beyond are disabled |
+| `isDateDisabled`         | `(iso, cell) => boolean`             | —          | Blackout individual days                                               |
+| `weekStartsOn`           | `1..7`                               | `1`        | First day of the week (ISO, 1 = Monday)                                |
+| `locale`, `zone`         | `string`                             | browser    | Intl names / which day is "today"                                      |
+| `captionLayout`          | `"label" \| "dropdown"`              | `"label"`  | Caption text, or month + year selects                                  |
+| `showWeekNumbers`        | `boolean`                            | `false`    | ISO week column                                                        |
+| `fixedWeeks`             | `boolean`                            | `false`    | Always 6 rows                                                          |
+| `showToday`, `showClear` | `boolean`                            | `false`    | Footer buttons                                                         |
+| `onSelect`               | `(value) => void`                    | —          | Single mode pick / clear                                               |
+| `onRangeChange`          | `({ start, end, complete }) => void` | —          | Range mode pick / clear                                                |
+| `onViewChange`           | `(view) => void`                     | —          | Displayed month changed                                                |
+
+```svelte
+<Calendar mode="range" bind:start bind:end months={2} min={todayIso()} />
+```
+
+Exports: `Calendar`, `CalendarProps`, `CalendarMode`, `CalendarCaptionLayout`, `CalendarDayState`, `CalendarRangeChange`, `CalendarDayCell`, `CalendarWeekday`, `createCalendarT`, `CALENDAR_MESSAGES_EN`, `CALENDAR_MESSAGES_SK`, and the ISO date helpers `isIsoDate`, `parseIsoDate`, `normalizeIsoDate`, `toIsoDate`, `todayIso`, `addDaysIso`, `addMonthsIso`, `compareIso`, `daysBetweenIso`, `rangeLengthIso`, `formatIsoDate`, `formatIsoDateRange` (types `IsoDate`, `IsoDateParts`, `YearMonth`).
+
+#### `FieldDate`
+
+Single-date field around `Calendar`: a trigger button showing the formatted date opens the calendar in a native dialog (default), or the calendar renders inline (`embedded`). The bound `value` is an ISO `YYYY-MM-DD` string; `name` goes on a hidden input carrying it, so the form submits the ISO date regardless of the display format. `required` / valid ISO / `min` / `max` / `isDateDisabled` are enforced by the field's validator (hidden inputs never validate natively).
+
+| Prop            | Type                         | Default                   | Description                                                 |
+| --------------- | ---------------------------- | ------------------------- | ----------------------------------------------------------- |
+| `value`         | `string \| null`             | `null`                    | Bindable ISO date                                           |
+| `name`          | `string`                     | —                         | Hidden input name                                           |
+| `embedded`      | `boolean`                    | `false`                   | Inline calendar instead of trigger + dialog                 |
+| `closeOnSelect` | `boolean`                    | `true`                    | Close the dialog after a pick; `false` adds a "Done" button |
+| `placeholder`   | `string`                     | `t("placeholder_date")`   | Trigger text while empty                                    |
+| `clearable`     | `boolean`                    | `true`                    | Trailing × (dialog) / footer "Clear" (embedded)             |
+| `locale`        | `string`                     | browser                   | Display text + calendar names                               |
+| `formatOptions` | `Intl.DateTimeFormatOptions` | `{ dateStyle: "medium" }` | Display text format                                         |
+| `format`        | `(iso) => string`            | —                         | Custom display text                                         |
+| `months`        | `number`                     | `1`                       | Months side by side                                         |
+| `calendarProps` | `Partial<CalendarProps>`     | —                         | Anything else for the inner calendar                        |
+| `validate`      | `boolean \| ValidateOptions` | enabled                   | `false` disables the built-in guard; object merges          |
+| `t`             | `TranslateFn`                | English                   | i18n (see `createCalendarT`)                                |
+| `onChange`      | `(value) => void`            | —                         | After a pick / clear through the UI                         |
+
+Also forwards `min`, `max`, `isDateDisabled`, `weekStartsOn`, `weekendDays`, `zone`, `captionLayout`, `yearRange`, `showWeekNumbers`, `showOutsideDays`, `fixedWeeks`, `showToday`, `renderDay` to the calendar, and takes the usual field props (`label`, `description`, `renderSize`, `required`, `disabled`, `labelLeft`, class props, …). Methods: the imperative validate API plus `open()` / `close()`.
+
+```svelte
+<FieldDate
+	bind:value={delivery}
+	label="Delivery date"
+	name="delivery"
+	min={todayIso()}
+	required
+/>
+```
+
+Exports: `FieldDate`, `FieldDateProps`, `FieldDateCalendarProps`.
+
+#### `FieldDateRange`
+
+Date-range field around a range-mode `Calendar`: same trigger + dialog / `embedded` presentations as `FieldDate`, binding `start` + `end` and submitting two hidden inputs (`nameStart`, `nameEnd`). First pick anchors, second completes (either order), a complete range closes the dialog (`closeOnSelect`). A half range fails validation whether or not the field is `required`. The default `months={2}` collapses to one below the `md` breakpoint.
+
+| Prop                   | Type                       | Default | Description                              |
+| ---------------------- | -------------------------- | ------- | ---------------------------------------- |
+| `start`, `end`         | `string \| null`           | `null`  | Bindable ISO range ends                  |
+| `nameStart`, `nameEnd` | `string`                   | —       | Hidden input names                       |
+| `format`               | `(start, end) => string`   | —       | Custom display text for a complete range |
+| `months`               | `number`                   | `2`     | Months side by side (1 below `md`)       |
+| `onChange`             | `({ start, end }) => void` | —       | After a pick / clear through the UI      |
+
+Everything else as `FieldDate`.
+
+```svelte
+<FieldDateRange
+	bind:start={from}
+	bind:end={to}
+	label="Stay"
+	nameStart="from"
+	nameEnd="to"
+/>
+```
+
+Exports: `FieldDateRange`, `FieldDateRangeProps`, `FieldDateRangeValue`.
+
 #### `FieldTextarea`
 
 Multi-line text input.

@@ -183,6 +183,7 @@
 		"vitest-browser-svelte": "^2.2.1"
 	},
 	"dependencies": {
+		"@marianmeres/calendar-utils": "^2.0.0",
 		"@marianmeres/clog": "^3.21.0",
 		"@marianmeres/countries": "^1.1.0",
 		"@marianmeres/cron-parser": "^1.0.1",

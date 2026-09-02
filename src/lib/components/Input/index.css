@@ -83,6 +83,12 @@
 	--stuic-field-options-optgroup-text: var(--stuic-color-muted-foreground);
 	/* FieldOptions `chips` display mode */
 	--stuic-field-options-chips-gap: 0.25rem;
+
+	/* FieldDate / FieldDateRange specific */
+	--stuic-field-date-icon-text: var(--stuic-color-muted-foreground);
+	--stuic-field-date-placeholder-text: var(--stuic-input-placeholder);
+	--stuic-field-date-embedded-padding: 0.5rem;
+	--stuic-field-date-dialog-padding: 1rem;
 }
 
 @layer components {
@@ -808,5 +814,118 @@
 				var(--stuic-input-font-size-lg)
 			);
 		}
+	}
+}
+
+/* ============================================================================
+   FIELD DATE / FIELD DATE RANGE
+   The trigger is a <button> (so no iOS zoom guard needed); it takes the input
+   size tokens so the field lines up with its siblings.
+   ============================================================================ */
+
+@layer components {
+	.stuic-field-date-trigger {
+		display: flex;
+		flex: 1 1 0%;
+		min-width: 0;
+		width: 100%;
+		align-items: center;
+		gap: 0.5rem;
+		margin: 0;
+		border: 0;
+		background: transparent;
+		text-align: start;
+		font-family: var(--stuic-input-font-family);
+		color: var(--stuic-input-text);
+		letter-spacing: -0.025em;
+		border-radius: var(--stuic-input-radius, var(--stuic-radius));
+		cursor: pointer;
+	}
+
+	/* InputWrap already shows the ring via `.input-wrap:focus-within` */
+	.stuic-field-date-trigger:focus,
+	.stuic-field-date-trigger:focus-visible {
+		outline: none;
+		box-shadow: none;
+	}
+
+	.stuic-field-date-trigger:disabled {
+		cursor: not-allowed;
+	}
+
+	.stuic-field-date-trigger[data-size="sm"] {
+		padding: var(--stuic-input-padding-y-sm) var(--stuic-input-padding-x-sm);
+		font-size: var(--stuic-input-font-size-sm);
+		min-height: var(--stuic-input-min-height-sm);
+	}
+
+	.stuic-field-date-trigger[data-size="md"],
+	.stuic-field-date-trigger:not([data-size]) {
+		padding: var(--stuic-input-padding-y-md) var(--stuic-input-padding-x-md);
+		font-size: var(--stuic-input-font-size-md);
+		min-height: var(--stuic-input-min-height-md);
+	}
+
+	.stuic-field-date-trigger[data-size="lg"] {
+		padding: var(--stuic-input-padding-y-lg) var(--stuic-input-padding-x-lg);
+		font-size: var(--stuic-input-font-size-lg);
+		min-height: var(--stuic-input-min-height-lg);
+	}
+
+	.stuic-field-date-trigger-icon {
+		display: inline-flex;
+		flex-shrink: 0;
+		color: var(--stuic-field-date-icon-text);
+	}
+
+	.stuic-field-date-trigger-label {
+		flex: 1;
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.stuic-field-date-trigger[data-empty] .stuic-field-date-trigger-label {
+		color: var(--stuic-field-date-placeholder-text);
+	}
+
+	/* `embedded`: the calendar lives inside the input card */
+	.stuic-field-date-embedded {
+		flex: 1 1 0%;
+		min-width: 0;
+		display: flex;
+		justify-content: center;
+		padding: var(--stuic-field-date-embedded-padding);
+		overflow-x: auto;
+	}
+
+	/* the picker dialog card (inside a transparent, click-through ModalDialog box) */
+	.stuic-field-date-dialog {
+		background: var(--stuic-modal-dialog-bg);
+		color: var(--stuic-modal-dialog-text);
+		border-radius: var(--stuic-field-date-dialog-radius, var(--stuic-radius-container));
+		box-shadow: var(--stuic-field-date-dialog-shadow, var(--stuic-shadow-dialog));
+		padding: var(--stuic-field-date-dialog-padding);
+		max-width: 100%;
+	}
+
+	.stuic-field-date-dialog-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.5rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.stuic-field-date-dialog-title {
+		font-weight: var(--font-weight-semibold);
+	}
+
+	.stuic-field-date-dialog-body {
+		display: flex;
+		justify-content: center;
+		max-width: 100%;
+		overflow-x: auto;
 	}
 }

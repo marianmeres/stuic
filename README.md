@@ -171,7 +171,7 @@ AppShell, Accordion, Backdrop, Modal, ModalDialog, Drawer, Collapsible, Header, 
 
 ### Forms & Inputs
 
-FieldInput, FieldMoney, FieldTextarea, FieldSelect, FieldCheckbox, FieldRadios, FieldFile, FieldAssets, FieldOptions, FieldKeyValues, FieldObject, FieldSwitch, FieldInputLocalized, FieldLikeButton, FieldPhoneNumber, FieldCountry, CronInput, Fieldset, LoginForm, LoginFormModal, RegisterForm, RegisterFormModal, LoginOrRegisterForm, LoginOrRegisterFormModal, EmailVerifyForm, OtpInput
+FieldInput, FieldMoney, FieldDate, FieldDateRange, Calendar, FieldTextarea, FieldSelect, FieldCheckbox, FieldRadios, FieldFile, FieldAssets, FieldOptions, FieldKeyValues, FieldObject, FieldSwitch, FieldInputLocalized, FieldLikeButton, FieldPhoneNumber, FieldCountry, CronInput, Fieldset, LoginForm, LoginFormModal, RegisterForm, RegisterFormModal, LoginOrRegisterForm, LoginOrRegisterFormModal, EmailVerifyForm, OtpInput
 
 ### Buttons & Controls
 

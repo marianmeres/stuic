@@ -92,3 +92,15 @@ export {
 } from "./FieldCountry.svelte";
 
 export { validatePhoneNumber } from "./phone-validation.js";
+
+export {
+	default as FieldDate,
+	type Props as FieldDateProps,
+	type FieldDateCalendarProps,
+} from "./FieldDate.svelte";
+
+export {
+	default as FieldDateRange,
+	type Props as FieldDateRangeProps,
+	type FieldDateRangeValue,
+} from "./FieldDateRange.svelte";

@@ -2,7 +2,7 @@
 
 ## Overview
 
-74 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
+75 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
@@ -58,22 +58,24 @@
 
 ### Form
 
-| Component                                     | Purpose                                                                     |
-| --------------------------------------------- | --------------------------------------------------------------------------- |
-| Input (FieldInput, FieldSelect, etc.)         | Form fields                                                                 |
-| FieldMoney                                    | Money input storing integer minor units (e.g. cents)                        |
-| FieldPhoneNumber                              | International phone input with country picker                               |
-| FieldObject                                   | Dual-mode JSON object editor (pretty-print/raw)                             |
-| CronInput                                     | Cron expression editor with presets and validation                          |
-| Fieldset                                      | Field grouping with legend                                                  |
-| FieldKeyValues                                | Key-value pair editor                                                       |
-| FieldsBuilder                                 | Field-definition list editor ("what properties does a thing have?")         |
-| FieldAssets                                   | File/asset management                                                       |
-| LoginForm, LoginFormModal                     | Standalone login form with optional modal variant                           |
-| RegisterForm                                  | Standalone registration form with declarative extra fields                  |
-| LoginOrRegisterForm, LoginOrRegisterFormModal | Composite login/register/verify form (3 modes, shared social-logins)        |
-| EmailVerifyForm                               | Post-registration email-verify form (OtpInput + resend cooldown)            |
-| OtpInput                                      | Generic N-slot one-time-code input (numeric/alphanumeric, paste-distribute) |
+| Component                                     | Purpose                                                                                    |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Input (FieldInput, FieldSelect, etc.)         | Form fields                                                                                |
+| FieldMoney                                    | Money input storing integer minor units (e.g. cents)                                       |
+| Calendar                                      | Month grid for single-date / range picking: keyboard grid, min/max, dropdown caption, i18n |
+| FieldDate, FieldDateRange                     | Date / date-range fields around Calendar: trigger + dialog or embedded; ISO hidden inputs  |
+| FieldPhoneNumber                              | International phone input with country picker                                              |
+| FieldObject                                   | Dual-mode JSON object editor (pretty-print/raw)                                            |
+| CronInput                                     | Cron expression editor with presets and validation                                         |
+| Fieldset                                      | Field grouping with legend                                                                 |
+| FieldKeyValues                                | Key-value pair editor                                                                      |
+| FieldsBuilder                                 | Field-definition list editor ("what properties does a thing have?")                        |
+| FieldAssets                                   | File/asset management                                                                      |
+| LoginForm, LoginFormModal                     | Standalone login form with optional modal variant                                          |
+| RegisterForm                                  | Standalone registration form with declarative extra fields                                 |
+| LoginOrRegisterForm, LoginOrRegisterFormModal | Composite login/register/verify form (3 modes, shared social-logins)                       |
+| EmailVerifyForm                               | Post-registration email-verify form (OtpInput + resend cooldown)                           |
+| OtpInput                                      | Generic N-slot one-time-code input (numeric/alphanumeric, paste-distribute)                |
 
 ### Display
 
@@ -150,7 +152,7 @@ Use `validate={false}` to bypass stuic's validation entirely.
 
 > **Why default-on?** Hidden-input field components (`FieldPhoneNumber`,
 > `FieldCountry`, `FieldObject`, `FieldAssets`, `FieldInputLocalized`,
-> `FieldKeyValues`, `FieldLikeButton`) _must_ be default-on because hidden
+> `FieldKeyValues`, `FieldLikeButton`, `FieldDate`, `FieldDateRange`) _must_ be default-on because hidden
 > inputs are excluded from native browser constraint validation — without the
 > stuic action enforcing `required` in a `customValidator`, the attribute is a
 > silent no-op. Plain-input field components were harmonized to the same
@@ -161,7 +163,8 @@ Use `validate={false}` to bypass stuic's validation entirely.
 Available on `FieldInput`, `FieldMoney`, `FieldTextarea`, `FieldCheckbox`,
 `FieldSelect`, `FieldFile`, `FieldObject`, `FieldAssets`, `FieldInputLocalized`,
 `FieldKeyValues`, `FieldPhoneNumber`, `FieldCountry`, `FieldLikeButton`,
-`FieldRadios`, `FieldSwitch`, `FieldOptions`, and `Switch`:
+`FieldRadios`, `FieldSwitch`, `FieldOptions`, `FieldDate`, `FieldDateRange`, and
+`Switch`:
 
 | Method                  | Returns                         | Purpose                                                       |
 | ----------------------- | ------------------------------- | ------------------------------------------------------------- |

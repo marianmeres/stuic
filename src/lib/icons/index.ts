@@ -40,6 +40,7 @@ export { iconLucideZoomIn as iconZoomIn } from "@marianmeres/icons-fns/lucide/ic
 export { iconLucideZoomOut as iconZoomOut } from "@marianmeres/icons-fns/lucide/iconLucideZoomOut.js";
 
 // UI Control Icons (Lucide)
+export { iconLucideCalendar as iconCalendar } from "@marianmeres/icons-fns/lucide/iconLucideCalendar.js";
 export { iconLucideCheck as iconCheck } from "@marianmeres/icons-fns/lucide/iconLucideCheck.js";
 export { iconLucideChevronDown as iconChevronDown } from "@marianmeres/icons-fns/lucide/iconLucideChevronDown.js";
 export { iconLucideChevronLeft as iconChevronLeft } from "@marianmeres/icons-fns/lucide/iconLucideChevronLeft.js";

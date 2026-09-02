@@ -16,6 +16,8 @@
 <br />
 <a href="./input/country" class="underline">Country</a>
 <br />
+<a href="./input/date" class="underline">Date / date range</a>
+<br />
 <a href="./input/validate-imperative" class="underline"
 	>Imperative validate() — full flow</a
 >

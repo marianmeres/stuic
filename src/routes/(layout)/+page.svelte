@@ -14,6 +14,7 @@
 		'breadcrumbs',
         'button',
         'button-group-radio', 
+        'calendar',
 		'carousel', 
 		'card',
 		'cart',

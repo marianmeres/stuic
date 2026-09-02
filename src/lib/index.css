@@ -63,6 +63,7 @@ In practice:
 @import "./components/Breadcrumbs/index.css";
 @import "./components/Button/index.css";
 @import "./components/ButtonGroupRadio/index.css";
+@import "./components/Calendar/index.css";
 @import "./components/Collapsible/index.css";
 @import "./components/Cart/index.css";
 @import "./components/Card/index.css";

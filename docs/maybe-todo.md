@@ -24,12 +24,12 @@ Checked first, to avoid false positives:
 
 ## Tier 1 — staples nearly every comparable library ships
 
-1. **Date picker / Calendar** — the single biggest gap. No calendar grid, no date-range
-   picker anywhere in the lib (only native `type="date"` via `FieldInput`).
-   `@marianmeres/calendar-utils` already does the date math, so this is mostly UI work.
-   A `FieldDate` / `FieldDateRange` would slot naturally next to `FieldMoney` /
-   `FieldPhoneNumber`. Most work of anything on this list, but also the absence
-   consumers will actually notice.
+1. ~~**Date picker / Calendar**~~ — ✅ shipped (see `src/lib/components/Calendar/` and
+   `FieldDate` / `FieldDateRange` in `Input/`): `Calendar` is the month grid (single /
+   range, APG keyboard grid, min/max/blackouts, dropdown caption, multiple months, week
+   numbers, `renderDay`, Intl names + `t` texts with Slovak bundled), built on
+   `@marianmeres/calendar-utils`; the fields wrap it as trigger + dialog or embedded, with
+   ISO `YYYY-MM-DD` hidden inputs and the usual validate API.
 2. ~~**Breadcrumbs**~~ — ✅ shipped (see `src/lib/components/Breadcrumbs/`):
    APG nav/ol trail, collapsible long trails, schema.org `BreadcrumbList` JSON-LD
    helpers (`breadcrumbsJsonLd` / `breadcrumbsJsonLdScript` + inline `jsonLd` prop).

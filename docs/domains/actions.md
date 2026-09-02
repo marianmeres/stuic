@@ -120,8 +120,8 @@ Per the HTML spec, `<input type="hidden">` is _barred from constraint
 validation_ — `validity.valueMissing` stays `false` regardless of the
 `required` attribute, and native browser submit blocking is skipped. Several
 STUIC field components (`FieldPhoneNumber`, `FieldCountry`, `FieldObject`,
-`FieldAssets`, `FieldInputLocalized`, `FieldKeyValues`, `FieldLikeButton`)
-use a hidden input to participate in `FormData`, so they each enforce
+`FieldAssets`, `FieldInputLocalized`, `FieldKeyValues`, `FieldLikeButton`,
+`FieldDate`, `FieldDateRange`) use a hidden input to participate in `FormData`, so they each enforce
 `required` themselves inside their `customValidator`:
 
 ```ts

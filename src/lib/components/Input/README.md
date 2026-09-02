@@ -4,22 +4,24 @@ A comprehensive form input system with multiple field components, validation sup
 
 ## Components
 
-| Component         | Description                                          |
-| ----------------- | ---------------------------------------------------- |
-| `FieldInput`      | Text, email, password, number, and other input types |
-| `FieldMoney`      | Money amount stored as integer minor units (cents)   |
-| `FieldTextarea`   | Multi-line text input with auto-grow                 |
-| `FieldSelect`     | Dropdown select with option groups                   |
-| `FieldCheckbox`   | Single checkbox with label                           |
-| `FieldRadios`     | Radio button group                                   |
-| `FieldSwitch`     | Toggle switch field                                  |
-| `FieldFile`       | File upload input                                    |
-| `FieldAssets`     | Asset/image upload with preview                      |
-| `FieldKeyValues`  | Key-value pairs editor with JSON serialization       |
-| `FieldLikeButton` | Like/favorite toggle button                          |
-| `Fieldset`        | Fieldset with legend                                 |
-| `Honeypot`        | Hidden anti-bot trap field (server-less)             |
-| `TimeTrap`        | Anti-bot submit-timing primitive (server-less)       |
+| Component         | Description                                                    |
+| ----------------- | -------------------------------------------------------------- |
+| `FieldInput`      | Text, email, password, number, and other input types           |
+| `FieldMoney`      | Money amount stored as integer minor units (cents)             |
+| `FieldDate`       | Single calendar date — trigger + dialog, or embedded calendar  |
+| `FieldDateRange`  | Inclusive date range (`start` … `end`), same two presentations |
+| `FieldTextarea`   | Multi-line text input with auto-grow                           |
+| `FieldSelect`     | Dropdown select with option groups                             |
+| `FieldCheckbox`   | Single checkbox with label                                     |
+| `FieldRadios`     | Radio button group                                             |
+| `FieldSwitch`     | Toggle switch field                                            |
+| `FieldFile`       | File upload input                                              |
+| `FieldAssets`     | Asset/image upload with preview                                |
+| `FieldKeyValues`  | Key-value pairs editor with JSON serialization                 |
+| `FieldLikeButton` | Like/favorite toggle button                                    |
+| `Fieldset`        | Fieldset with legend                                           |
+| `Honeypot`        | Hidden anti-bot trap field (server-less)                       |
+| `TimeTrap`        | Anti-bot submit-timing primitive (server-less)                 |
 
 ## Common Props (FieldInput, FieldTextarea, FieldSelect)
 
@@ -733,6 +735,137 @@ until it settles, and a rejection is caught so a failed download never breaks th
 > as a file icon and only fetch bytes when the user actually clicks Download.
 
 ---
+
+## Date and date range fields
+
+`FieldDate` picks one calendar date, `FieldDateRange` an inclusive `start` … `end` pair.
+Both wrap the [`Calendar`](../Calendar/README.md) component in the standard field
+scaffolding (label, description, validation, sizes, the shared class props, the
+imperative API) and come in two presentations:
+
+- **dialog** (default) — a trigger button shows the formatted value (or a placeholder)
+  and opens the calendar in a native `<dialog>`; a pick closes it (`closeOnSelect`), a
+  trailing × clears. Focus moves into the grid on open and back to the trigger on close.
+  On phones the dialog is a centered card with 44px day targets.
+- **embedded** — the calendar sits inline inside the field card, no trigger, no dialog;
+  "Clear" moves into the calendar's footer.
+
+Values are ISO `YYYY-MM-DD` strings (`null` = empty). The `name` (`nameStart` /
+`nameEnd` for the range) goes on **hidden inputs** carrying those ISO values, so a
+`<form>` always submits `2026-09-02` no matter how the date is displayed — `locale`,
+`formatOptions` and `format` only shape the trigger text.
+
+```svelte
+<script lang="ts">
+	import { FieldDate, FieldDateRange, todayIso } from "@marianmeres/stuic";
+
+	let delivery = $state<string | null>(null);
+	let from = $state<string | null>(null);
+	let to = $state<string | null>(null);
+	let dob = $state<string | null>(null);
+</script>
+
+<FieldDate
+	bind:value={delivery}
+	label="Delivery date"
+	name="delivery"
+	min={todayIso()}
+	required
+/>
+
+<FieldDateRange
+	bind:start={from}
+	bind:end={to}
+	label="Stay"
+	nameStart="from"
+	nameEnd="to"
+/>
+
+<!-- inline, with a dropdown caption to reach far-away years -->
+<FieldDate
+	bind:value={dob}
+	label="Date of birth"
+	name="dob"
+	embedded
+	captionLayout="dropdown"
+	yearRange={[1920, 2026]}
+	max={todayIso()}
+/>
+```
+
+### Props
+
+Field-specific:
+
+| Prop            | `FieldDate`        | `FieldDateRange`                        | Description                                                  |
+| --------------- | ------------------ | --------------------------------------- | ------------------------------------------------------------ |
+| value           | `value` (bindable) | `start`, `end` (bindable)               | ISO `YYYY-MM-DD` or `null`                                   |
+| form name       | `name`             | `nameStart`, `nameEnd`                  | Names of the hidden input(s)                                 |
+| `onChange`      | `(value) => void`  | `({ start, end }) => void`              | After a pick / clear through the UI (not on external writes) |
+| `format`        | `(iso) => string`  | `(start, end) => string`                | Custom trigger text (wins over `formatOptions`)              |
+| `months`        | default `1`        | default `2` (collapses to 1 below `md`) | Months side by side in the calendar                          |
+| `closeOnSelect` | close after a pick | close once the range is complete        | Default `true`; `false` keeps the dialog open + adds "Done"  |
+
+Shared:
+
+| Prop            | Type                         | Default                   | Description                                                                                           |
+| --------------- | ---------------------------- | ------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `embedded`      | `boolean`                    | `false`                   | Inline calendar instead of trigger + dialog                                                           |
+| `placeholder`   | `string`                     | `t("placeholder_…")`      | Trigger text while empty                                                                              |
+| `clearable`     | `boolean`                    | `true`                    | The trailing × (dialog) / the footer "Clear" (embedded)                                               |
+| `locale`        | `string`                     | browser                   | BCP 47 locale of the trigger text and the calendar's day / month names                                |
+| `formatOptions` | `Intl.DateTimeFormatOptions` | `{ dateStyle: "medium" }` | Trigger text format                                                                                   |
+| `calendarProps` | `Partial<CalendarProps>`     | -                         | Anything else for the inner `Calendar` (class hooks, `view`, …), applied last                         |
+| `validate`      | `boolean \| ValidateOptions` | enabled                   | `false` disables the built-in guard; an object is merged with it (your validator runs after it)       |
+| `classInput`    | `string`                     | -                         | Trigger button classes                                                                                |
+| `classDialog`   | `string`                     | -                         | Dialog card classes                                                                                   |
+| `noScrollLock`  | `boolean`                    | `false`                   | Don't lock body scroll while the dialog is open                                                       |
+| `t`             | `TranslateFn`                | English                   | i18n — see the [Calendar README](../Calendar/README.md#i18n) (Slovak bundled: `CALENDAR_MESSAGES_SK`) |
+| `input`         | `HTMLInputElement`           | -                         | The (first) hidden input (bindable)                                                                   |
+
+Forwarded to the calendar unchanged (see its README): `min`, `max`, `isDateDisabled`,
+`weekStartsOn`, `weekendDays`, `zone`, `captionLayout`, `yearRange`, `showWeekNumbers`,
+`showOutsideDays`, `fixedWeeks`, `showToday`, `renderDay`. Plus the usual field props:
+`label`, `description`, `labelAfter`, `below`, `id`, `tabindex`, `renderSize`,
+`required`, `disabled`, `labelLeft*`, `style`, and the shared `InputWrapClassProps`.
+
+### Validation
+
+A hidden input is barred from native constraint validation, so both fields enforce
+everything in their own validator (default-on, like the other hidden-input fields):
+`required`, a valid ISO date, `min` / `max`, `isDateDisabled` — and the range field
+rejects a half range (a start without an end) **whether or not** it is `required`. The
+messages go through `t` and format the bound with the field's own display format
+("Date must be on or after Feb 5, 2026."). A consumer `customValidator` runs after the
+guard passes.
+
+Loose input is tolerated on the way in: `"2026-09-02T10:00:00Z"` or a `Date` are reduced
+to their calendar date (the date portion **as written**, never shifted through a zone).
+Unparseable input is displayed as empty but submitted as-is, so the validator flags it
+instead of silently posting an empty value.
+
+### Methods
+
+Accessed via a `bind:this` reference — the imperative validate API (`validate()`,
+`clearValidation()`, `getValidation()`, `focus()`, `scrollIntoView()`) plus `open()` /
+`close()` for the dialog (no-ops when `embedded`).
+
+### CSS Variables
+
+The calendar inside is styled by the `--stuic-calendar-*` tokens (see its README); the
+field shell adds:
+
+| Variable                              | Default                          | Description                          |
+| ------------------------------------- | -------------------------------- | ------------------------------------ |
+| `--stuic-field-date-icon-text`        | `--stuic-color-muted-foreground` | Trigger calendar icon color          |
+| `--stuic-field-date-placeholder-text` | `--stuic-input-placeholder`      | Trigger placeholder color            |
+| `--stuic-field-date-embedded-padding` | `0.5rem`                         | Padding around the embedded calendar |
+| `--stuic-field-date-dialog-padding`   | `1rem`                           | Dialog card padding                  |
+| `--stuic-field-date-dialog-radius`    | `--stuic-radius-container`       | Dialog card radius                   |
+| `--stuic-field-date-dialog-shadow`    | `--stuic-shadow-dialog`          | Dialog card shadow                   |
+
+The trigger follows the `--stuic-input-*` size tokens (`renderSize`), the dialog card the
+`--stuic-modal-dialog-bg` / `-text` tokens.
 
 ## Honeypot & TimeTrap (anti-bot primitives)
 
