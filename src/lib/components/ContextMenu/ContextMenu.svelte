@@ -47,7 +47,7 @@
 		search?: boolean | ContextMenuSearchConfig;
 		/** Show backdrop in fallback mode (default: true) */
 		showBackdrop?: boolean;
-		/** Reserve scrollbar space to prevent layout shift on open (see DropdownMenu) */
+		/** Reserve scrollbar space; auto-detected once the menu scrolls (see DropdownMenu) */
 		scrollbarGutter?: boolean;
 		/** Skip the body scroll lock in fallback mode */
 		noScrollLock?: boolean;

@@ -194,8 +194,10 @@
 		onClose?: () => void;
 		/** Called when any action item is selected (fallback if item has no onSelect) */
 		onSelect?: (item: DropdownMenuActionItem) => void | boolean | Promise<void | boolean>;
-		/** Reserve scrollbar space to prevent layout shift on open (useful for long lists).
-		 *  When undefined, auto-enables if items count >= 7. */
+		/** Reserve scrollbar space (`scrollbar-gutter: stable`) so the menu width does not
+		 *  jump when the scrollbar comes and goes while open (search filtering, expandable
+		 *  sections). `true`/`false` force it. When undefined, the gutter is reserved only
+		 *  once the content actually scrolls, and kept until the menu closes. */
 		scrollbarGutter?: boolean;
 		/** Reference to trigger element */
 		triggerEl?: HTMLButtonElement;
@@ -684,9 +686,58 @@
 	// Computed transition duration
 	let transitionDuration = $derived(reducedMotion.current ? 0 : 100);
 
+	// Scrollbar gutter.
+	// `scrollbar-gutter: stable` keeps the dropdown width from jumping when the vertical
+	// scrollbar comes and goes while the menu is open (search filtering, expanding or
+	// collapsing sections). Reserving it up front for a menu that never scrolls leaves a
+	// dead strip along the right edge (with classic, space-taking scrollbars), so unless
+	// the `scrollbarGutter` prop decides, the gutter is reserved only once a space-taking
+	// scrollbar is actually present — and then kept until the menu closes.
+	let hasScrollbar = $state(false);
+
+	/** Whether `el` currently renders a vertical scrollbar that takes up layout space.
+	 *  Overlay scrollbars take none (and `scrollbar-gutter` reserves nothing for them).
+	 *  Both halves are needed: an already reserved gutter takes the same space as a
+	 *  scrollbar (so width alone is fooled by a stale gutter from the previous session),
+	 *  and a mid-transition frame (`overflow: hidden`, reduced height) "overflows"
+	 *  without any scrollbar (so height alone is fooled by the slide animation). */
+	function hasVerticalScrollbar(el: HTMLElement): boolean {
+		const cs = getComputedStyle(el);
+		const borders =
+			(parseFloat(cs.borderLeftWidth) || 0) + (parseFloat(cs.borderRightWidth) || 0);
+		// offsetWidth - clientWidth = horizontal borders + vertical scrollbar (or gutter)
+		const takesSpace = el.offsetWidth - el.clientWidth - borders > 1;
+		return takesSpace && el.scrollHeight > el.clientHeight;
+	}
+
+	function measureScrollbar() {
+		if (hasScrollbar || !dropdownEl) return;
+		if (hasVerticalScrollbar(dropdownEl)) hasScrollbar = true;
+	}
+
+	// Each open session measures afresh. Reset on open rather than on close, so the
+	// gutter survives the closing slide-out (no width jump mid-outro).
+	$effect(() => {
+		if (isOpen) hasScrollbar = false;
+	});
+
+	// Measure on open and whenever the rendered content can grow (search results,
+	// expanded sections, items, positioning mode). Effects run before the slide intro
+	// applies its first zero-height frame, so this reads the settled layout; the
+	// `onintrostart` / `onintroend` handlers in the template re-check around transitions
+	// (a re-open that interrupts the closing slide-out is measured mid-animation here,
+	// and only settles by `introend`).
+	$effect(() => {
+		if (!isOpen || !dropdownEl) return;
+		void filteredItems;
+		void expandedSections;
+		void isSupported;
+		untrack(measureScrollbar);
+	});
+
 	// Position styles for CSS Anchor Positioning
 	let dropdownStyle = $derived.by(() => {
-		const useGutter = scrollbarGutter ?? items.length >= 7;
+		const useGutter = scrollbarGutter ?? hasScrollbar;
 		const gutterStyle = useGutter ? "scrollbar-gutter: stable;" : "";
 		if (isSupported) {
 			// Use fixed height when search is enabled AND position is a "top" variant
@@ -878,6 +929,8 @@
 					)}
 			style={dropdownStyle}
 			transition:slide={{ duration: transitionDuration }}
+			onintrostart={measureScrollbar}
+			onintroend={measureScrollbar}
 		>
 			<!-- Close button (fallback mode only) -->
 			{#if !isSupported}
@@ -1017,6 +1070,7 @@
 										classExpandableContent
 									)}
 									transition:slide={{ duration: transitionDuration }}
+									onintroend={measureScrollbar}
 								>
 									{#each item.items as childItem}
 										{#if childItem.type === "action"}

@@ -185,3 +185,108 @@ test("onOpen fires on open and onClose fires on close", async () => {
 	await expect.element(screen.getByRole("menu")).not.toBeInTheDocument();
 	expect(onClose).toHaveBeenCalled();
 });
+
+// --- scrollbar gutter -----------------------------------------------------------
+// `scrollbar-gutter: stable` keeps the menu width steady while the scrollbar comes and
+// goes (search filtering, expandables). It used to be reserved by a head-count guess
+// (>= 7 items), which left a dead strip along the right edge of menus that never
+// scroll. Now it is reserved only once a space-taking scrollbar is actually present,
+// and then kept until the menu closes.
+
+// The demo's "File Menu": 7 mixed items (2 headers, 4 actions, 1 divider) that fit
+// well within the 300px max-height — exactly the shape that used to get the gutter.
+function fileMenuItems() {
+	return [
+		{ type: "header" as const, id: "h1", label: "File Operations" },
+		{ type: "action" as const, id: "new", label: "New File" },
+		{ type: "action" as const, id: "open", label: "Open" },
+		{ type: "action" as const, id: "save", label: "Save" },
+		{ type: "divider" as const, id: "d1" },
+		{ type: "header" as const, id: "h2", label: "Share" },
+		{ type: "action" as const, id: "share", label: "Share..." },
+	];
+}
+
+// Past the ~100ms slide intro, so assertions read the settled layout, not a frame
+// of the transition.
+const settle = () => new Promise((r) => setTimeout(r, 250));
+
+test("scrollbar gutter: not reserved for a menu that does not scroll (7 mixed items)", async () => {
+	const screen = render(DropdownMenu, { items: fileMenuItems(), children: text("File") });
+	await screen.getByRole("button", { name: "File" }).click();
+	const menu = screen.getByRole("menu");
+	await expect.element(menu).toBeInTheDocument();
+	await settle();
+
+	const el = menu.element() as HTMLElement;
+	expect(el.style.scrollbarGutter).toBe("");
+});
+
+test("scrollbar gutter: explicit scrollbarGutter=true reserves it regardless of content", async () => {
+	const screen = render(DropdownMenu, {
+		items: fileMenuItems(),
+		scrollbarGutter: true,
+		children: text("File"),
+	});
+	await screen.getByRole("button", { name: "File" }).click();
+	const menu = screen.getByRole("menu");
+	await expect.element(menu).toBeInTheDocument();
+
+	expect((menu.element() as HTMLElement).style.scrollbarGutter).toBe("stable");
+});
+
+test("scrollbar gutter: reserved once a space-taking scrollbar appears, kept while filtering shrinks the list, reset on reopen", async (ctx) => {
+	// Component CSS is not loaded here, so opt the menu into scrolling explicitly and
+	// give it a classic (space-taking) scrollbar: a ::-webkit-scrollbar rule makes
+	// Chromium render a non-overlay scrollbar of that width.
+	const style = document.createElement("style");
+	style.textContent = `[role="menu"] { overflow-y: auto; } [role="menu"]::-webkit-scrollbar { width: 12px; }`;
+	document.head.appendChild(style);
+	try {
+		const items = Array.from({ length: 40 }, (_, i) => ({
+			type: "action" as const,
+			id: `i${i}`,
+			label: `Item ${i}`,
+		}));
+		const screen = render(DropdownMenu, { items, search: true, children: text("Long") });
+		const trigger = screen.getByRole("button", { name: "Long" });
+		await trigger.click();
+		const menu = screen.getByRole("menu");
+		await expect.element(menu).toBeInTheDocument();
+		await settle();
+
+		const el = menu.element() as HTMLElement;
+		// No borders without the component CSS, so this is the scrollbar's own width.
+		if (el.offsetWidth - el.clientWidth === 0) {
+			// Headless Chromium launched with --hide-scrollbars: no scrollbar takes space,
+			// so there is nothing to reserve and the auto path correctly stays off.
+			expect(el.style.scrollbarGutter).toBe("");
+			ctx.skip(
+				"scrollbars take no space in this browser; auto-gutter path not exercised"
+			);
+		}
+		expect(el.style.scrollbarGutter).toBe("stable");
+
+		// Filter down to a single item: the list no longer scrolls, the gutter stays.
+		await screen.getByLabelText("Search menu items").fill("Item 39");
+		await expect
+			.element(screen.getByRole("menuitem", { name: "Item 39" }))
+			.toBeInTheDocument();
+		await expect
+			.element(screen.getByRole("menuitem", { name: "Item 1" }))
+			.not.toBeInTheDocument();
+		expect(el.style.scrollbarGutter).toBe("stable");
+
+		// Reopen: a fresh session measures again from scratch (search is cleared on
+		// close, so the full list scrolls again and the gutter comes back).
+		await trigger.click();
+		await expect.element(menu).not.toBeInTheDocument();
+		await trigger.click();
+		const reopened = screen.getByRole("menu");
+		await expect.element(reopened).toBeInTheDocument();
+		await settle();
+		expect((reopened.element() as HTMLElement).style.scrollbarGutter).toBe("stable");
+	} finally {
+		style.remove();
+	}
+});

@@ -11,6 +11,7 @@ A feature-rich dropdown menu component with CSS Anchor Positioning (with fallbac
 | `position`               | `DropdownMenuPosition`                | `"bottom-span-right"` | Popover position relative to trigger               |
 | `offset`                 | `string`                              | `"0.25rem"`           | Offset from trigger element (CSS value)            |
 | `maxHeight`              | `string`                              | `"300px"`             | Max height of dropdown                             |
+| `scrollbarGutter`        | `boolean`                             | auto                  | Reserve scrollbar space (auto: once it scrolls)    |
 | `closeOnSelect`          | `boolean`                             | `true`                | Close menu when action item is selected            |
 | `closeOnClickOutside`    | `boolean`                             | `true`                | Close on click outside                             |
 | `closeOnEscape`          | `boolean`                             | `true`                | Close on Escape key                                |
