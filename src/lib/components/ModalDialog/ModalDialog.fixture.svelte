@@ -1,5 +1,5 @@
 <script lang="ts">
-	// Conventions escape hatch (docs/component-testing/02-test-conventions.md):
+	// Conventions escape hatch (docs/testing-components.md):
 	// ModalDialog is imperative-only (open()/close() via a ref; no bindable
 	// `visible` prop), so a `.svelte.test.ts` file can't drive it directly. This
 	// fixture holds the `bind:this` ref and exposes an opener button that calls

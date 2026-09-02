@@ -7,7 +7,7 @@ import Fixture from "./SlidingPanels.fixture.svelte";
 // The snippet args (`show`) can't be wired to a clickable element from a
 // `.svelte.test.ts`, so we use the conventions escape hatch: a fixture that
 // composes the real component with markup and a "go B" / "go A" button per panel.
-// (see docs/component-testing/02-test-conventions.md and the brief.)
+// (see docs/testing-components.md and the brief.)
 //
 // Contract under test = the POST-TRANSITION outcome with destroyInactive (default
 // TRUE): both panels render initially (B starts off-screen, not destroyed), and

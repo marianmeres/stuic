@@ -8,7 +8,7 @@ import H from "./H.svelte";
 // The semantic tag comes from `level` (tags[level-1]); `data-level` reflects the
 // VISUAL level = renderLevel || level. Those two diverge when renderLevel is set,
 // which is the core contract worth asserting (semantic tag vs. visual style level).
-// See docs/component-testing/02-test-conventions.md.
+// See docs/testing-components.md.
 const text = (s: string) =>
 	createRawSnippet(() => ({ render: () => `<span>${s}</span>` }));
 

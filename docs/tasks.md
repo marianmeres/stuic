@@ -149,7 +149,9 @@ For consumers creating their own theme outside the library.
 ```ts
 import type { ThemeSchema } from "@marianmeres/stuic";
 import { generateThemeCss } from "@marianmeres/stuic";
-import stone from "@marianmeres/stuic/themes/stone";
+// Built-in theme schemas live in design-tokens, not in stuic. stuic depends on it,
+// but add it to your own package.json if you import from it directly.
+import { stone } from "@marianmeres/design-tokens/themes";
 import { writeFileSync } from "node:fs";
 
 const myTheme: ThemeSchema = {
@@ -166,7 +168,9 @@ const myTheme: ThemeSchema = {
 	dark: stone.dark,
 };
 
-writeFileSync("src/theme.css", generateThemeCss(myTheme));
+// generateThemeCss(schema, prefix, options?) — the "stuic-" prefix is what the
+// library's own CSS reads (--stuic-color-primary, …), so it is not optional.
+writeFileSync("src/theme.css", generateThemeCss(myTheme, "stuic-"));
 ```
 
 ### Checklist
@@ -179,20 +183,26 @@ writeFileSync("src/theme.css", generateThemeCss(myTheme));
 
 ## Test Changes
 
+The repo uses **pnpm**.
+
 ### Steps
 
-1. Run `npm run build` - Check for errors
-2. Run `npm run check` - TypeScript validation
-3. Run `npm run dev` - Start dev server
-4. Test in browser (http://localhost:8886)
-5. Test light mode
-6. Test dark mode (add `class="dark"` to `<html>`)
-7. Test that `--stuic-color-primary` changes cascade
+1. Run `pnpm run build` - Check for errors
+2. Run `pnpm run check` - TypeScript validation (`svelte-check`)
+3. Run `pnpm run lint` - ESLint + Prettier
+4. Run `pnpm test` - Node + browser suites (see [Testing](./testing.md))
+5. Run `pnpm run dev` - Start dev server
+6. Test in browser (http://localhost:8886)
+7. Test light mode
+8. Test dark mode (add `class="dark"` to `<html>`)
+9. Test that `--stuic-color-primary` changes cascade
 
 ### Checklist
 
 - [ ] No build errors
 - [ ] No TypeScript errors
+- [ ] Lint clean
+- [ ] Tests green
 - [ ] Component renders correctly
 - [ ] Light mode works
 - [ ] Dark mode works

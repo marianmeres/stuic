@@ -7,6 +7,8 @@ Planning artifact; no code was changed.
 
 # Component Coverage Roadmap
 
+> **ARCHIVED — historical, not current guidance.** See [`docs/_archive/README.md`](../README.md) for why.
+
 > The library has **74 components** (≈105 `.svelte` files incl. sub-components). Roughly **26 are
 > "easy"** (deterministic prop→DOM, no portals/traps), **23 "medium"** (actions, focus jumps, layout
 > reads), **30 "hard/E2E-only"** (portals, focus traps, anchor positioning, drag, Milkdown). The plan:
@@ -82,7 +84,7 @@ E2E. [04](./04-hard-cases-and-e2e.md) draws that line.
 - **One component per commit**, message like `test(Button): browser-mode coverage`.
 - Each commit: write `ComponentName.svelte.test.ts`, run `pnpm test` (both projects green), tick the
   row in [`PROGRESS.md`](./PROGRESS.md), commit.
-- Don't chase coverage %. Stop at the behavior contracts in [02](./02-test-conventions.md)'s checklist.
+- Don't chase coverage %. Stop at the behavior contracts in [02](../../testing-components.md)'s checklist.
 
 ## Open questions / decisions needed
 

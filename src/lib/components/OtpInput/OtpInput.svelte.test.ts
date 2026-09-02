@@ -7,7 +7,7 @@ import OtpInput from "./OtpInput.svelte";
 // headline browser-only behavior is the FOCUS JUMP: typing a sanitized char into
 // a slot advances focus to the next slot (via queueMicrotask). We exercise that
 // with .fill() (which dispatches a real input event) and assert toHaveFocus().
-// See docs/component-testing/02-test-conventions.md.
+// See docs/testing-components.md.
 
 test("renders a role=group root with the stuic-otp-input class and `length` slots", async () => {
 	const screen = render(OtpInput);

@@ -6,6 +6,8 @@ Claims verified against src/lib at commit cc9958b. Planning artifact; no code wa
 
 # Hard Cases & E2E Strategy
 
+> **ARCHIVED — historical, not current guidance.** See [`docs/_archive/README.md`](../README.md) for why.
+
 > ~30 of the 74 components are "hard". But "hard" splits two ways: **most are hard for _jsdom_ yet
 > perfectly testable in Vitest browser mode** (focus traps, anchor positioning, ResizeObserver — all
 > work in a real Chromium); only **drag-heavy and Milkdown-class** components genuinely need a
@@ -32,7 +34,7 @@ candidates, both verified to exist:
 
 ### Candidate A (recommended) — anchor-position viewport clamping
 
-- **Code:** [`src/lib/utils/anchor-position.ts`](../../src/lib/utils/anchor-position.ts), consumed by
+- **Code:** [`src/lib/utils/anchor-position.ts`](../../../src/lib/utils/anchor-position.ts), consumed by
   `DropdownMenu/DropdownMenu.svelte` (and others).
 - **Why:** this is precisely what regressed in `9d8c974` _"clamp anchor-positioned annotations to
   viewport on all paths"_ and `8c52afe`. A test here has immediate, proven value and prevents
@@ -45,7 +47,7 @@ candidates, both verified to exist:
 
 ### Candidate B (alternative) — focus trap
 
-- **Code:** [`src/lib/actions/focus-trap.ts`](../../src/lib/actions/focus-trap.ts), used by
+- **Code:** [`src/lib/actions/focus-trap.ts`](../../../src/lib/actions/focus-trap.ts), used by
   `ModalDialog`, `Backdrop`, `Drawer`.
 - **Why:** Tab/Shift-Tab cycling and `returnFocus`-on-teardown are core a11y contracts that node
   cannot exercise at all.
@@ -59,7 +61,7 @@ candidates, both verified to exist:
 ## Portals & focus traps (browser-mode, later sprint)
 
 `Modal`, `ModalDialog`, `Backdrop`, `Drawer`, `AlertConfirmPrompt` — all use
-[`focus-trap.ts`](../../src/lib/actions/focus-trap.ts), scroll-lock, and an Escape-key stack. These
+[`focus-trap.ts`](../../../src/lib/actions/focus-trap.ts), scroll-lock, and an Escape-key stack. These
 are testable in browser mode (open → focus trapped → Escape closes → backdrop click closes →
 `returnFocus`). The stack/queue _logic_ is already unit-tested (`AlertConfirmPromptStack`,
 `NotificationsStack`); browser tests add the DOM-interaction layer. Higher effort, real value —

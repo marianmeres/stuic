@@ -2,7 +2,7 @@
 
 ## Overview
 
-15 Svelte actions (directives) for reusable DOM behavior.
+16 Svelte actions (directives) for reusable DOM behavior.
 
 ---
 
@@ -18,6 +18,7 @@
 | `fileDropzone`            | Drag-and-drop file handling                                   | `file-dropzone.svelte.ts`            |
 | `highlightDragover`       | Visual feedback on drag-over                                  | `highlight-dragover.svelte.ts`       |
 | `resizableWidth`          | Draggable width resizing                                      | `resizable-width.svelte.ts`          |
+| `draggable`               | Pointer-delta drag handle (consumer owns the movement)        | `draggable.svelte.ts`                |
 | `trim`                    | Auto-trim whitespace from input                               | `trim.svelte.ts`                     |
 | `typeahead`               | Advanced autocomplete behavior                                | `typeahead.svelte.ts`                |
 | `onSubmitValidityCheck`   | Form submit validation                                        | `on-submit-validity-check.svelte.ts` |

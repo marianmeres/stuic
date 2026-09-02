@@ -7,6 +7,8 @@ Planning artifact; no code was changed.
 
 # Framework Setup
 
+> **ARCHIVED — historical, not current guidance.** See [`docs/_archive/README.md`](../README.md) for why.
+
 > This is the infrastructure dimension: the one-time work that turns "no DOM, no `$effect`"
 > into a working browser test harness. The single most important takeaway: **a Vitest
 > `projects` split routed by filename** (`*.test.ts` → fast node, `*.svelte.test.ts` → real
@@ -18,7 +20,7 @@ Planning artifact; no code was changed.
 
 - **Package manager:** pnpm. **Svelte:** 5.56.2. **SvelteKit:** 2.63.0 (adapter-auto). **Vitest:** 3.2.6.
 - **Test config:** none dedicated. Vitest is configured only implicitly through
-  [`vite.config.ts`](../../vite.config.ts) (`plugins: [tailwindcss(), sveltekit()]`), and the
+  [`vite.config.ts`](../../../vite.config.ts) (`plugins: [tailwindcss(), sveltekit()]`), and the
   script is `"test": "vitest --dir src/"`.
 - **What runs today:** 9 suites / ~59 tests, all **node environment, pure logic** — validation
   helpers, stack classes (`NotificationsStack`, `AlertConfirmPromptStack`), `tr`, `replace-map`,
@@ -70,7 +72,7 @@ do **not** need `@testing-library/svelte` or `@testing-library/jest-dom` — `vi
 
 ## Step 3 — The `projects` config
 
-Add a `test` block to [`vite.config.ts`](../../vite.config.ts) (keep the file; just extend it).
+Add a `test` block to [`vite.config.ts`](../../../vite.config.ts) (keep the file; just extend it).
 Verified against the live Vitest 4 docs (`provider: playwright()` is an imported **function**, not
 the old `'playwright'` string; `instances` is required):
 

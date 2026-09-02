@@ -7,6 +7,8 @@ vitest-browser-svelte docs. Planning artifact; no code was changed.
 
 # @marianmeres/stuic — Component Testing: Overview & Roadmap
 
+> **ARCHIVED — historical, not current guidance.** See [`docs/_archive/README.md`](../README.md) for why.
+
 > **Verdict:** the proposed stack — Vitest Browser Mode + `vitest-browser-svelte` + Playwright/Chromium
 > — is the right default for _this_ library, where the value being shipped is precisely the DOM/layout/
 > focus/positioning behavior that the current node/server-build test setup **cannot exercise at all**.
@@ -24,13 +26,13 @@ vitest-browser-svelte docs. Planning artifact; no code was changed.
 > node with the very server-build error this effort exists to escape.
 >
 > Read order: this file → [`01-framework-setup`](./01-framework-setup.md) for the exact config →
-> [`02-test-conventions`](./02-test-conventions.md) for how to write a test → then work
+> [`02-test-conventions`](../../testing-components.md) for how to write a test → then work
 > [`PROGRESS.md`](./PROGRESS.md) top-down. [`03`](./03-component-coverage-roadmap.md) ranks all 74
 > components; [`04`](./04-hard-cases-and-e2e.md) handles the hard 30; [`05`](./05-ci.md) is CI.
 
 ## A note on `docs/testing.md` (this is a partial reversal — by design)
 
-[`docs/testing.md`](../testing.md) records a deliberate decision **not** to test component rendering
+[`docs/testing.md`](../../testing.md) records a deliberate decision **not** to test component rendering
 ("50+ components × prop combos = slow suite, tiny yield; rendering is gated by svelte-check + publint +
 build"). That reasoning holds for _"does it render"_ and we keep it. What changes: browser mode lets
 us test _"does it **behave**"_ — events, two-way binding, aria/disabled/active state, focus traps,
@@ -45,7 +47,7 @@ explicit sprint task so the docs don't contradict each other.
 | 1    | Upgrade vitest 3→4, verify 9 suites green                           | [01](./01-framework-setup.md)            | high  | S      | med  | Gating prerequisite; nothing installs without it             |
 | 2    | Add `projects` split (node `server` + browser `client`) + Chromium  | [01](./01-framework-setup.md)            | high  | S      | med  | The harness; routes by `*.svelte.test.ts` filename           |
 | 3    | Separator smoke test — prove client build + `$effect` actually run  | [01](./01-framework-setup.md)            | high  | S      | med  | Disproves/confirms the documented server-build blocker       |
-| 4    | Reconcile `docs/testing.md` (behavior ✅, rendering still ❌)       | [02](./02-test-conventions.md)           | med   | S      | low  | Keep docs internally consistent before scaling               |
+| 4    | Reconcile `docs/testing.md` (behavior ✅, rendering still ❌)       | [02](../../testing-components.md)        | med   | S      | low  | Keep docs internally consistent before scaling               |
 | 5    | Button — flagship; sets every assertion pattern                     | [03](./03-component-coverage-roadmap.md) | high  | S      | low  | Most-used primitive; template for the rest                   |
 | 6    | Pill, Switch — events + binding patterns                            | [03](./03-component-coverage-roadmap.md) | high  | S      | low  | Cover dismiss/toggle/bind once, reuse everywhere             |
 | 7    | Spinner, Skeleton, DismissibleMessage, Avatar, Progress             | [03](./03-component-coverage-roadmap.md) | high  | S      | low  | Deterministic, high-traffic; quick wins                      |
@@ -68,7 +70,7 @@ Branch: `feat/component-testing`. One commit per task.
 chromium`, fix the test scripts, and land the Separator smoke test. Unblocks all component tests
    and proves the server-build blocker is gone. Detail in [01](./01-framework-setup.md).
 3. **Reconcile `docs/testing.md` (#4)** — small doc edit so the philosophy matches reality.
-4. **Button (#5)** — establishes the assertion vocabulary ([02](./02-test-conventions.md)) every later
+4. **Button (#5)** — establishes the assertion vocabulary ([02](../../testing-components.md)) every later
    test reuses. Highest-leverage single component.
 5. **Pill → Switch → Spinner → Skeleton → DismissibleMessage → Avatar → Progress (#6, #7)** — the easy
    tier, one commit each; fast, deterministic, high-traffic coverage.
@@ -105,7 +107,7 @@ flowchart TD
 ## Completeness check
 
 - **Snippet-heavy components** (Button needs `children`): the `createRawSnippet` pattern is settled in
-  [02](./02-test-conventions.md); first real exercise is Button — watch for friction and codify a shared
+  [02](../../testing-components.md); first real exercise is Button — watch for friction and codify a shared
   helper home then.
 - **SvelteKit-plugin-in-browser-mode** is the top unknown; the Separator smoke test (task 2) is the
   designated early canary, with a documented fallback (plain `svelte()` plugin for the client project).
@@ -114,6 +116,6 @@ flowchart TD
 - Not yet scoped: a dedicated `playwright.config.ts` for the standalone E2E layer — intentionally
   deferred to its own future initiative ([04](./04-hard-cases-and-e2e.md)).
 
-Source documents: [`01-framework-setup`](./01-framework-setup.md), [`02-test-conventions`](./02-test-conventions.md),
+Source documents: [`01-framework-setup`](./01-framework-setup.md), [`02-test-conventions`](../../testing-components.md),
 [`03-component-coverage-roadmap`](./03-component-coverage-roadmap.md), [`04-hard-cases-and-e2e`](./04-hard-cases-and-e2e.md),
 [`05-ci`](./05-ci.md).

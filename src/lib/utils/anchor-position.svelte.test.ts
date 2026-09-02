@@ -1,7 +1,7 @@
 import { expect, test, afterEach } from "vitest";
 import { clampIntoViewport } from "./anchor-position.js";
 
-// THE HARD PROOF (docs/component-testing/04-hard-cases-and-e2e.md, Candidate A).
+// THE HARD PROOF (docs/_archive/component-testing/04-hard-cases-and-e2e.md, Candidate A).
 //
 // clampIntoViewport is the JS backstop for CSS Anchor Positioning: it force-
 // measures getBoundingClientRect and reads window.innerWidth/innerHeight, then

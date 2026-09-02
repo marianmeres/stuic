@@ -36,19 +36,24 @@ Layer 4: Internal Vars        (--_bg, --_text, --_border)
 
 ```
 src/lib/
-├── components/           # 57 component directories
+├── components/           # 75 component directories
 │   └── {Name}/
 │       ├── {Name}.svelte     # Main component
 │       ├── index.ts          # Exports
 │       ├── index.css         # CSS tokens (if styled)
 │       └── README.md         # Documentation
 │
-├── actions/              # 15 Svelte actions
+├── actions/              # 16 Svelte actions
 │   ├── *.svelte.ts           # Reactive actions
 │   ├── *.ts                  # Traditional actions
 │   └── index.ts              # Barrel export
 │
-├── utils/                # 45 utility modules
+├── attachments/          # {@attach} DOM helpers (preferred over new actions)
+│   ├── auto-height.ts
+│   ├── long-press.ts
+│   └── index.ts              # Barrel export
+│
+├── utils/                # 55 utility modules (48 re-exported from the barrel)
 │   ├── *.svelte.ts           # Reactive utilities
 │   ├── *.ts                  # Pure functions
 │   └── index.ts              # Barrel export
@@ -58,6 +63,8 @@ src/lib/
 ├── css/                  # CSS-only presets (classes + tokens, no JS)
 │   └── frame.css             # Ratio-locked frame (letterbox)
 │
+├── types.ts              # Shared public types (DataAttributes, TranslateFn, …)
+├── mcp.ts                # MCP tool definitions (@marianmeres/mcp-server discovery)
 ├── index.css             # CENTRALIZED CSS imports
 └── index.ts              # Main barrel export
 ```
@@ -87,7 +94,7 @@ src/lib/
 **DO NOT** use `import './index.css'` inside component `.svelte` files.
 
 **Exception — subpath-export components.** A component whose peer dependencies are
-declared _optional_ (`MarkdownEditor`, `CommentInput`) is kept off the root barrel and
+declared _optional_ (`MarkdownEditor`, `CommentInput`, `TrendChart`) is kept off the root barrel and
 shipped behind its own subpath export, so those peers never enter the entry graph of
 consumers who don't use it. Such a component imports its own `index.css` locally and is
 **not** `@import`-ed into `src/lib/index.css` — centralizing it would ship the styles to
@@ -145,7 +152,7 @@ Props → Component → Data Attributes → CSS Selectors
 | ------------------------------------------ | --------------------------------------------------------------------------- |
 | `src/lib/index.css`                        | CSS entry point (import this)                                               |
 | `src/lib/index.ts`                         | JS entry point (barrel export)                                              |
-| `@marianmeres/design-tokens/css/stone.css` | Default theme (42 themes available)                                         |
+| `@marianmeres/design-tokens/css/stone.css` | Default theme (54 themes available)                                         |
 | `src/lib/utils/tw-merge.ts`                | Tailwind class merging                                                      |
 | `src/lib/utils/design-tokens.ts`           | Theme types (`ThemeSchema`, `ColorPair`, etc.) and CSS generation functions |
 
@@ -173,14 +180,15 @@ Theme CSS files are provided by the `@marianmeres/design-tokens` package (a regu
 "./phone-validation": Phone validation helpers
 "./markdown-editor":  MarkdownEditor  — optional peer deps, local CSS
 "./comment-input":    CommentInput    — optional peer deps, local CSS
+"./trend-chart":      TrendChart      — optional peer deps, local CSS
 ```
 
-The last two are deliberately **off** the main entry: they reach `@milkdown/*` and
-`@codemirror/*`, which are optional peers. A consumer that has not installed those
-peers gets a hard bundler error (rolldown reports every named import from the
-unresolved stub as `MISSING_EXPORT`) if the root barrel can reach them — even though
-the editor backends sit behind `await import()`, because the specifiers are static
-literals that a bundler must still resolve at build time.
+The last three are deliberately **off** the main entry: they reach `@milkdown/*`,
+`@codemirror/*` and `@marianmeres/trend-chart`, which are optional peers. A consumer
+that has not installed those peers gets a hard bundler error (rolldown reports every
+named import from the unresolved stub as `MISSING_EXPORT`) if the root barrel can reach
+them — even though the editor backends sit behind `await import()`, because the
+specifiers are static literals that a bundler must still resolve at build time.
 
 ---
 

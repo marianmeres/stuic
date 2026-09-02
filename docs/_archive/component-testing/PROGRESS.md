@@ -1,5 +1,7 @@
 # Implementation Progress — Component Testing
 
+> **ARCHIVED — historical, not current guidance.** See [`docs/_archive/README.md`](../README.md) for why.
+
 Living tracker for acting on [`00-overview-and-roadmap.md`](./00-overview-and-roadmap.md).
 A fresh conversation should read this file first, then the relevant `NN-*.md` section.
 
@@ -17,7 +19,7 @@ Branch: `feat/component-testing`
 | --- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ------ | --------- |
 | 1   | Upgrade vitest 3→4; confirm 9 existing node suites still green                                                            | [01](./01-framework-setup.md) Step 1        | ✅     | `71e47e2` |
 | 2   | Browser harness: add deps, `projects` config split, `playwright install chromium`, fix test scripts, Separator smoke test | [01](./01-framework-setup.md) Steps 2–5     | ✅     | `980b323` |
-| 3   | Reconcile [`docs/testing.md`](../testing.md) — add the browser-behavior layer                                             | [02](./02-test-conventions.md)              | ✅     | `977c431` |
+| 3   | Reconcile [`docs/testing.md`](../../testing.md) — add the browser-behavior layer                                          | [02](../../testing-components.md)           | ✅     | `977c431` |
 | 4   | **Button** — flagship; establish assertion patterns                                                                       | [03](./03-component-coverage-roadmap.md) #1 | ✅     | `9485e97` |
 | 5   | **Pill** — intent/active/dismissible event                                                                                | [03](./03-component-coverage-roadmap.md) #2 | ✅     | `2992faf` |
 | 6   | **Switch** — checked binding, toggle, disabled                                                                            | [03](./03-component-coverage-roadmap.md) #3 | ✅     | `6aa1771` |

@@ -24,9 +24,9 @@
 ```
 src/lib/
 ├── components/     # 75 component directories
-├── actions/        # 15 Svelte actions (use: directives)
+├── actions/        # 16 Svelte actions (use: directives)
 ├── attachments/    # Svelte attachments ({@attach} — preferred for new DOM helpers)
-├── utils/          # 45 utility modules
+├── utils/          # 55 utility modules (48 on the barrel)
 ├── icons/          # Icon re-exports from @marianmeres/icons-fns
 ├── css/            # CSS-only presets (ratio-locked frame / letterbox)
 ├── index.css       # Centralized CSS imports
@@ -39,7 +39,7 @@ src/lib/
 > attachments in `src/lib/attachments/` (export from its `index.ts`). The existing `actions/`
 > are kept as-is for back-compat; no need to migrate them.
 
-Theme CSS files are not bundled in this package — they're provided by `@marianmeres/design-tokens/css/*.css` (42 themes) and imported by `src/lib/index.css`.
+Theme CSS files are not bundled in this package — they're provided by `@marianmeres/design-tokens/css/*.css` (54 themes) and imported by `src/lib/index.css`.
 
 ---
 
@@ -126,15 +126,17 @@ Global tokens that control cross-component visual properties. Defined in `src/li
 - [Architecture](./docs/architecture.md) — System design, data flow
 - [Conventions](./docs/conventions.md) — Code standards, patterns
 - [Tasks](./docs/tasks.md) — Common procedures
+- [Testing](./docs/testing.md) — What we test, what we don't, the two-project split
+- [Component test conventions](./docs/testing-components.md) — How to write a `*.svelte.test.ts`
 
 ### Domain Docs
 
 - [Components](./docs/domains/components.md) — 75 component directories, Props pattern, snippets
 - [Theming](./docs/domains/theming.md) — CSS tokens, dark mode, themes
 - [CSS presets](./docs/domains/css-presets.md) — ratio-locked frame (letterbox), safe-area, scrollbar
-- [Actions](./docs/domains/actions.md) — 15 Svelte directives
+- [Actions](./docs/domains/actions.md) — 16 Svelte directives
 - [Attachments](./docs/domains/attachments.md) — `{@attach}` DOM helpers (preferred for new ones)
-- [Utils](./docs/domains/utils.md) — 45 utility modules
+- [Utils](./docs/domains/utils.md) — 55 utility modules
 
 ### Reference
 
@@ -151,7 +153,7 @@ Global tokens that control cross-component visual properties. Defined in `src/li
 | `src/lib/index.css`                    | CSS entry point                                |
 | `src/lib/index.ts`                     | JS entry point                                 |
 | `src/lib/utils/design-tokens.ts`       | Re-exports from `@marianmeres/design-tokens`   |
-| `@marianmeres/design-tokens/css/*.css` | Theme CSS files (42 themes, `--stuic-` prefix) |
+| `@marianmeres/design-tokens/css/*.css` | Theme CSS files (54 themes, `--stuic-` prefix) |
 | `src/lib/components/Button/`           | Reference component                            |
 
 ---

@@ -19,7 +19,7 @@ export default defineConfig({
 		// Two projects, routed purely by filename:
 		//   *.test.ts        -> fast node env (pure logic, the existing suites)
 		//   *.svelte.test.ts -> real browser (Chromium) for component/DOM/$effect tests
-		// See docs/component-testing/01-framework-setup.md
+		// See docs/_archive/component-testing/01-framework-setup.md
 		projects: [
 			{
 				extends: true, // inherit root plugins (tailwind + sveltekit)
@@ -40,7 +40,7 @@ export default defineConfig({
 					// Browser-mode tests are real Chromium interactions; under full-suite
 					// load (parallel files contending for CPU) a multi-step reactive test
 					// can exceed a tight budget. 5s keeps expect.element retries honest
-					// without masking genuine hangs. See docs/component-testing.
+					// without masking genuine hangs. See docs/_archive/component-testing/.
 					testTimeout: 5000,
 					browser: {
 						enabled: true,

@@ -11,7 +11,7 @@ import FieldInput from "./FieldInput.svelte";
 //   - the `trim` action (default on)    -> trailing/leading ws stripped on `change`
 //   - the `validate` action             -> customValidator message shows/hides in the
 //                                          .validation-box (inject a stub validator per
-//                                          docs/component-testing/03 — no live validation)
+//                                          docs/_archive/component-testing/03 — no live validation)
 // Both `trim` and `validate` listen on the native `change` event; Playwright's .fill()
 // only fires `input`, so we dispatch a real `change` (the same path onSubmit uses).
 const fireChange = (el: Element) =>

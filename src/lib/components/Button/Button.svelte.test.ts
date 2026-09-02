@@ -4,7 +4,7 @@ import { createRawSnippet } from "svelte";
 import Button from "./Button.svelte";
 
 // The flagship browser-mode test — establishes the patterns reused across the
-// component suite (see docs/component-testing/02-test-conventions.md):
+// component suite (see docs/testing-components.md):
 //   render() -> locators -> expect.element (auto-retry); events are spy props;
 //   snippet children via createRawSnippet; assert the data-* contract, not class
 //   strings. Kept per-file inline helper for `children` (no shared helper yet).

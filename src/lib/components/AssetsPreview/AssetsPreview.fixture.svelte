@@ -1,5 +1,5 @@
 <script lang="ts">
-	// Conventions escape hatch (docs/component-testing/02-test-conventions.md):
+	// Conventions escape hatch (docs/testing-components.md):
 	// AssetsPreview is imperative-only — it opens a ModalDialog via a ref method
 	// open(index?). A *.svelte.test.ts file can't hold a bind:this + a trigger, so
 	// this fixture exposes an opener button that calls open(openIndex); all other

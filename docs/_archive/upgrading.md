@@ -1,5 +1,7 @@
 # Upgrading STUIC
 
+> **ARCHIVED — historical, not current guidance.** See [`docs/_archive/README.md`](./README.md) for why.
+
 Notes for coding agents (and humans) maintaining a project that consumes `@marianmeres/stuic`. This doc describes the deltas introduced on top of **v3.66.1** — grouped by what a consumer actually cares about, not by commit.
 
 ## TL;DR

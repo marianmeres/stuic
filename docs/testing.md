@@ -16,7 +16,7 @@ Tests are for what those tools can't see. There are **two layers**, split by fil
 - **`*.test.ts` — node, fast.** Pure deterministic logic where a regression silently corrupts data.
 - **`*.svelte.test.ts` — real browser (Chromium).** Component _behavior_ the build can't see: events firing, two-way `bind:`, `aria`/`disabled`/`active` state, focus traps, computed layout/positioning.
 
-We still explicitly don't try to test everything. The browser layer targets **behavior contracts**, not "does it render" — see [`component-testing/`](./component-testing/) for the strategy, roadmap, and how-to.
+We still explicitly don't try to test everything. The browser layer targets **behavior contracts**, not "does it render" — see [`testing-components.md`](./testing-components.md) for the how-to and the "what to assert" checklist.
 
 ## What we test
 
@@ -79,8 +79,8 @@ const t: TranslateFn = (k) => k;
 For **component** tests (`*.svelte.test.ts`), the patterns differ — `render()` from
 `vitest-browser-svelte`, locators, and the retry-able `expect.element`; events are props (assert with
 spies); snippet children come from `createRawSnippet`. See
-[`component-testing/02-test-conventions.md`](./component-testing/02-test-conventions.md) for the full
-how-to and the "what to assert" checklist.
+[`testing-components.md`](./testing-components.md) for the full how-to and the "what to assert"
+checklist.
 
 ## When in doubt
 

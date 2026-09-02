@@ -2,7 +2,7 @@ import { render } from "vitest-browser-svelte";
 import { expect, test } from "vitest";
 import Separator from "./Separator.svelte";
 
-// Smoke test for the browser-mode harness (see docs/component-testing/01-framework-setup.md).
+// Smoke test for the browser-mode harness (see docs/_archive/component-testing/01-framework-setup.md).
 // If these pass, the client Svelte build, Chromium, tailwind and the locator API all work.
 
 test("renders with role=separator and default horizontal orientation", async () => {

@@ -1,45 +1,30 @@
-<!--
-GENERATED ANALYSIS — @marianmeres/stuic real-browser component testing
-Produced 2026-06-08 by multi-agent research → adversarial verify → synthesize.
-Claims verified against the codebase at commit cc9958b and the live
-vitest-browser-svelte docs. Planning artifact; no code was changed.
--->
+# Component Test Conventions
 
-# Test Conventions
+How to write a STUIC browser component test, and — just as important — **what is worth asserting**.
 
-> How to write a STUIC browser component test, and — just as important — **what is worth
-> asserting**. The headline: test _behavior the build can't see_ (events fire, bindings update,
+> The headline: test _behavior the build can't see_ (events fire, bindings update,
 > aria/disabled/active states, computed layout), not "does it render" (already gated by
 > `svelte-check` + `publint` + the build). Use `render()` → locators → `expect.element`. In Svelte 5
 > events are props, so you assert them with spies; snippet children come from `createRawSnippet`.
 
-## Reconciling with `docs/testing.md`
+Companion to [`testing.md`](./testing.md), which covers the suite as a whole (both layers, what we
+test and what we deliberately don't). This document is the how-to for the browser layer only.
 
-[`docs/testing.md`](../testing.md) currently states the library **deliberately does not** test full
-component rendering ("50+ components × prop combinations = slow suite with tiny yield... Rendering is
-already gated by svelte-check + publint + the build") and treats interactive/visual behavior as
-out of scope.
+## The line this layer does and doesn't cross
 
-That reasoning was **correct for what it described and is not actually reversed here** — it just
-predates a capability we didn't have:
+"Does it render / compile / export" is still low-yield and still covered by `svelte-check` +
+`publint` + the build. We do **not** write tests for that.
 
-- "Does it render / compile / export" → still low-yield, still covered by `svelte-check` + `publint` +
-  build. We will **not** write tests for that.
-- "Does it _behave_" — click handlers, two-way `bind:`, `aria-*`/`disabled`/`active` state, focus
-  traps, viewport-clamped anchor positioning (cf. the recent `9d8c974` annotation-clamp fix) — was
-  **previously impossible** (node/server build, no DOM, no `$effect`). Browser mode makes it possible,
-  and _this_ is the high-yield target.
-
-**Task in the roadmap:** update `docs/testing.md` to add this browser-test layer so the docs aren't
-self-contradictory — promote "interactive behavior" from ❌ to ✅-when-it's-a-real-contract, and point
-to this directory. (See [`PROGRESS.md`](./PROGRESS.md), sprint task.)
+"Does it _behave_" — click handlers, two-way `bind:`, `aria-*`/`disabled`/`active` state, focus
+traps, viewport-clamped anchor positioning — was impossible before browser mode (node/server build,
+no DOM, no `$effect`). That is the high-yield target, and the whole reason this layer exists.
 
 ## File naming & location
 
 - One test per component, **co-located** next to the `.svelte` file (matches the existing co-located
   style, e.g. `Input/phone-validation.test.ts`).
 - Name it `ComponentName.svelte.test.ts` — the `.svelte.test.ts` suffix is what routes it into the
-  browser `client` project (see [01](./01-framework-setup.md)). A plain `*.test.ts` next to a
+  browser `client` project (see [`_archive/component-testing/01-framework-setup.md`](./_archive/component-testing/01-framework-setup.md)). A plain `*.test.ts` next to a
   component stays in the fast node project (correct for extracted pure logic like `_internal/*.ts`).
 
 ## The canonical test
@@ -142,8 +127,22 @@ Rely on `expect.element` retries and awaited locator actions — **never fixed `
 reactivity resolves through the retry loop; only assertions on _external_ universal state living in a
 `*.svelte.ts` module may need `flushSync()` from `svelte`.
 
-## Open questions / decisions needed
+## Shared helpers
 
-- **Shared test utilities** — agree on one home for the `text()` snippet helper and any future
-  fixtures (suggest `src/lib/test-utils/` or `src/test-helpers.ts`), so it's not redefined per file.
-  Decide when the second snippet-needing component lands.
+There is deliberately **no shared test-util module**. The one recurring helper — a `text()` snippet
+factory for `children` — is three lines, so each test file declares its own copy rather than
+importing across the tree:
+
+```ts
+const text = (s: string) =>
+	createRawSnippet(() => ({ render: () => `<span>${s}</span>` }));
+```
+
+Revisit only if a genuinely non-trivial helper shows up.
+
+## Where this came from
+
+The plan that produced this layer (roadmap, framework setup, coverage tiers, CI, and the completed
+progress tracker) is archived under
+[`_archive/component-testing/`](./_archive/component-testing/). It is history, not guidance — this
+file is the live convention.

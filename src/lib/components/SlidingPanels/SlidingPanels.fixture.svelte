@@ -1,7 +1,7 @@
 <script lang="ts">
 	import SlidingPanels from "./SlidingPanels.svelte";
 
-	// Conventions escape hatch (docs/component-testing/02-test-conventions.md):
+	// Conventions escape hatch (docs/testing-components.md):
 	// SlidingPanels exposes the panel content via snippets that receive an
 	// imperative `show(panel)` fn. A `.svelte.test.ts` file can't host markup that
 	// wires snippet args to a button, so we compose the real component here and

@@ -2,7 +2,8 @@
 
 ## Overview
 
-45 utility modules for common tasks. Organized by category.
+55 utility modules for common tasks (48 re-exported from the package barrel; the rest
+are library-internal). Organized by category.
 
 ---
 
