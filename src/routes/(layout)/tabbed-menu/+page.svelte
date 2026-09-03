@@ -5,6 +5,7 @@
 	let value2 = $state<string | number>("home");
 	let valueShort = $state<string | number>("short1");
 	let value3 = $state<string | number>("a");
+	let valueUnderline = $state<string | number>("tab1");
 
 	const basicItems = [
 		{ id: "tab1", label: "First Tab" },
@@ -65,6 +66,27 @@
 			classButton="border-0 rounded-full bg-transparent"
 			classButtonActive="bg-(--stuic-color-primary) text-(--stuic-color-primary-foreground)"
 		/>
+	</section>
+
+	<section>
+		<h2 class="text-lg font-semibold mb-4">Underline Style</h2>
+		<TabbedMenu
+			items={basicItems}
+			bind:value={valueUnderline}
+			unstyled
+			class="flex gap-6 border-b border-(--stuic-color-border)"
+			classButton="
+				cursor-pointer px-1 py-2 -mb-px
+				border-b-2 border-transparent
+				text-(--stuic-color-muted-foreground)
+				transition-colors
+				hover:text-(--stuic-color-foreground)
+				focus-visible:outline-2 focus-visible:outline-(--stuic-color-ring) focus-visible:outline-offset-2
+				aria-disabled:opacity-50 aria-disabled:pointer-events-none
+			"
+			classButtonActive="border-(--stuic-color-primary) text-(--stuic-color-foreground) font-medium"
+		/>
+		<p class="mt-2 text-sm opacity-70">Selected: {valueUnderline}</p>
 	</section>
 
 	<section>
