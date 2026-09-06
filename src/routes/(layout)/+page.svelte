@@ -27,6 +27,7 @@
 		'context-menu',
 		'copy-button',
 		'cron-input',
+		'description-list',
 		'dim-behind',
 		'dismissible-message',
         'data-table', 

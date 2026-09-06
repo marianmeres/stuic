@@ -2,7 +2,7 @@
 
 ## Overview
 
-78 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
+79 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
@@ -105,6 +105,7 @@
 | Thc                 | Flexible renderer for text, HTML, components, or snippets                                            |
 | Card                | Flexible card with image, title, footer; vertical/horizontal layout                                  |
 | Stat                | KPI/stat card: label + value + delta with trend arrow and semantic coloring                          |
+| DescriptionList     | Term/value list (`<dl>`): stacked or two-column by container query, hairlines, truncation, totals    |
 | Timeline            | Vertical event list on a rail: dot/icon/custom markers, inline or opposite time, alternate layout    |
 | TrendChart          | Svelte wrapper for `@marianmeres/trend-chart` (subpath-only: `@marianmeres/stuic/trend-chart`)       |
 | Tree                | Hierarchical tree view with keyboard nav and drag-and-drop                                           |
@@ -967,6 +968,55 @@ Snippets: `children` (full content override, receives `{ state, copied }`). Clas
 Prefix: `--stuic-copy-button-*` (the surface themes via `--stuic-button-*`)
 
 `icon-size`, `icon-pop-duration`, `icon-pop-scale`
+
+---
+
+## DescriptionList
+
+The term-and-value list — the read-only block on every detail page, drawer and back-office panel. Renders `<dl>` › `<div>` per pair › `<dt>` + `<dd>` (plus an optional second `<dd>` qualifying the value), which is what the spec provides for grouping a term with its details and what lets each row be a grid without subgrid. No ARIA is added: a `<dl>` already has list semantics. Two equal ways to feed it — `items` for flat lists, `children` for markup-heavy ones — because the CSS selects **structurally** (`dl > div > dt`, `> div > dd + dd`), so a hand-written row renders identically to a generated one. Not an editor (that is `FieldKeyValues`) and not a table.
+
+### Exports
+
+| Export                       | Kind      | Description                                                                                              |
+| ---------------------------- | --------- | -------------------------------------------------------------------------------------------------------- |
+| `DescriptionList`            | component | Main component                                                                                           |
+| `DescriptionListProps`       | type      | Props type                                                                                               |
+| `DescriptionListItem`        | type      | `{ key?, label, value?, description?, href?, title?, labelLang?, valueLang?, emphasis?, wrap?, class* }` |
+| `DescriptionListLayout`      | type      | `"auto" \| "stacked" \| "columns"`                                                                       |
+| `DescriptionListColumnsFrom` | type      | `"xs" \| "sm" \| "md" \| "lg" \| "xl"` (20 / 24 / 28 / 32 / 36rem)                                       |
+| `DescriptionListDivide`      | type      | `"none" \| "inside" \| "outside"`                                                                        |
+| `DescriptionListWrap`        | type      | `"anywhere" \| "truncate" \| "normal"`                                                                   |
+| `DescriptionListValueAlign`  | type      | `"start" \| "end"`                                                                                       |
+| `DescriptionListSnippetArg`  | type      | `{ item, index }` — argument of all three snippets                                                       |
+
+### Key Props
+
+| Prop          | Type                                   | Default      | Description                                                                         |
+| ------------- | -------------------------------------- | ------------ | ----------------------------------------------------------------------------------- |
+| `items`       | `DescriptionListItem[]`                | —            | The rows, in order (label/value/description are THC)                                |
+| `children`    | `Snippet`                              | —            | Rendered inside the `<dl>` _instead of_ `items`                                     |
+| `layout`      | `"auto" \| "stacked" \| "columns"`     | `"auto"`     | Label over value, beside it, or the former until the list is `columnsFrom` wide     |
+| `columnsFrom` | `"xs" \| "sm" \| "md" \| "lg" \| "xl"` | `"sm"`       | The **list's own** width at which `"auto"` flips. Dropped unless `layout="auto"`    |
+| `divide`      | `"none" \| "inside" \| "outside"`      | `"inside"`   | n−1 rules (list in a box), n+1 (list loose on a page), or none                      |
+| `wrap`        | `"anywhere" \| "truncate" \| "normal"` | `"anywhere"` | Long-value behavior; per-row override via `item.wrap`                               |
+| `valueAlign`  | `"start" \| "end"`                     | `"start"`    | `"end"` is the totals shape (pair with `--stuic-description-list-label-width: 1fr`) |
+| `emptyValue`  | `THC`                                  | `"—"`        | Used when `value` is `undefined`/`null`/`""` — `0` is a value, not empty            |
+
+Snippets (all receive `{ item, index }`): `renderLabel`, `renderValue`, `renderItem` (the row `<div>` stays — it is what the grid is on). Class slots: `class`, `classItem`, `classLabel`, `classValue`, `classDescription`, each also available per item. Empty `items` with no `children` renders **nothing**, not an empty `<dl>`.
+
+### Why a container query
+
+`layout="auto"` makes the `<dl>` a named inline-size container (`stuic-description-list`) and flips its **rows** to a two-column grid at `columnsFrom` — an element cannot query itself. The viewport answers a different question: a 200px-wide list inside a 1400px page must stay stacked, and `sm:` would have flipped it. The breakpoint is a prop on a fixed scale (Tailwind's `@xs`…`@xl`) and not a token because `@container (min-width: var(--x))` is not valid CSS — size queries take literals. Side effect worth knowing: `container-type: inline-size` gives the list inline-axis containment, so its min-content contribution to a flex parent is zero (the list can sit beside a fixed-width element and shrink into what is left; `min-w-0` is already there in the static layouts too).
+
+### Row-level contract (works in both forms)
+
+`data-wrap="anywhere|truncate|normal"` and `data-emphasis` on a row `<div>` are honoured by the same selectors the data form uses, so `children` rows opt into per-row wrapping and the _Total_ look without a prop. Under `wrap="truncate"` a plain-string value auto-fills the `<dd>`'s `title` (a clipped value must stay reachable); pass `item.title` for html/component/snippet values.
+
+### CSS Tokens
+
+Prefix: `--stuic-description-list-*`
+
+`label-width` (not declared — fallback `minmax(7rem, 10rem)` at the usage site), `gap-x`, `gap-y`, `item-padding-y`, `rule-color`, `rule-width`, `label-font-size`, `label-font-weight`, `label-text`, `value-text`, `description-font-size`, `description-text`, `label-text-emphasis`, `value-font-weight-emphasis`
 
 ---
 

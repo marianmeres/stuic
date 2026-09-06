@@ -53,6 +53,7 @@ export * from "./components/ContextMenu/index.js";
 export * from "./components/CopyButton/index.js";
 export * from "./components/CronInput/index.js";
 export * from "./components/DataTable/index.js";
+export * from "./components/DescriptionList/index.js";
 export * from "./components/DismissibleMessage/index.js";
 export * from "./components/Drawer/index.js";
 export * from "./components/DropdownMenu/index.js";

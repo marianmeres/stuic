@@ -1,0 +1,264 @@
+/* ============================================================================
+   DESCRIPTION LIST COMPONENT TOKENS
+   Override globally: :root { --stuic-description-list-label-width: auto; }
+   Override locally:  <DescriptionList style="--stuic-description-list-gap-x: 1rem;">
+   ============================================================================ */
+
+:root {
+	/* Layout */
+	--stuic-description-list-gap-x: 1.5rem; /* label <-> value, columns state */
+	--stuic-description-list-gap-y: 0.125rem; /* label <-> value, stacked state */
+	--stuic-description-list-item-padding-y: 0.5rem; /* row padding, both states */
+
+	/* `--stuic-description-list-label-width` is deliberately NOT declared: it is read
+	   as a fallback argument at the usage site (`minmax(7rem, 10rem)`) so a scoped
+	   override on any ancestor works — see "Fallback Pattern" in docs/conventions.md. */
+
+	/* Rules */
+	--stuic-description-list-rule-color: var(--stuic-color-border);
+	--stuic-description-list-rule-width: 1px;
+
+	/* Label */
+	--stuic-description-list-label-font-size: var(--text-sm);
+	--stuic-description-list-label-font-weight: var(--font-weight-medium);
+	--stuic-description-list-label-text: var(--stuic-color-muted-foreground);
+
+	/* Value — inherits font-size, so `class="text-sm"` on the <dl> scales the whole list */
+	--stuic-description-list-value-text: var(--stuic-color-foreground);
+
+	/* Description (the second <dd>) */
+	--stuic-description-list-description-font-size: var(--text-sm);
+	--stuic-description-list-description-text: var(--stuic-color-muted-foreground);
+
+	/* Emphasis row */
+	--stuic-description-list-label-text-emphasis: var(--stuic-color-foreground);
+	--stuic-description-list-value-font-weight-emphasis: var(--font-weight-semibold);
+}
+
+@layer components {
+	/* ============================================================================
+	   BASE — selected STRUCTURALLY (`dl > div > dt`), not by class, so a hand-written
+	   `<div><dt/><dd/></div>` child renders identically to a generated `items` row.
+	   The per-element classes exist only as merge targets for `classLabel` & co.
+	   ============================================================================ */
+
+	.stuic-description-list {
+		/* UA gives <dl> a 1em block margin and <dd> a 40px inline start margin */
+		margin: 0;
+		/* A list in a flex/grid parent shrinks to its share instead of pushing it wider.
+		   In `layout="auto"` the container-type below already implies this; declaring it
+		   here means the static layouts behave the same way. */
+		min-width: 0;
+	}
+
+	/* Stacked is the base state: label over value. */
+	.stuic-description-list > div {
+		display: flex;
+		flex-direction: column;
+		row-gap: var(--stuic-description-list-gap-y);
+		padding-block: var(--stuic-description-list-item-padding-y);
+		min-width: 0;
+	}
+
+	.stuic-description-list > div > dt {
+		min-width: 0;
+		font-size: var(--stuic-description-list-label-font-size);
+		font-weight: var(--stuic-description-list-label-font-weight);
+		color: var(--stuic-description-list-label-text);
+	}
+
+	.stuic-description-list > div > dd {
+		margin: 0;
+		min-width: 0;
+		color: var(--stuic-description-list-value-text);
+	}
+
+	/* The second <dd> on the same term is the qualifier line. */
+	.stuic-description-list > div > dd + dd {
+		font-size: var(--stuic-description-list-description-font-size);
+		color: var(--stuic-description-list-description-text);
+	}
+
+	/* ============================================================================
+	   LAYOUT — "columns" is static; "auto" is the same row grid behind a container
+	   query on the LIST's own inline size (an element cannot query itself, so the
+	   container is the <dl> and the query styles its rows).
+	   ============================================================================ */
+
+	.stuic-description-list[data-layout="columns"] > div {
+		display: grid;
+		grid-template-columns:
+			var(--stuic-description-list-label-width, minmax(7rem, 10rem))
+			/* minmax(0, 1fr) and not 1fr: a grid item's automatic minimum size refuses
+			   to shrink below its content, so `wrap="truncate"` would overflow instead
+			   of clipping. */
+			minmax(0, 1fr);
+		column-gap: var(--stuic-description-list-gap-x);
+		align-items: baseline;
+	}
+
+	.stuic-description-list[data-layout="columns"] > div > dd + dd {
+		grid-column: 2;
+	}
+
+	.stuic-description-list[data-layout="auto"] {
+		/* Named so the query below can only ever resolve against this <dl>, never
+		   against a consumer's own @container ancestor. */
+		container-name: stuic-description-list;
+		container-type: inline-size;
+	}
+
+	/* The breakpoint cannot be a token: `@container (min-width: var(--x))` is not valid
+	   CSS — size queries take literals only. Hence a prop on a fixed scale mapped to a
+	   data attribute, and one block per step. Values are Tailwind's @xs…@xl. */
+
+	@container stuic-description-list (min-width: 20rem) {
+		.stuic-description-list[data-layout="auto"][data-columns-from="xs"] > div {
+			display: grid;
+			grid-template-columns:
+				var(--stuic-description-list-label-width, minmax(7rem, 10rem))
+				minmax(0, 1fr);
+			column-gap: var(--stuic-description-list-gap-x);
+			align-items: baseline;
+		}
+		.stuic-description-list[data-layout="auto"][data-columns-from="xs"] > div > dd + dd {
+			grid-column: 2;
+		}
+	}
+
+	@container stuic-description-list (min-width: 24rem) {
+		.stuic-description-list[data-layout="auto"][data-columns-from="sm"] > div {
+			display: grid;
+			grid-template-columns:
+				var(--stuic-description-list-label-width, minmax(7rem, 10rem))
+				minmax(0, 1fr);
+			column-gap: var(--stuic-description-list-gap-x);
+			align-items: baseline;
+		}
+		.stuic-description-list[data-layout="auto"][data-columns-from="sm"] > div > dd + dd {
+			grid-column: 2;
+		}
+	}
+
+	@container stuic-description-list (min-width: 28rem) {
+		.stuic-description-list[data-layout="auto"][data-columns-from="md"] > div {
+			display: grid;
+			grid-template-columns:
+				var(--stuic-description-list-label-width, minmax(7rem, 10rem))
+				minmax(0, 1fr);
+			column-gap: var(--stuic-description-list-gap-x);
+			align-items: baseline;
+		}
+		.stuic-description-list[data-layout="auto"][data-columns-from="md"] > div > dd + dd {
+			grid-column: 2;
+		}
+	}
+
+	@container stuic-description-list (min-width: 32rem) {
+		.stuic-description-list[data-layout="auto"][data-columns-from="lg"] > div {
+			display: grid;
+			grid-template-columns:
+				var(--stuic-description-list-label-width, minmax(7rem, 10rem))
+				minmax(0, 1fr);
+			column-gap: var(--stuic-description-list-gap-x);
+			align-items: baseline;
+		}
+		.stuic-description-list[data-layout="auto"][data-columns-from="lg"] > div > dd + dd {
+			grid-column: 2;
+		}
+	}
+
+	@container stuic-description-list (min-width: 36rem) {
+		.stuic-description-list[data-layout="auto"][data-columns-from="xl"] > div {
+			display: grid;
+			grid-template-columns:
+				var(--stuic-description-list-label-width, minmax(7rem, 10rem))
+				minmax(0, 1fr);
+			column-gap: var(--stuic-description-list-gap-x);
+			align-items: baseline;
+		}
+		.stuic-description-list[data-layout="auto"][data-columns-from="xl"] > div > dd + dd {
+			grid-column: 2;
+		}
+	}
+
+	/* ============================================================================
+	   DIVIDERS
+	   ============================================================================ */
+
+	.stuic-description-list[data-divide="inside"] > div + div,
+	.stuic-description-list[data-divide="outside"] > div {
+		border-top: var(--stuic-description-list-rule-width) solid
+			var(--stuic-description-list-rule-color);
+	}
+
+	.stuic-description-list[data-divide="outside"] > div:last-child {
+		border-bottom: var(--stuic-description-list-rule-width) solid
+			var(--stuic-description-list-rule-color);
+	}
+
+	/* Inside a box, the first and last rows sit flush with the box's own edges. With
+	   OUTSIDE rules the padding is what keeps the text off the rule, so it stays. */
+	.stuic-description-list:not([data-divide="outside"]) > div:first-child {
+		padding-top: 0;
+	}
+
+	.stuic-description-list:not([data-divide="outside"]) > div:last-child {
+		padding-bottom: 0;
+	}
+
+	/* ============================================================================
+	   WRAPPING — `anywhere` and not `break-word` on purpose: only `anywhere` counts in
+	   min-content sizing, so an inline-block inside the value cannot overflow the
+	   column it was meant to respect.
+	   ============================================================================ */
+
+	.stuic-description-list[data-wrap="anywhere"] > div > dd {
+		overflow-wrap: anywhere;
+	}
+
+	.stuic-description-list[data-wrap="truncate"] > div > dd {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	/* Row-level override (`item.wrap`, or `data-wrap` on a hand-written row). Same
+	   specificity as the list-level rules above — one class, one attribute, two
+	   elements — so it wins by source order. This block MUST stay after that one. */
+	.stuic-description-list > div[data-wrap="normal"] > dd {
+		overflow-wrap: normal;
+		white-space: normal;
+		overflow: visible;
+		text-overflow: clip;
+	}
+
+	.stuic-description-list > div[data-wrap="anywhere"] > dd {
+		overflow-wrap: anywhere;
+		white-space: normal;
+		overflow: visible;
+		text-overflow: clip;
+	}
+
+	.stuic-description-list > div[data-wrap="truncate"] > dd {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	/* ============================================================================
+	   VALUE ALIGNMENT + EMPHASIS (the totals shape)
+	   ============================================================================ */
+
+	.stuic-description-list[data-value-align="end"] > div > dd {
+		text-align: end;
+	}
+
+	.stuic-description-list > div[data-emphasis] > dt {
+		color: var(--stuic-description-list-label-text-emphasis);
+	}
+
+	.stuic-description-list > div[data-emphasis] > dd {
+		font-weight: var(--stuic-description-list-value-font-weight-emphasis);
+	}
+}
