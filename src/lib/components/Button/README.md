@@ -174,16 +174,17 @@ Notes:
 
 ### Component Tokens
 
-| Variable                       | Default                | Description         |
-| ------------------------------ | ---------------------- | ------------------- |
-| `--stuic-button-radius`        | `--radius-md`          | Border radius       |
-| `--stuic-button-font-family`   | `--font-sans`          | Font family         |
-| `--stuic-button-font-weight`   | `--font-weight-medium` | Font weight         |
-| `--stuic-button-transition`    | `100ms`                | Transition duration |
-| `--stuic-button-ring-width`    | `3px`                  | Focus ring width    |
-| `--stuic-button-ring-color`    | `--stuic-color-ring`   | Focus ring color    |
-| `--stuic-button-raised-offset` | `2px`                  | 3D effect offset    |
-| `--stuic-button-raised-color`  | `rgb(0 0 0 / 0.8)`     | 3D shadow color     |
+| Variable                       | Default                        | Description         |
+| ------------------------------ | ------------------------------ | ------------------- |
+| `--stuic-button-radius`        | `--stuic-radius-button`        | Border radius       |
+| `--stuic-button-border-width`  | `--stuic-border-width-button`  | Border width        |
+| `--stuic-button-font-family`   | `--font-sans`                  | Font family         |
+| `--stuic-button-font-weight`   | `--font-weight-medium`         | Font weight         |
+| `--stuic-button-transition`    | `--stuic-transition` (`150ms`) | Transition duration |
+| `--stuic-button-ring-width`    | `3px`                          | Focus ring width    |
+| `--stuic-button-ring-color`    | `--stuic-color-ring`           | Focus ring color    |
+| `--stuic-button-raised-offset` | `2px`                          | 3D effect offset    |
+| `--stuic-button-raised-color`  | `rgb(0 0 0 / 0.8)`             | 3D shadow color     |
 
 ### Size Tokens
 

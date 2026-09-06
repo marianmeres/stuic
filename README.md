@@ -57,7 +57,7 @@ STUIC uses a 4-layer CSS variable token system:
 ```
 Layer 1: Theme Tokens (--stuic-color-*)
     ↓
-Layer 2: Structural Tokens (--stuic-radius, --stuic-shadow, --stuic-border-width, --stuic-transition)
+Layer 2: Structural Tokens (--stuic-radius, --stuic-radius-button, --stuic-shadow, ...)
     ↓ (used as fallback defaults)
 Layer 3: Component Tokens (--stuic-button-radius, --stuic-input-accent, etc.)
     ↓ (Tailwind utility class references)
@@ -87,16 +87,20 @@ Override shared structural tokens to change the entire library's visual characte
 /* Brutalist — sharp, flat, borderless */
 :root {
 	--stuic-radius: 0;
+	--stuic-radius-button: 0;
 	--stuic-radius-container: 0;
 	--stuic-shadow: none;
 	--stuic-shadow-hover: none;
 	--stuic-shadow-overlay: none;
 	--stuic-shadow-dialog: none;
 	--stuic-border-width: 0;
+	--stuic-border-width-button: 0;
 }
 ```
 
-Available tokens: `--stuic-radius`, `--stuic-radius-container`, `--stuic-shadow`, `--stuic-shadow-hover`, `--stuic-shadow-overlay`, `--stuic-shadow-dialog`, `--stuic-border-width`, `--stuic-transition`.
+Available tokens: `--stuic-radius`, `--stuic-radius-button`, `--stuic-radius-container`, `--stuic-shadow`, `--stuic-shadow-hover`, `--stuic-shadow-overlay`, `--stuic-shadow-dialog`, `--stuic-border-width`, `--stuic-border-width-button`, `--stuic-transition`.
+
+Radius and border-width come in three tiers — elements, **buttons**, containers — so you can flatten inputs while keeping pill buttons, or the reverse.
 
 ### Per-Component Customization
 
@@ -104,7 +108,7 @@ Override specific component tokens:
 
 ```css
 :root {
-	--stuic-button-radius: 9999px; /* Pill buttons — overrides the shared --stuic-radius */
+	--stuic-button-radius: 9999px; /* Pill buttons — overrides the shared --stuic-radius-button */
 	--stuic-switch-accent: #10b981; /* Green switches */
 }
 ```

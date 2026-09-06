@@ -204,3 +204,44 @@ test("disabled tier carries data-disabled and renders a disabled Button with the
 	await expect.element(soldBtn).toBeInTheDocument();
 	await expect.element(soldBtn).toBeDisabled();
 });
+
+// The toggle's pill look used to be pinned into the group's inline `style` attribute,
+// which outranks any :root declaration and so made it the one unthemeable part of the
+// component. It now lives in index.css behind --stuic-pricing-table-toggle-* tokens.
+// Component tests don't load index.css, so we assert the mechanism (class carries the
+// look, `style` is left to the caller), not the resulting pixels.
+test("toggle carries stuic-pricing-table-toggle and pins nothing in its style attribute", async () => {
+	const screen = render(PricingTable, { tiers: makeTiers(vi.fn()) });
+
+	const toggle = screen.container.querySelector(".stuic-pricing-table-toggle");
+	expect(toggle).not.toBeNull();
+	expect(toggle!.getAttribute("role")).toBe("radiogroup");
+	// no inline custom properties -> :root { --stuic-pricing-table-toggle-* } can win
+	expect(toggle!.getAttribute("style") || "").not.toContain("--stuic-button-group-");
+});
+
+test("styleToggle lands on the toggle verbatim and classToggle is merged with the base class", async () => {
+	const screen = render(PricingTable, {
+		tiers: makeTiers(vi.fn()),
+		styleToggle: "--stuic-pricing-table-toggle-radius: 0px;",
+		classToggle: "my-toggle",
+	});
+
+	const toggle = screen.container.querySelector(".stuic-pricing-table-toggle")!;
+	// (the tooltip action appends its own `anchor-name` to the same attribute)
+	expect(toggle.getAttribute("style")).toContain(
+		"--stuic-pricing-table-toggle-radius: 0px;"
+	);
+	expect(toggle.classList.contains("my-toggle")).toBe(true);
+});
+
+test("unstyled drops the toggle base class but keeps classToggle", async () => {
+	const screen = render(PricingTable, {
+		tiers: makeTiers(vi.fn()),
+		unstyled: true,
+		classToggle: "my-toggle",
+	});
+
+	expect(screen.container.querySelector(".stuic-pricing-table-toggle")).toBeNull();
+	expect(screen.container.querySelector(".my-toggle")).not.toBeNull();
+});

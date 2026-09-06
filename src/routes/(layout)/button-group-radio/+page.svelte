@@ -50,7 +50,8 @@
 		class="max-w-xs"
 		style="
 			--stuic-button-group-radius: 9999px;
-			--stuic-button-group-padding: 0.25rem;
+			--stuic-button-group-padding-x: 0.25rem;
+			--stuic-button-group-padding-y: 0.25rem;
 			--stuic-button-group-bg: var(--stuic-color-muted);
 			--stuic-button-group-border-width: 0;
 			--stuic-button-group-button-bg-active: var(--stuic-color-background);

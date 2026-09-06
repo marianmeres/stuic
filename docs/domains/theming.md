@@ -186,38 +186,54 @@ const css = generateThemeCss(custom, "stuic-");
 
 Global tokens defined in `src/lib/index.css` that control cross-component visual properties. Override these to change the entire library's visual character:
 
-| Token                      | Default            | Purpose                                           |
-| -------------------------- | ------------------ | ------------------------------------------------- |
-| `--stuic-radius`           | `var(--radius-md)` | Element-level radius (buttons, inputs, badges)    |
-| `--stuic-radius-container` | `var(--radius-lg)` | Container-level radius (cards, modals, dropdowns) |
-| `--stuic-shadow`           | `var(--shadow-sm)` | Default resting shadow                            |
-| `--stuic-shadow-hover`     | `var(--shadow-md)` | Hover/elevated shadow                             |
-| `--stuic-shadow-overlay`   | `var(--shadow-lg)` | Overlays (dropdowns, notifications)               |
-| `--stuic-shadow-dialog`    | `var(--shadow-xl)` | Dialogs/modals                                    |
-| `--stuic-border-width`     | `1px`              | Default border width                              |
-| `--stuic-transition`       | `150ms`            | Default transition duration                       |
+| Token                         | Default            | Purpose                                                     |
+| ----------------------------- | ------------------ | ----------------------------------------------------------- |
+| `--stuic-radius`              | `var(--radius-md)` | Element-level radius (inputs, badges, list items)           |
+| `--stuic-radius-button`       | `var(--radius-md)` | Button-level radius (buttons, split buttons, button groups) |
+| `--stuic-radius-container`    | `var(--radius-lg)` | Container-level radius (cards, modals, dropdowns)           |
+| `--stuic-shadow`              | `var(--shadow-sm)` | Default resting shadow                                      |
+| `--stuic-shadow-hover`        | `var(--shadow-md)` | Hover/elevated shadow                                       |
+| `--stuic-shadow-overlay`      | `var(--shadow-lg)` | Overlays (dropdowns, notifications)                         |
+| `--stuic-shadow-dialog`       | `var(--shadow-xl)` | Dialogs/modals                                              |
+| `--stuic-border-width`        | `1px`              | Default border width                                        |
+| `--stuic-border-width-button` | `1px`              | Button border width (independent from general elements)     |
+| `--stuic-transition`          | `150ms`            | Default transition duration                                 |
+
+Radius and border-width come in **three tiers** — elements, buttons, containers — so a
+theme can flatten inputs while keeping pill buttons, or vice versa. See
+[Conventions: Element vs Button vs Container](../conventions.md#element-vs-button-vs-container).
 
 Example — brutalist style in 7 lines:
 
 ```css
 :root {
 	--stuic-radius: 0;
+	--stuic-radius-button: 0;
 	--stuic-radius-container: 0;
 	--stuic-shadow: none;
 	--stuic-shadow-hover: none;
 	--stuic-shadow-overlay: none;
 	--stuic-shadow-dialog: none;
 	--stuic-border-width: 0;
+	--stuic-border-width-button: 0;
 }
 ```
 
-Components reference these via the fallback pattern (not `:root` declarations):
+Components reference these via the fallback pattern (not `:root` declarations) — the
+per-component token first, the shared tier token as its fallback:
 
 ```css
 .stuic-button {
-	border-radius: var(--stuic-button-radius, var(--stuic-radius));
+	border-radius: var(--stuic-button-radius, var(--stuic-radius-button));
+	/*                 ^ component token      ^ shared tier token */
 }
 ```
+
+> **Note the mirrored names.** `--stuic-radius-button` is the shared tier token (declared
+> in `src/lib/index.css`, applies to every button-family component);
+> `--stuic-button-radius` is the `Button` component's own override token (never declared —
+> it only ever appears as the first argument of a `var()` fallback). Same for
+> `--stuic-border-width-button` vs `--stuic-button-border-width`.
 
 ---
 
@@ -239,7 +255,7 @@ Override per-component tokens globally:
 
 ```css
 :root {
-	--stuic-button-radius: 9999px; /* Pill buttons — overrides the shared fallback */
+	--stuic-button-radius: 9999px; /* Pill buttons — overrides --stuic-radius-button */
 }
 ```
 
@@ -250,6 +266,34 @@ Override locally:
 ```
 
 Some token sets belong to a CSS-only preset rather than to a component — e.g. `--stuic-frame-*` (ratio-locked frame / letterbox). Those are consumer **inputs** that stuic never declares; see [CSS presets](./css-presets.md).
+
+### Pitfall: never pin a nested component's tokens inline
+
+When a component renders another stuic component internally and wants to restyle it, the
+opinionated values must go in the outer component's `index.css`, behind its own
+`--stuic-{outer}-{part}-*` tokens — never into the inner component's inline `style`
+attribute:
+
+```svelte
+<!-- WRONG — an inline custom property outranks every :root declaration for that
+     element and its subtree, so no theme can reach the inner component -->
+<ButtonGroupRadio style="--stuic-button-group-radius: 9999px;" />
+
+<!-- RIGHT — the class carries the look, and `style` stays the caller's escape hatch -->
+<ButtonGroupRadio class="stuic-pricing-table-toggle" style={styleToggle} />
+```
+
+```css
+.stuic-pricing-table-toggle {
+	--stuic-button-group-radius: var(--stuic-pricing-table-toggle-radius, 9999px);
+}
+```
+
+No specificity or `@layer` trick outranks an inline declaration, so the inline form makes
+that part of the component permanently unthemeable. `PricingTable`'s billing toggle is the
+worked example. Note the trade: whatever the outer component declares on the element is no
+longer reachable through the _inner_ component's global token, so document the
+`--stuic-{outer}-*` replacement in the outer component's README.
 
 ---
 

@@ -161,12 +161,35 @@ A data-driven pricing tiers component for displaying plan comparisons with featu
 
 ### Toggle
 
-| Variable                                    | Default          | Description              |
-| ------------------------------------------- | ---------------- | ------------------------ |
-| `--stuic-pricing-table-toggle-bg`           | muted            | Toggle track background  |
-| `--stuic-pricing-table-toggle-bg-active`    | background       | Active option background |
-| `--stuic-pricing-table-toggle-color`        | muted-foreground | Option text color        |
-| `--stuic-pricing-table-toggle-color-active` | foreground       | Active option text color |
+The billing toggle is an internal `ButtonGroupRadio`. Its pill look is expressed through the
+tokens below, so a theme can reach it from `:root` like any other part of the component:
+
+```css
+:root {
+	/* square toggle to match a flat theme */
+	--stuic-pricing-table-toggle-radius: var(--stuic-radius-button);
+}
+```
+
+| Variable                                          | Default          | Description                                 |
+| ------------------------------------------------- | ---------------- | ------------------------------------------- |
+| `--stuic-pricing-table-toggle-radius`             | `9999px`         | Track and option border radius              |
+| `--stuic-pricing-table-toggle-bg`                 | muted            | Toggle track background                     |
+| `--stuic-pricing-table-toggle-border-width`       | `0`              | Toggle track border width                   |
+| `--stuic-pricing-table-toggle-padding-x`          | `0.25rem`        | Track horizontal padding around the options |
+| `--stuic-pricing-table-toggle-padding-y`          | `0.25rem`        | Track vertical padding around the options   |
+| `--stuic-pricing-table-toggle-color`              | muted-foreground | Inactive option text color                  |
+| `--stuic-pricing-table-toggle-color-hover`        | foreground       | Inactive option text color on hover         |
+| `--stuic-pricing-table-toggle-bg-active`          | background       | Active option background                    |
+| `--stuic-pricing-table-toggle-color-active`       | foreground       | Active option text color                    |
+| `--stuic-pricing-table-toggle-bg-active-hover`    | `-bg-active`     | Active option background on hover           |
+| `--stuic-pricing-table-toggle-color-active-hover` | `-color-active`  | Active option text color on hover           |
+
+For anything these do not cover, `styleToggle` sets inline styles on the group (including raw
+`--stuic-button-group-*` tokens) and wins over all of the above; `classToggle` adds classes.
+Note that `--stuic-button-group-*` set at `:root` does **not** reach the pricing toggle for the
+properties listed above — the component declares them on the element, so use the
+`--stuic-pricing-table-toggle-*` tokens instead.
 
 ### Typography
 

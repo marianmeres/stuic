@@ -29,6 +29,20 @@ In practice:
    These tokens provide a single point of control for cross-component properties.
    Override globally:  :root { --stuic-radius: 0; }
    Override per-component: --stuic-button-radius: 9999px; (takes precedence)
+
+   NOTE on the mirrored names. The tokens below are TIER tokens, named
+   --stuic-{property}-{tier}, and they ARE declared here. Component override tokens
+   are the transposition, --stuic-{component}-{property}, and are NEVER declared --
+   they exist only as the first argument of a var() fallback at the usage site:
+
+       border-radius: var(--stuic-button-radius, var(--stuic-radius-button));
+                          ^ component token (3)  ^ tier token (2, declared here)
+
+   So --stuic-radius-button (tier) applies to Button, SplitButton and ButtonGroupRadio,
+   while --stuic-button-radius (component) applies to Button alone. Same relationship
+   between --stuic-border-width-button and --stuic-button-border-width. "button" is the
+   only tier name that is also a component name, hence the only confusable pair -- do
+   not "fix" one into the other.
    ============================================================================ */
 :root {
 	/* Radius: three tiers */

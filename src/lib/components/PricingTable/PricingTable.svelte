@@ -177,6 +177,11 @@
 	let _classTiers = $derived(
 		unstyled ? classTiersProp : twMerge("stuic-pricing-table-tiers", classTiersProp)
 	);
+	// The toggle's pill look lives in index.css behind --stuic-pricing-table-toggle-*
+	// tokens (an inline declaration here would outrank any :root override).
+	let _classToggle = $derived(
+		unstyled ? classToggleProp : twMerge("stuic-pricing-table-toggle", classToggleProp)
+	);
 </script>
 
 <div bind:this={el} class={_class} {style} {...rest}>
@@ -195,20 +200,9 @@
 				onButtonClick={(i) => {
 					billingPeriod = i === 0 ? "monthly" : "annual";
 				}}
-				class={classToggleProp}
-				style="
-					width: auto;
-					--stuic-button-group-radius: 9999px;
-					--stuic-button-group-padding: 0.25rem;
-					--stuic-button-group-bg: var(--stuic-color-muted);
-					--stuic-button-group-border-width: 0;
-					--stuic-button-group-button-bg-active: var(--stuic-color-background);
-					--stuic-button-group-button-text-active: var(--stuic-color-foreground);
-					--stuic-button-group-button-bg-active-hover: var(--stuic-color-background);
-					--stuic-button-group-button-text-active-hover: var(--stuic-color-foreground);
-					{styleToggle ?? ''}
-				"
-				classButtonActive="shadow"
+				class={_classToggle}
+				style={styleToggle}
+				classButtonActive={unstyled ? undefined : "shadow"}
 			/>
 		{/if}
 	{/if}

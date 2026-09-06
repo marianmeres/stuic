@@ -101,11 +101,26 @@ Global tokens that control cross-component visual properties. Defined in `src/li
 }
 ```
 
-**Element vs Container classification:**
+**Element vs Button vs Container classification:**
 
 - **Element** (`--stuic-radius`): inputs, badges, list items, checkboxes, tabs — interactive controls
-- **Button** (`--stuic-radius-button`): buttons, button groups — allows rounded buttons even with flat elements
+- **Button** (`--stuic-radius-button`): buttons, split buttons, button groups — allows rounded buttons even with flat elements
 - **Container** (`--stuic-radius-container`): cards, modals, dropdowns, notifications, accordions — content wrappers
+
+**Tier tokens vs component tokens — the mirrored names.** Tier tokens (the table above) are
+`--stuic-{property}-{tier}` and ARE declared in `src/lib/index.css`. Component tokens are the
+transposition, `--stuic-{component}-{property}`, and are NEVER declared — they exist only as
+the first argument of a `var()` fallback:
+
+```css
+border-radius: var(--stuic-button-radius, var(--stuic-radius-button));
+/*                 ^ component token (3)  ^ tier token (2) */
+```
+
+So `--stuic-radius-button` applies to Button, SplitButton and ButtonGroupRadio, while
+`--stuic-button-radius` applies to Button alone. Same for `--stuic-border-width-button` vs
+`--stuic-button-border-width`. `button` is the only tier name that is also a component name,
+so it is the only confusable pair — do not "fix" one into the other.
 
 ---
 

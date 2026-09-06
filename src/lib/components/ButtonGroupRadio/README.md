@@ -129,34 +129,63 @@ disable the whole group instead, use the top-level `disabled` prop.
 
 ## CSS Variables
 
+All tokens below are **declared** in the component's `:root`. That means a `:root` override
+or a `style` prop override both work, but the `var(--token, <fallback>)` fallbacks visible in
+`index.css` never fire — the defaults are the `:root` values listed here.
+
 ### Component Tokens
 
-| Variable                                 | Default                   | Description                             |
-| ---------------------------------------- | ------------------------- | --------------------------------------- |
-| `--stuic-button-group-radius`            | `var(--radius-md)`        | Border radius for container and buttons |
-| `--stuic-button-group-padding`           | `0.375rem`                | Container padding                       |
-| `--stuic-button-group-gap`               | `0.25rem`                 | Gap between buttons                     |
-| `--stuic-button-group-border-width`      | `1px`                     | Container border width                  |
-| `--stuic-button-group-transition`        | `150ms`                   | Transition duration                     |
-| `--stuic-button-group-ring-width`        | `3px`                     | Focus ring width                        |
-| `--stuic-button-group-ring-color`        | `var(--stuic-color-ring)` | Focus ring color                        |
-| `--stuic-button-group-button-padding-x`  | `0.75rem`                 | Button horizontal padding               |
-| `--stuic-button-group-button-padding-y`  | `0.5rem`                  | Button vertical padding                 |
-| `--stuic-button-group-button-min-height` | `2.75rem`                 | Button min height (44px touch target)   |
+| Variable                                 | Default                   | Description                                    |
+| ---------------------------------------- | ------------------------- | ---------------------------------------------- |
+| `--stuic-button-group-radius`            | `9999px`                  | Border radius for container and buttons (pill) |
+| `--stuic-button-group-padding-x`         | `4px`                     | Container horizontal padding                   |
+| `--stuic-button-group-padding-y`         | `3px`                     | Container vertical padding                     |
+| `--stuic-button-group-gap`               | `0.25rem`                 | Gap between buttons                            |
+| `--stuic-button-group-border-width`      | `1px`                     | Container border width                         |
+| `--stuic-button-group-ring-width`        | `4px`                     | Focus ring width                               |
+| `--stuic-button-group-ring-color`        | `var(--stuic-color-ring)` | Focus ring color                               |
+| `--stuic-button-group-button-padding-x`  | `0.75rem`                 | Button horizontal padding                      |
+| `--stuic-button-group-button-padding-y`  | `0.375rem`                | Button vertical padding                        |
+| `--stuic-button-group-button-min-height` | `2.25rem`                 | Button min height (36px)                       |
+| `--stuic-button-group-transition`        | `var(--stuic-transition)` | Transition duration (not declared — fallback)  |
+
+`--stuic-button-group-transition` is the one exception: it is _not_ declared, so it resolves
+through its usage-site fallback to `--stuic-transition`.
 
 ### Color Tokens
 
-| Variable                                      | Default                                 | Description                      |
-| --------------------------------------------- | --------------------------------------- | -------------------------------- |
-| `--stuic-button-group-bg`                     | `var(--stuic-color-surface)`            | Container background             |
-| `--stuic-button-group-text`                   | `var(--stuic-color-foreground)`         | Container text color             |
-| `--stuic-button-group-border`                 | `var(--stuic-color-border)`             | Container border color           |
-| `--stuic-button-group-button-bg`              | `transparent`                           | Inactive button background       |
-| `--stuic-button-group-button-text`            | `var(--stuic-color-foreground)`         | Inactive button text             |
-| `--stuic-button-group-button-bg-hover`        | `var(--stuic-color-muted)`              | Inactive button hover background |
-| `--stuic-button-group-button-bg-active`       | `var(--stuic-color-primary)`            | Active button background         |
-| `--stuic-button-group-button-text-active`     | `var(--stuic-color-primary-foreground)` | Active button text               |
-| `--stuic-button-group-button-bg-active-hover` | `var(--stuic-color-primary-hover)`      | Active button hover background   |
+| Variable                                        | Default                                   | Description                      |
+| ----------------------------------------------- | ----------------------------------------- | -------------------------------- |
+| `--stuic-button-group-bg`                       | `var(--stuic-color-muted)`                | Container background             |
+| `--stuic-button-group-text`                     | `var(--stuic-color-muted-foreground)`     | Container text color             |
+| `--stuic-button-group-border`                   | `var(--stuic-input-border)`               | Container border color           |
+| `--stuic-button-group-border-focus`             | `var(--stuic-color-primary)`              | Container border on focus-within |
+| `--stuic-button-group-button-bg`                | `transparent`                             | Inactive button background       |
+| `--stuic-button-group-button-text`              | `var(--stuic-color-muted-foreground)`     | Inactive button text             |
+| `--stuic-button-group-button-bg-hover`          | `transparent`                             | Inactive button hover background |
+| `--stuic-button-group-button-text-hover`        | `var(--stuic-color-foreground)`           | Inactive button hover text       |
+| `--stuic-button-group-button-bg-active`         | `var(--stuic-color-surface-1)`            | Active button background         |
+| `--stuic-button-group-button-text-active`       | `var(--stuic-color-surface-1-foreground)` | Active button text               |
+| `--stuic-button-group-button-bg-active-hover`   | `var(--stuic-color-surface-1)`            | Active button hover background   |
+| `--stuic-button-group-button-text-active-hover` | `var(--stuic-color-surface-1-foreground)` | Active button hover text         |
+
+### Size Variants
+
+`size` sets `data-size` on the container, which re-declares a subset of the tokens above.
+`md` is the `:root` default; `sm` and `lg` override these:
+
+| Token                                    | `sm`       | `md` (default) | `lg`       |
+| ---------------------------------------- | ---------- | -------------- | ---------- |
+| `--stuic-button-group-padding-x`         | `3px`      | `4px`          | `8px`      |
+| `--stuic-button-group-padding-y`         | `2px`      | `3px`          | `6px`      |
+| `--stuic-button-group-gap`               | `0.125rem` | `0.25rem`      | `0.375rem` |
+| `--stuic-button-group-button-padding-x`  | `0.5rem`   | `0.75rem`      | `1rem`     |
+| `--stuic-button-group-button-padding-y`  | `0.375rem` | `0.375rem`     | `0.625rem` |
+| `--stuic-button-group-button-min-height` | `2.25rem`  | `2.25rem`      | `3rem`     |
+| overall height                           | 42px       | 44px           | 62px       |
+
+Because the size variants declare these on the container itself, they beat the inherited
+`:root` values — but an inline `style` on the same element still wins over both.
 
 ### Customization Examples
 

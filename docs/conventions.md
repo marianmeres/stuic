@@ -43,12 +43,14 @@ Global tokens in `src/lib/index.css` that control cross-component visual propert
 /* Brutalist example — 7 lines to transform everything */
 :root {
 	--stuic-radius: 0;
+	--stuic-radius-button: 0;
 	--stuic-radius-container: 0;
 	--stuic-shadow: none;
 	--stuic-shadow-hover: none;
 	--stuic-shadow-overlay: none;
 	--stuic-shadow-dialog: none;
 	--stuic-border-width: 0;
+	--stuic-border-width-button: 0;
 }
 ```
 
@@ -79,16 +81,34 @@ Component CSS must reference shared tokens as **fallbacks at usage sites**, not 
 
 Per-component overrides (`--stuic-widget-radius: 0`) still take precedence over the shared fallback.
 
-### Element vs Container
+### Element vs Button vs Container
 
-Two tiers of radius for natural visual hierarchy:
+Three tiers of radius for natural visual hierarchy:
 
-| Tier      | Token                      | Default            | Use for                                               |
-| --------- | -------------------------- | ------------------ | ----------------------------------------------------- |
-| Element   | `--stuic-radius`           | `var(--radius-md)` | Buttons, inputs, badges, list items, checkboxes, tabs |
-| Container | `--stuic-radius-container` | `var(--radius-lg)` | Cards, modals, dropdowns, notifications, accordions   |
+| Tier      | Token                      | Default            | Use for                                             |
+| --------- | -------------------------- | ------------------ | --------------------------------------------------- |
+| Element   | `--stuic-radius`           | `var(--radius-md)` | Inputs, badges, list items, checkboxes, tabs        |
+| Button    | `--stuic-radius-button`    | `var(--radius-md)` | Buttons, split buttons, button groups               |
+| Container | `--stuic-radius-container` | `var(--radius-lg)` | Cards, modals, dropdowns, notifications, accordions |
 
-**Rule of thumb:** if it wraps other interactive elements, it's a container.
+**Rule of thumb:** if it wraps other interactive elements, it's a container. Buttons get
+their own tier so a flat-input theme can still have pill buttons (and vice versa);
+`--stuic-border-width-button` splits out the same way.
+
+### Tier tokens vs component tokens
+
+The two layers use mirrored names, which is easy to misread for the button tier:
+
+| Name                          | Layer               | Declared?             | Scope                         |
+| ----------------------------- | ------------------- | --------------------- | ----------------------------- |
+| `--stuic-radius-button`       | shared tier (2)     | yes, in `index.css`   | every button-family component |
+| `--stuic-button-radius`       | component token (3) | no, fallback arg only | `Button` only                 |
+| `--stuic-border-width-button` | shared tier (2)     | yes, in `index.css`   | every button-family component |
+| `--stuic-button-border-width` | component token (3) | no, fallback arg only | `Button` only                 |
+
+Read it as `--stuic-{property}-{tier}` for tier tokens and `--stuic-{component}-{property}`
+for component tokens. `button` is the only tier name that is also a component name, so it
+is the only pair that reads as a transposition.
 
 ---
 

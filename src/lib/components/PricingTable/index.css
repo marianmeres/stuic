@@ -18,6 +18,60 @@
 	}
 
 	/* ============================================================================
+	   BILLING TOGGLE (an internal ButtonGroupRadio)
+
+	   The opinionated pill look lives here rather than in the component's inline
+	   `style` attribute, because an inline custom property declaration outranks any
+	   `:root` declaration for that element and its subtree -- which made the toggle
+	   the one part of this component a theme could not reach. Each value is a
+	   never-declared `--stuic-pricing-table-toggle-*` component token, so
+	   `:root { --stuic-pricing-table-toggle-radius: 0; }` works like every other
+	   token here. `styleToggle` still wins over all of it (inline).
+	   ============================================================================ */
+
+	.stuic-pricing-table-toggle {
+		/* hug the options instead of spanning the row (the group defaults to 100%) */
+		width: auto;
+
+		--stuic-button-group-radius: var(--stuic-pricing-table-toggle-radius, 9999px);
+		--stuic-button-group-padding-x: var(--stuic-pricing-table-toggle-padding-x, 0.25rem);
+		--stuic-button-group-padding-y: var(--stuic-pricing-table-toggle-padding-y, 0.25rem);
+		--stuic-button-group-bg: var(
+			--stuic-pricing-table-toggle-bg,
+			var(--stuic-color-muted)
+		);
+		--stuic-button-group-border-width: var(--stuic-pricing-table-toggle-border-width, 0);
+
+		/* Inactive option */
+		--stuic-button-group-button-text: var(
+			--stuic-pricing-table-toggle-color,
+			var(--stuic-color-muted-foreground)
+		);
+		--stuic-button-group-button-text-hover: var(
+			--stuic-pricing-table-toggle-color-hover,
+			var(--stuic-color-foreground)
+		);
+
+		/* Active option (hover falls back to the resting value = no hover shift) */
+		--stuic-button-group-button-bg-active: var(
+			--stuic-pricing-table-toggle-bg-active,
+			var(--stuic-color-background)
+		);
+		--stuic-button-group-button-text-active: var(
+			--stuic-pricing-table-toggle-color-active,
+			var(--stuic-color-foreground)
+		);
+		--stuic-button-group-button-bg-active-hover: var(
+			--stuic-pricing-table-toggle-bg-active-hover,
+			var(--stuic-pricing-table-toggle-bg-active, var(--stuic-color-background))
+		);
+		--stuic-button-group-button-text-active-hover: var(
+			--stuic-pricing-table-toggle-color-active-hover,
+			var(--stuic-pricing-table-toggle-color-active, var(--stuic-color-foreground))
+		);
+	}
+
+	/* ============================================================================
 	   TIERS GRID
 	   ============================================================================ */
 

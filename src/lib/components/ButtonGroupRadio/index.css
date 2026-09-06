@@ -78,7 +78,9 @@
 	   ============================================================================ */
 
 	.stuic-button-group[data-size="sm"] {
-		--stuic-button-group-padding: 0.25rem;
+		/* overall height = 36px + 2×2px + 2×1px = 42px */
+		--stuic-button-group-padding-x: 3px;
+		--stuic-button-group-padding-y: 2px;
 		--stuic-button-group-gap: 0.125rem;
 		--stuic-button-group-button-padding-x: 0.5rem;
 		--stuic-button-group-button-padding-y: 0.375rem;
@@ -86,7 +88,9 @@
 	}
 
 	.stuic-button-group[data-size="lg"] {
-		--stuic-button-group-padding: 0.5rem;
+		/* overall height = 48px + 2×6px + 2×1px = 62px */
+		--stuic-button-group-padding-x: 8px;
+		--stuic-button-group-padding-y: 6px;
 		--stuic-button-group-gap: 0.375rem;
 		--stuic-button-group-button-padding-x: 1rem;
 		--stuic-button-group-button-padding-y: 0.625rem;
