@@ -3,6 +3,7 @@ import { expect, test, vi } from "vitest";
 import { page, userEvent } from "vitest/browser";
 import { createRawSnippet } from "svelte";
 import DataTable, { type DataTableColumn } from "./DataTable.svelte";
+import Thc from "../Thc/Thc.svelte";
 import { createPagingStore } from "@marianmeres/paging-store";
 
 // The browser test viewport is 414x896 — below Tailwind's `md` — so DataTable would
@@ -684,4 +685,83 @@ test("unstyled drops the wrapper classes from both delegated regions", async () 
 	// the pager and the empty state are still there, just unstyled
 	expect(document.querySelector("nav")?.textContent).toContain("Page 1 of 5");
 	expect(document.querySelector("tbody td")?.textContent?.trim()).toBe("No data");
+});
+
+// ============================================================================
+// column labels are THC in BOTH layouts
+// ============================================================================
+
+const cardLabels = () => [
+	...document.querySelectorAll<HTMLElement>(".stuic-data-table-card-label"),
+];
+
+const HTML_LABEL: DataTableColumn<Row>[] = [
+	{ key: "name", label: { html: `<span title="Last 30 days">Scans</span>` } },
+];
+
+test("an { html } column label renders as html in the desktop header", async () => {
+	render(DataTable, { columns: HTML_LABEL, data: DATA, getRowId });
+	await expect.element(page.getByRole("table")).toBeInTheDocument();
+
+	const th = document.querySelector("thead th")!;
+	expect(th.querySelector("span")?.getAttribute("title")).toBe("Last 30 days");
+	expect(th.textContent?.trim()).toBe("Scans");
+});
+
+test("an { html } column label renders as html in the mobile card label too", async () => {
+	render(DataTable, { columns: HTML_LABEL, data: DATA, getRowId, small: true });
+	await expect.poll(() => cards().length).toBe(2);
+
+	const label = cardLabels()[0];
+	expect(label.querySelector("span")?.getAttribute("title")).toBe("Last 30 days");
+	// not the raw markup, which is what the card used to print
+	expect(label.textContent?.trim()).toBe("Scans");
+});
+
+test("a { component } column label renders in the mobile card label, not the key", async () => {
+	render(DataTable, {
+		// `Thc` is a convenient stand-in for any single-prop component
+		columns: [{ key: "name", label: { component: Thc, props: { thc: "Scans" } } }],
+		data: DATA,
+		getRowId,
+		small: true,
+	});
+	await expect.poll(() => cards().length).toBe(2);
+
+	expect(cardLabels()[0].textContent?.trim()).toBe("Scans");
+});
+
+test("plain string and { text } card labels are unchanged (escaped, not parsed)", async () => {
+	render(DataTable, {
+		columns: [
+			{ key: "name", label: "Name" },
+			{ key: "email", label: { text: "<b>Email</b>" } },
+		],
+		data: DATA,
+		getRowId,
+		small: true,
+	});
+	await expect.poll(() => cards().length).toBe(2);
+
+	const [name, email] = cardLabels();
+	expect(name.textContent?.trim()).toBe("Name");
+	expect(name.querySelector("*")).toBe(null);
+	expect(email.textContent?.trim()).toBe("<b>Email</b>");
+	expect(email.querySelector("b")).toBe(null);
+});
+
+test("a column with no label still falls back to the key in the card layout", async () => {
+	render(DataTable, {
+		columns: [{ key: "name" }, { key: "email", label: "" }],
+		data: DATA,
+		getRowId,
+		small: true,
+	});
+	await expect.poll(() => cards().length).toBe(2);
+
+	expect(
+		cardLabels()
+			.slice(0, 2)
+			.map((el) => el.textContent?.trim())
+	).toEqual(["name", "email"]);
 });

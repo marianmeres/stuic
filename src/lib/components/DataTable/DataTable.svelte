@@ -237,7 +237,7 @@
 	import Button from "../Button/Button.svelte";
 	import EmptyState from "../EmptyState/EmptyState.svelte";
 	import Pagination from "../Pagination/Pagination.svelte";
-	import Thc, { isTHCNotEmpty, getTHCStringContent } from "../Thc/Thc.svelte";
+	import Thc, { isTHCNotEmpty } from "../Thc/Thc.svelte";
 
 	let {
 		columns,
@@ -746,7 +746,7 @@
 							<div class={!unstyled ? "stuic-data-table-card-row" : undefined}>
 								<span class={!unstyled ? "stuic-data-table-card-label" : undefined}>
 									{#if isTHCNotEmpty(col.label)}
-										{getTHCStringContent(col.label) || col.key}
+										<Thc thc={col.label!} />
 									{:else}
 										{col.key}
 									{/if}
