@@ -147,10 +147,11 @@
 					classLabel
 				)}
 			>
-				{#if isTHCNotEmpty(label)}
-					<Thc thc={label as THC} forceAsHtml />
-				{:else}
+				<!-- a snippet label first: it takes `{ id }`, which `Thc` cannot pass -->
+				{#if typeof label === "function"}
 					{@render (label as SnippetWithId)({ id })}
+				{:else if isTHCNotEmpty(label)}
+					<Thc thc={label as THC} forceAsHtml />
 				{/if}
 			</div>
 		{/if}

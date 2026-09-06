@@ -387,7 +387,7 @@
 	// aria-live announcement text for reorder actions
 	let liveAnnouncement = $state("");
 	let parentHiddenInputEl: HTMLInputElement | undefined = $state();
-	let hasLabel = $derived(isTHCNotEmpty(label) || typeof label === "function");
+	let hasLabel = $derived(isTHCNotEmpty(label));
 	let inputEl = $state<HTMLInputElement>()!;
 	// Outer wrapper for scrollIntoView and focus targeting.
 	let wrapEl: HTMLDivElement | undefined = $state();

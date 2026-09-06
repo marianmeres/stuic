@@ -70,13 +70,18 @@
 	/**
 	 * Checks if a THC value has renderable content.
 	 *
+	 * Covers every form `Thc` itself can render: non-empty text/html, a component,
+	 * a `{ snippet }`, and a bare snippet function.
+	 *
 	 * @param m - The THC value to check
-	 * @returns `true` if the value contains non-empty text, html, or a component
+	 * @returns `true` if the value contains renderable content
 	 *
 	 * @example
 	 * ```ts
 	 * isTHCNotEmpty("Hello");           // true
 	 * isTHCNotEmpty({ text: "Hi" });    // true
+	 * isTHCNotEmpty(mySnippet);         // true
+	 * isTHCNotEmpty({ snippet });       // true
 	 * isTHCNotEmpty("");                // false
 	 * isTHCNotEmpty(null);              // false
 	 * ```
@@ -87,7 +92,10 @@
 			_is(m) ||
 			_is((m as WithText)?.text) ||
 			_is((m as WithHtml)?.html) ||
-			!!(m as WithComponent)?.component
+			!!(m as WithComponent)?.component ||
+			// a bare snippet is a function; `{ snippet }` is the object form
+			typeof m === "function" ||
+			!!(m as WithSnippet)?.snippet
 		);
 	}
 

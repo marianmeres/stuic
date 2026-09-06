@@ -2,6 +2,7 @@ import { render } from "vitest-browser-svelte";
 import { page } from "vitest/browser";
 import { expect, test, vi } from "vitest";
 import FieldCheckbox from "./FieldCheckbox.svelte";
+import { createRawSnippet } from "svelte";
 
 // FieldCheckbox is the structural ODD-ONE-OUT of the Field* family: NO InputWrap.
 // The root is a <label class="stuic-checkbox" data-size> that wraps a native
@@ -102,4 +103,32 @@ test("validate: checking an invalid box renders the message; unchecking clears i
 	await cb.click();
 	fireChange(cb.element());
 	await expect.element(screen.getByText("no good")).not.toBeInTheDocument();
+});
+
+// ============================================================================
+// snippet labels — `isTHCNotEmpty` recognises snippets, so the snippet branch
+// must be tested FIRST or `Thc` would render it without its `{ id }` argument
+// ============================================================================
+
+test("a snippet label is rendered with the input's id, not through Thc", async () => {
+	const screen = await render(FieldCheckbox, {
+		label: createRawSnippet((args: () => { id: string }) => ({
+			render: () => `<span data-label-id>${args().id}</span>`,
+		})),
+	});
+	const input = screen.container.querySelector<HTMLInputElement>(
+		'input[type="checkbox"]'
+	)!;
+	const rendered = screen.container.querySelector("[data-label-id]")!;
+
+	expect(input.id).toBeTruthy();
+	// the snippet received the real id — Thc renders bare snippets with no args
+	expect(rendered.textContent).toBe(input.id);
+});
+
+test("a { snippet } label renders instead of falling through to nothing", async () => {
+	const screen = await render(FieldCheckbox, {
+		label: { snippet: createRawSnippet(() => ({ render: () => `<em>Terms</em>` })) },
+	});
+	expect(screen.container.querySelector(".label em")?.textContent).toBe("Terms");
 });

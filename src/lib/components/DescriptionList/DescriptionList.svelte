@@ -159,14 +159,6 @@
 		...rest
 	}: Props = $props();
 
-	// `isTHCNotEmpty` only knows string/text/html/component — a snippet (bare or
-	// `{ snippet }`) is renderable content it reports as empty, which would silently
-	// drop a snippet description. Widen the test here.
-	const _hasContent = (thc: THC | undefined | null): boolean =>
-		typeof thc === "function" ||
-		!!(thc && typeof thc === "object" && "snippet" in thc) ||
-		isTHCNotEmpty(thc);
-
 	/** Emptiness of a VALUE is deliberately not `isTHCNotEmpty`: `0` is a value, not empty. */
 	const _isEmptyValue = (v: THC | number | undefined | null): boolean =>
 		v === undefined || v === null || v === "";
@@ -257,7 +249,7 @@
 								<Thc thc={_value(item)} />
 							{/if}
 						</dd>
-						{#if _hasContent(item.description)}
+						{#if isTHCNotEmpty(item.description)}
 							<dd class={_classDescription(item)}>
 								<Thc thc={item.description!} />
 							</dd>

@@ -389,7 +389,7 @@ test("THC values render html and components, not escaped text", async () => {
 	expect(container.querySelector("dd b")).not.toBeNull();
 });
 
-test("a snippet description is not dropped (isTHCNotEmpty reports snippets as empty)", async () => {
+test("a snippet description is not dropped", async () => {
 	const { container } = await render(DescriptionList, {
 		items: [{ label: "L", value: "V", description: text("qualifier") }],
 	});

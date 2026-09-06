@@ -26,14 +26,20 @@ type THC =
 
 ### `isTHCNotEmpty(value)`
 
-Checks if a THC value has renderable content.
+Checks if a THC value has renderable content — every form `Thc` itself can render.
 
 ```ts
 isTHCNotEmpty("Hello"); // true
 isTHCNotEmpty({ text: "Hi" }); // true
+isTHCNotEmpty(mySnippet); // true
+isTHCNotEmpty({ snippet }); // true
 isTHCNotEmpty(""); // false
 isTHCNotEmpty(null); // false
 ```
+
+> **Note:** a snippet label that needs an argument (e.g. the `{ id }` the `Field*`
+> components pass) must be rendered directly, not through `Thc` — `Thc` renders a bare
+> snippet with no arguments. Test `typeof value === "function"` first in that case.
 
 ### `getTHCStringContent(value)`
 

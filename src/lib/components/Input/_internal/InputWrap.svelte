@@ -82,7 +82,7 @@
 		}
 	});
 
-	let hasLabel = $derived(isTHCNotEmpty(label) || typeof label === "function");
+	let hasLabel = $derived(isTHCNotEmpty(label));
 </script>
 
 {#snippet snippetOrThc({ id, value }: { id: string; value?: SnippetWithId | THC })}
