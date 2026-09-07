@@ -78,6 +78,21 @@
 
 	let current = $derived(acp?.current!);
 
+	// The prompt field is bound to the dialog object itself (`current.value`). Svelte's
+	// `bind:value` on the underlying <input> registers an ASYNC "input" listener that
+	// re-reads the binding getter after `await tick()` (to respect validation in
+	// accessors), and `createOnClick` below dispatches a synthetic "input" event on OK.
+	// If the `onOk` worker shifts the stack within that microtask window (e.g.
+	// `Promise.resolve().then(() => acp.shift())`), the deferred read finds `current`
+	// already undefined and a plain `bind:value={current.value}` throws
+	// "Cannot read properties of undefined (reading 'value')" as an unhandled
+	// rejection. So the field binds through these null-safe accessors instead: after
+	// the dialog is gone the read yields undefined and the write is dropped.
+	const getValue = () => current?.value;
+	const setValue = (v: any) => {
+		if (current) current.value = v;
+	};
+
 	// Button config is layered: the dialog object's own value (most specific) wins over
 	// the component level prop - same as CmpButtonOk/Cancel/Custom below.
 
@@ -200,7 +215,7 @@
 					<div class={twMerge("input-box", "mt-3 p-1", classInputBox)}>
 						{#if current?.promptFieldProps?.options?.length}
 							<FieldSelect
-								bind:value={current.value}
+								bind:value={getValue, setValue}
 								bind:input={inputEl}
 								class={twMerge("input", "m-0", classInput)}
 								options={current.promptFieldProps.options}
@@ -210,7 +225,7 @@
 							/>
 						{:else}
 							<FieldInput
-								bind:value={current.value}
+								bind:value={getValue, setValue}
 								bind:input={inputEl}
 								class={twMerge("input", "m-0", classInput)}
 								renderSize="sm"

@@ -197,6 +197,82 @@ test("PROMPT: a default value pre-fills the input and resolves unchanged on OK",
 	await expect(promise).resolves.toBe("Anonymous");
 });
 
+// A hand-rolled `onOk` owns the close and may shift the stack whenever it likes,
+// including from a later microtask. Svelte's `bind:value` on the prompt <input>
+// registers an async "input" listener that re-reads the binding getter after
+// `await tick()`, and Current.svelte fires a synthetic "input" event on OK, so a shift
+// landing inside that window used to make the (then `current.value`) getter throw
+// "Cannot read properties of undefined (reading 'value')" as an unhandled rejection.
+// The field now binds through null-safe accessors. `Promise.resolve().then(shift)` is
+// the shape that reliably lands in the window in Chromium.
+test("PROMPT: an onOk that shifts one microtask late closes cleanly, no unhandled error", async () => {
+	const rejections: unknown[] = [];
+	const onRejection = (e: PromiseRejectionEvent) => {
+		rejections.push(e.reason);
+		// Keep the assertion below the single point of failure (vitest would otherwise
+		// also report the rejection as a run-level error).
+		e.preventDefault();
+	};
+	window.addEventListener("unhandledrejection", onRejection);
+
+	try {
+		const acp = new AlertConfirmPromptStack();
+		const screen = render(AlertConfirmPrompt, { acp });
+
+		let seen: string | undefined;
+		acp.prompt(
+			(value: string) =>
+				Promise.resolve().then(() => {
+					seen = value;
+					acp.shift();
+				}),
+			{ title: "Delete account?", value: "hunter2" }
+		);
+		flushSync();
+
+		await expect.element(screen.getByRole("dialog")).toBeInTheDocument();
+		await okBtn(screen).click();
+
+		await expect.poll(() => acp.current).toBeUndefined();
+		await expect.element(screen.getByRole("dialog")).not.toBeInTheDocument();
+		expect(seen).toBe("hunter2");
+		// Let the deferred re-read (a microtask or two after the click) settle.
+		await new Promise((r) => setTimeout(r, 50));
+		expect(rejections).toEqual([]);
+	} finally {
+		window.removeEventListener("unhandledrejection", onRejection);
+	}
+});
+
+// The documented idiom: return the promise, do the work, then shift. The dialog stays
+// up with OK disabled (isPending) until the returned promise settles, for prompts too.
+test("PROMPT: an async onOk keeps the dialog pending (OK disabled) until it shifts", async () => {
+	const acp = new AlertConfirmPromptStack();
+	const screen = render(AlertConfirmPrompt, { acp });
+
+	let release!: () => void;
+	const inFlight = new Promise<void>((r) => (release = r));
+	acp.prompt(
+		async () => {
+			await inFlight;
+			acp.shift();
+		},
+		{ title: "Delete account?", value: "hunter2" }
+	);
+	flushSync();
+
+	await expect.element(screen.getByRole("dialog")).toBeInTheDocument();
+	await okBtn(screen).click();
+
+	// Still open, and the one button that could re-run the action is disabled.
+	await expect.element(okBtn(screen)).toBeDisabled();
+	expect(acp.length).toBe(1);
+
+	release();
+	await expect.poll(() => acp.current).toBeUndefined();
+	await expect.element(screen.getByRole("dialog")).not.toBeInTheDocument();
+});
+
 // ---------------------------------------------------------------- ESCAPE
 
 test("ESCAPE: pressing Escape on the dialog resolves the confirm wrapper to false and closes", async () => {
@@ -221,6 +297,31 @@ test("ESCAPE: pressing Escape on the dialog resolves the confirm wrapper to fals
 	// Re-query via the role locator (it polls the live DOM); wrapping the now-detached
 	// `el` in page.elementLocator throws on the removed node.
 	await expect.element(dialog).not.toBeInTheDocument();
+});
+
+// The component routes Escape through `acp.escape()`, which only runs the current
+// dialog's `onEscape` (default: `shift`). With two dialogs queued, Escape must pop
+// exactly the first one and reveal the second; the old `escape()` shifted twice.
+test("ESCAPE: on a stack of two, Escape pops only the current dialog and reveals the next", async () => {
+	const acp = new AlertConfirmPromptStack();
+	const screen = render(AlertConfirmPrompt, { acp });
+
+	acp.confirm(acp.shift, { title: "First" });
+	acp.alert("Second");
+	flushSync();
+
+	const dialog = screen.getByRole("dialog");
+	await expect.element(dialog).toBeInTheDocument();
+	await expect.element(screen.getByText("First")).toBeInTheDocument();
+	expect(acp.length).toBe(2);
+
+	const el = dialog.element() as HTMLDialogElement;
+	el.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+
+	await expect.poll(() => acp.length).toBe(1);
+	await expect.element(screen.getByText("Second")).toBeInTheDocument();
+	// Still open: preClose vetoes the ModalDialog close while the stack is non-empty.
+	await expect.element(screen.getByRole("dialog")).toBeInTheDocument();
 });
 
 // ---------------------------------------------------------------- STACKING

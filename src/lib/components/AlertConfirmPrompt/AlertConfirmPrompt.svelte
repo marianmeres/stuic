@@ -94,7 +94,9 @@
 	<ModalDialog
 		bind:this={modal}
 		preEscapeClose={() => {
-			return isPending ? false : acp?.current.onEscape?.();
+			// `escape()` runs the current dialog's `onEscape` (defaults to `shift`); the
+			// handler owns the close. Refused while the OK handler is still pending.
+			return isPending ? false : acp?.escape();
 		}}
 		preClose={() => !acp.length}
 		noClickOutsideClose

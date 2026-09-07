@@ -91,6 +91,23 @@ const ucf = (s: string) => `${s}`[0].toUpperCase() + `${s}`.slice(1);
  * Manages a FIFO queue of dialogs, allowing one dialog to be displayed at a time.
  * Provides a modern, customizable replacement for native browser dialogs.
  *
+ * **The handler owns the close.** A dialog is removed from the queue only by
+ * `shift()`. Each of `onOk`, `onCancel` and `onEscape` defaults to `shift` when the
+ * caller does not supply it, so an `alert()` with no callbacks closes itself. As soon
+ * as you pass your own handler, closing becomes your job: call `acp.shift()` when you
+ * are done. The stack does not close for you, so that an async handler can validate,
+ * stage a second step, or keep a failed action's message on screen. (An `onOk` that
+ * runs its work but never shifts is the classic mistake: the work happens, the dialog
+ * stays, and the user clicks OK again.)
+ *
+ * While a handler's returned promise is pending, the rendered dialog is in a "pending"
+ * state (buttons disabled, spinner shown, Escape refused). Return the promise - do not
+ * `void` it - to get that for the duration of your work.
+ *
+ * If all you want is "a dialog that closes when the user answers", use the
+ * Promise-based wrappers {@link createAlert}, {@link createConfirm} and
+ * {@link createPrompt} instead; they shift for you.
+ *
  * @example
  * ```ts
  * const acp = new AlertConfirmPromptStack({
@@ -98,18 +115,24 @@ const ucf = (s: string) => `${s}`[0].toUpperCase() + `${s}`.slice(1);
  *   labelCancel: 'Dismiss'
  * });
  *
- * // Simple alert
+ * // Simple alert (no handler given, so OK/Escape default to `shift`)
  * acp.alert({ title: 'Notice', content: 'Operation complete' });
  *
- * // Confirm with callback
+ * // Confirm with callback. Supplying `onOk` makes YOU responsible for closing.
  * acp.confirm(
- *   () => console.log('Confirmed!'),
+ *   async () => {
+ *     await deleteItem(); // dialog is pending (OK disabled) until this settles
+ *     acp.shift();
+ *   },
  *   { title: 'Delete?', content: 'This cannot be undone', variant: 'warn' }
  * );
  *
- * // Prompt for input
+ * // Prompt for input. Same rule: shift when done.
  * acp.prompt(
- *   (value) => console.log('User entered:', value),
+ *   (value) => {
+ *     console.log('User entered:', value);
+ *     acp.shift();
+ *   },
  *   { title: 'Name', content: 'Enter your name', value: 'Default' }
  * );
  * ```
@@ -158,23 +181,34 @@ export class AlertConfirmPromptStack {
 		this.#stack.push(o as AlertConfirmPromptObj);
 	};
 
+	/** Removes the current dialog from the queue, revealing the next one (if any). */
 	shift = () => this.#stack.shift();
 
+	/** Clears the whole queue. */
 	reset = () => {
 		this.#stack = [];
 	};
 
+	/**
+	 * Runs the current dialog's `onEscape` handler (which defaults to `shift`). Does
+	 * nothing on an empty stack. The handler owns the close, exactly as with `onOk`
+	 * and `onCancel`, so this does NOT shift on its own: a custom `onEscape` that
+	 * does not shift keeps the dialog open, and one that does shift pops exactly one
+	 * entry (not the one queued behind it as well).
+	 */
 	escape = () => {
-		this.#stack?.[0]?.onEscape?.();
-		this.shift();
+		return this.#stack[0]?.onEscape?.();
 	};
 
+	/** Snapshot of the queue (current dialog first). */
 	dump = () => {
 		return [...this.#stack];
 	};
 
 	/**
-	 * Main api.
+	 * Queues an alert dialog (OK button only). With no `onOk`/`onEscape` given, both
+	 * default to `shift`, so a plain alert closes itself. If you supply either, call
+	 * `shift()` from it yourself.
 	 */
 	alert = (o?: Partial<AlertConfirmPromptObj> | string) => {
 		if (typeof o === "string") o = { title: o };
@@ -182,14 +216,20 @@ export class AlertConfirmPromptStack {
 	};
 
 	/**
-	 * Main api.
+	 * Queues a confirm dialog (Cancel + OK). `onOk` owns the close: call `acp.shift()`
+	 * from it when done (a returned promise keeps the dialog pending until it settles).
+	 * `onCancel`/`onEscape` default to `shift`. For a self-closing, Promise-based
+	 * confirm use {@link createConfirm}.
 	 */
 	confirm = (onOk: FnOnOK, o?: Partial<AlertConfirmPromptObj>) => {
 		this.#push({ onOk, value: false, ...o, type: AlertConfirmPromptType.CONFIRM });
 	};
 
 	/**
-	 * Main api.
+	 * Queues a prompt dialog (input + Cancel + OK). `onOk` receives the entered value
+	 * and owns the close: call `acp.shift()` from it when done (a returned promise
+	 * keeps the dialog pending until it settles). `onCancel`/`onEscape` default to
+	 * `shift`. For a self-closing, Promise-based prompt use {@link createPrompt}.
 	 */
 	prompt = (onOk: FnOnOK, o?: Partial<AlertConfirmPromptObj>) => {
 		this.#push({ onOk, value: "", ...o, type: AlertConfirmPromptType.PROMPT });
