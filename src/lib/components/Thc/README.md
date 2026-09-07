@@ -114,5 +114,5 @@ Many stuic components accept THC for labels and content:
 	description={{ html: "Enter your <strong>unique</strong> username" }}
 />
 
-<DismissibleMessage message={{ text: "Operation completed" }} theme="green" />
+<DismissibleMessage message={{ text: "Operation completed" }} intent="success" />
 ```

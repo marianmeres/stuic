@@ -7,13 +7,21 @@
 		class?: string;
 		classContent?: string;
 		classIcon?: string;
+		/**
+		 * Message content. Any THC form — a string, `{ text }`, `{ html }`, `{ component }`,
+		 * `{ snippet }` or a bare snippet — is handed to `Thc` as-is; an `Error` is rendered
+		 * as `String(error)`. Empty/nullish renders nothing.
+		 */
 		message: THC | Error | undefined | null;
 		intent?: MessageIntent;
+		/** Render a string or `{ text }` message via `{@html}` (snippets/components ignore it). */
 		forceAsHtml?: boolean;
 		duration?: number;
 		onDismiss?: (() => void) | null | false;
 		withIcon?: boolean;
 		iconFn?: (() => string) | false;
+		/** Accessible name (`aria-label` + `title`) of the built-in dismiss button. */
+		dismissLabel?: string;
 	}
 </script>
 
@@ -21,7 +29,7 @@
 	import { untrack } from "svelte";
 	import { slide } from "svelte/transition";
 	import { twMerge } from "../../utils/tw-merge.js";
-	import Thc, { isTHCNotEmpty } from "../Thc/Thc.svelte";
+	import Thc, { getTHCStringContent, isTHCNotEmpty } from "../Thc/Thc.svelte";
 	import Button from "../Button/Button.svelte";
 	import {
 		iconAlertWarning,
@@ -48,7 +56,15 @@
 		onDismiss,
 		withIcon,
 		iconFn,
+		dismissLabel = "Dismiss",
 	}: Props = $props();
+
+	// Only the non-THC member of the union needs coercing. Every THC form is passed to
+	// `Thc` intact — `String()`-ing the whole union used to flatten the object forms to
+	// "[object Object]" and a snippet to its source text.
+	let _message: THC = $derived(
+		message instanceof Error ? String(message) : (message ?? "")
+	);
 
 	// Track dismissal in local state instead of mutating the (non-bindable) `message`
 	// prop. Mutating a destructured prop var creates a local shadow that Svelte 5
@@ -56,14 +72,20 @@
 	// who dismissed an error would never see the SAME error message again, even
 	// after the parent re-set it. Keeping `_dismissed` separate sidesteps that and
 	// makes the dismiss state reset cleanly whenever the message changes.
-	let _message = $derived(message ? String(message) : "");
 	let _dismissed = $state(false);
 	let _show = $derived(isTHCNotEmpty(_message) && !_dismissed);
 
 	// Reset the dismissed flag whenever the message changes — a new (or re-set)
 	// message from the parent should re-show, even if the user previously dismissed.
+	//
+	// Keyed on the string content where there is one (string, Error, `{ text }`,
+	// `{ html }`), so an inline object literal — a new object on every parent render —
+	// does not re-show a dismissed message on unrelated state changes. Component and
+	// snippet forms have no string content and fall back to identity: a re-created
+	// snippet is a message rebuilt from new data and re-shows.
+	let _resetKey = $derived(getTHCStringContent(_message) || _message);
 	$effect(() => {
-		void _message;
+		void _resetKey;
 		untrack(() => {
 			if (_dismissed) _dismissed = false;
 		});
@@ -110,6 +132,8 @@
 					roundedFull
 					size="sm"
 					type="button"
+					title={dismissLabel}
+					aria-label={dismissLabel}
 					onclick={() => _onDismiss()}
 				/>
 			</div>

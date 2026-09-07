@@ -4,15 +4,29 @@ A dismissible alert/message component with semantic intents and slide transition
 
 ## Props
 
-| Prop           | Type                                                | Default | Description                                        |
-| -------------- | --------------------------------------------------- | ------- | -------------------------------------------------- |
-| `message`      | `THC \| Error`                                      | -       | Message content (string, HTML, or Error object)    |
-| `intent`       | `"destructive" \| "warning" \| "success" \| "info"` | -       | Semantic color intent                              |
-| `forceAsHtml`  | `boolean`                                           | `true`  | Render message as HTML                             |
-| `duration`     | `number`                                            | `150`   | Slide transition duration (ms)                     |
-| `onDismiss`    | `(() => void) \| null \| false`                     | -       | Dismiss callback (set to `false` to hide X button) |
-| `class`        | `string`                                            | -       | CSS for container                                  |
-| `classContent` | `string`                                            | -       | CSS for content area                               |
+| Prop           | Type                                                | Default     | Description                                                                                                                                                           |
+| -------------- | --------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `message`      | `THC \| Error \| null \| undefined`                 | -           | Message content: any [THC](../Thc/README.md) form (string, `{ text }`, `{ html }`, `{ component }`, `{ snippet }`, bare snippet) or an `Error`. Empty renders nothing |
+| `intent`       | `"destructive" \| "warning" \| "success" \| "info"` | -           | Semantic color intent                                                                                                                                                 |
+| `forceAsHtml`  | `boolean`                                           | `true`      | Render a string or `{ text }` message via `{@html}`; snippets and components are unaffected                                                                           |
+| `duration`     | `number`                                            | `150`       | Slide transition duration (ms)                                                                                                                                        |
+| `onDismiss`    | `(() => void) \| null \| false`                     | -           | Dismiss callback (set to `false` to hide X button)                                                                                                                    |
+| `dismissLabel` | `string`                                            | `"Dismiss"` | Accessible name (`aria-label` + `title`) of the built-in dismiss button                                                                                               |
+| `withIcon`     | `boolean`                                           | -           | Show the default icon for the current `intent`                                                                                                                        |
+| `iconFn`       | `(() => string) \| false`                           | -           | Custom icon (returns an SVG string); `false` hides the icon                                                                                                           |
+| `class`        | `string`                                            | -           | CSS for container                                                                                                                                                     |
+| `classContent` | `string`                                            | -           | CSS for content area                                                                                                                                                  |
+| `classIcon`    | `string`                                            | -           | CSS for icon area                                                                                                                                                     |
+
+`message` is a THC, so anything `Thc` renders works: a string, `{ text }`, `{ html }`,
+`{ component, props }`, `{ snippet }` or a bare snippet. An `Error` is rendered as
+`String(error)` (i.e. `Error: <message>`).
+
+Dismissing hides the message locally; the dismissed state resets when the message changes.
+For string, `{ text }`, `{ html }` and `Error` messages "changes" means different text — an
+inline `{ text: t("saved") }` literal re-created on every parent render does **not** re-show a
+dismissed message. Snippet and component messages have no text to compare, so they are keyed
+on identity: a re-created snippet re-shows.
 
 ## Usage
 
@@ -49,6 +63,58 @@ A dismissible alert/message component with semantic intents and slide transition
 
 <!-- Info message -->
 <DismissibleMessage message="New features are available" intent="info" />
+```
+
+### Snippet Content (with an action button)
+
+Any THC form works as the message, so a banner that needs an action inside the alert is a
+snippet — no need to re-implement the alert markup:
+
+```svelte
+<script lang="ts">
+	import { Button, DismissibleMessage } from "@marianmeres/stuic";
+
+	let sending = $state(false);
+
+	async function resend() {
+		sending = true;
+		try {
+			await api.resendVerificationEmail();
+		} finally {
+			sending = false;
+		}
+	}
+</script>
+
+{#snippet body()}
+	<span class="flex-1">Your email address is not verified.</span>
+	<Button size="sm" variant="outline" disabled={sending} onclick={resend}>Resend</Button>
+{/snippet}
+
+<DismissibleMessage
+	message={body}
+	intent="warning"
+	withIcon
+	classContent="flex flex-wrap items-center gap-x-4 gap-y-2"
+	dismissLabel="Dismiss"
+/>
+```
+
+### Other THC Forms
+
+```svelte
+<!-- explicit text (rendered via {@html} under the default forceAsHtml — pass
+     forceAsHtml={false} to escape it) -->
+<DismissibleMessage message={{ text: "Operation completed" }} intent="success" />
+
+<!-- html -->
+<DismissibleMessage message={{ html: "<b>Saved.</b> You can close this tab." }} />
+
+<!-- component -->
+<DismissibleMessage
+	message={{ component: QuotaWarning, props: { used: 95 } }}
+	intent="warning"
+/>
 ```
 
 ### Non-Dismissible

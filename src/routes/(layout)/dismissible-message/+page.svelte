@@ -10,7 +10,34 @@
 	);
 
 	let withIcon = $state(false);
+
+	// snippet-content example: an alert with an action button inside the message
+	let sending = $state(false);
+	let sentCount = $state(0);
+	let bannerKey = $state(0);
+	async function resend() {
+		sending = true;
+		await new Promise((r) => setTimeout(r, 800));
+		sending = false;
+		sentCount++;
+	}
 </script>
+
+{#snippet verifyEmailBody()}
+	<span class="flex-1">
+		Your email address is not verified.
+		{#if sentCount}<span class="opacity-70">(sent {sentCount}×)</span>{/if}
+	</span>
+	<Button
+		size="sm"
+		variant="outline"
+		disabled={sending}
+		spinner={sending}
+		onclick={resend}
+	>
+		Resend verification email
+	</Button>
+{/snippet}
 
 <div class="space-y-6">
 	<DismissibleMessage {message} {intent} {withIcon} />
@@ -30,6 +57,44 @@
 		/>
 
 		<Button onclick={() => (message = dummySentence(5))}>Show message</Button>
+	</div>
+
+	<div class="mt-8 space-y-2">
+		<h3 class="font-semibold mb-4">THC content</h3>
+		<p class="text-sm opacity-80 mb-4">
+			<code>message</code> is a THC — a snippet (or
+			<code>&lbrace; snippet &rbrace;</code>,
+			<code>&lbrace; component &rbrace;</code>, <code>&lbrace; html &rbrace;</code>,
+			<code>&lbrace; text &rbrace;</code>) renders as a real subtree, so an alert can
+			carry its own action button. The dismiss button is named via
+			<code>dismissLabel</code>.
+		</p>
+
+		{#key bannerKey}
+			<DismissibleMessage
+				message={verifyEmailBody}
+				intent="warning"
+				withIcon
+				classContent="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm"
+				dismissLabel="Dismiss this banner"
+			/>
+		{/key}
+		<Button size="sm" variant="ghost" onclick={() => bannerKey++}>Reset banner</Button>
+
+		<DismissibleMessage
+			message={{ html: "<b>Saved.</b> Rendered from <code>{ html }</code>." }}
+			intent="success"
+			{withIcon}
+			onDismiss={false}
+		/>
+
+		<DismissibleMessage
+			message={{ text: "Rendered from { text } (escaped: <b>not bold</b>)" }}
+			forceAsHtml={false}
+			intent="info"
+			{withIcon}
+			onDismiss={false}
+		/>
 	</div>
 
 	<div class="mt-8 space-y-2 bg-linear-to-r from-cyan-500 to-blue-500 p-4">
