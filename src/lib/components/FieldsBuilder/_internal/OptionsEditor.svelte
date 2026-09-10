@@ -37,7 +37,10 @@
 	interface Props {
 		options?: FieldOptionDef[];
 		languages?: string[];
+		/** Canonical language: value derivation and the editors' collapsed input. */
 		defaultLanguage?: string;
+		/** Language the announcements read option labels in. Default: `defaultLanguage`. */
+		displayLanguage?: string;
 		languageLabels?: Record<string, string>;
 		disabled?: boolean;
 		/** `lock.options` — render the list read-only. */
@@ -52,6 +55,7 @@
 		options = $bindable(),
 		languages,
 		defaultLanguage,
+		displayLanguage,
 		languageLabels,
 		disabled = false,
 		locked = false,
@@ -61,6 +65,11 @@
 	}: Props = $props();
 
 	const _defaultLanguage = $derived(defaultLanguage || languages?.[0]);
+	const _displayLanguages = $derived(
+		[displayLanguage || _defaultLanguage, _defaultLanguage].filter(
+			(l): l is string => !!l
+		)
+	);
 
 	interface OptionMeta {
 		/** Stable render id (options themselves have no identity). */
@@ -92,7 +101,7 @@
 	) {
 		liveAnnouncement = "";
 		const msg = String(
-			t(key, { label: getLocalizedText(option.label, _defaultLanguage), ...values })
+			t(key, { label: getLocalizedText(option.label, _displayLanguages), ...values })
 		);
 		tick().then(() => (liveAnnouncement = msg));
 	}

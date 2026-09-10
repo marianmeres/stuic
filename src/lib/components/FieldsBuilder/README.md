@@ -187,35 +187,36 @@ not block validation. It is never silently dropped.
 
 ## Props
 
-| Prop                                                          | Type                                                 | Default        | Description                                            |
-| ------------------------------------------------------------- | ---------------------------------------------------- | -------------- | ------------------------------------------------------ |
-| `value`                                                       | `FieldDef[]`                                         | required       | Bindable ordered field list                            |
-| `name`                                                        | `string`                                             | required       | Hidden-input name (form participation)                 |
-| `types`                                                       | `FieldTypeDef[]`                                     | required       | The type palette                                       |
-| `label`                                                       | `Snippet \| THC`                                     | —              | Field label                                            |
-| `description`                                                 | `Snippet \| THC`                                     | —              | Help text below                                        |
-| `languages`                                                   | `string[]`                                           | —              | Enables multi-language label/description/option labels |
-| `defaultLanguage`                                             | `string`                                             | `languages[0]` | Drives key derivation and display texts                |
-| `languageLabels`                                              | `Record<string, string>`                             | —              | Display names for language codes                       |
-| `keyPattern`                                                  | `RegExp`                                             | snake_case     | Key validation pattern                                 |
-| `keyMaxLength`                                                | `number`                                             | `63`           | Key length limit                                       |
-| `reservedKeys`                                                | `string[] \| (key) => boolean`                       | —              | Keys the user may not use                              |
-| `keysImmutable`                                               | `boolean`                                            | `true`         | Freeze keys loaded from `value`                        |
-| `deriveKeyFromLabel`                                          | `boolean \| (label) => string`                       | `true`         | Live key derivation (custom slugifier allowed)         |
-| `maxFields`                                                   | `number`                                             | —              | Disables adding beyond the limit                       |
-| `deleteMode`                                                  | `"mark" \| "immediate"`                              | `"mark"`       | Delete UX (see above)                                  |
-| `onBeforeDelete`                                              | `(field) => void \| false \| Promise<void \| false>` | —              | Delete veto hook                                       |
-| `onBeforeTypeChange`                                          | `(field, newType) => void \| false \| Promise<...>`  | —              | Type-change veto hook (pre-existing fields)            |
-| `onChange`                                                    | `(value: FieldDef[]) => void`                        | —              | Fired after every change                               |
-| `preview`                                                     | `Snippet<[{ fields: FieldDef[] }]>`                  | —              | Preview pane content (see below)                       |
-| `previewBreakpoint`                                           | `number`                                             | `768`          | Component width for side-by-side preview; `0` = below  |
-| `required`                                                    | `boolean`                                            | `false`        | At least one field required                            |
-| `validate`                                                    | `boolean \| ValidateOptions`                         | `true`         | Validate-action options                                |
-| `renderSize`                                                  | `"sm" \| "md" \| "lg"`                               | `"sm"`         | InputWrap size                                         |
-| `addLabel`, `emptyMessage`                                    | `string`                                             | —              | Text overrides                                         |
-| `classRow`, `classRowHeader`, `classRowBody`, `classPreview`  | `string`                                             | —              | Class hooks                                            |
-| `t`                                                           | `TranslateFn`                                        | built-in (en)  | i18n override for all texts (see below)                |
-| `disabled`, `id`, `tabindex`, `style`, `labelLeft*`, `class*` |                                                      |                | Standard `Field*`/InputWrap pass-throughs              |
+| Prop                                                          | Type                                                 | Default           | Description                                                                     |
+| ------------------------------------------------------------- | ---------------------------------------------------- | ----------------- | ------------------------------------------------------------------------------- |
+| `value`                                                       | `FieldDef[]`                                         | required          | Bindable ordered field list                                                     |
+| `name`                                                        | `string`                                             | required          | Hidden-input name (form participation)                                          |
+| `types`                                                       | `FieldTypeDef[]`                                     | required          | The type palette                                                                |
+| `label`                                                       | `Snippet \| THC`                                     | —                 | Field label                                                                     |
+| `description`                                                 | `Snippet \| THC`                                     | —                 | Help text below                                                                 |
+| `languages`                                                   | `string[]`                                           | —                 | Enables multi-language label/description/option labels                          |
+| `defaultLanguage`                                             | `string`                                             | `languages[0]`    | Canonical language: key derivation, required-label rule, editors' primary input |
+| `displayLanguage`                                             | `string`                                             | `defaultLanguage` | Translation shown in read-only spots (row list, palette, extras); see i18n      |
+| `languageLabels`                                              | `Record<string, string>`                             | —                 | Display names for language codes                                                |
+| `keyPattern`                                                  | `RegExp`                                             | snake_case        | Key validation pattern                                                          |
+| `keyMaxLength`                                                | `number`                                             | `63`              | Key length limit                                                                |
+| `reservedKeys`                                                | `string[] \| (key) => boolean`                       | —                 | Keys the user may not use                                                       |
+| `keysImmutable`                                               | `boolean`                                            | `true`            | Freeze keys loaded from `value`                                                 |
+| `deriveKeyFromLabel`                                          | `boolean \| (label) => string`                       | `true`            | Live key derivation (custom slugifier allowed)                                  |
+| `maxFields`                                                   | `number`                                             | —                 | Disables adding beyond the limit                                                |
+| `deleteMode`                                                  | `"mark" \| "immediate"`                              | `"mark"`          | Delete UX (see above)                                                           |
+| `onBeforeDelete`                                              | `(field) => void \| false \| Promise<void \| false>` | —                 | Delete veto hook                                                                |
+| `onBeforeTypeChange`                                          | `(field, newType) => void \| false \| Promise<...>`  | —                 | Type-change veto hook (pre-existing fields)                                     |
+| `onChange`                                                    | `(value: FieldDef[]) => void`                        | —                 | Fired after every change                                                        |
+| `preview`                                                     | `Snippet<[{ fields: FieldDef[] }]>`                  | —                 | Preview pane content (see below)                                                |
+| `previewBreakpoint`                                           | `number`                                             | `768`             | Component width for side-by-side preview; `0` = below                           |
+| `required`                                                    | `boolean`                                            | `false`           | At least one field required                                                     |
+| `validate`                                                    | `boolean \| ValidateOptions`                         | `true`            | Validate-action options                                                         |
+| `renderSize`                                                  | `"sm" \| "md" \| "lg"`                               | `"sm"`            | InputWrap size                                                                  |
+| `addLabel`, `emptyMessage`                                    | `string`                                             | —                 | Text overrides                                                                  |
+| `classRow`, `classRowHeader`, `classRowBody`, `classPreview`  | `string`                                             | —                 | Class hooks                                                                     |
+| `t`                                                           | `TranslateFn`                                        | built-in (en)     | i18n override for all texts (see below)                                         |
+| `disabled`, `id`, `tabindex`, `style`, `labelLeft*`, `class*` |                                                      |                   | Standard `Field*`/InputWrap pass-throughs                                       |
 
 Imperative API (via `bind:this`), same as every `Field*`:
 `validate()`, `clearValidation()`, `getValidation()`, `focus()`, `scrollIntoView()`.
@@ -281,7 +282,39 @@ messages alone would leave the type select in English. `FIELDS_BUILDER_DEFAULT_T
 is the Slovak twin of `FIELDS_BUILDER_DEFAULT_TYPES` (identical `type` values — the
 stored defs are unaffected by which one you pass). A palette entry's `label` /
 `description` also accept a per-language map (`{ en: "Text", sk: "Text" }`), resolved
-against `defaultLanguage`.
+against `displayLanguage`.
+
+### Display language vs. default language
+
+With `languages` set, two languages play different roles:
+
+- **`defaultLanguage`** (default `languages[0]`) is the _canonical_ one: the key is
+  derived from its label, the "label required" rule checks its entry, and the
+  label/description/option editors open on it (the other translations sit behind the
+  toggle).
+- **`displayLanguage`** (default `defaultLanguage`) is what the component _shows_
+  wherever it renders localized data read-only: the collapsed row titles and the
+  reorder/delete announcements, the type chips and the type picker, the palette
+  descriptions, extras labels/placeholders/descriptions, the built-in preview fallback,
+  and the extra's name in `err_extra_maxlength`. A missing translation falls back to
+  `defaultLanguage`, then to the first non-empty entry.
+
+So a Slovak user of a schema whose canonical language is English gets a Slovak list and
+Slovak chrome (`t`), and still edits the canonical English label first:
+
+```svelte
+<FieldsBuilder
+	bind:value
+	name="fields"
+	types={FIELDS_BUILDER_DEFAULT_TYPES_SK}
+	languages={["en", "sk"]}
+	displayLanguage={user.locale}
+	t={createFieldsBuilderT(FIELDS_BUILDER_MESSAGES_SK)}
+/>
+```
+
+`getLocalizedText(text, preferred)` — exported — accepts the same fallback chain as an
+array: `getLocalizedText(label, ["sk", "en"])`.
 
 ## Accessibility
 

@@ -2,7 +2,7 @@ import { render } from "vitest-browser-svelte";
 import { expect, test, vi } from "vitest";
 import FieldsBuilder from "./FieldsBuilder.svelte";
 import FieldsBuilderHarness from "./FieldsBuilderHarness.test.svelte";
-import type { FieldDef } from "./types.js";
+import type { FieldDef, FieldTypeDef } from "./types.js";
 import { DEFAULT_FIELD_TYPES } from "./utils.js";
 
 // FieldsBuilder is a composite form control whose bindable `value` is an ordered
@@ -20,7 +20,8 @@ import { DEFAULT_FIELD_TYPES } from "./utils.js";
 //   - options editor for `supportsOptions` types
 //   - validation (imperative `validate()`, inline row errors)
 //   - unknown-type degraded rows that still round-trip
-//   - languages mode (LocalizedText records)
+//   - languages mode (LocalizedText records), `displayLanguage` vs the
+//     canonical `defaultLanguage`
 //   - external `bind:value` resync + `preview` snippet (via harness)
 //
 // Drag-and-drop reorder shares `canMoveRow`/`moveRow` with the buttons tested
@@ -326,6 +327,60 @@ test("languages: default-language editing, translations toggle, record emitted",
 	await expect
 		.poll(() => emitted(screen.container)[0]?.label)
 		.toEqual({ en: "Color", sk: "Farba" });
+});
+
+test("displayLanguage: read-only texts follow it; authoring stays on the default language", async () => {
+	const types: FieldTypeDef[] = [
+		{
+			type: "text",
+			label: { en: "Text", sk: "Text (sk)" },
+			extras: [{ key: "unit", label: { en: "Unit", sk: "Jednotka" }, type: "string" }],
+		},
+		{ type: "number", label: { en: "Number", sk: "Číslo" } },
+	];
+	const screen = await render(FieldsBuilder, {
+		...baseProps([
+			{ key: "color", type: "text", label: { en: "Color", sk: "Farba" } },
+			// no Slovak entry -> falls back to the DEFAULT language, not to the
+			// record's first entry
+			{ key: "size", type: "number", label: { de: "Größe", en: "Size" } },
+		]),
+		types,
+		languages: ["en", "sk"],
+		displayLanguage: "sk",
+	});
+
+	// collapsed row titles and type chips read the display language
+	const rows = screen.getByRole("listitem");
+	await expect.element(rows.first()).toHaveTextContent("Farba");
+	await expect.element(rows.first()).toHaveTextContent("Text (sk)");
+	await expect.element(rows.nth(1)).toHaveTextContent("Size");
+	await expect.element(rows.nth(1)).toHaveTextContent("Číslo");
+
+	// the editor opens on the canonical language, while the type picker and the
+	// extras' labels still read the display language
+	await screen.getByRole("button", { name: /Farba/ }).click();
+	await expect.element(screen.getByLabelText("Label")).toHaveValue("Color");
+	await expect
+		.element(screen.getByRole("option", { name: "Text (sk)" }))
+		.toBeInTheDocument();
+	await expect.element(screen.getByLabelText("Jednotka")).toBeInTheDocument();
+	await screen.getByRole("button", { name: /Farba/ }).click();
+
+	// a new field's key derives from the canonical-language label; a translation
+	// typed afterwards moves the row title (display) but not the key (authoring)
+	await screen.getByRole("button", { name: "Add field" }).click();
+	await screen.getByLabelText("Label").fill("Ročník");
+	await expect.poll(() => emitted(screen.container)[2]?.key).toBe("rocnik");
+	await screen.getByRole("button", { name: "Show translations" }).first().click();
+	await screen.getByRole("textbox", { name: "sk" }).fill("Rok");
+	await expect
+		.poll(() => emitted(screen.container)[2]?.label)
+		.toEqual({ en: "Ročník", sk: "Rok" });
+	await expect.poll(() => emitted(screen.container)[2]?.key).toBe("rocnik");
+	await expect
+		.element(screen.getByRole("button", { name: /^Rok\b/ }))
+		.toBeInTheDocument();
 });
 
 test("an externally set bound value resyncs the rows (harness)", async () => {

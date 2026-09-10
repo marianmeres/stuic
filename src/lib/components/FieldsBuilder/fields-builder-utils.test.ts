@@ -1,5 +1,10 @@
 import { assert, test } from "vitest";
-import type { FieldDef, FieldOptionDef } from "./types.js";
+import type {
+	FieldDef,
+	FieldOptionDef,
+	FieldTypeDef,
+	FieldTypeExtraDef,
+} from "./types.js";
 import {
 	DEFAULT_FIELD_TYPES,
 	DEFAULT_KEY_PATTERN,
@@ -78,6 +83,20 @@ test("getLocalizedText: plain strings, records, preference and fallbacks", () =>
 	assert.equal(getLocalizedText({ en: "hello" }, "sk"), "hello");
 	assert.equal(getLocalizedText(undefined), "");
 	assert.equal(getLocalizedText({}), "");
+});
+
+test("getLocalizedText: a preference chain is honoured in order before the first-entry fallback", () => {
+	const text = { de: "hallo", en: "hello", sk: "ahoj" };
+	assert.equal(getLocalizedText(text, ["sk", "en"]), "ahoj");
+	// preferred missing -> next in the chain, NOT the record's first entry
+	assert.equal(getLocalizedText(text, ["cs", "en"]), "hello");
+	// an empty entry counts as missing
+	assert.equal(getLocalizedText({ de: "hallo", sk: "" }, ["sk", "en"]), "hallo");
+	// whole chain missing -> first non-empty entry
+	assert.equal(getLocalizedText(text, ["cs", "hu"]), "hallo");
+	assert.equal(getLocalizedText(text, []), "hallo");
+	// a plain string ignores the chain
+	assert.equal(getLocalizedText("plain", ["sk", "en"]), "plain");
 });
 
 // -------------------------------------------------------------- isKeyReserved
@@ -220,6 +239,33 @@ test("validateFieldDefs: string extras are bounded by `maxlength` (booleans/sele
 			t: (k, v) => `${k}:${v?.label}:${v?.max}`,
 		}).message,
 		"err_extra_maxlength:Unit:5"
+	);
+	// ...in the display language when set, falling back to the default language
+	const localizedExtras: FieldTypeExtraDef[] = [
+		{ key: "unit", label: { en: "Unit", sk: "Jednotka" }, type: "string", maxlength: 5 },
+		{ key: "note", label: { en: "Note" }, type: "string", maxlength: 5 },
+	];
+	const localizedTypes: FieldTypeDef[] = types.map((td) =>
+		td.type !== "number" ? td : { ...td, extras: localizedExtras }
+	);
+	const tLabel = (k: string, v?: Record<string, string | number>) => `${k}:${v?.label}`;
+	assert.equal(
+		validateFieldDefs([num({ unit: "kilojoules" })], {
+			types: localizedTypes,
+			defaultLanguage: "en",
+			displayLanguage: "sk",
+			t: tLabel,
+		}).message,
+		"err_extra_maxlength:Jednotka"
+	);
+	assert.equal(
+		validateFieldDefs([num({ note: "too long" })], {
+			types: localizedTypes,
+			defaultLanguage: "en",
+			displayLanguage: "sk",
+			t: tLabel,
+		}).message,
+		"err_extra_maxlength:Note"
 	);
 	// no `maxlength` declared -> unbounded
 	assert.equal(

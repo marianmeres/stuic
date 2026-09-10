@@ -15,7 +15,20 @@
 	// 1) minimal
 	let value1 = $state<FieldDef[]>([]);
 
-	// 2) prefilled, locks, languages, reserved keys
+	// 2) prefilled, locks, languages, reserved keys, display language
+	// bilingual palette: the `type` values are identical in both bundled palettes,
+	// so zipping them yields per-language labels/descriptions
+	const bilingualTypes: FieldTypeDef[] = FIELDS_BUILDER_DEFAULT_TYPES.map((td, i) => {
+		const sk = FIELDS_BUILDER_DEFAULT_TYPES_SK[i];
+		return {
+			...td,
+			label: { en: td.label as string, sk: sk.label as string },
+			description: { en: td.description as string, sk: sk.description as string },
+		};
+	});
+	// the schema's canonical language stays "en" (first of `languages`); this only
+	// switches what the row list / chips / palette show — as a user's UI locale would
+	let displayLanguage2 = $state<"en" | "sk">("en");
 	let value2 = $state<FieldDef[]>([
 		{
 			key: "title",
@@ -155,12 +168,27 @@
 			<h2 class="text-lg font-semibold mb-4">
 				Prefilled: locks, languages, reserved keys, unknown type, preview
 			</h2>
+			<div class="mb-3 text-sm flex items-center gap-3">
+				<span class="opacity-60">Display language (canonical stays "en"):</span>
+				{#each ["en", "sk"] as const as lang (lang)}
+					<label class="flex items-center gap-1 cursor-pointer">
+						<input
+							type="radio"
+							name="display-language-2"
+							value={lang}
+							bind:group={displayLanguage2}
+						/>
+						{lang}
+					</label>
+				{/each}
+			</div>
 			<FieldsBuilder
 				bind:value={value2}
 				name="fields2"
 				label="Item properties"
-				types={FIELDS_BUILDER_DEFAULT_TYPES}
+				types={bilingualTypes}
 				languages={["en", "sk"]}
+				displayLanguage={displayLanguage2}
 				reservedKeys={["id", "type", "created_at"]}
 				maxFields={8}
 			>
@@ -169,7 +197,9 @@
 						{#each fields as f (f.key || f.label)}
 							<div class="text-sm">
 								<div class="font-medium">
-									{getLocalizedText(f.label, "en") || "…"}{f.required ? " *" : ""}
+									{getLocalizedText(f.label, [displayLanguage2, "en"]) || "…"}{f.required
+										? " *"
+										: ""}
 								</div>
 								{#if f.type === "longtext"}
 									<textarea class="w-full border rounded p-1 opacity-50" disabled
@@ -177,7 +207,9 @@
 								{:else if f.type === "select"}
 									<select class="w-full border rounded p-1 opacity-50" disabled>
 										{#each f.options ?? [] as o (o.value)}
-											<option>{getLocalizedText(o.label, "en")}</option>
+											<option
+												>{getLocalizedText(o.label, [displayLanguage2, "en"])}</option
+											>
 										{/each}
 									</select>
 								{:else if f.type === "checkbox"}

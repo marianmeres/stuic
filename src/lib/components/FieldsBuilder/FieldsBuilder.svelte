@@ -7,7 +7,7 @@
 	import type { TranslateFn } from "../../types.js";
 	import type { THC } from "../Thc/Thc.svelte";
 	import type { InputWrapClassProps } from "../Input/types.js";
-	import type { FieldDef, FieldTypeDef } from "./types.js";
+	import type { FieldDef, FieldTypeDef, LocalizedText } from "./types.js";
 
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
@@ -46,8 +46,22 @@
 		 * strings.
 		 */
 		languages?: string[];
-		/** Defaults to `languages[0]`. Drives key derivation and display texts. */
+		/**
+		 * The canonical (authoring) language. Defaults to `languages[0]`. Drives
+		 * key derivation, the "label required" rule and which input the label/
+		 * description/option editors show collapsed. Also the display language
+		 * unless `displayLanguage` is set.
+		 */
 		defaultLanguage?: string;
+		/**
+		 * Which translation of consumer-supplied localized data is DISPLAYED —
+		 * field labels in the row list, announcements and the preview fallback;
+		 * palette labels/descriptions; extras labels/placeholders/descriptions.
+		 * Typically the current user's UI locale. Purely presentational: authoring
+		 * stays on `defaultLanguage` (see above), which is also the fallback for a
+		 * missing translation. Default: `defaultLanguage`.
+		 */
+		displayLanguage?: string;
 		languageLabels?: Record<string, string>;
 		/** Key policy. Default: lowercase snake_case starting with a letter. */
 		keyPattern?: RegExp;
@@ -165,6 +179,7 @@
 		style,
 		languages,
 		defaultLanguage,
+		displayLanguage,
 		languageLabels,
 		keyPattern,
 		keyMaxLength = DEFAULT_KEY_MAX_LENGTH,
@@ -244,6 +259,17 @@
 	let rows: Row[] = $state(fromValue(value ?? []));
 
 	const _defaultLanguage = $derived(defaultLanguage || languages?.[0]);
+	const _displayLanguage = $derived(displayLanguage || _defaultLanguage);
+	// display fallback chain: preferred → canonical → first non-empty entry
+	const _displayLanguages = $derived(
+		[_displayLanguage, _defaultLanguage].filter((l): l is string => !!l)
+	);
+
+	/** Read-only rendering of consumer-supplied localized data. */
+	function displayText(text: LocalizedText | null | undefined): string {
+		return getLocalizedText(text, _displayLanguages);
+	}
+
 	const typeByName = $derived(new Map(types.map((td) => [td.type, td])));
 	const visibleRows = $derived(rows.filter((r) => !r.deleted));
 	const maxReached = $derived(!!maxFields && visibleRows.length >= maxFields);
@@ -569,7 +595,7 @@
 	}
 
 	function rowLabel(row: Row): string {
-		return getLocalizedText(row.def.label, _defaultLanguage) || String(t("untitled"));
+		return displayText(row.def.label) || String(t("untitled"));
 	}
 
 	// clear-then-set so REPEATED identical announcements (e.g. pressing "Move
@@ -597,6 +623,7 @@
 				reservedKeys,
 				maxFields,
 				defaultLanguage: _defaultLanguage,
+				displayLanguage: _displayLanguage,
 				t: tUtils,
 			}
 		)
@@ -831,7 +858,7 @@
 												{:else if entry.icon}
 													{@render entry.icon()}
 												{/if}
-												{getLocalizedText(entry.label, _defaultLanguage)}
+												{displayText(entry.label)}
 											</span>
 										{/if}
 										{#if (showLabelError || showKeyError || showOptionsError || showExtrasError) && !row.deleted}
@@ -994,7 +1021,7 @@
 													>
 														{#each types as td (td.type)}
 															<option value={td.type}>
-																{getLocalizedText(td.label, _defaultLanguage)}
+																{displayText(td.label)}
 															</option>
 														{/each}
 													</select>
@@ -1016,7 +1043,7 @@
 												</div>
 												{#if entry.description}
 													<div class="fb-hint text-xs mt-0.5">
-														{getLocalizedText(entry.description, _defaultLanguage)}
+														{displayText(entry.description)}
 													</div>
 												{/if}
 												{#if typeChanged(row)}
@@ -1043,6 +1070,7 @@
 														bind:options={row.def.options}
 														{languages}
 														defaultLanguage={_defaultLanguage}
+														displayLanguage={_displayLanguage}
 														{languageLabels}
 														{disabled}
 														locked={!!row.def.lock?.options}
@@ -1077,7 +1105,7 @@
 															{@const exValue = extraText(row, ex.key)}
 															<div class="fb-extra">
 																<label class="fb-sub-label" for={exId}>
-																	{getLocalizedText(ex.label, _defaultLanguage)}
+																	{displayText(ex.label)}
 																</label>
 																{#if ex.type === "string"}
 																	<input
@@ -1086,10 +1114,7 @@
 																		class={twMerge(INPUT_CLS, "fb-extra-input w-full")}
 																		value={exValue}
 																		maxlength={ex.maxlength}
-																		placeholder={getLocalizedText(
-																			ex.placeholder,
-																			_defaultLanguage
-																		) || undefined}
+																		placeholder={displayText(ex.placeholder) || undefined}
 																		oninput={(e) =>
 																			onExtraStringInput(
 																				row,
@@ -1124,11 +1149,11 @@
 																		{tabindex}
 																	>
 																		<option value="">
-																			{getLocalizedText(ex.placeholder, _defaultLanguage)}
+																			{displayText(ex.placeholder)}
 																		</option>
 																		{#each ex.options as opt (opt.value)}
 																			<option value={opt.value}>
-																				{getLocalizedText(opt.label, _defaultLanguage)}
+																				{displayText(opt.label)}
 																			</option>
 																		{/each}
 																		<!-- a stored value outside the declared list stays
@@ -1141,7 +1166,7 @@
 																{/if}
 																{#if ex.description}
 																	<div class="fb-hint text-xs mt-0.5">
-																		{getLocalizedText(ex.description, _defaultLanguage)}
+																		{displayText(ex.description)}
 																	</div>
 																{/if}
 															</div>
@@ -1158,10 +1183,10 @@
 																	{tabindex}
 																/>
 																<span class="text-sm">
-																	{getLocalizedText(ex.label, _defaultLanguage)}
+																	{displayText(ex.label)}
 																	{#if ex.description}
 																		<span class="fb-hint block text-xs">
-																			{getLocalizedText(ex.description, _defaultLanguage)}
+																			{displayText(ex.description)}
 																		</span>
 																	{/if}
 																</span>
@@ -1291,14 +1316,14 @@
 								{:else}
 									<div class="fb-preview-fallback flex items-center gap-1.5 text-sm">
 										<span>
-											{getLocalizedText(f.label, _defaultLanguage) || t("untitled")}
+											{displayText(f.label) || t("untitled")}
 										</span>
 										{#if f.required}
 											<span class="fb-row-required" aria-hidden="true">*</span>
 										{/if}
 										{#if pentry}
 											<span class="fb-chip">
-												{getLocalizedText(pentry.label, _defaultLanguage)}
+												{displayText(pentry.label)}
 											</span>
 										{/if}
 									</div>

@@ -12,16 +12,22 @@ export type FieldsBuilderTranslate = (
 ) => string;
 
 /**
- * Read the display text of a `LocalizedText`: the string itself, the preferred
- * language's entry, or the first non-empty entry as a fallback.
+ * Read the display text of a `LocalizedText`: the string itself, the entry of
+ * the first preferred language (a single one, or a fallback chain in order of
+ * preference) that is non-empty, or the first non-empty entry as a last
+ * resort.
  */
 export function getLocalizedText(
 	text: LocalizedText | null | undefined,
-	preferredLanguage?: string
+	preferredLanguage?: string | string[]
 ): string {
 	if (text == null) return "";
 	if (typeof text === "string") return text;
-	if (preferredLanguage && text[preferredLanguage]) return text[preferredLanguage];
+	const preferred =
+		typeof preferredLanguage === "string"
+			? [preferredLanguage]
+			: (preferredLanguage ?? []);
+	for (const lang of preferred) if (lang && text[lang]) return text[lang];
 	for (const v of Object.values(text)) if (v) return v;
 	return "";
 }
@@ -105,7 +111,14 @@ export interface ValidateFieldDefsOptions {
 	keyMaxLength?: number;
 	reservedKeys?: string[] | ((key: string) => boolean);
 	maxFields?: number;
+	/** The canonical language: the "label required" rule reads this entry. */
 	defaultLanguage?: string;
+	/**
+	 * Language the texts interpolated into messages (an extra's `label`) are
+	 * read in, falling back to `defaultLanguage`. The rules themselves are not
+	 * affected. Default: `defaultLanguage`.
+	 */
+	displayLanguage?: string;
 	/** Translator for the error messages; defaults to returning the message key. */
 	t?: FieldsBuilderTranslate;
 }
@@ -126,6 +139,9 @@ export function validateFieldDefs(
 	const keyPattern = opts.keyPattern ?? DEFAULT_KEY_PATTERN;
 	const keyMaxLength = opts.keyMaxLength ?? DEFAULT_KEY_MAX_LENGTH;
 	const typeMap = opts.types ? new Map(opts.types.map((td) => [td.type, td])) : null;
+	const displayLanguages = [opts.displayLanguage, opts.defaultLanguage].filter(
+		(l): l is string => !!l
+	);
 
 	const rowErrors: (FieldDefRowErrors | null)[] = defs.map(() => null);
 	const put = (i: number, field: keyof FieldDefRowErrors, msg: string) => {
@@ -185,7 +201,7 @@ export function validateFieldDefs(
 					i,
 					"extras",
 					t("err_extra_maxlength", {
-						label: getLocalizedText(ex.label, opts.defaultLanguage),
+						label: getLocalizedText(ex.label, displayLanguages),
 						max: ex.maxlength,
 					})
 				);
