@@ -97,6 +97,8 @@ test("getLocalizedText: a preference chain is honoured in order before the first
 	assert.equal(getLocalizedText(text, []), "hallo");
 	// a plain string ignores the chain
 	assert.equal(getLocalizedText("plain", ["sk", "en"]), "plain");
+	// same resolver as the library-wide `tr()`: a JSON-encoded record works too
+	assert.equal(getLocalizedText('{"en":"hello","sk":"ahoj"}', "sk"), "ahoj");
 });
 
 // -------------------------------------------------------------- isKeyReserved

@@ -1,7 +1,12 @@
 import type { Snippet } from "svelte";
+import type { MaybeLocalized } from "../../utils/tr.js";
 
-/** A localized string: either one plain string, or a per-language map. */
-export type LocalizedText = string | Record<string, string>;
+/**
+ * A localized string: either one plain string, or a per-language map. The
+ * same shape as the library-wide `MaybeLocalized` (resolved by `tr()`); the
+ * alias is kept for this component's vocabulary.
+ */
+export type LocalizedText = MaybeLocalized;
 
 /** A single option of a choice-like field type (one declaring `supportsOptions`). */
 export interface FieldOptionDef {

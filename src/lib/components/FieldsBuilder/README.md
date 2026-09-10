@@ -314,7 +314,9 @@ Slovak chrome (`t`), and still edits the canonical English label first:
 ```
 
 `getLocalizedText(text, preferred)` — exported — accepts the same fallback chain as an
-array: `getLocalizedText(label, ["sk", "en"])`.
+array: `getLocalizedText(label, ["sk", "en"])`. It is the library-wide `tr()` under this
+component's name (`LocalizedText` is an alias of `MaybeLocalized`), so a label resolved in
+your own `preview` snippet and one resolved by `Nav` or `TabbedMenu` degrade identically.
 
 ## Accessibility
 

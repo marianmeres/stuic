@@ -1,3 +1,4 @@
+import { tr } from "../../utils/tr.js";
 import type { FieldDef, FieldTypeDef, LocalizedText } from "./types.js";
 
 /** Default machine-key policy: lowercase snake_case, starts with a letter, max 63 chars. */
@@ -15,21 +16,14 @@ export type FieldsBuilderTranslate = (
  * Read the display text of a `LocalizedText`: the string itself, the entry of
  * the first preferred language (a single one, or a fallback chain in order of
  * preference) that is non-empty, or the first non-empty entry as a last
- * resort.
+ * resort. This is the library-wide `tr()` under this component's name — same
+ * resolution, same fallbacks (a JSON-encoded record is accepted too).
  */
 export function getLocalizedText(
 	text: LocalizedText | null | undefined,
 	preferredLanguage?: string | string[]
 ): string {
-	if (text == null) return "";
-	if (typeof text === "string") return text;
-	const preferred =
-		typeof preferredLanguage === "string"
-			? [preferredLanguage]
-			: (preferredLanguage ?? []);
-	for (const lang of preferred) if (lang && text[lang]) return text[lang];
-	for (const v of Object.values(text)) if (v) return v;
-	return "";
+	return tr(text, preferredLanguage);
 }
 
 /**

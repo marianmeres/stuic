@@ -22,19 +22,20 @@ A horizontal tab navigation component built on semantic `ul/li` markup with ARIA
 
 ## Props
 
-| Prop                  | Type                             | Default     | Description                        |
-| --------------------- | -------------------------------- | ----------- | ---------------------------------- |
-| `items`               | `TabbedMenuItem[]`               | required    | Array of tab items                 |
-| `value`               | `string \| number`               | `undefined` | Active tab id (bindable)           |
-| `disabled`            | `boolean`                        | `false`     | Disable all tabs                   |
-| `onSelect`            | `(item: TabbedMenuItem) => void` | `undefined` | Callback when tab is selected      |
-| `class`               | `string`                         | `undefined` | Class for the `ul` wrapper         |
-| `classItem`           | `string`                         | `undefined` | Class for each `li` element        |
-| `classButton`         | `string`                         | `undefined` | Class for tab buttons              |
-| `classButtonActive`   | `string`                         | `undefined` | Additional class for active tab    |
-| `classButtonDisabled` | `string`                         | `undefined` | Additional class for disabled tabs |
-| `unstyled`            | `boolean`                        | `false`     | Skip default styling               |
-| `el`                  | `HTMLUListElement`               | `undefined` | Element reference (bindable)       |
+| Prop                  | Type                             | Default     | Description                                   |
+| --------------------- | -------------------------------- | ----------- | --------------------------------------------- |
+| `items`               | `TabbedMenuItem[]`               | required    | Array of tab items                            |
+| `value`               | `string \| number`               | `undefined` | Active tab id (bindable)                      |
+| `disabled`            | `boolean`                        | `false`     | Disable all tabs                              |
+| `onSelect`            | `(item: TabbedMenuItem) => void` | `undefined` | Callback when tab is selected                 |
+| `locale`              | `string \| string[]`             | `undefined` | Locale (or chain) for `MaybeLocalized` labels |
+| `class`               | `string`                         | `undefined` | Class for the `ul` wrapper                    |
+| `classItem`           | `string`                         | `undefined` | Class for each `li` element                   |
+| `classButton`         | `string`                         | `undefined` | Class for tab buttons                         |
+| `classButtonActive`   | `string`                         | `undefined` | Additional class for active tab               |
+| `classButtonDisabled` | `string`                         | `undefined` | Additional class for disabled tabs            |
+| `unstyled`            | `boolean`                        | `false`     | Skip default styling                          |
+| `el`                  | `HTMLUListElement`               | `undefined` | Element reference (bindable)                  |
 
 ## TabbedMenuItem Interface
 

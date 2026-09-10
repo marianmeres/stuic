@@ -55,8 +55,13 @@
 		/** Optional section title rendered above the groups (uppercase, non-interactive) */
 		title?: MaybeLocalized;
 
-		/** Current locale for MaybeLocalized resolution */
-		locale?: string;
+		/**
+		 * Locale for `MaybeLocalized` label resolution — one locale, or a chain
+		 * in order of preference (e.g. `[user.locale, "en"]`). A missing
+		 * translation falls back along the chain, then to the label's first
+		 * non-empty entry.
+		 */
+		locale?: string | string[];
 
 		/** Whether the sidebar is in collapsed mode (icon-only) */
 		isCollapsed?: boolean;

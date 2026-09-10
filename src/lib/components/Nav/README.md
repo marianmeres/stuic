@@ -8,7 +8,7 @@ A navigation component for sidebars with support for groups, nested items, expan
 | ---------------------- | --------------------------------------------------- | ------------- | --------------------------------------------------------- |
 | `groups`               | `NavGroup[]`                                        | -             | Navigation groups to render                               |
 | `title`                | `MaybeLocalized`                                    | -             | Section title above groups (uppercase, non-interactive)   |
-| `locale`               | `string`                                            | -             | Current locale for localized labels                       |
+| `locale`               | `string \| string[]`                                | -             | Locale (or preference chain) for localized labels         |
 | `isCollapsed`          | `boolean`                                           | `false`       | Collapsed mode (icon-only)                                |
 | `isExpanding`          | `boolean`                                           | `false`       | Transitioning from collapsed to expanded                  |
 | `activeId`             | `string`                                            | -             | Active item ID for highlighting                           |
@@ -329,7 +329,7 @@ Note: in icon-only sidebar mode (`isCollapsed`), the section title is visually h
 - **localStorage Persistence**: Expand/collapse state persists across page reloads
 - **Collapsed Mode**: Icon-only sidebar with tooltips
 - **Active State**: Highlight current item via `activeId` or custom callback
-- **Localization**: Labels support `MaybeLocalized` type
+- **Localization**: Labels support `MaybeLocalized`, resolved via `tr()` against `locale` (a single locale or a preference chain); a missing translation falls back to the label's first non-empty entry, never to `[object Object]`
 - **Touch-Friendly**: Auto-detect or manually enable larger touch targets
 - **ARIA Compliant**: Proper roles and aria-expanded attributes
 - **Reduced Motion**: Respects user's reduced motion preference

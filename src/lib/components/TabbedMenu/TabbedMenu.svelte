@@ -21,8 +21,13 @@
 		disabled?: boolean;
 		onSelect?: (item: TabbedMenuItem) => void;
 		orientation?: "horizontal" | "vertical";
-		/** Current locale for MaybeLocalized resolution */
-		locale?: string;
+		/**
+		 * Locale for `MaybeLocalized` label resolution — one locale, or a chain
+		 * in order of preference (e.g. `[user.locale, "en"]`). A missing
+		 * translation falls back along the chain, then to the label's first
+		 * non-empty entry.
+		 */
+		locale?: string | string[];
 		//
 		class?: string;
 		classItem?: string;
