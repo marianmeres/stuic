@@ -75,6 +75,7 @@ interface ContactFieldConfig {
 | `showCompany`        | `boolean`                                                    | `false`  | Render the Company field.                                                                                           |
 | `requireCompany`     | `boolean`                                                    | `false`  | Require Company (only applies when shown).                                                                          |
 | `messageMinLength`   | `number`                                                     | `0`      | Minimum message length. `0` disables the check.                                                                     |
+| `readonlyFields`     | `string[]`                                                   | -        | Field names rendered read-only — prefilled, visible, submitted, not editable (see below).                           |
 | `extraFields`        | `ContactFieldConfig[]`                                       | `[]`     | Declarative extra fields, positioned top or bottom.                                                                 |
 | `extraFieldsSlot`    | `Snippet<[{ formData, fieldError }]>`                        | -        | Escape hatch for non-FieldInput extras (consent checkbox, captcha widget).                                          |
 | `useHoneypot`        | `boolean`                                                    | `true`   | Render the hidden honeypot trap.                                                                                    |
@@ -181,6 +182,54 @@ automatically; the bound value is still the chosen string in `formData.subject`)
 	{/snippet}
 </ContactUsForm>
 ```
+
+### Prefilled, read-only fields (signed-in visitor)
+
+When the server already knows who is writing, prefill `formData` and list those
+field names in `readonlyFields`. The values stay visible, keep full contrast, are
+selectable/copyable, and still reach `onSubmit` — the user simply cannot change
+them.
+
+```svelte
+<script lang="ts">
+	import { ContactUsForm, createEmptyContactFormData } from "@marianmeres/stuic";
+
+	let { user } = $props();
+
+	let formData = $state({
+		...createEmptyContactFormData(),
+		name: user.name,
+		email: user.email,
+	});
+</script>
+
+<ContactUsForm
+	bind:formData
+	onSubmit={send}
+	showName
+	readonlyFields={["name", "email"]}
+/>
+```
+
+Notes:
+
+- `readonlyFields` does **not** show a field — pair it with the matching `show*` toggle.
+- It accepts the built-in names (`name`, `email`, `phone`, `subject`, `company`,
+  `message`) and any `extraFields` name. Unknown names are ignored.
+- Read-only is **not** `disabled`. `disabled` reads as "unavailable", greys the
+  value out and drops it from the tab order; read-only says "this is your value,
+  it just isn't yours to change here".
+- A read-only Subject falls back to a read-only **text input** even when
+  `subjectValues` is set, because `<select>` has no read-only counterpart and
+  disabling it would grey out the very value you meant to show.
+- **Prefill whatever you lock.** A read-only control is barred from _native_
+  constraint validation, so an empty required one is a dead end for the user.
+  The form still reports it (`validateContactForm` runs on submit, and
+  `validate()` covers the same ground for read-only fields), but nobody can fix
+  it from the UI.
+- Read-only is a **UI** affordance, not a security boundary: anything the browser
+  holds can be edited from devtools. Re-derive the trusted values server-side
+  from the session instead of trusting the posted ones.
 
 ### Declarative extra field
 

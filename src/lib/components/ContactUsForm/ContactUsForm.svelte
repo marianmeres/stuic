@@ -61,6 +61,29 @@
 		messageMinLength?: number;
 
 		/**
+		 * Names of fields rendered **read-only**: the value is visible and still
+		 * reaches `onSubmit`, but the user cannot change it. The typical case is a
+		 * signed-in visitor whose name/email the server already knows — prefill
+		 * them through `formData` and list them here.
+		 *
+		 * Accepts the built-in names (`"name"`, `"email"`, `"phone"`, `"subject"`,
+		 * `"company"`, `"message"`) and any `extraFields` name. Unknown names are
+		 * ignored. Listing a field does NOT show it — pair with the matching
+		 * `show*` toggle.
+		 *
+		 * Read-only is not the same as `disabled`: the value keeps full contrast
+		 * and stays focusable/selectable/copyable. A read-only Subject rendered
+		 * from `subjectValues` falls back to a read-only text input, because
+		 * `<select>` has no read-only counterpart.
+		 *
+		 * Prefill whatever you lock: a read-only control is barred from *native*
+		 * constraint validation, so an empty required one is a dead end for the
+		 * user. The form still reports it (see `validateContactForm`), it just
+		 * cannot be fixed in the UI.
+		 */
+		readonlyFields?: string[];
+
+		/**
 		 * Declarative extra fields rendered as FieldInput entries.
 		 * Values bind into `formData.extra[name]`.
 		 */
@@ -153,6 +176,7 @@
 		showCompany = false,
 		requireCompany = false,
 		messageMinLength = 0,
+		readonlyFields,
 		extraFields = [],
 		extraFieldsSlot,
 		useHoneypot = true,
@@ -184,12 +208,24 @@
 	let topFields = $derived(extraFields.filter((f) => f.position === "top"));
 	let bottomFields = $derived(extraFields.filter((f) => f.position !== "top"));
 
+	let readonlySet = $derived(new Set(readonlyFields ?? []));
+	function isReadonly(field: string): boolean {
+		return readonlySet.has(field);
+	}
+
 	// Subject: render a <select> when subjectValues is non-empty (which also shows
 	// the field regardless of showSubject); otherwise a free-text input gated by
 	// showSubject. The select gets a prepended blank "prompt" option so the initial
 	// empty subject isn't silently auto-selected to the first real value.
-	let subjectAsSelect = $derived((subjectValues?.length ?? 0) > 0);
-	let subjectShown = $derived(showSubject || subjectAsSelect);
+	//
+	// A read-only subject downgrades to a read-only text input — <select> has no
+	// readonly counterpart, and `disabled` would grey out the very value we mean
+	// to show. Hence `subjectShown` keys off *having* values rather than off
+	// rendering a select: sharing one flag would have made `subjectValues` +
+	// readonly hide the field outright.
+	let subjectHasValues = $derived((subjectValues?.length ?? 0) > 0);
+	let subjectAsSelect = $derived(subjectHasValues && !isReadonly("subject"));
+	let subjectShown = $derived(showSubject || subjectHasValues);
 	let subjectOptions = $derived([
 		{ label: t("contact_form.subject_select_prompt"), value: "" },
 		...(subjectValues ?? []).map((v) => ({ label: v, value: v })),
@@ -280,6 +316,21 @@
 		},
 	});
 
+	// Single source for `validateContactForm`'s options — the submit path and
+	// `readonlyMissing()` below must agree on which fields are shown/required.
+	let validationOptions = $derived({
+		showName,
+		requireName,
+		showPhone,
+		requirePhone,
+		showSubject: subjectShown,
+		requireSubject,
+		showCompany,
+		requireCompany,
+		messageMinLength,
+		extraFields,
+	});
+
 	// Merge internal + external errors; external takes precedence per field.
 	let allErrors = $derived.by(() => {
 		const map = new Map<string, string>();
@@ -289,7 +340,22 @@
 	});
 
 	function fieldError(field: string): string | undefined {
-		return allErrors.find((e) => e.field === field)?.message;
+		return allErrors.find((e) => e.field === field)?.message ?? readonlyMissing(field);
+	}
+
+	// A read-only control is barred from *native* constraint validation:
+	// `validity.valueMissing` stays false however empty it is (the spec requires
+	// the control to be "mutable"). Without this the field walk behind the
+	// exported `validate()` would green-light an empty read-only required field,
+	// and the consumer would post it. Run the form's own validator for that one
+	// field instead — same rules, same messages, no duplicated logic. The
+	// built-in submit path reaches `validateContactForm` anyway; this only
+	// closes the pre-submit / imperative window, and only for read-only fields.
+	function readonlyMissing(field: string): string | undefined {
+		if (!readonlySet.size || !isReadonly(field)) return;
+		return validateContactForm(formData, t, validationOptions).find(
+			(e) => e.field === field
+		)?.message;
 	}
 
 	function extraValue(cfg: ContactFieldConfig): string {
@@ -321,18 +387,7 @@
 	}
 
 	function handleSubmitValid() {
-		const validationErrors = validateContactForm(formData, t, {
-			showName,
-			requireName,
-			showPhone,
-			requirePhone,
-			showSubject: subjectShown,
-			requireSubject,
-			showCompany,
-			requireCompany,
-			messageMinLength,
-			extraFields,
-		});
+		const validationErrors = validateContactForm(formData, t, validationOptions);
 		internalErrors = validationErrors;
 
 		// Report-only on bot signals: we still submit when field validation passes
@@ -452,6 +507,7 @@
 			placeholder={cfg.placeholder}
 			autocomplete={cfg.autocomplete}
 			required={cfg.required}
+			readonly={isReadonly(cfg.name)}
 			name={`contact-extra-${cfg.name}`}
 			labelLeftBreakpoint={0}
 			validate={{
@@ -481,6 +537,7 @@
 			placeholder={t("contact_form.name_placeholder")}
 			autocomplete="name"
 			required={requireName}
+			readonly={isReadonly("name")}
 			name="contact-name"
 			labelLeftBreakpoint={0}
 			validate={{
@@ -501,6 +558,7 @@
 		placeholder={t("contact_form.email_placeholder")}
 		autocomplete="email"
 		required
+		readonly={isReadonly("email")}
 		name="contact-email"
 		labelLeftBreakpoint={0}
 		validate={{
@@ -521,6 +579,7 @@
 			placeholder={t("contact_form.phone_placeholder")}
 			autocomplete="tel"
 			required={requirePhone}
+			readonly={isReadonly("phone")}
 			name="contact-phone"
 			labelLeftBreakpoint={0}
 			validate={{
@@ -542,6 +601,7 @@
 			placeholder={t("contact_form.company_placeholder")}
 			autocomplete="organization"
 			required={requireCompany}
+			readonly={isReadonly("company")}
 			name="contact-company"
 			labelLeftBreakpoint={0}
 			validate={{
@@ -579,6 +639,7 @@
 				type="text"
 				placeholder={t("contact_form.subject_placeholder")}
 				required={requireSubject}
+				readonly={isReadonly("subject")}
 				name="contact-subject"
 				labelLeftBreakpoint={0}
 				validate={{
@@ -598,6 +659,7 @@
 		label={t("contact_form.message_label")}
 		placeholder={t("contact_form.message_placeholder")}
 		required
+		readonly={isReadonly("message")}
 		name="contact-message"
 		labelLeftBreakpoint={0}
 		validate={{
@@ -619,6 +681,7 @@
 			placeholder={cfg.placeholder}
 			autocomplete={cfg.autocomplete}
 			required={cfg.required}
+			readonly={isReadonly(cfg.name)}
 			name={`contact-extra-${cfg.name}`}
 			labelLeftBreakpoint={0}
 			validate={{

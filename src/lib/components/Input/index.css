@@ -24,6 +24,15 @@
 	--stuic-input-text: var(--stuic-color-foreground);
 	--stuic-input-placeholder: color-mix(in oklab, var(--stuic-color-muted-foreground) 75%, transparent);
 
+	/* Readonly: a value shown but not editable. Deliberately NOT the disabled
+	   treatment (opacity 0.5) — the text must stay fully legible. Mixed off the
+	   input bg rather than set to --stuic-color-muted: in several themes (stone,
+	   the demo default) muted and input sit ~2% apart, which is no cue at all.
+	   Mixing toward the muted *foreground* also flips direction on its own in
+	   dark themes, so the field reads as "settled" either way. */
+	--stuic-input-bg-readonly: color-mix(in oklab, var(--stuic-color-muted-foreground) 10%, var(--stuic-color-input));
+	--stuic-input-border-readonly: color-mix(in oklab, var(--stuic-color-muted-foreground) 15%, var(--stuic-input-border));
+
 	/* Size: sm */
 	--stuic-input-padding-x-sm: calc(var(--spacing) * 2.5);
 	--stuic-input-padding-y-sm: calc(var(--spacing) * 2);
@@ -252,6 +261,22 @@
 	.stuic-input .input-wrap.disabled {
 		opacity: 0.5;
 		cursor: not-allowed;
+	}
+
+	/* Readonly state — "this value is known, you just can't change it".
+	   Scoped to the wrap that directly contains the control (not the whole
+	   .stuic-input) so a nested readonly control can't mute an editable parent.
+	   Unlike disabled it keeps full text contrast and the focus ring: a readonly
+	   control is still focusable, and hiding that would cost keyboard users. */
+	.stuic-input .input-wrap:has(input[readonly]),
+	.stuic-input .input-wrap:has(textarea[readonly]) {
+		background: var(--stuic-input-bg-readonly);
+		border-color: var(--stuic-input-border-readonly);
+	}
+
+	.stuic-input input[readonly],
+	.stuic-input textarea[readonly] {
+		cursor: default;
 	}
 
 	/* Transparent wrapper utility - for components like Switch that don't need wrapper styling */

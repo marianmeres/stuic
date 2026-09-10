@@ -317,3 +317,127 @@ test("extra field refs follow display order across a reorder", async () => {
 		screen.container.querySelector('input[name="contact-extra-b"]')
 	);
 });
+
+// --- readonlyFields (prefilled identity) -----------------------------------
+
+test("readonlyFields marks the listed fields readonly and leaves the rest editable", async () => {
+	const screen = await render(ContactUsForm, {
+		onSubmit: noop,
+		showName: true,
+		showPhone: true,
+		readonlyFields: ["name", "email"],
+	});
+	const q = (name: string) =>
+		screen.container.querySelector<HTMLInputElement>(`[name="${name}"]`)!;
+	expect(q("contact-name").readOnly).toBe(true);
+	expect(q("contact-email").readOnly).toBe(true);
+	expect(q("contact-phone").readOnly).toBe(false);
+	expect(q("contact-message").readOnly).toBe(false);
+	// readonly, NOT disabled — the value must stay focusable and be submitted
+	expect(q("contact-name").disabled).toBe(false);
+	expect(q("contact-email").disabled).toBe(false);
+});
+
+test("a prefilled readonly field is rendered, left alone, and still submitted", async () => {
+	// No `.fill()` on the readonly inputs on purpose: Playwright's fill waits for
+	// the element to be *editable* and would just time out. `input.readOnly` is
+	// the browser contract we rely on; what's worth asserting here is that
+	// locking a field doesn't drop it out of the submitted payload.
+	const onSubmit = vi.fn();
+	const { screen } = renderHarness({
+		onSubmit,
+		timeTrapMinMs: 0,
+		showName: true,
+		initial: { name: "Jane Doe", email: "jane@example.com" },
+		readonlyFields: ["name", "email"],
+	});
+	const q = (name: string) =>
+		screen.container.querySelector<HTMLInputElement>(`[name="${name}"]`)!;
+	expect(q("contact-email").readOnly).toBe(true);
+	expect(q("contact-email").value).toBe("jane@example.com");
+
+	await screen.getByLabelText("Message").fill("body");
+	await send(screen).click();
+
+	await expect.poll(() => onSubmit.mock.calls.length).toBe(1);
+	const [data] = onSubmit.mock.calls[0];
+	expect(data.name).toBe("Jane Doe");
+	expect(data.email).toBe("jane@example.com");
+});
+
+test("an EMPTY readonly required field still blocks submit and reports inline", async () => {
+	// A readonly control is barred from native constraint validation
+	// (validity.valueMissing stays false), so this can only be caught by the
+	// form's own validator.
+	const onSubmit = vi.fn();
+	const screen = await render(ContactUsForm, {
+		onSubmit,
+		timeTrapMinMs: 0,
+		readonlyFields: ["email"],
+	});
+	expect(
+		screen.container.querySelector<HTMLInputElement>('[name="contact-email"]')!.validity
+			.valueMissing
+	).toBe(false);
+
+	await screen.getByLabelText("Message").fill("body");
+	await screen.getByRole("button", { name: "Send message" }).click();
+
+	expect(onSubmit).not.toHaveBeenCalled();
+	await expect.element(screen.getByText("Email is required")).toBeInTheDocument();
+});
+
+test("validate() reports an empty readonly required field (native validity can't)", async () => {
+	const { h } = renderHarness({
+		onSubmit: noop,
+		timeTrapMinMs: 0,
+		showName: true,
+		initial: { email: "a@b.com", message: "body" },
+		readonlyFields: ["name"],
+	});
+	// name is shown + required (requireName defaults true) + readonly + empty
+	expect(h.validate()).toBe(false);
+});
+
+test("a readonly subject downgrades from <select> to a readonly text input", async () => {
+	// <select> has no readonly counterpart, and `disabled` would grey out the
+	// very value we mean to show — so the value renders as a readonly input.
+	const { screen } = renderHarness({
+		onSubmit: noop,
+		timeTrapMinMs: 0,
+		subjectValues: ["Sales", "Support"],
+		initial: { subject: "Support" },
+		readonlyFields: ["subject"],
+	});
+	expect(screen.container.querySelector('select[name="contact-subject"]')).toBeNull();
+	const input = screen.container.querySelector<HTMLInputElement>(
+		'input[name="contact-subject"]'
+	)!;
+	// subjectValues alone still shows the field (no showSubject passed)
+	expect(input).not.toBeNull();
+	expect(input.readOnly).toBe(true);
+	expect(input.value).toBe("Support");
+});
+
+test("a readonly extra field renders readonly and submits its seeded value", async () => {
+	const onSubmit = vi.fn();
+	const screen = await render(ContactUsForm, {
+		onSubmit,
+		timeTrapMinMs: 0,
+		extraFields: [
+			{ name: "orderId", label: "Order number", initialValue: "ORD-42", required: true },
+		],
+		readonlyFields: ["orderId"],
+	});
+	const input = screen.container.querySelector<HTMLInputElement>(
+		'input[name="contact-extra-orderId"]'
+	)!;
+	expect(input.readOnly).toBe(true);
+
+	await screen.getByLabelText("Email").fill("a@b.com");
+	await screen.getByLabelText("Message").fill("body");
+	await screen.getByRole("button", { name: "Send message" }).click();
+
+	await expect.poll(() => onSubmit.mock.calls.length).toBe(1);
+	expect(onSubmit.mock.calls[0][0].extra).toMatchObject({ orderId: "ORD-42" });
+});

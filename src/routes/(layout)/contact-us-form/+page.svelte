@@ -43,6 +43,15 @@
 	let timeTrapMinMs = $state(2000);
 	let showExternalErrors = $state(false);
 	let showGeneralError = $state(false);
+	let lockIdentity = $state(false);
+
+	// Simulates "the server already knows who this is": prefill + lock.
+	const signedInUser = { name: "Jane Doe", email: "jane.doe@example.com" };
+	$effect(() => {
+		if (!lockIdentity) return;
+		formData.name = signedInUser.name;
+		formData.email = signedInUser.email;
+	});
 
 	const sampleExtraFields: ContactFieldConfig[] = [
 		{
@@ -161,6 +170,12 @@
 			renderSize="sm"
 		/>
 		<FieldSwitch
+			bind:checked={lockIdentity}
+			label="Signed-in user (prefill + lock name & email)"
+			name="lock-identity"
+			renderSize="sm"
+		/>
+		<FieldSwitch
 			bind:checked={showExternalErrors}
 			label="Inject field error (email)"
 			name="show-external-errors"
@@ -192,6 +207,7 @@
 			{requireSubject}
 			subjectValues={useSubjectDropdown ? sampleSubjects : undefined}
 			{showCompany}
+			readonlyFields={lockIdentity ? ["name", "email"] : undefined}
 			{useHoneypot}
 			{useTimeTrap}
 			{timeTrapMinMs}
@@ -301,6 +317,30 @@
 			onSubmit={(data) => alert("Subject: " + data.subject + "\nEmail: " + data.email)}
 			requireSubject
 			subjectValues={sampleSubjects}
+		/>
+	</div>
+</section>
+
+<!-- ============== PREFILLED + READ-ONLY ============== -->
+<section class="mb-12">
+	<h2 class="text-lg font-bold mb-2">Prefilled, read-only fields</h2>
+	<p class="text-sm opacity-60 mb-4">
+		For a signed-in visitor the server already knows the name and email — prefill
+		<code>formData</code> and list those names in <code>readonlyFields</code>. The values
+		stay visible, legible, selectable and are still submitted; they just can't be edited.
+		Not <code>disabled</code>: these fields keep full contrast and stay in the tab order.
+	</p>
+
+	<div class="max-w-lg">
+		<ContactUsForm
+			onSubmit={(data) => alert("Submitted as: " + data.name + " <" + data.email + ">")}
+			showName
+			formData={{
+				...createEmptyContactFormData(),
+				name: "Jane Doe",
+				email: "jane.doe@example.com",
+			}}
+			readonlyFields={["name", "email"]}
 		/>
 	</div>
 </section>

@@ -314,6 +314,25 @@ Override globally in `:root` or locally via `style` prop:
 | `--stuic-input-text`         | `--stuic-color-foreground`       | Text color            |
 | `--stuic-input-placeholder`  | `--stuic-color-muted-foreground` | Placeholder color     |
 
+### Readonly Tokens
+
+Any `Field*` control that reaches the DOM with a `readonly` attribute (via the
+`readonly` prop passthrough) gets a muted wrapper — a "shown, but not yours to
+change" treatment. Deliberately **not** the `disabled` treatment: `disabled`
+fades the whole wrap to `opacity: 0.5` and leaves the tab order, while readonly
+keeps full text contrast and stays focusable, selectable and copyable. Applies
+to `<input>` and `<textarea>` only — `<select>` has no readonly counterpart.
+
+| Variable                        | Default                                                                  | Description                      |
+| ------------------------------- | ------------------------------------------------------------------------ | -------------------------------- |
+| `--stuic-input-bg-readonly`     | `--stuic-color-input` mixed 10% toward `--stuic-color-muted-foreground`  | Wrapper background when readonly |
+| `--stuic-input-border-readonly` | `--stuic-input-border` mixed 15% toward `--stuic-color-muted-foreground` | Wrapper border when readonly     |
+
+Both are _mixed off_ the editable values rather than pointing at
+`--stuic-color-muted`: in several themes (stone, for one) `muted` and `input`
+sit ~2% apart, which is no visual cue at all. Mixing toward the muted
+_foreground_ also reverses direction on its own in dark themes.
+
 ### Size Tokens
 
 Each size (sm, md, lg) has corresponding tokens:
