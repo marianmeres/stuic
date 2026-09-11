@@ -73,6 +73,7 @@
 | CronInput                                     | Cron expression editor with presets and validation                                         |
 | Fieldset                                      | Field grouping with legend                                                                 |
 | FieldKeyValues                                | Key-value pair editor                                                                      |
+| FieldTable                                    | Rows × typed columns editor (text/number/select/checkbox/date/url cells, container layout) |
 | FieldsBuilder                                 | Field-definition list editor ("what properties does a thing have?")                        |
 | FieldAssets                                   | File/asset management                                                                      |
 | LoginForm, LoginFormModal                     | Standalone login form with optional modal variant                                          |
@@ -157,7 +158,7 @@ Use `validate={false}` to bypass stuic's validation entirely.
 
 > **Why default-on?** Hidden-input field components (`FieldPhoneNumber`,
 > `FieldCountry`, `FieldObject`, `FieldAssets`, `FieldInputLocalized`,
-> `FieldKeyValues`, `FieldLikeButton`, `FieldDate`, `FieldDateRange`, `Rating`) _must_ be default-on because hidden
+> `FieldKeyValues`, `FieldTable`, `FieldLikeButton`, `FieldDate`, `FieldDateRange`, `Rating`) _must_ be default-on because hidden
 > inputs are excluded from native browser constraint validation — without the
 > stuic action enforcing `required` in a `customValidator`, the attribute is a
 > silent no-op. Plain-input field components were harmonized to the same
@@ -167,7 +168,7 @@ Use `validate={false}` to bypass stuic's validation entirely.
 
 Available on `FieldInput`, `FieldMoney`, `FieldTextarea`, `FieldCheckbox`,
 `FieldSelect`, `FieldFile`, `FieldObject`, `FieldAssets`, `FieldInputLocalized`,
-`FieldKeyValues`, `FieldPhoneNumber`, `FieldCountry`, `FieldLikeButton`,
+`FieldKeyValues`, `FieldTable`, `FieldPhoneNumber`, `FieldCountry`, `FieldLikeButton`,
 `FieldRadios`, `FieldSwitch`, `FieldOptions`, `FieldDate`, `FieldDateRange`, and
 `Switch`:
 

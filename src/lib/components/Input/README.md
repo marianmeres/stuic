@@ -18,6 +18,7 @@ A comprehensive form input system with multiple field components, validation sup
 | `FieldFile`       | File upload input                                              |
 | `FieldAssets`     | Asset/image upload with preview                                |
 | `FieldKeyValues`  | Key-value pairs editor with JSON serialization                 |
+| `FieldTable`      | Rows × typed columns editor (a list of records) — see below    |
 | `FieldLikeButton` | Like/favorite toggle button                                    |
 | `Fieldset`        | Fieldset with legend                                           |
 | `Honeypot`        | Hidden anti-bot trap field (server-less)                       |
@@ -885,6 +886,256 @@ field shell adds:
 
 The trigger follows the `--stuic-input-*` size tokens (`renderSize`), the dialog card the
 `--stuic-modal-dialog-bg` / `-text` tokens.
+
+## FieldTable
+
+A form control whose value is **a list of records with a fixed, typed set of columns** —
+a bill of materials, a price list, opening hours, contacts. Each row is a line of typed
+inputs; the bound `value` is a live array of plain row objects, no string round trip:
+
+```ts
+[
+	{ part: "M6 bolt", qty: 12, material: "steel", rohs: true, since: "2026-01-15" },
+	{ part: "Washer", qty: 24, material: "brass", rohs: false, since: "" },
+];
+```
+
+It follows the hidden-input `Field*` contract (like `FieldKeyValues` and `FieldsBuilder`):
+one `<input type="hidden" name>` carries `JSON.stringify(value)`, every inner control is
+nameless, and `required` plus the per-cell rules are enforced by the component's own
+validator. Columns are declared by data:
+
+```svelte
+<script lang="ts">
+	import {
+		FieldTable,
+		type FieldTableColumn,
+		type FieldTableRow,
+	} from "@marianmeres/stuic";
+
+	const columns: FieldTableColumn[] = [
+		{ key: "part", type: "text", label: "Part", maxLength: 60 },
+		{ key: "qty", type: "number", label: "Qty", unit: "pcs" },
+		{
+			key: "material",
+			type: "select",
+			label: "Material",
+			options: [
+				{ value: "steel", label: "Steel" },
+				{ value: "brass", label: "Brass" },
+			],
+		},
+		{ key: "rohs", type: "checkbox", label: "RoHS" },
+		{ key: "since", type: "date", label: "Since" },
+		{ key: "sheet", type: "url", label: "Datasheet" },
+	];
+
+	let bom = $state<FieldTableRow[]>([]);
+</script>
+
+<FieldTable
+	bind:value={bom}
+	name="bom"
+	label="Bill of materials"
+	{columns}
+	maxRows={100}
+/>
+```
+
+### Column shape
+
+```ts
+type FieldTableCellType = "text" | "number" | "select" | "checkbox" | "date" | "url";
+
+interface FieldTableColumn {
+	key: string; // the row-object key this cell reads and writes
+	type: FieldTableCellType | (string & {}); // a built-in type, or anything for `cell`
+	label: MaybeLocalized; // resolved through `tr()` with `displayLanguage`
+	options?: { value: string; label: MaybeLocalized }[]; // `select`
+	unit?: string; // `number`: shown in the header ("Qty (pcs)") and after the input
+	placeholder?: MaybeLocalized;
+	maxLength?: number; // `text` / `url`: the input's maxlength, re-checked by validation
+	validate?: (value: unknown, row: Record<string, unknown>) => string | undefined | void;
+}
+```
+
+### The built-in cells
+
+| type       | Control                                          | Writes                                                 | Blank   | A stored value that does not fit                                              |
+| ---------- | ------------------------------------------------ | ------------------------------------------------------ | ------- | ----------------------------------------------------------------------------- |
+| `text`     | `<input type="text">` (+ `maxlength`)            | string; trimmed on commit (`change`), not while typing | `""`    | over `maxLength` → `err_maxlength`                                            |
+| `number`   | `<input type="text" inputmode="decimal">` + unit | `number`                                               | `null`  | unparseable text is **kept as typed** and flagged `err_number`                |
+| `select`   | `<select>` with a blank first entry              | the option value                                       | `""`    | shown as its own entry, round-trips, flagged `err_select_unknown`             |
+| `checkbox` | `<input type="checkbox">`                        | boolean                                                | `false` | checked iff `=== true`; rewritten only when toggled                           |
+| `date`     | `<input type="date">`                            | `YYYY-MM-DD`                                           | `""`    | input shows empty, value untouched until a date is picked, flagged `err_date` |
+| `url`      | `<input type="text" inputmode="url">`            | string; trimmed on commit                              | `""`    | not an absolute `http:` / `https:` URL → `err_url`                            |
+
+Why no `type="number"` / `type="url"`: a number input defaults to `step=1`, so a decimal
+fails **native** constraint validation and the browser refuses the whole form's submit —
+silently, when the bubble belongs to a control the user cannot see. A url input accepts
+`mailto:` while refusing a bare domain, which matches nobody's rule. Both stay text
+inputs (with the numeric / url keypad) and are validated by the component.
+
+**Number parsing is locale-aware and never guesses.** Whitespace (incl. NBSP) is
+stripped, so `1 000` gives `1000`; `.` is always the decimal separator; `,` is one only
+when `locale` uses it (`Intl.NumberFormat(locale)`), so `4,2` under `sk` is `4.2` and
+under `en` an error — never silently read as grouping. Display uses the locale's decimal
+separator without grouping, so a Slovak user sees `4,2`. While a cell is being typed in,
+the input shows exactly the typed text; blur re-formats it. The two helpers,
+`parseCellNumber(raw, locale)` and `formatCellNumber(n, locale)`, are exported.
+
+**Unknown types** render through the `cell` snippet, which receives
+`{ column, row, rowIndex, value, setValue, id, disabled, invalid, describedby }` — put
+`id` on your control so the row's `<label for>` reaches it. Without the snippet the cell
+shows the raw value read-only and round-trips it.
+
+```svelte
+{#snippet cell(ctx)}
+	{#if ctx.column.type === "color"}
+		<input
+			type="color"
+			id={ctx.id}
+			value={ctx.value}
+			oninput={(e) => ctx.setValue(e.currentTarget.value)}
+		/>
+	{/if}
+{/snippet}
+
+<FieldTable bind:value name="items" {columns} {cell} />
+```
+
+### Value semantics
+
+- **Row objects never gain a key the component invented.** Row identity lives in an
+  internal index-aligned list, so a backend with `additionalProperties: false` on the row
+  never sees a stray id.
+- **Keys not in `columns` are preserved, untouched and unrendered.** The library never
+  silently drops data; a consumer whose backend is closed prunes at its save boundary.
+- **"Add row"** inserts `newRow?.()`, or else one empty value per column (`""` / `null` /
+  `false` as in the table), and focuses the new row's first cell.
+- **A loaded row missing a cell** renders that control empty and writes nothing until the
+  cell is edited.
+- **Change → emit.** `value` is replaced by a JSON copy of the rows, then `onChange`
+  fires, then a bubbling `change` on the hidden input. **External reassignment** is
+  detected by a JSON comparison and rebuilds the rows.
+- **A non-array `value`** (`""`, `null`, `undefined`) renders as zero rows and is not
+  rewritten on mount — a mount never dirties the host form. The first edit emits an array.
+- **A non-object entry** renders as a degraded read-only row (`unknown_row_warning`). It
+  can be moved and removed, is never edited, and round-trips.
+- **Duplicate column keys**: the first occurrence wins, later ones are skipped with a
+  `console.warn`. **An empty column label** falls back to the key.
+
+### Layout
+
+One DOM for both modes — a real `<table>` — restyled by CSS. `layout="auto"` (default)
+switches on the **component's own width** through a container query, not the viewport's:
+a 480px table inside a side panel of a 1440px window stacks. `tableFrom` picks the
+threshold on a fixed scale (`sm` 32rem, `md` 40rem (default), `lg` 48rem, `xl` 56rem);
+`layout="table"` / `"stacked"` are static.
+
+- **table**: `<th scope="col">` headings (with the unit), one row per record, an actions
+  cell (move up / down, remove). Each cell type has a `min-width` token; the table
+  scrolls horizontally inside its own wrapper instead of squashing inputs.
+- **stacked**: each row is a card titled "Row N" with the actions on top, each cell a
+  label + control line.
+
+Every cell carries a real `<label for>` in both modes — "Qty (pcs), row 3" — visually
+hidden in table mode (the heading is visible there), visible and clickable in stacked
+mode. Crossing the breakpoint keeps focus and caret, because nothing remounts.
+
+### Validation and the host `validate()` rule
+
+The validator runs, in order: `required` with zero rows (`err_rows_required`), `maxRows`
+exceeded (`err_max_rows` — a seeded list above the cap is an error, never truncated),
+the first invalid cell in row-major order (`err_cell`: "Row 3, Qty: not a number" —
+built-in rule, then `column.maxLength`, then `column.validate`), then your
+`validate.customValidator`. Each invalid cell is `aria-invalid` with its message inline
+once `validate()` has run or once that cell was blurred; `validate()` scrolls to and
+focuses the first offender.
+
+No cell control carries `required`, `pattern`, `min` / `max` or a validating `type`, so
+a cell scrolled out of view can never make the browser refuse a submit without a
+message. The flip side — the rule for every hidden-input `Field*` — is that **a host that
+submits natively must call `validate()`** (or use `use:onSubmitValidityCheck`) before
+saving.
+
+### Props
+
+| Prop                       | Type                               | Default            | Description                                                       |
+| -------------------------- | ---------------------------------- | ------------------ | ----------------------------------------------------------------- |
+| `value`                    | `FieldTableRow[]`                  | required, bindable | The rows                                                          |
+| `name`                     | `string`                           | required           | The hidden input's name                                           |
+| `columns`                  | `FieldTableColumn[]`               | required           | One entry per cell, in order                                      |
+| `maxRows`                  | `number`                           | -                  | Cap; shows an `n / max` counter                                   |
+| `required`                 | `boolean`                          | `false`            | At least one row                                                  |
+| `displayLanguage`          | `string \| string[]`               | -                  | `tr()` fallback chain for column / option labels                  |
+| `locale`                   | `string`                           | browser            | Decimal separator of number cells                                 |
+| `layout`                   | `"auto" \| "table" \| "stacked"`   | `"auto"`           | See Layout                                                        |
+| `tableFrom`                | `"sm" \| "md" \| "lg" \| "xl"`     | `"md"`             | Container width at which `auto` renders the table                 |
+| `reorderable`              | `boolean`                          | `true`             | Move up / down buttons                                            |
+| `newRow`                   | `() => FieldTableRow`              | per-column empties | What "Add row" inserts                                            |
+| `cell`                     | `Snippet<[FieldTableCellContext]>` | -                  | Renders columns whose `type` is not built in                      |
+| `addLabel`, `emptyMessage` | `string`                           | `t(...)`           | Text overrides                                                    |
+| `onChange`                 | `(value: FieldTableRow[]) => void` | -                  | After every change                                                |
+| `t`                        | `TranslateFn`                      | English            | See i18n                                                          |
+| `renderSize`               | `"sm" \| "md" \| "lg"`             | `"sm"`             | Control size (the cells follow the `--stuic-input-*` size tokens) |
+
+Plus the usual field props: `label`, `description`, `labelAfter`, `below`, `id`,
+`tabindex`, `disabled`, `validate`, `labelLeft*`, `style`, `class`, and the shared
+`InputWrapClassProps`. The imperative API is the standard one: `validate()`,
+`clearValidation()`, `getValidation()`, `focus()` (first cell, or "Add row"),
+`scrollIntoView()`.
+
+### i18n
+
+All UI texts go through `t`. English is built in; Slovak ships bundled and opt-in
+(importing it is what pulls it into your bundle):
+
+```svelte
+<script>
+	import {
+		FieldTable,
+		createFieldTableT,
+		FIELD_TABLE_MESSAGES_SK,
+	} from "@marianmeres/stuic";
+	const t = createFieldTableT(FIELD_TABLE_MESSAGES_SK);
+</script>
+
+<FieldTable bind:value name="items" {columns} displayLanguage="sk" locale="sk" {t} />
+```
+
+`createFieldTableT(messages, fallbackMessages?)` falls back to `FIELD_TABLE_MESSAGES_EN`
+for any key the catalog does not define, so a partial catalog is fine and a raw key is
+never rendered. Column and option labels are consumer data: pass them as
+`{ en: "...", sk: "..." }` records and set `displayLanguage`.
+
+### Accessibility
+
+- Every cell has an accessible name of the form "Column, row N", in both layouts.
+- The actions are real buttons ("Move row 3 up", "Remove row 3"); a move keeps focus on
+  the moved row's button, a remove focuses the row now at that index (else the previous
+  one, else "Add row"); add, move and remove are announced through a polite live region.
+- "Enter" in a cell submits the host form, like any `FieldInput` in it — there is no
+  "Enter adds a row".
+
+### CSS Variables
+
+Cell controls reuse the `--stuic-input-*` colour and size tokens, so a themed `FieldInput`
+and a themed cell look alike. The table adds:
+
+| Variable                                                             | Default                          | Description                               |
+| -------------------------------------------------------------------- | -------------------------------- | ----------------------------------------- |
+| `--stuic-field-table-border-color`                                   | `--stuic-color-border`           | Stacked card border                       |
+| `--stuic-field-table-header-bg`                                      | `--stuic-color-muted`            | `<th>` background                         |
+| `--stuic-field-table-header-text`                                    | `--stuic-color-muted-foreground` | `<th>` and stacked cell-label color       |
+| `--stuic-field-table-row-divider-color`                              | `--stuic-color-border`           | Line between rows / under a card's title  |
+| `--stuic-field-table-cell-padding-x` / `-y`                          | `0.375rem` / `0.25rem`           | Cell padding in table mode                |
+| `--stuic-field-table-card-bg`                                        | `transparent`                    | Stacked card background                   |
+| `--stuic-field-table-card-gap`                                       | `0.5rem`                         | Gap between stacked cards                 |
+| `--stuic-field-table-card-radius`                                    | `--stuic-radius`                 | Stacked card radius (usage-site fallback) |
+| `--stuic-field-table-invalid-color`                                  | `--stuic-input-accent-error`     | Invalid cell border + inline message      |
+| `--stuic-field-table-unit-text`                                      | `--stuic-color-muted-foreground` | The unit suffix                           |
+| `--stuic-field-table-col-min-{text,number,select,checkbox,date,url}` | `10 / 6 / 8 / 3 / 9.5 / 12rem`   | Minimum cell width per type in table mode |
 
 ## Honeypot & TimeTrap (anti-bot primitives)
 

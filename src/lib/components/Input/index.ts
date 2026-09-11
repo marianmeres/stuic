@@ -82,6 +82,30 @@ export {
 } from "./FieldObject.svelte";
 
 export {
+	default as FieldTable,
+	type Props as FieldTableProps,
+	type FieldTableColumn,
+	type FieldTableCellType,
+	type FieldTableCellContext,
+	type FieldTableRow,
+} from "./FieldTable.svelte";
+
+export {
+	createFieldTableT,
+	FIELD_TABLE_MESSAGES_EN,
+	type FieldTableMessageKey,
+	type FieldTableMessages,
+} from "./field-table-i18n.js";
+
+export { FIELD_TABLE_MESSAGES_SK } from "./field-table-i18n-sk.js";
+
+export {
+	parseCellNumber,
+	formatCellNumber,
+	type ParsedCellNumber,
+} from "./field-table-number.js";
+
+export {
 	default as FieldPhoneNumber,
 	type Props as FieldPhoneNumberProps,
 } from "./FieldPhoneNumber.svelte";
