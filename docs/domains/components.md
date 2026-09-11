@@ -564,8 +564,10 @@ the list is the consumer's job, server-side. Own directory: `components/FieldsBu
 | `FieldDef`                                                         | type      | One field definition (the value unit)                       |
 | `FieldLock`                                                        | type      | Per-field edit locks                                        |
 | `FieldOptionDef`                                                   | type      | Choice-type option `{ value, label }`                       |
+| `FieldColumnDef`                                                   | type      | One column of a `supportsColumns` field                     |
 | `FieldTypeDef`                                                     | type      | Palette entry                                               |
-| `FieldTypeExtraDef`                                                | type      | Palette-declared boolean extra                              |
+| `FieldTypeExtraDef`                                                | type      | Palette-declared boolean / string / select extra            |
+| `FieldColumnErrors`, `FieldDefRowErrors`                           | types     | `validateFieldDefs` result shapes                           |
 | `LocalizedText`                                                    | type      | `string \| Record<language, string>`                        |
 | `FIELDS_BUILDER_DEFAULT_TYPES`                                     | constant  | Starter palette (text/longtext/number/checkbox/select/date) |
 | `FIELDS_BUILDER_DEFAULT_KEY_PATTERN`                               | constant  | `/^[a-z][a-z0-9_]{0,62}$/`                                  |
@@ -573,26 +575,29 @@ the list is the consumer's job, server-side. Own directory: `components/FieldsBu
 
 ### Key Props
 
-| Prop                 | Type                                           | Default  | Description                                      |
-| -------------------- | ---------------------------------------------- | -------- | ------------------------------------------------ |
-| `value`              | `FieldDef[]`                                   | required | Bindable ordered field list                      |
-| `name`               | `string`                                       | required | Hidden-input name                                |
-| `types`              | `FieldTypeDef[]`                               | required | The type palette                                 |
-| `languages`          | `string[]`                                     | —        | Multi-language labels/descriptions/options       |
-| `keysImmutable`      | `boolean`                                      | `true`   | Freeze keys loaded from `value`                  |
-| `deriveKeyFromLabel` | `boolean \| (label) => string`                 | `true`   | Live slug derivation (diacritics transliterated) |
-| `reservedKeys`       | `string[] \| (key) => boolean`                 | —        | Forbidden keys (derivation auto-avoids them)     |
-| `deleteMode`         | `"mark" \| "immediate"`                        | `"mark"` | Mark+undo vs outright removal                    |
-| `onBeforeDelete`     | `(field) => void \| false \| Promise`          | —        | Delete veto (Tree `onMove`-style)                |
-| `onBeforeTypeChange` | `(field, newType) => void \| false \| Promise` | —        | Type-change veto for pre-existing fields         |
-| `preview`            | `Snippet<[{ fields }]>`                        | —        | Live preview pane (side-by-side when wide)       |
-| `maxFields`          | `number`                                       | —        | Add-limit                                        |
+| Prop                                               | Type                                           | Default  | Description                                      |
+| -------------------------------------------------- | ---------------------------------------------- | -------- | ------------------------------------------------ |
+| `value`                                            | `FieldDef[]`                                   | required | Bindable ordered field list                      |
+| `name`                                             | `string`                                       | required | Hidden-input name                                |
+| `types`                                            | `FieldTypeDef[]`                               | required | The type palette                                 |
+| `languages`                                        | `string[]`                                     | —        | Multi-language labels/descriptions/options       |
+| `keysImmutable`                                    | `boolean`                                      | `true`   | Freeze keys loaded from `value`                  |
+| `deriveKeyFromLabel`                               | `boolean \| (label) => string`                 | `true`   | Live slug derivation (diacritics transliterated) |
+| `reservedKeys`                                     | `string[] \| (key) => boolean`                 | —        | Forbidden keys (derivation auto-avoids them)     |
+| `deleteMode`                                       | `"mark" \| "immediate"`                        | `"mark"` | Mark+undo vs outright removal                    |
+| `onBeforeDelete`                                   | `(field) => void \| false \| Promise`          | —        | Delete veto (Tree `onMove`-style)                |
+| `onBeforeTypeChange`                               | `(field, newType) => void \| false \| Promise` | —        | Type-change veto for pre-existing fields         |
+| `onBeforeColumnDelete`, `onBeforeColumnTypeChange` | `(field, column[, newType]) => …`              | —        | Column veto hooks (stored columns only)          |
+| `preview`                                          | `Snippet<[{ fields }]>`                        | —        | Live preview pane (side-by-side when wide)       |
+| `maxFields`                                        | `number`                                       | —        | Add-limit                                        |
 
 Features: collapsed rows (label + key + type chip) expanding to the full editor;
 drag reorder + Move up/down buttons with aria-live announcements; `lock.*` per-field
 locks (label/description always editable); unknown-type rows render degraded
 read-only and round-trip untouched; per-row inline validation with
-focus-first-offender `validate()`.
+focus-first-offender `validate()`; `supportsOptions` types get an option editor,
+`supportsColumns` types a column editor (each column: label / type from `columnTypes` /
+key, plus that column type's options and extras), capped by `maxColumns`.
 
 ### CSS Tokens
 

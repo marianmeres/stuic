@@ -805,3 +805,353 @@ test("record label without a languages prop: shows the fallback text, edits pres
 		.poll(() => emitted(screen.container)[0]?.label)
 		.toEqual({ en: "Colour", de: "Farbe" });
 });
+
+// ---------------------------------------------------------------------------
+// columns (`supportsColumns` palette entries)
+// ---------------------------------------------------------------------------
+
+const COLUMN_TYPES: FieldTypeDef[] = [
+	{ type: "text", label: "Text" },
+	{
+		type: "number",
+		label: "Number",
+		extras: [
+			{
+				key: "unit",
+				label: "Unit",
+				type: "string",
+				placeholder: "e.g. pcs",
+				maxlength: 8,
+			},
+		],
+	},
+	{ type: "select", label: "Choice", supportsOptions: true },
+];
+
+const TABLE_TYPES: FieldTypeDef[] = [
+	...TYPES,
+	{
+		type: "table",
+		label: "Table",
+		supportsColumns: true,
+		columnTypes: COLUMN_TYPES,
+		maxColumns: 3,
+	},
+];
+
+const COL_PART = { key: "part_name", type: "text", label: "Part name" };
+const COL_QTY = {
+	key: "quantity",
+	type: "number",
+	label: "Quantity",
+	extras: { unit: "pcs" },
+};
+
+function tableField(
+	columns = [COL_PART, COL_QTY],
+	overrides: Partial<FieldDef> = {}
+): FieldDef {
+	return { key: "bom", type: "table", label: "Bill of materials", columns, ...overrides };
+}
+
+// the field-level "Type" select and the per-column "Column type" select share
+// a substring, as do the field "Key" input and the column "key" input — always
+// match exactly in this section
+const exact = { exact: true } as const;
+
+test("columns: add a table field, then columns — the label derives the key, a duplicate label gets _2", async () => {
+	const screen = await render(FieldsBuilder, { ...baseProps(), types: TABLE_TYPES });
+	await screen.getByRole("button", { name: "Add field" }).click();
+	await screen.getByLabelText("Label", exact).fill("Bill of materials");
+	await screen.getByLabelText("Type", exact).selectOptions("table");
+
+	await screen.getByRole("button", { name: "Add column" }).click();
+	const first = screen.getByLabelText("Column name").first();
+	await expect.element(first).toHaveFocus();
+	await first.fill("Part name");
+	await expect
+		.poll(() => emitted(screen.container)[0]?.columns)
+		.toEqual([{ key: "part_name", type: "text", label: "Part name" }]);
+
+	await screen.getByRole("button", { name: "Add column" }).click();
+	await screen.getByLabelText("Column name").nth(1).fill("Part name");
+	await expect
+		.poll(() => emitted(screen.container)[0]?.columns?.map((c) => c.key))
+		.toEqual(["part_name", "part_name_2"]);
+	// a manual key edit stops derivation for that column only
+	await screen.getByLabelText("key", exact).nth(1).fill("part_no");
+	await screen.getByLabelText("Column name").nth(1).fill("Part number");
+	await expect
+		.poll(() => emitted(screen.container)[0]?.columns?.map((c) => c.key))
+		.toEqual(["part_name", "part_no"]);
+});
+
+test("columns: switching a column to a choice type opens its Choices; options ride on the column", async () => {
+	const screen = await render(FieldsBuilder, {
+		...baseProps([tableField([COL_PART])]),
+		types: TABLE_TYPES,
+	});
+	await screen.getByRole("button", { name: /Bill of materials/ }).click();
+	// a plain text column has no settings toggle
+	expect(screen.getByRole("button", { name: "Column settings" }).query()).toBeNull();
+	await screen.getByLabelText("Column type", exact).selectOptions("select");
+	await screen.getByRole("button", { name: "Add choice" }).click();
+	await screen.getByLabelText("Choice label").fill("Steel");
+	await expect
+		.poll(() => emitted(screen.container)[0]?.columns?.[0])
+		.toEqual({
+			key: "part_name",
+			type: "select",
+			label: "Part name",
+			options: [{ value: "steel", label: "Steel" }],
+		});
+	// the toggle collapses the sub-block; the data stays
+	await screen.getByRole("button", { name: "Column settings" }).click();
+	await expect.poll(() => screen.getByLabelText("Choice label").query()).toBeNull();
+	await expect
+		.poll(() => emitted(screen.container)[0]?.columns?.[0]?.options?.length)
+		.toBe(1);
+});
+
+test("columns: a number column renders its unit extra behind the settings toggle; emptying removes the key", async () => {
+	const screen = await render(FieldsBuilder, {
+		...baseProps([tableField([COL_QTY])]),
+		types: TABLE_TYPES,
+	});
+	await screen.getByRole("button", { name: /Bill of materials/ }).click();
+	// loaded columns start collapsed
+	expect(screen.getByLabelText("Unit").query()).toBeNull();
+	await screen.getByRole("button", { name: "Column settings" }).click();
+	const unit = screen.getByLabelText("Unit");
+	await expect.element(unit).toHaveValue("pcs");
+	await unit.fill("kg");
+	await expect
+		.poll(() => emitted(screen.container)[0]?.columns?.[0]?.extras)
+		.toEqual({ unit: "kg" });
+	await unit.fill("");
+	await expect
+		.poll(() => emitted(screen.container)[0]?.columns?.[0]?.extras)
+		.toBe(undefined);
+	// ...and the column itself is untouched
+	await expect
+		.poll(() => emitted(screen.container)[0]?.columns?.[0]?.key)
+		.toBe("quantity");
+});
+
+test("columns: loaded column keys are read-only; delete and type change go through the veto hooks", async () => {
+	const onBeforeColumnDelete = vi.fn(() => false as const);
+	const onBeforeColumnTypeChange = vi.fn(() => undefined);
+	const screen = await render(FieldsBuilder, {
+		...baseProps([tableField()]),
+		types: TABLE_TYPES,
+		onBeforeColumnDelete,
+		onBeforeColumnTypeChange,
+	});
+	await screen.getByRole("button", { name: /Bill of materials/ }).click();
+	const keys = screen.getByLabelText("key", exact);
+	await expect.element(keys.first()).toHaveValue("part_name");
+	await expect.element(keys.first()).toHaveAttribute("readonly");
+	await expect.element(keys.nth(1)).toHaveAttribute("readonly");
+
+	// veto keeps the column
+	await screen.getByRole("button", { name: "Remove column" }).first().click();
+	await expect.poll(() => onBeforeColumnDelete.mock.calls.length).toBe(1);
+	const [field, column] = onBeforeColumnDelete.mock.calls[0] as unknown as [
+		FieldDef,
+		FieldDef,
+	];
+	expect(field.key).toBe("bom");
+	expect(column).toEqual(COL_PART);
+	await expect.poll(() => emitted(screen.container)[0]?.columns?.length).toBe(2);
+
+	// a permitted type change applies and warns
+	await screen.getByLabelText("Column type", exact).first().selectOptions("number");
+	await expect.poll(() => onBeforeColumnTypeChange.mock.calls.length).toBe(1);
+	expect(onBeforeColumnTypeChange.mock.calls[0]).toEqual([
+		expect.objectContaining({ key: "bom" }),
+		COL_PART,
+		"number",
+	]);
+	await expect
+		.poll(() => emitted(screen.container)[0]?.columns?.[0]?.type)
+		.toBe("number");
+	await expect
+		.element(screen.getByText(/Changing the type of an existing column/))
+		.toBeInTheDocument();
+});
+
+test("columns: a vetoed column type change reverts the select", async () => {
+	const screen = await render(FieldsBuilder, {
+		...baseProps([tableField([COL_PART])]),
+		types: TABLE_TYPES,
+		onBeforeColumnTypeChange: vi.fn(() => false as const),
+	});
+	await screen.getByRole("button", { name: /Bill of materials/ }).click();
+	const type = screen.getByLabelText("Column type", exact);
+	await type.selectOptions("number");
+	await expect.element(type).toHaveValue("text");
+	await expect.poll(() => emitted(screen.container)[0]?.columns?.[0]?.type).toBe("text");
+});
+
+test("columns: a session-added column in a loaded field skips the hooks and keeps its editable key across collapse/expand", async () => {
+	const onBeforeColumnDelete = vi.fn(() => false as const);
+	const screen = await render(FieldsBuilder, {
+		...baseProps([tableField([COL_PART])]),
+		types: TABLE_TYPES,
+		onBeforeColumnDelete,
+	});
+	const header = screen.getByRole("button", { name: /Bill of materials/ });
+	await header.click();
+	await screen.getByRole("button", { name: "Add column" }).click();
+	await screen.getByLabelText("Column name").nth(1).fill("Quantity");
+	await expect
+		.poll(() => emitted(screen.container)[0]?.columns?.map((c) => c.key))
+		.toEqual(["part_name", "quantity"]);
+	await expect
+		.element(screen.getByLabelText("key", exact).nth(1))
+		.not.toHaveAttribute("readonly");
+
+	// collapse + expand: the editor remounts, the per-column meta must survive
+	await header.click();
+	await expect.poll(() => screen.getByLabelText("Column name").query()).toBeNull();
+	await header.click();
+	await expect
+		.element(screen.getByLabelText("key", exact).nth(1))
+		.not.toHaveAttribute("readonly");
+	// ...including "untouched": the key still follows the label
+	await screen.getByLabelText("Column name").nth(1).fill("Qty");
+	await expect
+		.poll(() => emitted(screen.container)[0]?.columns?.map((c) => c.key))
+		.toEqual(["part_name", "qty"]);
+
+	// removing it fires no hook
+	await screen.getByRole("button", { name: "Remove column" }).nth(1).click();
+	await expect.poll(() => emitted(screen.container)[0]?.columns?.length).toBe(1);
+	expect(onBeforeColumnDelete).not.toHaveBeenCalled();
+});
+
+test("columns: maxColumns disables Add column and shows the cap", async () => {
+	const screen = await render(FieldsBuilder, {
+		...baseProps([
+			tableField([COL_PART, COL_QTY, { key: "c", type: "text", label: "C" }]),
+		]),
+		types: TABLE_TYPES,
+	});
+	await screen.getByRole("button", { name: /Bill of materials/ }).click();
+	await expect.element(screen.getByRole("button", { name: "Add column" })).toBeDisabled();
+	await expect
+		.element(screen.getByText("Maximum number of columns is 3"))
+		.toBeInTheDocument();
+});
+
+test("validate(): a label-less second column expands the row, focuses that label and reports its position", async () => {
+	const screen = await render(FieldsBuilder, {
+		...baseProps([tableField([COL_PART, { key: "b", type: "text", label: "" }])]),
+		types: TABLE_TYPES,
+	});
+	const res = screen.component.validate();
+	expect(res?.valid).toBe(false);
+	expect(res?.message).toBe("Column 2: Label is required");
+	await expect.element(screen.getByLabelText("Column name").nth(1)).toHaveFocus();
+	// exact: the validation box holds the prefixed "Column 2: Label is required"
+	await expect.element(screen.getByText("Label is required", exact)).toBeInTheDocument();
+	// typing a label clears it
+	await screen.getByLabelText("Column name").nth(1).fill("B");
+	expect(screen.component.validate()?.valid).toBe(true);
+});
+
+test("validate(): a table without columns reports the list-level message and focuses Add column", async () => {
+	const screen = await render(FieldsBuilder, {
+		...baseProps([tableField([])]),
+		types: TABLE_TYPES,
+	});
+	const res = screen.component.validate();
+	expect(res?.message).toBe("Add at least one column");
+	await expect.element(screen.getByRole("button", { name: "Add column" })).toHaveFocus();
+	await expect
+		.element(screen.getByText("Add at least one column").first())
+		.toBeInTheDocument();
+});
+
+test("validate(): a column's option error opens its settings and focuses the add-choice button", async () => {
+	const screen = await render(FieldsBuilder, {
+		...baseProps([tableField([{ key: "m", type: "select", label: "Material" }])]),
+		types: TABLE_TYPES,
+	});
+	expect(screen.component.validate()?.message).toBe("Column 1: Add at least one choice");
+	await expect.element(screen.getByRole("button", { name: "Add choice" })).toHaveFocus();
+});
+
+test("columns: table → text → table keeps the columns (retained like options)", async () => {
+	const screen = await render(FieldsBuilder, {
+		...baseProps([tableField([COL_PART])]),
+		types: TABLE_TYPES,
+	});
+	await screen.getByRole("button", { name: /Bill of materials/ }).click();
+	await screen.getByLabelText("Type", exact).selectOptions("text");
+	await expect.poll(() => screen.getByLabelText("Column name").query()).toBeNull();
+	await expect.poll(() => emitted(screen.container)[0]?.columns).toEqual([COL_PART]);
+	// the retained columns do not block validation of a text field
+	expect(screen.component.validate()?.valid).toBe(true);
+	await screen.getByLabelText("Type", exact).selectOptions("table");
+	await expect.element(screen.getByLabelText("Column name")).toHaveValue("Part name");
+	await expect.element(screen.getByLabelText("key", exact)).toHaveAttribute("readonly");
+});
+
+test("columns: lock.columns renders the list read-only", async () => {
+	const screen = await render(FieldsBuilder, {
+		...baseProps([tableField([COL_PART], { lock: { columns: true } })]),
+		types: TABLE_TYPES,
+	});
+	await screen.getByRole("button", { name: /Bill of materials/ }).click();
+	expect(screen.getByRole("button", { name: "Add column" }).query()).toBeNull();
+	expect(screen.getByRole("button", { name: "Remove column" }).query()).toBeNull();
+	expect(screen.getByRole("button", { name: "Move up" }).query()).toBeNull();
+	await expect.element(screen.getByLabelText("Column name")).toHaveAttribute("readonly");
+	await expect.element(screen.getByLabelText("Column type", exact)).toBeDisabled();
+	await expect.element(screen.getByLabelText("key", exact)).toHaveAttribute("readonly");
+});
+
+test("columns: an unknown column type renders degraded, does not block, and round-trips untouched", async () => {
+	const legacy = { key: "legacy", type: "wormhole", label: "Legacy", extras: { x: 1 } };
+	const screen = await render(FieldsBuilder, {
+		...baseProps([tableField([legacy, COL_PART])]),
+		types: TABLE_TYPES,
+	});
+	await screen.getByRole("button", { name: /Bill of materials/ }).click();
+	await expect.element(screen.getByText("wormhole")).toBeInTheDocument();
+	await expect
+		.element(screen.getByText(/This column has a type this editor does not recognize/))
+		.toBeInTheDocument();
+	// only the known column has editable controls
+	await expect.element(screen.getByLabelText("Column name")).toHaveValue("Part name");
+	expect(screen.component.validate()?.valid).toBe(true);
+	await screen.getByLabelText("Column name").fill("Part");
+	await expect.poll(() => emitted(screen.container)[0]?.columns?.[0]).toEqual(legacy);
+});
+
+test("columns: move buttons reorder and announce; the key of a moved loaded column stays read-only", async () => {
+	const screen = await render(FieldsBuilder, {
+		...baseProps([tableField()]),
+		types: TABLE_TYPES,
+	});
+	await screen.getByRole("button", { name: /Bill of materials/ }).click();
+	// only column move buttons exist (a single field row has none)
+	await screen.getByRole("button", { name: "Move down" }).first().click();
+	await expect
+		.poll(() => emitted(screen.container)[0]?.columns?.map((c) => c.key))
+		.toEqual(["quantity", "part_name"]);
+	await expect
+		.poll(() =>
+			[...screen.container.querySelectorAll(".sr-only[aria-live]")]
+				.map((el) => el.textContent)
+				.join(" ")
+		)
+		.toContain("Moved down: Part name (2 of 2)");
+	await expect
+		.element(screen.getByLabelText("key", exact).nth(1))
+		.toHaveValue("part_name");
+	await expect
+		.element(screen.getByLabelText("key", exact).nth(1))
+		.toHaveAttribute("readonly");
+});

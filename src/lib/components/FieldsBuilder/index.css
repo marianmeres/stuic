@@ -168,6 +168,26 @@
 	}
 
 	/* =============================================================================
+	   COLUMNS EDITOR (`supportsColumns` types)
+	   ============================================================================= */
+
+	.stuic-fields-builder .fb-column-divider {
+		border-top: 1px dashed var(--stuic-fields-builder-row-border);
+	}
+
+	/* the per-column options / extras sub-block sits under its line, indented
+	   past the move buttons and marked by a thin left rule */
+	.stuic-fields-builder .fb-column-settings {
+		margin-left: calc(var(--spacing) * 5);
+		padding-left: calc(var(--spacing) * 2);
+		border-left: 2px solid var(--stuic-fields-builder-row-border);
+	}
+
+	.stuic-fields-builder .fb-column-settings .fb-sub-label {
+		margin-top: calc(var(--spacing) * 0.5);
+	}
+
+	/* =============================================================================
 	   PREVIEW PANE
 	   ============================================================================= */
 

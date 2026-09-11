@@ -44,6 +44,21 @@ export const FIELDS_BUILDER_MESSAGES_SK: FieldsBuilderMessages = {
 	option_value_hint: "Uložená strojová hodnota tejto možnosti",
 	remove_option: "Odstrániť možnosť",
 	removed_option: "Odstránená možnosť: {{label}}",
+	columns_label: "Stĺpce",
+	add_column: "Pridať stĺpec",
+	empty_columns_message: "Nie sú definované žiadne stĺpce",
+	untitled_column: "Nepomenovaný stĺpec",
+	column_label_placeholder: "Názov stĺpca",
+	column_key_placeholder: "kľúč",
+	column_key_hint: "Uložený strojový kľúč tohto stĺpca",
+	column_type_label: "Typ stĺpca",
+	column_settings: "Nastavenia stĺpca",
+	remove_column: "Odstrániť stĺpec",
+	removed_column: "Odstránený stĺpec: {{label}}",
+	column_type_change_warning:
+		"Zmena typu existujúceho stĺpca nemusí sedieť s hodnotami, ktoré sú v jeho bunkách už uložené.",
+	unknown_column_type_warning:
+		"Tento stĺpec má typ, ktorý tento editor nepozná. Zostáva nezmenený a nedá sa tu upravovať.",
 	advanced_label: "Rozšírené",
 	key_label: "Kľúč",
 	key_hint: "Jedinečný strojový identifikátor tohto poľa. Vypĺňa sa automaticky z názvu.",
@@ -67,6 +82,10 @@ export const FIELDS_BUILDER_MESSAGES_SK: FieldsBuilderMessages = {
 	err_option_value_duplicate: "Hodnoty možností musia byť jedinečné",
 	err_extra_maxlength: "{{label}} — hodnota je príliš dlhá (max. {{max}} znakov)",
 	err_max_fields: "Maximálny počet polí je {{max}}",
+	err_columns_required: "Pridajte aspoň jeden stĺpec",
+	err_max_columns: "Maximálny počet stĺpcov je {{max}}",
+	err_column: "Stĺpec {{position}}: {{message}}",
+	err_column_key_duplicate: "Tento kľúč už používa iný stĺpec",
 };
 
 /**

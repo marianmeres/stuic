@@ -4,6 +4,7 @@ export {
 } from "./FieldsBuilder.svelte";
 
 export type {
+	FieldColumnDef,
 	FieldDef,
 	FieldLock,
 	FieldOptionDef,
@@ -23,6 +24,7 @@ export {
 	slugifyKey,
 	uniqueKey,
 	validateFieldDefs,
+	type FieldColumnErrors,
 	type FieldDefRowErrors,
 	type FieldDefsValidationResult,
 	type ValidateFieldDefsOptions,

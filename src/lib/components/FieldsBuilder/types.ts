@@ -15,12 +15,32 @@ export interface FieldOptionDef {
 	label: LocalizedText;
 }
 
+/**
+ * One column of a field whose palette entry declares `supportsColumns` — a
+ * field in miniature: key, type, label, and the column type's options /
+ * extras. There is deliberately no per-column description, required flag or
+ * lock (each is additive later without changing the existing members).
+ */
+export interface FieldColumnDef {
+	/** Machine key. Unique within the field's columns (not across fields). */
+	key: string;
+	/** One of the entry's column palette types (`columnTypes`). */
+	type: string;
+	label: LocalizedText;
+	/** Edited for column types declaring `supportsOptions`. Kept when the type changes. */
+	options?: FieldOptionDef[];
+	/** Per column-type extras, driven by that column type's `extras`. Kept when the type changes. */
+	extras?: Record<string, unknown>;
+}
+
 /** What the user may NOT change on a field. Absent flag = editable. */
 export interface FieldLock {
 	key?: boolean;
 	type?: boolean;
 	required?: boolean;
 	options?: boolean;
+	/** Render the column list read-only (the counterpart of `options`). */
+	columns?: boolean;
 	/** Cannot be removed from the list. */
 	delete?: boolean;
 	/** Cannot be dragged, and other fields cannot be moved past it. */
@@ -55,6 +75,14 @@ export interface FieldDef {
 	 * extras of a previous type are RETAINED when the type changes.
 	 */
 	extras?: Record<string, unknown>;
+	/**
+	 * Edited and validated only for palette entries declaring
+	 * `supportsColumns`. Like `options`, RETAINED on the def when the field's
+	 * type changes away (never silently drop data; switching back restores
+	 * them) — consumers compiling the list should ignore `columns` on types
+	 * without `supportsColumns`.
+	 */
+	columns?: FieldColumnDef[];
 	/** What the user may NOT change. Absent = fully editable. */
 	lock?: FieldLock;
 }
@@ -123,6 +151,18 @@ export interface FieldTypeDef {
 	supportsOptions?: boolean;
 	/** Extra per-field controls, rendered into `FieldDef.extras[key]`. */
 	extras?: FieldTypeExtraDef[];
+	/** Renders the column editor and allows `FieldDef.columns`. */
+	supportsColumns?: boolean;
+	/**
+	 * The palette a column may take. Default: the component's `types` without
+	 * the entries that `supportsColumns` themselves. Columns do not nest: the
+	 * column editor ignores `supportsColumns` on any entry listed here. A
+	 * column palette entry's `supportsOptions` / `extras` work exactly as they
+	 * do per field — so leave off the extras that only make sense per field.
+	 */
+	columnTypes?: FieldTypeDef[];
+	/** Most columns one field of this type may declare. */
+	maxColumns?: number;
 	/** Optional live preview of a single field of this type. */
 	preview?: Snippet<[FieldDef]>;
 }

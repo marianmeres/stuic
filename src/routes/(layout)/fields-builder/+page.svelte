@@ -133,6 +133,64 @@
 		{ key: "name", type: "text", label: "Name", required: true },
 		{ key: "note", type: "longtext", label: "Note" },
 	]);
+
+	// 6) a `table` type whose definition is a list of typed columns
+	// (`supportsColumns`). The column palette is its own `FieldTypeDef[]`: a
+	// column type's `supportsOptions` / `extras` work exactly as per field —
+	// so it declares the number unit, but none of the per-field extras.
+	const tableColumnTypes: FieldTypeDef[] = [
+		{ type: "text", label: "Text" },
+		{
+			type: "number",
+			label: "Number",
+			extras: [
+				{
+					key: "unit",
+					label: "Unit",
+					type: "string",
+					placeholder: "e.g. pcs",
+					maxlength: 16,
+				},
+			],
+		},
+		{ type: "select", label: "Choice", supportsOptions: true },
+		{ type: "checkbox", label: "Yes / no" },
+		{ type: "date", label: "Date" },
+	];
+	const tableTypes: FieldTypeDef[] = [
+		...FIELDS_BUILDER_DEFAULT_TYPES,
+		{
+			type: "table",
+			label: "Table",
+			description: "Rows of typed columns (a bill of materials, a spec sheet, ...)",
+			supportsColumns: true,
+			columnTypes: tableColumnTypes,
+			maxColumns: 8,
+		},
+	];
+	// loaded with one stored table so key immutability and the column veto
+	// hooks can be seen; columns added in the session stay editable
+	let value6 = $state<FieldDef[]>([
+		{ key: "name", type: "text", label: "Name", required: true },
+		{
+			key: "bom",
+			type: "table",
+			label: "Bill of materials",
+			columns: [
+				{ key: "part_name", type: "text", label: "Part name" },
+				{ key: "quantity", type: "number", label: "Quantity", extras: { unit: "pcs" } },
+				{
+					key: "material",
+					type: "select",
+					label: "Material",
+					options: [
+						{ value: "steel", label: "Steel" },
+						{ value: "brass", label: "Brass" },
+					],
+				},
+			],
+		},
+	]);
 </script>
 
 <div class="space-y-12 max-w-4xl">
@@ -293,6 +351,41 @@
 			/>
 			<pre class="mt-2 text-xs opacity-60 overflow-x-auto">{JSON.stringify(
 					value5,
+					null,
+					2
+				)}</pre>
+		</div>
+
+		<div>
+			<h2 class="text-lg font-semibold mb-4">
+				Table type: a definition made of typed columns (<code>supportsColumns</code>)
+			</h2>
+			<p class="text-sm opacity-60 mb-4">
+				The <code>table</code> palette entry declares <code>supportsColumns</code>, its
+				own
+				<code>columnTypes</code> and <code>maxColumns</code>. Each column is a field in
+				miniature: label, type, key (derived, then read-only once stored), plus the column
+				type's choices or extras behind the settings toggle. Removing or retyping a stored
+				column goes through the column veto hooks.
+			</p>
+			<FieldsBuilder
+				bind:value={value6}
+				name="fields6"
+				label="Fields"
+				types={tableTypes}
+				onBeforeColumnDelete={(f, c) =>
+					confirm(
+						`Remove column "${getLocalizedText(c.label)}" of "${getLocalizedText(f.label)}"? Values stored in its cells will be lost.`
+					)
+						? undefined
+						: false}
+				onBeforeColumnTypeChange={(f, c, newType) =>
+					confirm(`Change column "${getLocalizedText(c.label)}" to type "${newType}"?`)
+						? undefined
+						: false}
+			/>
+			<pre class="mt-2 text-xs opacity-60 overflow-x-auto">{JSON.stringify(
+					value6,
 					null,
 					2
 				)}</pre>

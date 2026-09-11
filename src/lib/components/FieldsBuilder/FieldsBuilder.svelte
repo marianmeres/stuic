@@ -7,7 +7,7 @@
 	import type { TranslateFn } from "../../types.js";
 	import type { THC } from "../Thc/Thc.svelte";
 	import type { InputWrapClassProps } from "../Input/types.js";
-	import type { FieldDef, FieldTypeDef, LocalizedText } from "./types.js";
+	import type { FieldColumnDef, FieldDef, FieldTypeDef, LocalizedText } from "./types.js";
 
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
@@ -98,6 +98,22 @@
 			field: FieldDef,
 			newType: string
 		) => void | false | Promise<void | false>;
+		/**
+		 * Veto hook for removing a column that was present when `value` was
+		 * (re)loaded — return `false` (or throw) to cancel. Not called for
+		 * columns added in this session. Column removal is otherwise immediate
+		 * (no mark-delete for columns); this hook is the safety net.
+		 */
+		onBeforeColumnDelete?: (
+			field: FieldDef,
+			column: FieldColumnDef
+		) => void | false | Promise<void | false>;
+		/** Veto hook for changing the type of a pre-existing column (same contract). */
+		onBeforeColumnTypeChange?: (
+			field: FieldDef,
+			column: FieldColumnDef,
+			newType: string
+		) => void | false | Promise<void | false>;
 		onChange?: (value: FieldDef[]) => void;
 		/** Renders the preview pane. Receives the current (visible) fields. */
 		preview?: Snippet<[{ fields: FieldDef[] }]>;
@@ -130,11 +146,16 @@
 	import { getId } from "../../utils/get-id.js";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import InputWrap from "../Input/_internal/InputWrap.svelte";
+	import { loadedColumnMeta, type ColumnMeta } from "./_internal/column-meta.js";
+	import ColumnsEditor from "./_internal/ColumnsEditor.svelte";
+	import ExtrasEditor from "./_internal/ExtrasEditor.svelte";
 	import LocalizedTextInput from "./_internal/LocalizedTextInput.svelte";
 	import OptionsEditor from "./_internal/OptionsEditor.svelte";
 	import {
 		getLocalizedText,
 		isKeyReserved,
+		resolveColumnTypes,
+		seedExtraDefaults,
 		slugifyKey,
 		uniqueKey,
 		validateFieldDefs,
@@ -190,6 +211,8 @@
 		deleteMode = "mark",
 		onBeforeDelete,
 		onBeforeTypeChange,
+		onBeforeColumnDelete,
+		onBeforeColumnTypeChange,
 		onChange,
 		preview,
 		previewBreakpoint = 768,
@@ -223,6 +246,12 @@
 		emitted: boolean;
 		expanded: boolean;
 		advancedOpen: boolean;
+		/**
+		 * Index-aligned with `def.columns`, kept in lockstep by `ColumnsEditor`.
+		 * Owned here (not by the editor) because the row body unmounts while
+		 * collapsed — see `_internal/column-meta.ts`.
+		 */
+		columnMeta: ColumnMeta[];
 	}
 
 	function cloneDef(d: FieldDef): FieldDef {
@@ -244,6 +273,7 @@
 				emitted: true,
 				expanded: false,
 				advancedOpen: false,
+				columnMeta: (def.columns ?? []).map(loadedColumnMeta),
 			};
 		});
 	}
@@ -254,6 +284,7 @@
 	let rowEls: Record<string, HTMLElement | undefined> = $state({});
 	let labelEditors: Record<string, LocalizedTextInput | undefined> = $state({});
 	let keyInputEls: Record<string, HTMLInputElement | undefined> = $state({});
+	let columnsEditors: Record<string, ColumnsEditor | undefined> = $state({});
 	let liveAnnouncement = $state("");
 
 	let rows: Row[] = $state(fromValue(value ?? []));
@@ -364,13 +395,9 @@
 	// add / delete / type change / extras
 	// ---------------------------------------------------------------------------
 
-	function seedExtraDefaults(row: Row) {
-		const entry = typeByName.get(row.def.type);
-		for (const ex of entry?.extras ?? []) {
-			if (ex.default !== undefined && row.def.extras?.[ex.key] === undefined) {
-				row.def.extras = { ...(row.def.extras ?? {}), [ex.key]: ex.default };
-			}
-		}
+	function seedRowExtras(row: Row) {
+		const seeded = seedExtraDefaults(row.def.extras, typeByName.get(row.def.type));
+		if (seeded !== row.def.extras) row.def.extras = seeded;
 	}
 
 	function addField() {
@@ -386,8 +413,9 @@
 			emitted: false,
 			expanded: true,
 			advancedOpen: false,
+			columnMeta: [],
 		};
-		seedExtraDefaults(row);
+		seedRowExtras(row);
 		rows = [...rows, row];
 		// no syncToValue: a keyless row is not part of `value` yet
 		tick().then(() => labelEditors[row.rid]?.focus?.());
@@ -440,39 +468,10 @@
 			}
 		}
 		row.def.type = newType;
-		// `options`/`extras` of the previous type are deliberately kept — never
-		// silently drop data; switching back restores them
-		seedExtraDefaults(row);
+		// `options`/`extras`/`columns` of the previous type are deliberately
+		// kept — never silently drop data; switching back restores them
+		seedRowExtras(row);
 		syncToValue();
-	}
-
-	// `undefined` REMOVES the key (and an emptied bag removes `extras` itself):
-	// "no value" must have exactly one representation downstream — a consumer
-	// reading `extras.unit` to decide whether to render a suffix should never
-	// have to special-case `""`, nor a `{}` that means nothing.
-	function setExtra(row: Row, key: string, value: unknown) {
-		const next = { ...(row.def.extras ?? {}) };
-		if (value === undefined) delete next[key];
-		else next[key] = value;
-		row.def.extras = Object.keys(next).length ? next : undefined;
-		syncToValue();
-	}
-
-	/** Display value of a string/select extra (a non-string is shown, not eaten). */
-	function extraText(row: Row, key: string): string {
-		const v = row.def.extras?.[key];
-		return v == null ? "" : String(v);
-	}
-
-	// while typing, the RAW value is stored (trimming here would fight the
-	// caret: a written-back trimmed value makes a trailing space untypable) —
-	// only the emptiness test is trimmed; `onchange` normalizes on commit
-	function onExtraStringInput(row: Row, key: string, raw: string) {
-		setExtra(row, key, raw.trim() ? raw : undefined);
-	}
-
-	function onExtraStringChange(row: Row, key: string, raw: string) {
-		setExtra(row, key, raw.trim() || undefined);
 	}
 
 	function typeChanged(row: Row): boolean {
@@ -693,6 +692,8 @@
 						".fb-options .fb-option-value, .fb-options .fb-add-option-btn"
 					)
 					?.focus?.();
+			} else if (errs.columns) {
+				columnsEditors[row.rid]?.focusFirstInvalid(errs.columnErrors);
 			} else if (errs.extras) {
 				rowEls[row.rid]?.querySelector<HTMLElement>(".fb-extra-input")?.focus?.();
 			}
@@ -787,6 +788,7 @@
 							{@const showLabelError = !!(attempted && errs?.label)}
 							{@const showKeyError = !!(errs?.key && (attempted || row.keyEdited))}
 							{@const showOptionsError = !!(attempted && errs?.options)}
+							{@const showColumnsError = !!(attempted && errs?.columns)}
 							{@const showExtrasError = !!(attempted && errs?.extras)}
 							{@const canDrag =
 								!disabled && !row.deleted && !row.def.lock?.reorder && rows.length > 1}
@@ -861,7 +863,7 @@
 												{displayText(entry.label)}
 											</span>
 										{/if}
-										{#if (showLabelError || showKeyError || showOptionsError || showExtrasError) && !row.deleted}
+										{#if (showLabelError || showKeyError || showOptionsError || showColumnsError || showExtrasError) && !row.deleted}
 											<span class="fb-error-text shrink-0">
 												<span aria-hidden="true"
 													>{@html iconAlertWarning({ size: 14 })}</span
@@ -1089,119 +1091,68 @@
 												</div>
 											{/if}
 
-											{#if entry.extras?.length}
-												<!--
-													Every arm displays the ACTUAL def value only (no
-													`?? ex.default` fallback): defaults are materialized into
-													`extras` on add/type-change, but a def loaded without the
-													key must not render as if it held the default while
-													emitting nothing — the control must always match what
-													`value` says.
-												-->
-												<div class="fb-extras fb-field flex flex-col gap-2.5">
-													{#each entry.extras as ex, exIdx (ex.key)}
-														{#if ex.type === "string" || ex.type === "select"}
-															{@const exId = `${id}-extra-${row.rid}-${exIdx}`}
-															{@const exValue = extraText(row, ex.key)}
-															<div class="fb-extra">
-																<label class="fb-sub-label" for={exId}>
-																	{displayText(ex.label)}
-																</label>
-																{#if ex.type === "string"}
-																	<input
-																		id={exId}
-																		type="text"
-																		class={twMerge(INPUT_CLS, "fb-extra-input w-full")}
-																		value={exValue}
-																		maxlength={ex.maxlength}
-																		placeholder={displayText(ex.placeholder) || undefined}
-																		oninput={(e) =>
-																			onExtraStringInput(
-																				row,
-																				ex.key,
-																				e.currentTarget.value
-																			)}
-																		onchange={(e) =>
-																			onExtraStringChange(
-																				row,
-																				ex.key,
-																				e.currentTarget.value
-																			)}
-																		{disabled}
-																		{tabindex}
-																		aria-invalid={showExtrasError || undefined}
-																		aria-describedby={showExtrasError
-																			? `${id}-extras-err-${row.rid}`
-																			: undefined}
-																	/>
-																{:else}
-																	<select
-																		id={exId}
-																		class={twMerge(INPUT_CLS, "fb-extra-input w-full")}
-																		value={exValue}
-																		onchange={(e) =>
-																			setExtra(
-																				row,
-																				ex.key,
-																				e.currentTarget.value || undefined
-																			)}
-																		{disabled}
-																		{tabindex}
-																	>
-																		<option value="">
-																			{displayText(ex.placeholder)}
-																		</option>
-																		{#each ex.options as opt (opt.value)}
-																			<option value={opt.value}>
-																				{displayText(opt.label)}
-																			</option>
-																		{/each}
-																		<!-- a stored value outside the declared list stays
-																		     visible and round-trips (same stance as an
-																		     unknown field type) -->
-																		{#if exValue && !ex.options.some((o) => o.value === exValue)}
-																			<option value={exValue}>{exValue}</option>
-																		{/if}
-																	</select>
-																{/if}
-																{#if ex.description}
-																	<div class="fb-hint text-xs mt-0.5">
-																		{displayText(ex.description)}
-																	</div>
-																{/if}
-															</div>
-														{:else}
-															<label
-																class="stuic-checkbox fb-extra flex items-start gap-2 cursor-pointer"
-															>
-																<input
-																	type="checkbox"
-																	checked={!!row.def.extras?.[ex.key]}
-																	onchange={(e) =>
-																		setExtra(row, ex.key, e.currentTarget.checked)}
-																	{disabled}
-																	{tabindex}
-																/>
-																<span class="text-sm">
-																	{displayText(ex.label)}
-																	{#if ex.description}
-																		<span class="fb-hint block text-xs">
-																			{displayText(ex.description)}
-																		</span>
-																	{/if}
-																</span>
-															</label>
-														{/if}
-													{/each}
-													{#if showExtrasError}
+											{#if entry.supportsColumns}
+												<div
+													class="fb-field"
+													role="group"
+													aria-label={String(t("columns_label"))}
+													aria-describedby={showColumnsError
+														? `${id}-columns-err-${row.rid}`
+														: undefined}
+												>
+													<div class="fb-sub-label">{t("columns_label")}</div>
+													<ColumnsEditor
+														bind:columns={row.def.columns}
+														bind:meta={row.columnMeta}
+														bind:this={columnsEditors[row.rid]}
+														columnTypes={resolveColumnTypes(entry, types)}
+														maxColumns={entry.maxColumns}
+														{languages}
+														defaultLanguage={_defaultLanguage}
+														displayLanguage={_displayLanguage}
+														{languageLabels}
+														{keyMaxLength}
+														{deriveKeyFromLabel}
+														{keysImmutable}
+														{disabled}
+														locked={!!row.def.lock?.columns}
+														errors={attempted ? errs?.columnErrors : undefined}
+														idPrefix="{id}-col-{row.rid}"
+														onBeforeDelete={onBeforeColumnDelete
+															? (c) => onBeforeColumnDelete(cloneDef(row.def), c)
+															: undefined}
+														onBeforeTypeChange={onBeforeColumnTypeChange
+															? (c, nt) =>
+																	onBeforeColumnTypeChange(cloneDef(row.def), c, nt)
+															: undefined}
+														{tabindex}
+														{t}
+														onChange={syncToValue}
+													/>
+													<!-- the list-level message only (no columns / over the cap);
+													     a per-column message is already shown inline on its line -->
+													{#if showColumnsError && !errs?.columnErrors}
 														<div
-															id="{id}-extras-err-{row.rid}"
-															class="fb-error-text text-sm"
+															id="{id}-columns-err-{row.rid}"
+															class="fb-error-text text-sm mt-0.5"
 														>
-															{errs?.extras}
+															{errs?.columns}
 														</div>
 													{/if}
 												</div>
+											{/if}
+
+											{#if entry.extras?.length}
+												<ExtrasEditor
+													bind:extras={row.def.extras}
+													defs={entry.extras}
+													displayLanguages={_displayLanguages}
+													idPrefix="{id}-{row.rid}"
+													{disabled}
+													{tabindex}
+													error={showExtrasError ? errs?.extras : undefined}
+													onChange={syncToValue}
+												/>
 											{/if}
 
 											<div class="fb-advanced">

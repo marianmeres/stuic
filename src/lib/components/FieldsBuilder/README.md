@@ -43,6 +43,7 @@ interface FieldDef {
 	required?: boolean;
 	options?: { value: string; label: LocalizedText }[]; // edited for `supportsOptions` types
 	extras?: Record<string, unknown>; // per-type flags declared by the palette
+	columns?: FieldColumnDef[]; // edited for `supportsColumns` types, see Columns
 	lock?: FieldLock; // what the user may NOT change
 }
 ```
@@ -62,7 +63,8 @@ Value membership rules:
 - Palette `extras` defaults are materialized into `def.extras` when a field is added
   or its type changes; a def loaded _without_ an extra's key renders empty/unchecked —
   the control always reflects what `value` actually contains, never a phantom default.
-  Extras are **retained** across a type change too (same rule as `options`).
+  Extras are **retained** across a type change too (same rule as `options`), and so
+  are `columns`.
 
 ## The palette
 
@@ -74,6 +76,9 @@ interface FieldTypeDef {
 	icon?: string | Snippet; // html string or snippet, shown in the row's type chip
 	supportsOptions?: boolean; // renders the option editor
 	extras?: FieldTypeExtraDef[]; // per-type controls, see below
+	supportsColumns?: boolean; // renders the column editor, see Columns
+	columnTypes?: FieldTypeDef[]; // the palette a column may take
+	maxColumns?: number; // cap on the column list
 	preview?: Snippet<[FieldDef]>; // per-type preview of a single field
 }
 ```
@@ -140,6 +145,76 @@ type FieldTypeExtraDef =
 (text / longtext / number / checkbox / select / date) for demos and unopinionated
 consumers — `types` is still a required prop, so nobody gets it by accident.
 
+## Columns
+
+A palette entry may declare `supportsColumns`: its definition is then a **list of typed
+columns** — a "table" field whose value (rows) is an array of objects keyed by column.
+Editing the rows is not this component's job; authoring the columns is.
+
+```ts
+interface FieldColumnDef {
+	key: string; // unique within the field's columns (not across fields)
+	type: string; // one of the entry's `columnTypes`
+	label: LocalizedText;
+	options?: FieldOptionDef[]; // edited for a `supportsOptions` column type
+	extras?: Record<string, unknown>; // driven by the column type's `extras`
+}
+```
+
+```ts
+{
+	type: "table",
+	label: "Table",
+	supportsColumns: true,
+	maxColumns: 8,
+	columnTypes: [
+		{ type: "text", label: "Text" },
+		{ type: "number", label: "Number",
+		  extras: [{ key: "unit", label: "Unit", type: "string", maxlength: 16 }] },
+		{ type: "select", label: "Choice", supportsOptions: true },
+	],
+}
+```
+
+- **A column is a field in miniature.** One line per column: label (localized, like
+  every other label), type, key, and — behind a settings toggle that appears only when
+  the column type has `supportsOptions` or `extras` — the same option editor and extras
+  controls a field gets. `columnTypes` is a full `FieldTypeDef[]` on purpose, so there is
+  no new vocabulary: a number column declares its unit exactly as a number field does.
+  Leave off the extras that only make sense per field.
+- **Default palette.** Without `columnTypes`, a column may take any entry of `types`
+  that does not itself `supportsColumns`. Columns never nest — a `supportsColumns` entry
+  listed inside `columnTypes` is treated as a plain column type.
+- **Keys follow the field-key policy**: derived from the label while untouched
+  (transliterated, unique among the sibling columns, bounded by `keyMaxLength`; a
+  `deriveKeyFromLabel` function is used here too), frozen by the first manual edit, and
+  with `keysImmutable` read-only for every column that was present when `value` was
+  (re)loaded — a column added this session stays editable, also after the row is
+  collapsed and re-expanded. `keyPattern` / `keyMaxLength` apply; `reservedKeys` does
+  **not** (it guards the field-key namespace, a column key lives inside one field's rows).
+- **Removal is immediate** — there is no mark-delete for columns. The safety net is
+  `onBeforeColumnDelete(field, column)`: return `false` (or throw) to cancel. It fires
+  only for stored columns, never for one added this session. Changing a stored column's
+  type is guarded the same way (`onBeforeColumnTypeChange(field, column, newType)`, plus
+  an inline warning), and keeps the column's `options` / `extras` like a field does.
+- **`lock.columns`** renders the column list read-only (the counterpart of
+  `lock.options`).
+- **Retained across a field type change**: `table → text → table` restores the columns.
+  Consumers compiling the list should ignore `columns` on types without
+  `supportsColumns`.
+- **Unknown column type** (not in the column palette): rendered as a degraded read-only
+  line with a warning, not validated, round-tripped untouched — its key still counts
+  toward uniqueness. The same stance as an unknown field type.
+
+Validation adds, for a `supportsColumns` field: at least one column, at most
+`maxColumns` (a seeded list above the cap is an error, never truncated), and per column
+the label / key / options / string-extra rules above. `validateFieldDefs` reports them
+as `rowErrors[i].columnErrors` (index-aligned with `def.columns`, `null` for a clean
+column) and a row summary `rowErrors[i].columns` ("Column 2: Label is required").
+`validate()` expands the row, opens the column's settings when needed, and focuses the
+offending control. Consumer-specific budgets (say "fields plus columns ≤ 80") belong to
+the consumer: `validate.customValidator` runs after the built-in rules.
+
 ## Keys
 
 The key is the machine identifier; once data exists under it, renaming orphans that
@@ -175,7 +250,8 @@ data. The component treats keys accordingly:
 
 Owns: key pattern / length / uniqueness / reserved, label non-empty, choice types have
 at least one option with unique non-empty values, `maxFields`, `required` (at least one
-field). `validate()` expands, scrolls to and focuses the first offender.
+field), and for `supportsColumns` types the column rules (see Columns). `validate()`
+expands, scrolls to and focuses the first offender.
 
 **Does not own:** whether the resulting list is acceptable to the consumer's backend.
 The consumer persisting the list MUST re-validate server-side — this component is a
@@ -207,6 +283,8 @@ not block validation. It is never silently dropped.
 | `deleteMode`                                                  | `"mark" \| "immediate"`                              | `"mark"`          | Delete UX (see above)                                                           |
 | `onBeforeDelete`                                              | `(field) => void \| false \| Promise<void \| false>` | —                 | Delete veto hook                                                                |
 | `onBeforeTypeChange`                                          | `(field, newType) => void \| false \| Promise<...>`  | —                 | Type-change veto hook (pre-existing fields)                                     |
+| `onBeforeColumnDelete`                                        | `(field, column) => void \| false \| Promise<...>`   | —                 | Column removal veto hook (stored columns of `supportsColumns` fields)           |
+| `onBeforeColumnTypeChange`                                    | `(field, column, newType) => void \| false \| ...`   | —                 | Column type-change veto hook (stored columns)                                   |
 | `onChange`                                                    | `(value: FieldDef[]) => void`                        | —                 | Fired after every change                                                        |
 | `preview`                                                     | `Snippet<[{ fields: FieldDef[] }]>`                  | —                 | Preview pane content (see below)                                                |
 | `previewBreakpoint`                                           | `number`                                             | `768`             | Component width for side-by-side preview; `0` = below                           |
@@ -239,7 +317,8 @@ no built-in mapping from palette types to stuic `Field*` components.
 
 ## Locks
 
-Per-field `lock` flags: `key`, `type`, `required`, `options`, `delete`, `reorder`.
+Per-field `lock` flags: `key`, `type`, `required`, `options`, `columns`, `delete`,
+`reorder`.
 A `lock.reorder` field is position-pinned — it cannot be dragged and no other move may
 change its index. **Label and description are always editable**, even on fully locked
 fields: the consumer owns a system field's identity, the user owns what it is called.

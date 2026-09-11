@@ -38,6 +38,21 @@ export const FIELDS_BUILDER_MESSAGES_EN = {
 	option_value_hint: "Stored machine value of this choice",
 	remove_option: "Remove choice",
 	removed_option: "Removed choice: {{label}}",
+	columns_label: "Columns",
+	add_column: "Add column",
+	empty_columns_message: "No columns defined",
+	untitled_column: "Untitled column",
+	column_label_placeholder: "Column name",
+	column_key_placeholder: "key",
+	column_key_hint: "Stored machine key of this column",
+	column_type_label: "Column type",
+	column_settings: "Column settings",
+	remove_column: "Remove column",
+	removed_column: "Removed column: {{label}}",
+	column_type_change_warning:
+		"Changing the type of an existing column may not fit values already stored in its cells.",
+	unknown_column_type_warning:
+		"This column has a type this editor does not recognize. It is kept unchanged and cannot be edited here.",
 	advanced_label: "Advanced",
 	key_label: "Key",
 	key_hint:
@@ -62,6 +77,10 @@ export const FIELDS_BUILDER_MESSAGES_EN = {
 	err_option_value_duplicate: "Choice values must be unique",
 	err_extra_maxlength: "{{label}} is too long (max {{max}} characters)",
 	err_max_fields: "Maximum number of fields is {{max}}",
+	err_columns_required: "Add at least one column",
+	err_max_columns: "Maximum number of columns is {{max}}",
+	err_column: "Column {{position}}: {{message}}",
+	err_column_key_duplicate: "This key is already used by another column",
 };
 
 /** Every message key `FieldsBuilder` (and its internals) may look up. */
