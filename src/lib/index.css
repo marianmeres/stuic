@@ -86,6 +86,7 @@ In practice:
 @import "./components/RegisterForm/index.css";
 @import "./components/LoginOrRegisterForm/index.css";
 @import "./components/Checkout/index.css";
+@import "./components/ColorPicker/index.css";
 @import "./components/CommandMenu/index.css";
 /* NOTE: CommentInput/index.css is deliberately NOT imported here — same reason as
    MarkdownEditor's. It is a subpath-export component and imports its own CSS

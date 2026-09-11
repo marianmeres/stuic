@@ -23,7 +23,7 @@
 
 ```
 src/lib/
-├── components/     # 79 component directories
+├── components/     # 80 component directories
 ├── actions/        # 16 Svelte actions (use: directives)
 ├── attachments/    # Svelte attachments ({@attach} — preferred for new DOM helpers)
 ├── utils/          # 55 utility modules (48 on the barrel)
@@ -146,7 +146,7 @@ so it is the only confusable pair — do not "fix" one into the other.
 
 ### Domain Docs
 
-- [Components](./docs/domains/components.md) — 79 component directories, Props pattern, snippets
+- [Components](./docs/domains/components.md) — 80 component directories, Props pattern, snippets
 - [Theming](./docs/domains/theming.md) — CSS tokens, dark mode, themes
 - [CSS presets](./docs/domains/css-presets.md) — ratio-locked frame (letterbox), safe-area, scrollbar
 - [Actions](./docs/domains/actions.md) — 16 Svelte directives

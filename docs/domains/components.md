@@ -2,7 +2,7 @@
 
 ## Overview
 
-79 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
+80 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
@@ -35,6 +35,7 @@
 | Slider               | Fancy range input (fill + optional thumb)                                                       |
 | RangeSlider          | Dual-thumb Slider: `start` ≤ `end` on one track, no crossing, `minRange`, two hidden inputs     |
 | Rating               | Star rating: radiogroup input (half steps, hover preview, form + validate) or read-only display |
+| ColorPicker          | Swatch palette (radiogroup) + native picker & hex field; any CSS color, form + validate         |
 | TwCheck              | Styled checkbox/radio                                                                           |
 | DropdownMenu         | Popover menu                                                                                    |
 | ContextMenu          | Right-click / long-press menu at the cursor (the DropdownMenu engine + trigger semantics)       |
@@ -879,6 +880,62 @@ Snippets: `children`, `renderImage`, `renderBadge`, `renderContent`, `renderFoot
 Prefix: `--stuic-card-*`
 
 `bg`, `bg-hover`, `border`, `border-hover`, `padding`, `content-gap`, `image-aspect-ratio`, `image-object-fit`, `image-width-horizontal`, `radius`, `shadow`, `shadow-hover`, `ring-width`, `ring-color`, `eyebrow-font-size`, `eyebrow-text`, `title-font-size`, `title-font-weight`, `title-text`, `description-font-size`, `description-text`, `opacity-disabled`
+
+---
+
+## ColorPicker
+
+A swatch palette plus a custom-color escape hatch. The palette is a `role="radiogroup"` of swatch buttons (roving tabindex, wrapping Left/Right, Up/Down by one _rendered_ row — measured from the layout, so it survives wrapping — Home/End, Delete/Backspace to clear, an optional crossed-out "no color" swatch); the custom row is the native `<input type="color">` next to a hex text field. A hidden input carries `name`/value with the `validate` action and `required` enforced (hidden inputs skip native constraint validation).
+
+`columns` caps swatches per row rather than forcing a grid — a phone too narrow for N wraps to fewer instead of scrolling the page sideways.
+
+Swatch values are **never parsed** — they go to CSS as `--stuic-color-picker-swatch-color`, so a palette may hold hex, `oklch(...)`, `transparent`, or `var(--stuic-color-primary)` (`COLOR_PICKER_PALETTE_THEME` does exactly that, and the stored value keeps following the theme). Selection is a ring drawn _outside_ the swatch, which reads on any color without luminance math. Mobile needs no special path: the native input opens the platform picker, so there is no popover to fight the on-screen keyboard; swatches grow to ~44px on a coarse pointer and the hex field carries the iOS zoom guard.
+
+### Exports
+
+| Export                       | Kind      | Description                                  |
+| ---------------------------- | --------- | -------------------------------------------- |
+| `ColorPicker`                | component | Main component                               |
+| `ColorPickerProps`           | type      | Props type                                   |
+| `ColorPickerCustom`          | type      | `"both" \| "native" \| "text" \| false`      |
+| `ColorPickerSwatch`          | type      | `string \| ColorPickerSwatchObject`          |
+| `ColorPickerSwatchObject`    | type      | `{ value, label? }`                          |
+| `COLOR_PICKER_PALETTE`       | constant  | Default palette (12 hues + white/grey/black) |
+| `COLOR_PICKER_PALETTE_THEME` | constant  | Opt-in design-token palette                  |
+| `createColorPickerT`         | function  | Builds the `t` prop from a (partial) catalog |
+| `COLOR_PICKER_MESSAGES_EN`   | constant  | Built-in English catalog (also the fallback) |
+| `COLOR_PICKER_MESSAGES_SK`   | constant  | Bundled Slovak catalog (opt-in)              |
+| `ColorPickerMessageKey`      | type      | Message key union                            |
+| `ColorPickerMessages`        | type      | One locale's catalog                         |
+
+### Key Props
+
+| Prop                                                  | Type                                    | Default                | Description                                                                                                                                    |
+| ----------------------------------------------------- | --------------------------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `value`                                               | `string`                                | `""`                   | Bindable; any CSS color string, stored verbatim. `""` = no color                                                                               |
+| `palette`                                             | `ColorPickerSwatch[]`                   | `COLOR_PICKER_PALETTE` | Color strings or `{ value, label }` objects; `[]` renders no palette                                                                           |
+| `columns`                                             | `number`                                | —                      | Cap of N swatches per row (a narrower container wraps to fewer). Unset = as many as fit                                                        |
+| `custom`                                              | `"both" \| "native" \| "text" \| false` | `"both"`               | Which custom-color controls render under the palette                                                                                           |
+| `allowClear`                                          | `boolean`                               | `true`                 | Clear swatch + Delete/Backspace + an emptied hex field                                                                                         |
+| `name`, `required`, `validate`, `setValidationResult` |                                         |                        | Form integration — same contract as the `Field*` components; imperative `validate()` / `clearValidation()` / `getValidation()` via `bind:this` |
+| `onchange`                                            | `(value: string) => void`               | —                      | User **commits** only (see below)                                                                                                              |
+| `t`                                                   | `TranslateFn`                           | English                | Group label, swatch names, "no color", custom-color labels, required message                                                                   |
+
+Class slots: `class`, `classSwatch`.
+
+### Preview vs commit
+
+`value` updates live while the native OS picker is dragged and while a valid color is typed into the hex field (so `bind:value` previews); `onchange` — and the hidden input's `change`, which is what re-runs validation — fires only on a commit: a swatch click, an arrow onto a _different_ swatch (a radio does not re-fire for the checked one), the native picker's `change`, or Enter/blur in the hex field. An unparseable hex field commits nothing and snaps back.
+
+The hex field normalizes hex in any spelling (`#0f0`, `3b82f6`) to lowercase `#rrggbb`; anything else `CSS.supports("color", …)` accepts is kept verbatim. Because a focused field must own its own DOM value, it is written explicitly rather than driven by a reactive `value=` — Svelte skips a write when the expression matches what it last wrote, which is exactly the snap-back case.
+
+### CSS Tokens
+
+Prefix: `--stuic-color-picker-*`
+
+`gap`, `custom-gap`, `swatch-size`, `swatch-size-touch`, `swatch-border`, `swatch-scale-hover`, `swatch-ring-width`, `swatch-ring-gap`, `swatch-ring-color`, `swatch-ring-gap-color`, `ring-width`, `ring-color`, `clear-color`, `clear-bg`, `text-width`, `text-bg`, `text-border`, `text-color`, `text-placeholder`, `text-font-family`, `text-font-size`, `text-font-size-touch-min`, `opacity-disabled`
+
+Radius and border width use the shared-token fallback pattern (`swatch-radius` / `text-radius` / `*-border-width` → `--stuic-radius` / `--stuic-border-width`).
 
 ---
 

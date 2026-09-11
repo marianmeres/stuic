@@ -83,8 +83,15 @@ Checked first, to avoid false positives:
     feedback (icon + intent swap, localized label/name, sr live announcement),
     `onCopied` / `onError` callbacks; the write is the reusable `copyToClipboard()`
     util (async Clipboard API + `execCommand` fallback) in `utils/`.
-13. **ColorPicker** — beyond native `type="color"`: swatch palette + custom input.
-    Given stuic's theming/design-tokens focus, a swatch picker would be on-brand.
+13. ~~**ColorPicker**~~ — ✅ shipped (see `src/lib/components/ColorPicker/`): a
+    `role="radiogroup"` swatch palette (roving tabindex, wrapping arrows, optional
+    "no color" swatch, `columns` grid) plus a custom row of the native
+    `<input type="color">` and a hex field; hidden input + `validate` with `required`,
+    `t` texts with Slovak bundled. Swatch values are never parsed — any CSS color
+    string, so `COLOR_PICKER_PALETTE_THEME` can hold `var(--stuic-color-*)` tokens and
+    the picked value keeps following the theme. Mobile needed no special path: the
+    native input opens the platform picker, so there is no popover to fight the
+    on-screen keyboard.
 
 ## Deliberately out of scope (or close enough to covered)
 

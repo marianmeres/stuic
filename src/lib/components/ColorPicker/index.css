@@ -1,0 +1,275 @@
+/* ============================================================================
+   COLOR PICKER COMPONENT TOKENS
+   Override globally: :root { --stuic-color-picker-swatch-size: 2rem; }
+   Override locally:  <ColorPicker style="--stuic-color-picker-gap: 0.5rem;">
+   ============================================================================ */
+
+/* prettier-ignore */
+:root {
+	/* Layout */
+	--stuic-color-picker-gap: 0.375rem;
+	--stuic-color-picker-custom-gap: 0.5rem;
+	--stuic-color-picker-swatch-size: 1.75rem;
+	/* Touch bump: the swatches are the whole hit target, so on a coarse pointer
+	   they must reach the ~44px recommendation on their own. */
+	--stuic-color-picker-swatch-size-touch: 2.75rem;
+
+	/* Swatch: a hairline keeps white / transparent / near-background swatches
+	   visible on any theme. */
+	--stuic-color-picker-swatch-border: color-mix(in oklab, var(--stuic-color-foreground) 20%, transparent);
+	--stuic-color-picker-swatch-scale-hover: 1.1;
+
+	/* Selected ring — drawn OUTSIDE the swatch (a gap of page background, then
+	   the ring) so it reads on any color without measuring its luminance. */
+	--stuic-color-picker-swatch-ring-width: 2px;
+	--stuic-color-picker-swatch-ring-gap: 2px;
+	--stuic-color-picker-swatch-ring-color: var(--stuic-color-foreground);
+	--stuic-color-picker-swatch-ring-gap-color: var(--stuic-color-background);
+
+	/* Focus ring */
+	--stuic-color-picker-ring-width: 2px;
+	--stuic-color-picker-ring-color: var(--stuic-color-ring);
+
+	/* The "no color" swatch (diagonal slash) */
+	--stuic-color-picker-clear-color: var(--stuic-color-destructive);
+	--stuic-color-picker-clear-bg: transparent;
+
+	/* Hex text field */
+	--stuic-color-picker-text-width: 10ch;
+	--stuic-color-picker-text-bg: var(--stuic-color-input);
+	--stuic-color-picker-text-border: var(--stuic-color-border);
+	--stuic-color-picker-text-color: var(--stuic-color-foreground);
+	--stuic-color-picker-text-placeholder: color-mix(in oklab, var(--stuic-color-muted-foreground) 75%, transparent);
+	--stuic-color-picker-text-font-family: var(--font-mono);
+	--stuic-color-picker-text-font-size: var(--text-sm);
+	/* See the "IOS ZOOM GUARD" section at the bottom of this file. */
+	--stuic-color-picker-text-font-size-touch-min: 16px;
+
+	/* Disabled */
+	--stuic-color-picker-opacity-disabled: 0.5;
+}
+
+@layer components {
+	/* ============================================================================
+	   BASE
+	   ============================================================================ */
+
+	.stuic-color-picker {
+		--_size: var(--stuic-color-picker-swatch-size);
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: var(--stuic-color-picker-custom-gap);
+	}
+
+	.stuic-color-picker[data-disabled] {
+		opacity: var(--stuic-color-picker-opacity-disabled);
+	}
+
+	/* ============================================================================
+	   SWATCHES (the radiogroup)
+	   ============================================================================ */
+
+	.stuic-color-picker-swatches {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--stuic-color-picker-gap);
+	}
+
+	/* `columns` is a cap, not a grid: the row is exactly wide enough for N
+	   swatches, so it holds N — and on a screen too narrow for that it wraps to
+	   fewer instead of pushing the page sideways. (A real N-column grid would
+	   overflow: 8 x 44px + gaps does not fit a phone.) The keyboard follows the
+	   rendered rows, not this number — see `rowLength()`. */
+	.stuic-color-picker-swatches[data-columns] {
+		max-inline-size: calc(
+			var(--stuic-color-picker-columns, 6) * var(--_size) +
+				(var(--stuic-color-picker-columns, 6) - 1) * var(--stuic-color-picker-gap)
+		);
+	}
+
+	/* ============================================================================
+	   SWATCH
+	   ============================================================================ */
+
+	.stuic-color-picker-swatch {
+		box-sizing: border-box;
+		inline-size: var(--_size);
+		block-size: var(--_size);
+		margin: 0;
+		padding: 0;
+		appearance: none;
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+		background-color: var(--stuic-color-picker-swatch-color, transparent);
+		/* the hairline must not be tinted by the swatch color underneath it */
+		background-clip: padding-box;
+		border: var(--stuic-color-picker-swatch-border-width, var(--stuic-border-width)) solid
+			var(--stuic-color-picker-swatch-border);
+		border-radius: var(--stuic-color-picker-swatch-radius, var(--stuic-radius));
+		transition:
+			transform var(--stuic-color-picker-transition, var(--stuic-transition)),
+			box-shadow var(--stuic-color-picker-transition, var(--stuic-transition));
+	}
+
+	@media (hover: hover) {
+		.stuic-color-picker-swatch:hover:not(:disabled) {
+			transform: scale(var(--stuic-color-picker-swatch-scale-hover));
+		}
+	}
+
+	.stuic-color-picker-swatch:disabled {
+		cursor: default;
+	}
+
+	/* The selected marker: a gap of background, then the ring. Two stacked
+	   shadows rather than an outline, so the focus outline stays available. */
+	.stuic-color-picker-swatch[data-selected] {
+		box-shadow:
+			0 0 0 var(--stuic-color-picker-swatch-ring-gap)
+				var(--stuic-color-picker-swatch-ring-gap-color),
+			0 0 0
+				calc(
+					var(--stuic-color-picker-swatch-ring-gap) +
+						var(--stuic-color-picker-swatch-ring-width)
+				)
+				var(--stuic-color-picker-swatch-ring-color);
+	}
+
+	.stuic-color-picker-swatch:focus-visible {
+		outline: var(--stuic-color-picker-ring-width) solid
+			var(--stuic-color-picker-ring-color);
+		outline-offset: calc(
+			var(--stuic-color-picker-swatch-ring-gap) +
+				var(--stuic-color-picker-swatch-ring-width)
+		);
+	}
+
+	/* The "no color" swatch: a diagonal slash across an empty chip */
+	.stuic-color-picker-swatch[data-clear] {
+		background-color: var(--stuic-color-picker-clear-bg);
+		background-image: linear-gradient(
+			to top right,
+			transparent calc(50% - 0.5px),
+			var(--stuic-color-picker-clear-color) calc(50% - 0.5px),
+			var(--stuic-color-picker-clear-color) calc(50% + 0.5px),
+			transparent calc(50% + 0.5px)
+		);
+	}
+
+	/* ============================================================================
+	   CUSTOM ROW (native picker + hex field)
+	   ============================================================================ */
+
+	.stuic-color-picker-custom {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--stuic-color-picker-gap);
+	}
+
+	/* The native `<input type="color">`, shaped like one more swatch. */
+	.stuic-color-picker-native {
+		box-sizing: border-box;
+		inline-size: var(--_size);
+		block-size: var(--_size);
+		margin: 0;
+		padding: 0;
+		appearance: none;
+		-webkit-appearance: none;
+		background: none;
+		cursor: pointer;
+		border: var(--stuic-color-picker-swatch-border-width, var(--stuic-border-width)) solid
+			var(--stuic-color-picker-swatch-border);
+		border-radius: var(--stuic-color-picker-swatch-radius, var(--stuic-radius));
+	}
+
+	.stuic-color-picker-native:disabled {
+		cursor: default;
+	}
+
+	.stuic-color-picker-native::-webkit-color-swatch-wrapper {
+		padding: 0;
+	}
+
+	.stuic-color-picker-native::-webkit-color-swatch {
+		border: none;
+		border-radius: calc(
+			var(--stuic-color-picker-swatch-radius, var(--stuic-radius)) - 1px
+		);
+	}
+
+	.stuic-color-picker-native::-moz-color-swatch {
+		border: none;
+		border-radius: calc(
+			var(--stuic-color-picker-swatch-radius, var(--stuic-radius)) - 1px
+		);
+	}
+
+	.stuic-color-picker-native:focus-visible {
+		outline: var(--stuic-color-picker-ring-width) solid
+			var(--stuic-color-picker-ring-color);
+		outline-offset: 2px;
+	}
+
+	/* The hex field. Deliberately not `.stuic-input` — that is a whole field
+	   wrapper (label, description, error box); this is one bare control. */
+	.stuic-color-picker-text {
+		box-sizing: border-box;
+		inline-size: var(--stuic-color-picker-text-width);
+		min-inline-size: 0;
+		min-block-size: var(--_size);
+		padding-inline: 0.5rem;
+		padding-block: 0.25rem;
+		font-family: var(--stuic-color-picker-text-font-family);
+		font-size: var(--stuic-color-picker-text-font-size);
+		color: var(--stuic-color-picker-text-color);
+		background-color: var(--stuic-color-picker-text-bg);
+		border: var(--stuic-color-picker-text-border-width, var(--stuic-border-width)) solid
+			var(--stuic-color-picker-text-border);
+		border-radius: var(--stuic-color-picker-text-radius, var(--stuic-radius));
+	}
+
+	.stuic-color-picker-text::placeholder {
+		color: var(--stuic-color-picker-text-placeholder);
+	}
+
+	.stuic-color-picker-text:focus-visible {
+		outline: var(--stuic-color-picker-ring-width) solid
+			var(--stuic-color-picker-ring-color);
+		outline-offset: 1px;
+	}
+
+	/* ============================================================================
+	   TOUCH — the swatches are the entire hit target, so they carry the size
+	   ============================================================================ */
+
+	@media (pointer: coarse) {
+		.stuic-color-picker {
+			--_size: var(--stuic-color-picker-swatch-size-touch);
+		}
+	}
+}
+
+/* ============================================================================
+   IOS ZOOM GUARD
+
+   Mobile WebKit auto-zooms the viewport when a text control whose computed
+   font-size is below 16px receives focus, and the hex field defaults to 14px.
+   Same two conditions (and the same reasoning) as the guard in `Input/index.css`
+   — an Apple/WebKit engine AND a touch-capable device — and likewise unlayered,
+   so it also wins over a Tailwind text-size utility put on the field.
+
+   Opt out with `--stuic-color-picker-text-font-size-touch-min: 0px`.
+   ============================================================================ */
+
+@supports (font: -apple-system-body) or (-webkit-touch-callout: none) {
+	@media (any-pointer: coarse) {
+		.stuic-color-picker-text {
+			font-size: max(
+				var(--stuic-color-picker-text-font-size-touch-min),
+				var(--stuic-color-picker-text-font-size)
+			);
+		}
+	}
+}
