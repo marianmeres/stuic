@@ -6,6 +6,8 @@
 <br />
 <a href="./input/assets" class="underline">Field assets</a>
 <br />
+<a href="./input/single-asset" class="underline">Field single asset</a>
+<br />
 <a href="./input/keyvalues" class="underline">Key-value pairs</a>
 <br />
 <a href="./input/table" class="underline">Table (rows × typed columns)</a>

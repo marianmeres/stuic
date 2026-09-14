@@ -62,25 +62,26 @@
 
 ### Form
 
-| Component                                     | Purpose                                                                                    |
-| --------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| Input (FieldInput, FieldSelect, etc.)         | Form fields                                                                                |
-| FieldMoney                                    | Money input storing integer minor units (e.g. cents)                                       |
-| Calendar                                      | Month grid for single-date / range picking: keyboard grid, min/max, dropdown caption, i18n |
-| FieldDate, FieldDateRange                     | Date / date-range fields around Calendar: trigger + dialog or embedded; ISO hidden inputs  |
-| FieldPhoneNumber                              | International phone input with country picker                                              |
-| FieldObject                                   | Dual-mode JSON object editor (pretty-print/raw)                                            |
-| CronInput                                     | Cron expression editor with presets and validation                                         |
-| Fieldset                                      | Field grouping with legend                                                                 |
-| FieldKeyValues                                | Key-value pair editor                                                                      |
-| FieldTable                                    | Rows × typed columns editor (text/number/select/checkbox/date/url cells, container layout) |
-| FieldsBuilder                                 | Field-definition list editor ("what properties does a thing have?")                        |
-| FieldAssets                                   | File/asset management                                                                      |
-| LoginForm, LoginFormModal                     | Standalone login form with optional modal variant                                          |
-| RegisterForm                                  | Standalone registration form with declarative extra fields                                 |
-| LoginOrRegisterForm, LoginOrRegisterFormModal | Composite login/register/verify form (3 modes, shared social-logins)                       |
-| EmailVerifyForm                               | Post-registration email-verify form (OtpInput + resend cooldown)                           |
-| OtpInput                                      | Generic N-slot one-time-code input (numeric/alphanumeric, paste-distribute)                |
+| Component                                     | Purpose                                                                                           |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Input (FieldInput, FieldSelect, etc.)         | Form fields                                                                                       |
+| FieldMoney                                    | Money input storing integer minor units (e.g. cents)                                              |
+| Calendar                                      | Month grid for single-date / range picking: keyboard grid, min/max, dropdown caption, i18n        |
+| FieldDate, FieldDateRange                     | Date / date-range fields around Calendar: trigger + dialog or embedded; ISO hidden inputs         |
+| FieldPhoneNumber                              | International phone input with country picker                                                     |
+| FieldObject                                   | Dual-mode JSON object editor (pretty-print/raw)                                                   |
+| CronInput                                     | Cron expression editor with presets and validation                                                |
+| Fieldset                                      | Field grouping with legend                                                                        |
+| FieldKeyValues                                | Key-value pair editor                                                                             |
+| FieldTable                                    | Rows × typed columns editor (text/number/select/checkbox/date/url cells, container layout)        |
+| FieldsBuilder                                 | Field-definition list editor ("what properties does a thing have?")                               |
+| FieldAssets                                   | File/asset management                                                                             |
+| FieldSingleAsset                              | One asset (avatar, logo, cover): replace-in-place tile, inline remove + undo, rollback on failure |
+| LoginForm, LoginFormModal                     | Standalone login form with optional modal variant                                                 |
+| RegisterForm                                  | Standalone registration form with declarative extra fields                                        |
+| LoginOrRegisterForm, LoginOrRegisterFormModal | Composite login/register/verify form (3 modes, shared social-logins)                              |
+| EmailVerifyForm                               | Post-registration email-verify form (OtpInput + resend cooldown)                                  |
+| OtpInput                                      | Generic N-slot one-time-code input (numeric/alphanumeric, paste-distribute)                       |
 
 ### Display
 
@@ -157,7 +158,7 @@ failed `validate()` (imperative or event-driven) renders the inline error.
 Use `validate={false}` to bypass stuic's validation entirely.
 
 > **Why default-on?** Hidden-input field components (`FieldPhoneNumber`,
-> `FieldCountry`, `FieldObject`, `FieldAssets`, `FieldInputLocalized`,
+> `FieldCountry`, `FieldObject`, `FieldAssets`, `FieldSingleAsset`, `FieldInputLocalized`,
 > `FieldKeyValues`, `FieldTable`, `FieldLikeButton`, `FieldDate`, `FieldDateRange`, `Rating`) _must_ be default-on because hidden
 > inputs are excluded from native browser constraint validation — without the
 > stuic action enforcing `required` in a `customValidator`, the attribute is a
@@ -167,7 +168,7 @@ Use `validate={false}` to bypass stuic's validation entirely.
 ### Per-field methods
 
 Available on `FieldInput`, `FieldMoney`, `FieldTextarea`, `FieldCheckbox`,
-`FieldSelect`, `FieldFile`, `FieldObject`, `FieldAssets`, `FieldInputLocalized`,
+`FieldSelect`, `FieldFile`, `FieldObject`, `FieldAssets`, `FieldSingleAsset`, `FieldInputLocalized`,
 `FieldKeyValues`, `FieldTable`, `FieldPhoneNumber`, `FieldCountry`, `FieldLikeButton`,
 `FieldRadios`, `FieldSwitch`, `FieldOptions`, `FieldDate`, `FieldDateRange`, and
 `Switch`:

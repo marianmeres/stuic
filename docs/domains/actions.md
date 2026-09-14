@@ -121,7 +121,7 @@ Per the HTML spec, `<input type="hidden">` is _barred from constraint
 validation_ — `validity.valueMissing` stays `false` regardless of the
 `required` attribute, and native browser submit blocking is skipped. Several
 STUIC field components (`FieldPhoneNumber`, `FieldCountry`, `FieldObject`,
-`FieldAssets`, `FieldInputLocalized`, `FieldKeyValues`, `FieldLikeButton`,
+`FieldAssets`, `FieldSingleAsset`, `FieldInputLocalized`, `FieldKeyValues`, `FieldLikeButton`,
 `FieldDate`, `FieldDateRange`) use a hidden input to participate in `FormData`, so they each enforce
 `required` themselves inside their `customValidator`:
 
@@ -153,12 +153,12 @@ Two element types are deliberately exempt from the synthetic dispatch:
   group, which is wrong.
 - **`type="file"`** — a file input's value is read-only to script, so a
   synthetic `change` can't re-validate it; worse, it re-triggers any dropzone /
-  upload listener bound to the input. `FieldAssets` wires its hidden
+  upload listener bound to the input. `FieldAssets` (and `FieldSingleAsset`) wire their hidden
   `<input type="file">` through `fileDropzone`, so a re-fired `change` would
   re-run `processFiles` with the previously-picked file still in `inputEl.files`
   — duplicating the asset and firing a real re-upload on every save. File inputs
   are still read for native constraint validation (`required`); only the event
-  dispatch is skipped. (`FieldAssets` additionally clears its file input after
+  dispatch is skipped. (Both additionally clear their file input after
   consuming a selection, both as defense-in-depth and to allow re-selecting the
   same file twice in a row.)
 

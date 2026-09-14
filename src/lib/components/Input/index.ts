@@ -9,6 +9,25 @@ export {
 } from "./FieldAssets.svelte";
 
 export {
+	default as FieldSingleAsset,
+	type Props as FieldSingleAssetProps,
+	type FieldSingleAssetUploadContext,
+	type FieldSingleAssetShape,
+	type FieldSingleAssetFit,
+	type FieldSingleAssetSize,
+	type FieldSingleAssetFileCheck,
+} from "./FieldSingleAsset.svelte";
+
+export {
+	createFieldSingleAssetT,
+	FIELD_SINGLE_ASSET_MESSAGES_EN,
+	type FieldSingleAssetMessageKey,
+	type FieldSingleAssetMessages,
+} from "./field-single-asset-i18n.js";
+
+export { FIELD_SINGLE_ASSET_MESSAGES_SK } from "./field-single-asset-i18n-sk.js";
+
+export {
 	default as FieldCheckbox,
 	type Props as FieldCheckboxProps,
 } from "./FieldCheckbox.svelte";

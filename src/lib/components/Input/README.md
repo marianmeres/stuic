@@ -4,25 +4,26 @@ A comprehensive form input system with multiple field components, validation sup
 
 ## Components
 
-| Component         | Description                                                    |
-| ----------------- | -------------------------------------------------------------- |
-| `FieldInput`      | Text, email, password, number, and other input types           |
-| `FieldMoney`      | Money amount stored as integer minor units (cents)             |
-| `FieldDate`       | Single calendar date — trigger + dialog, or embedded calendar  |
-| `FieldDateRange`  | Inclusive date range (`start` … `end`), same two presentations |
-| `FieldTextarea`   | Multi-line text input with auto-grow                           |
-| `FieldSelect`     | Dropdown select with option groups                             |
-| `FieldCheckbox`   | Single checkbox with label                                     |
-| `FieldRadios`     | Radio button group                                             |
-| `FieldSwitch`     | Toggle switch field                                            |
-| `FieldFile`       | File upload input                                              |
-| `FieldAssets`     | Asset/image upload with preview                                |
-| `FieldKeyValues`  | Key-value pairs editor with JSON serialization                 |
-| `FieldTable`      | Rows × typed columns editor (a list of records) — see below    |
-| `FieldLikeButton` | Like/favorite toggle button                                    |
-| `Fieldset`        | Fieldset with legend                                           |
-| `Honeypot`        | Hidden anti-bot trap field (server-less)                       |
-| `TimeTrap`        | Anti-bot submit-timing primitive (server-less)                 |
+| Component          | Description                                                    |
+| ------------------ | -------------------------------------------------------------- |
+| `FieldInput`       | Text, email, password, number, and other input types           |
+| `FieldMoney`       | Money amount stored as integer minor units (cents)             |
+| `FieldDate`        | Single calendar date — trigger + dialog, or embedded calendar  |
+| `FieldDateRange`   | Inclusive date range (`start` … `end`), same two presentations |
+| `FieldTextarea`    | Multi-line text input with auto-grow                           |
+| `FieldSelect`      | Dropdown select with option groups                             |
+| `FieldCheckbox`    | Single checkbox with label                                     |
+| `FieldRadios`      | Radio button group                                             |
+| `FieldSwitch`      | Toggle switch field                                            |
+| `FieldFile`        | File upload input                                              |
+| `FieldAssets`      | Asset/image upload with preview                                |
+| `FieldSingleAsset` | One asset (avatar, logo, cover, one document) — see below      |
+| `FieldKeyValues`   | Key-value pairs editor with JSON serialization                 |
+| `FieldTable`       | Rows × typed columns editor (a list of records) — see below    |
+| `FieldLikeButton`  | Like/favorite toggle button                                    |
+| `Fieldset`         | Fieldset with legend                                           |
+| `Honeypot`         | Hidden anti-bot trap field (server-less)                       |
+| `TimeTrap`         | Anti-bot submit-timing primitive (server-less)                 |
 
 ## Common Props (FieldInput, FieldTextarea, FieldSelect)
 
@@ -677,8 +678,9 @@ all mounted pasteable fields):
   anywhere in the field focuses it, and a `:focus-within` ring on the input box signals the
   paste-ready state;
 - a paste with **no focus anywhere** (fresh page — focus parked on `<body>`) is routed to
-  the field as long as it is the _only_ pasteable (and visible) FieldAssets on the page, so
-  a bare Ctrl/Cmd-V works with no prior click;
+  the field as long as it is the _only_ pasteable (and visible) field on the page —
+  `FieldAssets` and `FieldSingleAsset` share one registry — so a bare Ctrl/Cmd-V works
+  with no prior click;
 - focus elsewhere is respected: pasting while a text input, textarea, select,
   contenteditable (even one nested _inside_ the field via the `label`/`description`/`below`
   snippets) or any other widget holds focus is never hijacked. With several pasteable fields
@@ -753,6 +755,200 @@ until it settles, and a rejection is caught so a failed download never breaks th
 
 > With this, non-image attachments need **no** pre-fetched object URL at all — they render
 > as a file icon and only fetch bytes when the user actually clicks Download.
+
+---
+
+## FieldSingleAsset
+
+One asset — a profile picture, a logo, a cover image, a single contract PDF. `FieldAssets`
+with `cardinality={1}` keeps the "many" interaction model (an add button that errors once
+the limit is hit, delete only inside the lightbox, a grid of small tiles). This field is
+built around a single tile instead:
+
+- **The tile is the picker and the drop target.** Click it, drop onto the field, or (opt-in)
+  paste — every source _replaces_ what is there. Two files at once are refused.
+- **Remove inline**, with an **Undo** offered for `undoTtl` ms (the asset is only unlinked
+  from `value`, never deleted anywhere, so undo is lossless). Focus returns to the tile.
+- **Shape / fit / size presets**: `shape="circle"` for avatars, `shape="wide"` (16:9) for
+  banners, `fit="contain"` for logos that must never be cropped; `size` is `sm` / `md` / `lg`
+  (5 / 8 / 12rem tall) or any CSS length.
+- **Optimistic preview + progress** — a spinner, or a ring driven by `onProgress` with
+  `withOnProgress`.
+- **Rollback on failure.** `value` is only rewritten when the upload _resolves_. A rejection
+  keeps the previous asset, shows the error on the tile with **Retry** (same file) and
+  **Discard**, and reports through `notifications`. X during an upload cancels it (a late
+  resolution is ignored).
+- **Client-side checks** before any bytes move: `accept` (also for drops and pastes),
+  `maxSize`, a custom async `validateFile`, and a `transformFile` seam for downscaling a
+  photo — or plugging in a cropper later.
+- **Preview** (the `AssetsPreview` lightbox: zoom, download, delete) as a secondary action.
+- `disabled` really disables (no drop, no paste, no remove — preview stays); without
+  `processAsset` the field is display-only; `isLoading` renders a skeleton in the tile's
+  shape.
+
+```svelte
+<script lang="ts">
+	import { FieldSingleAsset, type FieldAsset } from "@marianmeres/stuic";
+
+	let value = $state("");
+
+	async function processAsset(
+		asset: FieldAsset,
+		{ file, onProgress }: { file: File; onProgress: (p: number) => void }
+	): Promise<FieldAsset> {
+		const body = new FormData();
+		body.append("file", file);
+		const res = await fetch("/api/avatar", { method: "POST", body });
+		if (!res.ok) throw new Error(`Upload failed (${res.status})`);
+		const stored = await res.json();
+		return { id: stored.id, url: stored.url, name: file.name, type: file.type };
+	}
+</script>
+
+<FieldSingleAsset
+	bind:value
+	name="avatar"
+	label="Profile picture"
+	shape="circle"
+	accept="image/*"
+	capture="user"
+	maxSize={2 * 1024 * 1024}
+	{processAsset}
+	withOnProgress
+	pasteable
+	required
+/>
+```
+
+### Value
+
+`value` is the JSON of **one** `FieldAsset` object, or `""` when empty — not an array. It
+changes only when a user action settles: an upload that resolved, a remove, an undo. The
+form never sees a blob asset, and `onChange` fires exactly on those changes.
+
+For another shape — e.g. a backend that stores every relation as a list — pass
+`parseValue` / `serializeValue`:
+
+```svelte
+<FieldSingleAsset
+	bind:value
+	name="logo"
+	parseValue={(s) => JSON.parse(s || "[]")[0] ?? null}
+	serializeValue={(a) => JSON.stringify(a ? [a] : [])}
+/>
+```
+
+### Upload
+
+`processAsset(asset, { file, onProgress })` receives the optimistic asset (its `id` and
+every `url` are one blob URL of the file; `meta.size` is the byte size) plus the `file`
+itself — already run through `transformFile` — and `onProgress(0–100)`. Resolve with the
+stored asset: it becomes `value` as is (keep the blob URL as `url.thumb` if you like — it is
+revoked only when the field unmounts).
+
+Checks run in this order and the first failure stops with a message (via `notifications`,
+or `alert` without one):
+
+one file only → `accept` → `onBeforeReplace` → `transformFile` → `maxSize` → `validateFile`
+→ `processAsset`
+
+### Downscale or crop before upload (`transformFile`)
+
+```svelte
+<FieldSingleAsset ... transformFile={(file) => downscale(file, 512)} />
+```
+
+Return the file to upload, or `null` / `undefined` to cancel silently (the user closed your
+cropper). `maxSize` and `validateFile` see the transformed file, so a 12 MP phone photo
+downscaled on the client passes a 2 MB cap. A cropper is just a `transformFile` that opens
+a dialog and resolves with the cropped file.
+
+### Props
+
+| Prop                                                       | Type                                                   | Default            | Description                                                             |
+| ---------------------------------------------------------- | ------------------------------------------------------ | ------------------ | ----------------------------------------------------------------------- |
+| `value`                                                    | `string`                                               | required, bindable | JSON of one `FieldAsset`, or `""`                                       |
+| `name`                                                     | `string`                                               | required           | The hidden input's name                                                 |
+| `processAsset`                                             | `(asset, { file, onProgress }) => Promise<FieldAsset>` | -                  | The upload. Without it the field is display-only                        |
+| `withOnProgress`                                           | `boolean`                                              | `false`            | Progress ring instead of a spinner                                      |
+| `accept`                                                   | `string`                                               | -                  | HTML `accept` tokens (MIME, `image/*`, `.pdf`); applied to drops/pastes |
+| `capture`                                                  | `"user" \| "environment"`                              | -                  | Passed to the file input: phones open the camera directly               |
+| `maxSize`                                                  | `number`                                               | -                  | Max bytes, checked after `transformFile`                                |
+| `validateFile`                                             | `(file) => string \| void \| Promise<...>`             | -                  | Non-empty string rejects with that message                              |
+| `transformFile`                                            | `(file) => File \| null \| Promise<...>`               | -                  | Pre-upload hook; `null` cancels                                         |
+| `onBeforeRemove`                                           | `(asset) => boolean \| Promise<boolean>`               | -                  | `false` keeps the asset                                                 |
+| `onBeforeReplace`                                          | `(current, file) => boolean \| Promise<boolean>`       | -                  | `false` keeps the current asset                                         |
+| `undoTtl`                                                  | `number`                                               | `6000`             | ms the inline Undo stays after a remove; `0` disables                   |
+| `pasteable`                                                | `boolean`                                              | `false`            | Accept Ctrl/Cmd-V (same routing as `FieldAssets`)                       |
+| `shape`                                                    | `"square" \| "circle" \| "wide"`                       | `"square"`         | Tile shape                                                              |
+| `fit`                                                      | `"cover" \| "contain"`                                 | `"cover"`          | How an image fills the tile                                             |
+| `size`                                                     | `"sm" \| "md" \| "lg" \| string`                       | `"md"`             | Tile height: preset or CSS length                                       |
+| `placeholder`                                              | `THC`                                                  | -                  | Empty-tile content (e.g. an `Avatar` with initials)                     |
+| `noPreview`, `noDownload`                                  | `boolean`                                              | `false`            | Hide the Preview action / the lightbox's Download                       |
+| `onDownload`                                               | `(asset) => void \| Promise<void>`                     | -                  | Replaces the lightbox's default download (auth-gated bytes)             |
+| `onChange`                                                 | `(asset \| null) => void`                              | -                  | After every user-driven change of `value`                               |
+| `parseValue`, `serializeValue`                             | see Value                                              | JSON               | Custom `value` shape                                                    |
+| `isLoading`                                                | `boolean`                                              | `false`            | Skeleton while the initial value is fetched                             |
+| `notifications`                                            | `NotificationsStack`                                   | -                  | Where rejections and upload failures are reported (else `alert`)        |
+| `t`                                                        | `TranslateFn`                                          | English            | See i18n                                                                |
+| `classWrap`, `classPreview`, `classControls`, `classInput` | `string`                                               | -                  | Drop zone / tile / action buttons / hidden file input                   |
+
+Plus the usual field props: `label`, `description`, `labelAfter`, `below`, `id`, `tabindex`,
+`renderSize`, `required`, `disabled`, `validate`, `labelLeft*`, `style`, `class`, and the
+shared `InputWrapClassProps`. The imperative API is the standard one — `validate()`,
+`clearValidation()`, `getValidation()`, `focus()` (the tile), `scrollIntoView()` — plus
+`openFilePicker()`.
+
+### i18n
+
+All UI texts go through `t`. English is built in; Slovak ships bundled and opt-in:
+
+```svelte
+<script>
+	import {
+		FieldSingleAsset,
+		createFieldSingleAssetT,
+		FIELD_SINGLE_ASSET_MESSAGES_SK,
+	} from "@marianmeres/stuic";
+	const t = createFieldSingleAssetT(FIELD_SINGLE_ASSET_MESSAGES_SK);
+</script>
+
+<FieldSingleAsset bind:value name="avatar" {processAsset} {t} />
+```
+
+`createFieldSingleAssetT(messages, fallbackMessages?)` falls back to
+`FIELD_SINGLE_ASSET_MESSAGES_EN` for any key the catalog does not define. The catalog also
+carries the keys of the embedded `AssetsPreview`, so one `t` serves both.
+
+### Accessibility
+
+- The field's `<label>` targets the tile button; the tile's accessible description says what
+  pressing it does ("Choose a file" / "Replace x.jpg").
+- Remove / Preview / Retry / Discard are real named buttons, revealed on hover or focus,
+  always visible on touch, and on a failed upload.
+- Uploading, uploaded, failed, removed and restored are announced through a polite live
+  region; a remove or undo moves focus back to the tile.
+
+### CSS Variables
+
+| Variable                                              | Default                          | Description                                         |
+| ----------------------------------------------------- | -------------------------------- | --------------------------------------------------- |
+| `--stuic-field-single-asset-size-{sm,md,lg}`          | `5rem` / `8rem` / `12rem`        | Tile height per `size` preset                       |
+| `--stuic-field-single-asset-size`                     | (unset)                          | Explicit tile height, wins over the preset          |
+| `--stuic-field-single-asset-wide-ratio`               | `16 / 9`                         | Aspect ratio of `shape="wide"`                      |
+| `--stuic-field-single-asset-preview-bg`               | `--stuic-color-muted`            | Tile background (visible behind `fit="contain"`)    |
+| `--stuic-field-single-asset-preview-border`           | `--stuic-color-border`           | Tile border (dashed while empty)                    |
+| `--stuic-field-single-asset-preview-border-hover`     | `--stuic-color-ring`             | Tile border on hover                                |
+| `--stuic-field-single-asset-placeholder-text`         | `--stuic-color-muted-foreground` | Empty-tile icon color                               |
+| `--stuic-field-single-asset-meta-text`                | `--stuic-color-muted-foreground` | The meta line / hint / undo line                    |
+| `--stuic-field-single-asset-control-bg` / `-bg-hover` | `rgb(0 0 0 / 0.6)` / `0.8`       | Action buttons                                      |
+| `--stuic-field-single-asset-control-text`             | `#fff`                           | Action button icon color                            |
+| `--stuic-field-single-asset-overlay-bg`               | `rgb(0 0 0 / 0.4)`               | Progress overlay                                    |
+| `--stuic-field-single-asset-error-color`              | `--stuic-input-accent-error`     | Failed-upload border + overlay tint                 |
+| `--stuic-field-single-asset-radius`                   | `--stuic-radius`                 | Tile radius (usage-site fallback; `circle` ignores) |
+| `--stuic-field-single-asset-control-radius`           | `--stuic-radius-button`          | Action button radius (usage-site fallback)          |
+| `--stuic-field-single-asset-border-width`             | `--stuic-border-width`           | Tile border width (usage-site fallback)             |
+| `--stuic-field-single-asset-transition`               | `--stuic-transition`             | Hover / reveal transitions (usage-site fallback)    |
 
 ---
 

@@ -119,6 +119,25 @@
 	--stuic-field-table-col-min-checkbox: 3rem;
 	--stuic-field-table-col-min-date: 9.5rem;
 	--stuic-field-table-col-min-url: 12rem;
+
+	/* FieldSingleAsset */
+	--stuic-field-single-asset-size-sm: 5rem;
+	--stuic-field-single-asset-size-md: 8rem;
+	--stuic-field-single-asset-size-lg: 12rem;
+	--stuic-field-single-asset-wide-ratio: 16 / 9;
+	--stuic-field-single-asset-preview-bg: var(--stuic-color-muted);
+	--stuic-field-single-asset-preview-border: var(--stuic-color-border);
+	--stuic-field-single-asset-preview-border-hover: var(--stuic-color-ring);
+	--stuic-field-single-asset-placeholder-text: var(--stuic-color-muted-foreground);
+	--stuic-field-single-asset-meta-text: var(--stuic-color-muted-foreground);
+	--stuic-field-single-asset-control-bg: rgb(0 0 0 / 0.6);
+	--stuic-field-single-asset-control-bg-hover: rgb(0 0 0 / 0.8);
+	--stuic-field-single-asset-control-text: #fff;
+	--stuic-field-single-asset-overlay-bg: rgb(0 0 0 / 0.4);
+	--stuic-field-single-asset-error-color: var(--stuic-input-accent-error);
+	/* `--stuic-field-single-asset-size`, `-radius`, `-control-radius`, `-border-width`
+	   and `-transition` are deliberately NOT declared: they are read as fallback
+	   arguments at the usage site — see docs/conventions.md. */
 }
 
 @layer components {
@@ -1549,5 +1568,190 @@
 			font-size: var(--text-sm);
 			font-weight: 500;
 		}
+	}
+}
+
+/* ============================================================================
+   FIELD SINGLE ASSET
+   One tile (the preview, also the picker + drop target) with hover/focus
+   actions, a meta column, and an inline Undo after a remove. Layout that a
+   theme may want to change lives here; utility classes in the component only
+   handle flex/gap.
+   ============================================================================ */
+@layer components {
+	.stuic-field-single-asset-tile {
+		--_size: var(
+			--stuic-field-single-asset-size,
+			var(--stuic-field-single-asset-size-md)
+		);
+		height: var(--_size);
+	}
+	.stuic-field-single-asset[data-size="sm"] .stuic-field-single-asset-tile {
+		--_size: var(
+			--stuic-field-single-asset-size,
+			var(--stuic-field-single-asset-size-sm)
+		);
+	}
+	.stuic-field-single-asset[data-size="lg"] .stuic-field-single-asset-tile {
+		--_size: var(
+			--stuic-field-single-asset-size,
+			var(--stuic-field-single-asset-size-lg)
+		);
+	}
+
+	.stuic-field-single-asset-preview {
+		position: relative;
+		display: grid;
+		place-content: center;
+		overflow: hidden;
+		height: 100%;
+		width: auto;
+		max-width: 100%;
+		aspect-ratio: 1 / 1;
+		padding: 0;
+		background: var(--stuic-field-single-asset-preview-bg);
+		color: var(--stuic-field-single-asset-placeholder-text);
+		border-style: solid;
+		border-width: var(--stuic-field-single-asset-border-width, var(--stuic-border-width));
+		border-color: var(--stuic-field-single-asset-preview-border);
+		border-radius: var(--stuic-field-single-asset-radius, var(--stuic-radius));
+		cursor: pointer;
+		transition: border-color
+			var(--stuic-field-single-asset-transition, var(--stuic-transition));
+	}
+	.stuic-field-single-asset[data-shape="circle"] .stuic-field-single-asset-preview {
+		border-radius: 9999px;
+	}
+	.stuic-field-single-asset[data-shape="wide"] .stuic-field-single-asset-preview {
+		aspect-ratio: var(--stuic-field-single-asset-wide-ratio);
+	}
+	.stuic-field-single-asset[data-state="empty"] .stuic-field-single-asset-preview {
+		border-style: dashed;
+	}
+	.stuic-field-single-asset[data-state="error"] .stuic-field-single-asset-preview {
+		border-color: var(--stuic-field-single-asset-error-color);
+	}
+	.stuic-field-single-asset-preview:disabled {
+		cursor: default;
+	}
+	.stuic-field-single-asset[data-state="loading"] .stuic-field-single-asset-preview {
+		cursor: default;
+		border-color: transparent;
+	}
+	.stuic-field-single-asset-preview:not(:disabled):hover {
+		border-color: var(--stuic-field-single-asset-preview-border-hover);
+	}
+	.stuic-field-single-asset-preview:focus-visible {
+		outline: 2px solid var(--stuic-color-ring);
+		outline-offset: 2px;
+	}
+	/* the tile is `disabled` while the field only displays — keep it legible */
+	.stuic-field-single-asset[data-state="filled"]
+		.stuic-field-single-asset-preview:disabled {
+		opacity: 1;
+	}
+
+	.stuic-field-single-asset-img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.stuic-field-single-asset[data-fit="contain"] .stuic-field-single-asset-img {
+		object-fit: contain;
+		padding: calc(var(--spacing) * 2);
+	}
+	.stuic-field-single-asset-icon {
+		display: grid;
+		place-content: center;
+	}
+
+	.stuic-field-single-asset-overlay {
+		position: absolute;
+		inset: 0;
+		display: grid;
+		place-content: center;
+		pointer-events: none;
+		color: #fff;
+		background: var(--stuic-field-single-asset-overlay-bg);
+	}
+	.stuic-field-single-asset-overlay[data-error] {
+		background: color-mix(
+			in oklab,
+			var(--stuic-field-single-asset-error-color) 55%,
+			transparent
+		);
+	}
+
+	/* Actions: hidden until the tile is hovered / focused (or on a failed upload,
+	   where Retry / Discard must be findable); pointer events gated the same way so
+	   an invisible control never intercepts a click meant for the tile. Keyboard
+	   users Tab to them regardless. Touch has no hover: always shown there. */
+	.stuic-field-single-asset-actions {
+		position: absolute;
+		top: calc(var(--spacing) * 1);
+		right: calc(var(--spacing) * 1);
+		display: flex;
+		gap: calc(var(--spacing) * 1);
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity
+			var(--stuic-field-single-asset-transition, var(--stuic-transition));
+	}
+	.stuic-field-single-asset-tile:hover .stuic-field-single-asset-actions,
+	.stuic-field-single-asset-tile:focus-within .stuic-field-single-asset-actions,
+	.stuic-field-single-asset[data-state="error"] .stuic-field-single-asset-actions {
+		opacity: 1;
+		pointer-events: auto;
+	}
+	@media (hover: none) {
+		.stuic-field-single-asset-actions {
+			opacity: 1;
+			pointer-events: auto;
+		}
+	}
+	.stuic-field-single-asset-control {
+		display: grid;
+		place-content: center;
+		padding: calc(var(--spacing) * 1);
+		border-radius: var(
+			--stuic-field-single-asset-control-radius,
+			var(--stuic-radius-button)
+		);
+		background: var(--stuic-field-single-asset-control-bg);
+		color: var(--stuic-field-single-asset-control-text);
+		cursor: pointer;
+		transition: background-color
+			var(--stuic-field-single-asset-transition, var(--stuic-transition));
+	}
+	.stuic-field-single-asset-control:hover {
+		background: var(--stuic-field-single-asset-control-bg-hover);
+	}
+	.stuic-field-single-asset-control:focus-visible {
+		outline: 2px solid var(--stuic-color-ring);
+		outline-offset: 1px;
+	}
+
+	.stuic-field-single-asset-meta {
+		color: var(--stuic-field-single-asset-meta-text);
+	}
+	.stuic-field-single-asset-undo {
+		display: inline-flex;
+		align-items: center;
+		gap: calc(var(--spacing) * 1);
+		margin-left: calc(var(--spacing) * 2);
+		color: var(--stuic-color-foreground);
+		text-decoration: underline;
+		text-underline-offset: 2px;
+		cursor: pointer;
+	}
+	.stuic-field-single-asset-undo:focus-visible {
+		outline: 2px solid var(--stuic-color-ring);
+		outline-offset: 2px;
+		border-radius: var(
+			--stuic-field-single-asset-control-radius,
+			var(--stuic-radius-button)
+		);
 	}
 }
