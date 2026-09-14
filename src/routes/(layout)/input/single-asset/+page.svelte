@@ -19,7 +19,9 @@
 
 	// Fake upload: resolves with an asset whose urls reuse the optimistic blob url
 	// (a real one would POST `ctx.file` and resolve with the server's asset).
-	function fakeUpload(opts: { durationMs?: number; fail?: () => boolean } = {}) {
+	function fakeUpload(
+		opts: { durationMs?: number; fail?: () => boolean; error?: () => Error } = {}
+	) {
 		return async (
 			asset: FieldAsset,
 			ctx: { file: File; onProgress: (p: number) => void }
@@ -31,7 +33,9 @@
 				await sleep(duration / steps);
 				ctx.onProgress((i / steps) * 100);
 			}
-			if (opts.fail?.()) throw new Error("Simulated server error (503)");
+			if (opts.fail?.()) {
+				throw opts.error?.() ?? new Error("Simulated server error (503)");
+			}
 			const blobUrl = asset.id;
 			return {
 				id: getId("uploaded-"),
@@ -84,6 +88,13 @@
 			meta: { size: 1834 },
 		}),
 		failing: "",
+		gated: "",
+		serverOwned: JSON.stringify({
+			id: "so-1",
+			url: "/assets/04.jpg",
+			name: "04.jpg",
+			type: "image/jpeg",
+		}),
 		readonly: JSON.stringify({
 			id: "ro-1",
 			url: "/assets/03.jpg",
@@ -95,6 +106,13 @@
 	let f = $state<HTMLFormElement>()!;
 	let failNext = $state(true);
 	let disabledDemo = $state(false);
+
+	// onUploadError demo: a 402 is a product state the page renders itself
+	let gateNext = $state(true);
+	let gated = $state<string | null>(null);
+
+	// async onBeforeRemove demo: the hook IS the server-side delete
+	let deleteFails = $state(false);
 
 	// isLoading demo
 	let isLoadingDemo = $state(true);
@@ -201,6 +219,90 @@
 	accept="image/*"
 	processAsset={fakeUpload({ durationMs: 1000, fail: () => failNext })}
 	withOnProgress
+	labelLeftBreakpoint={0}
+/>
+
+<hr class="my-8" />
+
+<h2 class="text-lg font-semibold mb-4">Handled failure (onUploadError)</h2>
+<div class="mb-4">
+	<FieldSwitch
+		label="Next upload hits the plan limit (402)"
+		bind:checked={gateNext}
+		name="gate-next"
+	/>
+</div>
+{#if gated}
+	<div
+		class="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-md border border-(--stuic-color-border) bg-(--stuic-color-muted) p-3 text-sm"
+		role="status"
+	>
+		<span>{gated}</span>
+		<Button
+			size="sm"
+			onclick={() => {
+				gated = null;
+				gateNext = false;
+			}}
+		>
+			Upgrade plan
+		</Button>
+	</div>
+{/if}
+<FieldSingleAsset
+	bind:value={values.gated}
+	name="gated"
+	label="Gated upload"
+	description="The upload rejects with a 402-shaped error while the switch is on. onUploadError renders the panel above and returns false, so the field skips its toast; the tile keeps Retry / Discard (Retry after 'Upgrade plan' succeeds)."
+	{notifications}
+	accept="image/*"
+	processAsset={fakeUpload({
+		durationMs: 800,
+		fail: () => gateNext,
+		error: () =>
+			Object.assign(new Error("Your plan's photo storage is full (50 MB)."), {
+				status: 402,
+			}),
+	})}
+	onUploadError={(e) => {
+		if ((e as { status?: number })?.status === 402) {
+			gated = (e as Error).message;
+			return false;
+		}
+	}}
+	labelLeftBreakpoint={0}
+/>
+
+<hr class="my-8" />
+
+<h2 class="text-lg font-semibold mb-4">Async onBeforeRemove (the hook is the delete)</h2>
+<div class="mb-4">
+	<FieldSwitch
+		label="Server delete fails"
+		bind:checked={deleteFails}
+		name="delete-fails"
+	/>
+</div>
+<FieldSingleAsset
+	bind:value={values.serverOwned}
+	name="server-owned"
+	label="Server-owned logo"
+	description="onBeforeRemove awaits a 1.5 s DELETE and resolves with its outcome: the Remove control spins, the tile is inert and a second click is ignored meanwhile; the value clears only on success. undoTtl=0 — restoring the value would lie about a file that is already gone."
+	{notifications}
+	shape="wide"
+	fit="contain"
+	size="sm"
+	accept="image/*"
+	processAsset={fakeUpload({ durationMs: 1200 })}
+	undoTtl={0}
+	onBeforeRemove={async (asset) => {
+		await sleep(1500);
+		if (deleteFails) {
+			notifications.error(`DELETE ${asset.name} failed (simulated)`);
+			return false;
+		}
+		return true;
+	}}
 	labelLeftBreakpoint={0}
 />
 

@@ -102,7 +102,8 @@
 		 * The upload. Receives the optimistic asset (its `id` and every `url` are one
 		 * blob URL of the file) and the file itself; resolves with the stored asset,
 		 * which becomes the new `value`. A rejection keeps the previous `value`, shows
-		 * an error state on the tile with Retry / Discard, and reports `notifications`.
+		 * an error state on the tile with Retry / Discard, and reports `notifications`
+		 * (see `onUploadError` to take over that report).
 		 * Without it the field is display-only (no picker, no drop, no paste).
 		 */
 		processAsset?: (
@@ -111,6 +112,17 @@
 		) => Promise<FieldAsset>;
 		/** Render a progress ring driven by `ctx.onProgress` instead of a spinner. */
 		withOnProgress?: boolean;
+		/**
+		 * Called when `processAsset` rejects (with the raw rejection, so a status code or
+		 * a custom error class is still inspectable), after the tile has entered its
+		 * error state and before the default `notifications.error(...)` toast. Return
+		 * `false` to skip that toast — for a rejection the page already renders its own
+		 * way (a quota / plan-limit panel). The tile keeps Retry / Discard regardless.
+		 */
+		onUploadError?: (
+			error: unknown,
+			ctx: { asset: FieldAsset; file: File }
+		) => void | boolean;
 		/** Same tokens as the HTML `accept` attribute; also applied to drops and pastes. */
 		accept?: string;
 		/** Passed to the file input: on phones opens the camera directly. */
@@ -133,7 +145,12 @@
 		transformFile?: (
 			file: File
 		) => File | null | undefined | Promise<File | null | undefined>;
-		/** Return `false` (may be async) to keep the asset. */
+		/**
+		 * Return `false` (may be async) to keep the asset. While a returned promise is
+		 * pending the tile is busy: the Remove control shows a spinner, the tile and
+		 * its controls are inert, and a second Remove is a no-op — so the hook may do
+		 * the actual server-side delete and resolve with whether it succeeded.
+		 */
 		onBeforeRemove?: (asset: FieldAsset) => boolean | Promise<boolean>;
 		/** Return `false` (may be async) to keep the current asset instead of uploading `file`. */
 		onBeforeReplace?: (current: FieldAsset, file: File) => boolean | Promise<boolean>;
@@ -254,6 +271,7 @@
 		serializeValue = default_serialize,
 		processAsset,
 		withOnProgress = false,
+		onUploadError,
 		accept,
 		capture,
 		maxSize,
@@ -292,6 +310,9 @@
 	let pending = $state<Pending | null>(null);
 	// Bumped on every new upload / discard so a stale promise cannot land.
 	let uploadSeq = 0;
+	// `onBeforeRemove` in flight (it may be the real server-side delete): the tile
+	// is inert and the Remove control shows a spinner until it settles.
+	let removing = $state(false);
 	// The last removed asset while its Undo is still offered.
 	let removed = $state<FieldAsset | null>(null);
 	let undoTimer: ReturnType<typeof setTimeout> | undefined;
@@ -303,7 +324,9 @@
 	let descId = $derived(`${id}-action`);
 
 	let hasLabel = $derived(isTHCNotEmpty(label));
-	let canUpload = $derived(typeof processAsset === "function" && !disabled && !isLoading);
+	let canUpload = $derived(
+		typeof processAsset === "function" && !disabled && !isLoading && !removing
+	);
 	// what the tile shows: the upload in progress wins over the committed asset
 	let shown = $derived(pending?.asset ?? asset);
 	let shownIsImage = $derived(
@@ -312,13 +335,15 @@
 	let tileState = $derived(
 		isLoading
 			? "loading"
-			: pending
-				? pending.error
-					? "error"
-					: "uploading"
-				: asset
-					? "filled"
-					: "empty"
+			: removing
+				? "removing"
+				: pending
+					? pending.error
+						? "error"
+						: "uploading"
+					: asset
+						? "filled"
+						: "empty"
 	);
 	let sizePreset = $derived(SIZE_PRESETS.includes(size) ? size : undefined);
 	let sizeStyle = $derived(
@@ -337,6 +362,7 @@
 	);
 	let metaText = $derived.by(() => {
 		if (!shown) return "";
+		if (removing) return t("removing_short");
 		if (pending) {
 			if (pending.error) return t("upload_failed");
 			const parts = [
@@ -547,7 +573,11 @@
 				if (pending) pending.error = error;
 				const msg = t("upload_failed_named", { name: file.name, error });
 				announce(msg);
-				notifications?.error(msg);
+				// the consumer may own the report (a quota panel it already renders):
+				// `false` skips only the toast, the tile's Retry / Discard stay
+				if (onUploadError?.(e, { asset: optimistic, file }) !== false) {
+					notifications?.error(msg);
+				}
 			});
 	}
 
@@ -566,8 +596,17 @@
 
 	async function remove() {
 		const current = asset;
-		if (!current || disabled || isLoading) return;
-		if (typeof onBeforeRemove === "function" && !(await onBeforeRemove(current))) return;
+		if (!current || disabled || isLoading || removing) return;
+		if (typeof onBeforeRemove === "function") {
+			// busy for the whole round trip (the hook may be the real delete) — the
+			// `removing` guard above is what makes a second click a no-op meanwhile
+			removing = true;
+			try {
+				if (!(await onBeforeRemove(current))) return;
+			} finally {
+				removing = false;
+			}
+		}
 		assetsPreview?.close?.();
 		commit(null);
 		announce(t("removed", { name: current.name }));
@@ -632,20 +671,35 @@
 	});
 </script>
 
-{#snippet control(icon: string, labelText: string, onclick: () => void, action: string)}
+{#snippet control(
+	icon: string,
+	labelText: string,
+	onclick: () => void,
+	action: string,
+	opts: { busy?: boolean; inert?: boolean } = {}
+)}
+	<!-- `aria-disabled` (not `disabled`) so a busy control keeps focus for the
+	     round trip; the click is a no-op meanwhile (`remove()` guards on `removing`) -->
 	<button
 		type="button"
 		class={twMerge("stuic-field-single-asset-control", classControls)}
 		aria-label={labelText}
+		aria-disabled={opts.busy || opts.inert ? "true" : undefined}
+		aria-busy={opts.busy ? "true" : undefined}
 		data-action={action}
 		use:tooltip={() => ({ content: labelText })}
 		onclick={(e) => {
 			e.preventDefault();
 			e.stopPropagation();
+			if (opts.busy || opts.inert) return;
 			onclick();
 		}}
 	>
-		{@html icon}
+		{#if opts.busy}
+			<SpinnerCircleOscillate class="size-4" bgStrokeColor="rgba(255 255 255 / 0.3)" />
+		{:else}
+			{@html icon}
+		{/if}
 	</button>
 {/snippet}
 
@@ -740,7 +794,8 @@
 								iconZoomIn({ size: 16 }),
 								t("preview"),
 								() => assetsPreview.open(0),
-								"preview"
+								"preview",
+								{ inert: removing }
 							)}
 						{/if}
 						{#if pending || !disabled}
@@ -750,9 +805,12 @@
 									? pending.error
 										? t("discard")
 										: t("cancel_upload")
-									: t("remove"),
+									: removing
+										? t("removing_short")
+										: t("remove"),
 								on_x,
-								pending ? "discard" : "remove"
+								pending ? "discard" : "remove",
+								{ busy: removing }
 							)}
 						{/if}
 					</span>

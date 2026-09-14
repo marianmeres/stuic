@@ -25,6 +25,7 @@ export const FIELD_SINGLE_ASSET_MESSAGES_SK: FieldSingleAssetMessages = {
 	replace_file: "Nahradiť {{name}}",
 	empty_hint: "Presuňte sem súbor alebo kliknite a vyberte ho",
 	remove: "Odstrániť",
+	removing_short: "Odstraňuje sa…",
 	removed: "Súbor {{name}} bol odstránený",
 	undo: "Vrátiť späť",
 	restored: "Súbor {{name}} bol obnovený",

@@ -768,7 +768,9 @@ built around a single tile instead:
 - **The tile is the picker and the drop target.** Click it, drop onto the field, or (opt-in)
   paste — every source _replaces_ what is there. Two files at once are refused.
 - **Remove inline**, with an **Undo** offered for `undoTtl` ms (the asset is only unlinked
-  from `value`, never deleted anywhere, so undo is lossless). Focus returns to the tile.
+  from `value`, never deleted anywhere, so undo is lossless). Focus returns to the tile. An
+  async `onBeforeRemove` gets a busy state for its round trip (spinner on the Remove
+  control, tile inert, second click ignored) — so it may be the real server-side delete.
 - **Shape / fit / size presets**: `shape="circle"` for avatars, `shape="wide"` (16:9) for
   banners, `fit="contain"` for logos that must never be cropped; `size` is `sm` / `md` / `lg`
   (5 / 8 / 12rem tall) or any CSS length.
@@ -776,7 +778,8 @@ built around a single tile instead:
   `withOnProgress`.
 - **Rollback on failure.** `value` is only rewritten when the upload _resolves_. A rejection
   keeps the previous asset, shows the error on the tile with **Retry** (same file) and
-  **Discard**, and reports through `notifications`. X during an upload cancels it (a late
+  **Discard**, and reports through `notifications` — unless `onUploadError` returns `false`
+  because the page shows that failure its own way. X during an upload cancels it (a late
   resolution is ignored).
 - **Client-side checks** before any bytes move: `accept` (also for drops and pastes),
   `maxSize`, a custom async `validateFile`, and a `transformFile` seam for downscaling a
@@ -852,6 +855,54 @@ or `alert` without one):
 one file only → `accept` → `onBeforeReplace` → `transformFile` → `maxSize` → `validateFile`
 → `processAsset`
 
+### When the failure is yours to show (`onUploadError`)
+
+Some rejections are not failures but product states — a 402 "plan limit reached" that the
+page already renders as an upgrade panel. Without a hook the field would stack its generic
+toast on top of that panel. `onUploadError(error, { asset, file })` gets the raw rejection
+first; return `false` to skip the toast. The tile still shows the error with Retry / Discard
+(the user may come back to it after upgrading), so the override is deliberately that narrow:
+
+```svelte
+<script lang="ts">
+	let gated = $state<string | null>(null);
+</script>
+
+{#if gated}
+	<UpgradeNotice message={gated} />
+{/if}
+
+<FieldSingleAsset
+	...
+	onUploadError={(e) => {
+		if ((e as any)?.status === 402) {
+			gated = (e as Error).message;
+			return false; // handled above — no toast
+		}
+	}}
+/>
+```
+
+### Removing the server copy too (`onBeforeRemove`)
+
+By default a remove only unlinks the asset from `value` (hence the lossless Undo). When the
+field owns a file that must go away on the server as well, do the `DELETE` inside
+`onBeforeRemove` and resolve with whether it succeeded — the field clears `value` only then.
+The round trip gets a busy state (spinner on the Remove control, `data-state="removing"`,
+tile and controls inert, a second Remove ignored). Pair it with `undoTtl={0}`: restoring the
+local value would lie about a file that is already gone.
+
+```svelte
+<FieldSingleAsset
+	...
+	undoTtl={0}
+	onBeforeRemove={async (asset) => {
+		const res = await fetch(`/api/logo/${asset.id}`, { method: "DELETE" });
+		return res.ok;
+	}}
+/>
+```
+
 ### Downscale or crop before upload (`transformFile`)
 
 ```svelte
@@ -871,12 +922,13 @@ a dialog and resolves with the cropped file.
 | `name`                                                     | `string`                                               | required           | The hidden input's name                                                 |
 | `processAsset`                                             | `(asset, { file, onProgress }) => Promise<FieldAsset>` | -                  | The upload. Without it the field is display-only                        |
 | `withOnProgress`                                           | `boolean`                                              | `false`            | Progress ring instead of a spinner                                      |
+| `onUploadError`                                            | `(error, { asset, file }) => void \| boolean`          | -                  | On a rejected upload, before the toast; `false` skips the toast         |
 | `accept`                                                   | `string`                                               | -                  | HTML `accept` tokens (MIME, `image/*`, `.pdf`); applied to drops/pastes |
 | `capture`                                                  | `"user" \| "environment"`                              | -                  | Passed to the file input: phones open the camera directly               |
 | `maxSize`                                                  | `number`                                               | -                  | Max bytes, checked after `transformFile`                                |
 | `validateFile`                                             | `(file) => string \| void \| Promise<...>`             | -                  | Non-empty string rejects with that message                              |
 | `transformFile`                                            | `(file) => File \| null \| Promise<...>`               | -                  | Pre-upload hook; `null` cancels                                         |
-| `onBeforeRemove`                                           | `(asset) => boolean \| Promise<boolean>`               | -                  | `false` keeps the asset                                                 |
+| `onBeforeRemove`                                           | `(asset) => boolean \| Promise<boolean>`               | -                  | `false` keeps the asset; busy state while a promise settles             |
 | `onBeforeReplace`                                          | `(current, file) => boolean \| Promise<boolean>`       | -                  | `false` keeps the current asset                                         |
 | `undoTtl`                                                  | `number`                                               | `6000`             | ms the inline Undo stays after a remove; `0` disables                   |
 | `pasteable`                                                | `boolean`                                              | `false`            | Accept Ctrl/Cmd-V (same routing as `FieldAssets`)                       |

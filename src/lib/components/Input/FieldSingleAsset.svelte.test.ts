@@ -15,8 +15,10 @@ import { NotificationsStack } from "../Notifications/notifications-stack.svelte.
 //   - the check order: accept -> onBeforeReplace -> transformFile -> maxSize ->
 //     validateFile -> processAsset
 //   - a failed upload shows Retry (same file) / Discard; a cancelled upload's
-//     late resolution is ignored
-//   - remove offers an inline Undo for `undoTtl` ms; focus returns to the tile
+//     late resolution is ignored; `onUploadError` gets the raw rejection first
+//     and `false` from it skips the toast only
+//   - remove offers an inline Undo for `undoTtl` ms; focus returns to the tile;
+//     an async `onBeforeRemove` puts the tile in a busy `removing` state
 //   - `disabled` blocks drop/pick/paste/remove; without `processAsset` the field
 //     is display-only; `isLoading` renders a skeleton
 //   - `pasteable` shares FieldAssets' document-level paste registry
@@ -646,4 +648,103 @@ test("pasteable alone: an unfocused paste is routed here; plain text passes thro
 	expect(ev.defaultPrevented).toBe(true);
 	await expect.poll(() => processAsset.mock.calls.length).toBe(1);
 	await expect.poll(els(screen.container).state).toBe("filled");
+});
+
+test("onUploadError gets the raw rejection first; `false` skips the toast but keeps the tile's Retry / Discard", async () => {
+	const up = deferredUpload();
+	const { notifications, error } = notificationsMock();
+	let verdict: boolean | undefined = false;
+	const onUploadError = vi.fn(
+		(_e: unknown, _ctx: { asset: FieldAsset; file: File }) => verdict
+	);
+	const screen = await render(FieldSingleAsset, {
+		name: "a",
+		label: "Photo",
+		value: JSON.stringify(ASSET),
+		processAsset: up.processAsset,
+		notifications,
+		onUploadError,
+	});
+	const { input, hidden, state, action, meta } = els(screen.container);
+
+	pick(input, file("new.png"));
+	await expect.poll(state).toBe("uploading");
+	const gated = Object.assign(new Error("plan limit reached"), { status: 402 });
+	up.reject(gated);
+	await expect.poll(state).toBe("error");
+	expect(onUploadError).toHaveBeenCalledTimes(1);
+	const [e, ctx] = onUploadError.mock.calls[0];
+	expect(e).toBe(gated); // the raw error, not its message
+	expect(ctx.file.name).toBe("new.png");
+	expect(ctx.asset.id.startsWith("blob:")).toBe(true);
+	// handled by the consumer: no toast, but the tile's error chrome stays
+	expect(error).not.toHaveBeenCalled();
+	expect(meta()).toContain("Upload failed");
+	expect(action("retry")).not.toBeNull();
+	expect(action("discard")).not.toBeNull();
+	expect(JSON.parse(hidden.value).id).toBe("a1");
+
+	// anything but `false` keeps the default toast
+	verdict = undefined;
+	action("retry")!.click();
+	await expect.poll(() => up.processAsset.mock.calls.length).toBe(2);
+	up.reject(new Error("boom"));
+	await expect.poll(() => error.mock.calls.length).toBe(1);
+	expect(onUploadError).toHaveBeenCalledTimes(2);
+	expect(`${error.mock.calls[0][0]}`).toContain("boom");
+});
+
+test("async onBeforeRemove: busy state for the round trip, a second Remove is a no-op, `false` restores the filled state", async () => {
+	let settle!: (ok: boolean) => void;
+	const onBeforeRemove = vi.fn(
+		(_a: FieldAsset) => new Promise<boolean>((r) => (settle = r))
+	);
+	const processAsset = resolvingUpload();
+	const screen = await render(FieldSingleAsset, {
+		name: "a",
+		label: "Photo",
+		value: JSON.stringify(ASSET),
+		processAsset,
+		onBeforeRemove,
+		undoTtl: 0,
+	});
+	const { wrap, input, hidden, state, action, tile, meta, undo } = els(screen.container);
+
+	action("remove")!.click();
+	await expect.poll(state).toBe("removing");
+	expect(onBeforeRemove).toHaveBeenCalledTimes(1);
+	expect(onBeforeRemove.mock.calls[0][0]).toMatchObject({ id: "a1" });
+	const busy = action("remove")!;
+	expect(busy.getAttribute("aria-busy")).toBe("true");
+	expect(busy.getAttribute("aria-disabled")).toBe("true");
+	expect(busy.getAttribute("aria-label")).toBe("Removing…");
+	expect(action("preview")!.getAttribute("aria-disabled")).toBe("true");
+	expect(tile()!.disabled).toBe(true);
+	expect(meta()).toContain("Removing…");
+	expect(JSON.parse(hidden.value).id).toBe("a1"); // nothing written yet
+
+	// meanwhile a second Remove, a drop and a pick are all ignored
+	busy.click();
+	drop(wrap, file("new.png"));
+	pick(input, file("new.png"));
+	await tick();
+	expect(onBeforeRemove).toHaveBeenCalledTimes(1);
+	expect(processAsset).not.toHaveBeenCalled();
+
+	// refused: back to filled, untouched
+	settle(false);
+	await expect.poll(state).toBe("filled");
+	expect(JSON.parse(hidden.value).id).toBe("a1");
+	expect(action("remove")!.getAttribute("aria-busy")).toBeNull();
+	expect(action("remove")!.getAttribute("aria-label")).toBe("Remove");
+	expect(tile()!.disabled).toBe(false);
+
+	// confirmed: `value` is cleared only once the hook resolved
+	action("remove")!.click();
+	await expect.poll(state).toBe("removing");
+	settle(true);
+	await expect.poll(state).toBe("empty");
+	expect(hidden.value).toBe("");
+	expect(undo()).toBeNull(); // undoTtl 0: the server copy is gone
+	expect(onBeforeRemove).toHaveBeenCalledTimes(2);
 });

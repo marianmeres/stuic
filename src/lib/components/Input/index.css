@@ -1645,8 +1645,11 @@
 		outline: 2px solid var(--stuic-color-ring);
 		outline-offset: 2px;
 	}
-	/* the tile is `disabled` while the field only displays — keep it legible */
+	/* the tile is `disabled` while the field only displays (or while an async
+	   `onBeforeRemove` is in flight) — keep it legible */
 	.stuic-field-single-asset[data-state="filled"]
+		.stuic-field-single-asset-preview:disabled,
+	.stuic-field-single-asset[data-state="removing"]
 		.stuic-field-single-asset-preview:disabled {
 		opacity: 1;
 	}
@@ -1699,9 +1702,12 @@
 		transition: opacity
 			var(--stuic-field-single-asset-transition, var(--stuic-transition));
 	}
+	/* pinned open on error (Retry / Discard must not depend on hover) and while a
+	   remove is in flight (the busy spinner lives in the Remove control) */
 	.stuic-field-single-asset-tile:hover .stuic-field-single-asset-actions,
 	.stuic-field-single-asset-tile:focus-within .stuic-field-single-asset-actions,
-	.stuic-field-single-asset[data-state="error"] .stuic-field-single-asset-actions {
+	.stuic-field-single-asset[data-state="error"] .stuic-field-single-asset-actions,
+	.stuic-field-single-asset[data-state="removing"] .stuic-field-single-asset-actions {
 		opacity: 1;
 		pointer-events: auto;
 	}
@@ -1725,8 +1731,15 @@
 		transition: background-color
 			var(--stuic-field-single-asset-transition, var(--stuic-transition));
 	}
-	.stuic-field-single-asset-control:hover {
+	.stuic-field-single-asset-control:hover:not([aria-disabled="true"]) {
 		background: var(--stuic-field-single-asset-control-bg-hover);
+	}
+	/* `aria-disabled`, not `disabled`: a busy control keeps focus for the round trip */
+	.stuic-field-single-asset-control[aria-disabled="true"] {
+		cursor: default;
+	}
+	.stuic-field-single-asset-control[aria-disabled="true"]:not([aria-busy="true"]) {
+		opacity: 0.5;
 	}
 	.stuic-field-single-asset-control:focus-visible {
 		outline: 2px solid var(--stuic-color-ring);

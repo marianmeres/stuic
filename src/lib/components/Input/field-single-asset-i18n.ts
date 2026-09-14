@@ -15,6 +15,7 @@ export const FIELD_SINGLE_ASSET_MESSAGES_EN = {
 	replace_file: "Replace {{name}}",
 	empty_hint: "Drop a file here or click to browse",
 	remove: "Remove",
+	removing_short: "Removing…",
 	removed: "{{name}} removed",
 	undo: "Undo",
 	restored: "{{name}} restored",
