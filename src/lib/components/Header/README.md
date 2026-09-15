@@ -4,17 +4,54 @@ Top-bar component with leading slot, project logo, nav items, locale switcher, o
 
 ## Examples
 
+### The locale switcher stays visible when collapsed
+
+When the header collapses, the locale switcher does **not** fold into the trailing hamburger. It stays inline, immediately before the actions / avatar / hamburger, in **both** collapse modes. Nothing to configure — it is the default.
+
+```svelte
+<Header
+	projectName="App"
+	items={navItems}
+	{locales}
+	{activeLocale}
+	onLocaleChange={(id) => (activeLocale = id)}
+/>
+<!-- collapsed:  [App]                              [EN ▾] [☰] -->
+```
+
+This is the one control `Header` deliberately treats differently from a nav item, and the reason is worth stating because it looks like an inconsistency:
+
+> The person who most needs the language switch is the person who landed in a language they cannot read. A visible `EN ▾` trigger is self-describing to them — it shows the current language and it is obviously a control. An entry inside the hamburger is not: the trigger is an unlabeled icon, the section heading says "Language" in a language they do not speak, and past a handful of nav items it sits below the fold of a menu they have to scroll with a finger. It is reliably never found.
+
+What follows from it:
+
+| Behavior                                                                                                                                  | Why                                                                                                                                                                |
+| ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| The trailing dropdown has **no** locale section while the inline trigger is visible.                                                      | Two routes to one setting, one of which nobody finds. `_dropdownItems` appends the locale section only when the inline switcher is hidden.                         |
+| A header whose only collapsible content was the locale switcher renders **no hamburger at all**.                                          | `_dropdownItems` comes back empty, and the trailing `DropdownMenu` is gated on it being non-empty.                                                                 |
+| The inline trigger shows `HeaderLocaleItem.shortLabel` (when set) **only** while collapsed.                                               | `"Slovenčina"` next to a hamburger on a 360px phone is what pushed the switcher into the menu in the first place. The dropdown list always shows the full `label`. |
+| `keepLocaleOnCollapse={false}` restores the alternative: folds into the dropdown in `"hamburger"` mode, hidden entirely in `"hide"` mode. | For an end area already crowded with actions, or an app whose own drawer owns the language switch.                                                                 |
+
+```ts
+// Long locale names on a narrow header: short form on the inline trigger,
+// full form in the dropdown list.
+const locales: HeaderLocaleItem[] = [
+	{ id: "en", label: "English", shortLabel: "EN" },
+	{ id: "sk", label: "Slovenčina", shortLabel: "SK" },
+];
+```
+
 ### App-like collapse: avatar + actions visible, everything else hidden
 
-Common "app shell" pattern: when the header collapses below `collapseThreshold`, the avatar and a few key actions (search, notifications, cart…) remain visible, the trailing hamburger is NOT shown, and the nav items + locale switcher are hidden entirely (the nav typically lives in a drawer triggered by the leading hamburger instead).
+Common "app shell" pattern: when the header collapses below `collapseThreshold`, the avatar, the locale switcher and a few key actions (search, notifications, cart…) remain visible, the trailing hamburger is NOT shown, and the nav items are hidden entirely (the nav typically lives in a drawer triggered by the leading hamburger instead).
 
-| Requirement                     | Where it's handled                                                                                                 | How                                                                                                                              |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
-| **Avatar stays visible**        | [Header.svelte:626](./Header.svelte#L626) — `{#if avatar && !(_isCollapsed && _avatarInDropdown)}`                 | `_avatarInDropdown` requires `collapseMode === "hamburger"`. In `"hide"` mode it's always `false`, so the avatar always renders. |
-| **Action buttons stay visible** | [Header.svelte:585](./Header.svelte#L585) — `<!-- Actions (icon buttons, always visible) -->`                      | The actions loop has no collapse gating — items render in both modes.                                                            |
-| **No trailing hamburger**       | [Header.svelte:642](./Header.svelte#L642) — `{#if _isCollapsed && _dropdownItems.length > 0}`                      | In `"hide"` mode, `_dropdownItems` short-circuits to `[]`, so the `{#if}` is false → no trailing hamburger.                      |
-| **Nav items hidden**            | [Header.svelte:516](./Header.svelte#L516) — `{#if !_isCollapsed && items.length > 0}`                              | Inline nav requires `!_isCollapsed`; combined with the empty `_dropdownItems` above, items don't reappear in a dropdown either.  |
-| **Locale hidden**               | [Header.svelte:335](./Header.svelte#L335) — `!_isCollapsed \|\| (collapseMode === "hide" && keepLocaleOnCollapse)` | Default `keepLocaleOnCollapse={false}` hides the locale switcher in collapsed mode.                                              |
+| Requirement                     | Where it's handled                                                                                 | How                                                                                                                                                      |
+| ------------------------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Avatar stays visible**        | [Header.svelte:673](./Header.svelte#L673) — `{#if avatar && !(_isCollapsed && _avatarInDropdown)}` | `_avatarInDropdown` requires `collapseMode === "hamburger"`. In `"hide"` mode it's always `false`, so the avatar always renders.                         |
+| **Action buttons stay visible** | [Header.svelte:632](./Header.svelte#L632) — `<!-- Actions (icon buttons, always visible) -->`      | The actions loop has no collapse gating — items render in both modes.                                                                                    |
+| **No trailing hamburger**       | [Header.svelte:689](./Header.svelte#L689) — `{#if _isCollapsed && _dropdownItems.length > 0}`      | In `"hide"` mode, `_dropdownItems` short-circuits to `[]`, so the `{#if}` is false → no trailing hamburger.                                              |
+| **Nav items hidden**            | [Header.svelte:564](./Header.svelte#L564) — `{#if !_isCollapsed && items.length > 0}`              | Inline nav requires `!_isCollapsed`; combined with the empty `_dropdownItems` above, items don't reappear in a dropdown either.                          |
+| **Locale stays visible**        | [Header.svelte:369](./Header.svelte#L369) — `!_isCollapsed \|\| keepLocaleOnCollapse`              | `keepLocaleOnCollapse` defaults to `true` in both modes (see the section above). Pass `false` to hide it, e.g. when the drawer owns the language switch. |
 
 Minimal config:
 
@@ -26,7 +63,7 @@ Minimal config:
     collapseMode="hide"         <!-- no trailing hamburger; avatar stays -->
     leadingHamburger            <!-- optional: drives a drawer for the hidden nav -->
     onLeadingHamburger={() => (drawerOpen = true)}
-    {locales} {activeLocale}    <!-- hidden in collapsed (keepLocaleOnCollapse defaults to false) -->
+    {locales} {activeLocale}    <!-- stays visible in collapsed (keepLocaleOnCollapse defaults to true) -->
     onLocaleChange={(id) => (activeLocale = id)}
     avatarOnClick={() => alert("Profile")}  <!-- safe in "hide" mode — won't move into dropdown -->
 >

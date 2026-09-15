@@ -1515,6 +1515,18 @@ interface HeaderActionItem {
 }
 ```
 
+### HeaderLocaleItem
+
+```ts
+interface HeaderLocaleItem {
+	id: string;
+	label: THC;
+	/** Compact label for the inline trigger in COLLAPSED mode only
+	 *  (falls back to `label`); the dropdown list always shows `label`. */
+	shortLabel?: THC;
+}
+```
+
 ### Key Props
 
 | Prop                    | Type                         | Default               | Description                                                                                |
@@ -1540,7 +1552,7 @@ interface HeaderActionItem {
 | `contentMaxWidth`       | `string \| number`           | —                     | Inner content row max-width (outer header stays 100%).                                     |
 | `collapseThreshold`     | `number`                     | `768`                 | Width (px) to collapse; 0 disables.                                                        |
 | `collapseMode`          | `"hamburger" \| "hide"`      | `"hamburger"`         | Collapse behavior. See top of section.                                                     |
-| `keepLocaleOnCollapse`  | `boolean`                    | `false`               | Keep locale switcher visible when collapsed (only `collapseMode === "hide"`).              |
+| `keepLocaleOnCollapse`  | `boolean`                    | `true`                | Keep the locale switcher inline when collapsed (both modes). See below.                    |
 | `fixed`                 | `boolean`                    | `false`               | Fixed positioning at top.                                                                  |
 | `isCollapsed`           | `boolean`                    | —                     | Bindable: collapsed state.                                                                 |
 | `isMenuOpen`            | `boolean`                    | —                     | Bindable: hamburger menu open.                                                             |
@@ -1575,11 +1587,24 @@ Common pattern for app interfaces: the leading hamburger opens a side drawer for
 
 See [Header/README.md](../../src/lib/components/Header/README.md) for the breakdown of which markup branch handles each requirement of this pattern.
 
+### The locale switcher never folds into the hamburger
+
+By default (`keepLocaleOnCollapse`) the locale switcher stays **inline** when the header collapses, in both collapse modes — it sits just before the actions/avatar/hamburger instead of becoming the last section of the dropdown.
+
+This is the one control `Header` deliberately treats differently from nav items. The user who most needs the language switch is the one who landed in a language they cannot read, and for them a visible `EN ▾` trigger is self-describing while a hamburger entry is not: the trigger is an unlabeled icon, the section heading says "Language" in a language they do not speak, and with more than a few nav items it sits below the fold of a menu they must scroll.
+
+Consequences worth knowing:
+
+- The dropdown never carries a duplicate locale section while the inline trigger is visible.
+- If the locales were the only thing the trailing dropdown would have held, no hamburger renders at all.
+- `HeaderLocaleItem.shortLabel` keeps the inline trigger narrow on phones (`"Slovenčina"` → `"SK"`) without shortening the dropdown entries.
+- Set `keepLocaleOnCollapse={false}` when the end area is already crowded with actions, or when the app's own drawer owns the language switch.
+
 ### CSS Tokens
 
 Prefix: `--stuic-header-*`
 
-`padding-x`, `padding-y`, `gap`, `min-height`, `nav-gap`, `content-max-width`, `project-name-font-weight`, `z-index`, `bg`, `text`, `border-width`, `border-color`, `nav-item-bg-active`, `nav-item-text-active`
+`padding-x`, `padding-y`, `gap`, `end-gap-collapsed`, `min-height`, `nav-gap`, `content-max-width`, `project-name-font-weight`, `z-index`, `bg`, `text`, `border-width`, `border-color`, `nav-item-bg-active`, `nav-item-text-active`
 
 ---
 

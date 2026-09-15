@@ -21,6 +21,14 @@
 	/* Actions (icon buttons in the end region) */
 	--stuic-header-actions-gap: 0.25rem;
 
+	/* Gap between the end-area regions (locale / actions / avatar / hamburger)
+	   while collapsed. Expanded uses --stuic-header-gap; collapsed is tighter
+	   because the locale switcher stays inline there instead of folding into
+	   the hamburger, and at 320px the full gap pushes a locale + 3 actions +
+	   hamburger row past the content edge. Set to var(--stuic-header-gap) to
+	   keep both states equal. */
+	--stuic-header-end-gap-collapsed: 0.5rem;
+
 	/* Hamburger offsets — outdent the built-in hamburger buttons on both
 	   inline sides so the *icon* (not the invisible iconButton hit area)
 	   sits flush with the header's content padding on one side and tightens
@@ -126,6 +134,14 @@
 		font-size: var(--stuic-header-project-name-font-size, var(--text-lg, 1.125rem));
 		font-weight: var(--stuic-header-project-name-font-weight);
 		white-space: nowrap;
+		/* Truncate instead of overflowing the row. `min-width: 0` lets this
+		   flex item shrink below its content width (auto minimum size would
+		   otherwise pin it), and `overflow: hidden` is what makes
+		   `text-overflow` apply. Matters most in collapsed mode, where the
+		   name shares the row with the locale trigger + hamburger. */
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	/* ============================================================================
@@ -191,6 +207,10 @@
 		align-items: center;
 		gap: var(--stuic-header-gap);
 		flex-shrink: 0;
+	}
+
+	.stuic-header[data-collapsed] .stuic-header-end {
+		gap: var(--stuic-header-end-gap-collapsed);
 	}
 
 	.stuic-header-avatar {

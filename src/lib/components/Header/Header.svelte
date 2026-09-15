@@ -35,6 +35,12 @@
 		id: string;
 		/** Display label — supports THC (string, html, component, snippet) */
 		label: THC;
+		/** Compact label for the inline trigger in COLLAPSED mode only.
+		 *  Falls back to `label`. Use it when the full label ("Slovenčina")
+		 *  would crowd the narrow header next to the hamburger — the dropdown
+		 *  list always shows the full `label`, so the long form stays
+		 *  available where there is room to read it. */
+		shortLabel?: THC;
 	}
 
 	export interface HeaderActionItem {
@@ -86,11 +92,13 @@
 	}
 
 	/** Collapse behavior when the header drops below `collapseThreshold`:
-	 *  - "hamburger": nav items fold into a trailing dropdown along with the
-	 *    locale switcher and an interactive avatar.
+	 *  - "hamburger": nav items fold into a trailing dropdown along with an
+	 *    interactive avatar.
 	 *  - "hide": nav items are hidden entirely. No trailing hamburger renders.
-	 *    Avatar stays visible. Locale visibility is controlled by
-	 *    `keepLocaleOnCollapse`. */
+	 *    Avatar stays visible.
+	 *
+	 *  In BOTH modes the locale switcher stays inline next to the hamburger
+	 *  by default — see `keepLocaleOnCollapse`. */
 	export type HeaderCollapseMode = "hamburger" | "hide";
 
 	/** Visibility for the built-in leading hamburger button:
@@ -152,9 +160,27 @@
 		collapseThreshold?: number;
 		/** Collapse behavior when below threshold (defaults to "hamburger") */
 		collapseMode?: HeaderCollapseMode;
-		/** When `collapseMode === "hide"`, keep the locale switcher visible in
-		 *  collapsed mode. No effect when `collapseMode === "hamburger"`
-		 *  (locale already folds into the trailing dropdown there). */
+		/** Keep the locale switcher visible — inline, next to the hamburger —
+		 *  when the header is collapsed. Applies to BOTH collapse modes.
+		 *  Defaults to `true`.
+		 *
+		 *  Why it defaults on: the person who most needs this control is the
+		 *  one who landed in a language they cannot read. For them a visible
+		 *  "EN ▾" trigger is the only self-describing widget in the bar, while
+		 *  a locale entry folded into the hamburger — listed last, under a
+		 *  "Language" heading they also cannot read, often below the fold of a
+		 *  long menu — is effectively invisible.
+		 *
+		 *  When `true` in `"hamburger"` mode the locale section is NOT also
+		 *  appended to the trailing dropdown, so it is never reachable twice.
+		 *
+		 *  Set `false` for the alternative: folds into the trailing dropdown
+		 *  in `"hamburger"` mode, hidden entirely in `"hide"` mode (this was
+		 *  the behavior before the prop applied to both modes). Worth doing
+		 *  when the end area is already crowded with actions, or when the
+		 *  app's own drawer owns the language switch. See also
+		 *  `HeaderLocaleItem.shortLabel` for keeping the inline trigger
+		 *  narrow. */
 		keepLocaleOnCollapse?: boolean;
 		/** Fixed positioning (top of viewport) */
 		fixed?: boolean;
@@ -263,7 +289,7 @@
 		contentMaxWidth,
 		collapseThreshold = 768,
 		collapseMode = "hamburger",
-		keepLocaleOnCollapse = false,
+		keepLocaleOnCollapse = true,
 		fixed = false,
 		safeArea = false,
 		isCollapsed = $bindable(false),
@@ -336,16 +362,27 @@
 	// Locale switcher: only render when 2+ locales
 	let _hasLocales = $derived(locales.length > 1);
 
-	// Visibility of the inline (expanded-form) locale switcher.
-	// In "hamburger" mode: visible only when not collapsed (it folds into the
-	// trailing dropdown when collapsed). In "hide" mode: visible when not
-	// collapsed, or when collapsed and `keepLocaleOnCollapse` is set.
+	// Visibility of the inline (expanded-form) locale switcher. Always visible
+	// when expanded; when collapsed it stays inline unless explicitly opted out
+	// — in BOTH collapse modes. Deliberately mode-agnostic: a user who cannot
+	// read the current language must be able to find the switcher without
+	// opening a menu whose trigger tells them nothing.
 	let _showLocaleSwitcher = $derived(
-		_hasLocales && (!_isCollapsed || (collapseMode === "hide" && keepLocaleOnCollapse))
+		_hasLocales && (!_isCollapsed || keepLocaleOnCollapse)
 	);
 
 	// Active locale object (for trigger label); fallback to first
 	let _activeLocale = $derived(locales.find((l) => l.id === activeLocale) ?? locales[0]);
+
+	// Inline trigger label. `shortLabel` (when provided) is used ONLY in
+	// collapsed mode, where horizontal space next to the hamburger is scarce;
+	// expanded mode and the dropdown list always show the full `label`.
+	let _localeTriggerLabel = $derived.by((): THC | undefined => {
+		if (!_activeLocale) return undefined;
+		return _isCollapsed
+			? (_activeLocale.shortLabel ?? _activeLocale.label)
+			: _activeLocale.label;
+	});
 
 	// Locale items for the expanded-mode DropdownMenu
 	let _localeDropdownItems = $derived.by((): DropdownMenuItem[] => {
@@ -389,8 +426,10 @@
 				}) satisfies DropdownMenuActionItem
 		);
 
-		// Append locale section when locales are available
-		if (_hasLocales) {
+		// Append the locale section ONLY when the inline switcher is hidden.
+		// With the inline trigger visible this would be a second, worse route
+		// to the same setting — and the one nobody finds.
+		if (_hasLocales && !_showLocaleSwitcher) {
 			if (navItems.length > 0) {
 				navItems.push({ type: "divider" });
 			}
@@ -556,7 +595,9 @@
 
 			<!-- End area: locale + actions + avatar + trailing hamburger -->
 			<div class={_classEnd}>
-				<!-- Locale switcher (shown when expanded, or in "hide" mode with keepLocaleOnCollapse) -->
+				<!-- Locale switcher — inline when expanded and, unless
+				     `keepLocaleOnCollapse={false}`, still inline when collapsed
+				     (both collapse modes) rather than folded into the dropdown -->
 				{#if _showLocaleSwitcher}
 					<DropdownMenu
 						items={_localeDropdownItems}
@@ -573,8 +614,8 @@
 								aria-label="Change language"
 								{...triggerProps}
 							>
-								{#if _activeLocale}
-									<Thc thc={_activeLocale.label} />
+								{#if _localeTriggerLabel !== undefined}
+									<Thc thc={_localeTriggerLabel} />
 								{/if}
 								<span
 									class={twMerge(

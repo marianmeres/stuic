@@ -83,6 +83,16 @@
 	];
 
 	let containerWidth = $state(1000);
+
+	// Long locale names — the case that makes `shortLabel` worth having.
+	const localesLong: HeaderLocaleItem[] = [
+		{ id: "en", label: "English", shortLabel: "EN" },
+		{ id: "sk", label: "Slovenčina", shortLabel: "SK" },
+		{ id: "cs", label: "Čeština", shortLabel: "CS" },
+	];
+	let activeLocaleLong = $state("en");
+	let localeContainerWidth = $state(420);
+	let localeStaysVisible = $state(true);
 </script>
 
 <div class="space-y-16 py-8">
@@ -165,7 +175,7 @@
 			collapses into a hamburger + dropdown menu. The avatar moves into the dropdown when <code
 				class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">avatarOnClick</code
 			>
-			is set.
+			is set. The locale switcher stays inline rather than folding in — see the next example.
 		</p>
 		<input
 			type="range"
@@ -192,6 +202,51 @@
 					<Avatar initials="AB" size="md" autoColor />
 				{/snippet}
 			</Header>
+		</div>
+	</section>
+
+	<hr class="border-neutral-200 dark:border-neutral-700" />
+
+	<!-- Locale switcher stays inline when collapsed -->
+	<section>
+		<h2 class="text-xl font-semibold mb-2">Locale Stays Visible When Collapsed</h2>
+		<p class="text-sm text-neutral-500 mb-4">
+			The locale switcher does not fold into the hamburger — it stays inline next to it,
+			in both collapse modes. Drag below the threshold: the nav items disappear into the
+			menu, the locale trigger does not. Untick
+			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded"
+				>keepLocaleOnCollapse</code
+			>
+			to compare with the alternative, where it becomes the last section of the dropdown — on
+			a real phone that means scrolling a long menu to find it, which is why it defaults on.
+			These locales also carry a
+			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">shortLabel</code>,
+			used on the trigger only while collapsed ("Slovenčina" → "SK").
+		</p>
+		<label class="flex items-center gap-2 text-sm mb-4">
+			<input type="checkbox" bind:checked={localeStaysVisible} />
+			keepLocaleOnCollapse = {localeStaysVisible}
+		</label>
+		<input
+			type="range"
+			min="300"
+			max="1200"
+			bind:value={localeContainerWidth}
+			class="w-full mb-4"
+		/>
+		<p class="text-sm opacity-60 mb-2">Container width: {localeContainerWidth}px</p>
+		<div
+			class="border rounded-lg overflow-hidden mx-auto"
+			style="width: {localeContainerWidth}px; max-width: 100%;"
+		>
+			<Header
+				projectName="Multilang"
+				items={navItems}
+				locales={localesLong}
+				activeLocale={activeLocaleLong}
+				onLocaleChange={(id) => (activeLocaleLong = id)}
+				keepLocaleOnCollapse={localeStaysVisible}
+			/>
 		</div>
 	</section>
 
