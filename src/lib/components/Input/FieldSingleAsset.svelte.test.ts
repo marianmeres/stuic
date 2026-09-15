@@ -748,3 +748,62 @@ test("async onBeforeRemove: busy state for the round trip, a second Remove is a 
 	expect(undo()).toBeNull(); // undoTtl 0: the server copy is gone
 	expect(onBeforeRemove).toHaveBeenCalledTimes(2);
 });
+
+test("noFilename keeps the name out of the tile, the undo line and the failure toast", async () => {
+	const { notifications, error } = notificationsMock();
+	const { processAsset, reject } = deferredUpload();
+	const screen = await render(FieldSingleAsset, {
+		name: "a",
+		label: "Photo",
+		value: JSON.stringify(ASSET),
+		noFilename: true,
+		notifications,
+		processAsset,
+	});
+	const { input, state, action, undo, tile, meta } = els(screen.container);
+
+	// the filename line is gone, the type/size line is not
+	expect(meta()).not.toContain("x.jpg");
+	expect(meta()).toContain("JPG");
+	// ...and so is the tile's accessible action text ("Replace x.jpg")
+	expect(tile()!.textContent).toContain("Replace file");
+	expect(tile()!.textContent).not.toContain("x.jpg");
+
+	// the undo offer is name-less too
+	action("remove")!.click();
+	await expect.poll(state).toBe("empty");
+	expect(meta()).toContain("File removed");
+	expect(meta()).not.toContain("x.jpg");
+
+	undo()!.click();
+	await expect.poll(state).toBe("filled");
+
+	// and so is the upload failure (toast + live region)
+	pick(input, file("shot.png"));
+	await expect.poll(state).toBe("uploading");
+	reject(new Error("boom"));
+	await expect.poll(state).toBe("error");
+	expect(error).toHaveBeenCalledWith("Upload failed: boom");
+});
+
+test("without noFilename the name is shown everywhere it always was", async () => {
+	const { notifications, error } = notificationsMock();
+	const { processAsset, reject } = deferredUpload();
+	const screen = await render(FieldSingleAsset, {
+		name: "a",
+		label: "Photo",
+		value: JSON.stringify(ASSET),
+		notifications,
+		processAsset,
+	});
+	const { input, state, tile, meta } = els(screen.container);
+
+	expect(meta()).toContain("x.jpg");
+	expect(tile()!.textContent).toContain("Replace x.jpg");
+
+	pick(input, file("shot.png"));
+	await expect.poll(state).toBe("uploading");
+	reject(new Error("boom"));
+	await expect.poll(state).toBe("error");
+	expect(error).toHaveBeenCalledWith("Upload of shot.png failed: boom");
+});

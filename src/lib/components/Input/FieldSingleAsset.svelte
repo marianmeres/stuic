@@ -177,6 +177,14 @@
 		placeholder?: THC;
 		/** Hide the "Preview" action (the `AssetsPreview` lightbox). */
 		noPreview?: boolean;
+		/**
+		 * Never show the asset's `name` to the user — the tile's filename line, the
+		 * lightbox caption, the "… removed" / "… uploaded" announcements and toasts all
+		 * fall back to name-less wording (`replace_file_short`, `removed_short`, ...).
+		 * For stores that hand back a content-hash filename, which carries no meaning
+		 * worth reading. The type / size line (`metaText`) is unaffected.
+		 */
+		noFilename?: boolean;
 		/** Hide the lightbox's Download button. */
 		noDownload?: boolean;
 		/** See `AssetsPreview.onDownload`: replaces the default download of `url.original`. */
@@ -288,6 +296,7 @@
 		placeholder,
 		noPreview = false,
 		noDownload = false,
+		noFilename = false,
 		onDownload,
 		onChange,
 	}: Props = $props();
@@ -356,9 +365,13 @@
 	let tileActionText = $derived(
 		canUpload
 			? shown
-				? t("replace_file", { name: shown.name })
+				? noFilename
+					? t("replace_file_short")
+					: t("replace_file", { name: shown.name })
 				: t("pick_file")
-			: (shown?.name ?? "")
+			: noFilename
+				? ""
+				: (shown?.name ?? "")
 	);
 	let metaText = $derived.by(() => {
 		if (!shown) return "";
@@ -540,7 +553,7 @@
 		assetsPreview?.close?.();
 		pending = { asset: optimistic, file, progress: 0, error: null };
 		const seq = ++uploadSeq;
-		announce(t("uploading", { name: file.name }));
+		announce(noFilename ? t("uploading_short") : t("uploading", { name: file.name }));
 
 		const onProgress = (p: number) => {
 			if (seq === uploadSeq && pending && !pending.error) {
@@ -564,14 +577,20 @@
 				}
 				pending = null;
 				commit(uploaded);
-				announce(t("uploaded", { name: uploaded.name ?? file.name }));
+				announce(
+					noFilename
+						? t("uploaded_short")
+						: t("uploaded", { name: uploaded.name ?? file.name })
+				);
 			})
 			.catch((e) => {
 				if (seq !== uploadSeq) return;
 				const error = `${e?.message ?? e}`;
 				clog.error(error);
 				if (pending) pending.error = error;
-				const msg = t("upload_failed_named", { name: file.name, error });
+				const msg = noFilename
+					? t("upload_failed_error", { error })
+					: t("upload_failed_named", { name: file.name, error });
 				announce(msg);
 				// the consumer may own the report (a quota panel it already renders):
 				// `false` skips only the toast, the tile's Retry / Discard stay
@@ -609,7 +628,7 @@
 		}
 		assetsPreview?.close?.();
 		commit(null);
-		announce(t("removed", { name: current.name }));
+		announce(noFilename ? t("removed_short") : t("removed", { name: current.name }));
 		if (undoTtl > 0) {
 			removed = current;
 			undoTimer = setTimeout(() => clear_removed(), undoTtl);
@@ -622,7 +641,7 @@
 		if (!back) return;
 		clear_removed();
 		commit(back);
-		announce(t("restored", { name: back.name }));
+		announce(noFilename ? t("restored_short") : t("restored", { name: back.name }));
 		focus_tile();
 	}
 
@@ -823,13 +842,17 @@
 			{#if isLoading}
 				<Skeleton variant="text" lines={2} width="60%" />
 			{:else if shown}
-				<div class="truncate font-medium" title={shown.name}>{shown.name}</div>
+				{#if !noFilename}
+					<div class="truncate font-medium" title={shown.name}>{shown.name}</div>
+				{/if}
 				{#if metaText}
 					<div class="text-xs stuic-field-single-asset-meta">{metaText}</div>
 				{/if}
 			{:else if undoOffer}
 				<div class="stuic-field-single-asset-meta">
-					<span>{t("removed", { name: undoOffer.name })}</span>
+					<span>
+						{noFilename ? t("removed_short") : t("removed", { name: undoOffer.name })}
+					</span>
 					<button type="button" class="stuic-field-single-asset-undo" onclick={undo}>
 						{@html iconUndo({ size: 14 })}
 						<span>{t("undo")}</span>
@@ -925,6 +948,7 @@
 	noPrevNext
 	noDots
 	noCurrentOfTotal
+	noName={noFilename}
 	{noDownload}
 	onDelete={(_, _index, controls) => {
 		controls.close();

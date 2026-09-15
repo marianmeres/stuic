@@ -937,6 +937,7 @@ a dialog and resolves with the cropped file.
 | `size`                                                     | `"sm" \| "md" \| "lg" \| string`                       | `"md"`             | Tile height: preset or CSS length                                       |
 | `placeholder`                                              | `THC`                                                  | -                  | Empty-tile content (e.g. an `Avatar` with initials)                     |
 | `noPreview`, `noDownload`                                  | `boolean`                                              | `false`            | Hide the Preview action / the lightbox's Download                       |
+| `noFilename`                                               | `boolean`                                              | `false`            | Never show the asset's name (hash filenames); name-less wording instead |
 | `onDownload`                                               | `(asset) => void \| Promise<void>`                     | -                  | Replaces the lightbox's default download (auth-gated bytes)             |
 | `onChange`                                                 | `(asset \| null) => void`                              | -                  | After every user-driven change of `value`                               |
 | `parseValue`, `serializeValue`                             | see Value                                              | JSON               | Custom `value` shape                                                    |

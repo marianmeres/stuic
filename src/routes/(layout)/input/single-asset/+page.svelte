@@ -101,6 +101,13 @@
 			name: "03.jpg",
 			type: "image/jpeg",
 		}),
+		hashed: JSON.stringify({
+			id: "hashed-1",
+			url: "/assets/02.jpg",
+			name: "2a36cdac1484a2d4f9b3482f5a1a8d24b11fcf30faeb8cd70fc31837a1f0c9e2.jpg",
+			type: "image/jpeg",
+			meta: { size: 184320 },
+		}),
 	});
 
 	let f = $state<HTMLFormElement>()!;
@@ -303,6 +310,29 @@
 		}
 		return true;
 	}}
+	labelLeftBreakpoint={0}
+/>
+
+<hr class="my-8" />
+
+<h2 class="text-lg font-semibold mb-4">noFilename (content-hash names)</h2>
+<FieldSingleAsset
+	value={values.hashed}
+	name="hashed-with-name"
+	label="Default"
+	description="A store that renames uploads to their content hash: the name is noise."
+	{notifications}
+	processAsset={fakeUpload()}
+	labelLeftBreakpoint={0}
+/>
+<FieldSingleAsset
+	bind:value={values.hashed}
+	name="hashed"
+	label="noFilename"
+	description="The same asset with noFilename: only the type / size line is left, and every announcement, toast and lightbox caption drops the name too."
+	noFilename
+	{notifications}
+	processAsset={fakeUpload()}
 	labelLeftBreakpoint={0}
 />
 
