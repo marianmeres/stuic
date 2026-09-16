@@ -1,6 +1,8 @@
 <script lang="ts">
 	import {
 		ColorPicker,
+		FieldColorPicker,
+		FieldInput,
 		Button,
 		COLOR_PICKER_PALETTE_THEME,
 		createColorPickerT,
@@ -29,6 +31,23 @@
 		}
 		const fd = new FormData(e.currentTarget as HTMLFormElement);
 		submitted = JSON.stringify(Object.fromEntries(fd.entries()));
+	}
+
+	// field demo
+	let fieldName = $state("Spring sale");
+	let fieldAccent = $state("");
+	let fieldPicker: FieldColorPicker | undefined = $state();
+	let fieldSubmitted: string | null = $state(null);
+
+	function onFieldSubmit(e: SubmitEvent) {
+		e.preventDefault();
+		if (!fieldPicker?.validate()?.valid) {
+			fieldSubmitted = null;
+			fieldPicker?.focus();
+			return;
+		}
+		const fd = new FormData(e.currentTarget as HTMLFormElement);
+		fieldSubmitted = JSON.stringify(Object.fromEntries(fd.entries()));
 	}
 </script>
 
@@ -171,6 +190,55 @@
 				<Button size="sm" type="submit">Submit</Button>
 				{#if submitted}
 					<code class="text-sm">{submitted}</code>
+				{/if}
+			</div>
+		</form>
+	</section>
+
+	<hr class="border-neutral-200 dark:border-neutral-700" />
+
+	<!-- FieldColorPicker -->
+	<section>
+		<h2 class="text-xl font-semibold mb-2">In the field shell (FieldColorPicker)</h2>
+		<p class="text-sm text-neutral-500 mb-4">
+			<code>FieldColorPicker</code> is the picker inside the same label / description /
+			validation shell every <code>Field*</code> uses — so it lines up with a
+			<code>FieldInput</code> above it, and the visible label names the swatch group. Submit
+			with nothing picked: the message lands in the validation box and focus moves to the swatches.
+		</p>
+		<form onsubmit={onFieldSubmit} class="max-w-xl" data-testid="field-form">
+			<FieldInput label="Campaign name" bind:value={fieldName} name="campaign" />
+			<FieldColorPicker
+				bind:this={fieldPicker}
+				bind:value={fieldAccent}
+				label="Page colour"
+				description="Used for buttons and links on the public page."
+				name="accent"
+				required
+				columns={8}
+			>
+				{#snippet below()}
+					{@render preview(fieldAccent)}
+				{/snippet}
+			</FieldColorPicker>
+			<FieldColorPicker
+				label="Label on the left"
+				labelLeft
+				labelLeftBreakpoint={0}
+				value="#22c55e"
+				palette={["#ef4444", "#f97316", "#22c55e", "#3b82f6", "#a855f7"]}
+				custom="native"
+			/>
+			<FieldColorPicker
+				label="Disabled"
+				value="#f59e0b"
+				disabled
+				palette={["#f59e0b", "#3b82f6"]}
+			/>
+			<div class="flex items-center gap-3">
+				<Button size="sm" type="submit">Submit</Button>
+				{#if fieldSubmitted}
+					<code class="text-sm">{fieldSubmitted}</code>
 				{/if}
 			</div>
 		</form>

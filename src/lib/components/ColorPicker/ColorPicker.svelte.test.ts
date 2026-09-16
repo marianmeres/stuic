@@ -435,3 +435,56 @@ test("unstyled drops the classes but keeps the semantics", async () => {
 	expect(radios(c)[0].dataset.selected).toBe(undefined);
 	expect(radios(c)[0].getAttribute("aria-checked")).toBe("true");
 });
+
+// ============================================================================
+// labelledby / focus / scrollIntoView
+// ============================================================================
+
+test("labelledby names the radiogroup and replaces its aria-label", async () => {
+	const screen = await render(ColorPicker, {
+		palette: P,
+		label: "Ignored when labelledby is set",
+		labelledby: "ext-label",
+	});
+	const g = group(screen.container);
+	expect(g.getAttribute("aria-labelledby")).toBe("ext-label");
+	expect(g.getAttribute("aria-label")).toBe(null);
+	// ...and never reaches the root, which is where `...rest` would have put it
+	expect(
+		screen.container.querySelector(".stuic-color-picker")!.hasAttribute("aria-labelledby")
+	).toBe(false);
+});
+
+test("focus(): the checked swatch, else the first one, else the first custom control", async () => {
+	type Api = { focus: () => void };
+
+	const onPalette = await render(ColorPicker, { palette: P, value: "#0000ff" });
+	(onPalette.component as unknown as Api).focus();
+	expect(document.activeElement).toBe(radios(onPalette.container)[2]);
+
+	const offPalette = await render(ColorPicker, { palette: P, value: "#123456" });
+	(offPalette.component as unknown as Api).focus();
+	expect(document.activeElement).toBe(radios(offPalette.container)[0]);
+
+	const noGroup = await render(ColorPicker, {
+		palette: [],
+		allowClear: false,
+		custom: "text",
+	});
+	(noGroup.component as unknown as Api).focus();
+	expect(document.activeElement).toBe(text(noGroup.container));
+});
+
+test("scrollIntoView() scrolls the root with smooth + center defaults", async () => {
+	const spy = vi.spyOn(HTMLElement.prototype, "scrollIntoView");
+	try {
+		const screen = await render(ColorPicker, { palette: P });
+		(screen.component as unknown as { scrollIntoView: () => void }).scrollIntoView();
+		expect(spy).toHaveBeenCalledWith({ behavior: "smooth", block: "center" });
+		expect(spy.mock.contexts[0]).toBe(
+			screen.container.querySelector(".stuic-color-picker")
+		);
+	} finally {
+		spy.mockRestore();
+	}
+});

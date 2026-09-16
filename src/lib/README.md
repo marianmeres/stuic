@@ -46,6 +46,7 @@ npm install @marianmeres/stuic
 - **FieldOptions** - Modal-based multi-select picker (optional inline `chips` display)
 - **FieldKeyValues** - Key-value pairs editor with JSON serialization
 - **FieldSwitch** - Toggle switch within a form
+- **FieldColorPicker** - Color picker (swatches + custom color) within a form
 - **Fieldset** - Group of form fields with legend
 
 ### Buttons & Controls

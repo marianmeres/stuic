@@ -15,6 +15,7 @@ A comprehensive form input system with multiple field components, validation sup
 | `FieldCheckbox`    | Single checkbox with label                                     |
 | `FieldRadios`      | Radio button group                                             |
 | `FieldSwitch`      | Toggle switch field                                            |
+| `FieldColorPicker` | Color picker (swatches + custom color) field — see below       |
 | `FieldFile`        | File upload input                                              |
 | `FieldAssets`      | Asset/image upload with preview                                |
 | `FieldSingleAsset` | One asset (avatar, logo, cover, one document) — see below      |
@@ -183,6 +184,50 @@ Component-specific targets (e.g. `classInput` for the inner `<input>`/`<select>`
 The visible label names the control via `aria-labelledby` (the switch is announced as
 `switch, on/off` with that name). Clicking the label text does not toggle — the switch's
 own root is a `<label>`, so an HTML `for` association is not possible; click the switch.
+
+### Color Picker
+
+`FieldColorPicker` wraps a [`ColorPicker`](../ColorPicker/README.md) in the standard field
+scaffolding — visible label, description, validation box, `labelLeft*`, every
+`InputWrapClassProps` member — the way `FieldSwitch` wraps `Switch`.
+
+```svelte
+<script lang="ts">
+	import { FieldColorPicker } from "stuic";
+
+	let accent = $state("");
+</script>
+
+<FieldColorPicker
+	label="Page colour"
+	description="Used for buttons and links on the public page."
+	name="accent"
+	required
+	bind:value={accent}
+/>
+```
+
+| Prop                                                                                      | Goes to                                                       |
+| ----------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `value` (bindable), `palette`, `columns`, `custom`, `allowClear`, `name`, `t`, `onchange` | the inner `<ColorPicker>` (same semantics, same defaults)     |
+| `classSwatch`                                                                             | every swatch button                                           |
+| `classInput`                                                                              | the inner `<ColorPicker>`'s root class                        |
+| `required`, `disabled`, `validate`                                                        | both: the shell (asterisk, dimming, message) and the picker   |
+| `renderSize`                                                                              | the surrounding field shell only — swatch size is a CSS token |
+| everything else unrecognized (`...rest`)                                                  | the inner `<ColorPicker>` root                                |
+
+- **Naming.** The visible label names the swatch radiogroup via `aria-labelledby` →
+  `{id}-label`, with no competing `aria-label`. Without a `label` the group keeps the
+  picker's own `t("color")` name. Clicking the label text focuses nothing (a radiogroup is
+  not labelable by `for`) — same as `FieldSwitch`. With `palette={[]}` and
+  `allowClear={false}` there is no radiogroup, so the label names nothing; the hex field
+  keeps its own "Hex value" name.
+- **Validation.** The picker's hidden input runs the `validate` action; the result renders
+  in the field's validation box. `validate()`, `clearValidation()`, `getValidation()`,
+  `focus()` (the checked swatch — the group's tab stop) and `scrollIntoView()` are
+  available via `bind:this`, so `validateAllFields` / `scrollToFirstInvalidField` work.
+- **Layout.** The input wrap is transparent (no border / focus ring — the picker draws its
+  own swatches and hex field). A disabled field dims once (the shell), not twice.
 
 ### Input with Addons
 

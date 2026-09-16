@@ -467,6 +467,10 @@ File upload input.
 
 Form-wrapped switch toggle.
 
+#### `FieldColorPicker`
+
+Form-wrapped `ColorPicker`: visible label (names the swatch group via `aria-labelledby`), description, validation box, label-left layout.
+
 #### `FieldOptions`
 
 Multi-select options field.

@@ -16,8 +16,12 @@ own full-screen color UI, so there is no anchored popover to fight the on-screen
 keyboard. Swatches grow to a ~44px hit target on a coarse pointer, and the hex field
 carries the iOS zoom guard.
 
+In a form layout, use [`FieldColorPicker`](../Input/README.md#color-picker): this picker
+inside the standard field shell (visible label, description, validation box, label-left
+layout).
+
 Adjacent but different: `Rating` (the same input-with-hidden-input shape),
-`FieldSelect` (a labeled field wrapper), `ThemePreview` (theme token swatches).
+`ThemePreview` (theme token swatches).
 
 ## Props
 
@@ -29,7 +33,8 @@ Adjacent but different: `Rating` (the same input-with-hidden-input shape),
 | `custom`              | `"both" \| "native" \| "text" \| false` | `"both"`               | Which custom-color controls to render under the palette                                                          |
 | `allowClear`          | `boolean`                               | `true`                 | A crossed-out "no color" swatch, Delete / Backspace, and an emptied hex field all set `""`                       |
 | `disabled`            | `boolean`                               | `false`                | No interaction; the hidden input is disabled too (nothing submits)                                               |
-| `label`               | `string`                                | `"Color"`              | Accessible name of the swatch group (via `t("color")` by default)                                                |
+| `label`               | `string`                                | `"Color"`              | Accessible name of the swatch group (via `t("color")` by default). Not a visible label — see `FieldColorPicker`  |
+| `labelledby`          | `string`                                | —                      | Id of the element naming the swatch group (`aria-labelledby`); when set, replaces `label`'s `aria-label`         |
 | `name`                | `string`                                | —                      | Form field name of the hidden input                                                                              |
 | `required`            | `boolean`                               | `false`                | Require a non-empty value — enforced by the built-in validator (hidden inputs skip native constraint validation) |
 | `t`                   | `TranslateFn`                           | English                | i18n translate function (see below)                                                                              |
@@ -46,11 +51,13 @@ Other attributes (`id`, `style`, `data-*`, …) are passed to the root `div`.
 
 ### Imperative API (via `bind:this`)
 
-| Method              | Description                                                          |
-| ------------------- | -------------------------------------------------------------------- |
-| `validate()`        | Trigger validation now; returns the `ValidationResult`               |
-| `clearValidation()` | Clear the stored result and the hidden input's custom validity       |
-| `getValidation()`   | The last validation result (also reported via `setValidationResult`) |
+| Method              | Description                                                             |
+| ------------------- | ----------------------------------------------------------------------- |
+| `validate()`        | Trigger validation now; returns the `ValidationResult`                  |
+| `clearValidation()` | Clear the stored result and the hidden input's custom validity          |
+| `getValidation()`   | The last validation result (also reported via `setValidationResult`)    |
+| `focus()`           | Focus the checked swatch (the group's tab stop), else the first control |
+| `scrollIntoView()`  | Scroll the picker into view (defaults: `smooth` + `center`)             |
 
 ## Usage
 
@@ -114,6 +121,9 @@ resolve to near-identical greys.
 </form>
 ```
 
+A bare picker only reports the result (`setValidationResult`, `aria-invalid`); it renders no
+message. `FieldColorPicker` shows it in the field's validation box.
+
 ## Preview vs commit
 
 `value` updates **live** while the native picker is being dragged and while a valid
@@ -144,6 +154,8 @@ value when `allowClear` is on.
   Up / Down step by one **rendered** row (measured from the layout, so it stays right
   when a narrow screen wraps to fewer per row) and stop at the edges.
   `aria-required` / `aria-invalid` sit on the group.
+- The group is named by `label` (an `aria-label`, default "Color") or, when `labelledby`
+  is set, by that element instead — never both.
 - Every swatch is named: an entry's `label` (through `t`) or, without one, its color
   string. The clear swatch is "No color".
 - Selection is signalled by a ring drawn outside the swatch, not only by color.

@@ -31,6 +31,10 @@ export {
 	default as FieldCheckbox,
 	type Props as FieldCheckboxProps,
 } from "./FieldCheckbox.svelte";
+export {
+	default as FieldColorPicker,
+	type Props as FieldColorPickerProps,
+} from "./FieldColorPicker.svelte";
 export { default as Honeypot, type Props as HoneypotProps } from "./Honeypot.svelte";
 export {
 	default as TimeTrap,

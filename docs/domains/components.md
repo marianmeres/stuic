@@ -73,6 +73,7 @@
 | CronInput                                     | Cron expression editor with presets and validation                                                |
 | Fieldset                                      | Field grouping with legend                                                                        |
 | FieldKeyValues                                | Key-value pair editor                                                                             |
+| FieldColorPicker                              | ColorPicker in the field shell: visible label names the swatch group, description, validation box |
 | FieldTable                                    | Rows × typed columns editor (text/number/select/checkbox/date/url cells, container layout)        |
 | FieldsBuilder                                 | Field-definition list editor ("what properties does a thing have?")                               |
 | FieldAssets                                   | File/asset management                                                                             |
@@ -159,7 +160,7 @@ Use `validate={false}` to bypass stuic's validation entirely.
 
 > **Why default-on?** Hidden-input field components (`FieldPhoneNumber`,
 > `FieldCountry`, `FieldObject`, `FieldAssets`, `FieldSingleAsset`, `FieldInputLocalized`,
-> `FieldKeyValues`, `FieldTable`, `FieldLikeButton`, `FieldDate`, `FieldDateRange`, `Rating`) _must_ be default-on because hidden
+> `FieldKeyValues`, `FieldTable`, `FieldLikeButton`, `FieldDate`, `FieldDateRange`, `ColorPicker`, `FieldColorPicker`, `Rating`) _must_ be default-on because hidden
 > inputs are excluded from native browser constraint validation — without the
 > stuic action enforcing `required` in a `customValidator`, the attribute is a
 > silent no-op. Plain-input field components were harmonized to the same
@@ -170,8 +171,8 @@ Use `validate={false}` to bypass stuic's validation entirely.
 Available on `FieldInput`, `FieldMoney`, `FieldTextarea`, `FieldCheckbox`,
 `FieldSelect`, `FieldFile`, `FieldObject`, `FieldAssets`, `FieldSingleAsset`, `FieldInputLocalized`,
 `FieldKeyValues`, `FieldTable`, `FieldPhoneNumber`, `FieldCountry`, `FieldLikeButton`,
-`FieldRadios`, `FieldSwitch`, `FieldOptions`, `FieldDate`, `FieldDateRange`, and
-`Switch`:
+`FieldRadios`, `FieldSwitch`, `FieldColorPicker`, `FieldOptions`, `FieldDate`, `FieldDateRange`,
+`Switch`, and `ColorPicker`:
 
 | Method                  | Returns                         | Purpose                                                       |
 | ----------------------- | ------------------------------- | ------------------------------------------------------------- |
@@ -928,7 +929,9 @@ Swatch values are **never parsed** — they go to CSS as `--stuic-color-picker-s
 | `onchange`                                            | `(value: string) => void`               | —                      | User **commits** only (see below)                                                                                                              |
 | `t`                                                   | `TranslateFn`                           | English                | Group label, swatch names, "no color", custom-color labels, required message                                                                   |
 
-Class slots: `class`, `classSwatch`.
+Class slots: `class`, `classSwatch`. `labelledby` (an element id) names the swatch group via `aria-labelledby` instead of `label`'s `aria-label`.
+
+**In a form layout** use `FieldColorPicker` (exported from `Input`): the same `InputWrap` shell as every `Field*` (visible label, description, validation box, `labelLeft*`, `InputWrapClassProps`), with the picker props forwarded. The visible label names the radiogroup via `labelledby`; `focus()` / `scrollIntoView()` join the imperative API so `scrollToFirstInvalidField` works. The Input stylesheet exempts inputs inside `.stuic-color-picker` from its field-input rules (`:where(:not(.stuic-color-picker *))`, zero specificity) — otherwise the hex field and native picker would lose their border, font and size inside the shell.
 
 ### Preview vs commit
 

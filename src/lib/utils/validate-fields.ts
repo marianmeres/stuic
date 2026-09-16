@@ -8,7 +8,7 @@ import type { ValidationResult } from "../actions/validate.svelte.js";
  * Every STUIC `Field*` component (FieldInput, FieldPhoneNumber, FieldCountry,
  * FieldSelect, FieldCheckbox, FieldTextarea, FieldFile, FieldObject,
  * FieldAssets, FieldInputLocalized, FieldKeyValues, FieldLikeButton,
- * FieldRadios, FieldSwitch) satisfies this interface via `export function`.
+ * FieldRadios, FieldSwitch, FieldColorPicker) satisfies this interface via `export function`.
  */
 export interface ValidatableField {
 	/** Run the validator now. Renders the inline error if invalid. */

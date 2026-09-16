@@ -144,12 +144,18 @@
 	/* ============================================================================
 	   BASE INPUT ELEMENT STYLES
 	   Replaces @tailwindcss/forms plugin for input elements
+
+	   `:where(:not(.stuic-color-picker *))` (here, in the size variants and in the
+	   iOS zoom guard) exempts a composite control that styles its own raw inputs:
+	   FieldColorPicker's hex field and native picker would otherwise lose their
+	   border, font and size to these rules. Inside `:where()`, so the specificity
+	   every existing override was written against is unchanged.
 	   ============================================================================ */
 
 	.stuic-input
 		input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
 			[type="file"]
-		),
+		):where(:not(.stuic-color-picker *)),
 	.stuic-input textarea,
 	.stuic-input select {
 		/* Reset browser defaults */
@@ -202,7 +208,7 @@
 	.stuic-input[data-size="sm"]
 		input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
 			[type="file"]
-		),
+		):where(:not(.stuic-color-picker *)),
 	.stuic-input[data-size="sm"] textarea,
 	.stuic-input[data-size="sm"] select {
 		padding: var(--stuic-input-padding-y-sm) var(--stuic-input-padding-x-sm);
@@ -217,13 +223,13 @@
 	.stuic-input[data-size="md"]
 		input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
 			[type="file"]
-		),
+		):where(:not(.stuic-color-picker *)),
 	.stuic-input[data-size="md"] textarea,
 	.stuic-input[data-size="md"] select,
 	.stuic-input:not([data-size])
 		input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
 			[type="file"]
-		),
+		):where(:not(.stuic-color-picker *)),
 	.stuic-input:not([data-size]) textarea,
 	.stuic-input:not([data-size]) select {
 		padding: var(--stuic-input-padding-y-md) var(--stuic-input-padding-x-md);
@@ -239,7 +245,7 @@
 	.stuic-input[data-size="lg"]
 		input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
 			[type="file"]
-		),
+		):where(:not(.stuic-color-picker *)),
 	.stuic-input[data-size="lg"] textarea,
 	.stuic-input[data-size="lg"] select {
 		padding: var(--stuic-input-padding-y-lg) var(--stuic-input-padding-x-lg);
@@ -327,6 +333,12 @@
 		background: transparent;
 		border: none;
 		box-shadow: none;
+	}
+
+	/* FieldColorPicker: a disabled shell already dims the wrap — dimming the picker
+	   again would compound to 0.25 */
+	.stuic-input.disabled .stuic-color-picker[data-disabled] {
+		opacity: 1;
 	}
 
 	/* Size-specific input-wrap padding */
@@ -841,7 +853,7 @@
 		.stuic-input[data-size="sm"]
 			input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
 				[type="file"]
-			),
+			):where(:not(.stuic-color-picker *)),
 		.stuic-input[data-size="sm"] textarea,
 		.stuic-input[data-size="sm"] select {
 			font-size: max(
@@ -853,13 +865,13 @@
 		.stuic-input[data-size="md"]
 			input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
 				[type="file"]
-			),
+			):where(:not(.stuic-color-picker *)),
 		.stuic-input[data-size="md"] textarea,
 		.stuic-input[data-size="md"] select,
 		.stuic-input:not([data-size])
 			input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
 				[type="file"]
-			),
+			):where(:not(.stuic-color-picker *)),
 		.stuic-input:not([data-size]) textarea,
 		.stuic-input:not([data-size]) select {
 			font-size: max(
@@ -871,7 +883,7 @@
 		.stuic-input[data-size="lg"]
 			input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
 				[type="file"]
-			),
+			):where(:not(.stuic-color-picker *)),
 		.stuic-input[data-size="lg"] textarea,
 		.stuic-input[data-size="lg"] select {
 			font-size: max(

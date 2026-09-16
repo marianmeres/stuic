@@ -49,6 +49,13 @@
 		disabled?: boolean;
 		/** Accessible name of the swatch group (default `t("color")`, "Color") */
 		label?: string;
+		/**
+		 * Id of an element that names the swatch group (`aria-labelledby`). When set,
+		 * it replaces the group's `aria-label` — what `FieldColorPicker` uses to let
+		 * its visible label name the swatches. `...rest` cannot do this: it lands on
+		 * the root, not on the radiogroup.
+		 */
+		labelledby?: string;
 		/** Form field name (hidden input) */
 		name?: string;
 		/** Require a non-empty value (enforced by the built-in validator) */
@@ -92,6 +99,7 @@
 		allowClear = true,
 		disabled = false,
 		label,
+		labelledby,
 		name,
 		required = false,
 		t = t_default,
@@ -323,6 +331,22 @@
 	export function getValidation(): ValidationResult | undefined {
 		return _validation;
 	}
+
+	/**
+	 * Focus the group's tab stop (the checked swatch, or the first one), or —
+	 * with no swatches rendered — the first custom-color control.
+	 */
+	export function focus(): void {
+		(
+			el?.querySelector<HTMLElement>(`[role="radiogroup"] [tabindex="0"]`) ??
+			el?.querySelector<HTMLElement>(`input:not([type="hidden"])`)
+		)?.focus();
+	}
+
+	/** Scroll the picker into view. Defaults to smooth + center. */
+	export function scrollIntoView(opts?: ScrollIntoViewOptions): void {
+		el?.scrollIntoView?.({ behavior: "smooth", block: "center", ...opts });
+	}
 </script>
 
 <div
@@ -340,7 +364,8 @@
 		<div
 			class={unstyled ? undefined : "stuic-color-picker-swatches"}
 			role="radiogroup"
-			aria-label={label || t("color", null, "Color")}
+			aria-labelledby={labelledby || undefined}
+			aria-label={labelledby ? undefined : label || t("color", null, "Color")}
 			aria-required={required ? "true" : undefined}
 			aria-disabled={disabled ? "true" : undefined}
 			aria-invalid={_validation && !_validation.valid ? "true" : undefined}
