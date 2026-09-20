@@ -1230,6 +1230,49 @@ Responsive data table with paging, row selection, batch actions, and mobile card
 />
 ```
 
+#### `Gantt`
+
+Horizontal schedule chart — project plans (task per row, progress, milestones) and resource lanes (many bars per row). Whole-day ranges, inclusive at both ends; day, week or month columns.
+
+| Prop          | Type                            | Default    | Description                                                |
+| ------------- | ------------------------------- | ---------- | ---------------------------------------------------------- |
+| `rows`        | `GanttRow[]`                    | required   | The lanes, in display order                                |
+| `from` / `to` | `IsoDate \| Date`               | bar extent | The window, inclusive at both ends                         |
+| `unit`        | `"day" \| "week" \| "month"`    | `"day"`    | Column granularity                                         |
+| `unitWidth`   | `number \| "fit"`               | `2.5rem`   | **Minimum** column width in px; `"fit"` drops the minimum  |
+| `today`       | `IsoDate \| Date \| null`       | today      | The marker line's day; `null` removes it                   |
+| `labels`      | `boolean`                       | auto       | Left label column — on when any row has a `label`          |
+| `barLabels`   | `"inside" \| "after" \| "none"` | `"inside"` | Where a bar's own label is drawn                           |
+| `onSelect`    | `(detail) => void`              | —          | Bar click; also what turns bars into focusable `<button>`s |
+
+```svelte
+<Gantt
+	rows={[
+		{
+			label: "Design",
+			bars: [
+				{
+					from: "2026-09-07",
+					to: "2026-09-18",
+					label: "Wireframes",
+					intent: "primary",
+					progress: 0.65,
+				},
+			],
+		},
+		{
+			label: "Launch",
+			bars: [
+				{ from: "2026-10-15", milestone: true, label: "Go live", intent: "success" },
+			],
+		},
+	]}
+	onSelect={(d) => console.log(d.row.label, d.bar.from)}
+/>
+```
+
+The geometry is exported separately for axis-aligned overlays: `buildGanttAxis`, `placeRange`, `placePoint`, `dayToFraction`, `boundsOf`.
+
 #### `ImageCycler`
 
 Auto-cycling image carousel with fade transitions. Preloads next image before displaying. Supports custom title/description snippets.

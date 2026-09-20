@@ -1,0 +1,496 @@
+/* ============================================================================
+   GANTT COMPONENT TOKENS
+   Override globally: :root { --stuic-gantt-unit-width: 3rem; }
+   Override locally:  <Gantt style="--stuic-gantt-row-height: 3rem;" />
+
+   Structural tokens (radius, border-width, transition) are NOT declared here —
+   they are resolved as var() fallbacks at the usage sites below, so a scoped
+   --stuic-radius override still reaches them.
+   ============================================================================ */
+
+/* prettier-ignore */
+:root {
+	/* Layout */
+	--stuic-gantt-unit-width: 2.5rem;          /* one column — the horizontal zoom */
+	--stuic-gantt-label-width: 12rem;          /* the sticky left column */
+	--stuic-gantt-row-height: 2.5rem;
+	--stuic-gantt-max-height: none;            /* set it to make the header sticky */
+
+	/* Frame */
+	--stuic-gantt-bg: var(--stuic-color-background);
+	--stuic-gantt-border-color: var(--stuic-color-border);
+	--stuic-gantt-font-size: var(--text-base);
+
+	/* Header (both tiers) */
+	--stuic-gantt-header-bg: var(--stuic-color-surface);
+	--stuic-gantt-header-text: var(--stuic-color-foreground);
+	--stuic-gantt-header-font-size: var(--text-xs);
+	--stuic-gantt-header-padding: 0.25rem 0.375rem;
+	--stuic-gantt-header-sub-text: var(--stuic-color-muted-foreground);
+
+	/* Grid */
+	--stuic-gantt-grid-line-color: var(--stuic-color-border);
+	--stuic-gantt-weekend-bg: var(--stuic-color-muted);
+	--stuic-gantt-today-color: var(--stuic-color-destructive);
+	--stuic-gantt-today-width: 2px;
+
+	/* Row + left label column */
+	--stuic-gantt-row-bg-hover: color-mix(in srgb, var(--stuic-color-muted) 45%, transparent);
+	--stuic-gantt-label-bg: var(--stuic-color-background);
+	--stuic-gantt-label-padding: 0.375rem 0.75rem;
+	--stuic-gantt-label-font-size: var(--text-base);
+	--stuic-gantt-label-text: var(--stuic-color-foreground);
+	--stuic-gantt-description-font-size: var(--text-xs);
+	--stuic-gantt-description-text: var(--stuic-color-muted-foreground);
+
+	/* Bars */
+	--stuic-gantt-bar-height: 1.25rem;
+	--stuic-gantt-bar-height-inset: 0.625rem;  /* data-inset — the emphasis range */
+	--stuic-gantt-bar-bg: var(--stuic-color-muted-foreground);
+	--stuic-gantt-bar-text: var(--stuic-color-background);
+	--stuic-gantt-bar-font-size: var(--text-xs);
+	--stuic-gantt-bar-padding-inline: 0.375rem;
+	--stuic-gantt-bar-opacity-disabled: 0.45;
+	--stuic-gantt-milestone-size: 0.875rem;
+
+	/* Empty state area */
+	--stuic-gantt-empty-padding: 2rem 1rem;
+}
+
+@layer components {
+	/* ============================================================================
+	   FRAME
+	   One scroll container; everything inside is laid out in two flex columns —
+	   the sticky label column (width 0 when there are no labels) and the track.
+	   ============================================================================ */
+
+	.stuic-gantt {
+		--_label-w: 0px;
+		font-size: var(--stuic-gantt-font-size);
+		color: var(--stuic-color-foreground);
+	}
+
+	.stuic-gantt[data-labels] {
+		--_label-w: var(--stuic-gantt-label-width);
+	}
+
+	/* Deliberately NOT `width: max-content`: besides leaving the frame narrower
+	   than its container, a max-content scroll box that gains a vertical scrollbar
+	   loses that width from its content area and starts scrolling horizontally for
+	   no reason. The columns absorb the spare width instead (see below). */
+	.stuic-gantt-viewport {
+		overflow: auto;
+		max-height: var(--stuic-gantt-max-height);
+		background: var(--stuic-gantt-bg);
+		border: var(--stuic-gantt-border-width, var(--stuic-border-width)) solid
+			var(--stuic-gantt-border-color);
+		border-radius: var(--stuic-gantt-radius, var(--stuic-radius-container));
+	}
+
+	/* `max-content` so the px-sized track can overflow into the scroll; `min-width`
+	   so a short axis still fills the frame (and the sticky cells have a box). */
+	.stuic-gantt-inner {
+		width: max-content;
+		min-width: 100%;
+	}
+
+	.stuic-gantt[data-fit] .stuic-gantt-inner {
+		width: 100%;
+	}
+
+	/* ============================================================================
+	   HEADER — two tiers: groups (month / year) over units (day / week / month)
+	   ============================================================================ */
+
+	.stuic-gantt-head {
+		display: flex;
+		position: sticky;
+		top: 0;
+		z-index: 3;
+		background: var(--stuic-gantt-header-bg);
+		color: var(--stuic-gantt-header-text);
+		font-size: var(--stuic-gantt-header-font-size);
+		border-bottom: var(--stuic-gantt-border-width, var(--stuic-border-width)) solid
+			var(--stuic-gantt-border-color);
+	}
+
+	.stuic-gantt-corner {
+		flex: 0 0 var(--_label-w);
+		box-sizing: border-box;
+		position: sticky;
+		left: 0;
+		z-index: 1;
+		display: flex;
+		align-items: flex-end;
+		padding: var(--stuic-gantt-header-padding);
+		background: var(--stuic-gantt-header-bg);
+		border-right: var(--stuic-gantt-border-width, var(--stuic-border-width)) solid
+			var(--stuic-gantt-border-color);
+	}
+
+	/* `1 0 <basis>` everywhere below: the column width is a MINIMUM. When the axis
+	   is narrower than the frame the columns share out what is left (no dead gutter,
+	   and the grid layer still matches the track because both grow by the same
+	   rule); when it is wider they keep their basis and the frame scrolls. */
+	.stuic-gantt-axis,
+	.stuic-gantt-track {
+		flex: 1 0 calc(var(--stuic-gantt-unit-width) * var(--_gantt-columns));
+		min-width: 0;
+	}
+
+	.stuic-gantt[data-fit] .stuic-gantt-axis,
+	.stuic-gantt[data-fit] .stuic-gantt-track {
+		flex: 1 1 0;
+	}
+
+	.stuic-gantt-groups,
+	.stuic-gantt-units {
+		display: flex;
+	}
+
+	.stuic-gantt-group {
+		flex-grow: var(--_gantt-span);
+		flex-shrink: 0;
+		flex-basis: calc(var(--stuic-gantt-unit-width) * var(--_gantt-span));
+		min-width: 0;
+		box-sizing: border-box;
+		padding: var(--stuic-gantt-header-padding);
+		border-left: var(--stuic-gantt-border-width, var(--stuic-border-width)) solid
+			var(--stuic-gantt-grid-line-color);
+		font-weight: var(--font-weight-medium);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.stuic-gantt[data-fit] .stuic-gantt-group {
+		flex-shrink: 1;
+		flex-basis: 0;
+	}
+
+	.stuic-gantt-unit {
+		flex: 1 0 var(--stuic-gantt-unit-width);
+		min-width: 0;
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-end;
+		padding: var(--stuic-gantt-header-padding);
+		border-left: var(--stuic-gantt-border-width, var(--stuic-border-width)) solid
+			var(--stuic-gantt-grid-line-color);
+		line-height: 1.2;
+		overflow: hidden;
+	}
+
+	.stuic-gantt[data-fit] .stuic-gantt-unit {
+		flex: 1 1 0;
+		/* border-box padding does not shrink, so it is a hard floor on how narrow a
+		   column can get — which would break `fit`'s "never scrolls" promise at high
+		   column counts. The label is centered, so dropping it costs nothing. */
+		padding-inline: 0;
+	}
+
+	.stuic-gantt-group:first-child,
+	.stuic-gantt-unit:first-child {
+		border-left-color: transparent;
+	}
+
+	.stuic-gantt-unit[data-weekend] {
+		background: var(--stuic-gantt-weekend-bg);
+	}
+
+	.stuic-gantt-unit[data-today] {
+		color: var(--stuic-gantt-today-color);
+		font-weight: var(--font-weight-bold);
+	}
+
+	.stuic-gantt-unit-sub {
+		color: var(--stuic-gantt-header-sub-text);
+		font-size: 0.85em;
+	}
+
+	.stuic-gantt-unit[data-today] .stuic-gantt-unit-sub {
+		color: inherit;
+	}
+
+	/* ============================================================================
+	   BODY + the single grid layer
+	   Weekend shading and the gridlines are drawn once for the whole body rather
+	   than per row — otherwise it is rows × columns nodes for the same pixels.
+	   The rows come later in the DOM and are positioned, so they paint on top.
+	   ============================================================================ */
+
+	.stuic-gantt-body {
+		position: relative;
+	}
+
+	.stuic-gantt-grid {
+		position: absolute;
+		inset: 0 0 0 var(--_label-w);
+		display: flex;
+		pointer-events: none;
+	}
+
+	.stuic-gantt-gridline {
+		flex: 1 0 var(--stuic-gantt-unit-width);
+		border-left: var(--stuic-gantt-border-width, var(--stuic-border-width)) solid
+			var(--stuic-gantt-grid-line-color);
+	}
+
+	.stuic-gantt[data-fit] .stuic-gantt-gridline {
+		flex: 1 1 0;
+	}
+
+	.stuic-gantt-gridline:first-child {
+		border-left-color: transparent;
+	}
+
+	.stuic-gantt-gridline[data-weekend] {
+		background: var(--stuic-gantt-weekend-bg);
+	}
+
+	.stuic-gantt-today {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		width: var(--stuic-gantt-today-width);
+		translate: -50% 0;
+		background: var(--stuic-gantt-today-color);
+	}
+
+	/* ============================================================================
+	   ROWS
+	   ============================================================================ */
+
+	.stuic-gantt-row {
+		position: relative;
+		display: flex;
+		min-height: var(--stuic-gantt-row-height);
+		border-bottom: var(--stuic-gantt-border-width, var(--stuic-border-width)) solid
+			var(--stuic-gantt-border-color);
+	}
+
+	.stuic-gantt-row:last-child {
+		border-bottom-color: transparent;
+	}
+
+	/* translucent on purpose — the weekend shading must stay visible under it */
+	.stuic-gantt-row:hover {
+		background: var(--stuic-gantt-row-bg-hover);
+	}
+
+	.stuic-gantt-row-label {
+		flex: 0 0 var(--_label-w);
+		box-sizing: border-box;
+		position: sticky;
+		left: 0;
+		z-index: 2;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 0.0625rem;
+		padding: var(--stuic-gantt-label-padding);
+		background: var(--stuic-gantt-label-bg);
+		border-right: var(--stuic-gantt-border-width, var(--stuic-border-width)) solid
+			var(--stuic-gantt-border-color);
+		overflow: hidden;
+	}
+
+	.stuic-gantt-row-title {
+		font-size: var(--stuic-gantt-label-font-size);
+		color: var(--stuic-gantt-label-text);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.stuic-gantt-row-link {
+		color: inherit;
+		text-decoration: none;
+	}
+
+	.stuic-gantt-row-link:hover {
+		text-decoration: underline;
+	}
+
+	.stuic-gantt-row-description {
+		font-size: var(--stuic-gantt-description-font-size);
+		color: var(--stuic-gantt-description-text);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	/* `clip` rather than `hidden`: a bar label positioned past the bar (barLabels
+	   "after", and every milestone label) would otherwise be scrollable overflow and
+	   put a horizontal scrollbar on a chart that fits. No `overflow-clip-margin` —
+	   content in that margin still counts toward an ancestor's scrollable overflow,
+	   which is the very scrollbar this is here to prevent. */
+	.stuic-gantt-track {
+		position: relative;
+		overflow: clip;
+	}
+
+	/* ============================================================================
+	   BARS
+	   ============================================================================ */
+
+	.stuic-gantt-bar {
+		position: absolute;
+		top: 50%;
+		translate: 0 -50%;
+		height: var(--stuic-gantt-bar-height);
+		box-sizing: border-box;
+		display: flex;
+		align-items: center;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		font: inherit;
+		font-size: var(--stuic-gantt-bar-font-size);
+		text-align: start;
+		text-decoration: none;
+		background: var(--stuic-gantt-bar-bg);
+		color: var(--stuic-gantt-bar-text);
+		border-radius: var(--stuic-gantt-bar-radius, var(--stuic-radius));
+		overflow: hidden;
+		transition: box-shadow var(--stuic-gantt-transition, var(--stuic-transition)) ease;
+	}
+
+	/* the emphasis range drawn inside a wider bar of the same row */
+	.stuic-gantt-bar[data-inset] {
+		height: var(--stuic-gantt-bar-height-inset);
+		z-index: 1;
+	}
+
+	.stuic-gantt-bar[data-clipped-start] {
+		border-start-start-radius: 0;
+		border-end-start-radius: 0;
+	}
+
+	.stuic-gantt-bar[data-clipped-end] {
+		border-start-end-radius: 0;
+		border-end-end-radius: 0;
+	}
+
+	.stuic-gantt-bar:is(a, button) {
+		cursor: pointer;
+	}
+
+	.stuic-gantt-bar:is(a, button):hover {
+		box-shadow: 0 0 0 2px color-mix(in srgb, var(--stuic-gantt-bar-bg) 40%, transparent);
+	}
+
+	.stuic-gantt-bar:focus-visible {
+		outline: 2px solid var(--stuic-color-ring);
+		outline-offset: 1px;
+	}
+
+	.stuic-gantt-bar[data-disabled] {
+		opacity: var(--stuic-gantt-bar-opacity-disabled);
+		cursor: default;
+	}
+
+	.stuic-gantt-bar-progress {
+		position: absolute;
+		inset: 0 auto 0 0;
+		border-radius: inherit;
+		/* darken, rather than mix toward the foreground: mixing follows the color
+		   scheme, so in dark mode the fill turned LIGHTER than the bar and the
+		   label (sized for the bar's own foreground) lost its contrast. */
+		background: var(
+			--stuic-gantt-bar-progress-bg,
+			color-mix(in oklab, var(--stuic-gantt-bar-bg) 80%, black)
+		);
+	}
+
+	.stuic-gantt-bar-label {
+		position: relative; /* above the progress fill */
+		min-width: 0;
+		padding-inline: var(--stuic-gantt-bar-padding-inline);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	/* `after`: the label escapes the bar to its right, in body (not bar) color */
+	.stuic-gantt[data-bar-labels="after"] .stuic-gantt-bar {
+		overflow: visible;
+	}
+
+	.stuic-gantt[data-bar-labels="after"] .stuic-gantt-bar-label,
+	.stuic-gantt-bar[data-kind="milestone"] .stuic-gantt-bar-label {
+		position: absolute;
+		left: 100%;
+		top: 50%;
+		translate: 0 -50%;
+		margin-left: 0.375rem;
+		padding-inline: 0;
+		overflow: visible;
+		color: var(--stuic-gantt-label-text);
+	}
+
+	/* ============================================================================
+	   MILESTONE — a fixed box centered on its day; the diamond is the pseudo
+	   element, so the label (and any renderBar content) is never rotated with it.
+	   ============================================================================ */
+
+	.stuic-gantt-bar[data-kind="milestone"] {
+		width: var(--stuic-gantt-milestone-size);
+		height: var(--stuic-gantt-milestone-size);
+		translate: -50% -50%;
+		background: transparent;
+		border-radius: 0;
+		overflow: visible;
+	}
+
+	.stuic-gantt-bar[data-kind="milestone"]::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		rotate: 45deg;
+		background: var(--stuic-gantt-bar-bg);
+		border-radius: var(--stuic-gantt-milestone-radius, 2px);
+	}
+
+	/* ============================================================================
+	   INTENT — the bar's own two tokens, so progress and the milestone follow
+	   ============================================================================ */
+
+	.stuic-gantt-bar[data-intent="primary"] {
+		--stuic-gantt-bar-bg: var(--stuic-color-primary);
+		--stuic-gantt-bar-text: var(--stuic-color-primary-foreground);
+	}
+
+	.stuic-gantt-bar[data-intent="accent"] {
+		--stuic-gantt-bar-bg: var(--stuic-color-accent);
+		--stuic-gantt-bar-text: var(--stuic-color-accent-foreground);
+	}
+
+	.stuic-gantt-bar[data-intent="success"] {
+		--stuic-gantt-bar-bg: var(--stuic-color-success);
+		--stuic-gantt-bar-text: var(--stuic-color-success-foreground);
+	}
+
+	.stuic-gantt-bar[data-intent="warning"] {
+		--stuic-gantt-bar-bg: var(--stuic-color-warning);
+		--stuic-gantt-bar-text: var(--stuic-color-warning-foreground);
+	}
+
+	.stuic-gantt-bar[data-intent="destructive"] {
+		--stuic-gantt-bar-bg: var(--stuic-color-destructive);
+		--stuic-gantt-bar-text: var(--stuic-color-destructive-foreground);
+	}
+
+	/* ============================================================================
+	   EMPTY
+	   ============================================================================ */
+
+	/* positioned for the same reason the rows are: the grid layer is an absolute
+	   element earlier in the DOM, so in-flow content would paint underneath it */
+	.stuic-gantt-empty {
+		position: relative;
+		padding: var(--stuic-gantt-empty-padding);
+	}
+}

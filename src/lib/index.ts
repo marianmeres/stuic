@@ -62,6 +62,7 @@ export * from "./components/EmailVerifyForm/index.js";
 export * from "./components/EmptyState/index.js";
 export * from "./components/FieldsBuilder/index.js";
 export * from "./components/Float/index.js";
+export * from "./components/Gantt/index.js";
 export * from "./components/H/index.js";
 export * from "./components/Header/index.js";
 export * from "./components/ImageCycler/index.js";

@@ -87,6 +87,7 @@
 		'tabbed-menu',
         'thc', 
         'theme-preview', 
+		'gantt',
 		'timeline',
         'tooltip',
 		'trend-chart',

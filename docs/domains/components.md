@@ -111,6 +111,7 @@
 | Stat                | KPI/stat card: label + value + delta with trend arrow and semantic coloring                          |
 | DescriptionList     | Term/value list (`<dl>`): stacked or two-column by container query, hairlines, truncation, totals    |
 | Timeline            | Vertical event list on a rail: dot/icon/custom markers, inline or opposite time, alternate layout    |
+| Gantt               | Horizontal schedule chart: day/week/month axis, bars, milestones, progress, today line               |
 | TrendChart          | Svelte wrapper for `@marianmeres/trend-chart` (subpath-only: `@marianmeres/stuic/trend-chart`)       |
 | Tree                | Hierarchical tree view with keyboard nav and drag-and-drop                                           |
 | X                   | Styled close/multiply SVG icon                                                                       |
@@ -1352,6 +1353,62 @@ Snippets: `renderIndicator` (bubble override, receives `{ index, step, state }`)
 Prefix: `--stuic-stepper-*`
 
 `gap`, `gap-vertical`, `connector-min-length`, `indicator-size`, `indicator-border-width`, `indicator-radius`, `indicator-font-size`, `indicator-font-weight`, `indicator-{bg,text,border}{,-current,-completed,-error}`, `label-font-size`, `label-font-weight`, `label-text{,-current,-completed,-error}`, `description-font-size`, `description-text`, `connector-thickness`, `connector-bg{,-completed}`, `ring-width`, `ring-color`, `opacity-disabled`
+
+---
+
+## Gantt
+
+Horizontal schedule chart — the classic project plan (task per row, progress, milestones) and the resource lane view (many bars per row) in one component. Whole-day, inclusive-at-both-ends ranges throughout (`YYYY-MM-DD`, or a `Date` read as its local calendar date), so no timezone can shift a bar by a day. Columns are days, weeks or months; `week`/`month` snap the window outwards to whole units, and bars are positioned _through_ the columns, so an equal-width February column still holds 28 days. Read-only by design: no drag-to-reschedule, no dependency arrows (use `Timeline` for a vertical event list).
+
+Layout is one scroll container holding a sticky two-tier header (groups over units), a sticky left label column and, for the body, a **single** absolutely-positioned grid layer (gridlines + weekend shading + today line) rather than a cell per row per column. The frame always fills its parent and `unitWidth` is a _minimum_: a narrow axis shares the spare width between its columns (no dead gutter, and the grid layer keeps matching the track because both grow by the same rule), a wide one scrolls. `unitWidth="fit"` drops the minimum so the chart never scrolls sideways. The track is `overflow: clip`, so a label positioned past its bar cannot put a scrollbar on a chart that fits.
+
+### Exports
+
+| Export              | Kind      | Description                                                                                                   |
+| ------------------- | --------- | ------------------------------------------------------------------------------------------------------------- |
+| `Gantt`             | component | Main component                                                                                                |
+| `GanttProps`        | type      | Props type                                                                                                    |
+| `GanttRow`          | type      | `{ id?, label?, description?, bars, href?, data? }`                                                           |
+| `GanttBar`          | type      | `{ from, to?, label?, intent?, progress?, milestone?, inset?, href?, title?, disabled?, id?, class?, data? }` |
+| `GanttBarLabels`    | type      | `"inside" \| "after" \| "none"`                                                                               |
+| `GanttSelectDetail` | type      | `{ bar, row, rowIndex, barIndex, placement, point }` — `onSelect` / `renderBar`                               |
+| `GanttUnit`         | type      | `"day" \| "week" \| "month"`                                                                                  |
+| `GanttAxis`         | type      | `{ unit, from, to, start, end, columns, groups, totalDays }`                                                  |
+| `GanttColumn`       | type      | `{ date, days, offset, index, label, subLabel?, groupIndex, isWeekend, isToday }`                             |
+| `GanttGroup`        | type      | `{ key, label, span, from }` — a header group cell                                                            |
+| `GanttPlacement`    | type      | `{ start, end, clippedStart, clippedEnd, days }` — 0..1 track fractions                                       |
+| `GanttDateInput`    | type      | `IsoDate \| Date`                                                                                             |
+| `GanttAxisOptions`  | type      | `{ unit?, weekStartsOn?, locale?, today? }`                                                                   |
+| `buildGanttAxis`    | function  | `(from, to, options) => GanttAxis` — throws on a bad or too-wide window                                       |
+| `placeRange`        | function  | `(from, to, axis) => GanttPlacement \| null` (`null` = misses the window)                                     |
+| `placePoint`        | function  | `(date, axis) => number \| null` — the middle of that day, 0..1                                               |
+| `dayToFraction`     | function  | `(dayOffset, axis) => number` — column-aware, so month widths stay equal                                      |
+| `boundsOf`          | function  | `(ranges) => { from, to } \| null` — the default window                                                       |
+| `isoWeekNumber`     | function  | `(iso) => number` — ISO-8601 week, used for the week header                                                   |
+| `GANTT_MAX_COLUMNS` | const     | `2000` — over this `buildGanttAxis` throws instead of building the nodes                                      |
+
+### Key Props
+
+| Prop          | Type                          | Default    | Description                                                 |
+| ------------- | ----------------------------- | ---------- | ----------------------------------------------------------- |
+| `rows`        | `GanttRow[]`                  | required   | The lanes, in display order                                 |
+| `from` / `to` | `IsoDate \| Date`             | bar extent | The window, inclusive at both ends                          |
+| `unit`        | `GanttUnit`                   | `"day"`    | Column granularity                                          |
+| `unitWidth`   | `number \| "fit"`             | token      | **Minimum** column px (the zoom); `"fit"` drops the minimum |
+| `today`       | `IsoDate \| Date \| null`     | today      | The marker line's day; `null` removes it                    |
+| `labels`      | `boolean`                     | auto       | Left label column — on when any row has a `label`           |
+| `barLabels`   | `GanttBarLabels`              | `"inside"` | Where a bar's own label is drawn                            |
+| `onSelect`    | `(GanttSelectDetail) => void` | —          | Bar click; also what turns bars into focusable `<button>`s  |
+
+Also `weekStartsOn`, `locale`, `formatColumn`, `formatGroup`, `formatBarAria`. Snippets: `renderBar`, `renderRowLabel`, `renderCorner`, `empty`. Class slots: `class`, `classHeader`, `classRow`, `classRowLabel`, `classTrack`, `classBar`.
+
+A bar entirely outside the window is dropped (a hairline at the edge reads as "starts today"); one that overhangs is clipped and flagged `data-clipped-start` / `data-clipped-end`. `data-*` attributes survive `unstyled` — they describe the data, not the styling.
+
+### CSS Tokens
+
+Prefix: `--stuic-gantt-*`
+
+`unit-width`, `label-width`, `row-height`, `max-height`, `bg`, `border-color`, `font-size`, `header-{bg,text,font-size,padding,sub-text}`, `grid-line-color`, `weekend-bg`, `today-color`, `today-width`, `row-bg-hover`, `label-{bg,padding,font-size,text}`, `description-{font-size,text}`, `bar-{height,height-inset,bg,text,font-size,padding-inline,progress-bg,opacity-disabled,radius}`, `milestone-{size,radius}`, `empty-padding`, `radius`, `border-width`, `transition`
 
 ---
 

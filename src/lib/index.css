@@ -103,6 +103,7 @@ In practice:
 @import "./components/EmptyState/index.css";
 @import "./components/FieldsBuilder/index.css";
 @import "./components/Float/index.css";
+@import "./components/Gantt/index.css";
 @import "./components/H/index.css";
 @import "./components/Header/index.css";
 @import "./components/ImageCycler/index.css";
