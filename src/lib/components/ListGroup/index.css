@@ -1,0 +1,279 @@
+/* ============================================================================
+   LIST GROUP COMPONENT TOKENS
+   Override globally: :root { --stuic-list-group-item-padding-x: 1rem; }
+   Override locally:  <ListGroup style="--stuic-list-group-header-bg: var(--stuic-color-muted);">
+   ============================================================================ */
+
+:root {
+	/* Box — radius and border width are read with a tier fallback at the usage site
+	   (`--stuic-list-group-radius` → `--stuic-radius-container`,
+	   `--stuic-list-group-border-width` → `--stuic-border-width`), never declared here. */
+	--stuic-list-group-bg: transparent;
+	--stuic-list-group-border-color: var(--stuic-color-border);
+
+	/* Rules between header, rows and footer. The component's own width (like
+	   DescriptionList and Separator), so a theme that zeroes box borders keeps them. */
+	--stuic-list-group-rule-color: var(--stuic-color-border);
+	--stuic-list-group-rule-width: 1px;
+
+	/* Rows */
+	--stuic-list-group-item-padding-x: 0.75rem;
+	--stuic-list-group-item-padding-y: 0.5rem;
+	--stuic-list-group-item-gap-x: 0.75rem;
+	--stuic-list-group-item-gap-y: 0.25rem;
+	--stuic-list-group-item-align: center;
+	--stuic-list-group-grow-basis: 10rem; /* what `data-grow` claims before neighbours wrap */
+
+	/* Linked rows */
+	--stuic-list-group-item-bg-hover: var(--stuic-color-muted);
+	--stuic-list-group-item-ring-width: 2px;
+	--stuic-list-group-item-ring-color: var(--stuic-color-ring);
+
+	/* Header. `--stuic-list-group-header-padding-y` is deliberately NOT declared: it is
+	   read as a fallback argument at the usage site, so a scoped override of
+	   `--stuic-list-group-item-padding-y` reaches the header too (declared here, it would
+	   resolve once at :root and ignore every scoped override). */
+	--stuic-list-group-header-bg: transparent;
+	--stuic-list-group-title-font-weight: var(--font-weight-medium);
+	--stuic-list-group-title-text: var(--stuic-color-foreground);
+	--stuic-list-group-aside-text: var(--stuic-color-muted-foreground);
+
+	/* Empty + footer */
+	--stuic-list-group-empty-text: var(--stuic-color-muted-foreground);
+	--stuic-list-group-footer-text: var(--stuic-color-muted-foreground);
+
+	/* Typography: no part declares a size — everything inherits, so `class="text-sm"` on
+	   the root scales the whole box. */
+}
+
+@layer components {
+	/* ============================================================================
+	   BOX
+	   ============================================================================ */
+
+	.stuic-list-group {
+		min-width: 0;
+		background: var(--stuic-list-group-bg);
+		border: var(--stuic-list-group-border-width, var(--stuic-border-width)) solid
+			var(--stuic-list-group-border-color);
+		border-radius: var(--stuic-list-group-radius, var(--stuic-radius-container));
+		/* The header background and a linked row's hover background must follow the
+		   rounded corners. `clip`, not `hidden`: it creates no scroll container, so a
+		   sticky element inside still sticks (`hidden` stays as the fallback for browsers
+		   without `clip`). stuic's tooltip and popover are `position: fixed`, which an
+		   overflow-clipped ancestor does not clip. */
+		overflow: hidden;
+		overflow: clip;
+	}
+
+	/* One rule between consecutive parts (header › list | empty › footer). On the part
+	   that FOLLOWS rather than under the header, so a header over a `children` list that
+	   rendered no rows (hidden below) does not draw a second line against the box. */
+	.stuic-list-group > * + * {
+		border-top: var(--stuic-list-group-rule-width) solid
+			var(--stuic-list-group-rule-color);
+	}
+
+	/* ============================================================================
+	   HEADER — shares the rows' inline padding BY CONSTRUCTION (not a separate
+	   token), so the header text and the row text always start at the same x.
+	   ============================================================================ */
+
+	.stuic-list-group-header {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		column-gap: var(--stuic-list-group-item-gap-x);
+		row-gap: var(--stuic-list-group-item-gap-y);
+		padding-block: var(
+			--stuic-list-group-header-padding-y,
+			var(--stuic-list-group-item-padding-y)
+		);
+		padding-inline: var(--stuic-list-group-item-padding-x);
+		min-width: 0;
+		overflow-wrap: anywhere;
+		background: var(--stuic-list-group-header-bg);
+	}
+
+	.stuic-list-group-title {
+		/* `titleLevel` is semantics only: undo the UA heading margin and size. `font`
+		   (not `font-size`) so the size is inherited, never declared. */
+		margin: 0;
+		font: inherit;
+		font-weight: var(--stuic-list-group-title-font-weight);
+		color: var(--stuic-list-group-title-text);
+		min-width: 0;
+	}
+
+	.stuic-list-group-aside {
+		margin-inline-start: auto;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		column-gap: var(--stuic-list-group-item-gap-x);
+		row-gap: var(--stuic-list-group-item-gap-y);
+		color: var(--stuic-list-group-aside-text);
+		font-variant-numeric: tabular-nums;
+	}
+
+	/* ============================================================================
+	   LIST + ROWS — selected STRUCTURALLY (`> li`), not by class, so a hand-written
+	   `children` row renders exactly like a generated one. The per-part classes exist
+	   only as merge targets for `classItem` / `classItemLink`.
+
+	   The ROW BOX is the <li>, or — when its only child is a link or a button — that
+	   child. A child carrying a stuic component class (a `Button`, a `Pill`, a
+	   `ListItemButton`) is left alone: it has its own box, and flattening it into the
+	   row would strip its background and border. The generated `itemHref` anchor is
+	   matched by its own class for the same reason.
+	   ============================================================================ */
+
+	.stuic-list-group-list {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	/* A `children` list whose rows all rendered away (Svelte's anchors are comments) */
+	.stuic-list-group-list:empty {
+		display: none;
+	}
+
+	.stuic-list-group-list > li,
+	.stuic-list-group-list
+		> li
+		> :is(
+			.stuic-list-group-item-link,
+			:is(a, button):only-child:not([class^="stuic-"], [class*=" stuic-"])
+		) {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: var(--stuic-list-group-item-align);
+		column-gap: var(--stuic-list-group-item-gap-x);
+		row-gap: var(--stuic-list-group-item-gap-y);
+		padding-block: var(--stuic-list-group-item-padding-y);
+		padding-inline: var(--stuic-list-group-item-padding-x);
+		min-width: 0;
+		/* A dotted location path ("hall-a.rack-a2.shelf-a2-2.bin") is one unbreakable
+		   word. Without this its min-content pushes a 360px drawer sideways. `anywhere`
+		   and not `break-word`: only `anywhere` counts in min-content sizing. */
+		overflow-wrap: anywhere;
+	}
+
+	.stuic-list-group-list > li + li {
+		border-top: var(--stuic-list-group-rule-width) solid
+			var(--stuic-list-group-rule-color);
+	}
+
+	/* A row whose only child is a link or a button hands the box to that child */
+	.stuic-list-group-list
+		> li:has(
+			> :is(
+				.stuic-list-group-item-link,
+				:is(a, button):only-child:not([class^="stuic-"], [class*=" stuic-"])
+			)
+		) {
+		display: block;
+		padding: 0;
+	}
+
+	/* ============================================================================
+	   LINKED ROWS
+	   ============================================================================ */
+
+	.stuic-list-group-list
+		> li
+		> :is(
+			.stuic-list-group-item-link,
+			:is(a, button):only-child:not([class^="stuic-"], [class*=" stuic-"])
+		) {
+		/* a <button> is shrink-to-fit even as a flex container */
+		width: 100%;
+		box-sizing: border-box;
+		margin: 0;
+		color: inherit;
+		/* for <button> rows */
+		font: inherit;
+		text-align: start;
+		text-decoration: none;
+		background: none;
+		border: 0;
+		border-radius: 0;
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+		transition: background-color
+			var(--stuic-list-group-transition, var(--stuic-transition));
+	}
+
+	.stuic-list-group-list
+		> li
+		> :is(
+			.stuic-list-group-item-link,
+			:is(a, button):only-child:not([class^="stuic-"], [class*=" stuic-"])
+		):hover:not(:disabled) {
+		background: var(--stuic-list-group-item-bg-hover);
+	}
+
+	.stuic-list-group-list
+		> li
+		> :is(
+			.stuic-list-group-item-link,
+			:is(a, button):only-child:not([class^="stuic-"], [class*=" stuic-"])
+		):focus-visible {
+		outline: var(--stuic-list-group-item-ring-width) solid
+			var(--stuic-list-group-item-ring-color);
+		/* inset: the box clips, and the first/last row sit against its edge */
+		outline-offset: calc(-1 * var(--stuic-list-group-item-ring-width));
+	}
+
+	.stuic-list-group-list
+		> li
+		> :is(
+			.stuic-list-group-item-link,
+			:is(a, button):only-child:not([class^="stuic-"], [class*=" stuic-"])
+		):disabled {
+		cursor: default;
+	}
+
+	/* ============================================================================
+	   ROW CONTENT CONVENTION — `data-grow` on the one part that takes the leftover
+	   space. The BASIS, not a min-width, carries "claim 10rem before anything wraps":
+	   flex line-breaking uses the hypothetical size, so the trailing parts wrap once
+	   the name would get less than that — and in a container narrower than the basis
+	   the part still shrinks and truncates instead of overflowing.
+	   ============================================================================ */
+
+	.stuic-list-group-list > li > [data-grow],
+	.stuic-list-group-list
+		> li
+		> :is(
+			.stuic-list-group-item-link,
+			:is(a, button):only-child:not([class^="stuic-"], [class*=" stuic-"])
+		)
+		> [data-grow] {
+		flex: 1 1 var(--stuic-list-group-grow-basis);
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	/* ============================================================================
+	   EMPTY + FOOTER
+	   ============================================================================ */
+
+	.stuic-list-group-empty,
+	.stuic-list-group-footer {
+		padding-block: var(--stuic-list-group-item-padding-y);
+		padding-inline: var(--stuic-list-group-item-padding-x);
+		overflow-wrap: anywhere;
+	}
+
+	.stuic-list-group-empty {
+		color: var(--stuic-list-group-empty-text);
+	}
+
+	.stuic-list-group-footer {
+		color: var(--stuic-list-group-footer-text);
+	}
+}

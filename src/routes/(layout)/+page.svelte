@@ -50,6 +50,7 @@
 		'input',
 		'input-history',
 		'kbd-shortcut',
+		'list-group',
 		'list-item-button',
 		'login-form',
 		'login-or-register-form',

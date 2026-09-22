@@ -110,6 +110,7 @@ In practice:
 @import "./components/IconSwap/index.css";
 @import "./components/Input/index.css";
 @import "./components/KbdShortcut/index.css";
+@import "./components/ListGroup/index.css";
 @import "./components/ListItemButton/index.css";
 @import "./components/Modal/index.css";
 @import "./components/ModalDialog/index.css";

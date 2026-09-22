@@ -1273,6 +1273,43 @@ Horizontal schedule chart — project plans (task per row, progress, milestones)
 
 The geometry is exported separately for axis-aligned overlays: `buildGanttAxis`, `placeRange`, `placePoint`, `dayToFraction`, `boundsOf`.
 
+#### `ListGroup`
+
+Bordered, rounded box of rows split by hairlines, with an optional header (title + aside) and footer. Each row is one wrapping flex line of parts; `data-grow` on the part that should absorb the slack. Generic over the item type.
+
+| Prop         | Type                                   | Default | Description                                                            |
+| ------------ | -------------------------------------- | ------- | ---------------------------------------------------------------------- |
+| `items`      | `T[]`                                  | —       | The rows (without `renderItem`, each renders as `THC`)                 |
+| `renderItem` | `Snippet<[{ item, index }]>`           | —       | Row content                                                            |
+| `children`   | `Snippet`                              | —       | Hand-written `<li>`s instead of `items` (styled identically)           |
+| `getItemId`  | `(item, index) => string \| number`    | index   | Keyed identity                                                         |
+| `itemProps`  | `(item, index) => ListGroupItemProps`  | —       | Attributes (`data-*`, `class`) on each `<li>`                          |
+| `itemHref`   | `(item, index) => string \| undefined` | —       | Makes the whole row a link                                             |
+| `title`      | `THC`                                  | —       | Header start side; labels the list                                     |
+| `titleLevel` | `1…6`                                  | —       | Render the title as `<hN>` (semantics only)                            |
+| `aside`      | `THC`                                  | —       | Header end side                                                        |
+| `footer`     | `THC`                                  | —       | A line under the rows                                                  |
+| `empty`      | `THC`                                  | —       | Replaces the list when there are no rows; without it, nothing renders  |
+| `listProps`  | `ListGroupListProps`                   | —       | Attributes for the `<ul>` (e.g. `aria-label` when there is no `title`) |
+
+```svelte
+<ListGroup
+	class="text-sm"
+	items={lines}
+	getItemId={(l) => l.id}
+	itemProps={(l) => ({ "data-line": l.id })}
+	title="Loose items"
+	aside="70 pc"
+	empty="Nothing booked yet."
+>
+	{#snippet renderItem({ item })}
+		<span class="font-mono">{item.code}</span>
+		<span data-grow>{item.name}</span>
+		<span>×{item.qty}</span>
+	{/snippet}
+</ListGroup>
+```
+
 #### `ImageCycler`
 
 Auto-cycling image carousel with fade transitions. Preloads next image before displaying. Supports custom title/description snippets.

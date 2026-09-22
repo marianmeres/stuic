@@ -2,7 +2,7 @@
 
 ## Overview
 
-80 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
+82 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
@@ -110,6 +110,7 @@
 | Card                | Flexible card with image, title, footer; vertical/horizontal layout                                  |
 | Stat                | KPI/stat card: label + value + delta with trend arrow and semantic coloring                          |
 | DescriptionList     | Term/value list (`<dl>`): stacked or two-column by container query, hairlines, truncation, totals    |
+| ListGroup           | Bordered box of wrapping rows (`<ul>`): header title/aside, hairlines, linked rows, empty, footer    |
 | Timeline            | Vertical event list on a rail: dot/icon/custom markers, inline or opposite time, alternate layout    |
 | Gantt               | Horizontal schedule chart: day/week/month axis, bars, milestones, progress, today line               |
 | TrendChart          | Svelte wrapper for `@marianmeres/trend-chart` (subpath-only: `@marianmeres/stuic/trend-chart`)       |
@@ -1085,6 +1086,59 @@ Snippets (all receive `{ item, index }`): `renderLabel`, `renderValue`, `renderI
 Prefix: `--stuic-description-list-*`
 
 `label-width` (not declared — fallback `minmax(7rem, 10rem)` at the usage site), `gap-x`, `gap-y`, `item-padding-y`, `rule-color`, `rule-width`, `label-font-size`, `label-font-weight`, `label-text`, `value-text`, `description-font-size`, `description-text`, `label-text-emphasis`, `value-font-weight-emphasis`
+
+---
+
+## ListGroup
+
+A rounded, bordered box of rows split by hairlines — optional header (title start, figure end), optional footer line — the block back offices keep hand-rolling. Renders `<div>` › header `<div>` › `<ul role="list">` › `<li>` per row › footer `<div>`. Each row is **one wrapping flex line** of parts (a code, a name that takes the slack, a run of facts), not columns: nothing lines up across rows, and in a narrow drawer the trailing facts drop under the name. Not a `DataTable` (no column model), not a `DescriptionList` (many things, not properties of one), not a `Card` (no shadow, no padded body). Generic over `T`.
+
+### Exports
+
+| Export                | Kind      | Description                                                                           |
+| --------------------- | --------- | ------------------------------------------------------------------------------------- |
+| `ListGroup`           | component | Main component                                                                        |
+| `ListGroupProps`      | type      | Props type (`Props<T>`)                                                               |
+| `ListGroupSnippetArg` | type      | `{ item, index }` — `renderItem`'s argument                                           |
+| `ListGroupTitleLevel` | type      | `1 \| 2 \| 3 \| 4 \| 5 \| 6`                                                          |
+| `ListGroupItemProps`  | type      | `HTMLLiAttributes` minus `children`, with `class?: string` — what `itemProps` returns |
+| `ListGroupListProps`  | type      | `HTMLAttributes<HTMLUListElement>` minus `children`/`class`/`role` — `listProps`      |
+
+### Key Props
+
+| Prop         | Type                                   | Default | Description                                                                               |
+| ------------ | -------------------------------------- | ------- | ----------------------------------------------------------------------------------------- |
+| `items`      | `T[]`                                  | —       | The rows; without `renderItem` an item renders as `THC`                                   |
+| `renderItem` | `Snippet<[{ item, index }]>`           | —       | Row content, inside the `<li>` (or the `itemHref` anchor)                                 |
+| `children`   | `Snippet`                              | —       | `<li>`s rendered inside the `<ul>` _instead of_ `items`                                   |
+| `getItemId`  | `(item, index) => string \| number`    | index   | Keyed `{#each}` identity                                                                  |
+| `itemProps`  | `(item, index) => ListGroupItemProps`  | —       | Attributes on each `<li>` (the `data-*` hooks tests select on); `class` merges last       |
+| `itemHref`   | `(item, index) => string \| undefined` | —       | Wraps the row in `a.stuic-list-group-item-link`, which becomes the row box                |
+| `title`      | `THC`                                  | —       | Header start side; labels the `<ul>` (`aria-labelledby`)                                  |
+| `titleLevel` | `1…6`                                  | —       | `<hN>` instead of `<div>` — semantics only, look unchanged                                |
+| `aside`      | `THC`                                  | —       | Header end side (`tabular-nums`, muted). Never an automatic row count                     |
+| `footer`     | `THC`                                  | —       | A line inside the box under the rows                                                      |
+| `empty`      | `THC`                                  | —       | Replaces the `<ul>` when there are no rows; without it an empty group renders **nothing** |
+| `listProps`  | `ListGroupListProps`                   | —       | Attributes for the `<ul>` — how a title-less list gets `aria-label`/`aria-labelledby`     |
+
+Class slots: `class`, `classHeader`, `classTitle`, `classAside`, `classList`, `classItem`, `classItemLink`, `classEmpty`, `classFooter`. Rest props go to the root `<div>`.
+
+### Row contract (works in both forms)
+
+The CSS selects **structurally** (`ul > li`, `> li > :is(a, button):only-child`), so a hand-written `children` row renders exactly like a generated one. A row whose only child is a plain `<a>`/`<button>` hands the row box (padding, hover, inset focus ring) to it; a child carrying a stuic component class (a lone `Button`, `Pill`, `ListItemButton`) is left alone so it keeps its own box. `data-grow` on one part gives it `flex: 1 1 var(--stuic-list-group-grow-basis)` (10rem) + truncation — the **basis**, not a min-width, is what makes the neighbours wrap once the name would get less than 10rem, while a container narrower than that still shrinks it instead of overflowing. A second line is a child with `basis-full`.
+
+### Deliberate choices
+
+- Root, header and footer are `<div>`s: a labelled `<section>` is a `region` landmark, and outside `<main>`/sectioning content (a drawer, a dialog) a `<header>`/`<footer>` is a `banner`/`contentinfo` landmark — one per group.
+- `role="list"` is explicit (WebKit drops list semantics from `list-style: none`).
+- No part declares a `font-size` — `class="text-sm"` on the root scales the box. The header has no own `padding-x`: it shares the rows', so header and row text always start at the same x. `--stuic-list-group-header-padding-y` is a usage-site fallback, never declared, so a scoped `--stuic-list-group-item-padding-y` reaches the header.
+- `overflow: clip` (not `hidden`) on the box so header/hover backgrounds follow the radius without creating a scroll container.
+
+### CSS Tokens
+
+Prefix: `--stuic-list-group-*`
+
+`bg`, `border-color`, `rule-color`, `rule-width`, `item-padding-x`, `item-padding-y`, `item-gap-x`, `item-gap-y`, `item-align`, `grow-basis`, `item-bg-hover`, `item-ring-width`, `item-ring-color`, `header-bg`, `title-font-weight`, `title-text`, `aside-text`, `empty-text`, `footer-text`. Not declared (usage-site fallbacks): `radius` (→ `--stuic-radius-container`), `border-width` (→ `--stuic-border-width`), `transition` (→ `--stuic-transition`), `header-padding-y` (→ `item-padding-y`).
 
 ---
 
