@@ -22,7 +22,7 @@ variant for custom UI (volume/brightness controls, dashboards, media players).
 | `thumb`         | `boolean \| Snippet<[SliderRenderCtx]>`                            | `true`         | `false` hides the thumb (fill-only look), snippet renders inside thumb                                                                                                                                                |
 | `thumbPosition` | `"value" \| "start"`                                               | `"value"`      | `"value"` rides the fill edge; `"start"` pins it to the left/bottom so only the bar moves (true iOS volume look)                                                                                                      |
 | `thumbReserve`  | `boolean`                                                          | `true`         | Reserve the thumb's footprint along the track, so the fill never shrinks below the thumb. `false` = linear mapping across the full track (fill collapses to zero at `min`); only honored with `thumbPosition="start"` |
-| `fillRounded`   | `boolean`                                                          | `false`        | Round the fill's leading edge ("pill inside a pill")                                                                                                                                                                  |
+| `fillRounded`   | `boolean`                                                          | `true`         | Round the fill's leading edge ("pill inside a pill"); `false` cuts it flat                                                                                                                                            |
 | `ticks`         | `boolean \| number[]`                                              | -              | `true` = tick at every `step` (positive numeric step only; skipped above 101 auto ticks — pass an array), array = ticks at given in-range values                                                                      |
 | `valueLabel`    | `Snippet<[SliderRenderCtx]>`                                       | -              | Floating label at the current value along the track                                                                                                                                                                   |
 | `disabled`      | `boolean`                                                          | `false`        | Disable interaction                                                                                                                                                                                                   |
@@ -103,7 +103,6 @@ track and the fill collapses to zero at `min`.
 <Slider
 	orientation="vertical"
 	thumbPosition="start"
-	fillRounded
 	thumbClass="bg-transparent shadow-none"
 	bind:value={volume}
 >
@@ -123,8 +122,8 @@ track and the fill collapses to zero at `min`.
 With `thumbPosition="start"` the thumb never moves — only the bar does. It is purely
 decorative (the full-size hidden input is always the topmost hit target, so the thumb
 never receives pointer events), but it still **reserves its footprint** along the track:
-the fill can never shrink below it, and at `min` it is exactly a thumb-sized nub — with
-`fillRounded`, a circle enclosing the pinned thumb, same as the default
+the fill can never shrink below it, and at `min` it is exactly a thumb-sized nub — by
+default (`fillRounded`) a circle enclosing the pinned thumb, same as the default
 `thumbPosition="value"` look.
 
 Opt out with `thumbReserve={false}` for a linear mapping across the full track, where
@@ -202,23 +201,23 @@ the fill collapses to zero at `min` (and, at low values, is shorter than the thu
 
 ## CSS Variables
 
-| Variable                          | Default                    | Description                       |
-| --------------------------------- | -------------------------- | --------------------------------- |
-| `--stuic-slider-track`            | `--stuic-color-muted`      | Track (pill background) color     |
-| `--stuic-slider-fill`             | `--stuic-color-primary`    | Fill color                        |
-| `--stuic-slider-thumb`            | `--color-white`            | Thumb background                  |
-| `--stuic-slider-thumb-foreground` | `--stuic-color-foreground` | Thumb content color               |
-| `--stuic-slider-tick`             | foreground 25% mix         | Tick mark color (over the track)  |
-| `--stuic-slider-tick-on-fill`     | background 55% mix         | Tick mark color (over the fill)   |
-| `--stuic-slider-ring-width`       | `4px`                      | Focus ring width                  |
-| `--stuic-slider-ring-color`       | `--stuic-color-ring`       | Focus ring color                  |
-| `--stuic-slider-thickness`        | `2rem` (`sm` 1.25, `lg` 3) | Cross-axis size                   |
-| `--stuic-slider-length`           | `10rem`                    | Main-axis size                    |
-| `--stuic-slider-thumb-inset`      | `3px`                      | Gap between thumb and track edge  |
-| `--stuic-slider-radius`           | `9999px`                   | Track corner radius               |
-| `--stuic-slider-fill-radius`      | `--stuic-slider-radius`    | Fill radius (when `fillRounded`)  |
-| `--stuic-slider-thumb-radius`     | `9999px`                   | Thumb corner radius               |
-| `--stuic-slider-thumb-shadow`     | `--stuic-shadow`           | Thumb shadow                      |
-| `--stuic-slider-tick-size`        | `4px`                      | Tick mark diameter                |
-| `--stuic-slider-value-gap`        | `0.375rem`                 | Gap between track and value label |
-| `--stuic-slider-transition`       | `--stuic-transition`       | Fill/thumb movement transition    |
+| Variable                          | Default                    | Description                                |
+| --------------------------------- | -------------------------- | ------------------------------------------ |
+| `--stuic-slider-track`            | `--stuic-color-muted`      | Track (pill background) color              |
+| `--stuic-slider-fill`             | `--stuic-color-primary`    | Fill color                                 |
+| `--stuic-slider-thumb`            | `--color-white`            | Thumb background                           |
+| `--stuic-slider-thumb-foreground` | `--stuic-color-foreground` | Thumb content color                        |
+| `--stuic-slider-tick`             | foreground 25% mix         | Tick mark color (over the track)           |
+| `--stuic-slider-tick-on-fill`     | background 55% mix         | Tick mark color (over the fill)            |
+| `--stuic-slider-ring-width`       | `4px`                      | Focus ring width                           |
+| `--stuic-slider-ring-color`       | `--stuic-color-ring`       | Focus ring color                           |
+| `--stuic-slider-thickness`        | `2rem` (`sm` 1.25, `lg` 3) | Cross-axis size                            |
+| `--stuic-slider-length`           | `10rem`                    | Main-axis size                             |
+| `--stuic-slider-thumb-inset`      | `3px`                      | Gap between thumb and track edge           |
+| `--stuic-slider-radius`           | `9999px`                   | Track corner radius                        |
+| `--stuic-slider-fill-radius`      | `--stuic-slider-radius`    | Fill radius (unless `fillRounded={false}`) |
+| `--stuic-slider-thumb-radius`     | `9999px`                   | Thumb corner radius                        |
+| `--stuic-slider-thumb-shadow`     | `--stuic-shadow`           | Thumb shadow                               |
+| `--stuic-slider-tick-size`        | `4px`                      | Tick mark diameter                         |
+| `--stuic-slider-value-gap`        | `0.375rem`                 | Gap between track and value label          |
+| `--stuic-slider-transition`       | `--stuic-transition`       | Fill/thumb movement transition             |

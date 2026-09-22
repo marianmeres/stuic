@@ -120,8 +120,8 @@
 		 */
 		thumb?: boolean | Snippet<[RangeSliderRenderCtx]>;
 		/**
-		 * Round the fill's edges (instead of flat cuts), giving the "pill inside a
-		 * pill" look.
+		 * Round the fill's edges, giving the "pill inside a pill" look (the
+		 * default). `false` cuts them flat.
 		 */
 		fillRounded?: boolean;
 		/**
@@ -183,7 +183,7 @@
 		tickClass,
 		valueClass,
 		thumb = true,
-		fillRounded = false,
+		fillRounded = true,
 		ticks,
 		valueLabel,
 		el = $bindable(),
@@ -670,7 +670,7 @@
 	data-stuic-range-slider=""
 	data-orientation={orientation}
 	data-thumbs={_thumbReserved ? "true" : "false"}
-	data-fill-rounded={fillRounded ? "true" : undefined}
+	data-fill-rounded={fillRounded ? "true" : "false"}
 	data-size={!unstyled ? size : undefined}
 	data-intent={!unstyled ? intent : undefined}
 	data-disabled={disabled ? "true" : undefined}

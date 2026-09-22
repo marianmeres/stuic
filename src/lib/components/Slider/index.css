@@ -115,6 +115,9 @@
 	.stuic-slider .fill {
 		position: absolute;
 		background: var(--_fill);
+		/* Rounded leading edge ("pill inside a pill") is the default;
+		   `fillRounded={false}` cuts it flat below. */
+		border-radius: var(--stuic-slider-fill-radius, var(--stuic-slider-radius, 9999px));
 	}
 	/* With a reserved thumb (traveling OR pinned), the fill spans the thumb-center
 	   travel plus the thumb itself: it reaches the far edge of a traveling thumb and,
@@ -135,9 +138,9 @@
 		height: var(--_fill-len);
 	}
 
-	/* Rounded leading edge ("pill inside a pill") */
-	.stuic-slider[data-fill-rounded="true"] .fill {
-		border-radius: var(--stuic-slider-fill-radius, var(--stuic-slider-radius, 9999px));
+	/* Flat leading edge (opt out of the default pill) */
+	.stuic-slider[data-fill-rounded="false"] .fill {
+		border-radius: 0;
 	}
 
 	/* ============================================================================

@@ -100,8 +100,8 @@
 		 */
 		thumbReserve?: boolean;
 		/**
-		 * Round the fill's leading edge (instead of a flat cut), giving the
-		 * "pill inside a pill" look.
+		 * Round the fill's leading edge, giving the "pill inside a pill" look
+		 * (the default). `false` cuts it flat.
 		 */
 		fillRounded?: boolean;
 		/**
@@ -152,7 +152,7 @@
 		thumb = true,
 		thumbPosition = "value",
 		thumbReserve = true,
-		fillRounded = false,
+		fillRounded = true,
 		ticks,
 		valueLabel,
 		el = $bindable(),
@@ -447,7 +447,7 @@
 	data-thumb-position={thumb !== false ? thumbPosition : undefined}
 	data-thumb-travels={_thumbTravels ? "true" : "false"}
 	data-thumb-reserved={_thumbReserved ? "true" : "false"}
-	data-fill-rounded={fillRounded ? "true" : undefined}
+	data-fill-rounded={fillRounded ? "true" : "false"}
 	data-size={!unstyled ? size : undefined}
 	data-intent={!unstyled ? intent : undefined}
 	data-disabled={disabled ? "true" : undefined}

@@ -227,19 +227,20 @@ test('the default thumbPosition="value" travels with the value', async () => {
 	await expect.element(root).toHaveAttribute("data-thumb-reserved", "true");
 });
 
-test("fillRounded sets the data attribute driving the rounded-fill CSS", async () => {
-	const screen = render(Slider, {
-		"data-testid": "sl",
-		style: H,
-		value: 50,
-		fillRounded: true,
-	});
+test("fillRounded is on by default and sets the data attribute driving the CSS", async () => {
+	const screen = render(Slider, { "data-testid": "sl", style: H, value: 50 });
 	await expect
 		.element(screen.getByTestId("sl"))
 		.toHaveAttribute("data-fill-rounded", "true");
-	const plain = render(Slider, { "data-testid": "sl2", style: H, value: 50 });
-	await expect.element(plain.getByTestId("sl2")).toBeInTheDocument();
-	expect(plain.getByTestId("sl2").element().getAttribute("data-fill-rounded")).toBe(null);
+	const flat = render(Slider, {
+		"data-testid": "sl2",
+		style: H,
+		value: 50,
+		fillRounded: false,
+	});
+	await expect
+		.element(flat.getByTestId("sl2"))
+		.toHaveAttribute("data-fill-rounded", "false");
 });
 
 test("vertical orientation maps bottom->min, top->max", async () => {

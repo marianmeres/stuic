@@ -153,17 +153,22 @@
 </div>
 
 <h3 class="font-semibold mb-2">
-	Rounded fill <code class="text-xs opacity-60">fillRounded</code> and fill-only (no thumbs)
+	Flat fill <code class="text-xs opacity-60">{"fillRounded={false}"}</code> and fill-only (no
+	thumbs)
 </h3>
+<p class="text-sm opacity-60 mb-2">
+	The fill is a rounded pill by default (everywhere above); {"fillRounded={false}"} cuts both
+	its edges flat.
+</p>
 <div class="flex flex-wrap items-center gap-6 mb-8">
-	<RangeSlider start={30} end={70} size="lg" fillRounded label="Rounded fill" />
+	<RangeSlider start={30} end={70} size="lg" fillRounded={false} label="Flat fill" />
 	<RangeSlider
 		start={30}
 		end={70}
 		size="lg"
-		fillRounded
+		fillRounded={false}
 		thumb={false}
-		label="Rounded fill no thumbs"
+		label="Flat fill no thumbs"
 	/>
 	<RangeSlider start={30} end={70} thumb={false} label="Fill only" />
 </div>
@@ -183,7 +188,6 @@
 		start={20}
 		end={70}
 		size="lg"
-		fillRounded
 		step={10}
 		ticks
 		label="Vertical ticks"

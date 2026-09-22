@@ -704,11 +704,20 @@ test("intent and fillRounded are reflected as data attributes", async () => {
 		"data-testid": "rs",
 		style: H,
 		intent: "warning",
-		fillRounded: true,
 	});
 	const root = screen.getByTestId("rs");
 	await expect.element(root).toHaveAttribute("data-intent", "warning");
+	// fillRounded defaults to true
 	await expect.element(root).toHaveAttribute("data-fill-rounded", "true");
+
+	const flat = render(RangeSlider, {
+		"data-testid": "rs2",
+		style: H,
+		fillRounded: false,
+	});
+	await expect
+		.element(flat.getByTestId("rs2"))
+		.toHaveAttribute("data-fill-rounded", "false");
 });
 
 test("disabled ignores pointer interaction and disables both inputs", async () => {

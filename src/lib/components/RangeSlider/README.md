@@ -25,7 +25,7 @@ shape `FieldDateRange` uses.
 | `size`         | `"sm" \| "md" \| "lg" \| string`                                   | `"md"`         | Cross-axis thickness preset                                                                                                                      |
 | `intent`       | `"primary" \| "accent" \| "success" \| "warning" \| "destructive"` | -              | Semantic fill color                                                                                                                              |
 | `thumb`        | `boolean \| Snippet<[RangeSliderRenderCtx]>`                       | `true`         | `false` hides both thumbs (fill-only look), a snippet renders inside each thumb (its context says which one)                                     |
-| `fillRounded`  | `boolean`                                                          | `false`        | Round the fill's edges ("pill inside a pill")                                                                                                    |
+| `fillRounded`  | `boolean`                                                          | `true`         | Round the fill's edges ("pill inside a pill"); `false` cuts them flat                                                                            |
 | `ticks`        | `boolean \| number[]`                                              | -              | `true` = tick at every `step` (positive numeric step only; skipped above 101 auto ticks — pass an array), array = ticks at given in-range values |
 | `valueLabel`   | `Snippet<[RangeSliderRenderCtx]>`                                  | -              | Floating label per thumb, at its value along the track                                                                                           |
 | `disabled`     | `boolean`                                                          | `false`        | Disable interaction                                                                                                                              |
@@ -263,29 +263,29 @@ when `thumb={false}`).
 
 ## CSS Variables
 
-| Variable                                | Default                       | Description                        |
-| --------------------------------------- | ----------------------------- | ---------------------------------- |
-| `--stuic-range-slider-track`            | `--stuic-color-muted`         | Track (pill background) color      |
-| `--stuic-range-slider-fill`             | `--stuic-color-primary`       | Fill (selected range) color        |
-| `--stuic-range-slider-thumb`            | `--color-white`               | Thumb background                   |
-| `--stuic-range-slider-thumb-foreground` | `--stuic-color-foreground`    | Thumb content color                |
-| `--stuic-range-slider-tick`             | foreground 25% mix            | Tick mark color (over the track)   |
-| `--stuic-range-slider-tick-on-fill`     | background 55% mix            | Tick mark color (over the fill)    |
-| `--stuic-range-slider-ring-width`       | `4px`                         | Focus ring width                   |
-| `--stuic-range-slider-ring-color`       | `--stuic-color-ring`          | Focus ring color                   |
-| `--stuic-range-slider-thickness`        | `2rem` (`sm` 1.25, `lg` 3)    | Cross-axis size                    |
-| `--stuic-range-slider-length`           | `10rem`                       | Main-axis size                     |
-| `--stuic-range-slider-thumb-inset`      | `3px`                         | Gap between thumb and track edge   |
-| `--stuic-range-slider-radius`           | `9999px`                      | Track corner radius                |
-| `--stuic-range-slider-fill-radius`      | `--stuic-range-slider-radius` | Fill radius (when `fillRounded`)   |
-| `--stuic-range-slider-thumb-radius`     | `9999px`                      | Thumb corner radius                |
-| `--stuic-range-slider-thumb-shadow`     | `--stuic-shadow`              | Thumb shadow                       |
-| `--stuic-range-slider-tick-size`        | `4px`                         | Tick mark diameter                 |
-| `--stuic-range-slider-value-gap`        | `0.375rem`                    | Gap between track and value labels |
-| `--stuic-range-slider-transition`       | `--stuic-transition`          | Fill/thumb movement transition     |
+| Variable                                | Default                       | Description                                |
+| --------------------------------------- | ----------------------------- | ------------------------------------------ |
+| `--stuic-range-slider-track`            | `--stuic-color-muted`         | Track (pill background) color              |
+| `--stuic-range-slider-fill`             | `--stuic-color-primary`       | Fill (selected range) color                |
+| `--stuic-range-slider-thumb`            | `--color-white`               | Thumb background                           |
+| `--stuic-range-slider-thumb-foreground` | `--stuic-color-foreground`    | Thumb content color                        |
+| `--stuic-range-slider-tick`             | foreground 25% mix            | Tick mark color (over the track)           |
+| `--stuic-range-slider-tick-on-fill`     | background 55% mix            | Tick mark color (over the fill)            |
+| `--stuic-range-slider-ring-width`       | `4px`                         | Focus ring width                           |
+| `--stuic-range-slider-ring-color`       | `--stuic-color-ring`          | Focus ring color                           |
+| `--stuic-range-slider-thickness`        | `2rem` (`sm` 1.25, `lg` 3)    | Cross-axis size                            |
+| `--stuic-range-slider-length`           | `10rem`                       | Main-axis size                             |
+| `--stuic-range-slider-thumb-inset`      | `3px`                         | Gap between thumb and track edge           |
+| `--stuic-range-slider-radius`           | `9999px`                      | Track corner radius                        |
+| `--stuic-range-slider-fill-radius`      | `--stuic-range-slider-radius` | Fill radius (unless `fillRounded={false}`) |
+| `--stuic-range-slider-thumb-radius`     | `9999px`                      | Thumb corner radius                        |
+| `--stuic-range-slider-thumb-shadow`     | `--stuic-shadow`              | Thumb shadow                               |
+| `--stuic-range-slider-tick-size`        | `4px`                         | Tick mark diameter                         |
+| `--stuic-range-slider-value-gap`        | `0.375rem`                    | Gap between track and value labels         |
+| `--stuic-range-slider-transition`       | `--stuic-transition`          | Fill/thumb movement transition             |
 
 Data attributes on the root, for custom CSS: `data-orientation`, `data-thumbs`
-(`"true"` / `"false"`), `data-fill-rounded`, `data-size`, `data-intent`,
+(`"true"` / `"false"`), `data-fill-rounded` (`"true"` / `"false"`), `data-size`, `data-intent`,
 `data-disabled`, `data-dragging` / `data-ring` / `data-active-thumb` (each naming a
 thumb: `"start"` / `"end"`). Thumbs, value labels and the hidden inputs carry
 `data-thumb="start|end"`; tick layers `data-layer="before|on-fill|after"`.

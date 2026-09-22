@@ -71,8 +71,8 @@
 	<code class="text-xs opacity-60">thumbPosition="start"</code>
 </h3>
 <p class="text-sm opacity-60 mb-2">
-	Left/middle: bare icon (transparent thumb) + <code>fillRounded</code>. Right: the white
-	knob stays pinned at the bottom.
+	Left/middle: bare icon (transparent thumb). Right: the white knob stays pinned at the
+	bottom.
 </p>
 <div
 	class="inline-flex items-end gap-6 mb-8 p-6 rounded-2xl bg-neutral-700"
@@ -83,7 +83,6 @@
 		bind:value={ios1}
 		label="iOS volume 1"
 		thumbPosition="start"
-		fillRounded
 		thumb={volumeIconLg}
 		thumbClass="bg-transparent shadow-none"
 		style="--stuic-slider-thumb-foreground: black; --stuic-slider-thumb-inset: 0.75rem;"
@@ -93,7 +92,6 @@
 		bind:value={ios2}
 		label="iOS volume 2"
 		thumbPosition="start"
-		fillRounded
 		thumb={volumeIconLg}
 		thumbClass="bg-transparent shadow-none"
 		style="--stuic-slider-thumb-foreground: black; --stuic-slider-thumb-inset: 0.75rem;"
@@ -103,7 +101,6 @@
 		bind:value={ios3}
 		label="iOS volume 3"
 		thumbPosition="start"
-		fillRounded
 		thumb={volumeIcon}
 		style="--stuic-slider-thumb-inset: 0.625rem;"
 	/>
@@ -121,7 +118,6 @@
 	<span class="flex items-center gap-2">
 		<Slider
 			size="lg"
-			fillRounded
 			thumbPosition="start"
 			bind:value={reserved}
 			label="Reserved thumb"
@@ -131,7 +127,6 @@
 	<span class="flex items-center gap-2">
 		<Slider
 			size="lg"
-			fillRounded
 			thumbPosition="start"
 			thumbReserve={false}
 			bind:value={unreserved}
@@ -142,18 +137,28 @@
 </div>
 
 <h3 class="font-semibold mb-2">
-	Rounded fill <code class="text-xs opacity-60">fillRounded</code> (with a traveling thumb)
+	Flat fill <code class="text-xs opacity-60">{"fillRounded={false}"}</code>
 </h3>
+<p class="text-sm opacity-60 mb-2">
+	The fill is a rounded pill by default (everywhere above); {"fillRounded={false}"} cuts its
+	leading edge flat.
+</p>
 <div class="flex flex-wrap items-center gap-6 mb-8">
-	<Slider value={55} size="lg" fillRounded label="Rounded fill" />
-	<Slider value={55} size="lg" fillRounded thumb={false} label="Rounded fill no thumb" />
+	<Slider value={55} size="lg" fillRounded={false} label="Flat fill" />
 	<Slider
 		value={55}
 		size="lg"
-		fillRounded
+		fillRounded={false}
+		thumb={false}
+		label="Flat fill no thumb"
+	/>
+	<Slider
+		value={55}
+		size="lg"
+		fillRounded={false}
 		orientation="vertical"
 		class="h-32"
-		label="Rounded fill vertical"
+		label="Flat fill vertical"
 	/>
 </div>
 
@@ -213,7 +218,6 @@
 		step={20}
 		ticks
 		thumbPosition="start"
-		fillRounded
 		value={60}
 		size="lg"
 		label="Ticks pinned thumb"
@@ -224,7 +228,6 @@
 		step={25}
 		ticks
 		thumbPosition="start"
-		fillRounded
 		orientation="vertical"
 		value={50}
 		size="lg"
