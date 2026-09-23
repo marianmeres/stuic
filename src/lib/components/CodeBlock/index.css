@@ -1,0 +1,470 @@
+/* ============================================================================
+   CODE BLOCK COMPONENT TOKENS
+   Override globally: :root { --stuic-code-block-header-bg: transparent; }
+   Override locally:  <CodeBlock style="--stuic-code-block-max-height: 20rem;">
+   The copy button and the collapse toggle ARE Buttons — theme them via
+   --stuic-button-* or `copyButtonProps`.
+   ============================================================================ */
+
+:root {
+	/* Box — radius and border width are read with a tier fallback at the usage site
+	   (`--stuic-code-block-radius` → `--stuic-radius-container`,
+	   `--stuic-code-block-border-width` → `--stuic-border-width`), never declared here. */
+	--stuic-code-block-bg: transparent;
+	--stuic-code-block-border-color: var(--stuic-color-border);
+
+	/* The rules under the header and above the footer. The component's own width (like
+	   ListGroup), so a theme that zeroes box borders keeps them. */
+	--stuic-code-block-rule-color: var(--stuic-color-border);
+	--stuic-code-block-rule-width: 1px;
+
+	/* Code. `--stuic-code-block-text` is not declared: it falls back to the inherited
+	   color at the usage site. */
+	--stuic-code-block-padding-x: 1rem;
+	--stuic-code-block-padding-y: 1rem;
+	--stuic-code-block-font-family: var(--font-mono, ui-monospace, monospace);
+	--stuic-code-block-font-size: var(--text-sm);
+	--stuic-code-block-line-height: 1.625;
+	--stuic-code-block-code-tab-size: 4;
+	--stuic-code-block-max-height: none;
+
+	/* Focus ring of a scrollable <pre> and of the tabs (drawn inset: the box clips) */
+	--stuic-code-block-ring-width: 2px;
+	--stuic-code-block-ring-color: var(--stuic-color-ring);
+
+	/* Header. `--stuic-code-block-header-padding-x` is deliberately NOT declared: it is
+	   read with a `--stuic-code-block-padding-x` fallback at the usage site, so the label
+	   and the code start at the same x, and a scoped override of the code padding
+	   reaches the header too. */
+	--stuic-code-block-header-bg: var(--stuic-color-surface);
+	--stuic-code-block-header-padding-y: 0.25rem;
+	--stuic-code-block-header-gap: 0.5rem;
+	/* surface-foreground, NOT muted-foreground: the header sits on `surface`, and
+	   muted-foreground on surface falls below 4.5:1 in 54/54 light and 51/54 dark themes
+	   (surface-foreground: min 7.3:1 light, 5.7:1 dark). Same for the tabs. */
+	--stuic-code-block-title-text: var(--stuic-color-surface-foreground);
+
+	/* Tabs (`samples`). The active one is marked by an indicator bar and weight, not by
+	   dimming the others — a dimmed surface-foreground drops below 4.5:1. */
+	--stuic-code-block-tab-text: var(--stuic-color-surface-foreground);
+	--stuic-code-block-tab-padding-x: 0.75rem;
+	--stuic-code-block-tab-bg-hover: color-mix(
+		in srgb,
+		var(--stuic-color-surface-foreground) 8%,
+		transparent
+	);
+	--stuic-code-block-tab-font-weight-active: var(--font-weight-semibold, 600);
+	--stuic-code-block-tab-indicator-color: var(--stuic-color-surface-foreground);
+	--stuic-code-block-tab-indicator-width: 2px;
+
+	/* Lines (`lineNumbers`, `highlightLines`). The number color is 65% foreground over
+	   the background: >= 4.68:1 in every bundled theme (the plain muted-foreground is
+	   below 4.5:1 in 12 light ones). */
+	--stuic-code-block-line-number-text: color-mix(
+		in srgb,
+		var(--stuic-color-foreground) 65%,
+		var(--stuic-color-background)
+	);
+	--stuic-code-block-line-number-gap: 1.25rem;
+	--stuic-code-block-line-bg-highlighted: color-mix(
+		in srgb,
+		var(--stuic-color-primary) 12%,
+		transparent
+	);
+	--stuic-code-block-line-marker-color: var(--stuic-color-primary);
+	--stuic-code-block-line-marker-width: 3px;
+
+	/* Collapse (`collapsedLines`): the height of the fade over the cut-off */
+	--stuic-code-block-fade-size: 2lh;
+
+	/* Syntax colors — a GitHub-like palette, tuned so every color keeps >= 4.5:1 on the
+	   background of every bundled theme, light and dark. `punctuation` is tokenized but
+	   left in the text color (style `::highlight(stuic-code-block-punctuation)` to
+	   change that). */
+	--stuic-code-block-token-comment-text: #57606a;
+	--stuic-code-block-token-meta-text: #57606a;
+	--stuic-code-block-token-string-text: #0a3069;
+	--stuic-code-block-token-number-text: #0550ae;
+	--stuic-code-block-token-literal-text: #0550ae;
+	--stuic-code-block-token-parameter-text: #0550ae;
+	--stuic-code-block-token-keyword-text: #cf222e;
+	--stuic-code-block-token-operator-text: #cf222e;
+	--stuic-code-block-token-property-text: #116329;
+	--stuic-code-block-token-variable-text: #953800;
+	--stuic-code-block-token-function-text: #6639ba;
+}
+
+:root.dark {
+	--stuic-code-block-token-comment-text: #8b949e;
+	--stuic-code-block-token-meta-text: #8b949e;
+	--stuic-code-block-token-string-text: #a5d6ff;
+	--stuic-code-block-token-number-text: #79c0ff;
+	--stuic-code-block-token-literal-text: #79c0ff;
+	--stuic-code-block-token-parameter-text: #79c0ff;
+	--stuic-code-block-token-keyword-text: #ff7b72;
+	--stuic-code-block-token-operator-text: #ff7b72;
+	--stuic-code-block-token-property-text: #7ee787;
+	--stuic-code-block-token-variable-text: #ffa657;
+	--stuic-code-block-token-function-text: #d2a8ff;
+}
+
+@layer components {
+	/* ============================================================================
+	   BOX
+	   ============================================================================ */
+
+	.stuic-code-block {
+		min-width: 0;
+		background: var(--stuic-code-block-bg);
+		border: var(--stuic-code-block-border-width, var(--stuic-border-width)) solid
+			var(--stuic-code-block-border-color);
+		border-radius: var(--stuic-code-block-radius, var(--stuic-radius-container));
+		/* The header background must follow the rounded corners. `clip`, not `hidden`: it
+		   creates no scroll container (`hidden` stays as the fallback for browsers
+		   without `clip`). The <pre> scrolls on its own. */
+		overflow: hidden;
+		overflow: clip;
+	}
+
+	/* ============================================================================
+	   HEADER
+	   ============================================================================ */
+
+	.stuic-code-block-header {
+		display: flex;
+		/* wraps only where a query below asks for it — every part's basis is 0 or fits */
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--stuic-code-block-header-gap);
+		/* the header's actual block padding — the tabs' negative margins follow it */
+		--_header-padding-y: var(--stuic-code-block-header-padding-y);
+		padding-block: var(--_header-padding-y);
+		padding-inline: var(
+			--stuic-code-block-header-padding-x,
+			var(--stuic-code-block-padding-x)
+		);
+		min-width: 0;
+		background: var(--stuic-code-block-header-bg);
+		border-bottom: var(--stuic-code-block-rule-width) solid
+			var(--stuic-code-block-rule-color);
+		/* its own width, not the page's, decides when a title gets its own row */
+		container: stuic-code-block-header / inline-size;
+	}
+
+	.stuic-code-block-title {
+		/* basis 0: a long file name truncates instead of pushing the button down */
+		flex: 1 1 0;
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		font-family: var(--stuic-code-block-font-family);
+		font-size: var(--stuic-code-block-font-size);
+		color: var(--stuic-code-block-title-text);
+	}
+
+	/* stays at the end with or without a label or tabs */
+	.stuic-code-block-copy {
+		margin-inline-start: auto;
+		flex: none;
+	}
+
+	/* The (borderless) copy button sits flush in the header's end corner: no padding
+	   around it but on the start side, where the label or the tabs begin. Flush, it is
+	   a square-cornered cell like a tab, and its focus ring is drawn inset (the box
+	   clips). */
+	.stuic-code-block[data-copy="true"] .stuic-code-block-header {
+		--_header-padding-y: 0px;
+		padding-inline-end: 0;
+	}
+
+	.stuic-code-block[data-copy="true"] .stuic-code-block-copy {
+		border-radius: 0;
+	}
+
+	.stuic-code-block[data-copy="true"] .stuic-code-block-copy:focus-visible {
+		outline-offset: calc(-1 * var(--stuic-button-ring-width));
+	}
+
+	/* ============================================================================
+	   TABS — they reach the header's top and bottom edges, so the active tab's
+	   indicator sits on the header rule
+	   ============================================================================ */
+
+	/* with tabs, the title keeps its width and the tabs take the rest */
+	.stuic-code-block[data-samples="true"] .stuic-code-block-title {
+		flex: 0 1 auto;
+	}
+
+	.stuic-code-block-tabs {
+		display: flex;
+		align-self: stretch;
+		flex: 1 1 0;
+		min-width: 0;
+		margin-block: calc(-1 * var(--_header-padding-y));
+		/* many tabs in a narrow block scroll sideways rather than wrap */
+		overflow-x: auto;
+		scrollbar-width: thin;
+	}
+
+	/* the first tab's text starts where a label would */
+	.stuic-code-block-tabs:first-child {
+		margin-inline-start: calc(-1 * var(--stuic-code-block-tab-padding-x));
+	}
+
+	/* narrow: a title over the tabs gets its own row, so the tabs keep the width */
+	@container stuic-code-block-header (max-width: 36rem) {
+		.stuic-code-block[data-samples="true"] .stuic-code-block-title {
+			flex-basis: 100%;
+			padding-block-start: var(--stuic-code-block-header-padding-y);
+		}
+		.stuic-code-block-title + .stuic-code-block-tabs {
+			/* a real basis, so the (negative-margined) tabs can't squeeze onto the title's
+			   row and push the button down instead */
+			flex-basis: 50%;
+			margin-block-start: 0;
+			margin-inline-start: calc(-1 * var(--stuic-code-block-tab-padding-x));
+		}
+	}
+
+	.stuic-code-block-tab {
+		flex: none;
+		display: inline-flex;
+		align-items: center;
+		margin: 0;
+		padding-block: var(--stuic-code-block-header-padding-y);
+		padding-inline: var(--stuic-code-block-tab-padding-x);
+		font-family: var(--stuic-code-block-font-family);
+		font-size: var(--stuic-code-block-font-size);
+		color: var(--stuic-code-block-tab-text);
+		white-space: nowrap;
+		background: none;
+		border: 0;
+		border-radius: 0;
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+		transition: background-color
+			var(--stuic-code-block-transition, var(--stuic-transition));
+	}
+
+	.stuic-code-block-tab:hover {
+		background: var(--stuic-code-block-tab-bg-hover);
+	}
+
+	.stuic-code-block-tab:focus-visible {
+		outline: var(--stuic-code-block-ring-width) solid var(--stuic-code-block-ring-color);
+		outline-offset: calc(-1 * var(--stuic-code-block-ring-width));
+	}
+
+	.stuic-code-block-tab[data-active="true"] {
+		font-weight: var(--stuic-code-block-tab-font-weight-active);
+		box-shadow: inset 0 calc(-1 * var(--stuic-code-block-tab-indicator-width)) 0
+			var(--stuic-code-block-tab-indicator-color);
+	}
+
+	/* ============================================================================
+	   CODE
+	   ============================================================================ */
+
+	.stuic-code-block-pre {
+		margin: 0;
+		padding-block: var(--stuic-code-block-padding-y);
+		padding-inline: var(--stuic-code-block-padding-x);
+		/* the max height is the box's, padding included — with or without preflight */
+		box-sizing: border-box;
+		max-height: var(--stuic-code-block-max-height);
+		overflow: auto;
+		font-family: var(--stuic-code-block-font-family);
+		font-size: var(--stuic-code-block-font-size);
+		line-height: var(--stuic-code-block-line-height);
+		tab-size: var(--stuic-code-block-code-tab-size);
+		/* `currentColor` for `color` is the inherited color */
+		color: var(--stuic-code-block-text, currentColor);
+		white-space: pre;
+	}
+
+	.stuic-code-block-pre:focus-visible {
+		outline: var(--stuic-code-block-ring-width) solid var(--stuic-code-block-ring-color);
+		outline-offset: calc(-1 * var(--stuic-code-block-ring-width));
+	}
+
+	.stuic-code-block[data-wrap="true"] .stuic-code-block-pre {
+		white-space: pre-wrap;
+		/* `anywhere`, not `break-word`: a long URL or token must not widen the box */
+		overflow-wrap: anywhere;
+	}
+
+	.stuic-code-block-code {
+		/* undo UA/preflight code styling — the <pre> carries the typography */
+		font: inherit;
+		color: inherit;
+		background: none;
+		padding: 0;
+	}
+
+	/* ============================================================================
+	   LINES — one block <span> per line, each keeping its own "\n" (the text,
+	   the selection and the copy stay the plain sample). The inline padding
+	   moves from the <pre> to the lines so a highlighted line's background
+	   reaches both edges; the <code> grows to the longest line so it does so
+	   while scrolled too.
+	   ============================================================================ */
+
+	.stuic-code-block[data-lines="true"] .stuic-code-block-pre {
+		padding-inline: 0;
+	}
+
+	.stuic-code-block[data-lines="true"] .stuic-code-block-code {
+		display: block;
+		width: max-content;
+		min-width: 100%;
+	}
+
+	.stuic-code-block[data-lines="true"][data-wrap="true"] .stuic-code-block-code {
+		width: auto;
+	}
+
+	.stuic-code-block-line {
+		display: block;
+		position: relative;
+		padding-inline: var(--stuic-code-block-padding-x);
+	}
+
+	.stuic-code-block[data-line-numbers="true"] .stuic-code-block-line {
+		/* a wrapped continuation stays in the code column */
+		padding-inline-start: calc(
+			var(--stuic-code-block-padding-x) + var(--_digits, 2) * 1ch +
+				var(--stuic-code-block-line-number-gap)
+		);
+	}
+
+	.stuic-code-block[data-line-numbers="true"] .stuic-code-block-line::before {
+		content: attr(data-line);
+		position: absolute;
+		inset-inline-start: var(--stuic-code-block-padding-x);
+		width: calc(var(--_digits, 2) * 1ch);
+		text-align: end;
+		font-variant-numeric: tabular-nums;
+		color: var(--stuic-code-block-line-number-text);
+		/* never selected, never copied */
+		user-select: none;
+		pointer-events: none;
+	}
+
+	.stuic-code-block-line[data-highlighted="true"] {
+		background: var(--stuic-code-block-line-bg-highlighted);
+		box-shadow: inset var(--stuic-code-block-line-marker-width) 0 0
+			var(--stuic-code-block-line-marker-color);
+	}
+
+	/* ============================================================================
+	   COLLAPSED (`collapsedLines`) — N lines tall, padding included; the rest
+	   is hidden behind a fade and the footer toggle
+	   ============================================================================ */
+
+	.stuic-code-block[data-collapsed="true"] .stuic-code-block-pre {
+		max-height: calc(
+			var(--_collapsed-lines) * 1lh + 2 * var(--stuic-code-block-padding-y)
+		);
+		overflow-y: hidden;
+		mask-image: linear-gradient(
+			to bottom,
+			#000 calc(100% - var(--stuic-code-block-fade-size)),
+			transparent
+		);
+	}
+
+	.stuic-code-block-footer {
+		display: flex;
+		border-top: var(--stuic-code-block-rule-width) solid
+			var(--stuic-code-block-rule-color);
+	}
+
+	.stuic-code-block .stuic-code-block-toggle {
+		flex: 1 1 auto;
+		border-radius: 0;
+		font-size: var(--stuic-code-block-font-size);
+	}
+
+	.stuic-code-block-toggle-icon {
+		display: inline-flex;
+		transition: transform var(--stuic-code-block-transition, var(--stuic-transition));
+	}
+
+	.stuic-code-block-toggle-icon svg {
+		width: 1.25em;
+		height: 1.25em;
+	}
+
+	.stuic-code-block-toggle[aria-expanded="true"] .stuic-code-block-toggle-icon {
+		transform: rotate(180deg);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.stuic-code-block-toggle-icon {
+			transition: none;
+		}
+	}
+
+	/* ============================================================================
+	   SYNTAX COLORS — the CSS Custom Highlight API. The descendant form is
+	   needed: Firefox styles a highlight by the element that holds the text,
+	   which is a line <span> in the lined layout.
+	   ============================================================================ */
+
+	:is(.stuic-code-block-code, .stuic-code-block-code *)::highlight(
+		stuic-code-block-comment
+	) {
+		color: var(--stuic-code-block-token-comment-text);
+	}
+	:is(.stuic-code-block-code, .stuic-code-block-code *)::highlight(
+		stuic-code-block-meta
+	) {
+		color: var(--stuic-code-block-token-meta-text);
+	}
+	:is(.stuic-code-block-code, .stuic-code-block-code *)::highlight(
+		stuic-code-block-string
+	) {
+		color: var(--stuic-code-block-token-string-text);
+	}
+	:is(.stuic-code-block-code, .stuic-code-block-code *)::highlight(
+		stuic-code-block-number
+	) {
+		color: var(--stuic-code-block-token-number-text);
+	}
+	:is(.stuic-code-block-code, .stuic-code-block-code *)::highlight(
+		stuic-code-block-literal
+	) {
+		color: var(--stuic-code-block-token-literal-text);
+	}
+	:is(.stuic-code-block-code, .stuic-code-block-code *)::highlight(
+		stuic-code-block-parameter
+	) {
+		color: var(--stuic-code-block-token-parameter-text);
+	}
+	:is(.stuic-code-block-code, .stuic-code-block-code *)::highlight(
+		stuic-code-block-keyword
+	) {
+		color: var(--stuic-code-block-token-keyword-text);
+	}
+	:is(.stuic-code-block-code, .stuic-code-block-code *)::highlight(
+		stuic-code-block-operator
+	) {
+		color: var(--stuic-code-block-token-operator-text);
+	}
+	:is(.stuic-code-block-code, .stuic-code-block-code *)::highlight(
+		stuic-code-block-property
+	) {
+		color: var(--stuic-code-block-token-property-text);
+	}
+	:is(.stuic-code-block-code, .stuic-code-block-code *)::highlight(
+		stuic-code-block-variable
+	) {
+		color: var(--stuic-code-block-token-variable-text);
+	}
+	:is(.stuic-code-block-code, .stuic-code-block-code *)::highlight(
+		stuic-code-block-function
+	) {
+		color: var(--stuic-code-block-token-function-text);
+	}
+}

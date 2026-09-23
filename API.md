@@ -1273,6 +1273,35 @@ Horizontal schedule chart — project plans (task per row, progress, milestones)
 
 The geometry is exported separately for axis-aligned overlays: `buildGanttAxis`, `placeRange`, `placePoint`, `dayToFraction`, `boundsOf`.
 
+#### `CodeBlock`
+
+Copyable code sample: a bordered box with a header (the language or a file name, or tabs for several samples, + a borderless `CopyButton`) over a `<pre><code>`. Rendered as text; copies exactly what is shown. JSON, HTTP and shell are syntax-highlighted by default with the CSS Custom Highlight API (no markup, no dependency; plain text where unsupported). The root carries `not-prose`.
+
+| Prop              | Type                              | Default | Description                                                                           |
+| ----------------- | --------------------------------- | ------- | ------------------------------------------------------------------------------------- |
+| `code`            | `string`                          | —       | The sample (ignored with `samples`)                                                   |
+| `lang`            | `string`                          | —       | Header label, what is highlighted, `data-lang`, `language-{lang}` class               |
+| `title`           | `THC`                             | —       | Header label in place of `lang`; with `samples`, shown before the tabs                |
+| `samples`         | `CodeBlockSample[]`               | —       | `{ code, lang?, label?, id?, highlightLines?, copyText? }[]` behind tabs              |
+| `active`          | `string`                          | —       | Shown sample's id (bindable) — share one bound value to sync blocks                   |
+| `highlight`       | `boolean \| CodeBlockHighlighter` | `true`  | Built-in `highlightCode`, your own `(code, lang) => [start, end, type][]`, or off     |
+| `lineNumbers`     | `boolean`                         | `false` | Line numbers (not selectable, not copied); `lineNumbersStart` offsets them            |
+| `highlightLines`  | `number[] \| string`              | —       | Lines to mark, as positions in the sample (`"1, 3-5"`)                                |
+| `collapsedLines`  | `number`                          | —       | Collapse longer samples to N lines with a "Show all N lines" toggle (`bind:expanded`) |
+| `verbatim`        | `boolean`                         | `false` | Keep `code` as given (default: drop blank end lines and the shared indent)            |
+| `wrap`            | `boolean`                         | `false` | Soft-wrap instead of scrolling horizontally                                           |
+| `copy`            | `boolean`                         | `true`  | Render the copy button                                                                |
+| `copyButtonProps` | `Partial<CopyButtonProps>`        | —       | Pass-through to the `CopyButton`; its `text` overrides what is copied                 |
+| `t`               | `TranslateFn`                     | English | `createCodeBlockT(CODE_BLOCK_MESSAGES_SK)` — also localizes the copy button           |
+
+Class slots: `class`, `classHeader`, `classTitle`, `classTabs`, `classTab`, `classPre`, `classCode`, `classLine`, `classFooter`, `classToggle`. Also exported: `highlightCode`, `highlightJson`, `highlightHttp`, `highlightShell`, `HIGHLIGHT_CODE_LANGS`, types `CodeBlockSample`, `CodeBlockToken`, `CodeBlockTokenType`, `CodeBlockHighlighter`.
+
+```svelte
+<CodeBlock lang="bash" code={quickstart} />
+<CodeBlock lang="json" title="deno.json" code={config} lineNumbers highlightLines="2-3" />
+<CodeBlock title="Create an item" {samples} bind:active={language} collapsedLines={15} />
+```
+
 #### `ListGroup`
 
 Bordered, rounded box of rows split by hairlines, with an optional header (title + aside) and footer. Each row is one wrapping flex line of parts; `data-grow` on the part that should absorb the slack. Generic over the item type.

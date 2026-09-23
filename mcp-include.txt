@@ -1,2 +1,2 @@
 Svelte 5 + Tailwind CSS v4 component library with centralized design tokens,
-82 UI components, 16 Svelte actions, and 55 utility modules.
+83 UI components, 16 Svelte actions, and 55 utility modules.

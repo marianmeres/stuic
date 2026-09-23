@@ -40,6 +40,7 @@ export * from "./components/Card/index.js";
 export * from "./components/Carousel/index.js";
 export * from "./components/Checkout/index.js";
 export * from "./components/Circle/index.js";
+export * from "./components/CodeBlock/index.js";
 export * from "./components/Collapsible/index.js";
 export * from "./components/ColorPicker/index.js";
 export * from "./components/ColorScheme/index.js";

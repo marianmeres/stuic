@@ -2,7 +2,7 @@
 
 ## Overview
 
-82 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
+83 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
@@ -92,6 +92,7 @@
 | UserAvatarMenu      | Avatar trigger + dropdown menu with header tile, color-scheme toggle, authed/unauthed states         |
 | Pill                | Inline rounded badge/tag/chip (intent + variant + size, dismissible, dot, polymorphic span/a/button) |
 | KbdShortcut         | Keyboard shortcut hints                                                                              |
+| CodeBlock           | Copyable code sample: label/tabs + copy, JSON/HTTP/shell highlighting, line numbers, collapse        |
 | Carousel            | Image/content slider with snap, keyboard nav, wheel scroll, arrows                                   |
 | ListItemButton      | List item with actions                                                                               |
 | AnimatedElipsis     | Loading dots animation                                                                               |
@@ -1086,6 +1087,63 @@ Snippets (all receive `{ item, index }`): `renderLabel`, `renderValue`, `renderI
 Prefix: `--stuic-description-list-*`
 
 `label-width` (not declared — fallback `minmax(7rem, 10rem)` at the usage site), `gap-x`, `gap-y`, `item-padding-y`, `rule-color`, `rule-width`, `label-font-size`, `label-font-weight`, `label-text`, `value-text`, `description-font-size`, `description-text`, `label-text-emphasis`, `value-font-weight-emphasis`
+
+---
+
+## CodeBlock
+
+A copyable code sample for developer docs: a bordered, rounded box with a header (the language or a file name — or a tab list for several samples — on the start side, a borderless `CopyButton` on the end side) over a `<pre><code>`, and a footer toggle when collapsed. Renders `<div>` › optional header `<div>` › `<pre>` › `<code>` › optional footer `<div>`. The code is rendered as text, and the button copies exactly what is shown.
+
+### Exports
+
+| Export                                                         | Kind      | Description                                                                        |
+| -------------------------------------------------------------- | --------- | ---------------------------------------------------------------------------------- |
+| `CodeBlock`                                                    | component | Main component                                                                     |
+| `CodeBlockProps`, `CodeBlockSample`                            | type      | Props; one tab's sample `{ code, lang?, label?, id?, highlightLines?, copyText? }` |
+| `highlightCode`                                                | function  | The default highlighter: dispatches JSON / HTTP / shell by `lang`                  |
+| `highlightJson`, `highlightHttp`, `highlightShell`             | function  | The tokenizers, `(code) => CodeBlockToken[]`                                       |
+| `HIGHLIGHT_CODE_LANGS`                                         | const     | The `lang`s `highlightCode` knows                                                  |
+| `CodeBlockToken`, `CodeBlockTokenType`, `CodeBlockHighlighter` | type      | `[start, end, type]`; the 12 built-in types; `(code, lang?) => tokens`             |
+| `createCodeBlockT`, `CODE_BLOCK_MESSAGES_EN/_SK`               | i18n      | Catalog includes the `CopyButton` keys + `show_all_lines`, `show_less`             |
+
+### Key Props
+
+| Prop               | Type                              | Default | Description                                                                                   |
+| ------------------ | --------------------------------- | ------- | --------------------------------------------------------------------------------------------- |
+| `code`             | `string`                          | —       | The sample (ignored with `samples`)                                                           |
+| `lang`             | `string`                          | —       | Header label (unless `title`), highlighter input, `data-lang`, `language-{lang}` on `<code>`  |
+| `title`            | `THC`                             | —       | Header label in place of `lang`; `""` hides it; with `samples` it precedes and names the tabs |
+| `samples`          | `CodeBlockSample[]`               | —       | Tabs; `bind:active` (the sample id: `id` ?? string `label` ?? `lang` ?? index)                |
+| `highlight`        | `boolean \| CodeBlockHighlighter` | `true`  | Syntax highlighting                                                                           |
+| `lineNumbers`      | `boolean`                         | `false` | `lineNumbersStart` offsets the numbering                                                      |
+| `highlightLines`   | `number[] \| string`              | —       | 1-based positions in the sample, `"1, 3-5"`                                                   |
+| `collapsedLines`   | `number`                          | —       | Collapse to N lines + toggle; `bind:expanded`                                                 |
+| `verbatim`, `wrap` | `boolean`                         | `false` | Skip normalization; soft-wrap                                                                 |
+| `copy`             | `boolean`                         | `true`  | Render the copy button; with no label or tabs either, the header is not rendered              |
+| `copyButtonProps`  | `Partial<CopyButtonProps>`        | —       | Spread onto the `CopyButton` after the defaults (`label`, `ghost`, `sm`); `text` overrides    |
+| `t`                | `TranslateFn`                     | English | Passed to the `CopyButton` too                                                                |
+
+Class slots: `class`, `classHeader`, `classTitle`, `classTabs`, `classTab`, `classPre`, `classCode`, `classLine`, `classFooter`, `classToggle` (the copy button's via `copyButtonProps.class`, merged). Rest props go to the root `<div>`.
+
+### Deliberate choices
+
+- **Highlighting via the CSS Custom Highlight API** (`_internal/paint.ts`): tokens become `Range`s in shared named `Highlight`s (`stuic-code-block-<type>`), styled by `:is(.stuic-code-block-code, .stuic-code-block-code *)::highlight(...)` — the descendant form because Firefox styles by the element holding the text. No markup: text, selection, copy and SSR are the plain sample; unsupported browsers show plain text. Each block removes exactly its ranges on cleanup. The paint `$effect` depends on `text`, `lang`, the highlighter and `lined` (the DOM the ranges point into), and refuses to paint when `textContent !== text`. Verified in Chromium, WebKit and Firefox, including scoped `var()` token overrides.
+- **Tokenizers** (`highlight/*.ts`, node-tested) are tolerant scanners, not parsers: never throw, emit ordered non-overlapping tokens. A throwing custom highlighter is caught and logged.
+- **Lines** render only with `lineNumbers`/`highlightLines`: a block `<span>` per line that keeps its `\n`, so `textContent`, a native copy (checked in all three engines) and the token offsets stay the sample. Numbers are `::before { content: attr(data-line) }` with `user-select: none`. With lines, the `<pre>`'s inline padding moves to the lines and the `<code>` is `width: max-content; min-width: 100%`, so a highlighted band spans the scrolled width.
+- **Collapse** clamps the `<pre>` to `calc(N * 1lh + 2 * padding-y)` with `overflow-y: hidden` and a `mask-image` fade; the hidden overflow doesn't count toward the measured tab stop. Collapsing back scrolls the block into view if its top is above the viewport.
+- **Tabs**: WAI-ARIA tabs (automatic activation, roving tabindex, ←/→ wrap, Home/End); the `<pre>` is the tab panel (always a tab stop). A block lacking the bound `active` id keeps its last sample and never writes the value, so several blocks can share one binding. The header is an `inline-size` container: below 36rem a title over tabs gets its own row.
+- **Flush copy button:** with `copy`, `data-copy` on the root drops the header's block and end padding (a private `--_header-padding-y` on the header, which the tabs' negative margins follow), and the button gets `border-radius: 0` and an inset focus ring — the box clips.
+- **Contrast** (measured over the 54 bundled themes): the label and tabs use `surface-foreground` on `surface` (min 7.3:1 light / 5.7:1 dark; `muted-foreground` fails 4.5:1 almost everywhere); inactive tabs are not dimmed; line numbers are 65% foreground over background (min 4.68:1); the GitHub-like syntax palette (switched under `:root.dark`) keeps ≥ 4.5:1 on every theme background.
+- **`not-prose` on the root** (styled mode only). No outer margin is declared.
+- **Normalization** (`_internal/normalize-code.ts`): CRLF → LF, blank end lines dropped, the common leading-whitespace _string_ removed.
+- **Measured tab stop** on the `<pre>` while it scrolls (`ResizeObserver` + explicit `text`/`wrap`/`lined`/`collapsed` dependencies). Hence the `svelte-ignore a11y_no_noninteractive_tabindex`.
+- `unstyled` propagates to the `CopyButton` and the toggle, and keeps the `language-*` class, roles and tab stops.
+
+### CSS Tokens
+
+Prefix: `--stuic-code-block-*`
+
+`bg`, `border-color`, `rule-color`, `rule-width`, `padding-x`, `padding-y`, `font-family`, `font-size` (`var(--text-sm)`), `line-height`, `code-tab-size`, `max-height`, `ring-width`, `ring-color`, `header-bg`, `header-padding-y`, `header-gap`, `title-text`, `tab-text`, `tab-padding-x`, `tab-bg-hover`, `tab-font-weight-active`, `tab-indicator-color`, `tab-indicator-width`, `line-number-text`, `line-number-gap`, `line-bg-highlighted`, `line-marker-color`, `line-marker-width`, `fade-size`, `token-{comment,meta,string,number,literal,parameter,keyword,operator,property,variable,function}-text`. Not declared (usage-site fallbacks): `radius` (→ `--stuic-radius-container`), `border-width` (→ `--stuic-border-width`), `transition` (→ `--stuic-transition`), `text` (→ `currentColor`), `header-padding-x` (→ `padding-x`).
 
 ---
 

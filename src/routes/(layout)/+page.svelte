@@ -19,6 +19,7 @@
 		'card',
 		'cart',
 		'checkout',
+		'code-block',
 		'collapsible', 
         'color-picker',
 		'color-scheme', 
