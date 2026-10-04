@@ -201,7 +201,9 @@
 		{...rest as any}
 		{tabindex}
 	>
-		<span class="block truncate">
+		<!-- leading-normal: Button's `line-height: 1` makes this box 1em tall, and `truncate`'s
+		     overflow:hidden then cuts descenders (g, y) and stacked accents (Č, Å) -->
+		<span class="block truncate leading-normal">
 			{#if typeof rendered === "function"}
 				{@render rendered(value)}
 			{:else if rendered}

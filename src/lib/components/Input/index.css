@@ -669,6 +669,9 @@
 
 	.stuic-field-options-chip-label {
 		min-width: 0;
+		/* the Pill's `line-height: 1` box is 1em tall, so the overflow clip below would cut
+		   descenders (g, y) and stacked accents (Č, Å) */
+		line-height: 1.5;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
