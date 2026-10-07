@@ -12,7 +12,7 @@
 	--stuic-empty-state-padding-sm: 1.5rem;
 	--stuic-empty-state-icon-size-sm: 2rem;
 	--stuic-empty-state-title-font-size-sm: var(--text-base);
-	--stuic-empty-state-description-font-size-sm: var(--text-xs);
+	--stuic-empty-state-description-font-size-sm: var(--text-sm);
 
 	/* Size: md */
 	--stuic-empty-state-padding-md: 3rem;
