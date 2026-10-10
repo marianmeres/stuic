@@ -1,0 +1,114 @@
+/* ============================================================================
+   PHONE FRAME COMPONENT TOKENS
+   Override globally: :root { --stuic-phone-frame-bg: #e5e5e5; }
+   Override locally:  <PhoneFrame style="--stuic-phone-frame-padding: 0.75rem;">
+   ============================================================================ */
+
+/* prettier-ignore */
+:root {
+	/* Bezel */
+	--stuic-phone-frame-bg: #171717;
+	--stuic-phone-frame-padding: 0.5rem;
+	--stuic-phone-frame-radius: 1.75rem;
+	--stuic-phone-frame-border-color: rgb(0 0 0 / 0.4);
+
+	/* Screen */
+	--stuic-phone-frame-screen-bg: var(--stuic-color-background);
+	--stuic-phone-frame-screen-aspect-ratio: 390 / 844; /* iPhone 14 class, CSS px */
+	--stuic-phone-frame-screen-height: auto;            /* a length = clipped window */
+
+	/* Dynamic-island cutout (notch="island"); sizes relative to the screen width */
+	--stuic-phone-frame-island-width: 32%;
+	--stuic-phone-frame-island-top: 3%;
+
+	/* Classic notch cutout (notch="notch"); sizes relative to the screen width */
+	--stuic-phone-frame-notch-width: 54%;
+	--stuic-phone-frame-notch-radius: 1rem;
+
+	/* Focus ring (linked frames) */
+	--stuic-phone-frame-ring-width: 3px;
+	--stuic-phone-frame-ring-offset: 2px;
+	--stuic-phone-frame-ring-color: var(--stuic-color-ring);
+}
+
+:root.dark {
+	--stuic-phone-frame-border-color: rgb(255 255 255 / 0.15);
+}
+
+@layer components {
+	/* The bezel. Block-level so it fills its container: size it with `class`. */
+	.stuic-phone-frame {
+		display: block;
+		box-sizing: border-box;
+		padding: var(--stuic-phone-frame-padding);
+		background: var(--stuic-phone-frame-bg);
+		border-style: solid;
+		border-width: var(--stuic-phone-frame-border-width, var(--stuic-border-width));
+		border-color: var(--stuic-phone-frame-border-color);
+		border-radius: var(--stuic-phone-frame-radius);
+		box-shadow: var(--stuic-phone-frame-shadow, var(--stuic-shadow-dialog));
+		color: inherit;
+		text-decoration: none;
+	}
+
+	a.stuic-phone-frame:focus-visible {
+		outline: var(--stuic-phone-frame-ring-width) solid var(--stuic-phone-frame-ring-color);
+		outline-offset: var(--stuic-phone-frame-ring-offset);
+	}
+
+	/* The screen: a clipping window. `width: 100%` + `height: auto` lets `aspect-ratio`
+	   derive the height; a length in --stuic-phone-frame-screen-height makes both axes
+	   definite, so `aspect-ratio` is ignored and the window shows the top of the content
+	   (see RATIO_LOCKED_FRAME.md, G14). The radius is concentric with the bezel's unless
+	   overridden. */
+	.stuic-phone-frame-screen {
+		position: relative;
+		width: 100%;
+		height: var(--stuic-phone-frame-screen-height);
+		aspect-ratio: var(--stuic-phone-frame-screen-aspect-ratio);
+		overflow: hidden;
+		border-radius: var(
+			--stuic-phone-frame-screen-radius,
+			calc(
+				var(--stuic-phone-frame-radius) - var(--stuic-phone-frame-padding) -
+					var(--stuic-phone-frame-border-width, var(--stuic-border-width))
+			)
+		);
+		background: var(--stuic-phone-frame-screen-bg);
+	}
+
+	.stuic-phone-frame-image {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: top;
+	}
+
+	/* Camera cutout, overlaid on the screen content. Width-relative so it keeps its
+	   shape in a clipped (fixed-height) screen too: the height comes from aspect-ratio,
+	   and the island's top offset is a margin (a % margin resolves against the
+	   containing block's WIDTH, even vertically). */
+	.stuic-phone-frame-notch {
+		position: absolute;
+		top: 0;
+		left: 50%;
+		transform: translateX(-50%);
+		pointer-events: none;
+		background: var(--stuic-phone-frame-notch-bg, var(--stuic-phone-frame-bg));
+	}
+
+	.stuic-phone-frame[data-notch="island"] .stuic-phone-frame-notch {
+		width: var(--stuic-phone-frame-island-width);
+		aspect-ratio: 126 / 37;
+		margin-top: var(--stuic-phone-frame-island-top);
+		border-radius: 9999px;
+	}
+
+	.stuic-phone-frame[data-notch="notch"] .stuic-phone-frame-notch {
+		width: var(--stuic-phone-frame-notch-width);
+		aspect-ratio: 209 / 30;
+		border-radius: 0 0 var(--stuic-phone-frame-notch-radius)
+			var(--stuic-phone-frame-notch-radius);
+	}
+}

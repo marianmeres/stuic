@@ -2,7 +2,7 @@
 
 ## Overview
 
-83 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
+84 Svelte 5 component directories with consistent API patterns. All use runes-based reactivity.
 
 ## Component Categories
 
@@ -118,6 +118,7 @@
 | Tree                | Hierarchical tree view with keyboard nav and drag-and-drop                                           |
 | X                   | Styled close/multiply SVG icon                                                                       |
 | ImageCycler         | Auto-cycling image carousel with fade transitions and preloading                                     |
+| PhoneFrame          | Phone-shaped bezel around a screenshot (or any content): link, clipped top window, notch, tokens     |
 
 ### E-commerce
 

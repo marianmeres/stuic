@@ -1363,6 +1363,30 @@ interface ImageCyclerImage {
 }
 ```
 
+#### `PhoneFrame`
+
+Phone-shaped bezel around a screenshot (`src`) or any content (`children`). Block-level, sized with `class`; the screen is locked to a `390 / 844` ratio unless `screenHeight` turns it into a fixed-height window showing the top of the content. With `href` the whole frame is a link.
+
+| Prop            | Type                            | Default  | Description                                                                 |
+| --------------- | ------------------------------- | -------- | --------------------------------------------------------------------------- |
+| `src`           | `string`                        | —        | Screenshot URL (`object-fit: cover`, anchored to the top)                   |
+| `alt`           | `string`                        | `""`     | Alt text; the link's accessible name with `href`                            |
+| `width`         | `number \| string`              | —        | Intrinsic pixel width of the screenshot (`<img width>`), not the frame size |
+| `height`        | `number \| string`              | —        | Intrinsic pixel height of the screenshot (`<img height>`)                   |
+| `srcset`        | `string`                        | —        | `<img srcset>` pass-through                                                 |
+| `sizes`         | `string`                        | —        | `<img sizes>` pass-through                                                  |
+| `loading`       | `"lazy" \| "eager"`             | `"lazy"` | `eager` for a hero screenshot                                               |
+| `fetchpriority` | `"high" \| "low" \| "auto"`     | —        | `<img fetchpriority>` pass-through                                          |
+| `children`      | `Snippet`                       | —        | Custom screen content; takes precedence over `src`                          |
+| `href`          | `string`                        | —        | Renders `<a>` instead of `<div>`                                            |
+| `target`        | `string`                        | —        | Link target                                                                 |
+| `rel`           | `string`                        | —        | Link rel; `"noopener"` by default when `target` is `"_blank"`               |
+| `aspectRatio`   | `string \| number`              | token    | Screen `aspect-ratio` (`"390 / 844"`); ignored while `screenHeight` is set  |
+| `screenHeight`  | `string`                        | —        | Fixed screen height: a clipped window of the top of the content             |
+| `notch`         | `"none" \| "island" \| "notch"` | `"none"` | Camera cutout over the top of the screen                                    |
+| `classScreen`   | `string`                        | —        | Classes for the screen (clipping window)                                    |
+| `classImage`    | `string`                        | —        | Classes for the `<img>`                                                     |
+
 #### `ThemePreview`
 
 Theme color swatch preview.
@@ -2503,6 +2527,7 @@ Each component defines customization tokens. Override globally in `:root {}` or 
 | Notifications      | `--stuic-notification-*`        | `bg`, `text`, `border`                                                                                                                                                                                                        |
 | Tooltip            | `--stuic-tooltip-*`             | `bg`, `text`                                                                                                                                                                                                                  |
 | Popover            | `--stuic-popover-*`             | `bg`, `text`, `border`                                                                                                                                                                                                        |
+| PhoneFrame         | `--stuic-phone-frame-*`         | `bg`, `padding`, `radius`, `border-color`, `shadow`, `screen-bg`, `screen-radius`, `screen-aspect-ratio`, `screen-height`, `island-width`, `island-top`, `notch-width`, `notch-radius`, `notch-bg`, `ring-color`              |
 | Skeleton           | `--stuic-skeleton-*`            | `bg`, `bg-highlight`, `duration`                                                                                                                                                                                              |
 | Spotlight          | `--stuic-spotlight-*`           | `backdrop-bg`, `annotation-bg`, `annotation-text`, `annotation-border`                                                                                                                                                        |
 | Cart               | `--stuic-cart-*`                | `gap`, `item-padding`, `item-radius`, `item-border-color`, `item-bg`, `thumbnail-size`, `quantity-border-color`, `remove-color`, `summary-border-color`, `compact-max-height`, `transition`                                   |

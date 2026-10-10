@@ -82,6 +82,7 @@ export * from "./components/Nav/index.js";
 export * from "./components/Notifications/index.js";
 export * from "./components/OtpInput/index.js";
 export * from "./components/Pagination/index.js";
+export * from "./components/PhoneFrame/index.js";
 export * from "./components/Pill/index.js";
 export * from "./components/PricingTable/index.js";
 export * from "./components/Progress/index.js";

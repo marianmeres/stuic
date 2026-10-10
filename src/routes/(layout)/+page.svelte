@@ -64,6 +64,7 @@
 		'otp-input',
 		// 'on-outside',
 		'pagination',
+		'phone-frame',
 		'pill',
 		'popover',
 		'pricing-table',
