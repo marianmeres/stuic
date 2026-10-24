@@ -74,7 +74,8 @@
 | Fieldset                                      | Field grouping with legend                                                                        |
 | FieldKeyValues                                | Key-value pair editor                                                                             |
 | FieldColorPicker                              | ColorPicker in the field shell: visible label names the swatch group, description, validation box |
-| FieldTable                                    | Rows × typed columns editor (text/number/select/checkbox/date/url cells, container layout)        |
+| FieldTable                                    | Rows × typed columns editor (text/number/select/checkbox/date/url/country cells)                  |
+| FieldStruct                                   | One record × typed fields editor (an address, dimensions): FieldTable's cells, stacked            |
 | FieldsBuilder                                 | Field-definition list editor ("what properties does a thing have?")                               |
 | FieldAssets                                   | File/asset management                                                                             |
 | FieldSingleAsset                              | One asset (avatar, logo, cover): replace-in-place tile, inline remove + undo, rollback on failure |
@@ -164,7 +165,7 @@ Use `validate={false}` to bypass stuic's validation entirely.
 
 > **Why default-on?** Hidden-input field components (`FieldPhoneNumber`,
 > `FieldCountry`, `FieldObject`, `FieldAssets`, `FieldSingleAsset`, `FieldInputLocalized`,
-> `FieldKeyValues`, `FieldTable`, `FieldLikeButton`, `FieldDate`, `FieldDateRange`, `ColorPicker`, `FieldColorPicker`, `Rating`) _must_ be default-on because hidden
+> `FieldKeyValues`, `FieldTable`, `FieldStruct`, `FieldLikeButton`, `FieldDate`, `FieldDateRange`, `ColorPicker`, `FieldColorPicker`, `Rating`) _must_ be default-on because hidden
 > inputs are excluded from native browser constraint validation — without the
 > stuic action enforcing `required` in a `customValidator`, the attribute is a
 > silent no-op. Plain-input field components were harmonized to the same
@@ -174,7 +175,7 @@ Use `validate={false}` to bypass stuic's validation entirely.
 
 Available on `FieldInput`, `FieldMoney`, `FieldTextarea`, `FieldCheckbox`,
 `FieldSelect`, `FieldFile`, `FieldObject`, `FieldAssets`, `FieldSingleAsset`, `FieldInputLocalized`,
-`FieldKeyValues`, `FieldTable`, `FieldPhoneNumber`, `FieldCountry`, `FieldLikeButton`,
+`FieldKeyValues`, `FieldTable`, `FieldStruct`, `FieldPhoneNumber`, `FieldCountry`, `FieldLikeButton`,
 `FieldRadios`, `FieldSwitch`, `FieldColorPicker`, `FieldOptions`, `FieldDate`, `FieldDateRange`,
 `Switch`, and `ColorPicker`:
 

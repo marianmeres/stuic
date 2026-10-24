@@ -12,6 +12,8 @@
 <br />
 <a href="./input/table" class="underline">Table (rows × typed columns)</a>
 <br />
+<a href="./input/struct" class="underline">Struct (one record × typed fields)</a>
+<br />
 <a href="./input/object" class="underline">Object (pretty view)</a>
 <br />
 <a href="./input/phone-number" class="underline">Phone number</a>

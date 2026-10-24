@@ -21,6 +21,7 @@ A comprehensive form input system with multiple field components, validation sup
 | `FieldSingleAsset` | One asset (avatar, logo, cover, one document) — see below      |
 | `FieldKeyValues`   | Key-value pairs editor with JSON serialization                 |
 | `FieldTable`       | Rows × typed columns editor (a list of records) — see below    |
+| `FieldStruct`      | One record × typed fields editor (an address) — see below      |
 | `FieldLikeButton`  | Like/favorite toggle button                                    |
 | `Fieldset`         | Fieldset with legend                                           |
 | `Honeypot`         | Hidden anti-bot trap field (server-less)                       |
@@ -1445,6 +1446,223 @@ and a themed cell look alike. The table adds:
 | `--stuic-field-table-invalid-color`                                          | `--stuic-input-accent-error`        | Invalid cell border + inline message      |
 | `--stuic-field-table-unit-text`                                              | `--stuic-color-muted-foreground`    | The unit suffix                           |
 | `--stuic-field-table-col-min-{text,number,select,checkbox,date,url,country}` | `10 / 6 / 8 / 3 / 9.5 / 12 / 10rem` | Minimum cell width per type in table mode |
+
+## FieldStruct
+
+A form control whose value is **one plain object with a fixed, typed set of keys** — an
+address, a venue, a set of dimensions, a contact block. Each key is a labelled, typed
+input; the bound `value` is a live plain object, no string round trip. It is the
+**one-record, vertical sibling of `FieldTable`**: the same "fields declared by data" idea,
+the same built-in cells (one shared implementation), the same `cell` escape hatch, the
+same hidden-input `Field*` contract and validation rule.
+
+```svelte
+<script lang="ts">
+	import { FieldStruct, type FieldStructField } from "@marianmeres/stuic";
+
+	const fields: FieldStructField[] = [
+		{ key: "street", type: "text", label: { en: "Street", sk: "Ulica" }, required: true },
+		{ key: "zip", type: "text", label: { en: "ZIP", sk: "PSČ" }, maxLength: 10 },
+		{ key: "city", type: "text", label: { en: "City", sk: "Mesto" } },
+		{ key: "country", type: "country", label: { en: "Country", sk: "Krajina" } },
+	];
+
+	let address = $state<Record<string, unknown>>({});
+</script>
+
+<FieldStruct
+	bind:value={address}
+	name="address"
+	label="Adresa"
+	{fields}
+	displayLanguage="sk"
+/>
+```
+
+An address is a _declaration_, not a component — there is no `FieldAddress`.
+
+### Which object field when
+
+| The value is…                             | Component        |
+| ----------------------------------------- | ---------------- |
+| free keys the user names, any JSON values | `FieldKeyValues` |
+| fixed keys, one record                    | `FieldStruct`    |
+| fixed columns, many records               | `FieldTable`     |
+| anything, edited raw                      | `FieldObject`    |
+
+The component knows nothing about JSON Schema. Compiling a schema's `properties` block
+into a `fields` declaration is the consumer's job.
+
+### Field shape
+
+```ts
+type FieldStructCellType =
+	"text" | "number" | "select" | "checkbox" | "date" | "url" | "country";
+
+interface FieldStructField {
+	key: string; // the record key this field reads and writes
+	type: FieldStructCellType | (string & {}); // a built-in type, or anything for `cell`
+	label: MaybeLocalized; // resolved through `tr()` with `displayLanguage`
+	description?: MaybeLocalized; // a hint line under the control (`aria-describedby`)
+	placeholder?: MaybeLocalized;
+	required?: boolean; // this field must be non-blank
+	options?: { value: string; label: MaybeLocalized }[]; // `select`
+	unit?: string; // `number`: shown after the input (and in the accessible name)
+	maxLength?: number; // `text` / `url`: the input's maxlength, re-checked by validation
+	countryList?: string[]; // `country`: ISO alpha-2 codes to offer (default: all)
+	preferredCountries?: string[]; // `country`: pinned at the top of the list
+	countryNames?: Record<string, string>; // `country`: display-name overrides by ISO code
+	flags?: boolean; // `country`: flag emoji (default true)
+	validate?: (
+		value: unknown,
+		record: Record<string, unknown>
+	) => string | undefined | void;
+}
+```
+
+### The built-in fields
+
+The same controls as [`FieldTable`'s cells](#the-built-in-cells) — same inputs, same
+locale-aware number parsing, same "a stored value that does not fit is kept and flagged"
+rule. What differs is the **blank** value:
+
+| type       | Writes                          | When cleared                      |
+| ---------- | ------------------------------- | --------------------------------- |
+| `text`     | string, trimmed on commit       | the key is **removed**            |
+| `number`   | `number`                        | the key is removed                |
+| `select`   | the option value                | the key is removed                |
+| `checkbox` | boolean                         | `false` (a checkbox has no blank) |
+| `date`     | `YYYY-MM-DD`                    | the key is removed                |
+| `url`      | string                          | the key is removed                |
+| `country`  | the ISO alpha-2 code, e.g. `SK` | (cannot be cleared from the list) |
+
+A `checkbox` field renders its box beside its label; every other field stacks the label
+above the control, one field per line.
+
+**Unknown types** render through the `cell` snippet, which receives
+`{ field, record, value, setValue, id, disabled, invalid, describedby }` — put `id` on
+your control so the field's `<label for>` reaches it. Without the snippet the field shows
+the raw value read-only and round-trips it.
+
+### Value semantics
+
+- **The record never gains a key the component invented.** Blank is absence: an untouched
+  or emptied struct is `{}`, never four empty strings, so a backend with
+  `additionalProperties: false` and no `required` is happy. The one caveat: the struct is
+  a **whole-value replacement**. A PATCH-merge backend reads a missing key as "unchanged",
+  so there clearing a loaded street would not clear it — prune or null at your save
+  boundary if that is your API.
+- **Keys not in `fields` are preserved, untouched and unrendered.** The library never
+  silently drops data.
+- **A loaded record missing a field** renders that control empty and writes nothing until
+  the field is edited.
+- **Change → emit.** `value` is replaced by a JSON copy of the record, then `onChange`
+  fires, then a bubbling `change` on the hidden input. **External reassignment** is
+  detected by a JSON comparison and rebuilds the record.
+- **A non-object `value`** (`""`, `null`, `undefined`) renders every field empty and is not
+  rewritten on mount — a mount never dirties the host form. The first edit emits an object.
+- **Duplicate field keys**: the first occurrence wins, later ones are skipped with a
+  `console.warn`. **An empty field label** falls back to the key.
+
+### Read-only
+
+`readonly` renders the record as a [`DescriptionList`](../DescriptionList/README.md)
+inside the field's box (with the readonly surface tokens): the localized field label as
+the term, the formatted value as the details — numbers through `formatCellNumber` with
+the unit (`4,5 pcs` under `sk`), `select` as the option's label, `checkbox` as `t("yes")`
+/ `t("no")`, `country` as the flag and the localized country name, `url` as a link,
+blank as a dash. No inputs, no edit affordance; the hidden input still posts the value
+and `validate()` still runs. It never shows a key where a label exists. `disabled` keeps
+its usual meaning (faded, inputs present).
+
+### Validation and the host `validate()` rule
+
+The validator runs, in order: **each field in declaration order** (its `required`, then
+the built-in rule for its type, then `maxLength`, then `field.validate`), then the
+component-level `required` (every field blank → `err_struct_required`), then your
+`validate.customValidator`. The summary reads "Street is required" or
+"ZIP: too long (max 10 characters)"; each invalid field is `aria-invalid` with its
+message inline once `validate()` has run or once that field was blurred; `validate()`
+scrolls to and focuses the first offender. A per-field `required` message always wins
+over the component-level one, which is reachable only when no field is required on its
+own.
+
+No control carries `required`, `pattern`, `min` / `max` or a validating `type`, so a
+control scrolled out of view can never make the browser refuse a submit without a
+message. The flip side — the rule for every hidden-input `Field*` — is that **a host that
+submits natively must call `validate()`** (or use `use:onSubmitValidityCheck`) before
+saving.
+
+### Props
+
+| Prop              | Type                                       | Default            | Description                                                            |
+| ----------------- | ------------------------------------------ | ------------------ | ---------------------------------------------------------------------- |
+| `value`           | `Record<string, unknown>`                  | required, bindable | The record                                                             |
+| `name`            | `string`                                   | required           | The hidden input's name                                                |
+| `fields`          | `FieldStructField[]`                       | required           | One entry per field, in order                                          |
+| `required`        | `boolean`                                  | `false`            | At least one field is non-blank (per-field `required` is on the field) |
+| `readonly`        | `boolean`                                  | `false`            | Description-list rendering, no inputs                                  |
+| `displayLanguage` | `string \| string[]`                       | -                  | `tr()` fallback chain for field / option / hint texts                  |
+| `locale`          | `string`                                   | browser            | Decimal separator of number fields; language of country names          |
+| `cell`            | `Snippet<[FieldStructCellContext]>`        | -                  | Renders fields whose `type` is not built in                            |
+| `onChange`        | `(value: Record<string, unknown>) => void` | -                  | After every change                                                     |
+| `t`               | `TranslateFn`                              | English            | See i18n                                                               |
+| `renderSize`      | `"sm" \| "md" \| "lg"`                     | `"md"`             | Control size (the fields follow the `--stuic-input-*` size tokens)     |
+
+Plus the usual field props: `label`, `description`, `labelAfter`, `below`, `id`,
+`tabindex`, `disabled`, `validate`, `labelLeft*`, `style`, `class`, and the shared
+`InputWrapClassProps`. The imperative API is the standard one: `validate()`,
+`clearValidation()`, `getValidation()`, `focus()` (first control), `scrollIntoView()`.
+
+### i18n
+
+All UI texts go through `t`. English is built in; Slovak ships bundled and opt-in:
+
+```svelte
+<script>
+	import {
+		FieldStruct,
+		createFieldStructT,
+		FIELD_STRUCT_MESSAGES_SK,
+	} from "@marianmeres/stuic";
+	const t = createFieldStructT(FIELD_STRUCT_MESSAGES_SK);
+</script>
+
+<FieldStruct bind:value name="address" {fields} displayLanguage="sk" locale="sk" {t} />
+```
+
+`createFieldStructT(messages, fallbackMessages?)` falls back to `FIELD_STRUCT_MESSAGES_EN`
+for any key the catalog does not define. The per-type rules (`err_number`, `err_url`,
+`err_date`, `err_select_unknown`, `err_maxlength`, `err_country`) share `FieldTable`'s
+wording; the struct adds `err_required` (inline), `err_field_required` and `err_field`
+(the summary), `err_struct_required`, and `yes` / `no` for the read-only checkbox. Field,
+option and hint texts are consumer data: pass them as `{ en: "...", sk: "..." }` records
+and set `displayLanguage`.
+
+### Accessibility
+
+- Every control has a visible `<label for>`; a number field's unit is part of the
+  accessible name ("Qty (pcs)"); a `description` is an `aria-describedby` hint, and an
+  invalid field's message id joins it.
+- Enter in a control submits the host form, like any `FieldInput` in it.
+- Labels, hints, values and messages are `text-sm` or larger.
+
+### CSS Variables
+
+Controls reuse the `--stuic-input-*` colour and size tokens, so a themed `FieldInput` and a
+struct field look alike. The struct adds:
+
+| Variable                             | Default                          | Description                             |
+| ------------------------------------ | -------------------------------- | --------------------------------------- |
+| `--stuic-field-struct-gap`           | `1rem`                           | Gap between fields                      |
+| `--stuic-field-struct-padding`       | `0.75rem`                        | Padding inside the box                  |
+| `--stuic-field-struct-label-text`    | `--stuic-color-foreground`       | Per-field label color                   |
+| `--stuic-field-struct-hint-text`     | `--stuic-color-muted-foreground` | The `description` hint line             |
+| `--stuic-field-struct-invalid-color` | `--stuic-input-accent-error`     | Invalid control border + inline message |
+| `--stuic-field-struct-unit-text`     | `--stuic-color-muted-foreground` | The unit suffix                         |
+
+The read-only box uses `--stuic-input-bg-readonly` / `--stuic-input-border-readonly`
+(see _Readonly Tokens_ above).
 
 ## Honeypot & TimeTrap (anti-bot primitives)
 

@@ -129,6 +129,24 @@ export {
 } from "./field-table-number.js";
 
 export {
+	default as FieldStruct,
+	type Props as FieldStructProps,
+	type FieldStructField,
+	type FieldStructCellType,
+	type FieldStructCellContext,
+	type FieldStructValue,
+} from "./FieldStruct.svelte";
+
+export {
+	createFieldStructT,
+	FIELD_STRUCT_MESSAGES_EN,
+	type FieldStructMessageKey,
+	type FieldStructMessages,
+} from "./field-struct-i18n.js";
+
+export { FIELD_STRUCT_MESSAGES_SK } from "./field-struct-i18n-sk.js";
+
+export {
 	default as FieldPhoneNumber,
 	type Props as FieldPhoneNumberProps,
 } from "./FieldPhoneNumber.svelte";

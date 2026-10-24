@@ -126,6 +126,14 @@
 	--stuic-field-table-col-min-url: 12rem;
 	--stuic-field-table-col-min-country: 10rem;
 
+	/* FieldStruct specific (see the FIELD STRUCT section at the bottom of this file) */
+	--stuic-field-struct-gap: calc(var(--spacing) * 4);
+	--stuic-field-struct-padding: calc(var(--spacing) * 3);
+	--stuic-field-struct-label-text: var(--stuic-color-foreground);
+	--stuic-field-struct-hint-text: var(--stuic-color-muted-foreground);
+	--stuic-field-struct-invalid-color: var(--stuic-input-accent-error);
+	--stuic-field-struct-unit-text: var(--stuic-color-muted-foreground);
+
 	/* FieldSingleAsset */
 	--stuic-field-single-asset-size-sm: 5rem;
 	--stuic-field-single-asset-size-md: 8rem;
@@ -1620,6 +1628,71 @@
 			font-size: var(--text-sm);
 			font-weight: 500;
 		}
+	}
+}
+
+/* ============================================================================
+   FIELD STRUCT
+   One record × typed fields, stacked: a labelled control per field inside the
+   usual InputWrap box, one per line. The controls are the shared FieldCell (see
+   FIELD CELL above); this block owns the field stack, the per-field label /
+   hint / error lines and the read-only box. Everything a person reads is
+   `text-sm` or larger.
+   ============================================================================ */
+
+@layer components {
+	.stuic-field-struct {
+		display: flex;
+		flex-direction: column;
+		gap: var(--stuic-field-struct-gap);
+		padding: var(--stuic-field-struct-padding);
+		/* the shared cell reads these; the struct's own (documented) tokens feed them */
+		--stuic-field-cell-invalid-color: var(--stuic-field-struct-invalid-color);
+		--stuic-field-cell-unit-text: var(--stuic-field-struct-unit-text);
+	}
+
+	.stuic-field-struct-field {
+		display: flex;
+		flex-direction: column;
+		gap: calc(var(--spacing) * 1);
+		min-width: 0;
+	}
+
+	.stuic-field-struct-label {
+		font-size: var(--text-sm);
+		font-weight: var(--font-weight-medium);
+		color: var(--stuic-field-struct-label-text);
+	}
+
+	/* a checkbox field: the box and its label on one line */
+	.stuic-field-struct-check {
+		display: flex;
+		align-items: center;
+		gap: calc(var(--spacing) * 2);
+	}
+
+	.stuic-field-struct-hint {
+		font-size: var(--text-sm);
+		color: var(--stuic-field-struct-hint-text);
+	}
+
+	.stuic-field-struct-error {
+		font-size: var(--text-sm);
+		color: var(--stuic-field-struct-invalid-color);
+	}
+
+	/* ---- read-only: the record as a DescriptionList, in the readonly box ---- */
+
+	.stuic-field-struct[data-readonly] {
+		padding-block: calc(var(--spacing) * 1.5);
+	}
+
+	/* The same treatment `input[readonly]` gives the wrap (see INPUT WRAPPER STYLES):
+	   full text contrast, muted surface. Three class selectors so it outranks the
+	   base `.stuic-input .input-wrap` rule. */
+	.stuic-input .input-wrap.stuic-field-struct-wrap-readonly {
+		background: var(--stuic-input-bg-readonly);
+		border-color: var(--stuic-input-border-readonly);
 	}
 }
 
