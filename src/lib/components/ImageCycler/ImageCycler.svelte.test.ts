@@ -61,8 +61,8 @@ test("title and description snippet props render inside .stuic-image-cycler-meta
 	const meta = container.querySelector(".stuic-image-cycler-meta");
 	expect(meta).not.toBeNull();
 	const metaLoc = page.elementLocator(meta!);
-	await expect.element(metaLoc).toHaveTextContent("My title");
-	await expect.element(metaLoc).toHaveTextContent("My description");
+	await expect.element(metaLoc).toMatchTextContent("My title");
+	await expect.element(metaLoc).toMatchTextContent("My description");
 });
 
 test("no title/description snippets -> no .stuic-image-cycler-meta block", async () => {

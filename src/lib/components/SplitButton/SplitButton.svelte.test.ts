@@ -22,7 +22,7 @@ function baseItems() {
 }
 
 test("renders a role=group wrapper with default data-attrs", async () => {
-	const screen = render(SplitButton, {
+	const screen = await render(SplitButton, {
 		children: text("Save"),
 		"data-testid": "sb",
 	});
@@ -39,7 +39,7 @@ test("renders a role=group wrapper with default data-attrs", async () => {
 
 test("primary renders children content and fires onclick", async () => {
 	const onclick = vi.fn();
-	const screen = render(SplitButton, { children: text("Save"), onclick });
+	const screen = await render(SplitButton, { children: text("Save"), onclick });
 	const primary = screen.getByRole("button", { name: "Save" });
 	await expect.element(primary).toHaveClass("stuic-split-button-primary");
 	await primary.click();
@@ -48,7 +48,7 @@ test("primary renders children content and fires onclick", async () => {
 
 test("string `icon` without children renders an icon-only primary (data-icon-button)", async () => {
 	const svg = `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>`;
-	const screen = render(SplitButton, {
+	const screen = await render(SplitButton, {
 		icon: svg,
 		primaryProps: { "aria-label": "Mic" },
 	});
@@ -58,7 +58,7 @@ test("string `icon` without children renders an icon-only primary (data-icon-but
 });
 
 test("intent/variant/size forward to the primary button as data-attrs", async () => {
-	const screen = render(SplitButton, {
+	const screen = await render(SplitButton, {
 		children: text("Go"),
 		intent: "destructive",
 		variant: "soft",
@@ -71,7 +71,7 @@ test("intent/variant/size forward to the primary button as data-attrs", async ()
 });
 
 test("secondary defaults to a neutral ghost icon-button with 'More options' name", async () => {
-	const screen = render(SplitButton, { children: text("Save") });
+	const screen = await render(SplitButton, { children: text("Save") });
 	const secondary = screen.getByRole("button", { name: "More options" });
 	await expect.element(secondary).toHaveClass("stuic-split-button-secondary");
 	await expect.element(secondary).toHaveAttribute("data-variant", "ghost");
@@ -80,7 +80,7 @@ test("secondary defaults to a neutral ghost icon-button with 'More options' name
 });
 
 test("placement controls DOM order (start: secondary first; end: primary first)", async () => {
-	const start = render(SplitButton, {
+	const start = await render(SplitButton, {
 		children: text("A"),
 		"data-testid": "sb-start",
 	});
@@ -89,7 +89,7 @@ test("placement controls DOM order (start: secondary first; end: primary first)"
 	// no items -> secondary renders directly (no DropdownMenu wrapper)
 	expect(startFirst.classList.contains("stuic-split-button-secondary")).toBe(true);
 
-	const end = render(SplitButton, {
+	const end = await render(SplitButton, {
 		children: text("B"),
 		placement: "end",
 		"data-testid": "sb-end",
@@ -111,7 +111,7 @@ test("placement controls DOM order (start: secondary first; end: primary first)"
 });
 
 test("divided mode: data-divided, divider element, secondary inherits intent/variant", async () => {
-	const screen = render(SplitButton, {
+	const screen = await render(SplitButton, {
 		children: text("Save"),
 		divided: true,
 		intent: "primary",
@@ -128,7 +128,7 @@ test("divided mode: data-divided, divider element, secondary inherits intent/var
 
 test("items: secondary gets menu ARIA wiring and opens/closes the dropdown", async () => {
 	const items = baseItems();
-	const screen = render(SplitButton, {
+	const screen = await render(SplitButton, {
 		children: text("Save"),
 		items,
 		"data-testid": "sb",
@@ -153,7 +153,7 @@ test("items: secondary gets menu ARIA wiring and opens/closes the dropdown", asy
 
 test("onSecondaryClick without items: callback fires, no menu ARIA, no dropdown", async () => {
 	const onSecondaryClick = vi.fn();
-	const screen = render(SplitButton, {
+	const screen = await render(SplitButton, {
 		children: text("Save"),
 		onSecondaryClick,
 	});
@@ -165,7 +165,7 @@ test("onSecondaryClick without items: callback fires, no menu ARIA, no dropdown"
 });
 
 test("secondaryLabel renames the trigger; secondaryDisabled disables only the trigger", async () => {
-	const screen = render(SplitButton, {
+	const screen = await render(SplitButton, {
 		children: text("Save"),
 		secondaryLabel: "Audio settings",
 		secondaryDisabled: true,
@@ -176,7 +176,7 @@ test("secondaryLabel renames the trigger; secondaryDisabled disables only the tr
 });
 
 test("disabled disables only the primary", async () => {
-	const screen = render(SplitButton, { children: text("Save"), disabled: true });
+	const screen = await render(SplitButton, { children: text("Save"), disabled: true });
 	await expect.element(screen.getByRole("button", { name: "Save" })).toBeDisabled();
 	await expect
 		.element(screen.getByRole("button", { name: "More options" }))
@@ -186,7 +186,7 @@ test("disabled disables only the primary", async () => {
 test("iconSwap drives the primary through bindable checked (roleSwitch)", async () => {
 	const on = `<svg data-icon="on" viewBox="0 0 24 24"><path d="M1 1"/></svg>`;
 	const off = `<svg data-icon="off" viewBox="0 0 24 24"><path d="M2 2"/></svg>`;
-	const screen = render(SplitButton, {
+	const screen = await render(SplitButton, {
 		iconSwap: [on, off] as [string, string],
 		roleSwitch: true,
 		primaryProps: { "aria-label": "Mic" },
@@ -198,7 +198,7 @@ test("iconSwap drives the primary through bindable checked (roleSwitch)", async 
 });
 
 test("unstyled: no stuic classes/data-attrs on wrapper, forwarded to segments", async () => {
-	const screen = render(SplitButton, {
+	const screen = await render(SplitButton, {
 		children: text("Save"),
 		unstyled: true,
 		class: "custom",
@@ -213,7 +213,7 @@ test("unstyled: no stuic classes/data-attrs on wrapper, forwarded to segments", 
 });
 
 test("default caret chevron renders; custom secondaryIcon string replaces it", async () => {
-	const withCaret = render(SplitButton, { children: text("A") });
+	const withCaret = await render(SplitButton, { children: text("A") });
 	expect(
 		withCaret
 			.getByRole("button", { name: "More options" })
@@ -221,7 +221,7 @@ test("default caret chevron renders; custom secondaryIcon string replaces it", a
 			.querySelector(".stuic-split-button-caret svg")
 	).toBeTruthy();
 
-	const custom = render(SplitButton, {
+	const custom = await render(SplitButton, {
 		children: text("B"),
 		secondaryLabel: "More B",
 		secondaryIcon: `<svg data-icon="dots" viewBox="0 0 24 24"><path d="M3 3"/></svg>`,
@@ -233,7 +233,7 @@ test("default caret chevron renders; custom secondaryIcon string replaces it", a
 
 test("items takes precedence over onSecondaryClick when both are set", async () => {
 	const onSecondaryClick = vi.fn();
-	const screen = render(SplitButton, {
+	const screen = await render(SplitButton, {
 		children: text("Save"),
 		items: baseItems(),
 		onSecondaryClick,
@@ -245,7 +245,7 @@ test("items takes precedence over onSecondaryClick when both are set", async () 
 });
 
 test("menuOpen: true mounts with the menu already open (external control)", async () => {
-	const screen = render(SplitButton, {
+	const screen = await render(SplitButton, {
 		children: text("Save"),
 		items: baseItems(),
 		menuOpen: true,
@@ -260,7 +260,7 @@ test("menuOpen: true mounts with the menu already open (external control)", asyn
 
 test("menuProps forwards to DropdownMenu (onOpen fires)", async () => {
 	const onOpen = vi.fn();
-	const screen = render(SplitButton, {
+	const screen = await render(SplitButton, {
 		children: text("Save"),
 		items: baseItems(),
 		menuProps: { onOpen },
@@ -271,7 +271,7 @@ test("menuProps forwards to DropdownMenu (onOpen fires)", async () => {
 });
 
 test("primaryProps/secondaryProps escape hatches win over top-level conveniences", async () => {
-	const screen = render(SplitButton, {
+	const screen = await render(SplitButton, {
 		children: text("Save"),
 		variant: "solid",
 		primaryProps: { variant: "outline" },
@@ -286,7 +286,7 @@ test("primaryProps/secondaryProps escape hatches win over top-level conveniences
 });
 
 test("items mode DOM order: DropdownMenu wrapper is the placement-start first child", async () => {
-	const screen = render(SplitButton, {
+	const screen = await render(SplitButton, {
 		children: text("Save"),
 		items: baseItems(),
 		"data-testid": "sb",

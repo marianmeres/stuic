@@ -25,7 +25,7 @@ import TypeaheadInput from "./TypeaheadInput.svelte";
 const noopOptions = (_query: string, _current: unknown[]) => Promise.resolve([]);
 
 test("renders an input with the given placeholder and name (combobox role from the action)", async () => {
-	const screen = render(TypeaheadInput, {
+	const screen = await render(TypeaheadInput, {
 		value: "",
 		placeholder: "Search…",
 		name: "city",
@@ -44,14 +44,17 @@ test("renders an input with the given placeholder and name (combobox role from t
 });
 
 test("defaults name to 'text_input' when not provided", async () => {
-	const screen = render(TypeaheadInput, { value: "", getOptions: vi.fn(noopOptions) });
+	const screen = await render(TypeaheadInput, {
+		value: "",
+		getOptions: vi.fn(noopOptions),
+	});
 	await expect
 		.element(screen.getByRole("combobox"))
 		.toHaveAttribute("name", "text_input");
 });
 
 test("value binding: initial value is reflected in the input", async () => {
-	const screen = render(TypeaheadInput, {
+	const screen = await render(TypeaheadInput, {
 		value: "hi",
 		getOptions: vi.fn(noopOptions),
 	});
@@ -59,7 +62,7 @@ test("value binding: initial value is reflected in the input", async () => {
 });
 
 test("filling the input updates the visible value", async () => {
-	const screen = render(TypeaheadInput, {
+	const screen = await render(TypeaheadInput, {
 		value: "",
 		getOptions: vi.fn(noopOptions),
 	});
@@ -70,7 +73,7 @@ test("filling the input updates the visible value", async () => {
 
 test("typing a non-empty query eventually calls getOptions", async () => {
 	const getOptions = vi.fn(noopOptions);
-	const screen = render(TypeaheadInput, { value: "", getOptions });
+	const screen = await render(TypeaheadInput, { value: "", getOptions });
 	await screen.getByRole("combobox").fill("abc");
 	// Debounced (~150ms) + async; assert it fires without pinning exact timing.
 	await expect
@@ -87,7 +90,7 @@ test("spinner is shown while getOptions is in flight (pending promise)", async (
 	// The action calls onFetchingChange(true) immediately before awaiting getOptions.
 	let resolve!: (v: never[]) => void;
 	const getOptions = vi.fn(() => new Promise<never[]>((r) => (resolve = r)));
-	const { container } = render(TypeaheadInput, { value: "", getOptions });
+	const { container } = await render(TypeaheadInput, { value: "", getOptions });
 	const input = page.elementLocator(container.querySelector("input")!);
 	await input.fill("xy");
 	// Spinner.svelte renders <div class="stuic-spinner">; it appears once fetching=true.
@@ -99,7 +102,7 @@ test("spinner is shown while getOptions is in flight (pending promise)", async (
 test("noSpinner suppresses the Spinner even while fetching", async () => {
 	let resolve!: (v: never[]) => void;
 	const getOptions = vi.fn(() => new Promise<never[]>((r) => (resolve = r)));
-	const { container } = render(TypeaheadInput, {
+	const { container } = await render(TypeaheadInput, {
 		value: "",
 		noSpinner: true,
 		getOptions,

@@ -19,8 +19,8 @@ type HarnessExports = {
 	validate(): boolean;
 };
 
-function renderHarness(props: Record<string, unknown>) {
-	const screen = render(Harness, props);
+async function renderHarness(props: Record<string, unknown>) {
+	const screen = await render(Harness, props);
 	return { screen, h: screen.component as unknown as HarnessExports };
 }
 
@@ -51,7 +51,7 @@ test("an invalid email is reported on the FIRST failed click", async () => {
 
 test("a server field error blocks submit, then clears itself once edited", async () => {
 	const onSubmit = vi.fn();
-	const { screen, h } = renderHarness({ onSubmit });
+	const { screen, h } = await renderHarness({ onSubmit });
 
 	await screen.getByLabelText("Email", { exact: true }).fill("jane@example.com");
 	await cta(screen).click();
@@ -74,7 +74,7 @@ test("a server error on a non-email field is now rendered, and self-clears", asy
 	// only the email field used to consume `fieldError()`, so an error on any
 	// other field blocked the submit with no message anywhere
 	const onSubmit = vi.fn();
-	const { screen, h } = renderHarness({ onSubmit });
+	const { screen, h } = await renderHarness({ onSubmit });
 
 	await screen.getByLabelText("Email", { exact: true }).fill("jane@example.com");
 	h.setErrors([{ field: "first_name", message: "First name looks wrong" }]);
@@ -90,7 +90,7 @@ test("a server error on a non-email field is now rendered, and self-clears", asy
 
 test("an error on a field the form does not render keeps blocking", async () => {
 	const onSubmit = vi.fn();
-	const { screen, h } = renderHarness({ onSubmit });
+	const { screen, h } = await renderHarness({ onSubmit });
 
 	await screen.getByLabelText("Email", { exact: true }).fill("jane@example.com");
 	h.setErrors([{ field: "coupon", message: "Coupon expired" }]);
@@ -108,7 +108,7 @@ test("an error on a field the form does not render keeps blocking", async () => 
 
 test("an error on a field hidden by `fields` keeps blocking too", async () => {
 	const onSubmit = vi.fn();
-	const { screen, h } = renderHarness({ onSubmit, fields: { phone: false } });
+	const { screen, h } = await renderHarness({ onSubmit, fields: { phone: false } });
 	expect(screen.container.querySelector('input[name="checkout-guest-phone"]')).toBeNull();
 
 	await screen.getByLabelText("Email", { exact: true }).fill("jane@example.com");

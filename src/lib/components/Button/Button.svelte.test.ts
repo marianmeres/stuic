@@ -12,7 +12,7 @@ const text = (s: string) =>
 	createRawSnippet(() => ({ render: () => `<span>${s}</span>` }));
 
 test("renders a native button with the stuic-button base class and children", async () => {
-	const screen = render(Button, { children: text("Click me") });
+	const screen = await render(Button, { children: text("Click me") });
 	const btn = screen.getByRole("button");
 	await expect.element(btn).toBeInTheDocument();
 	await expect.element(btn).toHaveClass("stuic-button");
@@ -20,7 +20,7 @@ test("renders a native button with the stuic-button base class and children", as
 });
 
 test("defaults to variant=solid and size=md, with no data-intent", async () => {
-	const screen = render(Button, { children: text("Default") });
+	const screen = await render(Button, { children: text("Default") });
 	const btn = screen.getByRole("button");
 	await expect.element(btn).toHaveAttribute("data-variant", "solid");
 	await expect.element(btn).toHaveAttribute("data-size", "md");
@@ -28,7 +28,7 @@ test("defaults to variant=solid and size=md, with no data-intent", async () => {
 });
 
 test("intent / variant / size map to data-* attributes", async () => {
-	const screen = render(Button, {
+	const screen = await render(Button, {
 		intent: "primary",
 		variant: "outline",
 		size: "lg",
@@ -42,12 +42,16 @@ test("intent / variant / size map to data-* attributes", async () => {
 
 test("disabled disables the button (assert state — a disabled button is not clickable)", async () => {
 	const onclick = vi.fn();
-	const screen = render(Button, { disabled: true, onclick, children: text("Nope") });
+	const screen = await render(Button, {
+		disabled: true,
+		onclick,
+		children: text("Nope"),
+	});
 	await expect.element(screen.getByRole("button")).toBeDisabled();
 });
 
 test("href renders an anchor instead of a button", async () => {
-	const screen = render(Button, { href: "/somewhere", children: text("Go") });
+	const screen = await render(Button, { href: "/somewhere", children: text("Go") });
 	const link = screen.getByRole("link");
 	await expect.element(link).toBeInTheDocument();
 	await expect.element(link).toHaveAttribute("href", "/somewhere");
@@ -57,13 +61,13 @@ test("href renders an anchor instead of a button", async () => {
 
 test("onclick fires once on click", async () => {
 	const onclick = vi.fn();
-	const screen = render(Button, { onclick, children: text("Click") });
+	const screen = await render(Button, { onclick, children: text("Click") });
 	await screen.getByRole("button").click();
 	expect(onclick).toHaveBeenCalledOnce();
 });
 
 test("spinner renders the Spinner element alongside the children", async () => {
-	const screen = render(Button, { spinner: true, children: text("Loading") });
+	const screen = await render(Button, { spinner: true, children: text("Loading") });
 	const btn = screen.getByRole("button");
 	await expect.element(btn).toHaveTextContent("Loading");
 	// Spinner.svelte renders <div class="stuic-spinner">.
@@ -71,18 +75,18 @@ test("spinner renders the Spinner element alongside the children", async () => {
 });
 
 test("spinnerOnly keeps the spinner but hides the children", async () => {
-	const screen = render(Button, {
+	const screen = await render(Button, {
 		spinner: true,
 		spinnerOnly: true,
 		children: text("Hidden"),
 	});
 	const btn = screen.getByRole("button");
-	await expect.element(btn).not.toHaveTextContent("Hidden");
+	await expect.element(btn).not.toMatchTextContent("Hidden");
 	expect(screen.container.querySelector(".stuic-spinner")).not.toBeNull();
 });
 
 test("roleSwitch toggles data-checked on click", async () => {
-	const screen = render(Button, { roleSwitch: true, children: text("Toggle") });
+	const screen = await render(Button, { roleSwitch: true, children: text("Toggle") });
 	const btn = screen.getByRole("button");
 	// checked starts false -> data-checked attribute is absent.
 	await expect.element(btn).not.toHaveAttribute("data-checked");
@@ -93,7 +97,7 @@ test("roleSwitch toggles data-checked on click", async () => {
 });
 
 test("unstyled drops the base class and suppresses data-* attributes", async () => {
-	const screen = render(Button, {
+	const screen = await render(Button, {
 		unstyled: true,
 		intent: "primary",
 		children: text("Raw"),

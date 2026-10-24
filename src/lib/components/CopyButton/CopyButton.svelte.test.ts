@@ -304,13 +304,13 @@ test("tooltip=false disables it; a label disables it by default; tooltip=true re
 	await page.elementLocator(btn(off.container)).hover();
 	await settle();
 	expect(document.querySelector("[role=tooltip]")).toBeNull();
-	off.unmount();
+	await off.unmount();
 
 	const labeled = await render(CopyButton, { text: "x", label: "Copy link" });
 	await page.elementLocator(btn(labeled.container)).hover();
 	await settle();
 	expect(document.querySelector("[role=tooltip]")).toBeNull();
-	labeled.unmount();
+	await labeled.unmount();
 
 	const forced = await render(CopyButton, {
 		text: "x",
@@ -333,7 +333,7 @@ test("tooltip as a string replaces the idle text only; a TooltipConfig without c
 	await expect.poll(tooltipText, { timeout: 2000 }).toBe("Copy API key");
 	await click(b);
 	await expect.poll(tooltipText, { timeout: 2000 }).toBe("Copied");
-	str.unmount();
+	await str.unmount();
 
 	const cfg = await render(CopyButton, {
 		text: "x",

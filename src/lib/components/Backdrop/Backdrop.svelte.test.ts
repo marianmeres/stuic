@@ -31,7 +31,7 @@ const backdropRoot = (container: Element) =>
 	container.querySelector(".stuic-backdrop") as HTMLElement | null;
 
 test("renders the stuic-backdrop root with role=presentation and tabindex=-1 when visible", async () => {
-	const screen = render(Backdrop, { visible: true });
+	const screen = await render(Backdrop, { visible: true });
 	const root = backdropRoot(screen.container);
 	expect(root).not.toBeNull();
 	const loc = page.elementLocator(root!);
@@ -42,13 +42,13 @@ test("renders the stuic-backdrop root with role=presentation and tabindex=-1 whe
 });
 
 test("renders nothing when visible is false", async () => {
-	const screen = render(Backdrop, { visible: false });
+	const screen = await render(Backdrop, { visible: false });
 	// {#if visible} is false -> no backdrop root in the DOM at all.
 	expect(backdropRoot(screen.container)).toBeNull();
 });
 
 test("renders children inside the backdrop and the focus trap auto-focuses the child", async () => {
-	const screen = render(Backdrop, { visible: true, children: buttonChild() });
+	const screen = await render(Backdrop, { visible: true, children: buttonChild() });
 	// The child lives inside the backdrop root...
 	const child = screen.getByTestId("child");
 	await expect.element(child).toBeInTheDocument();
@@ -59,7 +59,7 @@ test("renders children inside the backdrop and the focus trap auto-focuses the c
 
 test("onBackdropClick fires on a mousedown whose target IS the backdrop root", async () => {
 	const onBackdropClick = vi.fn();
-	const screen = render(Backdrop, { visible: true, onBackdropClick });
+	const screen = await render(Backdrop, { visible: true, onBackdropClick });
 	const root = backdropRoot(screen.container);
 	// Make sure the root has actually mounted before we dispatch.
 	await expect.element(page.elementLocator(root!)).toBeInTheDocument();
@@ -70,7 +70,7 @@ test("onBackdropClick fires on a mousedown whose target IS the backdrop root", a
 
 test("onBackdropClick does NOT fire when the mousedown target is a child (e.target !== root)", async () => {
 	const onBackdropClick = vi.fn();
-	const screen = render(Backdrop, {
+	const screen = await render(Backdrop, {
 		visible: true,
 		onBackdropClick,
 		children: buttonChild(),
@@ -85,7 +85,7 @@ test("onBackdropClick does NOT fire when the mousedown target is a child (e.targ
 
 test("onEscape fires on a window Escape keydown (listener installs because onEscape is provided)", async () => {
 	const onEscape = vi.fn();
-	const screen = render(Backdrop, { visible: true, onEscape });
+	const screen = await render(Backdrop, { visible: true, onEscape });
 	// Wait until the root has mounted (and thus the window keydown listener's $effect has run)
 	// before dispatching — same gate the Drawer test uses for its Escape assertion.
 	await expect
@@ -98,7 +98,7 @@ test("onEscape fires on a window Escape keydown (listener installs because onEsc
 
 test("a non-Escape window keydown does not fire onEscape", async () => {
 	const onEscape = vi.fn();
-	const screen = render(Backdrop, { visible: true, onEscape });
+	const screen = await render(Backdrop, { visible: true, onEscape });
 	// Gate on mount so the listener is genuinely installed; this makes the negative meaningful
 	// (the listener exists and still ignores a non-Escape key) rather than passing because the
 	// listener simply wasn't there yet.
@@ -111,7 +111,7 @@ test("a non-Escape window keydown does not fire onEscape", async () => {
 
 test("onEscape does NOT fire when the keydown was already handled (defaultPrevented)", async () => {
 	const onEscape = vi.fn();
-	const screen = render(Backdrop, { visible: true, onEscape });
+	const screen = await render(Backdrop, { visible: true, onEscape });
 	await expect
 		.element(page.elementLocator(backdropRoot(screen.container)!))
 		.toBeInTheDocument();
@@ -132,7 +132,7 @@ test("firing Escape with onEscape omitted is a harmless no-op (no listener insta
 	// With no onEscape the window keydown $effect bails, so no listener exists. We can't assert a
 	// spy here; this is a smoke contract that the omitted-callback path neither throws nor mutates
 	// visibility (Backdrop has no internal Escape->close wiring — close is caller-driven).
-	const screen = render(Backdrop, { visible: true });
+	const screen = await render(Backdrop, { visible: true });
 	const root = backdropRoot(screen.container);
 	await expect.element(page.elementLocator(root!)).toBeInTheDocument();
 	window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));

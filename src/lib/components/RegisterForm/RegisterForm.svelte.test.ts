@@ -32,8 +32,8 @@ type HarnessExports = {
 	focusField(name: string): boolean;
 };
 
-function renderHarness(props: Record<string, unknown>) {
-	const screen = render(Harness, props);
+async function renderHarness(props: Record<string, unknown>) {
+	const screen = await render(Harness, props);
 	return { screen, h: screen.component as unknown as HarnessExports };
 }
 
@@ -113,7 +113,11 @@ test("with both hidden the CTA still submits — no silent submit_invalid", asyn
 });
 
 test("with both hidden, validate() reports valid", async () => {
-	const { h } = renderHarness({ onSubmit: noop, showEmail: false, showPassword: false });
+	const { h } = await renderHarness({
+		onSubmit: noop,
+		showEmail: false,
+		showPassword: false,
+	});
 	expect(h.validate()).toBe(true);
 });
 
@@ -140,7 +144,7 @@ test("hiding the core fields still validates the extra fields", async () => {
 // ------------------------------------------------------- credentialsSlot ---
 
 test("credentialsSlot renders at the credentials position", async () => {
-	const { screen } = renderHarness({
+	const { screen } = await renderHarness({
 		onSubmit: noop,
 		showEmail: false,
 		showPassword: false,
@@ -164,7 +168,7 @@ test("credentialsSlot renders at the credentials position", async () => {
 });
 
 test("credentialsSlot composes with a still-visible core field", async () => {
-	const { screen } = renderHarness({
+	const { screen } = await renderHarness({
 		onSubmit: noop,
 		showPassword: false,
 		withCredentialsSlot: true,
@@ -223,7 +227,7 @@ test("*FieldProps do not leak between fields", async () => {
 // --------------------------------------------------------- socialPosition --
 
 test("default socialPosition renders the block after the CTA, divider above", async () => {
-	const { screen } = renderHarness({ onSubmit: noop, withSocialLogins: true });
+	const { screen } = await renderHarness({ onSubmit: noop, withSocialLogins: true });
 	const block = screen.container.querySelector(".stuic-register-form-social")!;
 	const submit = screen.container.querySelector(".stuic-register-form-submit")!;
 	const divider = block.querySelector(".stuic-register-form-social-divider")!;
@@ -239,7 +243,7 @@ test("default socialPosition renders the block after the CTA, divider above", as
 });
 
 test('socialPosition="top" renders the block above the credentials, divider below', async () => {
-	const { screen } = renderHarness({
+	const { screen } = await renderHarness({
 		onSubmit: noop,
 		withSocialLogins: true,
 		socialPosition: "top",
@@ -270,14 +274,14 @@ test('socialPosition="top" renders the block above the credentials, divider belo
 test("the default divider label follows the position it faces", async () => {
 	// at the top the divider sits above the credentials, so "or continue with"
 	// would read backwards
-	const bottom = renderHarness({ onSubmit: noop, withSocialLogins: true });
+	const bottom = await renderHarness({ onSubmit: noop, withSocialLogins: true });
 	expect(
 		bottom.screen.container
 			.querySelector(".stuic-register-form-social-divider")
 			?.textContent?.trim()
 	).toBe("or continue with");
 
-	const top = renderHarness({
+	const top = await renderHarness({
 		onSubmit: noop,
 		withSocialLogins: true,
 		socialPosition: "top",
@@ -289,7 +293,7 @@ test("the default divider label follows the position it faces", async () => {
 	).toBe("or");
 
 	// an explicit label still wins in both
-	const override = renderHarness({
+	const override = await renderHarness({
 		onSubmit: noop,
 		withSocialLogins: true,
 		socialPosition: "top",
@@ -304,7 +308,7 @@ test("the default divider label follows the position it faces", async () => {
 
 test("socialDividerLabel={false} hides the divider in both positions", async () => {
 	for (const socialPosition of ["top", "bottom"] as const) {
-		const { screen } = renderHarness({
+		const { screen } = await renderHarness({
 			onSubmit: noop,
 			withSocialLogins: true,
 			socialPosition,
@@ -320,7 +324,7 @@ test("socialDividerLabel={false} hides the divider in both positions", async () 
 });
 
 test("unstyled suppresses the social classes and data-position", async () => {
-	const { screen } = renderHarness({
+	const { screen } = await renderHarness({
 		onSubmit: noop,
 		withSocialLogins: true,
 		socialPosition: "top",
@@ -344,7 +348,7 @@ const hasSeparator = (container: HTMLElement) =>
 	topGroup(container)?.hasAttribute("data-separator") ?? false;
 
 test("top fields are wrapped in a group and separated by default", async () => {
-	const { screen } = renderHarness({ onSubmit: noop, extraFields: TOP_FIELD });
+	const { screen } = await renderHarness({ onSubmit: noop, extraFields: TOP_FIELD });
 	const group = topGroup(screen.container)!;
 	expect(group).not.toBeNull();
 	// the field lives inside the wrapper, not as a sibling of it
@@ -353,7 +357,7 @@ test("top fields are wrapped in a group and separated by default", async () => {
 });
 
 test("no top fields -> no group wrapper at all", async () => {
-	const { screen } = renderHarness({
+	const { screen } = await renderHarness({
 		onSubmit: noop,
 		extraFields: [{ name: "company", label: "Company" }] as RegisterFieldConfig[],
 	});
@@ -378,7 +382,7 @@ test("the separator does not depend on what follows the group", async () => {
 		"no social, no credentials at all": { showEmail: false, showPassword: false },
 	};
 	for (const [label, props] of Object.entries(cases)) {
-		const { screen } = renderHarness({
+		const { screen } = await renderHarness({
 			onSubmit: noop,
 			extraFields: TOP_FIELD,
 			...props,
@@ -388,7 +392,7 @@ test("the separator does not depend on what follows the group", async () => {
 });
 
 test("topFieldsSeparator={false} opts out", async () => {
-	const { screen } = renderHarness({
+	const { screen } = await renderHarness({
 		onSubmit: noop,
 		extraFields: TOP_FIELD,
 		socialPosition: "top",
@@ -403,7 +407,7 @@ test("topFieldsSeparator={false} opts out", async () => {
 });
 
 test("unstyled suppresses the group class and data-separator", async () => {
-	const { screen } = renderHarness({
+	const { screen } = await renderHarness({
 		onSubmit: noop,
 		extraFields: TOP_FIELD,
 		socialPosition: "top",
@@ -462,7 +466,7 @@ test("submitButton payload reflects submitDisabled", async () => {
 // -------------------------------------------------------------- focusField --
 
 test("focusField focuses core and extra fields, false for unrendered ones", async () => {
-	const { screen, h } = renderHarness({
+	const { screen, h } = await renderHarness({
 		onSubmit: noop,
 		extraFields: [
 			{ name: "tenant", label: "Workspace id", position: "top" },
@@ -483,7 +487,7 @@ test("focusField focuses core and extra fields, false for unrendered ones", asyn
 });
 
 test("focusField returns false for an unmounted core field", async () => {
-	const { h } = renderHarness({
+	const { h } = await renderHarness({
 		onSubmit: noop,
 		showEmail: false,
 		showPasswordConfirm: false,
@@ -496,7 +500,7 @@ test("focusField returns false for an unmounted core field", async () => {
 test("extra field refs stay keyed by name across a reorder", async () => {
 	const a = { name: "a", label: "Field A" };
 	const b = { name: "b", label: "Field B" };
-	const { screen, h } = renderHarness({
+	const { screen, h } = await renderHarness({
 		onSubmit: noop,
 		extraFields: [a, b] as RegisterFieldConfig[],
 	});
@@ -512,7 +516,7 @@ test("extra field refs stay keyed by name across a reorder", async () => {
 
 test("a server field error blocks submit, then clears itself once edited", async () => {
 	const onSubmit = vi.fn();
-	const { screen, h } = renderHarness({ onSubmit, showPasswordConfirm: false });
+	const { screen, h } = await renderHarness({ onSubmit, showPasswordConfirm: false });
 
 	await screen.getByLabelText("Email", { exact: true }).fill(VALID.email);
 	await screen.getByLabelText("Password", { exact: true }).fill(VALID.password);
@@ -542,7 +546,7 @@ test("a server field error blocks submit, then clears itself once edited", async
 
 test("a server error on an extra field clears on that field's edit", async () => {
 	const onSubmit = vi.fn();
-	const { screen, h } = renderHarness({
+	const { screen, h } = await renderHarness({
 		onSubmit,
 		showEmail: false,
 		showPassword: false,
@@ -566,7 +570,7 @@ test("a server error on an extra field clears on that field's edit", async () =>
 
 test("typing the rejected value back in makes the error live again", async () => {
 	const onSubmit = vi.fn();
-	const { screen, h } = renderHarness({ onSubmit, showPasswordConfirm: false });
+	const { screen, h } = await renderHarness({ onSubmit, showPasswordConfirm: false });
 
 	await screen.getByLabelText("Email", { exact: true }).fill(VALID.email);
 	await screen.getByLabelText("Password", { exact: true }).fill(VALID.password);
@@ -610,7 +614,10 @@ test("a rule with no DOM equivalent still reports on the first click", async () 
 });
 
 test("a delivered server error is visible without further interaction", async () => {
-	const { screen, h } = renderHarness({ onSubmit: noop, showPasswordConfirm: false });
+	const { screen, h } = await renderHarness({
+		onSubmit: noop,
+		showPasswordConfirm: false,
+	});
 	await screen.getByLabelText("Email", { exact: true }).fill(VALID.email);
 	await screen.getByLabelText("Password", { exact: true }).fill(VALID.password);
 
@@ -626,7 +633,7 @@ test("an error on an UNMOUNTED core field keeps blocking — only the consumer c
 	// staling it on an unrelated edit would let the form post past a block they
 	// deliberately set.
 	const onSubmit = vi.fn();
-	const { screen, h } = renderHarness({
+	const { screen, h } = await renderHarness({
 		onSubmit,
 		showEmail: false,
 		showPasswordConfirm: false,
@@ -648,7 +655,7 @@ test("an error on an UNMOUNTED core field keeps blocking — only the consumer c
 
 test("an error on a field hidden by showPasswordConfirm={false} behaves the same", async () => {
 	const onSubmit = vi.fn();
-	const { screen, h } = renderHarness({ onSubmit, showPasswordConfirm: false });
+	const { screen, h } = await renderHarness({ onSubmit, showPasswordConfirm: false });
 
 	await screen.getByLabelText("Email", { exact: true }).fill(VALID.email);
 	await screen.getByLabelText("Password", { exact: true }).fill(VALID.password);
@@ -667,7 +674,7 @@ test("an error on a field hidden by showPasswordConfirm={false} behaves the same
 
 test("an identical error redelivered after a resubmit is shown again", async () => {
 	const onSubmit = vi.fn();
-	const { screen, h } = renderHarness({ onSubmit, showPasswordConfirm: false });
+	const { screen, h } = await renderHarness({ onSubmit, showPasswordConfirm: false });
 
 	await screen.getByLabelText("Email", { exact: true }).fill(VALID.email);
 	await screen.getByLabelText("Password", { exact: true }).fill(VALID.password);
@@ -693,7 +700,7 @@ test("an error on a consumer-owned field keeps blocking until the consumer clear
 	// the "unchecked terms" shape: rendered from extraFieldsSlot, so there is no
 	// edit here that answers it — the block must survive unrelated typing
 	const onSubmit = vi.fn();
-	const { screen, h } = renderHarness({ onSubmit, showPasswordConfirm: false });
+	const { screen, h } = await renderHarness({ onSubmit, showPasswordConfirm: false });
 
 	await screen.getByLabelText("Email", { exact: true }).fill(VALID.email);
 	await screen.getByLabelText("Password", { exact: true }).fill(VALID.password);
@@ -712,7 +719,7 @@ test("an error on a consumer-owned field keeps blocking until the consumer clear
 
 test("a re-rendered, content-identical errors array does not resurrect a stale error", async () => {
 	const onSubmit = vi.fn();
-	const { screen, h } = renderHarness({ onSubmit, showPasswordConfirm: false });
+	const { screen, h } = await renderHarness({ onSubmit, showPasswordConfirm: false });
 
 	await screen.getByLabelText("Email", { exact: true }).fill(VALID.email);
 	await screen.getByLabelText("Password", { exact: true }).fill(VALID.password);
@@ -729,7 +736,7 @@ test("a re-rendered, content-identical errors array does not resurrect a stale e
 
 test("`validate` passed via *FieldProps composes with the errors wiring", async () => {
 	const onSubmit = vi.fn();
-	const { screen, h } = renderHarness({
+	const { screen, h } = await renderHarness({
 		onSubmit,
 		showPasswordConfirm: false,
 		emailFieldProps: {
@@ -779,7 +786,7 @@ test("a required extra field with initialValue validates and submits it", async 
 });
 
 test("initialValue never clobbers a value the consumer already set", async () => {
-	const { h } = renderHarness({
+	const { h } = await renderHarness({
 		onSubmit: noop,
 		initial: { extra: { tenant: "mine" } },
 		extraFields: [

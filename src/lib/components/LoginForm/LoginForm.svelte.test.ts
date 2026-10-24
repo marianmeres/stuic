@@ -21,8 +21,8 @@ type HarnessExports = {
 	validate(): boolean;
 };
 
-function renderHarness(props: Record<string, unknown>) {
-	const screen = render(Harness, props);
+async function renderHarness(props: Record<string, unknown>) {
+	const screen = await render(Harness, props);
 	return { screen, h: screen.component as unknown as HarnessExports };
 }
 
@@ -41,7 +41,7 @@ test("renders email + password and submits when filled", async () => {
 
 test("a server field error blocks submit, then clears itself once edited", async () => {
 	const onSubmit = vi.fn();
-	const { screen, h } = renderHarness({ onSubmit });
+	const { screen, h } = await renderHarness({ onSubmit });
 
 	await screen.getByLabelText("Email", { exact: true }).fill(VALID.email);
 	await screen.getByLabelText("Password", { exact: true }).fill(VALID.password);
@@ -66,7 +66,7 @@ test("a server field error blocks submit, then clears itself once edited", async
 
 test("an error on a field the form does not render keeps blocking", async () => {
 	const onSubmit = vi.fn();
-	const { screen, h } = renderHarness({ onSubmit });
+	const { screen, h } = await renderHarness({ onSubmit });
 
 	await screen.getByLabelText("Email", { exact: true }).fill(VALID.email);
 	await screen.getByLabelText("Password", { exact: true }).fill(VALID.password);
@@ -101,7 +101,7 @@ test("an internal validation error is visible on the FIRST failed click", async 
 
 test("an identical error redelivered after a resubmit blocks again", async () => {
 	const onSubmit = vi.fn();
-	const { screen, h } = renderHarness({ onSubmit });
+	const { screen, h } = await renderHarness({ onSubmit });
 	const SAME = [{ field: "email", message: "No account with that address" }];
 
 	await screen.getByLabelText("Email", { exact: true }).fill(VALID.email);

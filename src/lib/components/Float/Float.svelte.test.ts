@@ -35,7 +35,7 @@ function pointer(el: HTMLElement, type: string, x: number, y: number) {
 // --- structure ---------------------------------------------------------------
 
 test("renders a positioned dialog with the title and stuic-float base class", async () => {
-	const { container } = render(Float, {
+	const { container } = await render(Float, {
 		title: "Settings",
 		x: 40,
 		y: 40,
@@ -52,7 +52,7 @@ test("renders a positioned dialog with the title and stuic-float base class", as
 });
 
 test("placement resolves an initial position when x/y are omitted", async () => {
-	const { container } = render(Float, {
+	const { container } = await render(Float, {
 		title: "A",
 		placement: "top-left",
 		offset: 12,
@@ -68,7 +68,7 @@ test("placement resolves an initial position when x/y are omitted", async () => 
 // --- minimize ----------------------------------------------------------------
 
 test("minimize button toggles data-minimized and swaps its label", async () => {
-	const { container } = render(Float, {
+	const { container } = await render(Float, {
 		title: "T",
 		x: 10,
 		y: 10,
@@ -87,7 +87,7 @@ test("minimize button toggles data-minimized and swaps its label", async () => {
 });
 
 test("double-clicking the header toggles minimized", async () => {
-	const { container } = render(Float, {
+	const { container } = await render(Float, {
 		title: "T",
 		x: 10,
 		y: 10,
@@ -103,8 +103,8 @@ test("double-clicking the header toggles minimized", async () => {
 
 // --- close -------------------------------------------------------------------
 
-test("no close button unless closable", () => {
-	const { container } = render(Float, {
+test("no close button unless closable", async () => {
+	const { container } = await render(Float, {
 		title: "T",
 		x: 10,
 		y: 10,
@@ -117,7 +117,7 @@ test("no close button unless closable", () => {
 
 test("closable shows a close button that fires onClose", async () => {
 	const onClose = vi.fn();
-	const { container } = render(Float, {
+	const { container } = await render(Float, {
 		title: "T",
 		x: 10,
 		y: 10,
@@ -130,9 +130,9 @@ test("closable shows a close button that fires onClose", async () => {
 	expect(onClose).toHaveBeenCalledOnce();
 });
 
-test("Escape fires onClose only when closable + closeOnEscape", () => {
+test("Escape fires onClose only when closable + closeOnEscape", async () => {
 	const onClose = vi.fn();
-	const a = render(Float, {
+	const a = await render(Float, {
 		title: "T",
 		x: 10,
 		y: 10,
@@ -147,7 +147,7 @@ test("Escape fires onClose only when closable + closeOnEscape", () => {
 	expect(onClose).toHaveBeenCalledOnce();
 
 	const onClose2 = vi.fn();
-	const b = render(Float, {
+	const b = await render(Float, {
 		title: "T2",
 		x: 10,
 		y: 10,
@@ -166,7 +166,7 @@ test("Escape fires onClose only when closable + closeOnEscape", () => {
 // --- drag --------------------------------------------------------------------
 
 test("dragging the header repositions the panel", async () => {
-	const { container } = render(Float, {
+	const { container } = await render(Float, {
 		title: "T",
 		x: 100,
 		y: 100,
@@ -186,7 +186,7 @@ test("dragging the header repositions the panel", async () => {
 });
 
 test("draggable=false disables repositioning", async () => {
-	const { container } = render(Float, {
+	const { container } = await render(Float, {
 		title: "T",
 		x: 100,
 		y: 100,
@@ -210,7 +210,7 @@ test("draggable=false disables repositioning", async () => {
 // --- bring to front ----------------------------------------------------------
 
 test("pointerdown raises the stacking order when bringToFrontOnClick", async () => {
-	const { container } = render(Float, {
+	const { container } = await render(Float, {
 		title: "T",
 		x: 10,
 		y: 10,
@@ -232,7 +232,7 @@ test("pointerdown raises the stacking order when bringToFrontOnClick", async () 
 // --- imperative API (via fixture) --------------------------------------------
 
 test("imperative moveTo / minimize / expand drive the panel", async () => {
-	const { container } = render(Fixture, { x: 10, y: 10, width: W });
+	const { container } = await render(Fixture, { x: 10, y: 10, width: W });
 	const el = root(container);
 	await expect.poll(() => el.style.left).toBe("10px");
 
@@ -251,7 +251,7 @@ test("imperative moveTo / minimize / expand drive the panel", async () => {
 
 test("storageKey persists position across remounts", async () => {
 	localStorage.removeItem("stuic-float-persist-test");
-	const a = render(Float, {
+	const a = await render(Float, {
 		title: "P",
 		x: 30,
 		y: 40,
@@ -270,7 +270,7 @@ test("storageKey persists position across remounts", async () => {
 	await expect.poll(() => elA.style.left).toBe("50px"); // 30 + 20
 
 	// a fresh mount restores the stored position, ignoring its own x/y props
-	const b = render(Float, {
+	const b = await render(Float, {
 		title: "P",
 		x: 999,
 		y: 999,

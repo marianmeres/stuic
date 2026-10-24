@@ -352,10 +352,10 @@ test("displayLanguage: read-only texts follow it; authoring stays on the default
 
 	// collapsed row titles and type chips read the display language
 	const rows = screen.getByRole("listitem");
-	await expect.element(rows.first()).toHaveTextContent("Farba");
-	await expect.element(rows.first()).toHaveTextContent("Text (sk)");
-	await expect.element(rows.nth(1)).toHaveTextContent("Size");
-	await expect.element(rows.nth(1)).toHaveTextContent("Číslo");
+	await expect.element(rows.first()).toMatchTextContent("Farba");
+	await expect.element(rows.first()).toMatchTextContent("Text (sk)");
+	await expect.element(rows.nth(1)).toMatchTextContent("Size");
+	await expect.element(rows.nth(1)).toMatchTextContent("Číslo");
 
 	// the editor opens on the canonical language, while the type picker and the
 	// extras' labels still read the display language
@@ -390,7 +390,7 @@ test("an externally set bound value resyncs the rows (harness)", async () => {
 	await expect
 		.element(screen.getByRole("button", { name: /External/ }))
 		.toBeInTheDocument();
-	await expect.element(screen.getByTestId("bound")).toHaveTextContent("external_field");
+	await expect.element(screen.getByTestId("bound")).toMatchTextContent("external_field");
 });
 
 test("preview snippet renders and updates live while typing (harness)", async () => {
@@ -399,11 +399,11 @@ test("preview snippet renders and updates live while typing (harness)", async ()
 		withPreview: true,
 	});
 	await expect.element(screen.getByText("Preview")).toBeInTheDocument();
-	await expect.element(screen.getByTestId("preview-json")).toHaveTextContent("Color");
+	await expect.element(screen.getByTestId("preview-json")).toMatchTextContent("Color");
 	// a keyless just-added row previews live while its label is being typed
 	await screen.getByRole("button", { name: "Add field" }).click();
 	await screen.getByLabelText("Label").fill("Wip");
-	await expect.element(screen.getByTestId("preview-json")).toHaveTextContent("Wip");
+	await expect.element(screen.getByTestId("preview-json")).toMatchTextContent("Wip");
 });
 
 // ---------------------------------------------------------------------------

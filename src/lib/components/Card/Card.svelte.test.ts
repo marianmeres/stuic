@@ -91,7 +91,7 @@ test("image + imageAlt render an <img> inside .stuic-card-image", async () => {
 });
 
 test("href renders an <a> (role=link) with empty data-interactive", async () => {
-	const screen = render(Card, { href: "/go", title: "Linked" });
+	const screen = await render(Card, { href: "/go", title: "Linked" });
 	const link = screen.getByRole("link");
 	await expect.element(link).toBeInTheDocument();
 	await expect.element(link).toHaveAttribute("href", "/go");
@@ -104,7 +104,7 @@ test("href renders an <a> (role=link) with empty data-interactive", async () => 
 
 test("onclick renders a <button> (role=button) with empty data-interactive and fires once", async () => {
 	const onclick = vi.fn();
-	const screen = render(Card, { onclick, title: "Clickable" });
+	const screen = await render(Card, { onclick, title: "Clickable" });
 	const btn = screen.getByRole("button");
 	await expect.element(btn).toBeInTheDocument();
 	await expect.element(btn).toHaveClass("stuic-card");
@@ -115,7 +115,7 @@ test("onclick renders a <button> (role=button) with empty data-interactive and f
 
 test("disabled button has the disabled attribute and empty data-disabled", async () => {
 	const onclick = vi.fn();
-	const screen = render(Card, { onclick, disabled: true, title: "Off" });
+	const screen = await render(Card, { onclick, disabled: true, title: "Off" });
 	const btn = screen.getByRole("button");
 	await expect.element(btn).toBeDisabled();
 	// data-disabled is an EMPTY attribute

@@ -57,7 +57,7 @@ function at(el: Element, x: number, y: number): [number, number] {
 }
 
 test("renders a labelled group with two range inputs and conventional data attributes", async () => {
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		label: "Price",
@@ -100,7 +100,7 @@ test("renders a labelled group with two range inputs and conventional data attri
 });
 
 test("thumb names: labelStart/labelEnd override the defaults, which come from t", async () => {
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		labelStart: "Lowest price",
@@ -110,7 +110,7 @@ test("thumb names: labelStart/labelEnd override the defaults, which come from t"
 	expect(startInput(screen).getAttribute("aria-label")).toBe("Lowest price");
 	expect(endInput(screen).getAttribute("aria-label")).toBe("Highest price");
 
-	const sk = render(RangeSlider, {
+	const sk = await render(RangeSlider, {
 		"data-testid": "rs2",
 		style: H,
 		t: createRangeSliderT(RANGE_SLIDER_MESSAGES_SK),
@@ -127,30 +127,30 @@ test("thumb names: labelStart/labelEnd override the defaults, which come from t"
 // `bound` output renders what the consumer's variables actually hold. (One
 // harness per test: locators are page-scoped, and its test ids are fixed.)
 test("undefined values default to the full range", async () => {
-	const screen = render(RangeSliderHarness, { min: 10, max: 90 });
+	const screen = await render(RangeSliderHarness, { min: 10, max: 90 });
 	await expect.element(screen.getByTestId("bound")).toHaveTextContent("10,90");
 });
 
 test("with max off the step grid, the end defaults to the last grid point, not to max", async () => {
-	const screen = render(RangeSliderHarness, { min: 0, max: 95, step: 10 });
+	const screen = await render(RangeSliderHarness, { min: 0, max: 95, step: 10 });
 	await expect.element(screen.getByTestId("bound")).toHaveTextContent("0,90");
 	expect(values(screen)).toEqual(["0", "90"]);
 });
 
 test("normalization writes back into the bindings: a reversed pair is reordered", async () => {
-	const screen = render(RangeSliderHarness, { initialStart: 80, initialEnd: 20 });
+	const screen = await render(RangeSliderHarness, { initialStart: 80, initialEnd: 20 });
 	await expect.element(screen.getByTestId("bound")).toHaveTextContent("20,80");
 });
 
 test("normalization writes back into the bindings: out of range -> clamped", async () => {
-	const screen = render(RangeSliderHarness, { initialStart: -5, initialEnd: 150 });
+	const screen = await render(RangeSliderHarness, { initialStart: -5, initialEnd: 150 });
 	await expect.element(screen.getByTestId("bound")).toHaveTextContent("0,100");
 });
 
 test("normalization writes back into the bindings: off-grid -> snapped", async () => {
 	// The browser sanitizes an off-grid range value onto the step grid; the bound
 	// values must follow, or form submission would disagree with the display.
-	const screen = render(RangeSliderHarness, {
+	const screen = await render(RangeSliderHarness, {
 		initialStart: 30,
 		initialEnd: 70,
 		step: 25,
@@ -160,7 +160,7 @@ test("normalization writes back into the bindings: off-grid -> snapped", async (
 });
 
 test("normalization writes back into the bindings: NaN -> bounds (no update-depth crash)", async () => {
-	const screen = render(RangeSliderHarness, {
+	const screen = await render(RangeSliderHarness, {
 		initialStart: NaN,
 		initialEnd: NaN,
 		min: 5,
@@ -170,7 +170,7 @@ test("normalization writes back into the bindings: NaN -> bounds (no update-dept
 });
 
 test("minRange on the bindings: the end is pushed up", async () => {
-	const screen = render(RangeSliderHarness, {
+	const screen = await render(RangeSliderHarness, {
 		initialStart: 50,
 		initialEnd: 52,
 		minRange: 10,
@@ -179,7 +179,7 @@ test("minRange on the bindings: the end is pushed up", async () => {
 });
 
 test("minRange on the bindings: at the ceiling the start is pushed down", async () => {
-	const screen = render(RangeSliderHarness, {
+	const screen = await render(RangeSliderHarness, {
 		initialStart: 95,
 		initialEnd: 100,
 		minRange: 10,
@@ -188,7 +188,7 @@ test("minRange on the bindings: at the ceiling the start is pushed down", async 
 });
 
 test("minRange is rounded UP onto the step grid (15 with step 10 -> 20)", async () => {
-	const screen = render(RangeSliderHarness, {
+	const screen = await render(RangeSliderHarness, {
 		initialStart: 50,
 		initialEnd: 50,
 		step: 10,
@@ -198,7 +198,7 @@ test("minRange is rounded UP onto the step grid (15 with step 10 -> 20)", async 
 });
 
 test("minRange wider than the whole span pins the thumbs to the full range", async () => {
-	const screen = render(RangeSliderHarness, {
+	const screen = await render(RangeSliderHarness, {
 		initialStart: 40,
 		initialEnd: 60,
 		minRange: 500,
@@ -210,7 +210,7 @@ test("minRange wider than the whole span pins the thumbs to the full range", asy
 });
 
 test("non-finite min/max fall back to sane bounds instead of crashing", async () => {
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		min: Number("nope"),
@@ -226,7 +226,7 @@ test("non-finite min/max fall back to sane bounds instead of crashing", async ()
 test("a track press jumps the NEAREST thumb there and commits it", async () => {
 	const oninput = vi.fn();
 	const onchange = vi.fn();
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		start: 40,
@@ -248,7 +248,7 @@ test("a track press jumps the NEAREST thumb there and commits it", async () => {
 });
 
 test("a press between the thumbs moves the nearer one", async () => {
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		start: 40,
@@ -262,7 +262,7 @@ test("a press between the thumbs moves the nearer one", async () => {
 test("thumbs never cross: a thumb dragged past the other stops at it", async () => {
 	const oninput = vi.fn();
 	const onchange = vi.fn();
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		start: 40,
@@ -287,7 +287,7 @@ test("thumbs never cross: a thumb dragged past the other stops at it", async () 
 });
 
 test("minRange keeps the thumbs apart while dragging", async () => {
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		start: 40,
@@ -303,7 +303,7 @@ test("minRange keeps the thumbs apart while dragging", async () => {
 
 test("stacked thumbs: a press beside them moves the thumb on that side", async () => {
 	const onchange = vi.fn();
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		start: 50,
@@ -316,7 +316,7 @@ test("stacked thumbs: a press beside them moves the thumb on that side", async (
 	expect(onchange).toHaveBeenCalledExactlyOnceWith({ start: 50, end: 100 }, "end");
 
 	// ...and on the other side -> start
-	const left = render(RangeSlider, {
+	const left = await render(RangeSlider, {
 		"data-testid": "rs2",
 		style: H,
 		start: 50,
@@ -330,7 +330,7 @@ test("stacked thumbs: a press beside them moves the thumb on that side", async (
 
 test("stacked thumbs: a press ON them is resolved by the first move's direction", async () => {
 	const onchange = vi.fn();
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		start: 50,
@@ -364,7 +364,7 @@ test("stacked thumbs: a press ON them is resolved by the first move's direction"
 
 test("a press-and-release without movement on stacked thumbs changes nothing", async () => {
 	const onchange = vi.fn();
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		start: 50,
@@ -383,7 +383,7 @@ test("a press-and-release without movement on stacked thumbs changes nothing", a
 
 test("grabbing a thumb does not jump the value; the drag continues from the grab point", async () => {
 	const oninput = vi.fn();
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		start: 50,
@@ -407,7 +407,7 @@ test("grabbing a thumb does not jump the value; the drag continues from the grab
 
 test("a second concurrent pointer cannot hijack or end an active drag", async () => {
 	const onchange = vi.fn();
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		start: 0,
@@ -439,7 +439,7 @@ test("disabled mid-drag aborts without applying or committing", async () => {
 	// Via the harness: `rerender` re-applies the initial props and would clobber
 	// the bindings, so the harness flips `disabled` from the inside.
 	const onchange = vi.fn();
-	const screen = render(RangeSliderHarness, {
+	const screen = await render(RangeSliderHarness, {
 		initialStart: 0,
 		initialEnd: 60,
 		onchange,
@@ -461,7 +461,7 @@ test("disabled mid-drag aborts without applying or committing", async () => {
 });
 
 test("RTL flips the horizontal mapping", async () => {
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H + ";direction:rtl",
 		start: 0,
@@ -475,7 +475,7 @@ test("RTL flips the horizontal mapping", async () => {
 
 test("committing an unchanged value does not fire onchange (native-faithful)", async () => {
 	const onchange = vi.fn();
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		start: 50,
@@ -491,7 +491,7 @@ test("committing an unchanged value does not fire onchange (native-faithful)", a
 test("keyboard on a focused input steps that thumb natively", async () => {
 	const oninput = vi.fn();
 	const onchange = vi.fn();
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		start: 50,
@@ -514,7 +514,7 @@ test("keyboard on a focused input steps that thumb natively", async () => {
 
 test("keyboard cannot push a thumb past the other one (End jumps up to it)", async () => {
 	const oninput = vi.fn();
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		start: 50,
@@ -528,7 +528,7 @@ test("keyboard cannot push a thumb past the other one (End jumps up to it)", asy
 	await expect.poll(() => values(screen)).toEqual(["50", "50"]);
 	expect(oninput).not.toHaveBeenCalled();
 
-	const wide = render(RangeSlider, {
+	const wide = await render(RangeSlider, {
 		"data-testid": "rs2",
 		style: H,
 		start: 40,
@@ -543,7 +543,7 @@ test("keyboard cannot push a thumb past the other one (End jumps up to it)", asy
 });
 
 test("vertical orientation maps bottom->min, top->max (pointer + ArrowUp)", async () => {
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: V,
 		orientation: "vertical",
@@ -567,7 +567,7 @@ test("vertical orientation maps bottom->min, top->max (pointer + ArrowUp)", asyn
 });
 
 test("values snap to the step grid", async () => {
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		start: 0,
@@ -582,7 +582,7 @@ test("values snap to the step grid", async () => {
 
 test("fractional steps produce clean values (no float noise)", async () => {
 	const oninput = vi.fn();
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		min: 0,
@@ -599,7 +599,7 @@ test("fractional steps produce clean values (no float noise)", async () => {
 });
 
 test("ticks: three clipped layers when styled, one plain layer when unstyled; arrays filter", async () => {
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		step: 25,
@@ -617,7 +617,7 @@ test("ticks: three clipped layers when styled, one plain layer when unstyled; ar
 		).toBe(5);
 	}
 
-	const explicit = render(RangeSlider, {
+	const explicit = await render(RangeSlider, {
 		"data-testid": "rs2",
 		style: H,
 		ticks: [0, 50, 50, 150],
@@ -628,7 +628,7 @@ test("ticks: three clipped layers when styled, one plain layer when unstyled; ar
 		explicit.container.querySelectorAll('.ticks[data-layer="before"] .tick').length
 	).toBe(2);
 
-	const unstyled = render(RangeSlider, {
+	const unstyled = await render(RangeSlider, {
 		"data-testid": "rs3",
 		style: H,
 		unstyled: true,
@@ -641,7 +641,7 @@ test("ticks: three clipped layers when styled, one plain layer when unstyled; ar
 });
 
 test("thumb=false maps the pointer linearly across the whole track", async () => {
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		start: 0,
@@ -663,7 +663,7 @@ test("thumb and valueLabel snippets render once per thumb with its context", asy
 		render: () =>
 			`<span data-testid="label-${ctx().thumb}">${ctx().start}-${ctx().end}:${ctx().value}</span>`,
 	}));
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		start: 20,
@@ -681,7 +681,7 @@ test("thumb and valueLabel snippets render once per thumb with its context", asy
 });
 
 test("unstyled omits the base class and preset data attributes, keeps the functional hook", async () => {
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		unstyled: true,
@@ -700,7 +700,7 @@ test("unstyled omits the base class and preset data attributes, keeps the functi
 });
 
 test("intent and fillRounded are reflected as data attributes", async () => {
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		intent: "warning",
@@ -710,7 +710,7 @@ test("intent and fillRounded are reflected as data attributes", async () => {
 	// fillRounded defaults to true
 	await expect.element(root).toHaveAttribute("data-fill-rounded", "true");
 
-	const flat = render(RangeSlider, {
+	const flat = await render(RangeSlider, {
 		"data-testid": "rs2",
 		style: H,
 		fillRounded: false,
@@ -722,7 +722,7 @@ test("intent and fillRounded are reflected as data attributes", async () => {
 
 test("disabled ignores pointer interaction and disables both inputs", async () => {
 	const oninput = vi.fn();
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		start: 40,
@@ -739,7 +739,7 @@ test("disabled ignores pointer interaction and disables both inputs", async () =
 });
 
 test("focus ring names the keyboard-focused thumb; pointer-initiated focus shows none", async () => {
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		start: 20,
@@ -769,7 +769,7 @@ test("focus ring names the keyboard-focused thumb; pointer-initiated focus shows
 });
 
 test("an externally set bound pair resyncs the slider (harness)", async () => {
-	const screen = render(RangeSliderHarness, { initialStart: 10, initialEnd: 90 });
+	const screen = await render(RangeSliderHarness, { initialStart: 10, initialEnd: 90 });
 	await expect.element(screen.getByTestId("bound")).toHaveTextContent("10,90");
 	await screen.getByTestId("set").click();
 	await expect.element(screen.getByTestId("bound")).toHaveTextContent("30,70");
@@ -782,7 +782,7 @@ test("validate: customValidator gets the pair, re-runs when either thumb commits
 		const { start, end } = v as { start: number; end: number };
 		return end - start < 30 ? "too narrow" : "";
 	});
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		start: 40,
@@ -815,7 +815,7 @@ test("validate: customValidator gets the pair, re-runs when either thumb commits
 });
 
 test("validate=false: validate() is a no-op", async () => {
-	const screen = render(RangeSlider, {
+	const screen = await render(RangeSlider, {
 		"data-testid": "rs",
 		style: H,
 		validate: false,

@@ -19,7 +19,7 @@ const totals = (over: Partial<CheckoutOrderTotals> = {}): CheckoutOrderTotals =>
 });
 
 test("shippingPending shows the pending label, not 'Free', when shipping is 0", async () => {
-	const screen = render(CheckoutOrderSummary, {
+	const screen = await render(CheckoutOrderSummary, {
 		totals: totals({ shipping: 0 }),
 		shippingPending: true,
 	});
@@ -28,7 +28,7 @@ test("shippingPending shows the pending label, not 'Free', when shipping is 0", 
 });
 
 test("shippingPending wins over a non-zero amount (price is hidden while pending)", async () => {
-	const screen = render(CheckoutOrderSummary, {
+	const screen = await render(CheckoutOrderSummary, {
 		totals: totals({ shipping: 1500 }),
 		shippingPending: true,
 	});
@@ -36,7 +36,7 @@ test("shippingPending wins over a non-zero amount (price is hidden while pending
 });
 
 test("without shippingPending, a 0 amount still reads as 'Free' (baseline unchanged)", async () => {
-	const screen = render(CheckoutOrderSummary, {
+	const screen = await render(CheckoutOrderSummary, {
 		totals: totals({ shipping: 0 }),
 	});
 	await expect.element(screen.getByText("Free")).toBeVisible();
@@ -44,13 +44,13 @@ test("without shippingPending, a 0 amount still reads as 'Free' (baseline unchan
 });
 
 test("hasShipping=false shows the not-selected dash (pending takes precedence over it)", async () => {
-	const dashOnly = render(CheckoutOrderSummary, {
+	const dashOnly = await render(CheckoutOrderSummary, {
 		totals: totals({ shipping: 0 }),
 		hasShipping: false,
 	});
 	await expect.element(dashOnly.getByText("—")).toBeVisible();
 
-	const pendingWins = render(CheckoutOrderSummary, {
+	const pendingWins = await render(CheckoutOrderSummary, {
 		totals: totals({ shipping: 0 }),
 		hasShipping: false,
 		shippingPending: true,

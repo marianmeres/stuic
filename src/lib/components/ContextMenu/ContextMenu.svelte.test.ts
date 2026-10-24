@@ -37,7 +37,7 @@ function rightClick(el: HTMLElement, clientX: number, clientY: number): boolean 
 }
 
 test("closed initially: no role=menu, target area has aria-haspopup", async () => {
-	const screen = render(ContextMenu, {
+	const screen = await render(ContextMenu, {
 		items: baseItems(),
 		children: text("Target area"),
 	});
@@ -48,7 +48,7 @@ test("closed initially: no role=menu, target area has aria-haspopup", async () =
 });
 
 test("contextmenu opens the menu at the pointer: native menu prevented, anchor moved, items render", async () => {
-	const screen = render(ContextMenu, {
+	const screen = await render(ContextMenu, {
 		items: baseItems(),
 		children: text("Target area"),
 	});
@@ -75,7 +75,7 @@ test("contextmenu opens the menu at the pointer: native menu prevented, anchor m
 });
 
 test("re-invoking while open just moves the anchor (menu stays open)", async () => {
-	const screen = render(ContextMenu, {
+	const screen = await render(ContextMenu, {
 		items: baseItems(),
 		children: text("Target area"),
 	});
@@ -92,7 +92,7 @@ test("re-invoking while open just moves the anchor (menu stays open)", async () 
 test("selecting an action fires its onSelect and closes the menu (closeOnSelect default)", async () => {
 	const onSelect = vi.fn();
 	const items = [{ type: "action" as const, id: "copy", label: "Copy", onSelect }];
-	const screen = render(ContextMenu, { items, children: text("Target area") });
+	const screen = await render(ContextMenu, { items, children: text("Target area") });
 
 	rightClick(target(screen), 100, 100);
 	await expect.element(screen.getByRole("menu")).toBeInTheDocument();
@@ -106,7 +106,7 @@ test("selecting an action fires its onSelect and closes the menu (closeOnSelect 
 });
 
 test("Escape closes the menu", async () => {
-	const screen = render(ContextMenu, {
+	const screen = await render(ContextMenu, {
 		items: baseItems(),
 		children: text("Target area"),
 	});
@@ -120,7 +120,7 @@ test("Escape closes the menu", async () => {
 });
 
 test("Shift+F10 opens the menu anchored at the target area", async () => {
-	const screen = render(ContextMenu, {
+	const screen = await render(ContextMenu, {
 		items: baseItems(),
 		children: text("Target area"),
 	});
@@ -137,7 +137,7 @@ test("Shift+F10 opens the menu anchored at the target area", async () => {
 });
 
 test("long-press (touch) opens the menu at the press point", async () => {
-	const screen = render(ContextMenu, {
+	const screen = await render(ContextMenu, {
 		items: baseItems(),
 		longPress: 60,
 		children: text("Target area"),
@@ -164,7 +164,7 @@ test("long-press (touch) opens the menu at the press point", async () => {
 });
 
 test("moving beyond the tolerance cancels the pending long-press", async () => {
-	const screen = render(ContextMenu, {
+	const screen = await render(ContextMenu, {
 		items: baseItems(),
 		longPress: 60,
 		children: text("Target area"),
@@ -196,7 +196,7 @@ test("moving beyond the tolerance cancels the pending long-press", async () => {
 });
 
 test("disabled: contextmenu is not intercepted and no menu opens", async () => {
-	const screen = render(ContextMenu, {
+	const screen = await render(ContextMenu, {
 		items: baseItems(),
 		disabled: true,
 		children: text("Target area"),
@@ -208,7 +208,7 @@ test("disabled: contextmenu is not intercepted and no menu opens", async () => {
 });
 
 test("programmatic open (isOpen prop) anchors at the target area", async () => {
-	const screen = render(ContextMenu, {
+	const screen = await render(ContextMenu, {
 		items: baseItems(),
 		isOpen: true,
 		children: text("Target area"),
@@ -223,7 +223,7 @@ test("programmatic open (isOpen prop) anchors at the target area", async () => {
 test("onOpen/onClose fire across the open -> close cycle", async () => {
 	const onOpen = vi.fn();
 	const onClose = vi.fn();
-	const screen = render(ContextMenu, {
+	const screen = await render(ContextMenu, {
 		items: baseItems(),
 		onOpen,
 		onClose,

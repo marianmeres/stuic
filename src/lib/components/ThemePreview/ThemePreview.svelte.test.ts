@@ -30,7 +30,7 @@ function rootLocator(container: HTMLElement) {
 }
 
 test("renders the root <div class=stuic-theme-preview> with default p-4 spacing", async () => {
-	const { container } = render(ThemePreview);
+	const { container } = await render(ThemePreview);
 	const root = rootLocator(container);
 	await expect.element(root).toBeInTheDocument();
 	await expect.element(root).toHaveClass("stuic-theme-preview");
@@ -39,14 +39,14 @@ test("renders the root <div class=stuic-theme-preview> with default p-4 spacing"
 });
 
 test("default header renders the 'Theme Preview' h1", async () => {
-	const screen = render(ThemePreview);
+	const screen = await render(ThemePreview);
 	const heading = screen.getByRole("heading", { level: 1, name: "Theme Preview" });
 	await expect.element(heading).toBeInTheDocument();
 	await expect.element(heading).toHaveTextContent("Theme Preview");
 });
 
 test("header snippet REPLACES the default header: custom text shows, 'Theme Preview' is gone", async () => {
-	const { container } = render(ThemePreview, {
+	const { container } = await render(ThemePreview, {
 		header: text("Custom Header"),
 	});
 	const screen = page.elementLocator(container);
@@ -58,7 +58,7 @@ test("header snippet REPLACES the default header: custom text shows, 'Theme Prev
 });
 
 test("footer snippet REPLACES the default footer: custom text shows, default footer text is gone", async () => {
-	const { container } = render(ThemePreview, {
+	const { container } = await render(ThemePreview, {
 		footer: text("Custom Footer"),
 	});
 	const screen = page.elementLocator(container);
@@ -70,7 +70,7 @@ test("footer snippet REPLACES the default footer: custom text shows, default foo
 });
 
 test("showLabels defaults true -> .section-label headings exist (e.g. 'Inputs')", async () => {
-	const { container } = render(ThemePreview);
+	const { container } = await render(ThemePreview);
 	const screen = page.elementLocator(container);
 	await expect.element(screen.getByText("Inputs")).toBeInTheDocument();
 	// And at least one section-label is in the DOM.
@@ -78,20 +78,20 @@ test("showLabels defaults true -> .section-label headings exist (e.g. 'Inputs')"
 });
 
 test("showLabels=false removes every .section-label heading", async () => {
-	const { container } = render(ThemePreview, { showLabels: false });
+	const { container } = await render(ThemePreview, { showLabels: false });
 	// Wait for the root to mount, then assert no section labels exist at all.
 	await expect.element(rootLocator(container)).toBeInTheDocument();
 	expect(container.querySelector(".section-label")).toBeNull();
 });
 
 test("showInputs defaults true -> the 'Hey ho' FieldCheckbox renders", async () => {
-	const { container } = render(ThemePreview);
+	const { container } = await render(ThemePreview);
 	const screen = page.elementLocator(container);
 	await expect.element(screen.getByText("Hey ho")).toBeInTheDocument();
 });
 
 test("showInputs=false removes the Inputs section (no 'Hey ho' checkbox)", async () => {
-	const { container } = render(ThemePreview, { showInputs: false });
+	const { container } = await render(ThemePreview, { showInputs: false });
 	const screen = page.elementLocator(container);
 	// Mount the root first, then assert the Inputs-only checkbox is absent.
 	await expect.element(rootLocator(container)).toBeInTheDocument();
@@ -99,14 +99,14 @@ test("showInputs=false removes the Inputs section (no 'Hey ho' checkbox)", async
 });
 
 test("compact=true switches the root spacing token from p-4 to p-2", async () => {
-	const { container } = render(ThemePreview, { compact: true });
+	const { container } = await render(ThemePreview, { compact: true });
 	const root = rootLocator(container);
 	await expect.element(root).toHaveClass("p-2");
 	await expect.element(root).not.toHaveClass("p-4");
 });
 
 test("default sidebar Nav auto-expands the active group -> 'Dashboard' renders without a click", async () => {
-	const { container } = render(ThemePreview);
+	const { container } = await render(ThemePreview);
 	const screen = page.elementLocator(container);
 	// activeId="dashboard" matches an item in the "Navigation" group, so the group
 	// auto-expands and the "Dashboard" leaf renders. Auto-retry tolerates the Nav's
@@ -115,7 +115,7 @@ test("default sidebar Nav auto-expands the active group -> 'Dashboard' renders w
 });
 
 test("sidebar snippet REPLACES the default sidebar (its v1.0.0 footer is gone)", async () => {
-	const { container } = render(ThemePreview, {
+	const { container } = await render(ThemePreview, {
 		sidebar: text("Custom Sidebar"),
 	});
 	const screen = page.elementLocator(container);

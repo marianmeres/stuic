@@ -42,8 +42,8 @@ test("forcedOs=mac, metas=[cmd] -> ⌘ symbol in .stuic-kbd-symbol", async () =>
 	await expect
 		.poll(() => container.querySelector(".stuic-kbd-symbol")?.textContent)
 		.toContain("⌘");
-	await expect.element(root).toHaveTextContent("⌘");
-	await expect.element(root).toHaveTextContent("K");
+	await expect.element(root).toMatchTextContent("⌘");
+	await expect.element(root).toMatchTextContent("K");
 });
 
 test("forcedOs=mac, metas=[shift] -> ⇧ symbol", async () => {
@@ -56,7 +56,7 @@ test("forcedOs=mac, metas=[shift] -> ⇧ symbol", async () => {
 	await expect
 		.poll(() => container.querySelector(".stuic-kbd-symbol")?.textContent)
 		.toContain("⇧");
-	await expect.element(root).toHaveTextContent("⇧");
+	await expect.element(root).toMatchTextContent("⇧");
 });
 
 test("forcedOs=win, metas=[cmd] remaps cmd->win -> ⊞ symbol", async () => {
@@ -70,7 +70,7 @@ test("forcedOs=win, metas=[cmd] remaps cmd->win -> ⊞ symbol", async () => {
 	await expect
 		.poll(() => container.querySelector(".stuic-kbd-symbol")?.textContent)
 		.toContain("⊞");
-	await expect.element(root).toHaveTextContent("⊞");
+	await expect.element(root).toMatchTextContent("⊞");
 });
 
 test("forcedOs=win, metas=[ctrl] has no win symbol -> falls back to Ctrl key (ucfirst)", async () => {
@@ -83,7 +83,7 @@ test("forcedOs=win, metas=[ctrl] has no win symbol -> falls back to Ctrl key (uc
 	// otherSymbol has no entry for ctrl -> wrap() returns a .stuic-kbd-key, not a symbol.
 	// Gate on the positive content first (expect.element retries until the async
 	// {@html} resolves) so the subsequent absence check is not a premature false-pass.
-	await expect.element(root).toHaveTextContent("Ctrl");
+	await expect.element(root).toMatchTextContent("Ctrl");
 	// "Ctrl" lives in a .stuic-kbd-key span (the meta), plus the keys span -> at least 2
 	await expect
 		.poll(() => container.querySelectorAll(".stuic-kbd-key").length)

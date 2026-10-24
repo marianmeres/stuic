@@ -20,25 +20,25 @@ const hours = Array.from({ length: 24 }, (_, i) => i); // 0..23
 
 const nextFrame = () => new Promise<void>((r) => requestAnimationFrame(() => r()));
 
-function lbOf(screen: ReturnType<typeof render>) {
+function lbOf(screen: Awaited<ReturnType<typeof render>>) {
 	return screen.getByRole("listbox").element() as HTMLElement;
 }
 
 test("renders a listbox with the accessible name", async () => {
-	const screen = render(WheelPicker, { options: hours, label: "Hour" });
+	const screen = await render(WheelPicker, { options: hours, label: "Hour" });
 	const lb = screen.getByRole("listbox");
 	await expect.element(lb).toBeInTheDocument();
 	await expect.element(lb).toHaveAttribute("aria-label", "Hour");
 });
 
 test("non-loop renders exactly one role=option per option", async () => {
-	const screen = render(WheelPicker, { options: hours });
+	const screen = await render(WheelPicker, { options: hours });
 	const lb = lbOf(screen);
 	expect(lb.querySelectorAll('[role="option"]').length).toBe(24);
 });
 
 test("initial value selects the matching option (label + data/aria-selected)", async () => {
-	const screen = render(WheelPicker, { options: hours, value: 9 });
+	const screen = await render(WheelPicker, { options: hours, value: 9 });
 	const lb = lbOf(screen);
 	const selected = lb.querySelector('[data-selected="true"]');
 	expect(selected?.textContent?.trim()).toBe("9");
@@ -48,20 +48,24 @@ test("initial value selects the matching option (label + data/aria-selected)", a
 });
 
 test("aria-activedescendant points at the selected option's id", async () => {
-	const screen = render(WheelPicker, { options: hours, value: 5 });
+	const screen = await render(WheelPicker, { options: hours, value: 5 });
 	const lb = lbOf(screen);
 	const selected = lb.querySelector('[data-selected="true"]');
 	expect(lb.getAttribute("aria-activedescendant")).toBe(selected?.id);
 });
 
 test("index binding (without value) selects the right option", async () => {
-	const screen = render(WheelPicker, { options: hours, index: 3 });
+	const screen = await render(WheelPicker, { options: hours, index: 3 });
 	const lb = lbOf(screen);
 	expect(lb.querySelector('[data-selected="true"]')?.textContent?.trim()).toBe("3");
 });
 
 test("loop renders multiple tiles but exposes only N role=option rows (home tile)", async () => {
-	const screen = render(WheelPicker, { options: [0, 1, 2, 3, 4], loop: true, value: 0 });
+	const screen = await render(WheelPicker, {
+		options: [0, 1, 2, 3, 4],
+		loop: true,
+		value: 0,
+	});
 	const lb = lbOf(screen);
 	// only the home tile carries role=option, so AT never reads N duplicates
 	expect(lb.querySelectorAll('[role="option"]').length).toBe(5);
@@ -75,7 +79,7 @@ test("loop renders multiple tiles but exposes only N role=option rows (home tile
 
 test("ArrowDown commits the next option and fires onchange once", async () => {
 	const onchange = vi.fn();
-	const screen = render(WheelPicker, { options: hours, value: 0, onchange });
+	const screen = await render(WheelPicker, { options: hours, value: 0, onchange });
 	const lb = lbOf(screen);
 	lb.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }));
 	await vi.waitFor(() =>
@@ -88,7 +92,7 @@ test("ArrowDown commits the next option and fires onchange once", async () => {
 
 test("ArrowUp at the first option clamps (non-loop): no change, no onchange", async () => {
 	const onchange = vi.fn();
-	const screen = render(WheelPicker, { options: hours, value: 0, onchange });
+	const screen = await render(WheelPicker, { options: hours, value: 0, onchange });
 	const lb = lbOf(screen);
 	lb.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowUp", bubbles: true }));
 	await nextFrame();
@@ -98,7 +102,12 @@ test("ArrowUp at the first option clamps (non-loop): no change, no onchange", as
 
 test("ArrowUp at the first option WRAPS to the last when looping", async () => {
 	const onchange = vi.fn();
-	const screen = render(WheelPicker, { options: hours, value: 0, loop: true, onchange });
+	const screen = await render(WheelPicker, {
+		options: hours,
+		value: 0,
+		loop: true,
+		onchange,
+	});
 	const lb = lbOf(screen);
 	lb.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowUp", bubbles: true }));
 	await vi.waitFor(() => expect(onchange).toHaveBeenCalled());
@@ -107,7 +116,7 @@ test("ArrowUp at the first option WRAPS to the last when looping", async () => {
 
 test("End jumps to the last option", async () => {
 	const onchange = vi.fn();
-	const screen = render(WheelPicker, { options: hours, value: 0, onchange });
+	const screen = await render(WheelPicker, { options: hours, value: 0, onchange });
 	const lb = lbOf(screen);
 	lb.dispatchEvent(new KeyboardEvent("keydown", { key: "End", bubbles: true }));
 	await vi.waitFor(() => expect(onchange.mock.lastCall?.[1]).toBe(23));
@@ -121,7 +130,7 @@ test("ArrowDown skips a disabled option", async () => {
 		{ label: "b", value: "b", disabled: true },
 		{ label: "c", value: "c" },
 	];
-	const screen = render(WheelPicker, { options: opts, value: "a", onchange });
+	const screen = await render(WheelPicker, { options: opts, value: "a", onchange });
 	const lb = lbOf(screen);
 	lb.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }));
 	await vi.waitFor(() => expect(onchange).toHaveBeenCalled());
@@ -131,7 +140,7 @@ test("ArrowDown skips a disabled option", async () => {
 
 test("scrolling a row under the band and settling commits it (scrollend path)", async () => {
 	const onchange = vi.fn();
-	const screen = render(WheelPicker, {
+	const screen = await render(WheelPicker, {
 		options: hours,
 		value: 0,
 		itemHeight: ITEM_H,
@@ -151,7 +160,7 @@ test("scrolling a row under the band and settling commits it (scrollend path)", 
 });
 
 test("a reactive value change scrolls to and selects the new option", async () => {
-	const screen = render(WheelPicker, { options: hours, value: 2 });
+	const screen = await render(WheelPicker, { options: hours, value: 2 });
 	const lb = lbOf(screen);
 	expect(lb.querySelector('[data-selected="true"]')?.textContent?.trim()).toBe("2");
 
@@ -163,13 +172,13 @@ test("a reactive value change scrolls to and selects the new option", async () =
 });
 
 test("keyboard=false drops the listbox from the tab order", async () => {
-	const screen = render(WheelPicker, { options: hours, keyboard: false });
+	const screen = await render(WheelPicker, { options: hours, keyboard: false });
 	const lb = lbOf(screen);
 	expect(lb.hasAttribute("tabindex")).toBe(false);
 });
 
 test("custom renderItem is used for row content", async () => {
-	const screen = render(WheelPicker, {
+	const screen = await render(WheelPicker, {
 		options: [1, 2],
 		renderItem: createRawSnippet((args: () => { option: { label: string } }) => ({
 			render: () => `<span class="custom">#${args().option.label}</span>`,
@@ -183,7 +192,7 @@ test("custom renderItem is used for row content", async () => {
 
 test("reactively shrinking options reconciles the stale selection and fires onchange", async () => {
 	const onchange = vi.fn();
-	const screen = render(WheelPicker, { options: hours, value: 20, onchange });
+	const screen = await render(WheelPicker, { options: hours, value: 20, onchange });
 	const lb = lbOf(screen);
 	expect(lb.querySelector('[data-selected="true"]')?.textContent?.trim()).toBe("20");
 
@@ -202,14 +211,14 @@ test("an initially-selected disabled option is skipped to the nearest enabled on
 		{ label: "b", value: "b", disabled: true },
 		{ label: "c", value: "c" },
 	];
-	const screen = render(WheelPicker, { options: opts, value: "b", label: "x" });
+	const screen = await render(WheelPicker, { options: opts, value: "b", label: "x" });
 	const lb = lbOf(screen);
 	// "b" is disabled -> initial selection falls forward to "c"
 	expect(lb.querySelector('[data-selected="true"]')?.textContent?.trim()).toBe("c");
 });
 
 test("a value absent from options falls back to (and displays) the first option", async () => {
-	const screen = render(WheelPicker, { options: [1, 2, 3], value: 99, label: "x" });
+	const screen = await render(WheelPicker, { options: [1, 2, 3], value: 99, label: "x" });
 	const lb = lbOf(screen);
 	expect(lb.querySelector('[data-selected="true"]')?.textContent?.trim()).toBe("1");
 });
@@ -220,7 +229,7 @@ test("re-announces even when consecutive selections share a label", async () => 
 		{ label: "X", value: 2 },
 		{ label: "X", value: 3 },
 	];
-	const screen = render(WheelPicker, { options: opts, value: 1, label: "x" });
+	const screen = await render(WheelPicker, { options: opts, value: 1, label: "x" });
 	const lb = lbOf(screen);
 	const srText = () =>
 		lb.parentElement?.querySelector(".stuic-wheel-picker-sr")?.textContent ?? "";
@@ -241,7 +250,7 @@ test("looping wrap 59 -> 00 scrolls one step FORWARD (not a long rewind)", async
 	// the same path a live clock's external value tick takes. ArrowDown at the last minute
 	// must travel ONE row down to 00, not rewind ~59 rows up to the same tile's 00.
 	const mins = Array.from({ length: 60 }, (_, i) => i);
-	const screen = render(WheelPicker, {
+	const screen = await render(WheelPicker, {
 		options: mins,
 		value: 59,
 		loop: true,
@@ -269,7 +278,7 @@ test("picker width stays constant when the selected (bold) word changes (no jitt
 	// Words of differing width + a bold selected style would otherwise resize the
 	// shrink-to-fit wheel as the committed selection moves. The bold-width ghost pins it.
 	const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-	const screen = render(WheelPicker, {
+	const screen = await render(WheelPicker, {
 		options: days,
 		loop: true,
 		value: "Mon",
@@ -289,7 +298,7 @@ test("picker width stays constant when the selected (bold) word changes (no jitt
 test("keyboard nav at a non-loop edge stays usable (no stuck-flag regression)", async () => {
 	// ArrowDown on the last option is a zero-distance move; it must not wedge the picker.
 	// A subsequent reactive value change must still take effect.
-	const screen = render(WheelPicker, { options: [0, 1, 2], value: 2, label: "x" });
+	const screen = await render(WheelPicker, { options: [0, 1, 2], value: 2, label: "x" });
 	const lb = lbOf(screen);
 	lb.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }));
 	await nextFrame();

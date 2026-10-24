@@ -65,7 +65,7 @@ test("getTHCStringContent returns the html SOURCE and nothing for snippets", () 
 test("Thc renders a bare snippet and the { snippet } form", async () => {
 	const bare = await render(Thc, { thc: snippet });
 	expect(bare.container.querySelector("i")?.textContent).toBe("snip");
-	bare.unmount();
+	await bare.unmount();
 
 	const wrapped = await render(Thc, { thc: { snippet } });
 	expect(wrapped.container.querySelector("i")?.textContent).toBe("snip");

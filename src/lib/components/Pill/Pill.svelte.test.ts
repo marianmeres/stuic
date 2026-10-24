@@ -12,7 +12,7 @@ const text = (s: string) =>
 // the wrapper directly via a data-testid passed through {...rest}.
 
 test("plain pill renders a span.stuic-pill with default variant/size data-attrs", async () => {
-	const screen = render(Pill, {
+	const screen = await render(Pill, {
 		children: text("Tag"),
 		"data-testid": "pill",
 	});
@@ -25,7 +25,7 @@ test("plain pill renders a span.stuic-pill with default variant/size data-attrs"
 });
 
 test("intent/variant/size map to data-* attributes", async () => {
-	const screen = render(Pill, {
+	const screen = await render(Pill, {
 		children: text("Status"),
 		intent: "success",
 		variant: "solid",
@@ -39,7 +39,7 @@ test("intent/variant/size map to data-* attributes", async () => {
 });
 
 test("active reflects data-active=true", async () => {
-	const screen = render(Pill, {
+	const screen = await render(Pill, {
 		children: text("Filter"),
 		active: true,
 		"data-testid": "pill",
@@ -48,7 +48,7 @@ test("active reflects data-active=true", async () => {
 });
 
 test("href renders an anchor with data-interactive", async () => {
-	const screen = render(Pill, { children: text("Go"), href: "/somewhere" });
+	const screen = await render(Pill, { children: text("Go"), href: "/somewhere" });
 	const link = screen.getByRole("link");
 	await expect.element(link).toBeInTheDocument();
 	await expect.element(link).toHaveAttribute("href", "/somewhere");
@@ -58,7 +58,7 @@ test("href renders an anchor with data-interactive", async () => {
 
 test("onclick (no href) renders a button and fires once on click", async () => {
 	const onclick = vi.fn();
-	const screen = render(Pill, { children: text("Click"), onclick });
+	const screen = await render(Pill, { children: text("Click"), onclick });
 	const btn = screen.getByRole("button");
 	await expect.element(btn).toHaveClass("stuic-pill");
 	await expect.element(btn).toHaveAttribute("data-interactive", "true");
@@ -68,7 +68,7 @@ test("onclick (no href) renders a button and fires once on click", async () => {
 
 test("disabled button is disabled (and is not actionable)", async () => {
 	const onclick = vi.fn();
-	const screen = render(Pill, {
+	const screen = await render(Pill, {
 		children: text("Nope"),
 		onclick,
 		disabled: true,
@@ -80,7 +80,7 @@ test("disabled button is disabled (and is not actionable)", async () => {
 });
 
 test("dismissible: outer span gets data-dismissible and a Dismiss button is present", async () => {
-	const screen = render(Pill, { children: text("Tag"), dismissible: true });
+	const screen = await render(Pill, { children: text("Tag"), dismissible: true });
 	const dismiss = screen.getByRole("button", { name: "Dismiss" });
 	await expect.element(dismiss).toBeInTheDocument();
 	await expect.element(dismiss).toHaveClass("stuic-pill-dismiss");
@@ -89,7 +89,7 @@ test("dismissible: outer span gets data-dismissible and a Dismiss button is pres
 test("dismiss click fires ondismiss once and does NOT fire pill onclick (stopPropagation)", async () => {
 	const ondismiss = vi.fn();
 	const onclick = vi.fn();
-	const screen = render(Pill, {
+	const screen = await render(Pill, {
 		children: text("Tag"),
 		dismissible: true,
 		ondismiss,
@@ -104,7 +104,7 @@ test("dismiss click fires ondismiss once and does NOT fire pill onclick (stopPro
 });
 
 test("dismissible: dismissLabel sets the X button's accessible name", async () => {
-	const screen = render(Pill, {
+	const screen = await render(Pill, {
 		children: text("Tag"),
 		dismissible: true,
 		dismissLabel: "Remove Tag",

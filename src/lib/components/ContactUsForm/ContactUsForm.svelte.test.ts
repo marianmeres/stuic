@@ -186,8 +186,8 @@ test("an extra field renders and binds into formData.extra", async () => {
 // (the same behaviors RegisterForm covers in depth; here we assert the shared
 // `createExternalFieldErrors` / `repaintFieldErrors` wiring is actually in place)
 
-function renderHarness(props: Record<string, unknown>) {
-	const screen = render(Harness, props);
+async function renderHarness(props: Record<string, unknown>) {
+	const screen = await render(Harness, props);
 	return { screen, h: screen.component as unknown as HarnessExports };
 }
 
@@ -198,7 +198,7 @@ const send = (screen: { getByRole: (r: string, o: object) => unknown }) =>
 
 test("a server field error blocks submit, then clears itself once edited", async () => {
 	const onSubmit = vi.fn();
-	const { screen, h } = renderHarness({ onSubmit, timeTrapMinMs: 0 });
+	const { screen, h } = await renderHarness({ onSubmit, timeTrapMinMs: 0 });
 
 	await screen.getByLabelText("Email").fill("a@b.com");
 	await screen.getByLabelText("Message").fill("body");
@@ -218,7 +218,7 @@ test("a server field error blocks submit, then clears itself once edited", async
 
 test("an error on a consumer-owned field keeps blocking until cleared", async () => {
 	const onSubmit = vi.fn();
-	const { screen, h } = renderHarness({ onSubmit, timeTrapMinMs: 0 });
+	const { screen, h } = await renderHarness({ onSubmit, timeTrapMinMs: 0 });
 
 	await screen.getByLabelText("Email").fill("a@b.com");
 	await screen.getByLabelText("Message").fill("body");
@@ -276,7 +276,7 @@ test("a required extra field with initialValue validates and submits it", async 
 });
 
 test("initialValue never clobbers a value the consumer already set", async () => {
-	const { h } = renderHarness({
+	const { h } = await renderHarness({
 		onSubmit: noop,
 		timeTrapMinMs: 0,
 		initial: { extra: { reason: "mine" } },
@@ -302,7 +302,7 @@ test("extra field refs follow display order across a reorder", async () => {
 		required: true,
 		position: "top",
 	};
-	const { screen, h } = renderHarness({
+	const { screen, h } = await renderHarness({
 		onSubmit: noop,
 		timeTrapMinMs: 0,
 		extraFields: [a, b],
@@ -344,7 +344,7 @@ test("a prefilled readonly field is rendered, left alone, and still submitted", 
 	// the browser contract we rely on; what's worth asserting here is that
 	// locking a field doesn't drop it out of the submitted payload.
 	const onSubmit = vi.fn();
-	const { screen } = renderHarness({
+	const { screen } = await renderHarness({
 		onSubmit,
 		timeTrapMinMs: 0,
 		showName: true,
@@ -388,7 +388,7 @@ test("an EMPTY readonly required field still blocks submit and reports inline", 
 });
 
 test("validate() reports an empty readonly required field (native validity can't)", async () => {
-	const { h } = renderHarness({
+	const { h } = await renderHarness({
 		onSubmit: noop,
 		timeTrapMinMs: 0,
 		showName: true,
@@ -402,7 +402,7 @@ test("validate() reports an empty readonly required field (native validity can't
 test("a readonly subject downgrades from <select> to a readonly text input", async () => {
 	// <select> has no readonly counterpart, and `disabled` would grey out the
 	// very value we mean to show — so the value renders as a readonly input.
-	const { screen } = renderHarness({
+	const { screen } = await renderHarness({
 		onSubmit: noop,
 		timeTrapMinMs: 0,
 		subjectValues: ["Sales", "Support"],

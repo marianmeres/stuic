@@ -22,7 +22,7 @@ const buttonChild = () =>
 	createRawSnippet(() => ({ render: () => `<button>Go</button>` }));
 
 test("visible:true renders the backdrop + a role=dialog panel with aria-modal and children", async () => {
-	const screen = render(Drawer, {
+	const screen = await render(Drawer, {
 		visible: true,
 		position: "right",
 		children: buttonChild(),
@@ -40,7 +40,7 @@ test("visible:true renders the backdrop + a role=dialog panel with aria-modal an
 });
 
 test("the focus trap auto-focuses the button child inside the open Drawer", async () => {
-	const screen = render(Drawer, {
+	const screen = await render(Drawer, {
 		visible: true,
 		children: buttonChild(),
 	});
@@ -49,7 +49,7 @@ test("the focus trap auto-focuses the button child inside the open Drawer", asyn
 });
 
 test("visible:false renders no dialog", async () => {
-	const screen = render(Drawer, {
+	const screen = await render(Drawer, {
 		visible: false,
 		children: buttonChild(),
 	});
@@ -59,7 +59,7 @@ test("visible:false renders no dialog", async () => {
 });
 
 test("labelledby / describedby map to aria-* attributes on the dialog panel", async () => {
-	const screen = render(Drawer, {
+	const screen = await render(Drawer, {
 		visible: true,
 		labelledby: "the-title",
 		describedby: "the-desc",
@@ -74,7 +74,7 @@ test("labelledby / describedby map to aria-* attributes on the dialog panel", as
 
 test("onEscape fires on a window Escape keydown while the Drawer is open", async () => {
 	const onEscape = vi.fn();
-	const screen = render(Drawer, {
+	const screen = await render(Drawer, {
 		visible: true,
 		onEscape,
 		children: buttonChild(),
@@ -94,7 +94,7 @@ test("onEscape fires on a window Escape keydown while the Drawer is open", async
 
 test("onOutside fires on a mousedown on the backdrop root", async () => {
 	const onOutside = vi.fn();
-	const screen = render(Drawer, {
+	const screen = await render(Drawer, {
 		visible: true,
 		onOutside,
 		children: buttonChild(),
@@ -118,7 +118,7 @@ test("onOutside fires on a mousedown on the backdrop root", async () => {
 
 test("a mousedown originating on the panel does NOT fire onOutside (panel stops propagation)", async () => {
 	const onOutside = vi.fn();
-	const screen = render(Drawer, {
+	const screen = await render(Drawer, {
 		visible: true,
 		onOutside,
 		children: buttonChild(),

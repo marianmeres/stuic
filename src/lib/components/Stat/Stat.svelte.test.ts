@@ -106,7 +106,7 @@ test("no trend and no delta -> no data-trend, no data-trend-intent, no meta row"
 });
 
 test("href renders an <a> (role=link) with empty data-interactive", async () => {
-	const screen = render(Stat, { href: "/details", label: "Linked", value: "7" });
+	const screen = await render(Stat, { href: "/details", label: "Linked", value: "7" });
 	const link = screen.getByRole("link");
 	await expect.element(link).toBeInTheDocument();
 	await expect.element(link).toHaveAttribute("href", "/details");
@@ -118,7 +118,7 @@ test("href renders an <a> (role=link) with empty data-interactive", async () => 
 
 test("onclick renders a <button> (role=button) with empty data-interactive and fires once", async () => {
 	const onclick = vi.fn();
-	const screen = render(Stat, { onclick, label: "Clickable", value: "7" });
+	const screen = await render(Stat, { onclick, label: "Clickable", value: "7" });
 	const btn = screen.getByRole("button");
 	await expect.element(btn).toBeInTheDocument();
 	await expect.element(btn).toHaveClass("stuic-stat");
@@ -129,7 +129,7 @@ test("onclick renders a <button> (role=button) with empty data-interactive and f
 
 test("disabled button has the disabled attribute and empty data-disabled", async () => {
 	const onclick = vi.fn();
-	const screen = render(Stat, { onclick, disabled: true, value: "0" });
+	const screen = await render(Stat, { onclick, disabled: true, value: "0" });
 	const btn = screen.getByRole("button");
 	await expect.element(btn).toBeDisabled();
 	// data-disabled is an EMPTY attribute

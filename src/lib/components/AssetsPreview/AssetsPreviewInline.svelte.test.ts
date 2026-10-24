@@ -64,7 +64,7 @@ const slidePanelImgCount = (container: Element) =>
 	container.querySelectorAll("img").length;
 
 test("single image: name label shows the basename, Download present, no dots, no Close", async () => {
-	const screen = render(AssetsPreviewInline, { assets: [ALPHA] });
+	const screen = await render(AssetsPreviewInline, { assets: [ALPHA] });
 
 	// The root region carries the stuic hook class.
 	const root = screen.container.querySelector(".stuic-assets-preview");
@@ -88,7 +88,7 @@ test("single image: name label shows the basename, Download present, no dots, no
 });
 
 test("two images: two dots render and the first is the active one", async () => {
-	const screen = render(AssetsPreviewInline, { assets: [ALPHA, BETA] });
+	const screen = await render(AssetsPreviewInline, { assets: [ALPHA, BETA] });
 
 	// Dots render one-per-asset for galleries of length 2..10.
 	await expect
@@ -111,7 +111,7 @@ test("two images: two dots render and the first is the active one", async () => 
 });
 
 test("clicking the beta dot navigates: name label -> 'beta.jpg' and that dot becomes active", async () => {
-	const screen = render(AssetsPreviewInline, { assets: [ALPHA, BETA] });
+	const screen = await render(AssetsPreviewInline, { assets: [ALPHA, BETA] });
 
 	await expect.poll(() => currentName(screen.container)).toBe("alpha.jpg");
 
@@ -143,7 +143,7 @@ test("clicking the beta dot navigates: name label -> 'beta.jpg' and that dot bec
 });
 
 test("Zoom out is disabled at zoom index 0; clicking Zoom in enables it", async () => {
-	const screen = render(AssetsPreviewInline, { assets: [ALPHA] });
+	const screen = await render(AssetsPreviewInline, { assets: [ALPHA] });
 
 	const zoomOut = screen.getByRole("button", { name: "Zoom out" });
 	const zoomIn = screen.getByRole("button", { name: "Zoom in" });
@@ -159,7 +159,7 @@ test("Zoom out is disabled at zoom index 0; clicking Zoom in enables it", async 
 });
 
 test("noZoom hides both zoom buttons", async () => {
-	const screen = render(AssetsPreviewInline, { assets: [ALPHA], noZoom: true });
+	const screen = await render(AssetsPreviewInline, { assets: [ALPHA], noZoom: true });
 
 	// Wait for the gallery to mount (Download confirms the controls rendered).
 	await expect
@@ -175,7 +175,7 @@ test("noZoom hides both zoom buttons", async () => {
 });
 
 test("noDownload hides the Download button", async () => {
-	const screen = render(AssetsPreviewInline, { assets: [ALPHA], noDownload: true });
+	const screen = await render(AssetsPreviewInline, { assets: [ALPHA], noDownload: true });
 
 	// Zoom in confirms the control bar rendered (zoom defaults on for images).
 	await expect
@@ -189,7 +189,7 @@ test("noDownload hides the Download button", async () => {
 
 test("onDelete fn renders a Delete button; clicking it fires the spy with the current asset + index", async () => {
 	const onDelete = vi.fn();
-	const screen = render(AssetsPreviewInline, { assets: [ALPHA, BETA], onDelete });
+	const screen = await render(AssetsPreviewInline, { assets: [ALPHA, BETA], onDelete });
 
 	const del = screen.getByRole("button", { name: "Delete" });
 	await expect.element(del).toBeInTheDocument();
@@ -213,7 +213,10 @@ test("onDownload provided: clicking Download fires the spy with the current asse
 		.mockImplementation(() => {});
 	try {
 		const onDownload = vi.fn();
-		const screen = render(AssetsPreviewInline, { assets: [ALPHA, BETA], onDownload });
+		const screen = await render(AssetsPreviewInline, {
+			assets: [ALPHA, BETA],
+			onDownload,
+		});
 
 		const dl = screen.getByRole("button", { name: "Download" });
 		await expect.element(dl).toBeInTheDocument();
@@ -238,7 +241,7 @@ test("no onDownload: clicking Download runs the default forceDownload path (anch
 		.spyOn(HTMLAnchorElement.prototype, "click")
 		.mockImplementation(() => {});
 	try {
-		const screen = render(AssetsPreviewInline, { assets: [ALPHA] });
+		const screen = await render(AssetsPreviewInline, { assets: [ALPHA] });
 
 		const dl = screen.getByRole("button", { name: "Download" });
 		await expect.element(dl).toBeInTheDocument();
@@ -256,7 +259,7 @@ test("async onDownload: the Download button is disabled while the promise is pen
 	let release!: () => void;
 	const pending = new Promise<void>((r) => (release = r));
 	const onDownload = vi.fn(() => pending);
-	const screen = render(AssetsPreviewInline, { assets: [ALPHA], onDownload });
+	const screen = await render(AssetsPreviewInline, { assets: [ALPHA], onDownload });
 
 	const dl = screen.getByRole("button", { name: "Download" });
 	await expect.element(dl).toBeInTheDocument();
@@ -277,7 +280,7 @@ test("async onDownload that rejects: the failure is swallowed — the button re-
 	let reject!: (e?: unknown) => void;
 	const pending = new Promise<void>((_, r) => (reject = r));
 	const onDownload = vi.fn(() => pending);
-	const screen = render(AssetsPreviewInline, { assets: [ALPHA], onDownload });
+	const screen = await render(AssetsPreviewInline, { assets: [ALPHA], onDownload });
 
 	const dl = screen.getByRole("button", { name: "Download" });
 	await dl.click();
@@ -291,7 +294,7 @@ test("async onDownload that rejects: the failure is swallowed — the button re-
 });
 
 test("ArrowRight on the root advances to the next asset (name label -> 'beta.jpg')", async () => {
-	const screen = render(AssetsPreviewInline, { assets: [ALPHA, BETA] });
+	const screen = await render(AssetsPreviewInline, { assets: [ALPHA, BETA] });
 
 	await expect.poll(() => currentName(screen.container)).toBe("alpha.jpg");
 

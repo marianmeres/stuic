@@ -20,6 +20,11 @@ import type { FieldAsset, FieldAssetWithBlobUrl } from "./FieldAssets.svelte";
 // We dispatch synthetic ClipboardEvents (real Chromium honors ClipboardEventInit
 // .clipboardData with a DataTransfer) — plus one NATIVE-path test at the end.
 
+// Hermetic image URL for fixture assets: a dead URL would be requested from the test
+// server, where SvelteKit's dev middleware fails to SSR its 404 and logs a stack trace.
+const PNG_1X1 =
+	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
+
 function pasteEventWithFile(name = "shot.png", type = "image/png") {
 	const dt = new DataTransfer();
 	dt.items.add(new File(["fake-bytes"], name, { type }));
@@ -45,7 +50,7 @@ const processAssetsMock = () =>
 	vi.fn(async (assets: FieldAsset[]): Promise<FieldAssetWithBlobUrl[]> =>
 		assets.map((a, i) => ({
 			id: `uploaded-${i}`,
-			url: { thumb: `t-${i}`, full: `f-${i}` },
+			url: { thumb: `${PNG_1X1}#t-${i}`, full: `${PNG_1X1}#f-${i}` },
 			name: a.name,
 			type: a.type,
 			blobUrl: a.id,
@@ -147,9 +152,7 @@ test("pasteable: clicking inside the field focuses the grid (paste target)", asy
 		label: "Assets",
 		// one pre-existing asset so fileDropzone's allowClick (empty-field click ->
 		// file picker) stays off and a click is purely a focus gesture
-		value: JSON.stringify([
-			{ id: "0", url: "/x.jpg", name: "x.jpg", type: "image/jpeg" },
-		]),
+		value: JSON.stringify([{ id: "0", url: PNG_1X1, name: "x.jpg", type: "image/jpeg" }]),
 		pasteable: true,
 		processAssets,
 	});
@@ -466,9 +469,7 @@ test("NATIVE: click field, press Cmd/Ctrl-V with a PNG on the clipboard", async 
 		name: "a",
 		label: "Assets",
 		// non-empty so fileDropzone's empty-field click->picker stays off
-		value: JSON.stringify([
-			{ id: "0", url: "/x.jpg", name: "x.jpg", type: "image/jpeg" },
-		]),
+		value: JSON.stringify([{ id: "0", url: PNG_1X1, name: "x.jpg", type: "image/jpeg" }]),
 		pasteable: true,
 		processAssets,
 	});

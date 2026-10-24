@@ -40,7 +40,7 @@ function makeTiers(ctaOnClick: PricingTier["ctaOnClick"]): PricingTier[] {
 }
 
 test("renders the stuic-pricing-table root with a role=list tiers grid of 3 tiers", async () => {
-	const screen = render(PricingTable, { tiers: makeTiers(vi.fn()) });
+	const screen = await render(PricingTable, { tiers: makeTiers(vi.fn()) });
 
 	// root container class is the one stable contract we assert by class
 	expect(screen.container.querySelector(".stuic-pricing-table")).not.toBeNull();
@@ -55,7 +55,7 @@ test("renders the stuic-pricing-table root with a role=list tiers grid of 3 tier
 });
 
 test("renders each tier name and the monthly price + period (default billingPeriod=monthly)", async () => {
-	const screen = render(PricingTable, { tiers: makeTiers(vi.fn()) });
+	const screen = await render(PricingTable, { tiers: makeTiers(vi.fn()) });
 
 	await expect.element(screen.getByText("Free")).toBeInTheDocument();
 	await expect.element(screen.getByText("Pro")).toBeInTheDocument();
@@ -79,7 +79,7 @@ test("renders each tier name and the monthly price + period (default billingPeri
 });
 
 test("billing toggle shows Monthly/Annual radios when a tier has both periods", async () => {
-	const screen = render(PricingTable, { tiers: makeTiers(vi.fn()) });
+	const screen = await render(PricingTable, { tiers: makeTiers(vi.fn()) });
 
 	// ButtonGroupRadio renders the options as role=radio buttons
 	await expect
@@ -89,7 +89,7 @@ test("billing toggle shows Monthly/Annual radios when a tier has both periods", 
 });
 
 test("showBillingToggle=false hides the toggle even when both periods exist", async () => {
-	const screen = render(PricingTable, {
+	const screen = await render(PricingTable, {
 		tiers: makeTiers(vi.fn()),
 		showBillingToggle: false,
 	});
@@ -98,7 +98,7 @@ test("showBillingToggle=false hides the toggle even when both periods exist", as
 
 test("toggle hidden when no tier defines both monthly AND annual prices", async () => {
 	// "pro" only has a monthly price here -> hasBothPeriods is false -> no toggle
-	const screen = render(PricingTable, {
+	const screen = await render(PricingTable, {
 		tiers: [
 			{ id: "free", name: "Free", price: { monthly: 0 } },
 			{ id: "pro", name: "Pro", price: { monthly: 10 } },
@@ -108,7 +108,7 @@ test("toggle hidden when no tier defines both monthly AND annual prices", async 
 });
 
 test("clicking the Annual radio reactively switches the rendered prices to annual", async () => {
-	const screen = render(PricingTable, { tiers: makeTiers(vi.fn()) });
+	const screen = await render(PricingTable, { tiers: makeTiers(vi.fn()) });
 
 	// Scope period assertions to the unique highlighted Pro tier: every tier renders a
 	// period label, so a bare getByText("/mo" | "/yr") would match 3 elements (strict-mode
@@ -134,7 +134,7 @@ test("clicking the Annual radio reactively switches the rendered prices to annua
 });
 
 test("highlighted tier carries data-highlighted and renders its badge", async () => {
-	const screen = render(PricingTable, { tiers: makeTiers(vi.fn()) });
+	const screen = await render(PricingTable, { tiers: makeTiers(vi.fn()) });
 
 	const highlighted = screen.container.querySelector(
 		".stuic-pricing-table-tier[data-highlighted]"
@@ -145,7 +145,7 @@ test("highlighted tier carries data-highlighted and renders its badge", async ()
 });
 
 test("feature with default icon gets data-included; icon:false feature does not", async () => {
-	const screen = render(PricingTable, { tiers: makeTiers(vi.fn()) });
+	const screen = await render(PricingTable, { tiers: makeTiers(vi.fn()) });
 
 	// the included feature label renders
 	const included = screen.getByText("Feature X");
@@ -166,7 +166,7 @@ test("feature with default icon gets data-included; icon:false feature does not"
 
 test("CTA button click invokes ctaOnClick with the tier and current billingPeriod", async () => {
 	const ctaOnClick = vi.fn();
-	const screen = render(PricingTable, { tiers: makeTiers(ctaOnClick) });
+	const screen = await render(PricingTable, { tiers: makeTiers(ctaOnClick) });
 
 	await screen.getByRole("button", { name: "Buy" }).click();
 
@@ -178,7 +178,7 @@ test("CTA button click invokes ctaOnClick with the tier and current billingPerio
 
 test("CTA passes the active billingPeriod (annual) after the toggle is switched", async () => {
 	const ctaOnClick = vi.fn();
-	const screen = render(PricingTable, { tiers: makeTiers(ctaOnClick) });
+	const screen = await render(PricingTable, { tiers: makeTiers(ctaOnClick) });
 
 	await screen.getByRole("radio", { name: "Annual" }).click();
 	// wait for the switch to land in the DOM before clicking the CTA
@@ -190,7 +190,7 @@ test("CTA passes the active billingPeriod (annual) after the toggle is switched"
 });
 
 test("disabled tier carries data-disabled and renders a disabled Button with the disabledLabel", async () => {
-	const screen = render(PricingTable, { tiers: makeTiers(vi.fn()) });
+	const screen = await render(PricingTable, { tiers: makeTiers(vi.fn()) });
 
 	const disabledTier = screen.container.querySelector(
 		".stuic-pricing-table-tier[data-disabled]"
@@ -211,7 +211,7 @@ test("disabled tier carries data-disabled and renders a disabled Button with the
 // Component tests don't load index.css, so we assert the mechanism (class carries the
 // look, `style` is left to the caller), not the resulting pixels.
 test("toggle carries stuic-pricing-table-toggle and pins nothing in its style attribute", async () => {
-	const screen = render(PricingTable, { tiers: makeTiers(vi.fn()) });
+	const screen = await render(PricingTable, { tiers: makeTiers(vi.fn()) });
 
 	const toggle = screen.container.querySelector(".stuic-pricing-table-toggle");
 	expect(toggle).not.toBeNull();
@@ -221,7 +221,7 @@ test("toggle carries stuic-pricing-table-toggle and pins nothing in its style at
 });
 
 test("styleToggle lands on the toggle verbatim and classToggle is merged with the base class", async () => {
-	const screen = render(PricingTable, {
+	const screen = await render(PricingTable, {
 		tiers: makeTiers(vi.fn()),
 		styleToggle: "--stuic-pricing-table-toggle-radius: 0px;",
 		classToggle: "my-toggle",
@@ -236,7 +236,7 @@ test("styleToggle lands on the toggle verbatim and classToggle is merged with th
 });
 
 test("unstyled drops the toggle base class but keeps classToggle", async () => {
-	const screen = render(PricingTable, {
+	const screen = await render(PricingTable, {
 		tiers: makeTiers(vi.fn()),
 		unstyled: true,
 		classToggle: "my-toggle",

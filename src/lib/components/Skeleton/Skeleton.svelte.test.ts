@@ -8,7 +8,7 @@ import Skeleton from "./Skeleton.svelte";
 // width/height/size -> inline style, a11y role/aria contract).
 
 test("default rectangle renders role=status, aria-busy and rounded class", async () => {
-	const screen = render(Skeleton);
+	const screen = await render(Skeleton);
 	const el = screen.getByRole("status");
 	await expect.element(el).toBeInTheDocument();
 	await expect.element(el).toHaveAttribute("aria-busy", "true");
@@ -19,7 +19,7 @@ test("default rectangle renders role=status, aria-busy and rounded class", async
 });
 
 test("variant=circle adds the circle class and drops rounded class", async () => {
-	const screen = render(Skeleton, { variant: "circle" });
+	const screen = await render(Skeleton, { variant: "circle" });
 	const el = screen.getByRole("status");
 	await expect.element(el).toHaveClass("stuic-skeleton-circle");
 	// rounded === true && variant !== "circle" is false here -> no rounded class
@@ -27,20 +27,20 @@ test("variant=circle adds the circle class and drops rounded class", async () =>
 });
 
 test("circle with size sets width and height inline from size", async () => {
-	const screen = render(Skeleton, { variant: "circle", size: "48px" });
+	const screen = await render(Skeleton, { variant: "circle", size: "48px" });
 	const el = screen.getByRole("status");
 	// source pushes `width: ${size}` and `height: ${size}` only for circle+size
 	await expect.element(el).toHaveStyle({ width: "48px", height: "48px" });
 });
 
 test("width and height props are applied as inline style", async () => {
-	const screen = render(Skeleton, { width: "200px", height: "100px" });
+	const screen = await render(Skeleton, { width: "200px", height: "100px" });
 	const el = screen.getByRole("status");
 	await expect.element(el).toHaveStyle({ width: "200px", height: "100px" });
 });
 
 test("rounded as a string sets inline border-radius", async () => {
-	const screen = render(Skeleton, { rounded: "1rem" });
+	const screen = await render(Skeleton, { rounded: "1rem" });
 	const el = screen.getByRole("status");
 	// typeof rounded === "string" -> styles.push(`border-radius: ${rounded}`)
 	await expect.element(el).toHaveStyle({ borderRadius: "1rem" });
@@ -50,7 +50,7 @@ test("rounded as a string sets inline border-radius", async () => {
 
 test("text variant with lines>1 renders a container with N child placeholders", async () => {
 	const lines = 3;
-	const screen = render(Skeleton, {
+	const screen = await render(Skeleton, {
 		variant: "text",
 		lines,
 		// restProps spreads onto the container div; use it to grab the node
@@ -68,7 +68,7 @@ test("text variant with lines>1 renders a container with N child placeholders", 
 });
 
 test("text variant last line uses default lastLineWidth (75%)", async () => {
-	const screen = render(Skeleton, {
+	const screen = await render(Skeleton, {
 		variant: "text",
 		lines: 2,
 		"data-testid": "sk",
@@ -83,7 +83,7 @@ test("text variant last line uses default lastLineWidth (75%)", async () => {
 });
 
 test("ariaLabel sets aria-label and renders an sr-only span", async () => {
-	const screen = render(Skeleton, { ariaLabel: "Loading content" });
+	const screen = await render(Skeleton, { ariaLabel: "Loading content" });
 	const el = screen.getByRole("status");
 	await expect.element(el).toHaveAttribute("aria-label", "Loading content");
 	await expect.element(screen.getByText("Loading content")).toHaveClass("sr-only");

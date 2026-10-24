@@ -42,7 +42,7 @@ const cancelBtn = (screen: LocatorSelectors) =>
 
 test("ALERT: setting acp.current opens the dialog and renders the message", async () => {
 	const acp = new AlertConfirmPromptStack();
-	const screen = render(AlertConfirmPrompt, { acp });
+	const screen = await render(AlertConfirmPrompt, { acp });
 
 	// Before anything is pushed, there is no dialog (the {#if acp?.current} guard).
 	expect(screen.container.querySelector("dialog")).toBeNull();
@@ -62,7 +62,7 @@ test("ALERT: setting acp.current opens the dialog and renders the message", asyn
 
 test("ALERT: the focus trap lands focus on the OK button (only focusable element)", async () => {
 	const acp = new AlertConfirmPromptStack();
-	const screen = render(AlertConfirmPrompt, { acp });
+	const screen = await render(AlertConfirmPrompt, { acp });
 
 	const alert = createAlert(acp);
 	void alert("Hello");
@@ -78,7 +78,7 @@ test("ALERT: the focus trap lands focus on the OK button (only focusable element
 
 test("ALERT: clicking OK resolves the promise, clears acp.current and closes the dialog", async () => {
 	const acp = new AlertConfirmPromptStack();
-	const screen = render(AlertConfirmPrompt, { acp });
+	const screen = await render(AlertConfirmPrompt, { acp });
 
 	const alert = createAlert(acp);
 	const promise = alert("Done");
@@ -101,7 +101,7 @@ test("ALERT: clicking OK resolves the promise, clears acp.current and closes the
 
 test("CONFIRM: renders both Cancel and OK buttons", async () => {
 	const acp = new AlertConfirmPromptStack();
-	const screen = render(AlertConfirmPrompt, { acp });
+	const screen = await render(AlertConfirmPrompt, { acp });
 
 	const confirm = createConfirm(acp);
 	void confirm("Sure?");
@@ -115,7 +115,7 @@ test("CONFIRM: renders both Cancel and OK buttons", async () => {
 
 test("CONFIRM: clicking OK resolves true and closes the dialog", async () => {
 	const acp = new AlertConfirmPromptStack();
-	const screen = render(AlertConfirmPrompt, { acp });
+	const screen = await render(AlertConfirmPrompt, { acp });
 
 	const confirm = createConfirm(acp);
 	const promise = confirm("Proceed?");
@@ -131,7 +131,7 @@ test("CONFIRM: clicking OK resolves true and closes the dialog", async () => {
 
 test("CONFIRM: clicking Cancel resolves false and closes the dialog", async () => {
 	const acp = new AlertConfirmPromptStack();
-	const screen = render(AlertConfirmPrompt, { acp });
+	const screen = await render(AlertConfirmPrompt, { acp });
 
 	const confirm = createConfirm(acp);
 	const promise = confirm("Proceed?");
@@ -149,7 +149,7 @@ test("CONFIRM: clicking Cancel resolves false and closes the dialog", async () =
 
 test("PROMPT: renders a text input alongside OK / Cancel", async () => {
 	const acp = new AlertConfirmPromptStack();
-	const screen = render(AlertConfirmPrompt, { acp });
+	const screen = await render(AlertConfirmPrompt, { acp });
 
 	const prompt = createPrompt(acp);
 	void prompt("Name?");
@@ -164,7 +164,7 @@ test("PROMPT: renders a text input alongside OK / Cancel", async () => {
 
 test("PROMPT: filling the input and clicking OK resolves the typed value", async () => {
 	const acp = new AlertConfirmPromptStack();
-	const screen = render(AlertConfirmPrompt, { acp });
+	const screen = await render(AlertConfirmPrompt, { acp });
 
 	const prompt = createPrompt(acp);
 	// default value "" so the input starts empty.
@@ -184,7 +184,7 @@ test("PROMPT: filling the input and clicking OK resolves the typed value", async
 
 test("PROMPT: a default value pre-fills the input and resolves unchanged on OK", async () => {
 	const acp = new AlertConfirmPromptStack();
-	const screen = render(AlertConfirmPrompt, { acp });
+	const screen = await render(AlertConfirmPrompt, { acp });
 
 	const prompt = createPrompt(acp);
 	const promise = prompt("Name?", "Anonymous");
@@ -217,7 +217,7 @@ test("PROMPT: an onOk that shifts one microtask late closes cleanly, no unhandle
 
 	try {
 		const acp = new AlertConfirmPromptStack();
-		const screen = render(AlertConfirmPrompt, { acp });
+		const screen = await render(AlertConfirmPrompt, { acp });
 
 		let seen: string | undefined;
 		acp.prompt(
@@ -248,7 +248,7 @@ test("PROMPT: an onOk that shifts one microtask late closes cleanly, no unhandle
 // up with OK disabled (isPending) until the returned promise settles, for prompts too.
 test("PROMPT: an async onOk keeps the dialog pending (OK disabled) until it shifts", async () => {
 	const acp = new AlertConfirmPromptStack();
-	const screen = render(AlertConfirmPrompt, { acp });
+	const screen = await render(AlertConfirmPrompt, { acp });
 
 	let release!: () => void;
 	const inFlight = new Promise<void>((r) => (release = r));
@@ -277,7 +277,7 @@ test("PROMPT: an async onOk keeps the dialog pending (OK disabled) until it shif
 
 test("ESCAPE: pressing Escape on the dialog resolves the confirm wrapper to false and closes", async () => {
 	const acp = new AlertConfirmPromptStack();
-	const screen = render(AlertConfirmPrompt, { acp });
+	const screen = await render(AlertConfirmPrompt, { acp });
 
 	const confirm = createConfirm(acp);
 	const promise = confirm("Sure?");
@@ -304,7 +304,7 @@ test("ESCAPE: pressing Escape on the dialog resolves the confirm wrapper to fals
 // exactly the first one and reveal the second; the old `escape()` shifted twice.
 test("ESCAPE: on a stack of two, Escape pops only the current dialog and reveals the next", async () => {
 	const acp = new AlertConfirmPromptStack();
-	const screen = render(AlertConfirmPrompt, { acp });
+	const screen = await render(AlertConfirmPrompt, { acp });
 
 	acp.confirm(acp.shift, { title: "First" });
 	acp.alert("Second");
@@ -328,7 +328,7 @@ test("ESCAPE: on a stack of two, Escape pops only the current dialog and reveals
 
 test("STACK: dismissing the current alert reveals the next queued one without closing", async () => {
 	const acp = new AlertConfirmPromptStack();
-	const screen = render(AlertConfirmPrompt, { acp });
+	const screen = await render(AlertConfirmPrompt, { acp });
 
 	// Two plain alerts; their default onOk is acp.shift, so clicking OK advances the
 	// stack. Only the head (current) is shown at a time.
@@ -362,7 +362,7 @@ test("STACK: dismissing the current alert reveals the next queued one without cl
 // the test env), so the intent resolution is asserted on that attribute.
 test("INTENT: the warn variant renders the OK button as destructive (confirm + prompt)", async () => {
 	const acp = new AlertConfirmPromptStack();
-	const screen = render(AlertConfirmPrompt, { acp });
+	const screen = await render(AlertConfirmPrompt, { acp });
 
 	acp.confirm(() => {}, { title: "Delete?", variant: "warn" });
 	flushSync();
@@ -382,7 +382,7 @@ test("INTENT: the warn variant renders the OK button as destructive (confirm + p
 // warn *message* severity must not leak into the *action* intent.
 test("INTENT: the warn variant does NOT make an alert's OK button destructive", async () => {
 	const acp = new AlertConfirmPromptStack();
-	const screen = render(AlertConfirmPrompt, { acp });
+	const screen = await render(AlertConfirmPrompt, { acp });
 
 	acp.alert({ title: "Cannot close yet", variant: "warn" });
 	flushSync();
@@ -392,7 +392,7 @@ test("INTENT: the warn variant does NOT make an alert's OK button destructive", 
 
 test("INTENT: non-warn variants keep the primary OK button", async () => {
 	const acp = new AlertConfirmPromptStack();
-	const screen = render(AlertConfirmPrompt, { acp });
+	const screen = await render(AlertConfirmPrompt, { acp });
 
 	// variant defaults to "info" when not given.
 	acp.confirm(() => {}, { title: "Proceed?" });
@@ -407,7 +407,10 @@ test("INTENT: non-warn variants keep the primary OK button", async () => {
 
 test("INTENT: an explicit intentButtonPrimary wins over the warn default", async () => {
 	const acp = new AlertConfirmPromptStack();
-	const screen = render(AlertConfirmPrompt, { acp, intentButtonPrimary: "warning" });
+	const screen = await render(AlertConfirmPrompt, {
+		acp,
+		intentButtonPrimary: "warning",
+	});
 
 	acp.confirm(() => {}, { title: "Delete?", variant: "warn" });
 	flushSync();
@@ -419,7 +422,7 @@ test("INTENT: an explicit intentButtonPrimary wins over the warn default", async
 
 test("INTENT: a per dialog intentButtonPrimary wins over the component prop", async () => {
 	const acp = new AlertConfirmPromptStack();
-	const screen = render(AlertConfirmPrompt, { acp, intentButtonPrimary: "accent" });
+	const screen = await render(AlertConfirmPrompt, { acp, intentButtonPrimary: "accent" });
 
 	// Opting a single dialog out of the app wide setup (and out of the warn default).
 	acp.confirm(() => {}, {
@@ -441,7 +444,7 @@ test("INTENT: a per dialog intentButtonPrimary wins over the component prop", as
 
 test("INTENT: per dialog cancel/custom intents win over the component props", async () => {
 	const acp = new AlertConfirmPromptStack();
-	const screen = render(AlertConfirmPrompt, {
+	const screen = await render(AlertConfirmPrompt, {
 		acp,
 		intentButtonCancel: "accent",
 		intentButtonCustom: "accent",
@@ -464,7 +467,10 @@ test("INTENT: per dialog cancel/custom intents win over the component props", as
 
 test("CLASS: per dialog button classes are merged on top of the component props", async () => {
 	const acp = new AlertConfirmPromptStack();
-	const screen = render(AlertConfirmPrompt, { acp, classButtonPrimary: "min-w-24" });
+	const screen = await render(AlertConfirmPrompt, {
+		acp,
+		classButtonPrimary: "min-w-24",
+	});
 
 	acp.alert({ title: "Hi", classButton: "uppercase", classButtonPrimary: "min-w-48" });
 	flushSync();

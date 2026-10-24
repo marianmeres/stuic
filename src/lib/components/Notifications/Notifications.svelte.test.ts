@@ -25,7 +25,7 @@ test("info(): a role=alert with the text and data-type='info' appears", async ()
 	const notifications = makeStack();
 	notifications.info("Hello");
 
-	const screen = render(Notifications, { notifications });
+	const screen = await render(Notifications, { notifications });
 
 	const alert = screen.getByRole("alert");
 	await expect.element(alert).toBeInTheDocument();
@@ -35,7 +35,7 @@ test("info(): a role=alert with the text and data-type='info' appears", async ()
 
 test("the stack is reactive: items added AFTER render still appear", async () => {
 	const notifications = makeStack();
-	const screen = render(Notifications, { notifications });
+	const screen = await render(Notifications, { notifications });
 
 	// Nothing yet.
 	await expect.element(screen.getByRole("alert")).not.toBeInTheDocument();
@@ -53,7 +53,7 @@ test("success / warn / error map to their data-type", async () => {
 	notifications.warn("W");
 	notifications.error("E");
 
-	const screen = render(Notifications, { notifications });
+	const screen = await render(Notifications, { notifications });
 
 	// Wait for the stack to render (auto-retry on first appearance).
 	await expect.element(screen.getByText("S")).toBeInTheDocument();
@@ -76,7 +76,7 @@ test("adding the same content twice dedupes to one notification with a count bad
 	notifications.info("Hello");
 	notifications.info("Hello");
 
-	const screen = render(Notifications, { notifications });
+	const screen = await render(Notifications, { notifications });
 
 	// One alert (same computed id -> deduped), count badge shows "2". Locate the
 	// badge by its dedicated `.count` class (scoped, unambiguous) and poll its
@@ -94,7 +94,7 @@ test("Close button (aria-label 'Close') is present by default and removes the no
 	const notifications = makeStack();
 	notifications.info("Bye");
 
-	const screen = render(Notifications, { notifications });
+	const screen = await render(Notifications, { notifications });
 
 	await expect.element(screen.getByText("Bye")).toBeInTheDocument();
 
@@ -116,7 +116,7 @@ test("noXButton with ttl 0 -> no Close button (showXButton = !noXButton || ttl >
 	const notifications = makeStack();
 	notifications.info("NoClose");
 
-	const screen = render(Notifications, { notifications, noXButton: true });
+	const screen = await render(Notifications, { notifications, noXButton: true });
 
 	await expect.element(screen.getByText("NoClose")).toBeInTheDocument();
 	await expect
@@ -129,7 +129,7 @@ test("two distinct messages render two role=alert nodes", async () => {
 	notifications.info("First");
 	notifications.success("Second");
 
-	const screen = render(Notifications, { notifications });
+	const screen = await render(Notifications, { notifications });
 
 	await expect.element(screen.getByText("First")).toBeInTheDocument();
 	await expect.element(screen.getByText("Second")).toBeInTheDocument();
@@ -140,7 +140,7 @@ test("two distinct messages render two role=alert nodes", async () => {
 
 test("an empty stack renders no role=alert", async () => {
 	const notifications = makeStack();
-	const screen = render(Notifications, { notifications });
+	const screen = await render(Notifications, { notifications });
 
 	await expect.element(screen.getByRole("alert")).not.toBeInTheDocument();
 });

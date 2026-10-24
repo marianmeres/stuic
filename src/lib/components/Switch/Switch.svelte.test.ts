@@ -34,14 +34,14 @@ function checkbox(container: HTMLElement) {
 }
 
 test("renders the label track and the hidden checkbox input", async () => {
-	const screen = render(Switch, { "data-testid": "sw" });
+	const screen = await render(Switch, { "data-testid": "sw" });
 	await expect.element(screen.getByTestId("sw")).toBeInTheDocument();
 	await expect.element(screen.getByTestId("sw")).toHaveClass("stuic-switch");
 	await expect.element(checkbox(screen.container)).toBeInTheDocument();
 });
 
 test("the track is the announced control: role=switch, the input is aria-hidden", async () => {
-	const screen = render(Switch, { "data-testid": "sw" });
+	const screen = await render(Switch, { "data-testid": "sw" });
 	await expect.element(screen.getByRole("switch")).toBeInTheDocument();
 	await expect.element(screen.getByTestId("sw")).toHaveAttribute("role", "switch");
 	await expect.element(checkbox(screen.container)).toHaveAttribute("aria-hidden", "true");
@@ -50,7 +50,7 @@ test("the track is the announced control: role=switch, the input is aria-hidden"
 });
 
 test("label prop becomes the accessible name (aria-label)", async () => {
-	const screen = render(Switch, { "data-testid": "sw", label: "Published" });
+	const screen = await render(Switch, { "data-testid": "sw", label: "Published" });
 	await expect
 		.element(screen.getByTestId("sw"))
 		.toHaveAttribute("aria-label", "Published");
@@ -62,7 +62,7 @@ test("label prop becomes the accessible name (aria-label)", async () => {
 });
 
 test("an explicit aria-label from the caller wins over the label prop", async () => {
-	const screen = render(Switch, {
+	const screen = await render(Switch, {
 		"data-testid": "sw",
 		label: "Published",
 		"aria-label": "Live on the public page",
@@ -73,7 +73,7 @@ test("an explicit aria-label from the caller wins over the label prop", async ()
 });
 
 test("checked=true is reflected in the input, aria-checked and the data-checked attribute", async () => {
-	const screen = render(Switch, { "data-testid": "sw", checked: true });
+	const screen = await render(Switch, { "data-testid": "sw", checked: true });
 	await expect.element(checkbox(screen.container)).toBeChecked();
 	await expect.element(screen.getByRole("switch")).toBeChecked();
 	await expect.element(screen.getByTestId("sw")).toHaveAttribute("aria-checked", "true");
@@ -81,7 +81,7 @@ test("checked=true is reflected in the input, aria-checked and the data-checked 
 });
 
 test("checked=false leaves the input unchecked with aria-checked/data-checked false", async () => {
-	const screen = render(Switch, { "data-testid": "sw", checked: false });
+	const screen = await render(Switch, { "data-testid": "sw", checked: false });
 	await expect.element(checkbox(screen.container)).not.toBeChecked();
 	await expect.element(screen.getByRole("switch")).not.toBeChecked();
 	await expect.element(screen.getByTestId("sw")).toHaveAttribute("aria-checked", "false");
@@ -89,7 +89,7 @@ test("checked=false leaves the input unchecked with aria-checked/data-checked fa
 });
 
 test("clicking the track toggles the input checked state (reactivity proof)", async () => {
-	const screen = render(Switch, { "data-testid": "sw", checked: false });
+	const screen = await render(Switch, { "data-testid": "sw", checked: false });
 	const input = checkbox(screen.container);
 	await expect.element(input).not.toBeChecked();
 
@@ -110,13 +110,13 @@ test("clicking the track toggles the input checked state (reactivity proof)", as
 
 test("onclick callback fires once when the track is clicked", async () => {
 	const onclick = vi.fn();
-	const screen = render(Switch, { "data-testid": "sw", checked: false, onclick });
+	const screen = await render(Switch, { "data-testid": "sw", checked: false, onclick });
 	await screen.getByTestId("sw").click(HIT);
 	expect(onclick).toHaveBeenCalledOnce();
 });
 
 test("disabled marks the input disabled and sets data-disabled + aria-disabled", async () => {
-	const screen = render(Switch, {
+	const screen = await render(Switch, {
 		"data-testid": "sw",
 		checked: false,
 		disabled: true,
@@ -132,34 +132,34 @@ test("disabled marks the input disabled and sets data-disabled + aria-disabled",
 });
 
 test("required is announced on the switch (the input carrying it is aria-hidden)", async () => {
-	const screen = render(Switch, { "data-testid": "sw", required: true });
+	const screen = await render(Switch, { "data-testid": "sw", required: true });
 	await expect.element(checkbox(screen.container)).toBeRequired();
 	await expect.element(screen.getByTestId("sw")).toHaveAttribute("aria-required", "true");
 });
 
 test("no aria-disabled / aria-required when not disabled / not required", async () => {
-	const screen = render(Switch, { "data-testid": "sw" });
+	const screen = await render(Switch, { "data-testid": "sw" });
 	await expect.element(screen.getByTestId("sw")).not.toHaveAttribute("aria-disabled");
 	await expect.element(screen.getByTestId("sw")).not.toHaveAttribute("aria-required");
 	await expect.element(screen.getByTestId("sw")).not.toHaveAttribute("aria-invalid");
 });
 
 test("intent is reflected via the data-intent attribute", async () => {
-	const screen = render(Switch, { "data-testid": "sw", intent: "success" });
+	const screen = await render(Switch, { "data-testid": "sw", intent: "success" });
 	await expect
 		.element(screen.getByTestId("sw"))
 		.toHaveAttribute("data-intent", "success");
 });
 
 test("name is forwarded to the hidden checkbox for form participation", async () => {
-	const screen = render(Switch, { "data-testid": "sw", name: "notifications" });
+	const screen = await render(Switch, { "data-testid": "sw", name: "notifications" });
 	await expect
 		.element(checkbox(screen.container))
 		.toHaveAttribute("name", "notifications");
 });
 
 test("on snippet renders inside the dot when checked", async () => {
-	const screen = render(Switch, {
+	const screen = await render(Switch, {
 		"data-testid": "sw",
 		checked: true,
 		on: text("ON"),
@@ -170,7 +170,7 @@ test("on snippet renders inside the dot when checked", async () => {
 });
 
 test("off snippet renders inside the dot when unchecked", async () => {
-	const screen = render(Switch, {
+	const screen = await render(Switch, {
 		"data-testid": "sw",
 		checked: false,
 		on: text("ON"),
@@ -181,7 +181,7 @@ test("off snippet renders inside the dot when unchecked", async () => {
 });
 
 test("a failed validation is announced via aria-invalid on the switch", async () => {
-	const screen = render(Switch, {
+	const screen = await render(Switch, {
 		"data-testid": "sw",
 		required: true,
 		validate: true,

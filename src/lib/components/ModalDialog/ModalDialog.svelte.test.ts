@@ -15,7 +15,7 @@ import Fixture from "./ModalDialog.fixture.svelte";
 //     propagation). The various no*Close props gate those paths.
 
 test("starts closed; clicking the opener calls open() and shows role=dialog (async)", async () => {
-	const screen = render(Fixture);
+	const screen = await render(Fixture);
 	// visible starts undefined -> nothing is rendered.
 	await expect.element(screen.getByRole("dialog")).not.toBeInTheDocument();
 
@@ -27,7 +27,7 @@ test("starts closed; clicking the opener calls open() and shows role=dialog (asy
 });
 
 test("the focus trap auto-focuses the first focusable element inside the dialog", async () => {
-	const screen = render(Fixture);
+	const screen = await render(Fixture);
 	await screen.getByTestId("opener").click();
 	await expect.element(screen.getByRole("dialog")).toBeInTheDocument();
 	// The box div has no positive tabindex by default, so the first focusable is
@@ -36,7 +36,7 @@ test("the focus trap auto-focuses the first focusable element inside the dialog"
 });
 
 test("Escape (keydown on the dialog) closes it by default", async () => {
-	const screen = render(Fixture);
+	const screen = await render(Fixture);
 	await screen.getByTestId("opener").click();
 	await expect.element(screen.getByRole("dialog")).toBeInTheDocument();
 
@@ -47,7 +47,7 @@ test("Escape (keydown on the dialog) closes it by default", async () => {
 });
 
 test("noEscapeClose keeps the dialog open on Escape", async () => {
-	const screen = render(Fixture, { noEscapeClose: true });
+	const screen = await render(Fixture, { noEscapeClose: true });
 	await screen.getByTestId("opener").click();
 	await expect.element(screen.getByRole("dialog")).toBeInTheDocument();
 
@@ -59,7 +59,7 @@ test("noEscapeClose keeps the dialog open on Escape", async () => {
 });
 
 test("preEscapeClose returning false vetoes the Escape close", async () => {
-	const screen = render(Fixture, { preEscapeClose: () => false });
+	const screen = await render(Fixture, { preEscapeClose: () => false });
 	await screen.getByTestId("opener").click();
 	await expect.element(screen.getByRole("dialog")).toBeInTheDocument();
 
@@ -76,7 +76,7 @@ test("async preEscapeClose resolving to false keeps the dialog open", async () =
 		calls++;
 		return false;
 	};
-	const screen = render(Fixture, { preEscapeClose });
+	const screen = await render(Fixture, { preEscapeClose });
 	await screen.getByTestId("opener").click();
 	await expect.element(screen.getByRole("dialog")).toBeInTheDocument();
 
@@ -96,7 +96,7 @@ test("rapid double-Escape during a pending async preEscapeClose invokes the hook
 		calls++;
 		return gate.then(() => undefined);
 	};
-	const screen = render(Fixture, { preEscapeClose });
+	const screen = await render(Fixture, { preEscapeClose });
 	await screen.getByTestId("opener").click();
 	await expect.element(screen.getByRole("dialog")).toBeInTheDocument();
 
@@ -124,7 +124,7 @@ test("a vetoed Escape can be retried: the latch resets so a later Escape re-runs
 		calls++;
 		return calls === 1 ? false : undefined;
 	};
-	const screen = render(Fixture, { preEscapeClose });
+	const screen = await render(Fixture, { preEscapeClose });
 	await screen.getByTestId("opener").click();
 	await expect.element(screen.getByRole("dialog")).toBeInTheDocument();
 
@@ -149,7 +149,7 @@ test("programmatic close() is NOT gated by the Escape veto (preEscapeClose)", as
 		calls++;
 		return false;
 	};
-	const screen = render(Fixture, { preEscapeClose });
+	const screen = await render(Fixture, { preEscapeClose });
 	await screen.getByTestId("opener").click();
 	await expect.element(screen.getByRole("dialog")).toBeInTheDocument();
 
@@ -164,7 +164,7 @@ test("noEscapeClose keeps the dialog open AND never calls preEscapeClose", async
 	const preEscapeClose = () => {
 		calls++;
 	};
-	const screen = render(Fixture, { noEscapeClose: true, preEscapeClose });
+	const screen = await render(Fixture, { noEscapeClose: true, preEscapeClose });
 	await screen.getByTestId("opener").click();
 	await expect.element(screen.getByRole("dialog")).toBeInTheDocument();
 
@@ -177,7 +177,7 @@ test("noEscapeClose keeps the dialog open AND never calls preEscapeClose", async
 });
 
 test("a click on the dialog backdrop (e.target === dialog) closes it", async () => {
-	const screen = render(Fixture);
+	const screen = await render(Fixture);
 	await screen.getByTestId("opener").click();
 	await expect.element(screen.getByRole("dialog")).toBeInTheDocument();
 
@@ -190,7 +190,7 @@ test("a click on the dialog backdrop (e.target === dialog) closes it", async () 
 });
 
 test("clicking inside the box keeps the dialog open (box stops propagation)", async () => {
-	const screen = render(Fixture);
+	const screen = await render(Fixture);
 	await screen.getByTestId("opener").click();
 	await expect.element(screen.getByRole("dialog")).toBeInTheDocument();
 
@@ -203,7 +203,7 @@ test("clicking inside the box keeps the dialog open (box stops propagation)", as
 });
 
 test("noClickOutsideClose keeps the dialog open on a backdrop click", async () => {
-	const screen = render(Fixture, { noClickOutsideClose: true });
+	const screen = await render(Fixture, { noClickOutsideClose: true });
 	await screen.getByTestId("opener").click();
 	await expect.element(screen.getByRole("dialog")).toBeInTheDocument();
 
@@ -215,7 +215,7 @@ test("noClickOutsideClose keeps the dialog open on a backdrop click", async () =
 });
 
 test("ariaLabelledby is forwarded to aria-labelledby on the dialog", async () => {
-	const screen = render(Fixture, { ariaLabelledby: "the-title" });
+	const screen = await render(Fixture, { ariaLabelledby: "the-title" });
 	await screen.getByTestId("opener").click();
 	await expect
 		.element(screen.getByRole("dialog"))

@@ -608,7 +608,7 @@ test("external bind:value reassignment resyncs the record; toggling readonly kee
 	await screen.getByLabelText("Street").fill("Edited");
 	await expect
 		.element(screen.getByTestId("bound"))
-		.toHaveTextContent('"street":"Edited"');
+		.toMatchTextContent('"street":"Edited"');
 	await screen.getByTestId("set-external").click();
 	await expect.element(screen.getByLabelText("Street")).toHaveValue("External");
 	await expect.element(screen.getByLabelText("Qty (pcs)")).toHaveValue("");

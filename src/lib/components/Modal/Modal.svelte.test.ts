@@ -19,7 +19,7 @@ const text = (s: string) =>
 	createRawSnippet(() => ({ render: () => `<span>${s}</span>` }));
 
 test("visible:true opens the dialog asynchronously and renders children", async () => {
-	const screen = render(Modal, { visible: true, children: button("Go") });
+	const screen = await render(Modal, { visible: true, children: button("Go") });
 	const dialog = screen.getByRole("dialog");
 	// expect.element retries absorb the waitForNextRepaint().then(showModal) delay.
 	await expect.element(dialog).toBeInTheDocument();
@@ -30,14 +30,14 @@ test("visible:true opens the dialog asynchronously and renders children", async 
 });
 
 test("focus trap moves focus to the first focusable child once open", async () => {
-	const screen = render(Modal, { visible: true, children: button("Go") });
+	const screen = await render(Modal, { visible: true, children: button("Go") });
 	await expect.element(screen.getByRole("dialog")).toBeInTheDocument();
 	// use:focusTrap with autoFocusFirst auto-focuses the first focusable descendant.
 	await expect.element(screen.getByRole("button", { name: "Go" })).toHaveFocus();
 });
 
 test("header / footer snippets render their content", async () => {
-	const screen = render(Modal, {
+	const screen = await render(Modal, {
 		visible: true,
 		children: button("Go"),
 		header: text("Modal title"),
@@ -49,7 +49,7 @@ test("header / footer snippets render their content", async () => {
 });
 
 test("labelledby / describedby map to aria-* attributes on the dialog", async () => {
-	const screen = render(Modal, {
+	const screen = await render(Modal, {
 		visible: true,
 		children: button("Go"),
 		labelledby: "the-title",
@@ -63,7 +63,7 @@ test("labelledby / describedby map to aria-* attributes on the dialog", async ()
 
 test("Escape calls onEscape and closes the dialog", async () => {
 	const onEscape = vi.fn();
-	const screen = render(Modal, { visible: true, children: button("Go"), onEscape });
+	const screen = await render(Modal, { visible: true, children: button("Go"), onEscape });
 	const dialog = screen.getByRole("dialog");
 	await expect.element(dialog).toBeInTheDocument();
 	// Opening alone must not fire onEscape (guards against spurious wiring on mount).
@@ -85,7 +85,7 @@ test("onEscape returning false vetoes the close (modal stays open)", async () =>
 		calls++;
 		return false;
 	};
-	const screen = render(Modal, { visible: true, children: button("Go"), onEscape });
+	const screen = await render(Modal, { visible: true, children: button("Go"), onEscape });
 	const dialog = screen.getByRole("dialog");
 	await expect.element(dialog).toBeInTheDocument();
 
@@ -104,7 +104,7 @@ test("onEscape returning true (sync) closes (only an explicit false vetoes)", as
 		calls++;
 		return true;
 	};
-	const screen = render(Modal, { visible: true, children: button("Go"), onEscape });
+	const screen = await render(Modal, { visible: true, children: button("Go"), onEscape });
 	const dialog = screen.getByRole("dialog");
 	await expect.element(dialog).toBeInTheDocument();
 
@@ -121,7 +121,7 @@ test("onEscape resolving to false (async) vetoes the close", async () => {
 		calls++;
 		return false;
 	};
-	const screen = render(Modal, { visible: true, children: button("Go"), onEscape });
+	const screen = await render(Modal, { visible: true, children: button("Go"), onEscape });
 	const dialog = screen.getByRole("dialog");
 	await expect.element(dialog).toBeInTheDocument();
 
@@ -140,7 +140,7 @@ test("onEscape resolving to true (async) closes after the promise resolves", asy
 		calls++;
 		return true;
 	};
-	const screen = render(Modal, { visible: true, children: button("Go"), onEscape });
+	const screen = await render(Modal, { visible: true, children: button("Go"), onEscape });
 	const dialog = screen.getByRole("dialog");
 	await expect.element(dialog).toBeInTheDocument();
 
@@ -154,7 +154,7 @@ test("onEscape resolving to true (async) closes after the promise resolves", asy
 
 test("escaped key other than Escape neither fires onEscape nor closes", async () => {
 	const onEscape = vi.fn();
-	const screen = render(Modal, { visible: true, children: button("Go"), onEscape });
+	const screen = await render(Modal, { visible: true, children: button("Go"), onEscape });
 	const dialog = screen.getByRole("dialog");
 	await expect.element(dialog).toBeInTheDocument();
 

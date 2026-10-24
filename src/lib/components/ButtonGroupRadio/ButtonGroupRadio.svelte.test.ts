@@ -13,7 +13,7 @@ import ButtonGroupRadio from "./ButtonGroupRadio.svelte";
 const OPTIONS = ["Apple", "Banana", "Cherry"];
 
 test("root is a radiogroup, only rendered when there are options, with one radio per option", async () => {
-	const screen = render(ButtonGroupRadio, { options: OPTIONS });
+	const screen = await render(ButtonGroupRadio, { options: OPTIONS });
 	const group = screen.getByRole("radiogroup");
 	await expect.element(group).toBeInTheDocument();
 	await expect.element(group).toHaveClass("stuic-button-group");
@@ -24,23 +24,23 @@ test("root is a radiogroup, only rendered when there are options, with one radio
 });
 
 test("root is NOT rendered when there are no options (the {#if coll.size} guard)", async () => {
-	const screen = render(ButtonGroupRadio, { options: [] });
+	const screen = await render(ButtonGroupRadio, { options: [] });
 	// coll.size === 0 -> the whole <div role="radiogroup"> block is skipped
 	await expect.element(screen.getByRole("radiogroup")).not.toBeInTheDocument();
 });
 
 test("size defaults to md and is reflected as data-size on the radiogroup", async () => {
-	const screen = render(ButtonGroupRadio, { options: OPTIONS });
+	const screen = await render(ButtonGroupRadio, { options: OPTIONS });
 	await expect.element(screen.getByRole("radiogroup")).toHaveAttribute("data-size", "md");
 });
 
 test("size prop is reflected as data-size on the radiogroup", async () => {
-	const screen = render(ButtonGroupRadio, { options: OPTIONS, size: "lg" });
+	const screen = await render(ButtonGroupRadio, { options: OPTIONS, size: "lg" });
 	await expect.element(screen.getByRole("radiogroup")).toHaveAttribute("data-size", "lg");
 });
 
 test("initial value selects the matching radio (aria-checked) and leaves the others unchecked", async () => {
-	const screen = render(ButtonGroupRadio, { options: OPTIONS, value: "Banana" });
+	const screen = await render(ButtonGroupRadio, { options: OPTIONS, value: "Banana" });
 	await expect
 		.element(screen.getByRole("radio", { name: "Banana" }))
 		.toHaveAttribute("aria-checked", "true");
@@ -53,7 +53,7 @@ test("initial value selects the matching radio (aria-checked) and leaves the oth
 });
 
 test("clicking a radio moves the selection (REACTIVITY): the clicked one becomes checked, the previous one unchecks", async () => {
-	const screen = render(ButtonGroupRadio, { options: OPTIONS, value: "Banana" });
+	const screen = await render(ButtonGroupRadio, { options: OPTIONS, value: "Banana" });
 	const banana = screen.getByRole("radio", { name: "Banana" });
 	const cherry = screen.getByRole("radio", { name: "Cherry" });
 
@@ -69,7 +69,7 @@ test("clicking a radio moves the selection (REACTIVITY): the clicked one becomes
 
 test("onButtonClick fires with (index, coll) and activation still proceeds when it returns undefined", async () => {
 	const onButtonClick = vi.fn(); // returns undefined -> does not prevent
-	const screen = render(ButtonGroupRadio, {
+	const screen = await render(ButtonGroupRadio, {
 		options: OPTIONS,
 		value: "Apple",
 		onButtonClick,
@@ -85,7 +85,7 @@ test("onButtonClick fires with (index, coll) and activation still proceeds when 
 });
 
 test("onButtonClick returning false prevents activation (aria-checked stays false)", async () => {
-	const screen = render(ButtonGroupRadio, {
+	const screen = await render(ButtonGroupRadio, {
 		options: OPTIONS,
 		value: "Apple",
 		onButtonClick: () => false,
@@ -102,7 +102,7 @@ test("onButtonClick returning false prevents activation (aria-checked stays fals
 });
 
 test("disabled=true disables the radios (state-only; do not click a disabled radio)", async () => {
-	const screen = render(ButtonGroupRadio, {
+	const screen = await render(ButtonGroupRadio, {
 		options: OPTIONS,
 		value: "Banana",
 		disabled: true,
@@ -118,14 +118,14 @@ test("disabled=true disables the radios (state-only; do not click a disabled rad
 const OPTIONS_WITH_DISABLED = ["Apple", { label: "Banana", disabled: true }, "Cherry"];
 
 test("a per-option `disabled` flag disables only that radio, leaving the others enabled", async () => {
-	const screen = render(ButtonGroupRadio, { options: OPTIONS_WITH_DISABLED });
+	const screen = await render(ButtonGroupRadio, { options: OPTIONS_WITH_DISABLED });
 	await expect.element(screen.getByRole("radio", { name: "Banana" })).toBeDisabled();
 	await expect.element(screen.getByRole("radio", { name: "Apple" })).not.toBeDisabled();
 	await expect.element(screen.getByRole("radio", { name: "Cherry" })).not.toBeDisabled();
 });
 
 test("keyboard navigation skips a disabled option (ArrowRight from Apple lands on Cherry, not the disabled Banana)", async () => {
-	const screen = render(ButtonGroupRadio, {
+	const screen = await render(ButtonGroupRadio, {
 		options: OPTIONS_WITH_DISABLED,
 		value: "Apple",
 	});

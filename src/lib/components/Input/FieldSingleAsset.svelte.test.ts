@@ -24,20 +24,20 @@ import { NotificationsStack } from "../Notifications/notifications-stack.svelte.
 //   - `pasteable` shares FieldAssets' document-level paste registry
 //   - `required` is enforced through the hidden input's validator
 
-const ASSET: FieldAsset = { id: "a1", url: "/x.jpg", name: "x.jpg", type: "image/jpeg" };
-
-// Loadable, hermetic 1x1 PNG for the test that opens the AssetsPreview lightbox: the
-// preview preloads images without .catch, so a dead URL there rejects unhandled.
+// Loadable, hermetic 1x1 PNG. A dead URL would be requested from the test server
+// (where SvelteKit's dev middleware fails to SSR its 404 and logs a stack trace), and
+// the AssetsPreview lightbox preloads images without .catch, so it would also reject
+// unhandled there.
 const PNG_1X1 =
 	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
-const LOADABLE_ASSET: FieldAsset = { ...ASSET, url: PNG_1X1 };
+const ASSET: FieldAsset = { id: "a1", url: PNG_1X1, name: "x.jpg", type: "image/jpeg" };
 
 const file = (name = "shot.png", type = "image/png", bytes = "fake-bytes") =>
 	new File([bytes], name, { type });
 
 const uploaded = (a: FieldAsset, id = "up-1"): FieldAsset => ({
 	id,
-	url: { thumb: "/t.jpg", full: "/f.jpg" },
+	url: { thumb: `${PNG_1X1}#t`, full: `${PNG_1X1}#f` },
 	name: a.name,
 	type: a.type,
 });
@@ -568,7 +568,7 @@ test("preview action opens the AssetsPreview dialog; its Delete removes the asse
 	const screen = await render(FieldSingleAsset, {
 		name: "a",
 		label: "Photo",
-		value: JSON.stringify(LOADABLE_ASSET),
+		value: JSON.stringify(ASSET),
 		processAsset: resolvingUpload(),
 	});
 	const { action, state } = els(screen.container);

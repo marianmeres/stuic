@@ -16,7 +16,7 @@ const text = (s: string) =>
 	createRawSnippet(() => ({ render: () => `<span>${s}</span>` }));
 
 test("renders a native button.stuic-list-item-button[type=button] with children", async () => {
-	const screen = render(ListItemButton, { children: text("Hello") });
+	const screen = await render(ListItemButton, { children: text("Hello") });
 	const btn = screen.getByRole("button");
 	await expect.element(btn).toBeInTheDocument();
 	await expect.element(btn).toHaveClass("stuic-list-item-button");
@@ -31,25 +31,25 @@ test("renders a native button.stuic-list-item-button[type=button] with children"
 });
 
 test("active=true sets data-active to an empty-string attribute", async () => {
-	const screen = render(ListItemButton, { active: true, children: text("Item") });
+	const screen = await render(ListItemButton, { active: true, children: text("Item") });
 	const btn = screen.getByRole("button");
 	await expect.element(btn).toHaveAttribute("data-active", "");
 });
 
 test("focused=true sets data-focused to an empty-string attribute", async () => {
-	const screen = render(ListItemButton, { focused: true, children: text("Item") });
+	const screen = await render(ListItemButton, { focused: true, children: text("Item") });
 	const btn = screen.getByRole("button");
 	await expect.element(btn).toHaveAttribute("data-focused", "");
 });
 
 test("preset size 'lg' maps to data-size='lg'", async () => {
-	const screen = render(ListItemButton, { size: "lg", children: text("Big") });
+	const screen = await render(ListItemButton, { size: "lg", children: text("Big") });
 	const btn = screen.getByRole("button");
 	await expect.element(btn).toHaveAttribute("data-size", "lg");
 });
 
 test("custom size (non-preset) has no data-size but is merged into the class list", async () => {
-	const screen = render(ListItemButton, { size: "h-20", children: text("Tall") });
+	const screen = await render(ListItemButton, { size: "h-20", children: text("Tall") });
 	const btn = screen.getByRole("button");
 	// non-preset size is NOT reflected as data-size...
 	await expect.element(btn).not.toHaveAttribute("data-size");
@@ -61,7 +61,7 @@ test("custom size (non-preset) has no data-size but is merged into the class lis
 test("disabled=true disables the button (assert state — do not click)", async () => {
 	// onclick/disabled arrive via ...rest (HTMLButtonAttributes)
 	const onclick = vi.fn();
-	const screen = render(ListItemButton, {
+	const screen = await render(ListItemButton, {
 		disabled: true,
 		onclick,
 		children: text("Nope"),
@@ -71,13 +71,13 @@ test("disabled=true disables the button (assert state — do not click)", async 
 
 test("onclick fires once on click (enabled button)", async () => {
 	const onclick = vi.fn();
-	const screen = render(ListItemButton, { onclick, children: text("Click") });
+	const screen = await render(ListItemButton, { onclick, children: text("Click") });
 	await screen.getByRole("button").click();
 	expect(onclick).toHaveBeenCalledOnce();
 });
 
 test("href renders an anchor (link) and no button, with data-* still applied", async () => {
-	const screen = render(ListItemButton, {
+	const screen = await render(ListItemButton, {
 		href: "/x",
 		size: "lg",
 		active: true,
@@ -95,7 +95,7 @@ test("href renders an anchor (link) and no button, with data-* still applied", a
 });
 
 test("contentBefore/contentAfter THC { text } render as visible plain text", async () => {
-	const screen = render(ListItemButton, {
+	const screen = await render(ListItemButton, {
 		contentBefore: { text: "B4" },
 		contentAfter: { text: "AF" },
 		children: text("Main"),
@@ -109,7 +109,7 @@ test("contentBefore/contentAfter THC { text } render as visible plain text", asy
 });
 
 test("unstyled=true drops the base class and suppresses the data-* state attributes", async () => {
-	const screen = render(ListItemButton, {
+	const screen = await render(ListItemButton, {
 		unstyled: true,
 		size: "lg",
 		active: true,

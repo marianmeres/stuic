@@ -17,7 +17,7 @@ import Fixture from "./SlidingPanels.fixture.svelte";
 // so it absorbs the ~60ms transition without any fixed sleep.
 
 test("both panels render initially; A is active, B is present but off-screen (not destroyed)", async () => {
-	const screen = render(Fixture, { duration: 60 });
+	const screen = await render(Fixture, { duration: 60 });
 	// destroyInactive defaults true, but the *inactive* panel is only destroyed
 	// AFTER a transition — on initial mount both A and B are in the DOM.
 	await expect.element(screen.getByText("Panel A")).toBeInTheDocument();
@@ -28,7 +28,7 @@ test("both panels render initially; A is active, B is present but off-screen (no
 });
 
 test("show('B'): after the transition completes, Panel A is destroyed and Panel B is shown", async () => {
-	const screen = render(Fixture, { duration: 60 });
+	const screen = await render(Fixture, { duration: 60 });
 
 	await screen.getByRole("button", { name: /go B/i }).click();
 
@@ -39,7 +39,7 @@ test("show('B'): after the transition completes, Panel A is destroyed and Panel 
 });
 
 test("show('B') then show('A'): Panel B is destroyed and Panel A is shown again", async () => {
-	const screen = render(Fixture, { duration: 60 });
+	const screen = await render(Fixture, { duration: 60 });
 
 	// Transition A -> B.
 	await screen.getByRole("button", { name: /go B/i }).click();

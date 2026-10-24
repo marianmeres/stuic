@@ -35,8 +35,8 @@ type HarnessExports = {
 	validate: () => boolean;
 };
 
-function renderHarness(props: Record<string, unknown>) {
-	const screen = render(Harness, props);
+async function renderHarness(props: Record<string, unknown>) {
+	const screen = await render(Harness, props);
 	return { screen, h: screen.component as unknown as HarnessExports };
 }
 
@@ -46,7 +46,7 @@ test("without `subdivisions` the field is the unchanged free-text input (regress
 	// Seeded with a display-name value: with the feature OFF nothing may
 	// reconcile, require, or re-label the field — the pre-feature behavior
 	// verbatim.
-	const { screen, h } = renderHarness({
+	const { screen, h } = await renderHarness({
 		initial: { country: "US", state_or_region: "Michigan" },
 	});
 	const input = screen.getByLabelText(LABEL);
@@ -58,7 +58,7 @@ test("without `subdivisions` the field is the unchanged free-text input (regress
 });
 
 test("mode swaps live on country edits: listed → select, unlisted/unknown → input", async () => {
-	const { screen, h } = renderHarness({
+	const { screen, h } = await renderHarness({
 		initial: { country: "US" },
 		subdivisions: SUBDIVISIONS,
 	});
@@ -79,7 +79,7 @@ test("mode swaps live on country edits: listed → select, unlisted/unknown → 
 // --- stored value ----------------------------------------------------------
 
 test("selecting an option stores the `code`, not the display name", async () => {
-	const { screen, h } = renderHarness({
+	const { screen, h } = await renderHarness({
 		initial: { country: "US" },
 		subdivisions: SUBDIVISIONS,
 	});
@@ -92,7 +92,7 @@ test("selecting an option stores the `code`, not the display name", async () => 
 // --- prefill reconciliation ------------------------------------------------
 
 test("reconciliation: lowercase code is normalized to the canonical code", async () => {
-	const { screen, h } = renderHarness({
+	const { screen, h } = await renderHarness({
 		initial: { country: "US", state_or_region: "mi" },
 		subdivisions: SUBDIVISIONS,
 	});
@@ -101,7 +101,7 @@ test("reconciliation: lowercase code is normalized to the canonical code", async
 });
 
 test("reconciliation: display-name value is rewritten to its code (self-heals legacy rows)", async () => {
-	const { screen, h } = renderHarness({
+	const { screen, h } = await renderHarness({
 		initial: { country: "US", state_or_region: "Michigan" },
 		subdivisions: SUBDIVISIONS,
 	});
@@ -110,7 +110,7 @@ test("reconciliation: display-name value is rewritten to its code (self-heals le
 });
 
 test("reconciliation: unrecognized value renders unselected but is NEVER destroyed", async () => {
-	const { screen, h } = renderHarness({
+	const { screen, h } = await renderHarness({
 		initial: { country: "US", state_or_region: "Narnia" },
 		subdivisions: SUBDIVISIONS,
 	});
@@ -122,7 +122,7 @@ test("reconciliation: unrecognized value renders unselected but is NEVER destroy
 });
 
 test("reconciliation: empty value stays empty (no write), placeholder option shows", async () => {
-	const { screen, h } = renderHarness({
+	const { screen, h } = await renderHarness({
 		initial: { country: "US", state_or_region: "" },
 		subdivisions: SUBDIVISIONS,
 	});
@@ -133,7 +133,7 @@ test("reconciliation: empty value stays empty (no write), placeholder option sho
 });
 
 test("country round-trip preserves the stored code (US → CA → US restores 'MI')", async () => {
-	const { screen, h } = renderHarness({
+	const { screen, h } = await renderHarness({
 		initial: { country: "US", state_or_region: "MI" },
 		subdivisions: SUBDIVISIONS,
 	});
@@ -156,7 +156,7 @@ test("country round-trip preserves the stored code (US → CA → US restores 'M
 // first one document-wide.
 
 test("select mode is required by default", async () => {
-	const { screen } = renderHarness({
+	const { screen } = await renderHarness({
 		initial: { country: "US" },
 		subdivisions: SUBDIVISIONS,
 	});
@@ -164,7 +164,7 @@ test("select mode is required by default", async () => {
 });
 
 test("subdivisionRequired=false opts out of select-mode required", async () => {
-	const { screen } = renderHarness({
+	const { screen } = await renderHarness({
 		initial: { country: "US" },
 		subdivisions: SUBDIVISIONS,
 		subdivisionRequired: false,
@@ -173,7 +173,7 @@ test("subdivisionRequired=false opts out of select-mode required", async () => {
 });
 
 test("subdivisionRequired accepts a per-country predicate", async () => {
-	const { screen, h } = renderHarness({
+	const { screen, h } = await renderHarness({
 		initial: { country: "US" },
 		subdivisions: SUBDIVISIONS,
 		subdivisionRequired: (cc: string) => cc === "CA",
@@ -184,7 +184,7 @@ test("subdivisionRequired accepts a per-country predicate", async () => {
 });
 
 test("input mode keeps the plain requiredFields behavior (not required by default)", async () => {
-	const { screen } = renderHarness({
+	const { screen } = await renderHarness({
 		initial: { country: "SK" },
 		subdivisions: SUBDIVISIONS,
 	});
@@ -194,7 +194,7 @@ test("input mode keeps the plain requiredFields behavior (not required by defaul
 });
 
 test("a requiredFields entry for state_or_region wins over subdivisionRequired=false", async () => {
-	const { screen } = renderHarness({
+	const { screen } = await renderHarness({
 		initial: { country: "US" },
 		subdivisions: SUBDIVISIONS,
 		subdivisionRequired: false,
@@ -211,7 +211,7 @@ test("a requiredFields entry for state_or_region wins over subdivisionRequired=f
 });
 
 test("validate() blocks an empty required subdivision and passes once one is picked", async () => {
-	const { screen, h } = renderHarness({
+	const { screen, h } = await renderHarness({
 		initial: {
 			name: "Jo",
 			street: "1 Main St",
@@ -232,7 +232,7 @@ test("validate() blocks an empty required subdivision and passes once one is pic
 // --- stateField snippet override -------------------------------------------
 
 test("stateField snippet replaces the built-in field and receives the active options", async () => {
-	const { screen, h } = renderHarness({
+	const { screen, h } = await renderHarness({
 		initial: { country: "US" },
 		subdivisions: SUBDIVISIONS,
 		withCustomStateField: true,
@@ -254,7 +254,7 @@ test("stateField snippet replaces the built-in field and receives the active opt
 });
 
 test("stateField snippet: built-in reconciliation is OFF — the custom control owns the value", async () => {
-	const { screen, h } = renderHarness({
+	const { screen, h } = await renderHarness({
 		initial: { country: "US", state_or_region: "Michigan" },
 		subdivisions: SUBDIVISIONS,
 		withCustomStateField: true,
@@ -270,7 +270,7 @@ test("stateField snippet: built-in reconciliation is OFF — the custom control 
 // --- free-text (input mode) value preservation ------------------------------
 
 test("free-text countries keep raw text verbatim even with `subdivisions` passed", async () => {
-	const { screen, h } = renderHarness({
+	const { screen, h } = await renderHarness({
 		initial: { country: "SK", state_or_region: "Bratislavský kraj" },
 		subdivisions: SUBDIVISIONS,
 	});
@@ -281,7 +281,7 @@ test("free-text countries keep raw text verbatim even with `subdivisions` passed
 });
 
 test("round-trip THROUGH input mode preserves the code (US 'MI' → SK shows text → US reselects)", async () => {
-	const { screen, h } = renderHarness({
+	const { screen, h } = await renderHarness({
 		initial: { country: "US", state_or_region: "MI" },
 		subdivisions: SUBDIVISIONS,
 	});
@@ -300,7 +300,7 @@ test("round-trip THROUGH input mode preserves the code (US 'MI' → SK shows tex
 });
 
 test("a name typed in input mode reconciles to its code when the country later matches", async () => {
-	const { screen, h } = renderHarness({
+	const { screen, h } = await renderHarness({
 		initial: { country: "SK" },
 		subdivisions: SUBDIVISIONS,
 	});
@@ -320,7 +320,7 @@ test("a name typed in input mode reconciles to its code when the country later m
 // --- required / errors through validate() -----------------------------------
 
 test("subdivisionRequired=false: validate() passes with an empty subdivision", async () => {
-	const { screen, h } = renderHarness({
+	const { screen, h } = await renderHarness({
 		initial: {
 			name: "Jo",
 			street: "1 Main St",
@@ -337,7 +337,7 @@ test("subdivisionRequired=false: validate() passes with an empty subdivision", a
 });
 
 test("external `errors` for state_or_region surface inline in select mode via validate()", async () => {
-	const { screen, h } = renderHarness({
+	const { screen, h } = await renderHarness({
 		initial: { country: "US", state_or_region: "MI" },
 		subdivisions: SUBDIVISIONS,
 		errors: [{ field: "address.state_or_region", message: "Server rejected this state" }],
@@ -352,7 +352,7 @@ test("external `errors` for state_or_region surface inline in select mode via va
 // --- plain (non-$state) address object --------------------------------------
 
 test("plain address object: country edits made through the form still flip the mode live", async () => {
-	const screen = render(PlainHarness, {
+	const screen = await render(PlainHarness, {
 		initial: { country: "SK", state_or_region: "Michigan" },
 		subdivisions: SUBDIVISIONS,
 	});

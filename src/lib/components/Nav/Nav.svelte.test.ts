@@ -24,7 +24,7 @@ beforeEach(() => localStorage.clear());
 
 test("(1) non-interactive section title renders as a span, not a button", async () => {
 	const groups: NavGroup[] = [{ title: "Group A", items: [] }];
-	const screen = render(Nav, { groups, title: "Main", persistState: false });
+	const screen = await render(Nav, { groups, title: "Main", persistState: false });
 
 	// The title text is present...
 	await expect.element(screen.getByText("Main")).toBeInTheDocument();
@@ -41,7 +41,7 @@ test("(1) non-interactive section title renders as a span, not a button", async 
 test("(2) collapsibleTitle renders a button that toggles aria-expanded", async () => {
 	const groups: NavGroup[] = [{ title: "Group A", items: [] }];
 	const onTitleToggle = vi.fn();
-	const screen = render(Nav, {
+	const screen = await render(Nav, {
 		groups,
 		title: "Main",
 		collapsibleTitle: true,
@@ -68,7 +68,7 @@ test("(3) group header is collapsed by default; clicking expands it, items appea
 			items: [{ id: "a1", label: "Item A1", href: "/a1" }],
 		},
 	];
-	const screen = render(Nav, { groups, persistState: false, onGroupToggle });
+	const screen = await render(Nav, { groups, persistState: false, onGroupToggle });
 
 	const header = screen.getByRole("button", { name: "Group A" });
 	await expect.element(header).toBeInTheDocument();
@@ -103,7 +103,7 @@ test("(4) active href leaf has data-active and aria-current=page (activeId auto-
 		},
 	];
 	// activeId matches a2 -> its group auto-expands without a click.
-	const screen = render(Nav, { groups, activeId: "a2", persistState: false });
+	const screen = await render(Nav, { groups, activeId: "a2", persistState: false });
 
 	const active = screen.getByRole("link", { name: "Item A2" });
 	await expect.element(active).toBeInTheDocument();
@@ -122,7 +122,7 @@ test("(5) onClick-only leaf renders a <button>; clicking fires item.onClick and 
 	const onSelect = vi.fn();
 	const item: NavItem = { id: "a1", label: "Action A1", onClick: itemOnClick };
 	const groups: NavGroup[] = [{ title: "Group A", items: [item], defaultExpanded: true }];
-	const screen = render(Nav, { groups, persistState: false, onSelect });
+	const screen = await render(Nav, { groups, persistState: false, onSelect });
 
 	// onClick-only leaf (no href) is a <button>, never a link -> safe to click.
 	const leaf = screen.getByRole("button", { name: "Action A1" });
@@ -147,7 +147,7 @@ test("(6) disabled href leaf exposes aria-disabled and tabindex=-1 (asserted, no
 			items: [{ id: "a1", label: "Item A1", href: "/a1", disabled: true }],
 		},
 	];
-	const screen = render(Nav, { groups, persistState: false });
+	const screen = await render(Nav, { groups, persistState: false });
 
 	const link = screen.getByRole("link", { name: "Item A1" });
 	await expect.element(link).toBeInTheDocument();
@@ -170,7 +170,7 @@ test("(7) parent item with children toggles a nested children <ul>", async () =>
 			],
 		},
 	];
-	const screen = render(Nav, { groups, persistState: false });
+	const screen = await render(Nav, { groups, persistState: false });
 
 	// Parent with children renders as a toggle button, not a link.
 	const parentBtn = screen.getByRole("button", { name: "Parent" });
@@ -197,7 +197,7 @@ test("(7) parent item with children toggles a nested children <ul>", async () =>
 
 test("(8) group without items but with href renders an <a> directly, always visible (no expand toggle)", async () => {
 	const groups: NavGroup[] = [{ title: "Standalone", href: "/standalone" }];
-	const screen = render(Nav, { groups, persistState: false });
+	const screen = await render(Nav, { groups, persistState: false });
 
 	// No expandable header button for a group without items.
 	await expect
@@ -215,7 +215,7 @@ test("(9) group without items + onClick renders a <button>; clicking fires onGro
 	const onGroupSelect = vi.fn();
 	const group: NavGroup = { title: "Action Group", onClick: groupOnClick };
 	const groups: NavGroup[] = [group];
-	const screen = render(Nav, { groups, persistState: false, onGroupSelect });
+	const screen = await render(Nav, { groups, persistState: false, onGroupSelect });
 
 	const btn = screen.getByRole("button", { name: "Action Group" });
 	await expect.element(btn).toBeInTheDocument();
@@ -232,7 +232,7 @@ test("(10) isCollapsed sets data-collapsed on the nav root", async () => {
 	const groups: NavGroup[] = [
 		{ title: "Group A", items: [{ id: "a1", label: "A1", href: "/a1" }] },
 	];
-	const screen = render(Nav, { groups, isCollapsed: true, persistState: false });
+	const screen = await render(Nav, { groups, isCollapsed: true, persistState: false });
 
 	// Located by role (single <nav> -> implicit role=navigation), asserted via
 	// auto-retry. The empty-string data-collapsed attribute is present when collapsed.
@@ -254,7 +254,7 @@ test("(11) isActive callback variant marks the matching leaf and auto-expands it
 			],
 		},
 	];
-	const screen = render(Nav, { groups, isActive, persistState: false });
+	const screen = await render(Nav, { groups, isActive, persistState: false });
 
 	// Auto-expanded: the header shows aria-expanded=true with no interaction.
 	const header = screen.getByRole("button", { name: "Group A" });
@@ -276,7 +276,7 @@ test("(12) disabled onClick-only leaf renders a <button> with the disabled attri
 			items: [{ id: "a1", label: "Action A1", onClick: itemOnClick, disabled: true }],
 		},
 	];
-	const screen = render(Nav, { groups, persistState: false, onSelect });
+	const screen = await render(Nav, { groups, persistState: false, onSelect });
 
 	// onClick-only leaf -> <button>; disabled -> the native disabled attribute is set.
 	// We deliberately do NOT click: Playwright would wait for the button to become

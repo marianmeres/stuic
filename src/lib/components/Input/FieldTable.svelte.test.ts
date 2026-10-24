@@ -721,7 +721,7 @@ test("external bind:value reassignment resyncs the rows (harness)", async () => 
 		initialColumns: COLUMNS,
 	});
 	await cell(screen, "Part", 1).fill("Edited");
-	await expect.element(screen.getByTestId("bound")).toHaveTextContent('"part":"Edited"');
+	await expect.element(screen.getByTestId("bound")).toMatchTextContent('"part":"Edited"');
 	await screen.getByTestId("set-external").click();
 	await expect.element(cell(screen, "Part", 1)).toHaveValue("External");
 	expect(screen.container.querySelectorAll("tbody tr").length).toBe(1);

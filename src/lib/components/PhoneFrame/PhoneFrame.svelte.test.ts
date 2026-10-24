@@ -21,7 +21,7 @@ const PNG =
 const text = (s: string) =>
 	createRawSnippet(() => ({ render: () => `<span>${s}</span>` }));
 
-function parts(screen: ReturnType<typeof render>) {
+function parts(screen: Awaited<ReturnType<typeof render>>) {
 	const root = screen.container.querySelector<HTMLElement>(".stuic-phone-frame")!;
 	const scr = root.querySelector<HTMLElement>(".stuic-phone-frame-screen")!;
 	const img = root.querySelector<HTMLImageElement>("img");
@@ -32,27 +32,27 @@ function parts(screen: ReturnType<typeof render>) {
 // `target` is also a Svelte mount option name, so those renders go through `{ props }`.
 
 test("renders a <div> by default and an <a> with href", async () => {
-	const a = render(PhoneFrame, { src: PNG, alt: "Shot", "data-testid": "pf-div" });
+	const a = await render(PhoneFrame, { src: PNG, alt: "Shot", "data-testid": "pf-div" });
 	const div = a.getByTestId("pf-div");
 	await expect.element(div).toBeInTheDocument();
 	expect((div.element() as HTMLElement).tagName).toBe("DIV");
 	expect((div.element() as HTMLElement).hasAttribute("href")).toBe(false);
 
-	const b = render(PhoneFrame, { src: PNG, alt: "Linked shot", href: "/live" });
+	const b = await render(PhoneFrame, { src: PNG, alt: "Linked shot", href: "/live" });
 	const link = b.getByRole("link", { name: "Linked shot" });
 	await expect.element(link).toHaveAttribute("href", "/live");
 	expect((link.element() as HTMLElement).tagName).toBe("A");
 });
 
 test("target=_blank defaults rel to noopener; explicit rel wins; no target → no rel", async () => {
-	const blank = render(PhoneFrame, {
+	const blank = await render(PhoneFrame, {
 		props: { src: PNG, alt: "Blank", href: "/x", target: "_blank" },
 	});
 	const blankLink = blank.getByRole("link", { name: "Blank" });
 	await expect.element(blankLink).toHaveAttribute("rel", "noopener");
 	await expect.element(blankLink).toHaveAttribute("target", "_blank");
 
-	const explicit = render(PhoneFrame, {
+	const explicit = await render(PhoneFrame, {
 		props: {
 			src: PNG,
 			alt: "Explicit",
@@ -65,14 +65,19 @@ test("target=_blank defaults rel to noopener; explicit rel wins; no target → n
 		.element(explicit.getByRole("link", { name: "Explicit" }))
 		.toHaveAttribute("rel", "noopener noreferrer");
 
-	const same = render(PhoneFrame, { src: PNG, alt: "Same tab", href: "/x" });
+	const same = await render(PhoneFrame, { src: PNG, alt: "Same tab", href: "/x" });
 	const sameLink = same.getByRole("link", { name: "Same tab" });
 	await expect.element(sameLink).toBeInTheDocument();
 	expect((sameLink.element() as HTMLElement).hasAttribute("rel")).toBe(false);
 });
 
 test("img gets the attribute contract: lazy by default, eager/fetchpriority/srcset/sizes/size", async () => {
-	const lazy = render(PhoneFrame, { src: PNG, alt: "Shot", width: 780, height: 1688 });
+	const lazy = await render(PhoneFrame, {
+		src: PNG,
+		alt: "Shot",
+		width: 780,
+		height: 1688,
+	});
 	const img = lazy.getByRole("img", { name: "Shot" });
 	await expect.element(img).toHaveAttribute("src", PNG);
 	await expect.element(img).toHaveAttribute("loading", "lazy");
@@ -82,7 +87,7 @@ test("img gets the attribute contract: lazy by default, eager/fetchpriority/srcs
 	await expect.element(img).toHaveClass("stuic-phone-frame-image");
 	expect((img.element() as HTMLElement).hasAttribute("fetchpriority")).toBe(false);
 
-	const eager = render(PhoneFrame, {
+	const eager = await render(PhoneFrame, {
 		src: PNG,
 		alt: "Hero",
 		loading: "eager",
@@ -98,7 +103,7 @@ test("img gets the attribute contract: lazy by default, eager/fetchpriority/srcs
 });
 
 test("children render on the screen and take precedence over src", async () => {
-	const screen = render(PhoneFrame, {
+	const screen = await render(PhoneFrame, {
 		src: PNG,
 		alt: "Shot",
 		children: text("Live app"),
@@ -110,7 +115,7 @@ test("children render on the screen and take precedence over src", async () => {
 });
 
 test("no src and no children → an empty screen, no <img>", async () => {
-	const screen = render(PhoneFrame, { "data-testid": "pf" });
+	const screen = await render(PhoneFrame, { "data-testid": "pf" });
 	await expect.element(screen.getByTestId("pf")).toBeInTheDocument();
 	const { scr, img } = parts(screen);
 	expect(img).toBeNull();
@@ -118,7 +123,7 @@ test("no src and no children → an empty screen, no <img>", async () => {
 });
 
 test("notch: none by default; island/notch set data-notch and render the cutout", async () => {
-	const none = render(PhoneFrame, { src: PNG, alt: "A", "data-testid": "pf-none" });
+	const none = await render(PhoneFrame, { src: PNG, alt: "A", "data-testid": "pf-none" });
 	const noneRoot = none.getByTestId("pf-none");
 	await expect.element(noneRoot).toBeInTheDocument();
 	const noneNode = noneRoot.element() as HTMLElement;
@@ -126,7 +131,7 @@ test("notch: none by default; island/notch set data-notch and render the cutout"
 	expect(noneNode.querySelector(".stuic-phone-frame-notch")).toBeNull();
 
 	for (const notch of ["island", "notch"] as const) {
-		const screen = render(PhoneFrame, {
+		const screen = await render(PhoneFrame, {
 			src: PNG,
 			alt: "A",
 			notch,
@@ -143,7 +148,7 @@ test("notch: none by default; island/notch set data-notch and render the cutout"
 });
 
 test("class props merge onto frame, screen and image; rest props land on the root", async () => {
-	const screen = render(PhoneFrame, {
+	const screen = await render(PhoneFrame, {
 		src: PNG,
 		alt: "A",
 		class: "w-64 custom-frame",
@@ -165,7 +170,7 @@ test("class props merge onto frame, screen and image; rest props land on the roo
 });
 
 test("unstyled drops every stuic class, the data-notch attribute and the cutout", async () => {
-	const screen = render(PhoneFrame, {
+	const screen = await render(PhoneFrame, {
 		src: PNG,
 		alt: "A",
 		notch: "island",
@@ -187,7 +192,7 @@ test("unstyled drops every stuic class, the data-notch attribute and the cutout"
 });
 
 test("default screen geometry: height derived from width by the 390/844 ratio", async () => {
-	const screen = render(PhoneFrame, {
+	const screen = await render(PhoneFrame, {
 		src: PNG,
 		alt: "A",
 		style: "width: 300px",
@@ -202,7 +207,7 @@ test("default screen geometry: height derived from width by the 390/844 ratio", 
 });
 
 test("aspectRatio prop changes the derived height", async () => {
-	const screen = render(PhoneFrame, {
+	const screen = await render(PhoneFrame, {
 		src: PNG,
 		alt: "A",
 		aspectRatio: "1 / 2",
@@ -220,7 +225,7 @@ test("aspectRatio prop changes the derived height", async () => {
 });
 
 test("screenHeight makes a fixed-height window: height = value, width still fills the bezel", async () => {
-	const screen = render(PhoneFrame, {
+	const screen = await render(PhoneFrame, {
 		src: PNG,
 		alt: "A",
 		screenHeight: "200px",
@@ -243,7 +248,7 @@ test("screenHeight makes a fixed-height window: height = value, width still fill
 test("the --stuic-phone-frame-screen-height token set on the root (inherited) clips too", async () => {
 	// what the responsive recipe relies on: a token set via `class`/`style` on the frame
 	// is inherited by the screen when the prop is not given
-	const screen = render(PhoneFrame, {
+	const screen = await render(PhoneFrame, {
 		src: PNG,
 		alt: "A",
 		style: "width: 300px; --stuic-phone-frame-screen-height: 120px",

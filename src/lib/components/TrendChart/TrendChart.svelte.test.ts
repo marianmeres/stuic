@@ -84,7 +84,7 @@ test("unmount destroys the chart (svg detached)", async () => {
 	});
 	const root = rootEl(screen.container);
 	await expect.poll(() => root.querySelector("svg.trend-chart")).not.toBeNull();
-	screen.unmount();
+	await screen.unmount();
 	expect(root.querySelector("svg")).toBeNull();
 });
 

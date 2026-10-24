@@ -11,7 +11,7 @@ import CommentInput from "./CommentInput.svelte";
 // contenteditable surface.
 
 test("renders the default toolbar (bold, italic, bullet/ordered list, link)", async () => {
-	const screen = render(CommentInput, { label: "Comment" });
+	const screen = await render(CommentInput, { label: "Comment" });
 	await expect.element(screen.getByRole("toolbar")).toBeInTheDocument();
 	for (const name of ["Bold", "Italic", "Bullet list", "Ordered list", "Link"]) {
 		await expect.element(screen.getByRole("button", { name })).toBeInTheDocument();
@@ -23,7 +23,7 @@ test("renders the default toolbar (bold, italic, bullet/ordered list, link)", as
 });
 
 test("honors a custom toolbar array", async () => {
-	const screen = render(CommentInput, { toolbar: ["bold", "blockquote"] });
+	const screen = await render(CommentInput, { toolbar: ["bold", "blockquote"] });
 	await expect.element(screen.getByRole("button", { name: "Bold" })).toBeInTheDocument();
 	await expect
 		.element(screen.getByRole("button", { name: "Blockquote" }))
@@ -34,12 +34,15 @@ test("honors a custom toolbar array", async () => {
 });
 
 test("toolbar={false} renders no toolbar", async () => {
-	const screen = render(CommentInput, { toolbar: false });
+	const screen = await render(CommentInput, { toolbar: false });
 	await expect.element(screen.getByRole("toolbar")).not.toBeInTheDocument();
 });
 
 test("mounts in source mode and shows a toggle to WYSIWYG", async () => {
-	const screen = render(CommentInput, { sourceLabel: "Source", previewLabel: "Preview" });
+	const screen = await render(CommentInput, {
+		sourceLabel: "Source",
+		previewLabel: "Preview",
+	});
 	// Default mode is "source", so the toggle offers to switch to WYSIWYG ("Preview").
 	const toggle = screen.getByRole("button", { name: "Preview" });
 	await expect.element(toggle).toBeInTheDocument();
@@ -51,7 +54,7 @@ test("mounts in source mode and shows a toggle to WYSIWYG", async () => {
 });
 
 test("showModeToggle={false} hides the mode toggle", async () => {
-	const screen = render(CommentInput, { showModeToggle: false });
+	const screen = await render(CommentInput, { showModeToggle: false });
 	// At rest (source mode) the toggle would read "Preview"; assert it's absent.
 	await expect
 		.element(screen.getByRole("button", { name: "Preview" }))
@@ -59,7 +62,7 @@ test("showModeToggle={false} hides the mode toggle", async () => {
 });
 
 test("no submit button is rendered without onSubmit", async () => {
-	const screen = render(CommentInput, { value: "x" });
+	const screen = await render(CommentInput, { value: "x" });
 	await expect
 		.element(screen.getByRole("button", { name: "Comment" }))
 		.not.toBeInTheDocument();
@@ -67,7 +70,7 @@ test("no submit button is rendered without onSubmit", async () => {
 
 test("submit stays enabled while empty; an empty submit is blocked with an inline error", async () => {
 	const onSubmit = vi.fn();
-	const screen = render(CommentInput, {
+	const screen = await render(CommentInput, {
 		onSubmit,
 		emptyMessage: "Write something first",
 	});
@@ -83,13 +86,13 @@ test("submit stays enabled while empty; an empty submit is blocked with an inlin
 
 test("blockEmptySubmit={false} lets an empty submit through to onSubmit", async () => {
 	const onSubmit = vi.fn();
-	const screen = render(CommentInput, { onSubmit, blockEmptySubmit: false });
+	const screen = await render(CommentInput, { onSubmit, blockEmptySubmit: false });
 	await screen.getByRole("button", { name: "Comment" }).click();
 	expect(onSubmit).toHaveBeenCalledWith("");
 });
 
 test("submit is enabled once there is content", async () => {
-	const screen = render(CommentInput, { onSubmit: vi.fn(), value: "something" });
+	const screen = await render(CommentInput, { onSubmit: vi.fn(), value: "something" });
 	await expect
 		.element(screen.getByRole("button", { name: "Comment" }))
 		.not.toBeDisabled();
@@ -97,7 +100,7 @@ test("submit is enabled once there is content", async () => {
 
 test("clicking submit calls onSubmit with the value and clears on success", async () => {
 	const onSubmit = vi.fn();
-	const screen = render(CommentInput, { onSubmit, value: "ship it" });
+	const screen = await render(CommentInput, { onSubmit, value: "ship it" });
 	const submit = screen.getByRole("button", { name: "Comment" });
 	await submit.click();
 	expect(onSubmit).toHaveBeenCalledWith("ship it");
@@ -108,7 +111,7 @@ test("clicking submit calls onSubmit with the value and clears on success", asyn
 
 test("clearOnSubmit=false keeps the value (submit stays enabled)", async () => {
 	const onSubmit = vi.fn();
-	const screen = render(CommentInput, {
+	const screen = await render(CommentInput, {
 		onSubmit,
 		value: "keep me",
 		clearOnSubmit: false,
@@ -121,7 +124,7 @@ test("clearOnSubmit=false keeps the value (submit stays enabled)", async () => {
 
 test("Cmd/Ctrl+Enter submits", async () => {
 	const onSubmit = vi.fn();
-	render(CommentInput, { onSubmit, value: "via keyboard" });
+	await render(CommentInput, { onSubmit, value: "via keyboard" });
 	const root = document.querySelector(".stuic-comment-input")!;
 	root.dispatchEvent(
 		new KeyboardEvent("keydown", { key: "Enter", metaKey: true, bubbles: true })
@@ -131,7 +134,7 @@ test("Cmd/Ctrl+Enter submits", async () => {
 
 test("Cancel button appears with onCancel and calls it", async () => {
 	const onCancel = vi.fn();
-	const screen = render(CommentInput, { onCancel });
+	const screen = await render(CommentInput, { onCancel });
 	const cancel = screen.getByRole("button", { name: "Cancel" });
 	await expect.element(cancel).toBeInTheDocument();
 	await cancel.click();
@@ -139,7 +142,11 @@ test("Cancel button appears with onCancel and calls it", async () => {
 });
 
 test("disabled disables the toolbar buttons and the submit button", async () => {
-	const screen = render(CommentInput, { value: "x", disabled: true, onSubmit: vi.fn() });
+	const screen = await render(CommentInput, {
+		value: "x",
+		disabled: true,
+		onSubmit: vi.fn(),
+	});
 	await expect.element(screen.getByRole("button", { name: "Bold" })).toBeDisabled();
 	await expect.element(screen.getByRole("button", { name: "Comment" })).toBeDisabled();
 });
@@ -150,7 +157,7 @@ test("an empty source box shows a caret once focused (drawn, not native)", async
 	// contenteditable=false placeholder widget), so clicking an empty box looked
 	// like it hadn't focused. The source backend enables `drawSelection()`, which
 	// draws its own caret — assert that caret appears (with real height) on focus.
-	render(CommentInput, { placeholder: "Leave a comment…" });
+	await render(CommentInput, { placeholder: "Leave a comment…" });
 
 	// The CodeMirror (source) backend mounts behind a dynamic import.
 	const content = await vi.waitFor(
@@ -181,7 +188,7 @@ test("submit validates first: a required empty field does not call onSubmit", as
 	const onSubmit = vi.fn();
 	// blockEmptySubmit:false removes the empty gate, so the validation gate (the
 	// `required` rule) is what must block the submit here.
-	const screen = render(CommentInput, {
+	const screen = await render(CommentInput, {
 		required: true,
 		blockEmptySubmit: false,
 		onSubmit,

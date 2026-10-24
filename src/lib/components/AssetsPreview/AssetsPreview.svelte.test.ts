@@ -38,7 +38,7 @@ const currentName = (container: Element) =>
 		?.textContent?.trim() ?? "";
 
 test("nothing is shown until open() is called: no dialog initially", async () => {
-	const screen = render(Fixture, { assets: [ALPHA, BETA] });
+	const screen = await render(Fixture, { assets: [ALPHA, BETA] });
 
 	// The opener exists, but the modal dialog is not in the a11y tree yet.
 	await expect.element(screen.getByTestId("opener")).toBeInTheDocument();
@@ -46,7 +46,7 @@ test("nothing is shown until open() is called: no dialog initially", async () =>
 });
 
 test("open() shows the modal dialog starting on the first asset", async () => {
-	const screen = render(Fixture, { assets: [ALPHA, BETA] });
+	const screen = await render(Fixture, { assets: [ALPHA, BETA] });
 
 	await screen.getByTestId("opener").click();
 
@@ -56,7 +56,7 @@ test("open() shows the modal dialog starting on the first asset", async () => {
 });
 
 test("the Close button closes the modal", async () => {
-	const screen = render(Fixture, { assets: [ALPHA, BETA] });
+	const screen = await render(Fixture, { assets: [ALPHA, BETA] });
 
 	await screen.getByTestId("opener").click();
 	await expect.element(screen.getByRole("dialog")).toBeInTheDocument();
@@ -70,7 +70,7 @@ test("the Close button closes the modal", async () => {
 
 test("onDownload threads through the modal: clicking Download fires the spy with the current asset + index", async () => {
 	const onDownload = vi.fn();
-	const screen = render(Fixture, { assets: [ALPHA, BETA], onDownload });
+	const screen = await render(Fixture, { assets: [ALPHA, BETA], onDownload });
 
 	await screen.getByTestId("opener").click();
 	await expect.element(screen.getByRole("dialog")).toBeInTheDocument();

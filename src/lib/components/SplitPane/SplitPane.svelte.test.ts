@@ -39,7 +39,7 @@ beforeEach(() => {
 });
 
 test("renders two panes and a window-splitter separator, the size on the primary pane", async () => {
-	const screen = render(SplitPane, {
+	const screen = await render(SplitPane, {
 		start: text("A"),
 		end: text("B"),
 		size: 40,
@@ -73,7 +73,7 @@ test("renders two panes and a window-splitter separator, the size on the primary
 });
 
 test("vertical resizes a height and the separator is a horizontal splitter", async () => {
-	const screen = render(SplitPane, {
+	const screen = await render(SplitPane, {
 		start: text("A"),
 		end: text("B"),
 		orientation: "vertical",
@@ -94,7 +94,7 @@ test("vertical resizes a height and the separator is a horizontal splitter", asy
 });
 
 test("primary=end sizes the second pane and the keys follow the handle", async () => {
-	const screen = render(SplitPane, {
+	const screen = await render(SplitPane, {
 		start: text("A"),
 		end: text("B"),
 		primary: "end",
@@ -118,7 +118,7 @@ test("primary=end sizes the second pane and the keys follow the handle", async (
 
 test("keyboard resizes, updates bind:size and fires onResize", async () => {
 	const onResize = vi.fn();
-	const screen = render(Harness, { initialSize: 50, min: 10, onResize });
+	const screen = await render(Harness, { initialSize: 50, min: 10, onResize });
 	const bound = screen.getByTestId("bound");
 	await expect.element(bound).toHaveTextContent("50");
 
@@ -144,7 +144,7 @@ test("keyboard resizes, updates bind:size and fires onResize", async () => {
 });
 
 test("writing `size` goes through the splitter (clamped, announced); reset() restores the mount size", async () => {
-	const screen = render(Harness, { initialSize: 50, min: 10, max: 90 });
+	const screen = await render(Harness, { initialSize: 50, min: 10, max: 90 });
 	const s = screen.getByRole("separator");
 	const bound = screen.getByTestId("bound");
 	await expect.element(s).toHaveAttribute("aria-valuenow", "50");
@@ -165,7 +165,7 @@ test("writing `size` goes through the splitter (clamped, announced); reset() res
 });
 
 test("px units", async () => {
-	const screen = render(SplitPane, {
+	const screen = await render(SplitPane, {
 		start: text("A"),
 		end: text("B"),
 		units: "px",
@@ -185,14 +185,14 @@ test("px units", async () => {
 });
 
 test("a size stored under `key` wins over the mount size and is written back; reset still means the mount size", async () => {
-	const first = render(Harness, { initialSize: 50, key: "sp-k" });
+	const first = await render(Harness, { initialSize: 50, key: "sp-k" });
 	await expect.element(first.getByTestId("bound")).toHaveTextContent("50");
 	sep(first).focus();
 	await userEvent.keyboard("{ArrowRight}{ArrowRight}{ArrowRight}");
 	await expect.element(first.getByTestId("bound")).toHaveTextContent("53");
-	first.unmount();
+	await first.unmount();
 
-	const second = render(Harness, { initialSize: 50, key: "sp-k" });
+	const second = await render(Harness, { initialSize: 50, key: "sp-k" });
 	await expect.element(second.getByTestId("bound")).toHaveTextContent("53");
 	expect(pane(second, "start").style.width).toBe("53%");
 
@@ -201,7 +201,7 @@ test("a size stored under `key` wins over the mount size and is written back; re
 });
 
 test("disabled renders an inert divider; re-enabling re-arms it without a jump", async () => {
-	const screen = render(Harness, { initialSize: 50 });
+	const screen = await render(Harness, { initialSize: 50 });
 	const s = screen.getByRole("separator");
 	await expect.element(s).toHaveAttribute("tabindex", "0");
 
@@ -226,7 +226,7 @@ test("disabled renders an inert divider; re-enabling re-arms it without a jump",
 
 test("pointer drag on the separator", async () => {
 	const onResize = vi.fn();
-	const screen = render(SplitPane, {
+	const screen = await render(SplitPane, {
 		start: text("A"),
 		end: text("B"),
 		size: 50,
@@ -249,7 +249,7 @@ test("pointer drag on the separator", async () => {
 });
 
 test("unstyled drops the stuic classes; `label` and `t` name the separator", async () => {
-	const screen = render(SplitPane, {
+	const screen = await render(SplitPane, {
 		start: text("A"),
 		end: text("B"),
 		unstyled: true,
@@ -265,9 +265,9 @@ test("unstyled drops the stuic classes; `label` and `t` name the separator", asy
 	await expect.element(s).toHaveClass("custom-sep");
 	await expect.element(s).not.toHaveClass("stuic-split-pane-separator");
 	await expect.element(s).toHaveAttribute("aria-label", "Divider");
-	screen.unmount();
+	await screen.unmount();
 
-	const sk = render(SplitPane, {
+	const sk = await render(SplitPane, {
 		start: text("A"),
 		end: text("B"),
 		t: createSplitPaneT(SPLIT_PANE_MESSAGES_SK),

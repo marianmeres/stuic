@@ -41,7 +41,7 @@ const cards = () => [...document.querySelectorAll<HTMLElement>(".stuic-data-tabl
 // ============================================================================
 
 test("rowHref wraps the lead cell content in an anchor (desktop)", async () => {
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -59,7 +59,7 @@ test("rowHref wraps the lead cell content in an anchor (desktop)", async () => {
 });
 
 test("rowHref returning undefined renders that row without an anchor", async () => {
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -73,7 +73,7 @@ test("rowHref returning undefined renders that row without an anchor", async () 
 });
 
 test("rowHrefColumn moves the anchor to another column", async () => {
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -89,7 +89,7 @@ test("rowHrefColumn moves the anchor to another column", async () => {
 });
 
 test("the anchor wraps the consumer `cell` snippet output, not the raw value", async () => {
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -105,7 +105,7 @@ test("the anchor wraps the consumer `cell` snippet output, not the raw value", a
 });
 
 test("the anchor keeps the column's renderValue formatting", async () => {
-	render(DataTable, {
+	await render(DataTable, {
 		columns: [
 			{
 				key: "name",
@@ -126,7 +126,7 @@ test("the anchor keeps the column's renderValue formatting", async () => {
 test("clicking the lead anchor does not fire onRowClick nor toggle selection", async () => {
 	const onRowClick = vi.fn();
 	const selected = new Set<string | number>();
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -145,7 +145,7 @@ test("clicking the lead anchor does not fire onRowClick nor toggle selection", a
 
 test("clicking elsewhere on the row still fires onRowClick", async () => {
 	const onRowClick = vi.fn();
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -161,7 +161,7 @@ test("clicking elsewhere on the row still fires onRowClick", async () => {
 });
 
 test("classRowLink is merged onto the anchor, and unstyled drops the base class", async () => {
-	const screen = render(DataTable, {
+	const screen = await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -181,7 +181,7 @@ test("classRowLink is merged onto the anchor, and unstyled drops the base class"
 // ============================================================================
 
 test("rowHref links the lead field of the mobile card too", async () => {
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -197,7 +197,7 @@ test("rowHref links the lead field of the mobile card too", async () => {
 });
 
 test("a hideOnMobile lead column falls back to the first visible card field", async () => {
-	render(DataTable, {
+	await render(DataTable, {
 		columns: [{ ...COLUMNS[0], hideOnMobile: true }, COLUMNS[1]],
 		data: DATA,
 		getRowId,
@@ -211,7 +211,7 @@ test("a hideOnMobile lead column falls back to the first visible card field", as
 
 test("Enter on a card's lead link navigates instead of firing onRowClick", async () => {
 	const onRowClick = vi.fn();
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -229,7 +229,7 @@ test("Enter on a card's lead link navigates instead of firing onRowClick", async
 
 test("a focused card checkbox keeps Space for itself", async () => {
 	const onRowClick = vi.fn();
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -251,7 +251,7 @@ test("a focused card checkbox keeps Space for itself", async () => {
 // ============================================================================
 
 test("rowActivatable makes the <tr> focusable without giving it a role", async () => {
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -268,7 +268,7 @@ test("rowActivatable makes the <tr> focusable without giving it a role", async (
 });
 
 test("rowActivatable is a no-op without onRowClick / selectOnRowClick", async () => {
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -283,7 +283,7 @@ test("rowActivatable is a no-op without onRowClick / selectOnRowClick", async ()
 
 test("Enter activates a focused row, Space does not", async () => {
 	const onRowClick = vi.fn();
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -306,7 +306,7 @@ test("Enter on an activatable row selects and activates, in that order", async (
 	const onRowClick = vi.fn(() => {
 		seen.push(!!document.querySelector('tbody tr[data-selected="true"]'));
 	});
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -327,7 +327,7 @@ test("Enter on an activatable row selects and activates, in that order", async (
 
 test("Enter on a lead link inside an activatable row does not double-fire", async () => {
 	const onRowClick = vi.fn();
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -347,7 +347,7 @@ test("Enter on a lead link inside an activatable row does not double-fire", asyn
 // ============================================================================
 
 test("without rowHref / rowActivatable the row markup is unchanged", async () => {
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -383,7 +383,7 @@ const batchActionsSnippet = createRawSnippet(
 const PAGING = createPagingStore({ total: 10, limit: 2 }).get();
 
 test("the selection bar is reserved (and idle) before anything is selected", async () => {
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -398,7 +398,7 @@ test("the selection bar is reserved (and idle) before anything is selected", asy
 });
 
 test("selecting swaps the bar's content in place, keeping the same element", async () => {
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -419,7 +419,7 @@ test("selecting swaps the bar's content in place, keeping the same element", asy
 });
 
 test("reserveBatchBar={false} restores the pop-in behaviour", async () => {
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -436,7 +436,7 @@ test("reserveBatchBar={false} restores the pop-in behaviour", async () => {
 });
 
 test("no bar at all when there is nothing to put in it", async () => {
-	render(DataTable, { columns: COLUMNS, data: DATA, getRowId, selectable: true });
+	await render(DataTable, { columns: COLUMNS, data: DATA, getRowId, selectable: true });
 	await expect.element(page.getByRole("table")).toBeInTheDocument();
 
 	expect(bar()).toBe(null);
@@ -446,7 +446,7 @@ test("no bar at all when there is nothing to put in it", async () => {
 });
 
 test("without a batchActions snippet the bar reports the count itself", async () => {
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -462,7 +462,7 @@ test("without a batchActions snippet the bar reports the count itself", async ()
 });
 
 test("the select-all offer renders inside the same bar, not as a second block", async () => {
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -493,7 +493,7 @@ test("the select-all offer renders inside the same bar, not as a second block", 
 const pager = () => document.querySelector<HTMLElement>(".stuic-data-table-paging");
 
 test("paging renders the built-in pager by default", async () => {
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -508,7 +508,7 @@ test("paging renders the built-in pager by default", async () => {
 });
 
 test("showPager={false} hides the pager but keeps the select-all offer", async () => {
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -531,7 +531,7 @@ test("showPager={false} hides the pager but keeps the select-all offer", async (
 test("showPager={true} still renders no pager for a single-page result", async () => {
 	// 2 rows out of 2 -- one page, nothing to page through
 	const onePage = createPagingStore({ total: 2, limit: 2 }).get();
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -553,7 +553,7 @@ test("the pager is a Pagination, and still reports the same offsets", async () =
 	const seen: number[] = [];
 	// page 2 of 5 (total 10, limit 2) — both directions are live
 	const middle = createPagingStore({ total: 10, limit: 2, offset: 2 }).get();
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -585,7 +585,7 @@ test("the pager is a Pagination, and still reports the same offsets", async () =
 
 test("the pager's edge buttons stay disabled (no onPageChange on the first page)", async () => {
 	const seen: number[] = [];
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -602,7 +602,7 @@ test("the pager's edge buttons stay disabled (no onPageChange on the first page)
 });
 
 test("the pager renders the DataTable `t` (no separate Pagination catalog)", async () => {
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: DATA,
 		getRowId,
@@ -626,7 +626,7 @@ test("the pager renders the DataTable `t` (no separate Pagination catalog)", asy
 const emptyCell = () => document.querySelector<HTMLElement>(".stuic-data-table-empty");
 
 test("the built-in empty state is an EmptyState titled `no_data` (desktop)", async () => {
-	render(DataTable, { columns: COLUMNS, data: [], getRowId });
+	await render(DataTable, { columns: COLUMNS, data: [], getRowId });
 	await expect.element(page.getByRole("table")).toBeInTheDocument();
 
 	const cell = emptyCell()!;
@@ -643,7 +643,7 @@ test("the built-in empty state is an EmptyState titled `no_data` (desktop)", asy
 });
 
 test("the built-in empty state renders the same way in the mobile card layout", async () => {
-	render(DataTable, { columns: COLUMNS, data: [], getRowId, small: true });
+	await render(DataTable, { columns: COLUMNS, data: [], getRowId, small: true });
 	await vi.waitFor(() => expect(emptyCell()).not.toBe(null));
 
 	const cell = emptyCell()!;
@@ -656,7 +656,7 @@ test("the built-in empty state renders the same way in the mobile card layout", 
 });
 
 test("an `empty` snippet still replaces the built-in one entirely", async () => {
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: [],
 		getRowId,
@@ -670,7 +670,7 @@ test("an `empty` snippet still replaces the built-in one entirely", async () => 
 });
 
 test("unstyled drops the wrapper classes from both delegated regions", async () => {
-	render(DataTable, {
+	await render(DataTable, {
 		columns: COLUMNS,
 		data: [],
 		getRowId,
@@ -700,7 +700,7 @@ const HTML_LABEL: DataTableColumn<Row>[] = [
 ];
 
 test("an { html } column label renders as html in the desktop header", async () => {
-	render(DataTable, { columns: HTML_LABEL, data: DATA, getRowId });
+	await render(DataTable, { columns: HTML_LABEL, data: DATA, getRowId });
 	await expect.element(page.getByRole("table")).toBeInTheDocument();
 
 	const th = document.querySelector("thead th")!;
@@ -709,7 +709,7 @@ test("an { html } column label renders as html in the desktop header", async () 
 });
 
 test("an { html } column label renders as html in the mobile card label too", async () => {
-	render(DataTable, { columns: HTML_LABEL, data: DATA, getRowId, small: true });
+	await render(DataTable, { columns: HTML_LABEL, data: DATA, getRowId, small: true });
 	await expect.poll(() => cards().length).toBe(2);
 
 	const label = cardLabels()[0];
@@ -719,7 +719,7 @@ test("an { html } column label renders as html in the mobile card label too", as
 });
 
 test("a { component } column label renders in the mobile card label, not the key", async () => {
-	render(DataTable, {
+	await render(DataTable, {
 		// `Thc` is a convenient stand-in for any single-prop component
 		columns: [{ key: "name", label: { component: Thc, props: { thc: "Scans" } } }],
 		data: DATA,
@@ -732,7 +732,7 @@ test("a { component } column label renders in the mobile card label, not the key
 });
 
 test("plain string and { text } card labels are unchanged (escaped, not parsed)", async () => {
-	render(DataTable, {
+	await render(DataTable, {
 		columns: [
 			{ key: "name", label: "Name" },
 			{ key: "email", label: { text: "<b>Email</b>" } },
@@ -751,7 +751,7 @@ test("plain string and { text } card labels are unchanged (escaped, not parsed)"
 });
 
 test("a column with no label still falls back to the key in the card layout", async () => {
-	render(DataTable, {
+	await render(DataTable, {
 		columns: [{ key: "name" }, { key: "email", label: "" }],
 		data: DATA,
 		getRowId,

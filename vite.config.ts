@@ -53,6 +53,12 @@ export default defineConfig({
 							},
 						}),
 						instances: [{ browser: "chromium" }],
+						// Vitest 5 flipped the default to exact (full, case-sensitive) text
+						// locators. The suite was written against substring matching, and
+						// flipping it would silently weaken every negative assertion
+						// (`.not.toBeInTheDocument()` on a partial string). Pass
+						// `{ exact: true }` per locator where precision matters.
+						locators: { exact: false },
 					},
 				},
 			},

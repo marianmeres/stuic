@@ -17,7 +17,7 @@ import UserAvatarMenu from "./UserAvatarMenu.svelte";
 // "Dark mode") without toggling the shared global ColorScheme state.
 
 test("AUTHED: trigger exposes aria-label 'User menu' and starts collapsed", async () => {
-	const screen = render(UserAvatarMenu, {
+	const screen = await render(UserAvatarMenu, {
 		identity: { email: "ada@x.io" },
 		actions: { onLogout: vi.fn() },
 	});
@@ -32,7 +32,7 @@ test("AUTHED: trigger exposes aria-label 'User menu' and starts collapsed", asyn
 });
 
 test("AUTHED: clicking the trigger opens the menu, shows the email header and a Logout menuitem", async () => {
-	const screen = render(UserAvatarMenu, {
+	const screen = await render(UserAvatarMenu, {
 		identity: { email: "ada@x.io" },
 		actions: { onLogout: vi.fn() },
 	});
@@ -53,7 +53,7 @@ test("AUTHED: clicking the trigger opens the menu, shows the email header and a 
 
 test("AUTHED: clicking Logout fires onLogout once and closes the menu", async () => {
 	const onLogout = vi.fn();
-	const screen = render(UserAvatarMenu, {
+	const screen = await render(UserAvatarMenu, {
 		identity: { email: "ada@x.io" },
 		actions: { onLogout },
 	});
@@ -71,7 +71,7 @@ test("AUTHED: clicking Logout fires onLogout once and closes the menu", async ()
 });
 
 test("AUTHED: a color-scheme menuitem renders by default (Light/Dark mode)", async () => {
-	const screen = render(UserAvatarMenu, {
+	const screen = await render(UserAvatarMenu, {
 		identity: { email: "ada@x.io" },
 		actions: { onLogout: vi.fn() },
 	});
@@ -87,7 +87,7 @@ test("AUTHED: a color-scheme menuitem renders by default (Light/Dark mode)", asy
 });
 
 test("UNAUTH: trigger exposes aria-label 'Sign in'", async () => {
-	const screen = render(UserAvatarMenu, {
+	const screen = await render(UserAvatarMenu, {
 		identity: null,
 		actions: { onLogin: vi.fn(), onRegister: vi.fn() },
 	});
@@ -97,7 +97,7 @@ test("UNAUTH: trigger exposes aria-label 'Sign in'", async () => {
 });
 
 test("UNAUTH: open shows Login and Register menuitems", async () => {
-	const screen = render(UserAvatarMenu, {
+	const screen = await render(UserAvatarMenu, {
 		identity: null,
 		actions: { onLogin: vi.fn(), onRegister: vi.fn() },
 	});
@@ -114,7 +114,7 @@ test("UNAUTH: open shows Login and Register menuitems", async () => {
 });
 
 test("UNAUTH: only provided handlers appear (no Logout menuitem)", async () => {
-	const screen = render(UserAvatarMenu, {
+	const screen = await render(UserAvatarMenu, {
 		identity: null,
 		actions: { onLogin: vi.fn() },
 	});
@@ -135,7 +135,7 @@ test("UNAUTH: only provided handlers appear (no Logout menuitem)", async () => {
 
 test("UNAUTH: clicking Login fires onLogin once", async () => {
 	const onLogin = vi.fn();
-	const screen = render(UserAvatarMenu, {
+	const screen = await render(UserAvatarMenu, {
 		identity: null,
 		actions: { onLogin },
 	});

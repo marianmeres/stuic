@@ -10,7 +10,7 @@ import OtpInput from "./OtpInput.svelte";
 // See docs/testing-components.md.
 
 test("renders a role=group root with the stuic-otp-input class and `length` slots", async () => {
-	const screen = render(OtpInput);
+	const screen = await render(OtpInput);
 	const group = screen.getByRole("group");
 	await expect.element(group).toBeInTheDocument();
 	await expect.element(group).toHaveClass("stuic-otp-input");
@@ -19,7 +19,7 @@ test("renders a role=group root with the stuic-otp-input class and `length` slot
 });
 
 test("each slot is a maxlength=1 input with a unique aria-label", async () => {
-	const screen = render(OtpInput, { autoFocus: false });
+	const screen = await render(OtpInput, { autoFocus: false });
 	const slot1 = screen.getByLabelText("Digit 1 of 6");
 	await expect.element(slot1).toBeInTheDocument();
 	await expect.element(slot1).toHaveAttribute("maxlength", "1");
@@ -28,13 +28,13 @@ test("each slot is a maxlength=1 input with a unique aria-label", async () => {
 });
 
 test("custom length changes slot count and aria-label denominator", async () => {
-	const screen = render(OtpInput, { length: 4, autoFocus: false });
+	const screen = await render(OtpInput, { length: 4, autoFocus: false });
 	expect(screen.getByRole("group").element().querySelectorAll("input").length).toBe(4);
 	await expect.element(screen.getByLabelText("Digit 1 of 4")).toBeInTheDocument();
 });
 
 test("value binding distributes chars across slots, leaving the rest empty", async () => {
-	const screen = render(OtpInput, { value: "12", autoFocus: false });
+	const screen = await render(OtpInput, { value: "12", autoFocus: false });
 	await expect.element(screen.getByLabelText("Digit 1 of 6")).toHaveValue("1");
 	await expect.element(screen.getByLabelText("Digit 2 of 6")).toHaveValue("2");
 	await expect.element(screen.getByLabelText("Digit 3 of 6")).toHaveValue("");
@@ -42,13 +42,13 @@ test("value binding distributes chars across slots, leaving the rest empty", asy
 });
 
 test("autoFocus (default) focuses the first slot on mount", async () => {
-	const screen = render(OtpInput);
+	const screen = await render(OtpInput);
 	// the mount $effect focuses the first empty slot (slot 1) via queueMicrotask
 	await expect.element(screen.getByLabelText("Digit 1 of 6")).toHaveFocus();
 });
 
 test("FOCUS JUMP: filling a slot advances focus to the next slot", async () => {
-	const screen = render(OtpInput);
+	const screen = await render(OtpInput);
 	const slot1 = screen.getByLabelText("Digit 1 of 6");
 	// fill dispatches a real input event -> handleInput writes the char and,
 	// since the char is non-empty and idx < length-1, queueMicrotask focuses slot 2
@@ -60,7 +60,7 @@ test("FOCUS JUMP: filling a slot advances focus to the next slot", async () => {
 test("sequential fill builds the value, fires oninput, and calls onComplete once with the code", async () => {
 	const onComplete = vi.fn();
 	const oninput = vi.fn();
-	const screen = render(OtpInput, { onComplete, oninput });
+	const screen = await render(OtpInput, { onComplete, oninput });
 
 	for (let i = 1; i <= 6; i++) {
 		await screen.getByLabelText(`Digit ${i} of 6`).fill(String(i));
@@ -81,7 +81,7 @@ test("sequential fill builds the value, fires oninput, and calls onComplete once
 test("numeric mode (default) sanitizes non-digits away: no commit, letter never enters the value", async () => {
 	const oninput = vi.fn();
 	const onComplete = vi.fn();
-	const screen = render(OtpInput, { oninput, onComplete, autoFocus: false });
+	const screen = await render(OtpInput, { oninput, onComplete, autoFocus: false });
 	const slot1 = screen.getByLabelText("Digit 1 of 6");
 
 	// "a" is stripped by the numeric sanitizer -> sanitize() yields "" -> commit("")
@@ -108,14 +108,14 @@ test("numeric mode (default) sanitizes non-digits away: no commit, letter never 
 });
 
 test("alphanumeric mode keeps letters", async () => {
-	const screen = render(OtpInput, { mode: "alphanumeric" });
+	const screen = await render(OtpInput, { mode: "alphanumeric" });
 	const slot1 = screen.getByLabelText("Digit 1 of 6");
 	await slot1.fill("a");
 	await expect.element(slot1).toHaveValue("a");
 });
 
 test("error=true sets data-error on the root and aria-invalid on each slot", async () => {
-	const screen = render(OtpInput, { error: true, autoFocus: false });
+	const screen = await render(OtpInput, { error: true, autoFocus: false });
 	await expect.element(screen.getByRole("group")).toHaveAttribute("data-error", "true");
 	await expect
 		.element(screen.getByLabelText("Digit 1 of 6"))
@@ -126,7 +126,7 @@ test("error=true sets data-error on the root and aria-invalid on each slot", asy
 });
 
 test("no error: root has no data-error and slots are not aria-invalid", async () => {
-	const screen = render(OtpInput, { autoFocus: false });
+	const screen = await render(OtpInput, { autoFocus: false });
 	await expect.element(screen.getByRole("group")).not.toHaveAttribute("data-error");
 	await expect
 		.element(screen.getByLabelText("Digit 1 of 6"))
@@ -134,7 +134,7 @@ test("no error: root has no data-error and slots are not aria-invalid", async ()
 });
 
 test("disabled disables the slots", async () => {
-	const screen = render(OtpInput, { disabled: true, autoFocus: false });
+	const screen = await render(OtpInput, { disabled: true, autoFocus: false });
 	await expect.element(screen.getByLabelText("Digit 1 of 6")).toBeDisabled();
 	await expect.element(screen.getByLabelText("Digit 6 of 6")).toBeDisabled();
 });

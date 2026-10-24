@@ -103,7 +103,7 @@ test("snippet states render alongside string states", async () => {
 	});
 	const root = rootLocator(container);
 	// the snippet's text content renders
-	await expect.element(root).toHaveTextContent("alpha");
+	await expect.element(root).toMatchTextContent("alpha");
 	// two state spans, snippet one is active/visible
 	expect(container.querySelectorAll(".stuic-icon-swap-state")).toHaveLength(2);
 	const spans = container.querySelectorAll(".stuic-icon-swap-state");

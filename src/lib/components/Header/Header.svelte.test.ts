@@ -16,26 +16,26 @@ import type { HeaderLocaleItem, HeaderNavItem } from "./Header.svelte";
 const root = (screen: { container: HTMLElement }) =>
 	screen.container.querySelector("header") as HTMLElement;
 
-test("safeArea:true sets an empty [data-safe-area] on the root header", () => {
-	const screen = render(Header, { safeArea: true });
+test("safeArea:true sets an empty [data-safe-area] on the root header", async () => {
+	const screen = await render(Header, { safeArea: true });
 	const header = root(screen);
 	expect(header).not.toBeNull();
 	expect(header.hasAttribute("data-safe-area")).toBe(true);
 	expect(header.getAttribute("data-safe-area")).toBe("");
 });
 
-test("safeArea defaults off — no [data-safe-area] attribute", () => {
-	const screen = render(Header, {});
+test("safeArea defaults off — no [data-safe-area] attribute", async () => {
+	const screen = await render(Header, {});
 	expect(root(screen).hasAttribute("data-safe-area")).toBe(false);
 });
 
-test("unstyled suppresses [data-safe-area] even when safeArea:true", () => {
-	const screen = render(Header, { safeArea: true, unstyled: true });
+test("unstyled suppresses [data-safe-area] even when safeArea:true", async () => {
+	const screen = await render(Header, { safeArea: true, unstyled: true });
 	expect(root(screen).hasAttribute("data-safe-area")).toBe(false);
 });
 
-test("safeArea and fixed are independent — each toggles its own data-* attribute", () => {
-	const screen = render(Header, { safeArea: true, fixed: false });
+test("safeArea and fixed are independent — each toggles its own data-* attribute", async () => {
+	const screen = await render(Header, { safeArea: true, fixed: false });
 	const header = root(screen);
 	expect(header.hasAttribute("data-safe-area")).toBe(true);
 	expect(header.hasAttribute("data-fixed")).toBe(false);
@@ -72,7 +72,7 @@ const ITEMS: HeaderNavItem[] = [
 const localeProps = { locales: LOCALES, activeLocale: "en" };
 
 test("collapsed hamburger mode keeps the locale trigger inline (default)", async () => {
-	const screen = render(Header, {
+	const screen = await render(Header, {
 		items: ITEMS,
 		...localeProps,
 		collapseThreshold: COLLAPSED,
@@ -85,7 +85,7 @@ test("collapsed hamburger mode keeps the locale trigger inline (default)", async
 });
 
 test("collapsed hamburger dropdown carries no duplicate locale section", async () => {
-	const screen = render(Header, {
+	const screen = await render(Header, {
 		items: ITEMS,
 		...localeProps,
 		localeLabel: "Language",
@@ -102,7 +102,7 @@ test("collapsed hamburger dropdown carries no duplicate locale section", async (
 });
 
 test("keepLocaleOnCollapse:false restores the fold-into-dropdown behavior", async () => {
-	const screen = render(Header, {
+	const screen = await render(Header, {
 		items: ITEMS,
 		...localeProps,
 		localeLabel: "Language",
@@ -120,7 +120,7 @@ test("keepLocaleOnCollapse:false restores the fold-into-dropdown behavior", asyn
 });
 
 test("locale-only header renders no trailing hamburger when the locale stays inline", async () => {
-	const screen = render(Header, {
+	const screen = await render(Header, {
 		items: [],
 		...localeProps,
 		collapseThreshold: COLLAPSED,
@@ -135,7 +135,7 @@ test("locale-only header renders no trailing hamburger when the locale stays inl
 });
 
 test("collapseMode:hide keeps the locale trigger visible by default", async () => {
-	const screen = render(Header, {
+	const screen = await render(Header, {
 		items: ITEMS,
 		...localeProps,
 		collapseMode: "hide" as const,
@@ -147,7 +147,7 @@ test("collapseMode:hide keeps the locale trigger visible by default", async () =
 });
 
 test("collapseMode:hide + keepLocaleOnCollapse:false hides the locale entirely", async () => {
-	const screen = render(Header, {
+	const screen = await render(Header, {
 		items: ITEMS,
 		...localeProps,
 		collapseMode: "hide" as const,
@@ -166,7 +166,7 @@ test("collapseMode:hide + keepLocaleOnCollapse:false hides the locale entirely",
 // One render per test: the harness locators are page-scoped, so two headers on
 // screen at once is a strict-mode violation rather than two isolated trees.
 test("collapsed trigger uses the compact shortLabel", async () => {
-	const screen = render(Header, {
+	const screen = await render(Header, {
 		locales: LOCALES,
 		activeLocale: "sk",
 		collapseThreshold: COLLAPSED,
@@ -177,7 +177,7 @@ test("collapsed trigger uses the compact shortLabel", async () => {
 });
 
 test("expanded trigger keeps the full label even when shortLabel is set", async () => {
-	const screen = render(Header, {
+	const screen = await render(Header, {
 		locales: LOCALES,
 		activeLocale: "sk",
 		collapseThreshold: EXPANDED,
@@ -188,7 +188,7 @@ test("expanded trigger keeps the full label even when shortLabel is set", async 
 });
 
 test("collapsed trigger falls back to the full label when shortLabel is absent", async () => {
-	const screen = render(Header, {
+	const screen = await render(Header, {
 		locales: [
 			{ id: "en", label: "English" },
 			{ id: "sk", label: "Slovenčina" },
@@ -203,7 +203,7 @@ test("collapsed trigger falls back to the full label when shortLabel is absent",
 
 test("the inline collapsed trigger still drives onLocaleChange", async () => {
 	const onLocaleChange = vi.fn();
-	const screen = render(Header, {
+	const screen = await render(Header, {
 		items: ITEMS,
 		...localeProps,
 		onLocaleChange,

@@ -30,7 +30,7 @@ function baseItems() {
 }
 
 test("closed initially: aria-expanded false and no role=menu in the document", async () => {
-	const screen = render(DropdownMenu, {
+	const screen = await render(DropdownMenu, {
 		items: baseItems(),
 		children: text("Open menu"),
 	});
@@ -45,7 +45,7 @@ test("closed initially: aria-expanded false and no role=menu in the document", a
 });
 
 test("clicking the trigger opens the menu: aria-expanded true, items + header + separator render", async () => {
-	const screen = render(DropdownMenu, {
+	const screen = await render(DropdownMenu, {
 		items: baseItems(),
 		children: text("Open menu"),
 	});
@@ -83,7 +83,7 @@ test("clicking the trigger opens the menu: aria-expanded true, items + header + 
 });
 
 test("disabled action item is rendered disabled", async () => {
-	const screen = render(DropdownMenu, {
+	const screen = await render(DropdownMenu, {
 		items: baseItems(),
 		children: text("Open menu"),
 	});
@@ -100,7 +100,7 @@ test("selecting an action fires its onSelect once and closes the menu (closeOnSe
 		{ type: "header" as const, id: "h1", label: "Section" },
 		{ type: "action" as const, id: "open", label: "Open", disabled: true },
 	];
-	const screen = render(DropdownMenu, { items, children: text("Open menu") });
+	const screen = await render(DropdownMenu, { items, children: text("Open menu") });
 
 	const trigger = screen.getByRole("button", { name: "Open menu" });
 	await trigger.click();
@@ -118,7 +118,7 @@ test("selecting an action fires its onSelect once and closes the menu (closeOnSe
 });
 
 test("Escape closes the menu (closeOnEscape default)", async () => {
-	const screen = render(DropdownMenu, {
+	const screen = await render(DropdownMenu, {
 		items: baseItems(),
 		children: text("Open menu"),
 	});
@@ -138,7 +138,7 @@ test("search filters items by prefix: typing 'new' keeps New and drops Open", as
 		{ type: "action" as const, id: "new", label: "New", onSelect: vi.fn() },
 		{ type: "action" as const, id: "open", label: "Open", onSelect: vi.fn() },
 	];
-	const screen = render(DropdownMenu, {
+	const screen = await render(DropdownMenu, {
 		items,
 		search: true,
 		children: text("Open menu"),
@@ -168,7 +168,7 @@ test("search filters items by prefix: typing 'new' keeps New and drops Open", as
 test("onOpen fires on open and onClose fires on close", async () => {
 	const onOpen = vi.fn();
 	const onClose = vi.fn();
-	const screen = render(DropdownMenu, {
+	const screen = await render(DropdownMenu, {
 		items: baseItems(),
 		children: text("Open menu"),
 		onOpen,
@@ -212,7 +212,10 @@ function fileMenuItems() {
 const settle = () => new Promise((r) => setTimeout(r, 250));
 
 test("scrollbar gutter: not reserved for a menu that does not scroll (7 mixed items)", async () => {
-	const screen = render(DropdownMenu, { items: fileMenuItems(), children: text("File") });
+	const screen = await render(DropdownMenu, {
+		items: fileMenuItems(),
+		children: text("File"),
+	});
 	await screen.getByRole("button", { name: "File" }).click();
 	const menu = screen.getByRole("menu");
 	await expect.element(menu).toBeInTheDocument();
@@ -223,7 +226,7 @@ test("scrollbar gutter: not reserved for a menu that does not scroll (7 mixed it
 });
 
 test("scrollbar gutter: explicit scrollbarGutter=true reserves it regardless of content", async () => {
-	const screen = render(DropdownMenu, {
+	const screen = await render(DropdownMenu, {
 		items: fileMenuItems(),
 		scrollbarGutter: true,
 		children: text("File"),
@@ -248,7 +251,11 @@ test("scrollbar gutter: reserved once a space-taking scrollbar appears, kept whi
 			id: `i${i}`,
 			label: `Item ${i}`,
 		}));
-		const screen = render(DropdownMenu, { items, search: true, children: text("Long") });
+		const screen = await render(DropdownMenu, {
+			items,
+			search: true,
+			children: text("Long"),
+		});
 		const trigger = screen.getByRole("button", { name: "Long" });
 		await trigger.click();
 		const menu = screen.getByRole("menu");

@@ -169,7 +169,7 @@ test("copy=false: no button; with no label either, no header at all", async () =
 	const labelled = await render(CodeBlock, { code: "x", lang: "bash", copy: false });
 	expect(q(labelled.container, ".stuic-code-block-title")!.textContent).toBe("bash");
 	expect(q(labelled.container, "button")).toBeNull();
-	labelled.unmount();
+	await labelled.unmount();
 
 	const bare = await render(CodeBlock, { code: "x", copy: false });
 	expect(q(bare.container, ".stuic-code-block-header")).toBeNull();
@@ -227,7 +227,7 @@ test("an overflowing <pre> is a tab stop; one that fits is not", async () => {
 	await expect
 		.element(page.elementLocator(pre(long.container)))
 		.toHaveAttribute("tabindex", "0");
-	long.unmount();
+	await long.unmount();
 
 	const short = await render(CodeBlock, { code: "echo hi", style: "width: 240px" });
 	// give the measurement a chance to (wrongly) flip it
@@ -321,10 +321,10 @@ test("unmount removes exactly this block's ranges", async () => {
 			(r as Range).toString()
 		);
 	await expect.poll(all).toEqual(expect.arrayContaining(['"keep"', '"drop"']));
-	drop.unmount();
+	await drop.unmount();
 	expect(all()).toContain('"keep"');
 	expect(all()).not.toContain('"drop"');
-	keep.unmount();
+	await keep.unmount();
 });
 
 test("highlight=false and unknown languages paint nothing", async () => {
@@ -613,10 +613,10 @@ test("a title is shown before the tabs and names the tab list", async () => {
 test("active picks the sample by id (label, else lang); an unknown one shows the first", async () => {
 	const byLabel = await render(CodeBlock, { samples: SAMPLES, active: "Python" });
 	expect(code(byLabel.container).textContent).toBe("requests.get(url)");
-	byLabel.unmount();
+	await byLabel.unmount();
 	const byLang = await render(CodeBlock, { samples: SAMPLES, active: "json" });
 	expect(code(byLang.container).textContent).toBe('{"a": 1}');
-	byLang.unmount();
+	await byLang.unmount();
 	const unknown = await render(CodeBlock, { samples: SAMPLES, active: "rust" });
 	expect(code(unknown.container).textContent).toBe("curl https://x.test");
 });
@@ -711,7 +711,7 @@ test("layout: with the copy button the header has start padding only; the button
 	expect(Math.round(h.bottom - b.bottom)).toBe(
 		Math.round(parseFloat(getComputedStyle(header).borderBottomWidth))
 	);
-	withCopy.unmount();
+	await withCopy.unmount();
 
 	// no button: the label keeps its padding all around
 	const noCopy = await render(CodeBlock, { code: "x", lang: "bash", copy: false });

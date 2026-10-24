@@ -26,7 +26,7 @@ function rootLocator(container: HTMLElement) {
 }
 
 test("renders a ul.stuic-tabbed-menu role=tablist with the horizontal orientation contract", async () => {
-	const { container } = render(TabbedMenu, { items });
+	const { container } = await render(TabbedMenu, { items });
 	const root = rootLocator(container);
 	await expect.element(root).toBeInTheDocument();
 	await expect.element(root).toHaveClass("stuic-tabbed-menu");
@@ -37,7 +37,7 @@ test("renders a ul.stuic-tabbed-menu role=tablist with the horizontal orientatio
 });
 
 test("each item renders a role=tab locatable by its label as accessible name", async () => {
-	const screen = render(TabbedMenu, { items });
+	const screen = await render(TabbedMenu, { items });
 	// default items render as <button> tabs; the string label is the accessible name
 	await expect.element(screen.getByRole("tab", { name: "Tab A" })).toBeInTheDocument();
 	await expect.element(screen.getByRole("tab", { name: "Tab B" })).toBeInTheDocument();
@@ -45,7 +45,7 @@ test("each item renders a role=tab locatable by its label as accessible name", a
 });
 
 test("value selects the matching tab: aria-selected is the string 'true'/'false'", async () => {
-	const screen = render(TabbedMenu, { items, value: "a" });
+	const screen = await render(TabbedMenu, { items, value: "a" });
 	const tabA = screen.getByRole("tab", { name: "Tab A" });
 	const tabB = screen.getByRole("tab", { name: "Tab B" });
 	// aria-selected is a STRING attribute, not a boolean
@@ -55,7 +55,7 @@ test("value selects the matching tab: aria-selected is the string 'true'/'false'
 
 test("clicking a tab moves selection and fires onSelect once with that item", async () => {
 	const onSelect = vi.fn();
-	const screen = render(TabbedMenu, { items, value: "a", onSelect });
+	const screen = await render(TabbedMenu, { items, value: "a", onSelect });
 	const tabA = screen.getByRole("tab", { name: "Tab A" });
 	const tabB = screen.getByRole("tab", { name: "Tab B" });
 
@@ -72,7 +72,7 @@ test("clicking a tab moves selection and fires onSelect once with that item", as
 
 test("disabled item is aria-disabled='true' and a normal click leaves selection unchanged", async () => {
 	const onSelect = vi.fn();
-	const screen = render(TabbedMenu, { items, value: "a", onSelect });
+	const screen = await render(TabbedMenu, { items, value: "a", onSelect });
 	const tabA = screen.getByRole("tab", { name: "Tab A" });
 	const tabC = screen.getByRole("tab", { name: "Tab C" });
 
@@ -91,14 +91,14 @@ test("disabled item is aria-disabled='true' and a normal click leaves selection 
 });
 
 test("orientation='vertical' reflects on data-orientation and aria-orientation", async () => {
-	const { container } = render(TabbedMenu, { items, orientation: "vertical" });
+	const { container } = await render(TabbedMenu, { items, orientation: "vertical" });
 	const root = rootLocator(container);
 	await expect.element(root).toHaveAttribute("data-orientation", "vertical");
 	await expect.element(root).toHaveAttribute("aria-orientation", "vertical");
 });
 
 test("item.href renders the tab as an <a> (still role=tab) with the href attribute", async () => {
-	const screen = render(TabbedMenu, {
+	const screen = await render(TabbedMenu, {
 		items: [{ id: "h", label: "Link", href: "/x" }],
 	});
 	const tab = screen.getByRole("tab", { name: "Link" });
@@ -110,7 +110,7 @@ test("item.href renders the tab as an <a> (still role=tab) with the href attribu
 
 test("item.onSelect returning false aborts: outer onSelect uncalled, selection unchanged", async () => {
 	const onSelect = vi.fn();
-	const screen = render(TabbedMenu, {
+	const screen = await render(TabbedMenu, {
 		items: [
 			{ id: "a", label: "Tab A" },
 			{ id: "x", label: "X", onSelect: () => false },
@@ -131,7 +131,7 @@ test("item.onSelect returning false aborts: outer onSelect uncalled, selection u
 });
 
 test("unstyled=true drops the stuic-tabbed-menu base class from the <ul>", async () => {
-	const { container } = render(TabbedMenu, { items, unstyled: true });
+	const { container } = await render(TabbedMenu, { items, unstyled: true });
 	// the styled base class is gone; locate the tablist by role instead
 	expect(container.querySelector(".stuic-tabbed-menu")).toBeNull();
 	const ul = page.elementLocator(container.querySelector("[role='tablist']")!);

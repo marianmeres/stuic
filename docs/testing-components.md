@@ -36,7 +36,7 @@ import { expect, test, vi } from "vitest";
 import Pill from "./Pill.svelte";
 
 test("renders label and applies intent", async () => {
-	const screen = render(Pill, { label: "Beta", intent: "primary" });
+	const screen = await render(Pill, { label: "Beta", intent: "primary" });
 	const pill = screen.getByText("Beta");
 	await expect.element(pill).toBeVisible();
 	await expect.element(pill).toHaveAttribute("data-intent", "primary");
@@ -44,7 +44,7 @@ test("renders label and applies intent", async () => {
 
 test("dismiss button fires ondismiss", async () => {
 	const ondismiss = vi.fn();
-	const screen = render(Pill, { label: "Beta", ondismiss });
+	const screen = await render(Pill, { label: "Beta", ondismiss });
 	await screen.getByRole("button", { name: /dismiss/i }).click();
 	expect(ondismiss).toHaveBeenCalledOnce();
 });
@@ -52,10 +52,20 @@ test("dismiss button fires ondismiss", async () => {
 
 Key facts (verified against the `vitest-browser-svelte` README):
 
-- `render(Component, props)` returns a **screen** object with Playwright-style locator methods
+- `render(Component, props)` resolves to a **screen** object with Playwright-style locator methods
   (`getByRole`, `getByText`, `getByLabelText`, …). `render` is imported from `"vitest-browser-svelte"`.
+- **`render()` is async — always `await` it** (and `await screen.unmount()`). A sync
+  `const screen = render(...)` destructures a Promise and fails at the first locator. A helper that
+  wraps `render` must be `async` and awaited too; type its result as
+  `Awaited<ReturnType<typeof render>>`.
+- **`toHaveTextContent` is an exact match** (whitespace-normalized). For a substring or a RegExp use
+  `toMatchTextContent` — and for "doesn't contain" always `.not.toMatchTextContent`, since
+  `.not.toHaveTextContent` only rules out an exact match and passes almost vacuously.
+- **Text locators match substrings** (`browser.locators.exact: false` in `vite.config.ts`, keeping the
+  pre-Vitest-5 behavior). Pass `{ exact: true }` when a name is a substring of another
+  (`"Type"` vs `"Column type"`).
 - **`expect.element(locator)` auto-retries** — it polls the DOM until the assertion passes or times
-  out (`testTimeout`, set to 2000ms in our config). Prefer it over reading values synchronously; it
+  out (`testTimeout`, set to 5000ms in our config). Prefer it over reading values synchronously; it
   removes the need for `act`/manual `tick()` for in-component reactivity.
 - `.click()`, `.fill()`, etc. are awaited interactions on a locator.
 - **No `@testing-library`, no `act`.** `vitest-browser-svelte` intentionally omits `act`.
@@ -67,7 +77,7 @@ There are no `component.$on` listeners in Svelte 5 — events are callback props
 
 ```ts
 const onclick = vi.fn();
-render(Button, { onclick, children: text("Save") });
+const screen = await render(Button, { onclick, children: text("Save") });
 await screen.getByRole("button").click();
 expect(onclick).toHaveBeenCalledOnce();
 ```
@@ -84,7 +94,7 @@ import { createRawSnippet } from "svelte";
 const text = (s: string) =>
 	createRawSnippet(() => ({ render: () => `<span>${s}</span>` }));
 
-render(Button, { children: text("Click me") });
+await render(Button, { children: text("Click me") });
 ```
 
 For complex snippet scenarios (a snippet that itself renders a STUIC component, takes args, etc.),

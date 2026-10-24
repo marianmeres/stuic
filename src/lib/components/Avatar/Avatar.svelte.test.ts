@@ -69,7 +69,7 @@ test("no src and no initials falls back to icon mode (renders an svg)", async ()
 
 test("onclick renders a <button type=button> with data-interactive and fires once", async () => {
 	const onclick = vi.fn();
-	const screen = render(Avatar, { onclick, initials: "AB" });
+	const screen = await render(Avatar, { onclick, initials: "AB" });
 	const btn = screen.getByRole("button");
 	await expect.element(btn).toBeInTheDocument();
 	await expect.element(btn).toHaveAttribute("type", "button");

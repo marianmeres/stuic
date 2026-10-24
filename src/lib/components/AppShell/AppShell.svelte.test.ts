@@ -35,7 +35,7 @@ const CONDITIONAL_REGIONS = [
 ] as const;
 
 test("only children: always-present regions render, every conditional region is absent", async () => {
-	const screen = render(AppShell, { children: text("page body") });
+	const screen = await render(AppShell, { children: text("page body") });
 
 	// Root shell with default id and the data-shell marker.
 	const shell = screen.container.querySelector('[data-shell="shell"]');
@@ -61,14 +61,14 @@ test("only children: always-present regions render, every conditional region is 
 });
 
 test("id prop overrides the shell element id", async () => {
-	const screen = render(AppShell, { id: "my-shell", children: text("body") });
+	const screen = await render(AppShell, { id: "my-shell", children: text("body") });
 	const shell = screen.container.querySelector('[data-shell="shell"]');
 	expect(shell).not.toBeNull();
 	expect(shell!.id).toBe("my-shell");
 });
 
 test("rail snippet renders the rail region (a <div>) with its content", async () => {
-	const screen = render(AppShell, {
+	const screen = await render(AppShell, {
 		rail: text("rail content"),
 		children: text("body"),
 	});
@@ -80,7 +80,7 @@ test("rail snippet renders the rail region (a <div>) with its content", async ()
 });
 
 test("header snippet renders the header region as a <header>", async () => {
-	const screen = render(AppShell, {
+	const screen = await render(AppShell, {
 		header: text("header content"),
 		children: text("body"),
 	});
@@ -92,7 +92,7 @@ test("header snippet renders the header region as a <header>", async () => {
 });
 
 test("sidebarLeft + sidebarRight render both <aside> regions with distinct content", async () => {
-	const screen = render(AppShell, {
+	const screen = await render(AppShell, {
 		sidebarLeft: text("left sidebar"),
 		sidebarRight: text("right sidebar"),
 		children: text("body"),
@@ -110,7 +110,7 @@ test("sidebarLeft + sidebarRight render both <aside> regions with distinct conte
 });
 
 test("pageHeader + pageFooter render both regions inside the page", async () => {
-	const screen = render(AppShell, {
+	const screen = await render(AppShell, {
 		pageHeader: text("page header content"),
 		pageFooter: text("page footer content"),
 		children: text("body"),
@@ -137,7 +137,7 @@ test("pageHeader + pageFooter render both regions inside the page", async () => 
 });
 
 test("footer snippet renders the footer region as a <footer>", async () => {
-	const screen = render(AppShell, {
+	const screen = await render(AppShell, {
 		footer: text("footer content"),
 		children: text("body"),
 	});
@@ -149,7 +149,7 @@ test("footer snippet renders the footer region as a <footer>", async () => {
 });
 
 test("pageFlexGrow maps to the emitted flex token on data-shell=page (default 3 -> flex-[3])", async () => {
-	const screen = render(AppShell, { children: text("body") });
+	const screen = await render(AppShell, { children: text("body") });
 	// default pageFlexGrow=3 -> flexMap[3] = "flex-[3]".
 	const pageEl = screen.container.querySelector('[data-shell="page"]');
 	expect(pageEl).not.toBeNull();
@@ -157,7 +157,7 @@ test("pageFlexGrow maps to the emitted flex token on data-shell=page (default 3 
 });
 
 test("pageFlexGrow={2} maps to flex-[2] on data-shell=page", async () => {
-	const screen = render(AppShell, { pageFlexGrow: 2, children: text("body") });
+	const screen = await render(AppShell, { pageFlexGrow: 2, children: text("body") });
 	const pageEl = screen.container.querySelector('[data-shell="page"]');
 	expect(pageEl).not.toBeNull();
 	await expect.element(page.elementLocator(pageEl!)).toHaveClass("flex-[2]");
@@ -166,7 +166,7 @@ test("pageFlexGrow={2} maps to flex-[2] on data-shell=page", async () => {
 test("pageFlexGrow={0}: page gets flex-1 and sidebars collapse to flex-none", async () => {
 	// 0 is the only falsy pageFlexGrow: flexMap[0] === "flex-1", and the sidebar
 	// flex class toggles `pageFlexGrow ? "flex-1" : "flex-none"` -> "flex-none".
-	const screen = render(AppShell, {
+	const screen = await render(AppShell, {
 		pageFlexGrow: 0,
 		sidebarLeft: text("left sidebar"),
 		children: text("body"),

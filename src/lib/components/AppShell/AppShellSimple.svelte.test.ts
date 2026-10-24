@@ -34,7 +34,7 @@ function shell(root: ParentNode, name: string) {
 }
 
 test("only children: <main> renders with the child text; header/rail/aside are absent", async () => {
-	const screen = render(AppShellSimple, { children: text("page body") });
+	const screen = await render(AppShellSimple, { children: text("page body") });
 
 	// <main> has the implicit ARIA role "main"; auto-retry proves it is mounted.
 	const main = screen.getByRole("main");
@@ -49,7 +49,7 @@ test("only children: <main> renders with the child text; header/rail/aside are a
 });
 
 test('header snippet: <header data-shell="header"> renders with its content', async () => {
-	const screen = render(AppShellSimple, {
+	const screen = await render(AppShellSimple, {
 		header: text("the header"),
 		children: text("page body"),
 	});
@@ -65,7 +65,7 @@ test('header snippet: <header data-shell="header"> renders with its content', as
 });
 
 test("headerStyle is forwarded verbatim onto the header's style attribute", async () => {
-	const screen = render(AppShellSimple, {
+	const screen = await render(AppShellSimple, {
 		header: text("styled header"),
 		headerStyle: "background: red",
 		children: text("page body"),
@@ -80,7 +80,7 @@ test("headerStyle is forwarded verbatim onto the header's style attribute", asyn
 });
 
 test('rail snippet: <div data-shell="rail"> renders with its content', async () => {
-	const screen = render(AppShellSimple, {
+	const screen = await render(AppShellSimple, {
 		rail: text("rail content"),
 		children: text("page body"),
 	});
@@ -96,7 +96,7 @@ test('rail snippet: <div data-shell="rail"> renders with its content', async () 
 });
 
 test('aside snippet: <aside data-shell="aside"> renders with its content', async () => {
-	const screen = render(AppShellSimple, {
+	const screen = await render(AppShellSimple, {
 		aside: text("aside content"),
 		children: text("page body"),
 	});
@@ -111,7 +111,7 @@ test('aside snippet: <aside data-shell="aside"> renders with its content', async
 });
 
 test("all snippets together: header + rail + aside + main all render", async () => {
-	const screen = render(AppShellSimple, {
+	const screen = await render(AppShellSimple, {
 		header: text("H"),
 		rail: text("R"),
 		aside: text("A"),

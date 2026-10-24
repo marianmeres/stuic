@@ -23,7 +23,7 @@ const makeGetOptions = () =>
 
 test("clicking the opener calls open() and shows a role=dialog with the search box (async)", async () => {
 	const getOptions = makeGetOptions();
-	const screen = render(Fixture, { getOptions });
+	const screen = await render(Fixture, { getOptions });
 
 	// nothing is open yet
 	await expect.element(screen.getByRole("dialog")).not.toBeInTheDocument();
@@ -41,7 +41,7 @@ test("clicking the opener calls open() and shows a role=dialog with the search b
 
 test("typing runs the debounced getOptions and renders the results as role=option in a role=listbox", async () => {
 	const getOptions = makeGetOptions();
-	const screen = render(Fixture, { getOptions });
+	const screen = await render(Fixture, { getOptions });
 
 	await screen.getByTestId("opener").click();
 	await expect.element(screen.getByRole("dialog")).toBeInTheDocument();
@@ -64,7 +64,7 @@ test("typing runs the debounced getOptions and renders the results as role=optio
 
 test("getOptions receives the typed query string", async () => {
 	const getOptions = makeGetOptions();
-	const screen = render(Fixture, { getOptions });
+	const screen = await render(Fixture, { getOptions });
 
 	await screen.getByTestId("opener").click();
 	await expect.element(screen.getByRole("dialog")).toBeInTheDocument();
@@ -80,7 +80,7 @@ test("getOptions receives the typed query string", async () => {
 
 test("selecting an option closes the dialog (submit() -> close())", async () => {
 	const getOptions = makeGetOptions();
-	const screen = render(Fixture, { getOptions });
+	const screen = await render(Fixture, { getOptions });
 
 	await screen.getByTestId("opener").click();
 	await expect.element(screen.getByRole("dialog")).toBeInTheDocument();

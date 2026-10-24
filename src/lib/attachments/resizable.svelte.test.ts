@@ -36,7 +36,7 @@ beforeEach(() => {
 
 test("applies `initial`, clamps to min/max and reports through onResize", async () => {
 	const onResize = vi.fn();
-	const screen = render(Fixture, {
+	const screen = await render(Fixture, {
 		options: { initial: 500, min: 50, max: 300, onResize },
 	});
 	await expect.element(screen.getByTestId("el")).toHaveStyle({ width: "300px" });
@@ -50,13 +50,13 @@ test("applies `initial`, clamps to min/max and reports through onResize", async 
 });
 
 test("% units resolve against the parent element", async () => {
-	const screen = render(Fixture, { options: { initial: 25, units: "%" } });
+	const screen = await render(Fixture, { options: { initial: 25, units: "%" } });
 	await expect.element(screen.getByTestId("el")).toHaveStyle({ width: "25%" });
 	expect(el(screen).offsetWidth).toBe(100);
 });
 
 test("axis y resizes the height and puts the handle on the bottom edge", async () => {
-	const screen = render(Fixture, {
+	const screen = await render(Fixture, {
 		vertical: true,
 		options: { axis: "y", initial: 120 },
 	});
@@ -68,7 +68,7 @@ test("axis y resizes the height and puts the handle on the bottom edge", async (
 });
 
 test("the created handle is a focusable ARIA window splitter describing the size", async () => {
-	const screen = render(Fixture, {
+	const screen = await render(Fixture, {
 		options: { initial: 100, min: 50, max: 300, label: "Sidebar width" },
 	});
 	await expect.element(screen.getByTestId("el")).toHaveStyle({ width: "100px" });
@@ -90,13 +90,13 @@ test("the created handle is a focusable ARIA window splitter describing the size
 });
 
 test("without min/max the aria range is 0..container (px) or 0..100 (%)", async () => {
-	const screen = render(Fixture, { options: { initial: 100 } });
+	const screen = await render(Fixture, { options: { initial: 100 } });
 	await expect.element(screen.getByTestId("el")).toHaveStyle({ width: "100px" });
 	expect(handle(screen).getAttribute("aria-valuemin")).toBe("0");
 	expect(handle(screen).getAttribute("aria-valuemax")).toBe("400");
-	screen.unmount();
+	await screen.unmount();
 
-	const screen2 = render(Fixture, { options: { initial: 25, units: "%" } });
+	const screen2 = await render(Fixture, { options: { initial: 25, units: "%" } });
 	await expect.element(screen2.getByTestId("el")).toHaveStyle({ width: "25%" });
 	expect(handle(screen2).getAttribute("aria-valuemax")).toBe("100");
 	expect(handle(screen2).getAttribute("aria-valuetext")).toBe("25%");
@@ -104,7 +104,7 @@ test("without min/max the aria range is 0..container (px) or 0..100 (%)", async 
 
 test("keyboard: arrows step (Shift x10), Home/End hit the bounds, Enter resets", async () => {
 	const onResize = vi.fn();
-	const screen = render(Fixture, {
+	const screen = await render(Fixture, {
 		options: { initial: 100, min: 50, max: 300, step: 10, onResize },
 	});
 	const target = screen.getByTestId("el");
@@ -140,7 +140,7 @@ test("keyboard: arrows step (Shift x10), Home/End hit the bounds, Enter resets",
 });
 
 test("`reverse` inverts the keys, like it inverts the drag", async () => {
-	const screen = render(Fixture, { options: { initial: 100, reverse: true } });
+	const screen = await render(Fixture, { options: { initial: 100, reverse: true } });
 	const target = screen.getByTestId("el");
 	await expect.element(target).toHaveStyle({ width: "100px" });
 	expect(handle(screen).className).toContain("left-0");
@@ -152,7 +152,7 @@ test("`reverse` inverts the keys, like it inverts the drag", async () => {
 });
 
 test("axis y listens to ArrowUp/ArrowDown, in % steps of 1", async () => {
-	const screen = render(Fixture, {
+	const screen = await render(Fixture, {
 		vertical: true,
 		options: { axis: "y", units: "%", initial: 50 },
 	});
@@ -172,7 +172,7 @@ test("axis y listens to ArrowUp/ArrowDown, in % steps of 1", async () => {
 
 test("pointer drag resizes from the grab point and flags the handle while dragging", async () => {
 	const onResize = vi.fn();
-	const screen = render(Fixture, { options: { initial: 100, max: 300, onResize } });
+	const screen = await render(Fixture, { options: { initial: 100, max: 300, onResize } });
 	const target = screen.getByTestId("el");
 	await expect.element(target).toHaveStyle({ width: "100px" });
 	const h = handle(screen);
@@ -205,7 +205,7 @@ test("pointer drag resizes from the grab point and flags the handle while draggi
 });
 
 test("double-click resets to `resetTo` (defaults to `initial`)", async () => {
-	const screen = render(Fixture, { options: { initial: 100, resetTo: 150 } });
+	const screen = await render(Fixture, { options: { initial: 100, resetTo: 150 } });
 	const target = screen.getByTestId("el");
 	await expect.element(target).toHaveStyle({ width: "100px" });
 	handle(screen).focus();
@@ -216,15 +216,15 @@ test("double-click resets to `resetTo` (defaults to `initial`)", async () => {
 });
 
 test("`key` persists the size and a fresh setup restores it over `initial`", async () => {
-	const screen = render(Fixture, { options: { initial: 100, key: "t-persist" } });
+	const screen = await render(Fixture, { options: { initial: 100, key: "t-persist" } });
 	await expect.element(screen.getByTestId("el")).toHaveStyle({ width: "100px" });
 	handle(screen).focus();
 	await userEvent.keyboard("{ArrowRight}{ArrowRight}");
 	await expect.element(screen.getByTestId("el")).toHaveStyle({ width: "120px" });
 	expect(sessionStorage.getItem("resizable-width-t-persist")).toContain("120");
-	screen.unmount();
+	await screen.unmount();
 
-	const again = render(Fixture, { options: { initial: 100, key: "t-persist" } });
+	const again = await render(Fixture, { options: { initial: 100, key: "t-persist" } });
 	await expect.element(again.getByTestId("el")).toHaveStyle({ width: "120px" });
 	// …and Enter still means the configured initial, not the restored size
 	handle(again).focus();
@@ -233,7 +233,10 @@ test("`key` persists the size and a fresh setup restores it over `initial`", asy
 });
 
 test("a provided handle gets the semantics and is restored on cleanup", async () => {
-	const screen = render(Fixture, { external: true, options: { initial: 100, max: 300 } });
+	const screen = await render(Fixture, {
+		external: true,
+		options: { initial: 100, max: 300 },
+	});
 	const target = screen.getByTestId("el");
 	await expect.element(target).toHaveStyle({ width: "100px" });
 	// nothing was created inside the element, the sibling is the handle
@@ -264,7 +267,7 @@ test("a provided handle gets the semantics and is restored on cleanup", async ()
 });
 
 test("enabled: false sets nothing up", async () => {
-	const screen = render(Fixture, { options: { enabled: false, initial: 200 } });
+	const screen = await render(Fixture, { options: { enabled: false, initial: 200 } });
 	await expect.element(screen.getByTestId("el")).toHaveStyle({ width: "100px" });
 	expect(el(screen).querySelector("[data-handle]")).toBeNull();
 });
@@ -272,7 +275,7 @@ test("enabled: false sets nothing up", async () => {
 test("onInit hands out an api: set() clamps and persists, reset() restores", async () => {
 	let api: ResizableApi | undefined;
 	const onResize = vi.fn();
-	const screen = render(Fixture, {
+	const screen = await render(Fixture, {
 		options: { initial: 100, max: 300, onResize, onInit: (a) => (api = a) },
 	});
 	const target = screen.getByTestId("el");
@@ -289,7 +292,7 @@ test("onInit hands out an api: set() clamps and persists, reset() restores", asy
 
 test("resizableWidth action: same handle, legacy `{ width }` payload", async () => {
 	const onResize = vi.fn();
-	const screen = render(Fixture, { action: { initial: 120, max: 300, onResize } });
+	const screen = await render(Fixture, { action: { initial: 120, max: 300, onResize } });
 	const target = screen.getByTestId("el");
 	await expect.element(target).toHaveStyle({ width: "120px" });
 	expect(onResize).toHaveBeenCalledWith({ width: 120, units: "px", container: 400 });
