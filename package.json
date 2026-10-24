@@ -195,7 +195,6 @@
 		"@marianmeres/ticker": "^1.17.1",
 		"@marianmeres/tree": "^2.3.0",
 		"libphonenumber-js": "^1.13.15",
-		"runed": "^0.31.1",
 		"tailwind-merge": "^3.7.0"
 	},
 	"imports": {

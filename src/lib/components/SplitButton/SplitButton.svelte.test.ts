@@ -143,8 +143,7 @@ test("items: secondary gets menu ARIA wiring and opens/closes the dropdown", asy
 	await expect.element(screen.getByRole("menu")).toBeInTheDocument();
 	await expect.element(screen.getByTestId("sb")).toHaveAttribute("data-open", "true");
 
-	// Native click: selecting synchronously closes the menu (this node detaches), which
-	// would orphan a Playwright actionability promise ("Cancelled"). See DropdownMenu tests.
+	// Native click: synchronous, no post-action wait. See DropdownMenu tests.
 	(screen.getByRole("menuitem", { name: "One" }).element() as HTMLElement).click();
 	expect(items[0].onSelect).toHaveBeenCalledTimes(1);
 	await expect.element(screen.getByRole("menu")).not.toBeInTheDocument();

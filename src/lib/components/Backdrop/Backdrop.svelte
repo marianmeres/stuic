@@ -3,7 +3,7 @@
 	import type { FocusTrapOptions } from "../../actions/focus-trap.js";
 	import { BodyScroll, focusTrap as focusTrapAction } from "#lib/index.js";
 	import { createClog } from "@marianmeres/clog";
-	import { watch } from "runed";
+	import { watch } from "../../utils/watch.svelte.js";
 	import { onDestroy } from "svelte";
 	import { fade } from "svelte/transition";
 

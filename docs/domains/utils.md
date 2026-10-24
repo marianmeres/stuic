@@ -2,7 +2,7 @@
 
 ## Overview
 
-55 utility modules for common tasks (48 re-exported from the package barrel; the rest
+58 utility modules for common tasks (51 re-exported from the package barrel; the rest
 are library-internal). Organized by category.
 
 ---
@@ -11,16 +11,19 @@ are library-internal). Organized by category.
 
 State utilities using Svelte 5 runes:
 
-| Util                   | Purpose                           |
-| ---------------------- | --------------------------------- |
-| `localStorageState`    | Persist state to localStorage     |
-| `sessionStorageState`  | Persist state to sessionStorage   |
-| `breakpoint`           | Reactive responsive breakpoint    |
-| `devicePointer`        | Detect pointer type (mouse/touch) |
-| `prefersReducedMotion` | Detect motion preference          |
-| `observeExists`        | Observe element existence         |
-| `inputHistory`         | Input undo/redo history           |
-| `switch`               | Toggle state factory              |
+| Util                   | Purpose                                                                |
+| ---------------------- | ---------------------------------------------------------------------- |
+| `localStorageState`    | Persist state to localStorage                                          |
+| `sessionStorageState`  | Persist state to sessionStorage                                        |
+| `breakpoint`           | Reactive responsive breakpoint                                         |
+| `devicePointer`        | Detect pointer type (mouse/touch)                                      |
+| `prefersReducedMotion` | Detect motion preference                                               |
+| `observeExists`        | Observe element existence                                              |
+| `inputHistory`         | Input undo/redo history                                                |
+| `switch`               | Toggle state factory                                                   |
+| `watch`                | Effect over explicit sources with previous values; body runs untracked |
+| `Debounced`            | Debounced reactive mirror of a getter (typeahead)                      |
+| `onClickOutside`       | Pointerdown-outside detection with start/stop (menus, dialogs)         |
 
 ### Example: Persistent State
 
@@ -30,6 +33,36 @@ import { localStorageState } from "@marianmeres/stuic";
 let theme = localStorageState("theme", "light");
 // theme.value is reactive and persisted
 theme.value = "dark";
+```
+
+### Example: watch + Debounced + onClickOutside
+
+```svelte
+<script lang="ts">
+	import { Debounced, onClickOutside, watch } from "@marianmeres/stuic";
+
+	let q = $state("");
+	let menu = $state<HTMLElement>();
+	let isOpen = $state(false);
+
+	// `current` lags `q` by 150 ms of quiet; `watch` tracks only its sources, so
+	// reading other state inside the body does not re-trigger the fetch
+	const debounced = new Debounced(() => q, 150);
+	watch(
+		() => debounced.current,
+		(query) => search(query)
+	);
+
+	// only listens while open; `stop()` detaches the document listener
+	const clickOutside = onClickOutside(
+		() => menu,
+		() => (isOpen = false),
+		{
+			immediate: false,
+		}
+	);
+	$effect(() => (isOpen && menu ? clickOutside.start() : clickOutside.stop()));
+</script>
 ```
 
 ---

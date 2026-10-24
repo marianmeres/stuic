@@ -61,8 +61,7 @@ test("AUTHED: clicking Logout fires onLogout once and closes the menu", async ()
 	await screen.getByRole("button", { name: "User menu" }).click();
 	await expect.element(screen.getByRole("menu")).toBeInTheDocument();
 
-	// Native click: selecting synchronously closes the menu (node detaches), which would
-	// orphan a Playwright actionability promise ("Cancelled"). Native click is synchronous.
+	// Native click: synchronous, no post-action wait. See DropdownMenu tests.
 	(screen.getByRole("menuitem", { name: /logout/i }).element() as HTMLElement).click();
 
 	expect(onLogout).toHaveBeenCalledOnce();
@@ -143,8 +142,7 @@ test("UNAUTH: clicking Login fires onLogin once", async () => {
 	await screen.getByRole("button", { name: "Sign in" }).click();
 	await expect.element(screen.getByRole("menu")).toBeInTheDocument();
 
-	// Native click: selecting synchronously closes the menu (node detaches), which would
-	// orphan a Playwright actionability promise ("Cancelled"). Native click is synchronous.
+	// Native click: synchronous, no post-action wait. See DropdownMenu tests.
 	(screen.getByRole("menuitem", { name: "Login" }).element() as HTMLElement).click();
 
 	expect(onLogin).toHaveBeenCalledOnce();

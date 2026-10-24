@@ -106,9 +106,9 @@ test("selecting an action fires its onSelect once and closes the menu (closeOnSe
 	await trigger.click();
 	await expect.element(screen.getByRole("menu")).toBeInTheDocument();
 
-	// Native click: selecting synchronously closes the menu (this node detaches), which
-	// would orphan a Playwright actionability promise ("Cancelled"). A native DOM click
-	// fires the handler synchronously with no post-action wait.
+	// Native click: fires the handler synchronously with no post-action wait. (A locator
+	// click works too now that the in-house onClickOutside replaced runed's — its
+	// cancelled debounce promise used to surface as an unhandled "Cancelled" rejection.)
 	(screen.getByRole("menuitem", { name: "New" }).element() as HTMLElement).click();
 
 	expect(onSelect).toHaveBeenCalledOnce();

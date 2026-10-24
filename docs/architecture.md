@@ -53,7 +53,7 @@ src/lib/
 │   ├── long-press.ts
 │   └── index.ts              # Barrel export
 │
-├── utils/                # 55 utility modules (48 re-exported from the barrel)
+├── utils/                # 58 utility modules (51 re-exported from the barrel)
 │   ├── *.svelte.ts           # Reactive utilities
 │   ├── *.ts                  # Pure functions
 │   └── index.ts              # Barrel export
@@ -139,7 +139,6 @@ Props → Component → Data Attributes → CSS Selectors
 | Package                        | Purpose                       |
 | ------------------------------ | ----------------------------- |
 | `tailwind-merge`               | CSS class conflict resolution |
-| `runed`                        | Svelte 5 reactive utilities   |
 | `@marianmeres/icons-fns`       | Icon SVG generation           |
 | `@marianmeres/item-collection` | Collection management         |
 | `@marianmeres/ticker`          | Animation timing              |

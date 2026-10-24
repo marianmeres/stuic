@@ -32,7 +32,6 @@
 	import { prefersReducedMotion } from "../../utils/prefers-reduced-motion.svelte.js";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import Backdrop from "../Backdrop/Backdrop.svelte";
-	// import { onClickOutside } from "runed";
 
 	const prefersReduced = prefersReducedMotion();
 	const DEFAULT_POS = "left";
@@ -127,9 +126,9 @@
 	}
 </script>
 
-<!-- 
-	Using `onmousedown` not `onclick` intentionally. Otherwise drag inside + release outside 
- 	(eg selecting text and accidentally release outside) would trigger close. 
+<!--
+	Using `onmousedown` not `onclick` intentionally. Otherwise drag inside + release outside
+ 	(eg selecting text and accidentally release outside) would trigger close.
 -->
 
 <Backdrop

@@ -25,7 +25,7 @@
 </script>
 
 <script lang="ts">
-	import { onClickOutside } from "runed";
+	import { onClickOutside } from "../../utils/on-click-outside.svelte.js";
 	import { onDestroy, onMount, tick } from "svelte";
 	import { focusTrap } from "../../actions/focus-trap.js";
 	import { stopPropagation } from "../../utils/event-modifiers.js";

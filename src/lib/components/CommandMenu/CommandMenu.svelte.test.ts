@@ -10,7 +10,7 @@ import Fixture from "./CommandMenu.fixture.svelte";
 //     auto-retry, never a synchronous read.
 //   - the search box is a FieldInput text <input> (role="textbox") whose default
 //     placeholder is the i18n "Type to search...".
-//   - typing is debounced ~150ms (runed Debounced) before getOptions runs; results
+//   - typing is debounced ~150ms (the `Debounced` util) before getOptions runs; results
 //     render as role="option" inside a role="listbox" (the items come back through
 //     ListItemButton with an explicit role="option", id is the default label).
 //   - picking an option (submit() path) sets the bound value and close()s the dialog.

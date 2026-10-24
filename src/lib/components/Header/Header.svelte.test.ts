@@ -210,9 +210,8 @@ test("the inline collapsed trigger still drives onLocaleChange", async () => {
 		collapseThreshold: COLLAPSED,
 	});
 	await screen.getByRole("button", { name: "Change language" }).click();
-	// Native click, per the DropdownMenu test convention: selecting closes the
-	// menu synchronously, detaching this node, which would orphan a Playwright
-	// actionability promise ("Cancelled").
+	// Native click, per the DropdownMenu test convention: synchronous, no
+	// post-action wait.
 	(screen.getByRole("menuitem", { name: "Slovenčina" }).element() as HTMLElement).click();
 	expect(onLocaleChange).toHaveBeenCalledExactlyOnceWith("sk");
 });

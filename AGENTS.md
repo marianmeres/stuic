@@ -26,7 +26,7 @@ src/lib/
 ├── components/     # 84 component directories
 ├── actions/        # 16 Svelte actions (use: directives)
 ├── attachments/    # Svelte attachments ({@attach} — preferred for new DOM helpers)
-├── utils/          # 55 utility modules (48 on the barrel)
+├── utils/          # 58 utility modules (51 on the barrel)
 ├── icons/          # Icon re-exports from @marianmeres/icons-fns
 ├── css/            # CSS-only presets (ratio-locked frame / letterbox)
 ├── index.css       # Centralized CSS imports
@@ -151,7 +151,7 @@ so it is the only confusable pair — do not "fix" one into the other.
 - [CSS presets](./docs/domains/css-presets.md) — ratio-locked frame (letterbox), safe-area, scrollbar
 - [Actions](./docs/domains/actions.md) — 16 Svelte directives
 - [Attachments](./docs/domains/attachments.md) — `{@attach}` DOM helpers (preferred for new ones)
-- [Utils](./docs/domains/utils.md) — 55 utility modules
+- [Utils](./docs/domains/utils.md) — 58 utility modules
 
 ### Reference
 

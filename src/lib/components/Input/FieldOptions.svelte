@@ -12,7 +12,8 @@
 		iconTrash,
 	} from "#lib/icons/index.js";
 	import { ItemCollection, type Item } from "@marianmeres/item-collection";
-	import { Debounced, watch } from "runed";
+	import { Debounced } from "../../utils/debounced.svelte.js";
+	import { watch } from "../../utils/watch.svelte.js";
 	import { onDestroy, tick, type Snippet } from "svelte";
 	import { tooltip } from "../../actions/index.js";
 	import {

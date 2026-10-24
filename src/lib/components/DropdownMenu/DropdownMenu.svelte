@@ -262,7 +262,7 @@
 		iconSearch,
 		iconX,
 	} from "#lib/icons/index.js";
-	import { onClickOutside } from "runed";
+	import { onClickOutside } from "../../utils/on-click-outside.svelte.js";
 	import { slide, fade } from "svelte/transition";
 	import { untrack } from "svelte";
 	import Thc from "../Thc/Thc.svelte";
