@@ -99,7 +99,7 @@ function legacyCopy(text: string): boolean {
 	ta.select();
 	ta.setSelectionRange(0, text.length);
 
-	let ok = false;
+	let ok: boolean;
 	try {
 		ok = document.execCommand("copy");
 	} catch (_e) {

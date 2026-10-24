@@ -155,8 +155,7 @@
 			aria-label={isDefault ? ariaLabel : languageLabels?.[lang] || lang}
 			aria-invalid={(isDefault && ariaInvalid) || undefined}
 			aria-describedby={isDefault ? ariaDescribedby : undefined}
-			use:autogrow={() => ({ enabled: true, value: readLang(lang) })}
-		></textarea>
+			use:autogrow={() => ({ enabled: true, value: readLang(lang) })}></textarea>
 	{:else}
 		<input
 			type="text"

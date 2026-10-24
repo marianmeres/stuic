@@ -328,8 +328,7 @@
 						use:autogrow={() => ({
 							enabled: true,
 							value: entries.find((e) => e.language === _defaultLanguage)?.value,
-						})}
-					></textarea>
+						})}></textarea>
 				{:else}
 					<input
 						bind:this={defaultInputEl}
@@ -377,8 +376,7 @@
 										use:autogrow={() => ({
 											enabled: true,
 											value: entries.find((e) => e.language === lang)?.value,
-										})}
-									></textarea>
+										})}></textarea>
 								{:else}
 									<input
 										type="text"

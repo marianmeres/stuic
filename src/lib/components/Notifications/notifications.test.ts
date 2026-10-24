@@ -22,7 +22,6 @@ test("sanity check", async () => {
 	lastProgress = n.head._ttlProgress;
 	await sleep(15);
 	assert(lastProgress < n.head._ttlProgress);
-	lastProgress = n.head._ttlProgress;
 
 	// sleep long enough to trigger disposal
 	await sleep(100);

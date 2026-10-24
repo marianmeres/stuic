@@ -381,8 +381,7 @@
 					{tabindex}
 					{disabled}
 					wrap="off"
-					use:autogrow={() => ({ enabled: true, value })}
-				></textarea>
+					use:autogrow={() => ({ enabled: true, value })}></textarea>
 			{:else}
 				<div
 					class={twMerge(

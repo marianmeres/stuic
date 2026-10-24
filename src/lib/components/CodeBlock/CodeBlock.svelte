@@ -195,7 +195,7 @@
 	let current = $derived(_samples?.[activeIndex]);
 
 	// Keyed by index, written through `bind:this`; only read in handlers.
-	const tabEls: HTMLButtonElement[] = [];
+	const tabEls: HTMLButtonElement[] = $state([]);
 
 	function selectTab(i: number, focus = false) {
 		active = sampleIds[i];

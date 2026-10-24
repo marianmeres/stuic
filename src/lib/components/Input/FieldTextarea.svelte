@@ -173,6 +173,5 @@
 		{tabindex}
 		{required}
 		{disabled}
-		{...rest}
-	></textarea>
+		{...rest}></textarea>
 </InputWrap>

@@ -437,8 +437,7 @@
 									)}
 									{disabled}
 									{tabindex}
-									use:autogrow={() => ({ enabled: true, value: entry.value })}
-								></textarea>
+									use:autogrow={() => ({ enabled: true, value: entry.value })}></textarea>
 
 								<!-- Subtle JSON state indicator -->
 								{#if st !== "none"}
