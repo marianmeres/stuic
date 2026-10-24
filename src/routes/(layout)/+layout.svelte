@@ -2,10 +2,9 @@
 	let { children } = $props();
 	import "../../app.css";
 	import { page } from "$app/state";
-	import { ColorScheme, ColorSchemeLocal, Breakpoint, ucfirst } from "$lib/index.js";
-	import { base } from "$app/paths";
+	import { ColorScheme, ColorSchemeLocal, Breakpoint, ucfirst } from "#lib/index.js";
 	import { themes, themeNames } from "./theme-preview/themes-list.js";
-	import { browser } from "$app/environment";
+	import { browser } from "$app/env";
 
 	const THEME_STORAGE_KEY = "stuic-selected-theme";
 
@@ -48,7 +47,7 @@
 			<a class="underline" href="/">UI home</a>
 			<span class="space-x-1">
 				{#each segments || [] as seg, i}
-					{@const href = [base, seg].join("/")}
+					{@const href = `/${seg}`}
 					{#if i === (segments?.length || 0) - 1}
 						&rarr;&nbsp;<span>{ucfirst(seg)}</span>
 					{:else}

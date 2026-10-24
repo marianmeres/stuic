@@ -5,7 +5,7 @@
 		hideSpotlight,
 		isSpotlightOpen,
 		type SpotlightPosition,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	let tourStep = $state(0);
 	let tourActive = $derived(tourStep > 0);

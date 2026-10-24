@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { iconCheck, svgCircle, type SvgCircleOptions } from "$lib/index.js";
+	import { iconCheck, svgCircle, type SvgCircleOptions } from "#lib/index.js";
 	import type { Attachment } from "svelte/attachments";
 
 	// The helper is framework agnostic: it returns a plain DOM <svg> (plus setters), so

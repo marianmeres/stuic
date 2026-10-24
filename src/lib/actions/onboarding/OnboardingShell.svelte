@@ -41,7 +41,7 @@
 </script>
 
 <script lang="ts">
-	import { iconArrowLeft, iconArrowRight, iconCheck } from "$lib/icons/index.js";
+	import { iconArrowLeft, iconArrowRight, iconCheck } from "#lib/icons/index.js";
 	import Button from "../../components/Button/Button.svelte";
 	import Thc from "../../components/Thc/Thc.svelte";
 	import { omit } from "../../utils/omit-pick.js";

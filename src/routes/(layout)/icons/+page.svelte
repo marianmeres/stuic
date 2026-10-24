@@ -41,7 +41,7 @@
 		iconMenu,
 		iconMinus,
 		iconEllipsisVertical,
-	} from "$lib/icons/index.js";
+	} from "#lib/icons/index.js";
 
 	const fileIcons = [
 		{ name: "iconFile", icon: iconFile },
@@ -96,7 +96,7 @@
 <h1>Stuic Icons Reference</h1>
 
 <p class="mb-8 opacity-75">
-	All icons are centralized in <code>$lib/icons/index.js</code>. Change the underlying
+	All icons are centralized in <code>#lib/icons/index.js</code>. Change the underlying
 	implementation there to swap icons across the entire library.
 </p>
 

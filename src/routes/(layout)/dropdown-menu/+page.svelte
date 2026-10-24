@@ -3,7 +3,7 @@
 		DropdownMenu,
 		type DropdownMenuItem,
 		type DropdownMenuPosition,
-	} from "$lib/components/DropdownMenu/index.js";
+	} from "#lib/components/DropdownMenu/index.js";
 	import { iconLucideCopy } from "@marianmeres/icons-fns/lucide/iconLucideCopy.js";
 	import { iconLucidePencil } from "@marianmeres/icons-fns/lucide/iconLucidePencil.js";
 	import { iconLucideTrash2 } from "@marianmeres/icons-fns/lucide/iconLucideTrash2.js";

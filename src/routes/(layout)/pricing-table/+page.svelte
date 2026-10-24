@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { PricingTable, type PricingTier, type BillingPeriod } from "$lib/index.js";
+	import { PricingTable, type PricingTier, type BillingPeriod } from "#lib/index.js";
 
 	let billingPeriod: BillingPeriod = $state("monthly");
 

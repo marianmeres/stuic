@@ -7,7 +7,7 @@
 		iconUndo,
 		iconX,
 		iconZoomIn,
-	} from "$lib/icons/index.js";
+	} from "#lib/icons/index.js";
 	import { onDestroy, tick, type Snippet } from "svelte";
 	import { fileDropzone } from "../../actions/file-dropzone.svelte.js";
 	import { highlightDragover } from "../../actions/highlight-dragover.svelte.js";

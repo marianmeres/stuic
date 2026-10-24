@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { KbdShortcut } from "$lib/index.js";
+	import { KbdShortcut } from "#lib/index.js";
 </script>
 
 <div class="space-y-4">

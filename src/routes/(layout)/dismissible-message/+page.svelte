@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Button, DismissibleMessage, FieldCheckbox, FieldSelect } from "$lib/index.js";
-	import type { MessageIntent } from "$lib/components/DismissibleMessage/DismissibleMessage.svelte";
+	import { Button, DismissibleMessage, FieldCheckbox, FieldSelect } from "#lib/index.js";
+	import type { MessageIntent } from "#lib/components/DismissibleMessage/DismissibleMessage.svelte";
 	import { dummySentence } from "../../_utils/dummy-text.js";
 
 	let message = $state("");

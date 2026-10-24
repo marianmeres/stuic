@@ -3,7 +3,7 @@
 		FieldPhoneNumber,
 		onSubmitValidityCheck,
 		type ValidationResult,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 	import { isValidPhoneNumber, parsePhoneNumber } from "libphonenumber-js";
 
 	let value = $state("");

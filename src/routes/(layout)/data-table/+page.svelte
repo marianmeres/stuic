@@ -5,7 +5,7 @@
 		createDataTableT,
 		DATA_TABLE_MESSAGES_SK,
 		type DataTableColumn,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 	import { createPagingStore, type PagingCalcResult } from "@marianmeres/paging-store";
 
 	// --- Sample data ---

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ImageCycler, type ImageCyclerImage } from "$lib/index.js";
+	import { ImageCycler, type ImageCyclerImage } from "#lib/index.js";
 
 	const images: ImageCyclerImage[] = [
 		{

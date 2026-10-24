@@ -6,7 +6,7 @@
 		AlertConfirmPrompt,
 		AlertConfirmPromptStack,
 		createConfirm,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 	import CustomShellDemo from "./CustomShellDemo.svelte";
 
 	// ── Tour 1: Basic 3-step tour ─────────────────────────────────────────

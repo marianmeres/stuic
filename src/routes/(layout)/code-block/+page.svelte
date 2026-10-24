@@ -9,7 +9,7 @@
 		type CodeBlockHighlighter,
 		type CodeBlockSample,
 		type CodeBlockToken,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	const notifications = new NotificationsStack([], { disposeInterval: 1_000 });
 	const tSk = createCodeBlockT(CODE_BLOCK_MESSAGES_SK);

@@ -179,7 +179,7 @@
 		iconQuote,
 		iconRedo,
 		iconUndo,
-	} from "$lib/icons/index.js";
+	} from "#lib/icons/index.js";
 	import InputWrap from "../Input/_internal/InputWrap.svelte";
 	import type { EditorCommands, EditorHandle, PromptFn } from "./_internal/types.js";
 	import {

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import AppShell, {
 		appShellSetHtmlBodyHeight,
-	} from "$lib/components/AppShell/AppShell.svelte";
+	} from "#lib/components/AppShell/AppShell.svelte";
 	import { onMount } from "svelte";
 	import { dummyText } from "../../_utils/dummy-text.js";
 	import FlexSelect from "./_components/FlexSelect.svelte";

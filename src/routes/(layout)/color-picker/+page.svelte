@@ -8,7 +8,7 @@
 		createColorPickerT,
 		COLOR_PICKER_MESSAGES_SK,
 		type ValidationResult,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	let basic = $state("#3b82f6");
 	let grid = $state("#ef4444");

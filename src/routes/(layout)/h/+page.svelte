@@ -1,5 +1,5 @@
 <script lang="ts">
-	import H from "$lib/components/H/H.svelte";
+	import H from "#lib/components/H/H.svelte";
 </script>
 
 <h2 class="text-xl font-bold mb-4">H (Heading)</h2>

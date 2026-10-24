@@ -6,7 +6,7 @@
 		Notifications,
 		NotificationsStack,
 		sleep,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 	import { citiesByContinent } from "../../_utils/options.js";
 	import { createClog } from "@marianmeres/clog";
 

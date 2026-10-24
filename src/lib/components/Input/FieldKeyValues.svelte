@@ -58,7 +58,7 @@
 </script>
 
 <script lang="ts">
-	import { iconAlertWarning, iconCode, iconPlus, iconTrash } from "$lib/icons/index.js";
+	import { iconAlertWarning, iconCode, iconPlus, iconTrash } from "#lib/icons/index.js";
 	import { tick } from "svelte";
 	import { autogrow } from "../../actions/autogrow.svelte.js";
 	import { validate as validateAction } from "../../actions/validate.svelte.js";

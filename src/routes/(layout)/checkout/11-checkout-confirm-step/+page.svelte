@@ -3,7 +3,7 @@
 		CheckoutConfirmStep,
 		type CheckoutOrderData,
 		type CheckoutValidationError,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	// --- Sample order ---
 	function createSampleOrder(): CheckoutOrderData {

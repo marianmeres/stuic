@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { InputHistory } from "$lib/index.js";
+	import { InputHistory } from "#lib/index.js";
 
 	// Example 1: Basic input with history
 	const history1 = new InputHistory({

@@ -8,8 +8,8 @@
 		type LoginFormData,
 		type RegisterFormData,
 		type LoginOrRegisterFormMode,
-	} from "$lib/index.js";
-	import FieldSwitch from "$lib/components/Input/FieldSwitch.svelte";
+	} from "#lib/index.js";
+	import FieldSwitch from "#lib/components/Input/FieldSwitch.svelte";
 
 	// --- State ---
 	let actionLog = $state<string[]>([]);

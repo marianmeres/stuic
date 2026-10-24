@@ -1,6 +1,6 @@
 <script lang="ts">
-	import FieldInput from "$lib/components/Input/FieldInput.svelte";
-	import TypeaheadInput from "$lib/components/TypeaheadInput/TypeaheadInput.svelte";
+	import FieldInput from "#lib/components/Input/FieldInput.svelte";
+	import TypeaheadInput from "#lib/components/TypeaheadInput/TypeaheadInput.svelte";
 	import { createClog } from "@marianmeres/clog";
 	import { ItemCollection, type Item } from "@marianmeres/item-collection";
 	import X from "../../../../lib/components/X/X.svelte";

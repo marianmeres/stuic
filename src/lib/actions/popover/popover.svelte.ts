@@ -37,7 +37,7 @@ let openRequestedThisCycle = false;
  * @example
  * ```svelte
  * <script>
- * import { openPopover } from '$lib/actions/popover';
+ * import { openPopover } from '@marianmeres/stuic';
  * </script>
  * <button onclick={() => openPopover('my-popover')}>Open</button>
  * ```

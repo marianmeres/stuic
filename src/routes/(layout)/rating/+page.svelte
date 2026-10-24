@@ -6,7 +6,7 @@
 		RATING_MESSAGES_SK,
 		iconStar,
 		type ValidationResult,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 	import { iconBsHeartFill } from "@marianmeres/icons-fns/bootstrap/iconBsHeartFill.js";
 	import { iconBsHeart } from "@marianmeres/icons-fns/bootstrap/iconBsHeart.js";
 

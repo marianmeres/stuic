@@ -6,7 +6,7 @@
 		Notifications,
 		NotificationsStack,
 		onSubmitValidityCheck,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 	import { createClog } from "@marianmeres/clog";
 	import { ItemCollection, type Item } from "@marianmeres/item-collection";
 	import FieldOptions from "../../../../lib/components/Input/FieldOptions.svelte";

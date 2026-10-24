@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { parseBoolean } from "@marianmeres/parse-boolean";
-	import { twMerge } from "$lib/index.js";
+	import { twMerge } from "#lib/index.js";
 
 	let { flag = $bindable(), label }: { flag: boolean; label: string } = $props();
 

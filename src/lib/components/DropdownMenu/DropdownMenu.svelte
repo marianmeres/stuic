@@ -261,7 +261,7 @@
 		iconChevronRight,
 		iconSearch,
 		iconX,
-	} from "$lib/icons/index.js";
+	} from "#lib/icons/index.js";
 	import { onClickOutside } from "runed";
 	import { slide, fade } from "svelte/transition";
 	import { untrack } from "svelte";

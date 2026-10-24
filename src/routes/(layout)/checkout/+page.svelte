@@ -10,10 +10,10 @@
 		type CheckoutAddressData,
 		type CheckoutCustomerFormData,
 		type CheckoutValidationError,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
-	import FieldInput from "$lib/components/Input/FieldInput.svelte";
-	import { t_default } from "$lib/components/Checkout/_internal/checkout-i18n-defaults.js";
+	import FieldInput from "#lib/components/Input/FieldInput.svelte";
+	import { t_default } from "#lib/components/Checkout/_internal/checkout-i18n-defaults.js";
 
 	// --- Format price demos ---
 	const priceExamples = [0, 99, 1299, 12999, 100000];

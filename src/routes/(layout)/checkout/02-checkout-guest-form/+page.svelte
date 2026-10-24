@@ -5,10 +5,10 @@
 		validateCustomerForm,
 		type CheckoutCustomerFormData,
 		type CheckoutValidationError,
-	} from "$lib/index.js";
-	import { t_default } from "$lib/components/Checkout/_internal/checkout-i18n-defaults.js";
-	import Button from "$lib/components/Button/Button.svelte";
-	import FieldSwitch from "$lib/components/Input/FieldSwitch.svelte";
+	} from "#lib/index.js";
+	import { t_default } from "#lib/components/Checkout/_internal/checkout-i18n-defaults.js";
+	import Button from "#lib/components/Button/Button.svelte";
+	import FieldSwitch from "#lib/components/Input/FieldSwitch.svelte";
 
 	// --- Interactive demo state ---
 	let formData = $state<CheckoutCustomerFormData>(createEmptyCustomerFormData());

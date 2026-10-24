@@ -5,7 +5,7 @@
 		Notifications,
 		NotificationsStack,
 		X,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 	import { dummySentence, dummyText } from "../../_utils/dummy-text.js";
 
 	let modal1 = $state<ModalDialog>();

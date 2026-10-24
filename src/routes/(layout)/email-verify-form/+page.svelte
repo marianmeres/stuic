@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { EmailVerifyForm } from "$lib/index.js";
-	import Button from "$lib/components/Button/Button.svelte";
-	import FieldSwitch from "$lib/components/Input/FieldSwitch.svelte";
+	import { EmailVerifyForm } from "#lib/index.js";
+	import Button from "#lib/components/Button/Button.svelte";
+	import FieldSwitch from "#lib/components/Input/FieldSwitch.svelte";
 
 	let isSubmitting = $state(false);
 	let error = $state<string | undefined>(undefined);

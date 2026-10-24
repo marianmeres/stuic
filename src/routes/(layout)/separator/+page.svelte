@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Separator from "$lib/components/Separator/Separator.svelte";
+	import Separator from "#lib/components/Separator/Separator.svelte";
 </script>
 
 <h2 class="text-xl font-bold mb-4">Separator</h2>

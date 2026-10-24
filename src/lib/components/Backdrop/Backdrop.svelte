@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import type { Snippet } from "svelte";
 	import type { FocusTrapOptions } from "../../actions/focus-trap.js";
-	import { BodyScroll, focusTrap as focusTrapAction } from "$lib/index.js";
+	import { BodyScroll, focusTrap as focusTrapAction } from "#lib/index.js";
 	import { createClog } from "@marianmeres/clog";
 	import { watch } from "runed";
 	import { onDestroy } from "svelte";

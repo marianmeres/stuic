@@ -1,5 +1,5 @@
 <script>
-	import { X } from "$lib/index.js";
+	import { X } from "#lib/index.js";
 </script>
 
 <div class="flex gap-4">

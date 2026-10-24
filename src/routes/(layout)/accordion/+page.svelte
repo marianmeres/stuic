@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Accordion, AccordionItem } from "$lib/index.js";
+	import { Accordion, AccordionItem } from "#lib/index.js";
 
 	let controlledOpen = $state(false);
 </script>

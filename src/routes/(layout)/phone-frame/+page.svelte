@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { PhoneFrame, Button, H, Pill } from "$lib/index.js";
+	import { PhoneFrame, Button, H, Pill } from "#lib/index.js";
 
 	// A 390×844 CSS px screenshot taken on a 2× display (780×1688 px file).
 	const shot = {

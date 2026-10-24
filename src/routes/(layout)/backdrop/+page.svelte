@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button, Backdrop, stopPropagation } from "$lib/index.js";
+	import { Button, Backdrop, stopPropagation } from "#lib/index.js";
 	import { createClog } from "@marianmeres/clog";
 	import { dummyText } from "../../_utils/dummy-text.js";
 

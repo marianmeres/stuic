@@ -5,8 +5,8 @@
 		createBreadcrumbsT,
 		BREADCRUMBS_MESSAGES_SK,
 		type BreadcrumbItem,
-	} from "$lib/components/Breadcrumbs/index.js";
-	import { iconChevronRight } from "$lib/icons/index.js";
+	} from "#lib/components/Breadcrumbs/index.js";
+	import { iconChevronRight } from "#lib/icons/index.js";
 
 	const items: BreadcrumbItem[] = [
 		{ label: "Home", href: "#/" },

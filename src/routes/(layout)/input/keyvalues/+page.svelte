@@ -6,7 +6,7 @@
 		Notifications,
 		NotificationsStack,
 		onSubmitValidityCheck,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 	import { createClog } from "@marianmeres/clog";
 
 	const clog = createClog("field keyvalues page");

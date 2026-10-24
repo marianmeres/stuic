@@ -5,18 +5,18 @@ Sed metus sapien, feugiat eget mauris quis, pellentesque porta enim. In hac habi
 </script>
 
 <script lang="ts">
-	import Button from "$lib/components/Button/Button.svelte";
-	import FieldCheckbox from "$lib/components/Input/FieldCheckbox.svelte";
-	import FieldFile from "$lib/components/Input/FieldFile.svelte";
-	import FieldInput from "$lib/components/Input/FieldInput.svelte";
-	import FieldInputLocalized from "$lib/components/Input/FieldInputLocalized.svelte";
-	import FieldLikeButton from "$lib/components/Input/FieldLikeButton.svelte";
-	import FieldOptions from "$lib/components/Input/FieldOptions.svelte";
-	import FieldRadios from "$lib/components/Input/FieldRadios.svelte";
-	import FieldSelect from "$lib/components/Input/FieldSelect.svelte";
-	import FieldSwitch from "$lib/components/Input/FieldSwitch.svelte";
-	import FieldTextarea from "$lib/components/Input/FieldTextarea.svelte";
-	import Fieldset from "$lib/components/Input/Fieldset.svelte";
+	import Button from "#lib/components/Button/Button.svelte";
+	import FieldCheckbox from "#lib/components/Input/FieldCheckbox.svelte";
+	import FieldFile from "#lib/components/Input/FieldFile.svelte";
+	import FieldInput from "#lib/components/Input/FieldInput.svelte";
+	import FieldInputLocalized from "#lib/components/Input/FieldInputLocalized.svelte";
+	import FieldLikeButton from "#lib/components/Input/FieldLikeButton.svelte";
+	import FieldOptions from "#lib/components/Input/FieldOptions.svelte";
+	import FieldRadios from "#lib/components/Input/FieldRadios.svelte";
+	import FieldSelect from "#lib/components/Input/FieldSelect.svelte";
+	import FieldSwitch from "#lib/components/Input/FieldSwitch.svelte";
+	import FieldTextarea from "#lib/components/Input/FieldTextarea.svelte";
+	import Fieldset from "#lib/components/Input/Fieldset.svelte";
 	import {
 		FieldAssets,
 		getId,
@@ -24,7 +24,7 @@ Sed metus sapien, feugiat eget mauris quis, pellentesque porta enim. In hac habi
 		onSubmitValidityCheck,
 		sleep,
 		type FieldAssetWithBlobUrl,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 	import { createClog } from "@marianmeres/clog";
 	import { ItemCollection, type Item } from "@marianmeres/item-collection";
 	import { onMount } from "svelte";

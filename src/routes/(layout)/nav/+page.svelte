@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Nav, type NavItem, type NavGroup } from "$lib/components/Nav/index.js";
+	import { Nav, type NavItem, type NavGroup } from "#lib/components/Nav/index.js";
 	import { iconLucideFile } from "@marianmeres/icons-fns/lucide/iconLucideFile.js";
 	import { iconLucideFolder } from "@marianmeres/icons-fns/lucide/iconLucideFolder.js";
 	import { iconLucideImage } from "@marianmeres/icons-fns/lucide/iconLucideImage.js";

@@ -3,10 +3,10 @@
 		CheckoutLoginForm,
 		createEmptyLoginFormData,
 		type CheckoutLoginFormData,
-	} from "$lib/index.js";
-	import Button from "$lib/components/Button/Button.svelte";
-	import FieldSwitch from "$lib/components/Input/FieldSwitch.svelte";
-	import { iconGoogle, iconFacebook, iconApple } from "$lib/icons/index.js";
+	} from "#lib/index.js";
+	import Button from "#lib/components/Button/Button.svelte";
+	import FieldSwitch from "#lib/components/Input/FieldSwitch.svelte";
+	import { iconGoogle, iconFacebook, iconApple } from "#lib/icons/index.js";
 
 	// --- Interactive demo state ---
 	let formData = $state<CheckoutLoginFormData>(createEmptyLoginFormData());

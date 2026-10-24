@@ -11,7 +11,7 @@
 
 <script lang="ts">
 	import type { Snippet } from "svelte";
-	import { createTour, tourStep, type TourShellContext } from "$lib/index.js";
+	import { createTour, tourStep, type TourShellContext } from "#lib/index.js";
 
 	let { shell }: { shell?: Snippet<[TourShellContext]> } = $props();
 

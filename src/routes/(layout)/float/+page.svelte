@@ -5,8 +5,8 @@
 		Float,
 		FLOAT_PLACEMENTS,
 		type FloatPlacement,
-	} from "$lib/index.js";
-	import { iconGripVertical } from "$lib/icons/index.js";
+	} from "#lib/index.js";
+	import { iconGripVertical } from "#lib/icons/index.js";
 
 	// refs for the imperative API
 	let panel: Float = $state()!;

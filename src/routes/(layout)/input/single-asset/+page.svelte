@@ -10,7 +10,7 @@
 		onSubmitValidityCheck,
 		sleep,
 		type FieldAsset,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 	import { createClog } from "@marianmeres/clog";
 	import { onMount } from "svelte";
 

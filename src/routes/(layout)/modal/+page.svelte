@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Modal from "$lib/components/Modal/Modal.svelte";
-	import { AlertConfirmPrompt, AlertConfirmPromptStack, Button } from "$lib/index.js";
-	import X from "$lib/components/X/X.svelte";
+	import Modal from "#lib/components/Modal/Modal.svelte";
+	import { AlertConfirmPrompt, AlertConfirmPromptStack, Button } from "#lib/index.js";
+	import X from "#lib/components/X/X.svelte";
 	import { dummyText } from "../../_utils/dummy-text.js";
 
 	let modal: Modal = $state()!;

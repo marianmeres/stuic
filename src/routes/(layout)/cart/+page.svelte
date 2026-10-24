@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Cart, Button, type CartComponentItem } from "$lib/index.js";
+	import { Cart, Button, type CartComponentItem } from "#lib/index.js";
 
 	// --- Mock data ---
 	const PRODUCTS: CartComponentItem[] = [

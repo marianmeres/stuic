@@ -7,7 +7,7 @@
 		buildSinglePageSpreads,
 		computeBookPageSize,
 		Button,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	// Sample pages using picsum placeholder images
 	const pages: BookPage[] = Array.from({ length: 9 }, (_, i) => ({

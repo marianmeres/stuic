@@ -6,7 +6,7 @@
 		AlertConfirmPromptStack,
 		Notifications,
 		NotificationsStack,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	import { themes, themeNames } from "./themes-list.js";
 

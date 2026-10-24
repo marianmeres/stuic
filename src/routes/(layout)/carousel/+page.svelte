@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Carousel, type CarouselItem, Button } from "$lib/index.js";
+	import { Carousel, type CarouselItem, Button } from "#lib/index.js";
 
 	// Basic items with simple text content
 	const basicItems: CarouselItem[] = [

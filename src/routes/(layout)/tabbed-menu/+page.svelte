@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { TabbedMenu } from "$lib/index.js";
+	import { TabbedMenu } from "#lib/index.js";
 
 	let value1 = $state<string | number>("tab1");
 	let value2 = $state<string | number>("home");

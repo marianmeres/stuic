@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { sleep, tooltip, popover } from "$lib/index.js";
+	import { sleep, tooltip, popover } from "#lib/index.js";
 	import { dummySentence } from "../../_utils/dummy-text.js";
 
 	let showCustom = $state(true);

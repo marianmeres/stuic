@@ -1,10 +1,10 @@
 <script lang="ts">
-	import Spinner from "$lib/components/Spinner/Spinner.svelte";
-	import SpinnerCircle from "$lib/components/Spinner/SpinnerCircle.svelte";
+	import Spinner from "#lib/components/Spinner/Spinner.svelte";
+	import SpinnerCircle from "#lib/components/Spinner/SpinnerCircle.svelte";
 	import SpinnerUnicode, {
 		spinnerCreateBackAndForthCharFrames,
 		type SpinnerUnicodeVariant,
-	} from "$lib/components/Spinner/SpinnerUnicode.svelte";
+	} from "#lib/components/Spinner/SpinnerUnicode.svelte";
 	import { createTickerRAF } from "@marianmeres/ticker";
 	import { untrack } from "svelte";
 	import SpinnerCircleOscillate from "../../../lib/components/Spinner/SpinnerCircleOscillate.svelte";

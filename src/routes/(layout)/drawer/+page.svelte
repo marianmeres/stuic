@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button, FieldSelect, Drawer, X } from "$lib/index.js";
+	import { Button, FieldSelect, Drawer, X } from "#lib/index.js";
 	import { dummyText } from "../../_utils/dummy-text.js";
 
 	let visible = $state(false); // "raw" open/close strategy

@@ -4,7 +4,7 @@ import {
 	iconAlertWarning,
 	iconAlertError,
 	iconRefresh,
-} from "$lib/icons/index.js";
+} from "#lib/icons/index.js";
 
 const size = 23;
 

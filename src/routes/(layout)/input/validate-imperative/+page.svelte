@@ -8,7 +8,7 @@
 		FieldTextarea,
 		scrollToFirstInvalidField,
 		validateAllFields,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	// Pristine address form — exactly the carsinc checkout-shipping repro.
 	// Nothing in this state has been touched by the user. Clicking "Continue"

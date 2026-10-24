@@ -104,7 +104,7 @@
 	import {
 		iconArrowLeft as iconPrevious,
 		iconArrowRight as iconNext,
-	} from "$lib/icons/index.js";
+	} from "#lib/icons/index.js";
 
 	let {
 		items,

@@ -6,8 +6,8 @@
 		createEmptyLoginFormData,
 		type CheckoutCustomerFormData,
 		type CheckoutLoginFormData,
-	} from "$lib/index.js";
-	import type { CartComponentItem } from "$lib/components/Cart/Cart.svelte";
+	} from "#lib/index.js";
+	import type { CartComponentItem } from "#lib/components/Cart/Cart.svelte";
 
 	// --- Sample items ---
 	const sampleItems: CartComponentItem[] = [

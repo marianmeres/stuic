@@ -3,7 +3,7 @@
 		CheckoutOrderConfirmation,
 		defaultFormatPrice,
 		type CheckoutOrderData,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	// --- Sample order data ---
 	const sampleOrder: CheckoutOrderData = {

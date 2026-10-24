@@ -133,7 +133,7 @@
 	import { twMerge } from "../../utils/tw-merge.js";
 	import { localStorageValue } from "../../utils/storage-abstraction.js";
 	import { prefersReducedMotion } from "../../utils/prefers-reduced-motion.svelte.js";
-	import { iconChevronRight } from "$lib/icons/index.js";
+	import { iconChevronRight } from "#lib/icons/index.js";
 	import { slide } from "svelte/transition";
 	import { SvelteSet } from "svelte/reactivity";
 

@@ -9,7 +9,7 @@
 		onSubmitValidityCheck,
 		type IsoDate,
 		type ValidationResult,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	const today = todayIso();
 

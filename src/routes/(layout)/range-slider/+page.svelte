@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { RangeSlider, Button, type ValidationResult } from "$lib/index.js";
+	import { RangeSlider, Button, type ValidationResult } from "#lib/index.js";
 	import { iconLucideChevronLeft } from "@marianmeres/icons-fns/lucide/iconLucideChevronLeft.js";
 	import { iconLucideChevronRight } from "@marianmeres/icons-fns/lucide/iconLucideChevronRight.js";
 

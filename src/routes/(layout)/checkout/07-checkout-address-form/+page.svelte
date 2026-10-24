@@ -6,12 +6,12 @@
 		type CheckoutAddressData,
 		type CheckoutSubdivisionOption,
 		type CheckoutValidationError,
-	} from "$lib/index.js";
-	import { t_default } from "$lib/components/Checkout/_internal/checkout-i18n-defaults.js";
-	import Button from "$lib/components/Button/Button.svelte";
-	import FieldSwitch from "$lib/components/Input/FieldSwitch.svelte";
-	import FieldSelect from "$lib/components/Input/FieldSelect.svelte";
-	import FieldInput from "$lib/components/Input/FieldInput.svelte";
+	} from "#lib/index.js";
+	import { t_default } from "#lib/components/Checkout/_internal/checkout-i18n-defaults.js";
+	import Button from "#lib/components/Button/Button.svelte";
+	import FieldSwitch from "#lib/components/Input/FieldSwitch.svelte";
+	import FieldSelect from "#lib/components/Input/FieldSelect.svelte";
+	import FieldInput from "#lib/components/Input/FieldInput.svelte";
 
 	// --- Interactive demo state ---
 	let address = $state<CheckoutAddressData>(createEmptyAddress());

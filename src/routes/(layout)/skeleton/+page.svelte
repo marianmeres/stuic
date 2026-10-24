@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Skeleton from "$lib/components/Skeleton/Skeleton.svelte";
+	import Skeleton from "#lib/components/Skeleton/Skeleton.svelte";
 </script>
 
 <h2 class="text-xl font-bold mb-4">Skeleton Loader</h2>

@@ -137,7 +137,7 @@ export interface TourOptions {
  * @example
  * ```svelte
  * <script>
- *   import { createTour, tourStep } from '$lib';
+ *   import { createTour, tourStep } from '@marianmeres/stuic';
  *
  *   const tour = createTour({
  *     steps: [

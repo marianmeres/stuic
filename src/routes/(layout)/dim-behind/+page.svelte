@@ -4,7 +4,7 @@
 		showDimBehind,
 		hideDimBehind,
 		isDimBehindOpen,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	let reactiveOpen = $state(false);
 	let multiAll = $state(false);

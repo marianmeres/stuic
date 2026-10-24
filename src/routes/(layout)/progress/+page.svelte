@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Progress } from "$lib/index.js";
+	import { Progress } from "#lib/index.js";
 
 	let progress = $state(38);
 	let animatedProgress = $state(0);

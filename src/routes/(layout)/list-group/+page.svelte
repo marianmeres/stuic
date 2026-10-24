@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button, EmptyState, ListGroup, SplitPane, iconInbox } from "$lib/index.js";
+	import { Button, EmptyState, ListGroup, SplitPane, iconInbox } from "#lib/index.js";
 
 	// The reference: one kit group of a job's pick list. Rows share no columns — the
 	// sixth carries a unit code the others lack, and the locations differ in length.

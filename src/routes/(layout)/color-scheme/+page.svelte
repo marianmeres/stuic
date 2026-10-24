@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ColorScheme } from "$lib/index.js";
+	import { ColorScheme } from "#lib/index.js";
 
 	let customKey = $state("demo:cs");
 </script>

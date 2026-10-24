@@ -7,14 +7,14 @@
 		Avatar,
 		Drawer,
 		Button,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 	import {
 		iconSettings,
 		iconSearch,
 		iconArrowLeft,
 		iconMenu,
 		iconUser,
-	} from "$lib/icons/index.js";
+	} from "#lib/icons/index.js";
 
 	const locales: HeaderLocaleItem[] = [
 		{ id: "en", label: "EN" },

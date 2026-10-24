@@ -4,10 +4,10 @@
 		Pagination,
 		createPaginationT,
 		PAGINATION_MESSAGES_SK,
-	} from "$lib/components/Pagination/index.js";
+	} from "#lib/components/Pagination/index.js";
 	import DataTable, {
 		type DataTableColumn,
-	} from "$lib/components/DataTable/DataTable.svelte";
+	} from "#lib/components/DataTable/DataTable.svelte";
 
 	const TOTAL = 137;
 	const LIMIT = 10;

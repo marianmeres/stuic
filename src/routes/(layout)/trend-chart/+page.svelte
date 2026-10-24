@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { TrendChart as TrendChartInstance } from "@marianmeres/trend-chart";
-	import { TrendChart } from "$lib/components/TrendChart/index.js";
-	import { Stat, Button } from "$lib/index.js";
+	import { TrendChart } from "#lib/components/TrendChart/index.js";
+	import { Stat, Button } from "#lib/index.js";
 
 	// deterministic pseudo-random walk (mulberry32) so the demo is stable
 	function walk(seed: number, n: number, start = 50): number[] {

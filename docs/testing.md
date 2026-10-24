@@ -72,7 +72,7 @@ test("myThing handles the happy path", () => {
 For things that take a `TranslateFn`, inject an identity stub so the output is just the key:
 
 ```ts
-import type { TranslateFn } from "$lib/types.js";
+import type { TranslateFn } from "#lib/types.js";
 const t: TranslateFn = (k) => k;
 ```
 

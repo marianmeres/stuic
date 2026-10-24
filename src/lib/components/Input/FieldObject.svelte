@@ -45,7 +45,7 @@
 </script>
 
 <script lang="ts">
-	import { iconCheck, iconPencil } from "$lib/icons/index.js";
+	import { iconCheck, iconPencil } from "#lib/icons/index.js";
 	import { autogrow } from "../../actions/autogrow.svelte.js";
 	import { tooltip } from "../../actions/index.js";
 	import { validate as validateAction } from "../../actions/validate.svelte.js";

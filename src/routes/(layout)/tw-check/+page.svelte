@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { TwCheck } from "$lib/index.js";
+	import { TwCheck } from "#lib/index.js";
 </script>
 
 <h1 class="mb-4">Customization using different strategies</h1>

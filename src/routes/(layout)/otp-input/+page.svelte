@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { OtpInput } from "$lib/index.js";
-	import Button from "$lib/components/Button/Button.svelte";
-	import FieldSwitch from "$lib/components/Input/FieldSwitch.svelte";
+	import { OtpInput } from "#lib/index.js";
+	import Button from "#lib/components/Button/Button.svelte";
+	import FieldSwitch from "#lib/components/Input/FieldSwitch.svelte";
 
 	let value1 = $state("");
 	let lastComplete1 = $state<string | null>(null);

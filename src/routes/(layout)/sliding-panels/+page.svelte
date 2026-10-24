@@ -1,5 +1,5 @@
 <script lang="ts">
-	import SlidingPanels from "$lib/components/SlidingPanels/SlidingPanels.svelte";
+	import SlidingPanels from "#lib/components/SlidingPanels/SlidingPanels.svelte";
 
 	// Reference to the component instance so we can switch from outside
 	let c = $state<SlidingPanels>();

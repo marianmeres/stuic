@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	import { DevicePointer, twMerge } from "$lib/index.js";
+	import { DevicePointer, twMerge } from "#lib/index.js";
 	export interface Props {
 		class?: string;
 		strokeWidth?: 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | 3.5 | 4;

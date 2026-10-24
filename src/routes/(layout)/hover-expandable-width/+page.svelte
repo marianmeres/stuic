@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { HoverExpandableWidth } from "$lib/index.js";
+	import { HoverExpandableWidth } from "#lib/index.js";
 	import { dummyText } from "../../_utils/dummy-text.js";
 
 	let enabled = $state(true);

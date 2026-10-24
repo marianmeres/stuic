@@ -11,7 +11,7 @@ import {
 	iconFileText,
 	iconFileWord,
 	iconFileZip,
-} from "$lib/icons/index.js";
+} from "#lib/icons/index.js";
 import { getFileTypeLabel } from "../../../utils/get-file-type-label.js";
 import { isImage } from "../../../utils/is-image.js";
 import { isPlainObject } from "../../../utils/is-plain-object.js";

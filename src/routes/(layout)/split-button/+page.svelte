@@ -6,7 +6,7 @@
 		iconSettings,
 		type DropdownMenuItem,
 		type SplitButtonPlacement,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 	import { iconLucideMic } from "@marianmeres/icons-fns/lucide/iconLucideMic.js";
 	import { iconLucideMicOff } from "@marianmeres/icons-fns/lucide/iconLucideMicOff.js";
 	import { iconLucideVideo } from "@marianmeres/icons-fns/lucide/iconLucideVideo.js";

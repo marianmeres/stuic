@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { WheelPicker } from "$lib/index.js";
-	import Button from "$lib/components/Button/Button.svelte";
-	import FieldSwitch from "$lib/components/Input/FieldSwitch.svelte";
+	import { WheelPicker } from "#lib/index.js";
+	import Button from "#lib/components/Button/Button.svelte";
+	import FieldSwitch from "#lib/components/Input/FieldSwitch.svelte";
 
 	const range = (n: number, start = 0) => Array.from({ length: n }, (_, i) => i + start);
 	const pad = (n: number) => ({ label: String(n).padStart(2, "0"), value: n });

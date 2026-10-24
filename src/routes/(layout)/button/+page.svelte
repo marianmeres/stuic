@@ -19,7 +19,7 @@
 		SpinnerUnicode,
 		iconChevronLeft,
 		iconChevronRight,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	let checked = $state(true);
 	let isLoading = $state(false);

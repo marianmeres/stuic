@@ -30,10 +30,10 @@
 		iconBookOpen,
 		iconArrowRight as iconNext,
 		iconArrowLeft as iconPrevious,
-	} from "$lib/icons/index.js";
-	import { waitForTwoRepaints } from "$lib/utils/paint.js";
-	import { resolveUrl } from "$lib/utils/resolve-url.js";
-	import { twMerge } from "$lib/utils/tw-merge.js";
+	} from "#lib/icons/index.js";
+	import { waitForTwoRepaints } from "#lib/utils/paint.js";
+	import { resolveUrl } from "#lib/utils/resolve-url.js";
+	import { twMerge } from "#lib/utils/tw-merge.js";
 	import { iconLucideFileImage as iconFileImage } from "@marianmeres/icons-fns/lucide/iconLucideFileImage.js";
 	import type { AssetPreviewNormalized } from "../AssetsPreview/_internal/assets-preview-types.js";
 	import AssetsPreviewInline from "../AssetsPreview/AssetsPreviewInline.svelte";

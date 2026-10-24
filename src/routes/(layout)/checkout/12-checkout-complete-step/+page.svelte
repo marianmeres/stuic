@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { CheckoutCompleteStep, type CheckoutOrderData } from "$lib/index.js";
+	import { CheckoutCompleteStep, type CheckoutOrderData } from "#lib/index.js";
 
 	// --- Sample order data ---
 	const sampleOrder: CheckoutOrderData = {

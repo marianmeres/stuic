@@ -2,13 +2,13 @@
 	import {
 		MarkdownEditor,
 		type ToolbarItem,
-	} from "$lib/components/MarkdownEditor/index.js";
+	} from "#lib/components/MarkdownEditor/index.js";
 	import {
 		AlertConfirmPrompt,
 		AlertConfirmPromptStack,
 		createPrompt,
 		type ValidationResult,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	// STUIC ACP prompt opt-in (replaces the native window.prompt for link/image)
 	const acp = new AlertConfirmPromptStack();

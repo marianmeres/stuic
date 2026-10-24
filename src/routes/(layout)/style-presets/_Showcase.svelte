@@ -15,7 +15,7 @@
 		ModalDialog,
 		FieldInput,
 		FieldCheckbox,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	let { raised = false }: { raised?: boolean } = $props();
 

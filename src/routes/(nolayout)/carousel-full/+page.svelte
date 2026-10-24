@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Carousel, type CarouselItem } from "$lib/index.js";
+	import { Carousel, type CarouselItem } from "#lib/index.js";
 
 	const slides: CarouselItem[] = [
 		{

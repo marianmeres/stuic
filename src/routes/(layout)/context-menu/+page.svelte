@@ -2,9 +2,9 @@
 	import {
 		ContextMenu,
 		type ContextMenuItem,
-	} from "$lib/components/ContextMenu/index.js";
-	import { createContextMenuT, CONTEXT_MENU_MESSAGES_SK } from "$lib/index.js";
-	import Button from "$lib/components/Button/Button.svelte";
+	} from "#lib/components/ContextMenu/index.js";
+	import { createContextMenuT, CONTEXT_MENU_MESSAGES_SK } from "#lib/index.js";
+	import Button from "#lib/components/Button/Button.svelte";
 	import { iconLucideCopy } from "@marianmeres/icons-fns/lucide/iconLucideCopy.js";
 	import { iconLucidePencil } from "@marianmeres/icons-fns/lucide/iconLucidePencil.js";
 	import { iconLucideTrash2 } from "@marianmeres/icons-fns/lucide/iconLucideTrash2.js";

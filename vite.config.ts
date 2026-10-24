@@ -1,4 +1,5 @@
 /// <reference types="node" />
+import adapter from "@sveltejs/adapter-auto";
 import { sveltekit } from "@sveltejs/kit/vite";
 // import { defineConfig } from 'vite';
 import { defineConfig } from "vitest/config";
@@ -9,7 +10,11 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export default defineConfig({
-	plugins: [tailwindcss(), sveltekit()],
+	plugins: [
+		tailwindcss(),
+		// SvelteKit 3 takes its config here (svelte.config.js is no longer read)
+		sveltekit({ adapter: adapter() }),
+	],
 	server: {
 		port: parseInt(process.env.DEV_PORT || "8886"),
 		// expose on all

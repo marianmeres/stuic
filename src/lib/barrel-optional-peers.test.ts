@@ -72,10 +72,10 @@ function codeOf(file: string): string {
 		.join("\n");
 }
 
-/** Mirror the resolution a bundler does: $lib alias, NodeNext .js->.ts, dir index. */
+/** Mirror the resolution a bundler does: #lib alias, NodeNext .js->.ts, dir index. */
 function resolveSpecifier(spec: string, fromFile: string): string | null {
 	let base: string;
-	if (spec.startsWith("$lib/")) base = resolve(SRC_LIB, spec.slice("$lib/".length));
+	if (spec.startsWith("#lib/")) base = resolve(SRC_LIB, spec.slice("#lib/".length));
 	else if (spec.startsWith(".")) base = resolve(dirname(fromFile), spec);
 	else return null; // bare specifier — handled by the caller, not resolved to disk
 
@@ -106,7 +106,7 @@ function walk(entry: string): { files: Set<string>; bare: Set<string> } {
 		if (files.has(file) || !WALKABLE.test(file)) continue;
 		files.add(file);
 		for (const spec of specifiersIn(codeOf(file))) {
-			if (!spec.startsWith(".") && !spec.startsWith("$lib/")) {
+			if (!spec.startsWith(".") && !spec.startsWith("#lib/")) {
 				bare.add(spec);
 				continue;
 			}

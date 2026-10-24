@@ -10,7 +10,7 @@
 		type FieldTableColumn,
 		type FieldTableRow,
 		type ValidationResult,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	// the shape this component exists for: a bill of materials with one column per
 	// built-in cell type

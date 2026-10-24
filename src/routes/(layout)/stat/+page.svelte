@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { Stat, iconUser, iconDownload, iconTrendingUp, iconCheck } from "$lib/index.js";
+	import { Stat, iconUser, iconDownload, iconTrendingUp, iconCheck } from "#lib/index.js";
 	// deliberately a subpath import — TrendChart is NOT on the main barrel
 	// (optional @marianmeres/trend-chart peer dep)
-	import { TrendChart } from "$lib/components/TrendChart/index.js";
+	import { TrendChart } from "#lib/components/TrendChart/index.js";
 </script>
 
 <div class="space-y-16 py-8">

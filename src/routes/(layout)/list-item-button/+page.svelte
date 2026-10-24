@@ -5,7 +5,7 @@
 		iconCheck,
 		iconChevronRight,
 		iconTrash,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	let activeIdx = $state(1);
 	let focusedIdx = $state(-1);

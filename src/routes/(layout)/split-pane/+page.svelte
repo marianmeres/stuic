@@ -5,7 +5,7 @@
 		createSplitPaneT,
 		SPLIT_PANE_MESSAGES_SK,
 		type ResizableInfo,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	let size = $state(40);
 	let basic: SplitPane | undefined = $state();

@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { IconSwap } from "$lib/index.js";
+	import { IconSwap } from "#lib/index.js";
 	import {
 		iconMenu,
 		iconX,
 		iconSquare,
 		iconCircle,
 		iconArrowRight,
-	} from "$lib/icons/index.js";
+	} from "#lib/icons/index.js";
 
 	// Demo 1: Basic 2-state hamburger/X toggle
 	let isOpen = $state(false);

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { CheckoutProgress, type CheckoutStep } from "$lib/index.js";
-	import Button from "$lib/components/Button/Button.svelte";
+	import { CheckoutProgress, type CheckoutStep } from "#lib/index.js";
+	import Button from "#lib/components/Button/Button.svelte";
 
 	// --- Basic demo ---
 	const defaultStepIds = ["review", "shipping", "confirm", "complete"];

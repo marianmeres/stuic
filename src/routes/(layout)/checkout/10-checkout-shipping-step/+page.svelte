@@ -5,7 +5,7 @@
 		type CheckoutAddressData,
 		type CheckoutDeliveryOption,
 		type CheckoutOrderData,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	// --- Sample order ---
 	function createSampleOrder(deliveryOptionId?: string): CheckoutOrderData {

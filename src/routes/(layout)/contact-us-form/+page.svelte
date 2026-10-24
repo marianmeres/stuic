@@ -5,9 +5,9 @@
 		type ContactFormData,
 		type ContactBotCheck,
 		type ContactFieldConfig,
-	} from "$lib/index.js";
-	import FieldSwitch from "$lib/components/Input/FieldSwitch.svelte";
-	import FieldCheckbox from "$lib/components/Input/FieldCheckbox.svelte";
+	} from "#lib/index.js";
+	import FieldSwitch from "#lib/components/Input/FieldSwitch.svelte";
+	import FieldCheckbox from "#lib/components/Input/FieldCheckbox.svelte";
 
 	// --- Interactive demo state ---
 	let formData = $state<ContactFormData>(createEmptyContactFormData());

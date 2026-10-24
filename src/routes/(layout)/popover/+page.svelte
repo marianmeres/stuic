@@ -6,8 +6,8 @@
 		type PopoverPosition,
 		tooltip,
 		isPopoverOpen,
-	} from "$lib/index.js";
-	import { Spinner } from "$lib/index.js";
+	} from "#lib/index.js";
+	import { Spinner } from "#lib/index.js";
 	import { dummySentence } from "../../_utils/dummy-text.js";
 
 	const isSupported = isPopoverSupported();

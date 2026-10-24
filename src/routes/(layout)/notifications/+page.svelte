@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button, Notifications, NotificationsStack } from "$lib/index.js";
+	import { Button, Notifications, NotificationsStack } from "#lib/index.js";
 	import { dummySentence } from "../../_utils/dummy-text.js";
 
 	const fixed = "Short"; // dummySentence(1);

@@ -8,7 +8,7 @@
 		onSubmitValidityCheck,
 		sleep,
 		type FieldAssetWithBlobUrl,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 	import { createClog } from "@marianmeres/clog";
 	import { createTicker, createTickerRAF } from "@marianmeres/ticker";
 	import { onMount, tick } from "svelte";

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import EmptyState from "$lib/components/EmptyState/EmptyState.svelte";
-	import Button from "$lib/components/Button/Button.svelte";
-	import { iconSearch, iconFile, iconPlus, iconInbox } from "$lib/icons/index.js";
+	import EmptyState from "#lib/components/EmptyState/EmptyState.svelte";
+	import Button from "#lib/components/Button/Button.svelte";
+	import { iconSearch, iconFile, iconPlus, iconInbox } from "#lib/icons/index.js";
 </script>
 
 <h2 class="text-xl font-bold mb-4">EmptyState</h2>

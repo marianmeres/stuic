@@ -10,7 +10,7 @@
 		type FieldStructField,
 		type FieldStructValue,
 		type ValidationResult,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	// the shape this component exists for: an address, declared by data, with
 	// localized labels — a declaration, not an address component

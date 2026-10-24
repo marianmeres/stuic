@@ -9,7 +9,7 @@
 		type CalendarDayCell,
 		type IsoDate,
 		type YearMonth,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	const today = todayIso();
 

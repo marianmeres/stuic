@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Switch } from "$lib/index.js";
+	import { Switch } from "#lib/index.js";
 	import { iconHeroSolidCheck } from "@marianmeres/icons-fns/heroicons/solid/iconHeroSolidCheck.js";
 	import { iconHeroSolidXMark } from "@marianmeres/icons-fns/heroicons/solid/iconHeroSolidXMark.js";
 

@@ -4,7 +4,7 @@
 		FieldObject,
 		maybeJsonParse,
 		onSubmitValidityCheck,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	let values = $state({
 		flat: JSON.stringify({

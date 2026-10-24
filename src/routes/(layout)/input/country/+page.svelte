@@ -3,7 +3,7 @@
 		FieldCountry,
 		onSubmitValidityCheck,
 		type ValidationResult,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 	import { ISO_MAP } from "@marianmeres/countries";
 
 	let value = $state("");

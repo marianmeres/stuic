@@ -59,7 +59,7 @@
 
 <script lang="ts">
 	import { tick } from "svelte";
-	import { iconSearch } from "$lib/icons/index.js";
+	import { iconSearch } from "#lib/icons/index.js";
 	import {
 		validate as validateAction,
 		type ValidationResult,

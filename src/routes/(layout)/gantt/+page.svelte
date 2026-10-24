@@ -8,7 +8,7 @@
 		type GanttRow,
 		type GanttSelectDetail,
 		type GanttUnit,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	// A classic project plan: one bar per task, progress, milestones.
 	const PLAN: GanttRow[] = [

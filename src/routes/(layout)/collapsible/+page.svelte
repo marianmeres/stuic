@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Collapsible } from "$lib/index.js";
+	import { Collapsible } from "#lib/index.js";
 	import { dummySentence } from "../../_utils/dummy-text.js";
 
 	let expanded = $state(false);

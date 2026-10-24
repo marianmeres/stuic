@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { BookResponsive, Button, type BookPage } from "$lib/index.js";
+	import { BookResponsive, Button, type BookPage } from "#lib/index.js";
 
 	let forceInline = $state(false);
 

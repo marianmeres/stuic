@@ -6,7 +6,7 @@
 		iconTrash as iconDelete,
 		iconZoomIn,
 		iconZoomOut,
-	} from "$lib/icons/index.js";
+	} from "#lib/icons/index.js";
 	import { createClog } from "@marianmeres/clog";
 	import type { TranslateFn } from "../../../types.js";
 	import { twMerge } from "../../../utils/tw-merge.js";

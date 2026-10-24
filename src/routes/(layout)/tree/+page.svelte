@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Tree } from "$lib/index.js";
-	import type { TreeNodeDTO, TreeMoveEvent } from "$lib/index.js";
+	import { Tree } from "#lib/index.js";
+	import type { TreeNodeDTO, TreeMoveEvent } from "#lib/index.js";
 	import { iconLucideFolder } from "@marianmeres/icons-fns/lucide/iconLucideFolder.js";
 	import { iconLucideFolderOpen } from "@marianmeres/icons-fns/lucide/iconLucideFolderOpen.js";
 	import { iconBsFileEarmark } from "@marianmeres/icons-fns/bootstrap/iconBsFileEarmark.js";

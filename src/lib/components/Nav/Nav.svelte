@@ -149,7 +149,7 @@
 	import { getId } from "../../utils/get-id.js";
 	import { prefersReducedMotion } from "../../utils/prefers-reduced-motion.svelte.js";
 	import { DevicePointer } from "../../utils/device-pointer.svelte.js";
-	import { iconChevronRight } from "$lib/icons/index.js";
+	import { iconChevronRight } from "#lib/icons/index.js";
 	import { slide } from "svelte/transition";
 	import { untrack } from "svelte";
 	import Thc from "../Thc/Thc.svelte";

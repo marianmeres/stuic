@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { CheckoutCartReview, defaultFormatPrice } from "$lib/index.js";
-	import type { CartComponentItem } from "$lib/components/Cart/Cart.svelte";
-	import Button from "$lib/components/Button/Button.svelte";
-	import FieldSwitch from "$lib/components/Input/FieldSwitch.svelte";
+	import { CheckoutCartReview, defaultFormatPrice } from "#lib/index.js";
+	import type { CartComponentItem } from "#lib/components/Cart/Cart.svelte";
+	import Button from "#lib/components/Button/Button.svelte";
+	import FieldSwitch from "#lib/components/Input/FieldSwitch.svelte";
 
 	// --- Sample items ---
 	const sampleItems: CartComponentItem[] = [

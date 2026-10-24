@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { LoginForm, createEmptyLoginFormData } from "$lib/index.js";
-	import type { LoginFormData } from "$lib/components/LoginForm/_internal/login-form-types.js";
+	import { LoginForm, createEmptyLoginFormData } from "#lib/index.js";
+	import type { LoginFormData } from "#lib/components/LoginForm/_internal/login-form-types.js";
 
 	type Props = {
 		onLog: (msg: string, data?: unknown) => void;

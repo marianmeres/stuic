@@ -1,5 +1,5 @@
 <script>
-	import Thc from "$lib/components/Thc/Thc.svelte";
+	import Thc from "#lib/components/Thc/Thc.svelte";
 	import Foo from "./Foo.svelte";
 </script>
 

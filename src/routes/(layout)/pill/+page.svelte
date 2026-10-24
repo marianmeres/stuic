@@ -8,7 +8,7 @@
 		iconArrowRight,
 		iconUser,
 		iconTrash,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	const intents: (IntentColorKey | undefined)[] = [
 		undefined,

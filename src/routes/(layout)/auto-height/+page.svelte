@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { autoHeight } from "$lib/index.js";
+	import { autoHeight } from "#lib/index.js";
 
 	// --- Demo A: height animates on content change ---
 	const SIZES = { short: 1, medium: 3, tall: 6 } as const;

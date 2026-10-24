@@ -10,7 +10,7 @@
 		iconPencil,
 		iconTrash,
 		type TimelineItem,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	const ORDER: TimelineItem[] = [
 		{ title: "Order placed", description: "Ref #1001 · 3 items", time: "Mon, 09:00" },

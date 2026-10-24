@@ -9,7 +9,7 @@
 		COPY_BUTTON_MESSAGES_SK,
 		iconLink,
 		sleep,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	const notifications = new NotificationsStack([], { disposeInterval: 1_000 });
 

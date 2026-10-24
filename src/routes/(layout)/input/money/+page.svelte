@@ -4,7 +4,7 @@
 		money,
 		onSubmitValidityCheck,
 		type ValidationResult,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	// Bound values are INTEGER minor units (cents). null/"" = empty.
 	let price = $state<number | string | null>(1999);

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Slider } from "$lib/index.js";
+	import { Slider } from "#lib/index.js";
 	import { iconLucideVolume2 } from "@marianmeres/icons-fns/lucide/iconLucideVolume2.js";
 	import { iconLucideSun } from "@marianmeres/icons-fns/lucide/iconLucideSun.js";
 

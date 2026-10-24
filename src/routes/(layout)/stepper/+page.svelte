@@ -6,7 +6,7 @@
 		STEPPER_MESSAGES_SK,
 		iconUser,
 		type StepperStep,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	const STEPS = ["Account", "Payment", "Confirm", "Done"];
 

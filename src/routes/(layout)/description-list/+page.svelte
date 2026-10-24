@@ -4,7 +4,7 @@
 		SplitPane,
 		Pill,
 		type DescriptionListItem,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 
 	const SHARE_URL = "https://example.com/share/9f4c2a71-3b8e-4d05-a6f1-7c2e0b93d5a8";
 	// no "/" or "." to break at — the only kind of value that tells the wrap modes apart

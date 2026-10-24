@@ -1,5 +1,5 @@
 <script lang="ts">
-	import AlertConfirmPrompt from "$lib/components/AlertConfirmPrompt/AlertConfirmPrompt.svelte";
+	import AlertConfirmPrompt from "#lib/components/AlertConfirmPrompt/AlertConfirmPrompt.svelte";
 	import {
 		AlertConfirmPromptStack,
 		Button,
@@ -11,7 +11,7 @@
 		type FnOnCustom,
 		type FnOnEscape,
 		type FnOnOK,
-	} from "$lib/index.js";
+	} from "#lib/index.js";
 	import { tick } from "svelte";
 	import { dummySentence, dummyText } from "../../_utils/dummy-text.js";
 	import FooButton from "./FooButton.svelte";

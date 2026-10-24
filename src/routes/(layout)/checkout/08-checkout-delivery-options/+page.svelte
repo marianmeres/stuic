@@ -3,9 +3,9 @@
 		CheckoutDeliveryOptions,
 		defaultFormatPrice,
 		type CheckoutDeliveryOption,
-	} from "$lib/index.js";
-	import FieldInput from "$lib/components/Input/FieldInput.svelte";
-	import FieldSwitch from "$lib/components/Input/FieldSwitch.svelte";
+	} from "#lib/index.js";
+	import FieldInput from "#lib/components/Input/FieldInput.svelte";
+	import FieldSwitch from "#lib/components/Input/FieldSwitch.svelte";
 
 	// --- Sample delivery options ---
 	const sampleOptions: CheckoutDeliveryOption[] = [

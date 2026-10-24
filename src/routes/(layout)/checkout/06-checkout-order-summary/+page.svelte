@@ -3,10 +3,10 @@
 		CheckoutOrderSummary,
 		defaultFormatPrice,
 		type CheckoutOrderTotals,
-	} from "$lib/index.js";
-	import Button from "$lib/components/Button/Button.svelte";
-	import FieldSwitch from "$lib/components/Input/FieldSwitch.svelte";
-	import FieldInput from "$lib/components/Input/FieldInput.svelte";
+	} from "#lib/index.js";
+	import Button from "#lib/components/Button/Button.svelte";
+	import FieldSwitch from "#lib/components/Input/FieldSwitch.svelte";
+	import FieldInput from "#lib/components/Input/FieldInput.svelte";
 
 	// --- Basic demo ---
 	let totals = $state<CheckoutOrderTotals>({

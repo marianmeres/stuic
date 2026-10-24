@@ -280,15 +280,15 @@ Note: in icon-only sidebar mode (`isCollapsed`), the section title is visually h
 ```svelte
 <script lang="ts">
 	import { Nav } from "stuic";
-	import { page } from "$app/stores";
+	import { page } from "$app/state";
 
 	const groups = [/* ... */];
 </script>
 
 <Nav
 	{groups}
-	isActive={(item) => $page.url.pathname === item.href}
-	isGroupActive={(group) => $page.url.pathname === group.href}
+	isActive={(item) => page.url.pathname === item.href}
+	isGroupActive={(group) => page.url.pathname === group.href}
 />
 ```
 
