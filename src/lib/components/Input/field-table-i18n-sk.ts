@@ -41,4 +41,7 @@ export const FIELD_TABLE_MESSAGES_SK: FieldTableMessages = {
 	err_date: "nie je platný dátum",
 	err_select_unknown: "„{{value}}“ nie je medzi možnosťami",
 	err_maxlength: "príliš dlhé (max. {{max}} znakov)",
+	err_country: "nie je známa krajina",
+	country_search_placeholder: "Hľadať krajinu…",
+	country_no_results: "Krajina sa nenašla",
 };

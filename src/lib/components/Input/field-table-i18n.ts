@@ -30,6 +30,9 @@ export const FIELD_TABLE_MESSAGES_EN = {
 	err_date: "not a valid date",
 	err_select_unknown: "“{{value}}” is not one of the choices",
 	err_maxlength: "too long (max {{max}} characters)",
+	err_country: "not a known country",
+	country_search_placeholder: "Search country...",
+	country_no_results: "No country found",
 };
 
 /** Every message key `FieldTable` may look up. */

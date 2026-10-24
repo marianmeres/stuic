@@ -666,7 +666,7 @@ test("an unknown column type renders read-only (round-trips) without a `cell` sn
 		})
 	);
 	expect(
-		screen.container.querySelector(".stuic-field-table-readonly")?.textContent?.trim()
+		screen.container.querySelector(".stuic-field-cell-readonly")?.textContent?.trim()
 	).toBe("red");
 	await cell(screen, "Part", 1).fill("y");
 	await expect
@@ -745,4 +745,54 @@ test("`columns` changing while rows exist keeps the rows' data (harness)", async
 	await expect
 		.poll(() => JSON.parse(screen.getByTestId("bound").element().textContent || "[]")[1])
 		.toEqual({ ...BOM[1], part: "W2" });
+});
+
+// ---------------------------------------------------------------------------
+// country cell (the shared FieldCell's one composite control)
+// ---------------------------------------------------------------------------
+
+test("country cell: the cell label reaches the trigger, picking a country writes its ISO code, an unknown code is flagged", async () => {
+	const screen = await render(
+		FieldTable,
+		baseProps(
+			[
+				{ name: "Acme", country: "" },
+				{ name: "Nope", country: "XX" },
+			],
+			{
+				columns: [
+					{ key: "name", type: "text", label: "Name" },
+					{
+						key: "country",
+						type: "country",
+						label: "Country",
+						countryList: ["SK", "CZ", "AT"],
+					},
+				] satisfies FieldTableColumn[],
+			}
+		)
+	);
+	expect(screen.container.querySelectorAll('td[data-type="country"]').length).toBe(2);
+	// no hidden input of its own: the table's is the only one
+	expect(screen.container.querySelectorAll('input[type="hidden"]').length).toBe(1);
+
+	const trigger = cell(screen, "Country", 1);
+	await expect.element(trigger).toHaveAttribute("aria-haspopup", "menu");
+	await trigger.click();
+	// pick through the search box (type-ahead + Enter), the way a keyboard user does
+	const search = screen.getByPlaceholder("Search country...");
+	await search.fill("Slov");
+	await expect.element(screen.getByRole("menuitem", { name: /Slovakia/ })).toBeVisible();
+	await userEvent.keyboard("{Enter}");
+	await expect.poll(() => emitted(screen.container)[0].country).toBe("SK");
+	await expect.element(trigger).toHaveTextContent("Slovakia");
+
+	// a stored code outside the list is kept, and validate() names it
+	expect(emitted(screen.container)[1].country).toBe("XX");
+	expect(screen.component.validate()?.message).toBe(
+		"Row 2, Country: not a known country"
+	);
+	await expect
+		.element(cell(screen, "Country", 2))
+		.toHaveAttribute("aria-invalid", "true");
 });

@@ -25,29 +25,21 @@
 		ValidationResult,
 	} from "../../actions/validate.svelte.js";
 	import type { TranslateFn } from "../../types.js";
-	import type { MaybeLocalized } from "../../utils/tr.js";
 	import type { THC } from "../Thc/Thc.svelte";
+	import type { FieldCellDef, FieldCellType } from "./_internal/field-cell.js";
 	import type { InputWrapClassProps } from "./types.js";
 
 	type SnippetWithId = Snippet<[{ id: string }]>;
 
-	/** The cell types `FieldTable` renders itself. */
-	export type FieldTableCellType =
-		"text" | "number" | "select" | "checkbox" | "date" | "url";
+	/** The cell types `FieldTable` renders itself (the shared `FieldCell` set). */
+	export type FieldTableCellType = FieldCellType;
 
-	export interface FieldTableColumn {
-		/** The row-object key this cell reads and writes. */
-		key: string;
-		/** A built-in cell type, or anything else for the `cell` snippet. */
-		type: FieldTableCellType | (string & {});
-		label: MaybeLocalized;
-		/** `select` cells: the choices. */
-		options?: { value: string; label: MaybeLocalized }[];
-		/** `number` cells: a display unit — in the header ("Qty (pcs)") and after the input. */
-		unit?: string;
-		placeholder?: MaybeLocalized;
-		/** `text` / `url` cells: the input's `maxlength`, re-checked by validation. */
-		maxLength?: number;
+	/**
+	 * One column: the shared cell declaration (`key`, `type`, `label`, `options`, `unit`,
+	 * `placeholder`, `maxLength`, the `country` options) plus the row-flavoured rule.
+	 * The unit also shows in the header ("Qty (pcs)").
+	 */
+	export interface FieldTableColumn extends FieldCellDef {
 		/** Extra per-cell rule, run after the built-in one. Return a message to fail. */
 		validate?: (
 			value: unknown,
@@ -126,10 +118,15 @@
 	import { getId } from "../../utils/get-id.js";
 	import { isPlainObject } from "../../utils/is-plain-object.js";
 	import { tr } from "../../utils/tr.js";
-	import { twMerge } from "../../utils/tw-merge.js";
+	import FieldCell from "./_internal/FieldCell.svelte";
+	import {
+		cellRawText,
+		cellRule,
+		emptyCellValue,
+		isBuiltInCellType,
+	} from "./_internal/field-cell.js";
 	import InputWrap from "./_internal/InputWrap.svelte";
 	import { t_default } from "./field-table-i18n.js";
-	import { formatCellNumber, parseCellNumber } from "./field-table-number.js";
 
 	let {
 		value = $bindable(),
@@ -199,12 +196,6 @@
 		return tr(c.label, displayLanguage) || c.key;
 	}
 
-	function emptyFor(type: string): unknown {
-		if (type === "number") return null;
-		if (type === "checkbox") return false;
-		return "";
-	}
-
 	// ---------------------------------------------------------------------------
 	// rows + identity (OptionsEditor pattern: meta is index-aligned with rows and
 	// every mutation below keeps them in lockstep; the #each is keyed by rid so a
@@ -228,8 +219,6 @@
 	let addBtnEl: HTMLButtonElement | undefined = $state();
 	let liveAnnouncement = $state("");
 
-	/** What a number cell's input shows while it is being typed in (`rid:key`). */
-	let drafts: Record<string, string> = $state({});
 	/** Cells that were blurred — their inline error may show before validate(). */
 	let touched: Record<string, boolean> = $state({});
 
@@ -261,7 +250,6 @@
 		if (external !== internal) {
 			rows = fromValue(value);
 			meta = rows.map(() => ({ rid: getId("r") }));
-			drafts = {};
 			touched = {};
 		}
 	});
@@ -281,7 +269,7 @@
 		if (disabled || maxReached || !uniqueColumns.length) return;
 		const row =
 			newRow?.() ??
-			Object.fromEntries(uniqueColumns.map((c) => [c.key, emptyFor(c.type)]));
+			Object.fromEntries(uniqueColumns.map((c) => [c.key, emptyCellValue(c.type)]));
 		const m: RowMeta = { rid: getId("r") };
 		rows = [...rows, row];
 		meta = [...meta, m];
@@ -365,115 +353,12 @@
 	}
 
 	// ---------------------------------------------------------------------------
-	// cell display + input handlers
+	// validation (display + input handling live in the shared FieldCell; the
+	// per-type rule in field-cell.ts)
 	// ---------------------------------------------------------------------------
-
-	const isBlank = (v: unknown) => v === null || v === undefined || v === "";
-
-	function textOf(v: unknown): string {
-		if (v === null || v === undefined) return "";
-		return typeof v === "string" ? v : String(v);
-	}
-
-	/** Read-only rendering of a value the editor does not interpret. */
-	function rawText(v: unknown): string {
-		if (v === null || v === undefined) return "";
-		return typeof v === "string" ? v : JSON.stringify(v);
-	}
-
-	function numberText(rid: string, key: string, v: unknown): string {
-		const d = drafts[cellKey(rid, key)];
-		if (d !== undefined) return d;
-		if (typeof v === "number") return formatCellNumber(v, locale);
-		return textOf(v);
-	}
-
-	function onTextInput(r: number, key: string, e: Event) {
-		setCell(r, key, (e.currentTarget as HTMLInputElement).value);
-	}
-
-	// trimmed on commit (`change`), not while typing
-	function onTextChange(r: number, key: string, e: Event) {
-		const raw = (e.currentTarget as HTMLInputElement).value;
-		const trimmed = raw.trim();
-		if (trimmed !== raw) setCell(r, key, trimmed);
-	}
-
-	// the parsed number (or `null` for blank) is written on every keystroke; what
-	// does not parse is kept AS TYPED and flagged. The draft keeps the input showing
-	// exactly the typed text ("4." must not snap to "4" mid-typing); blur drops it,
-	// so the value is then shown formatted for `locale`.
-	function onNumberInput(rid: string, r: number, key: string, e: Event) {
-		const raw = (e.currentTarget as HTMLInputElement).value;
-		drafts[cellKey(rid, key)] = raw;
-		const parsed = parseCellNumber(raw, locale);
-		setCell(r, key, parsed.ok ? parsed.value : raw);
-	}
-
-	function onNumberBlur(rid: string, key: string) {
-		delete drafts[cellKey(rid, key)];
-		markTouched(rid, key);
-	}
 
 	function markTouched(rid: string, key: string) {
 		touched[cellKey(rid, key)] = true;
-	}
-
-	function selectHasValue(c: FieldTableColumn, v: unknown): boolean {
-		return typeof v === "string" && (c.options ?? []).some((o) => o.value === v);
-	}
-
-	// ---------------------------------------------------------------------------
-	// validation
-	// ---------------------------------------------------------------------------
-
-	const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
-
-	function isIsoDate(v: string): boolean {
-		if (!ISO_DATE_RE.test(v)) return false;
-		const d = new Date(`${v}T00:00:00Z`);
-		return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === v;
-	}
-
-	function isHttpUrl(v: string): boolean {
-		try {
-			const u = new URL(v);
-			return u.protocol === "http:" || u.protocol === "https:";
-		} catch {
-			return false;
-		}
-	}
-
-	/** Built-in per-type rule, then `maxLength`, then `column.validate`. */
-	function cellRule(
-		c: FieldTableColumn,
-		v: unknown,
-		row: FieldTableRow
-	): string | undefined {
-		if (!isBlank(v)) {
-			switch (c.type) {
-				case "number":
-					if (typeof v !== "number" || !Number.isFinite(v))
-						return String(t("err_number"));
-					break;
-				case "select":
-					if (!selectHasValue(c, v)) {
-						return String(t("err_select_unknown", { value: rawText(v) }));
-					}
-					break;
-				case "date":
-					if (typeof v !== "string" || !isIsoDate(v)) return String(t("err_date"));
-					break;
-				case "url":
-					if (typeof v !== "string" || !isHttpUrl(v)) return String(t("err_url"));
-					break;
-			}
-		}
-		if (c.maxLength != null && typeof v === "string" && v.length > c.maxLength) {
-			return String(t("err_maxlength", { max: c.maxLength }));
-		}
-		const custom = c.validate?.(v, row);
-		return custom ? String(custom) : undefined;
 	}
 
 	/** Index-aligned with `rows`: `{ [columnKey]: message }` or null. */
@@ -482,7 +367,7 @@
 			if (!isPlainObject(row)) return null;
 			let errs: Record<string, string> | null = null;
 			for (const c of uniqueColumns) {
-				const m = cellRule(c, (row as FieldTableRow)[c.key], row as FieldTableRow);
+				const m = cellRule(c, (row as FieldTableRow)[c.key], row as FieldTableRow, t);
 				if (m) (errs ??= {})[c.key] = m;
 			}
 			return errs;
@@ -585,22 +470,9 @@
 	});
 
 	// ---------------------------------------------------------------------------
-	// styling consts — the chrome is Tailwind utilities on purpose: the `.stuic-input
-	// input` base rule (border 0, transparent bg) outranks any component-layer
-	// selector, and utilities are the one layer above it (FieldKeyValues pattern).
-	// Size/padding come from the `.stuic-input[data-size]` rules for free.
+	// styling consts — utilities on purpose (FieldKeyValues pattern); the cell
+	// controls' chrome lives in the shared FieldCell
 	// ---------------------------------------------------------------------------
-
-	const INPUT_CLS = [
-		"stuic-field-table-control",
-		"rounded bg-(--stuic-input-bg) text-(--stuic-input-text)",
-		"border border-(--stuic-input-border)",
-		"focus:border-(--stuic-input-border-focus)",
-		"focus:outline-none focus:ring-0",
-		"focus-visible:outline-none focus-visible:ring-0",
-		"aria-invalid:border-(--stuic-field-table-invalid-color)",
-		"disabled:opacity-50",
-	].join(" ");
 
 	const BTN_CLS = [
 		"p-1 rounded shrink-0",
@@ -617,91 +489,21 @@
 	{@const cid = cellId(rid, key)}
 	{@const invalid = showCellError(r, c)}
 	{@const describedby = invalid ? `${cid}-err` : undefined}
-	{#if c.type === "text" || c.type === "url"}
-		<input
-			type="text"
-			inputmode={c.type === "url" ? "url" : undefined}
+	{#if isBuiltInCellType(c.type)}
+		<FieldCell
+			def={c}
+			value={v}
 			id={cid}
-			class={INPUT_CLS}
-			value={textOf(v)}
-			placeholder={tr(c.placeholder, displayLanguage) || undefined}
-			maxlength={c.maxLength}
-			aria-invalid={invalid || undefined}
-			aria-describedby={describedby}
 			{disabled}
 			{tabindex}
-			oninput={(e) => onTextInput(r, key, e)}
-			onchange={(e) => onTextChange(r, key, e)}
-			onblur={() => markTouched(rid, key)}
-		/>
-	{:else if c.type === "number"}
-		<div class="stuic-field-table-number">
-			<input
-				type="text"
-				inputmode="decimal"
-				id={cid}
-				class={twMerge(INPUT_CLS, "min-w-0")}
-				value={numberText(rid, key, v)}
-				placeholder={tr(c.placeholder, displayLanguage) || undefined}
-				aria-invalid={invalid || undefined}
-				aria-describedby={describedby}
-				{disabled}
-				{tabindex}
-				oninput={(e) => onNumberInput(rid, r, key, e)}
-				onblur={() => onNumberBlur(rid, key)}
-			/>
-			{#if c.unit}
-				<span class="stuic-field-table-unit" aria-hidden="true">{c.unit}</span>
-			{/if}
-		</div>
-	{:else if c.type === "select"}
-		<select
-			id={cid}
-			class={INPUT_CLS}
-			value={textOf(v)}
-			aria-invalid={invalid || undefined}
-			aria-describedby={describedby}
-			{disabled}
-			{tabindex}
-			onchange={(e) => setCell(r, key, e.currentTarget.value)}
-			onblur={() => markTouched(rid, key)}
-		>
-			<option value="">{tr(c.placeholder, displayLanguage)}</option>
-			{#each c.options ?? [] as o (o.value)}
-				<option value={o.value}>{tr(o.label, displayLanguage) || o.value}</option>
-			{/each}
-			{#if !isBlank(v) && !selectHasValue(c, v)}
-				<!-- a stored value outside the choices: shown as its own entry so it
-				     round-trips instead of being silently coerced away -->
-				<option value={textOf(v)}>{rawText(v)}</option>
-			{/if}
-		</select>
-	{:else if c.type === "checkbox"}
-		<span class="stuic-checkbox stuic-field-table-checkbox">
-			<input
-				type="checkbox"
-				id={cid}
-				checked={v === true}
-				aria-invalid={invalid || undefined}
-				aria-describedby={describedby}
-				{disabled}
-				{tabindex}
-				onchange={(e) => setCell(r, key, e.currentTarget.checked)}
-				onblur={() => markTouched(rid, key)}
-			/>
-		</span>
-	{:else if c.type === "date"}
-		<input
-			type="date"
-			id={cid}
-			class={INPUT_CLS}
-			value={typeof v === "string" ? v : ""}
-			aria-invalid={invalid || undefined}
-			aria-describedby={describedby}
-			{disabled}
-			{tabindex}
-			oninput={(e) => setCell(r, key, e.currentTarget.value)}
-			onblur={() => markTouched(rid, key)}
+			{invalid}
+			{describedby}
+			{locale}
+			{displayLanguage}
+			{renderSize}
+			{t}
+			onValue={(next) => setCell(r, key, next)}
+			onBlur={() => markTouched(rid, key)}
 		/>
 	{:else if cell}
 		{@render cell({
@@ -717,7 +519,7 @@
 		})}
 	{:else}
 		<!-- unknown type without a `cell` snippet: shown read-only, round-trips -->
-		<div id={cid} class="stuic-field-table-readonly">{rawText(v)}</div>
+		<div id={cid} class="stuic-field-cell-readonly">{cellRawText(v)}</div>
 	{/if}
 {/snippet}
 
@@ -810,7 +612,7 @@
 										<div class="stuic-field-table-unknown-row">
 											{t("unknown_row_warning")}
 										</div>
-										<div class="stuic-field-table-readonly">{rawText(row)}</div>
+										<div class="stuic-field-cell-readonly">{cellRawText(row)}</div>
 									</td>
 								{/if}
 								{#if showActions}

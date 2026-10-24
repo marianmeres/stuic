@@ -1239,7 +1239,8 @@ validator. Columns are declared by data:
 ### Column shape
 
 ```ts
-type FieldTableCellType = "text" | "number" | "select" | "checkbox" | "date" | "url";
+type FieldTableCellType =
+	"text" | "number" | "select" | "checkbox" | "date" | "url" | "country";
 
 interface FieldTableColumn {
 	key: string; // the row-object key this cell reads and writes
@@ -1249,9 +1250,17 @@ interface FieldTableColumn {
 	unit?: string; // `number`: shown in the header ("Qty (pcs)") and after the input
 	placeholder?: MaybeLocalized;
 	maxLength?: number; // `text` / `url`: the input's maxlength, re-checked by validation
+	countryList?: string[]; // `country`: ISO alpha-2 codes to offer (default: all)
+	preferredCountries?: string[]; // `country`: pinned at the top of the list
+	countryNames?: Record<string, string>; // `country`: display-name overrides by ISO code
+	flags?: boolean; // `country`: flag emoji in the list (default true)
 	validate?: (value: unknown, row: Record<string, unknown>) => string | undefined | void;
 }
 ```
+
+The cells are the same typed controls `FieldStruct` renders for a single record — one
+shared implementation, so a column and a struct field with the same `type` behave
+identically.
 
 ### The built-in cells
 
@@ -1263,6 +1272,7 @@ interface FieldTableColumn {
 | `checkbox` | `<input type="checkbox">`                        | boolean                                                | `false` | checked iff `=== true`; rewritten only when toggled                           |
 | `date`     | `<input type="date">`                            | `YYYY-MM-DD`                                           | `""`    | input shows empty, value untouched until a date is picked, flagged `err_date` |
 | `url`      | `<input type="text" inputmode="url">`            | string; trimmed on commit                              | `""`    | not an absolute `http:` / `https:` URL → `err_url`                            |
+| `country`  | `FieldCountry` (searchable list)                 | the ISO alpha-2 code, e.g. `SK`                        | `""`    | an unknown code shows the placeholder, round-trips, flagged `err_country`     |
 
 Why no `type="number"` / `type="url"`: a number input defaults to `step=1`, so a decimal
 fails **native** constraint validation and the browser refuses the whole form's submit —
@@ -1277,6 +1287,11 @@ under `en` an error — never silently read as grouping. Display uses the locale
 separator without grouping, so a Slovak user sees `4,2`. While a cell is being typed in,
 the input shows exactly the typed text; blur re-formats it. The two helpers,
 `parseCellNumber(raw, locale)` and `formatCellNumber(n, locale)`, are exported.
+
+**`country` names follow `locale`** (`"sk"` or `"sk-SK"` both resolve to the Slovak
+names of `@marianmeres/countries`; register the locale at startup to avoid a one-frame
+English flash, as the `FieldCountry` docs describe). A chosen country cannot be cleared
+from the list; clear the cell by reassigning the value.
 
 **Unknown types** render through the `cell` snippet, which receives
 `{ column, row, rowIndex, value, setValue, id, disabled, invalid, describedby }` — put
@@ -1417,19 +1432,19 @@ never rendered. Column and option labels are consumer data: pass them as
 Cell controls reuse the `--stuic-input-*` colour and size tokens, so a themed `FieldInput`
 and a themed cell look alike. The table adds:
 
-| Variable                                                             | Default                          | Description                               |
-| -------------------------------------------------------------------- | -------------------------------- | ----------------------------------------- |
-| `--stuic-field-table-border-color`                                   | `--stuic-color-border`           | Stacked card border                       |
-| `--stuic-field-table-header-bg`                                      | `--stuic-color-muted`            | `<th>` background                         |
-| `--stuic-field-table-header-text`                                    | `--stuic-color-muted-foreground` | `<th>` and stacked cell-label color       |
-| `--stuic-field-table-row-divider-color`                              | `--stuic-color-border`           | Line between rows / under a card's title  |
-| `--stuic-field-table-cell-padding-x` / `-y`                          | `0.375rem` / `0.25rem`           | Cell padding in table mode                |
-| `--stuic-field-table-card-bg`                                        | `transparent`                    | Stacked card background                   |
-| `--stuic-field-table-card-gap`                                       | `0.5rem`                         | Gap between stacked cards                 |
-| `--stuic-field-table-card-radius`                                    | `--stuic-radius`                 | Stacked card radius (usage-site fallback) |
-| `--stuic-field-table-invalid-color`                                  | `--stuic-input-accent-error`     | Invalid cell border + inline message      |
-| `--stuic-field-table-unit-text`                                      | `--stuic-color-muted-foreground` | The unit suffix                           |
-| `--stuic-field-table-col-min-{text,number,select,checkbox,date,url}` | `10 / 6 / 8 / 3 / 9.5 / 12rem`   | Minimum cell width per type in table mode |
+| Variable                                                                     | Default                             | Description                               |
+| ---------------------------------------------------------------------------- | ----------------------------------- | ----------------------------------------- |
+| `--stuic-field-table-border-color`                                           | `--stuic-color-border`              | Stacked card border                       |
+| `--stuic-field-table-header-bg`                                              | `--stuic-color-muted`               | `<th>` background                         |
+| `--stuic-field-table-header-text`                                            | `--stuic-color-muted-foreground`    | `<th>` and stacked cell-label color       |
+| `--stuic-field-table-row-divider-color`                                      | `--stuic-color-border`              | Line between rows / under a card's title  |
+| `--stuic-field-table-cell-padding-x` / `-y`                                  | `0.375rem` / `0.25rem`              | Cell padding in table mode                |
+| `--stuic-field-table-card-bg`                                                | `transparent`                       | Stacked card background                   |
+| `--stuic-field-table-card-gap`                                               | `0.5rem`                            | Gap between stacked cards                 |
+| `--stuic-field-table-card-radius`                                            | `--stuic-radius`                    | Stacked card radius (usage-site fallback) |
+| `--stuic-field-table-invalid-color`                                          | `--stuic-input-accent-error`        | Invalid cell border + inline message      |
+| `--stuic-field-table-unit-text`                                              | `--stuic-color-muted-foreground`    | The unit suffix                           |
+| `--stuic-field-table-col-min-{text,number,select,checkbox,date,url,country}` | `10 / 6 / 8 / 3 / 9.5 / 12 / 10rem` | Minimum cell width per type in table mode |
 
 ## Honeypot & TimeTrap (anti-bot primitives)
 

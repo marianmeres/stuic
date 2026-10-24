@@ -99,6 +99,11 @@
 	--stuic-field-date-embedded-padding: 0.5rem;
 	--stuic-field-date-dialog-padding: 1rem;
 
+	/* FieldCell — the typed control shared by FieldTable and FieldStruct (see the
+	   FIELD CELL section below). Each host re-points these at its own tokens. */
+	--stuic-field-cell-invalid-color: var(--stuic-input-accent-error);
+	--stuic-field-cell-unit-text: var(--stuic-color-muted-foreground);
+
 	/* FieldTable specific (see the FIELD TABLE section at the bottom of this file) */
 	--stuic-field-table-border-color: var(--stuic-color-border);
 	--stuic-field-table-header-bg: var(--stuic-color-muted);
@@ -119,6 +124,7 @@
 	--stuic-field-table-col-min-checkbox: 3rem;
 	--stuic-field-table-col-min-date: 9.5rem;
 	--stuic-field-table-col-min-url: 12rem;
+	--stuic-field-table-col-min-country: 10rem;
 
 	/* FieldSingleAsset */
 	--stuic-field-single-asset-size-sm: 5rem;
@@ -1011,6 +1017,50 @@
 }
 
 /* ============================================================================
+   FIELD CELL
+   The typed control shared by FieldTable (a cell of a row) and FieldStruct (a
+   field of the record): `_internal/FieldCell.svelte`. The control's own chrome
+   (border, background, focus, invalid border) is Tailwind utilities in that
+   component, because the `.stuic-input input` base rule outranks any
+   component-layer selector; this block owns the bits around the control. The
+   two tokens it reads (`--stuic-field-cell-invalid-color`,
+   `--stuic-field-cell-unit-text`) are declared at :root above and re-pointed by
+   each host at its own documented tokens.
+   ============================================================================ */
+
+@layer components {
+	.stuic-field-cell-number {
+		display: flex;
+		align-items: center;
+		gap: calc(var(--spacing) * 1.5);
+	}
+
+	.stuic-field-cell-unit {
+		color: var(--stuic-field-cell-unit-text);
+		font-size: var(--text-sm);
+		white-space: nowrap;
+	}
+
+	.stuic-field-cell-checkbox {
+		display: flex;
+		align-items: center;
+		min-height: var(--stuic-input-min-height-sm);
+	}
+
+	/* an unknown type without a `cell` snippet, or a degraded record */
+	.stuic-field-cell-readonly {
+		font-size: var(--text-sm);
+		overflow-wrap: anywhere;
+	}
+
+	/* The nested FieldCountry is a full field: its wrap's focus ring is turned off
+	   so it matches the other controls' focus border. */
+	.stuic-field-cell-country .input-wrap:focus-within {
+		box-shadow: none;
+	}
+}
+
+/* ============================================================================
    FIELD TABLE
    One DOM for both layouts: a real <table> is the base ("table" mode), and the
    "stacked" mode restyles it into one card per row (thead gone, each <td> a
@@ -1023,14 +1073,18 @@
    (a JS ResizeObserver flipping an attribute) would remount nothing either, but
    paints one frame in the wrong mode and costs an observer per instance.
 
-   Cell controls take their chrome from Tailwind utilities in the component
-   (the `.stuic-input input` base rule outranks any component-layer selector);
-   this file owns layout, headers, cards, min-widths and the messages.
+   Cell controls are the shared FieldCell (see FIELD CELL above): their chrome
+   is Tailwind utilities in that component (the `.stuic-input input` base rule
+   outranks any component-layer selector); this file owns layout, headers,
+   cards, min-widths and the messages.
    ============================================================================ */
 
 @layer components {
 	.stuic-field-table {
 		padding: calc(var(--spacing) * 2);
+		/* the shared cell reads these; the table's own (documented) tokens feed them */
+		--stuic-field-cell-invalid-color: var(--stuic-field-table-invalid-color);
+		--stuic-field-cell-unit-text: var(--stuic-field-table-unit-text);
 	}
 
 	.stuic-field-table[data-layout="auto"] {
@@ -1054,7 +1108,7 @@
 
 	.stuic-field-table th {
 		text-align: start;
-		font-size: var(--text-xs);
+		font-size: var(--text-sm);
 		font-weight: 500;
 		color: var(--stuic-field-table-header-text);
 		background: var(--stuic-field-table-header-bg);
@@ -1104,6 +1158,9 @@
 	.stuic-field-table td[data-type="url"] {
 		min-width: var(--stuic-field-table-col-min-url);
 	}
+	.stuic-field-table td[data-type="country"] {
+		min-width: var(--stuic-field-table-col-min-country);
+	}
 
 	/* In table mode the <th scope="col"> is the visible heading; the per-cell
 	   label stays for the accessible name only ("Qty, row 3"). */
@@ -1135,40 +1192,20 @@
 		gap: calc(var(--spacing) * 0.5);
 	}
 
-	/* ---- cells ---- */
+	/* ---- cells (the controls themselves are the shared FieldCell rules) ---- */
 
-	.stuic-field-table-number {
-		display: flex;
-		align-items: center;
-		gap: calc(var(--spacing) * 1.5);
-	}
-
-	.stuic-field-table-unit {
-		color: var(--stuic-field-table-unit-text);
-		font-size: var(--text-xs);
-		white-space: nowrap;
-	}
-
-	.stuic-field-table-checkbox {
-		display: flex;
-		align-items: center;
-		min-height: var(--stuic-input-min-height-sm);
-	}
-
-	.stuic-field-table-readonly {
-		font-size: var(--text-sm);
+	.stuic-field-table .stuic-field-cell-readonly {
 		padding-block: var(--stuic-field-table-cell-padding-y);
-		overflow-wrap: anywhere;
 	}
 
 	.stuic-field-table-unknown-row {
-		font-size: var(--text-xs);
+		font-size: var(--text-sm);
 		color: var(--stuic-color-surface-warning-foreground);
 	}
 
 	.stuic-field-table-cell-error {
 		margin-top: calc(var(--spacing) * 1);
-		font-size: var(--text-xs);
+		font-size: var(--text-sm);
 		color: var(--stuic-field-table-invalid-color);
 	}
 
@@ -1215,7 +1252,7 @@
 	}
 
 	.stuic-field-table-count {
-		font-size: var(--text-xs);
+		font-size: var(--text-sm);
 		color: var(--stuic-color-muted-foreground);
 		font-variant-numeric: tabular-nums;
 	}
@@ -1265,7 +1302,7 @@
 		overflow: visible;
 		clip-path: none;
 		white-space: normal;
-		font-size: var(--text-xs);
+		font-size: var(--text-sm);
 		font-weight: 500;
 		color: var(--stuic-field-table-header-text);
 	}
@@ -1338,7 +1375,7 @@
 			overflow: visible;
 			clip-path: none;
 			white-space: normal;
-			font-size: var(--text-xs);
+			font-size: var(--text-sm);
 			font-weight: 500;
 			color: var(--stuic-field-table-header-text);
 		}
@@ -1411,7 +1448,7 @@
 			overflow: visible;
 			clip-path: none;
 			white-space: normal;
-			font-size: var(--text-xs);
+			font-size: var(--text-sm);
 			font-weight: 500;
 			color: var(--stuic-field-table-header-text);
 		}
@@ -1484,7 +1521,7 @@
 			overflow: visible;
 			clip-path: none;
 			white-space: normal;
-			font-size: var(--text-xs);
+			font-size: var(--text-sm);
 			font-weight: 500;
 			color: var(--stuic-field-table-header-text);
 		}
@@ -1557,7 +1594,7 @@
 			overflow: visible;
 			clip-path: none;
 			white-space: normal;
-			font-size: var(--text-xs);
+			font-size: var(--text-sm);
 			font-weight: 500;
 			color: var(--stuic-field-table-header-text);
 		}
