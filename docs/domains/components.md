@@ -1843,27 +1843,27 @@ Thin opinionated wrapper around `Avatar` + `DropdownMenu` for the common "user a
 | `UserAvatarMenuIdentity`    | type      | `{ email, name?, src?, roles? }`                                                    |
 | `UserAvatarMenuActions`     | type      | `{ onProfile?, onSettings?, onLogout?, onLoginOrRegister?, onLogin?, onRegister? }` |
 | `UserAvatarMenuLabels`      | type      | Label overrides (all optional, English defaults)                                    |
-| `UserAvatarMenuColorScheme` | type      | `boolean \| { enabled?, onToggle?, isDark? }`                                       |
+| `UserAvatarMenuColorScheme` | type      | `boolean \| { enabled?, system?, onToggle?, isDark? }`                              |
 
 ### Key Props
 
-| Prop             | Type                                          | Default | Description                                                       |
-| ---------------- | --------------------------------------------- | ------- | ----------------------------------------------------------------- |
-| `identity`       | `UserAvatarMenuIdentity \| null`              | `null`  | Current user. `null` / `undefined` → unauthenticated mode.        |
-| `actions`        | `UserAvatarMenuActions`                       | `{}`    | Handlers; missing → corresponding item hidden.                    |
-| `labels`         | `UserAvatarMenuLabels`                        | English | Translated strings for built-in items.                            |
-| `colorScheme`    | `boolean \| { enabled?, onToggle?, isDark? }` | `true`  | Built-in dark/light toggle. `false` to disable.                   |
-| `showHeaderTile` | `boolean`                                     | `true`  | Render avatar+email tile inside the dropdown (auth only).         |
-| `showRoles`      | `boolean`                                     | `false` | Render `identity.roles` under the email in the header tile.       |
-| `extraItems`     | `DropdownMenuItem[]`                          | —       | Appended to the standard item set.                                |
-| `items`          | `DropdownMenuItem[]`                          | —       | Full override of items (trigger + shell still render).            |
-| `avatar`         | `Partial<AvatarProps>`                        | —       | Forwarded to the default trigger Avatar (and header-tile Avatar). |
-| `position`       | `DropdownMenuPosition`                        | —       | Forwarded to `DropdownMenu`.                                      |
-| `classDropdown`  | `string`                                      | —       | Forwarded.                                                        |
-| `classTrigger`   | `string`                                      | —       | Class merged onto the default trigger `<button>`.                 |
-| `trigger`        | `Snippet<[{ isOpen, toggle, triggerProps }]>` | —       | Custom trigger snippet (replaces default Avatar trigger).         |
-| `headerTile`     | `Snippet<[{ identity }]>`                     | —       | Custom header-tile snippet (replaces default avatar+email tile).  |
-| `isOpen`         | `boolean`                                     | `false` | Bindable open state.                                              |
+| Prop             | Type                                                   | Default | Description                                                                                   |
+| ---------------- | ------------------------------------------------------ | ------- | --------------------------------------------------------------------------------------------- |
+| `identity`       | `UserAvatarMenuIdentity \| null`                       | `null`  | Current user. `null` / `undefined` → unauthenticated mode.                                    |
+| `actions`        | `UserAvatarMenuActions`                                | `{}`    | Handlers; missing → corresponding item hidden.                                                |
+| `labels`         | `UserAvatarMenuLabels`                                 | English | Translated strings for built-in items.                                                        |
+| `colorScheme`    | `boolean \| { enabled?, system?, onToggle?, isDark? }` | `true`  | Built-in dark/light toggle. `false` to disable; `{ system: true }` for System / Light / Dark. |
+| `showHeaderTile` | `boolean`                                              | `true`  | Render avatar+email tile inside the dropdown (auth only).                                     |
+| `showRoles`      | `boolean`                                              | `false` | Render `identity.roles` under the email in the header tile.                                   |
+| `extraItems`     | `DropdownMenuItem[]`                                   | —       | Appended to the standard item set.                                                            |
+| `items`          | `DropdownMenuItem[]`                                   | —       | Full override of items (trigger + shell still render).                                        |
+| `avatar`         | `Partial<AvatarProps>`                                 | —       | Forwarded to the default trigger Avatar (and header-tile Avatar).                             |
+| `position`       | `DropdownMenuPosition`                                 | —       | Forwarded to `DropdownMenu`.                                                                  |
+| `classDropdown`  | `string`                                               | —       | Forwarded.                                                                                    |
+| `classTrigger`   | `string`                                               | —       | Class merged onto the default trigger `<button>`.                                             |
+| `trigger`        | `Snippet<[{ isOpen, toggle, triggerProps }]>`          | —       | Custom trigger snippet (replaces default Avatar trigger).                                     |
+| `headerTile`     | `Snippet<[{ identity }]>`                              | —       | Custom header-tile snippet (replaces default avatar+email tile).                              |
+| `isOpen`         | `boolean`                                              | `false` | Bindable open state.                                                                          |
 
 ### Default item order
 
@@ -1873,7 +1873,7 @@ Thin opinionated wrapper around `Avatar` + `DropdownMenu` for the common "user a
 
 ### Opinionated decisions
 
-- Color scheme is the only built-in side effect (`ColorScheme.toggle()` + re-read on select). Opt out with `colorScheme={false}`.
+- Color scheme is the only built-in side effect (`ColorScheme.toggle()` + re-read on select; `ColorScheme.setPreference()` in the three-state `{ system: true }` form, an "Appearance" group). Opt out with `colorScheme={false}`.
 - English label defaults; consumers pass `labels` for i18n. No i18n library imported.
 - No auth state ownership, no router, no modal triggering — all consumer callbacks.
 

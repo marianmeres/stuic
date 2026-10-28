@@ -68,30 +68,30 @@ The component composes existing primitives and adds convention, not behavior. It
 
 ## Props
 
-| Prop             | Type                                          | Default | Description                                                                                 |
-| ---------------- | --------------------------------------------- | ------- | ------------------------------------------------------------------------------------------- |
-| `identity`       | `UserAvatarMenuIdentity \| null`              | `null`  | Current user. `null` / `undefined` → unauthenticated mode.                                  |
-| `actions`        | `UserAvatarMenuActions`                       | `{}`    | Handlers: `onProfile`, `onSettings`, `onLogout`, `onLogin`, `onRegister`. Missing → hidden. |
-| `labels`         | `UserAvatarMenuLabels`                        | English | Translated strings for built-in items.                                                      |
-| `colorScheme`    | `boolean \| { enabled?; onToggle?; isDark? }` | `true`  | Built-in dark/light toggle. `false` to disable. Object form overrides toggle / read.        |
-| `showHeaderTile` | `boolean`                                     | `true`  | Render the avatar + email header tile when authenticated.                                   |
-| `showRoles`      | `boolean`                                     | `false` | Render `identity.roles` under the email in the header tile.                                 |
-| `extraItems`     | `DropdownMenuItem[]`                          | —       | Appended to the standard item set.                                                          |
-| `items`          | `DropdownMenuItem[]`                          | —       | Full override of the item list. Trigger + dropdown shell still render.                      |
-| `avatar`         | `Partial<AvatarProps>`                        | —       | Forwarded to BOTH the trigger Avatar and the header-tile Avatar.                            |
-| `avatarHeader`   | `Partial<AvatarProps>`                        | —       | Overrides applied on top of `avatar` for the header-tile Avatar only. Shallow merge.        |
-| `position`       | `DropdownMenuPosition`                        | —       | Forwarded to `DropdownMenu`.                                                                |
-| `offset`         | `string`                                      | —       | Forwarded.                                                                                  |
-| `maxHeight`      | `string`                                      | —       | Forwarded.                                                                                  |
-| `closeOnSelect`  | `boolean`                                     | —       | Forwarded.                                                                                  |
-| `classDropdown`  | `string`                                      | —       | Forwarded.                                                                                  |
-| `classTrigger`   | `string`                                      | —       | Class merged onto the default trigger `<button>`.                                           |
-| `isOpen`         | `boolean`                                     | `false` | Bindable open state.                                                                        |
-| `trigger`        | `Snippet<[{ isOpen; toggle; triggerProps }]>` | —       | Custom trigger snippet; fully replaces the default.                                         |
-| `headerTile`     | `Snippet<[{ identity }]>`                     | —       | Custom header-tile snippet; replaces the default avatar+email tile inside the dropdown.     |
-| `unstyled`       | `boolean`                                     | `false` | Skip default styling.                                                                       |
-| `class`          | `string`                                      | —       | Wrapper classes.                                                                            |
-| `el`             | `HTMLDivElement`                              | —       | Bindable wrapper element.                                                                   |
+| Prop             | Type                                                   | Default | Description                                                                                                                                             |
+| ---------------- | ------------------------------------------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `identity`       | `UserAvatarMenuIdentity \| null`                       | `null`  | Current user. `null` / `undefined` → unauthenticated mode.                                                                                              |
+| `actions`        | `UserAvatarMenuActions`                                | `{}`    | Handlers: `onProfile`, `onSettings`, `onLogout`, `onLogin`, `onRegister`. Missing → hidden.                                                             |
+| `labels`         | `UserAvatarMenuLabels`                                 | English | Translated strings for built-in items.                                                                                                                  |
+| `colorScheme`    | `boolean \| { enabled?; system?; onToggle?; isDark? }` | `true`  | Built-in dark/light toggle. `false` to disable. Object form overrides toggle / read; `system: true` swaps the toggle for a System / Light / Dark group. |
+| `showHeaderTile` | `boolean`                                              | `true`  | Render the avatar + email header tile when authenticated.                                                                                               |
+| `showRoles`      | `boolean`                                              | `false` | Render `identity.roles` under the email in the header tile.                                                                                             |
+| `extraItems`     | `DropdownMenuItem[]`                                   | —       | Appended to the standard item set.                                                                                                                      |
+| `items`          | `DropdownMenuItem[]`                                   | —       | Full override of the item list. Trigger + dropdown shell still render.                                                                                  |
+| `avatar`         | `Partial<AvatarProps>`                                 | —       | Forwarded to BOTH the trigger Avatar and the header-tile Avatar.                                                                                        |
+| `avatarHeader`   | `Partial<AvatarProps>`                                 | —       | Overrides applied on top of `avatar` for the header-tile Avatar only. Shallow merge.                                                                    |
+| `position`       | `DropdownMenuPosition`                                 | —       | Forwarded to `DropdownMenu`.                                                                                                                            |
+| `offset`         | `string`                                               | —       | Forwarded.                                                                                                                                              |
+| `maxHeight`      | `string`                                               | —       | Forwarded.                                                                                                                                              |
+| `closeOnSelect`  | `boolean`                                              | —       | Forwarded.                                                                                                                                              |
+| `classDropdown`  | `string`                                               | —       | Forwarded.                                                                                                                                              |
+| `classTrigger`   | `string`                                               | —       | Class merged onto the default trigger `<button>`.                                                                                                       |
+| `isOpen`         | `boolean`                                              | `false` | Bindable open state.                                                                                                                                    |
+| `trigger`        | `Snippet<[{ isOpen; toggle; triggerProps }]>`          | —       | Custom trigger snippet; fully replaces the default.                                                                                                     |
+| `headerTile`     | `Snippet<[{ identity }]>`                              | —       | Custom header-tile snippet; replaces the default avatar+email tile inside the dropdown.                                                                 |
+| `unstyled`       | `boolean`                                              | `false` | Skip default styling.                                                                                                                                   |
+| `class`          | `string`                                               | —       | Wrapper classes.                                                                                                                                        |
+| `el`             | `HTMLDivElement`                                       | —       | Bindable wrapper element.                                                                                                                               |
 
 ### `UserAvatarMenuIdentity`
 
@@ -129,6 +129,8 @@ interface UserAvatarMenuLabels {
 	register?: string; // "Register"
 	lightMode?: string; // "Light mode"
 	darkMode?: string; // "Dark mode"
+	appearance?: string; // "Appearance"  (three-state group label)
+	systemMode?: string; // "System"      (three-state follow-the-OS option)
 	triggerAuthed?: string; // "User menu"  (aria-label)
 	triggerAnon?: string; // "Sign in"    (aria-label)
 }
@@ -143,7 +145,7 @@ Predictable so consumers can reason about position when adding `extraItems`.
 1. Header tile (when `showHeaderTile !== false`)
 2. View profile (when `actions.onProfile`)
 3. Settings (when `actions.onSettings`)
-4. Color scheme toggle (when `colorScheme !== false`) — sun/moon icon, label flips
+4. Color scheme toggle (when `colorScheme !== false`) — sun/moon icon, label flips; with `colorScheme={{ system: true }}` an expandable "Appearance" group instead (System / Light mode / Dark mode, the active one checked)
 5. Divider (when there was at least one item above **and** `actions.onLogout`)
 6. Logout (when `actions.onLogout`) — with `iconLogOut`
 7. `extraItems` (appended)
@@ -165,6 +167,7 @@ When `items` is passed, the entire default set is bypassed. The trigger + shell 
 ## Opinionated decisions
 
 - **Color scheme is the one built-in side effect.** The component calls `ColorScheme.toggle()` and re-reads `ColorScheme.getValue()` on select. Label/icon flip without consumer involvement. Opt out with `colorScheme={false}`, or override via the object form: `colorScheme={{ onToggle, isDark }}`.
+- **Three states are opt-in.** `colorScheme={{ system: true }}` reads `ColorScheme.preference` and calls `ColorScheme.setPreference()`; "System" follows the OS live. Mount `<ColorSchemeSystemAware />` so it also holds after a reload.
 - **English defaults.** Pass `labels` for i18n. The component never imports an i18n library; consumers pass already-translated strings.
 - **No auth ownership.** No state observation, no log-out call, no router. All side effects are consumer callbacks.
 - **No modal triggering.** "Login" doesn't open a `LoginOrRegisterFormModal` — that's your `onLogin` handler.

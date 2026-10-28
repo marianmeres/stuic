@@ -1495,7 +1495,7 @@ Horizontal or vertical separator line with optional decorative `aria-hidden` mod
 
 #### `ColorScheme`
 
-Dark/light mode toggle management. Includes `ColorSchemeLocal` (localStorage-based) and `ColorSchemeSystemAware` (system preference sync).
+Dark/light mode toggle management. Includes `ColorSchemeLocal` (localStorage-based) and `ColorSchemeSystemAware` (system preference sync — at first paint and live, while no preference is stored). Three-state support: reactive `ColorScheme.preference` (`"system" | "light" | "dark"`), `ColorScheme.setPreference()`, and `ColorScheme.configure({ followSystem })`.
 
 #### `Thc`
 

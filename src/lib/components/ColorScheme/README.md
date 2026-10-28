@@ -6,9 +6,11 @@ Hydration components and a small runtime for dark mode support. Add/remove the `
 
 - `localStorage["stuic-color-scheme"]` is `"dark"` or `"light"` → that wins.
 - Otherwise → defer to the current `<html>` class (set by SSR, `app.html`, or your own bootstrap).
-- `prefers-color-scheme` is **never** consulted implicitly. It is read only when:
-  - You explicitly mount `<ColorSchemeSystemAware />` (which reads it once, at first paint, to seed the DOM when no preference is stored), or
-  - You call `ColorScheme.getSystemValue()` from your own UI (e.g. a "Use system preference" button).
+- `prefers-color-scheme` is **never** consulted implicitly. It is read only when the runtime follows the OS — an explicit opt-in:
+  - You mount `<ColorSchemeSystemAware />` (it paints the OS setting at first paint when no preference is stored, and turns on `followSystem`), or
+  - You call `ColorScheme.configure({ followSystem: true })`, or `ColorScheme.setPreference("system")`, or
+  - You call `ColorScheme.getSystemValue()` from your own UI.
+- While following the OS and no preference is stored, the scheme tracks the OS setting **live** (e.g. scheduled dark mode at sunset repaints an open page). A stored `"light"` / `"dark"` always wins.
 
 ## Components
 
@@ -18,7 +20,7 @@ Uses only the localStorage setting. If no preference is stored, the inline boots
 
 ### ColorSchemeSystemAware
 
-Explicit opt-in for OS-aware first paint. Checks localStorage first; if empty, falls back to `prefers-color-scheme: dark`. Use this if you want the OS to influence first paint.
+Explicit opt-in for an OS-aware scheme. Checks localStorage first; if empty, falls back to `prefers-color-scheme: dark` at first paint, then keeps following the OS setting while the page is open (`followSystem`). Use this if you want the OS to decide until the viewer picks.
 
 ## Props
 
@@ -83,23 +85,33 @@ With `<ColorSchemeLocal />` mounted, the app starts dark; toggling persists `"li
 <button onclick={() => ColorScheme.reset()}>Reset</button>
 ```
 
-### Apply system preference on demand
+### Three states: system | light | dark
+
+`ColorScheme.preference` is reactive: `"light"` / `"dark"` when the viewer picked one, `"system"` when nothing is stored. `ColorScheme.current` stays what is on screen.
 
 ```svelte
 <script lang="ts">
-	import { ColorScheme } from "stuic";
+	import { ColorScheme, ColorSchemeSystemAware } from "stuic";
+	import type { ColorSchemePreference } from "stuic";
 
-	function useSystem() {
-		const v = ColorScheme.getSystemValue();
-		localStorage.setItem(ColorScheme.KEY, v);
-		document.documentElement.classList.toggle("dark", v === "dark");
-		ColorScheme.syncFromDom();
-	}
+	const options: ColorSchemePreference[] = ["system", "light", "dark"];
 </script>
 
-<button onclick={useSystem}>Use system preference</button>
+<!-- "system" must survive a reload: paint the OS setting first -->
+<ColorSchemeSystemAware />
+
+{#each options as option (option)}
+	<button
+		aria-pressed={ColorScheme.preference === option}
+		onclick={() => ColorScheme.setPreference(option)}
+	>
+		{option}
+	</button>
+{/each}
 ```
+
+`setPreference("system")` clears the stored value, applies the OS setting and follows it from then on. `UserAvatarMenu` offers the same as `colorScheme={{ system: true }}`.
 
 ## Notes on `reset()`
 
-`ColorScheme.reset()` removes the persisted preference from `localStorage`. It does **not** change the visual state in the current session — `toggle()` already painted the DOM, and the lib does not track an "original SSR default" to revert to. The next page load will paint from the SSR'd `<html>` class. If you need a same-session revert, persist your default explicitly (e.g. `localStorage.setItem(ColorScheme.KEY, "dark")` then call your toggle code).
+`ColorScheme.reset()` removes the persisted preference from `localStorage`. While following the OS it is `setPreference("system")`: the OS setting applies at once. Otherwise it does **not** change the visual state in the current session — `toggle()` already painted the DOM, and the lib does not track an "original SSR default" to revert to. The next page load will paint from the SSR'd `<html>` class. If you need a same-session revert, persist your default explicitly (e.g. `localStorage.setItem(ColorScheme.KEY, "dark")` then call your toggle code).

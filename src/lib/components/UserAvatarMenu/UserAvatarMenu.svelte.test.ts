@@ -1,6 +1,7 @@
 import { render } from "vitest-browser-svelte";
 import { expect, test, vi } from "vitest";
 import UserAvatarMenu from "./UserAvatarMenu.svelte";
+import { ColorScheme } from "../ColorScheme/index.js";
 
 // UserAvatarMenu wraps DropdownMenu. It is bindable-driven (the default trigger
 // is a <button aria-label> calling DropdownMenu's `toggle`), so we can render it
@@ -83,6 +84,41 @@ test("AUTHED: a color-scheme menuitem renders by default (Light/Dark mode)", asy
 	await expect
 		.element(screen.getByRole("menuitem", { name: /mode/i }))
 		.toBeInTheDocument();
+});
+
+test("AUTHED: colorScheme { system: true } offers System / Light / Dark under Appearance", async () => {
+	const screen = await render(UserAvatarMenu, {
+		identity: { email: "ada@x.io" },
+		actions: { onLogout: vi.fn() },
+		colorScheme: { system: true },
+	});
+
+	await screen.getByRole("button", { name: "User menu" }).click();
+	await expect.element(screen.getByRole("menu")).toBeInTheDocument();
+
+	// The two-state toggle is replaced, not joined.
+	await expect
+		.element(screen.getByRole("menuitem", { name: /mode/i }))
+		.not.toBeInTheDocument();
+
+	await screen.getByRole("menuitem", { name: "Appearance" }).click();
+	await expect
+		.element(screen.getByRole("menuitem", { name: "System" }))
+		.toBeInTheDocument();
+	await expect
+		.element(screen.getByRole("menuitem", { name: "Light mode" }))
+		.toBeInTheDocument();
+
+	// This one DOES mutate the shared ColorScheme state, so it puts it back.
+	await screen.getByRole("menuitem", { name: "Dark mode" }).click();
+	expect(ColorScheme.preference).toBe("dark");
+	expect(localStorage.getItem(ColorScheme.KEY)).toBe("dark");
+	expect(document.documentElement.classList.contains("dark")).toBe(true);
+
+	ColorScheme.configure({ followSystem: false });
+	localStorage.removeItem(ColorScheme.KEY);
+	document.documentElement.classList.remove("dark");
+	ColorScheme.reset();
 });
 
 test("UNAUTH: trigger exposes aria-label 'Sign in'", async () => {

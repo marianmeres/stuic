@@ -7,16 +7,19 @@
 	import { ColorScheme } from "./color-scheme.svelte.js";
 	$effect(() => {
 		// Bootstrap <script> below has run by the time this effect fires;
-		// re-seed the runtime from whatever the DOM is now showing.
+		// re-seed the runtime from whatever the DOM is now showing, then keep
+		// following the OS while no preference is stored.
 		ColorScheme.syncFromDom();
+		ColorScheme.configure({ followSystem: true });
 	});
 </script>
 
 <!--
-	Explicit opt-in for OS-aware first paint. The `ColorScheme` runtime itself
-	never auto-derives from `prefers-color-scheme` — only this bootstrap does,
-	and only at hydration when no preference is stored. If you do not want
-	system preference taken into account, use the ColorSchemeLocal sibling.
+	Explicit opt-in for OS-aware color scheme. With no preference stored, this
+	bootstrap paints the OS setting at first paint, and the mounted component
+	turns on the runtime's `followSystem`, so the page keeps following the OS
+	setting while it is open. A stored "light" / "dark" wins over both. If you do
+	not want system preference taken into account, use the ColorSchemeLocal sibling.
 
 	Uses the hardcoded default storage key "stuic-color-scheme". Apps that
 	override the runtime key via `ColorScheme.configure({ key })` should ship

@@ -28,7 +28,8 @@
 	 *
 	 * The component never navigates, logs out, or toggles theme on its own —
 	 * it only invokes callbacks. The only built-in side effect is
-	 * `ColorScheme.toggle()` inside the color-scheme item (see `colorScheme`).
+	 * `ColorScheme.toggle()` (or `ColorScheme.setPreference()` in the three-state
+	 * form) inside the color-scheme item (see `colorScheme`).
 	 */
 	export interface UserAvatarMenuActions {
 		/** "View profile" item. Hidden when not provided. (Auth state only.) */
@@ -63,6 +64,10 @@
 		register?: string;
 		lightMode?: string;
 		darkMode?: string;
+		/** Three-state color scheme only: the group's label. Default: "Appearance". */
+		appearance?: string;
+		/** Three-state color scheme only: the follow-the-OS option. Default: "System". */
+		systemMode?: string;
 		/** Trigger aria-label when authenticated. Default: "User menu". */
 		triggerAuthed?: string;
 		/** Trigger aria-label when unauthenticated. Default: "Sign in". */
@@ -77,6 +82,14 @@
 		| boolean
 		| {
 				enabled?: boolean;
+				/**
+				 * Three states instead of the toggle: an "Appearance" group offering
+				 * System / Light / Dark, read from and written to
+				 * `ColorScheme.preference` / `ColorScheme.setPreference()`. Pair with
+				 * `<ColorSchemeSystemAware />` so "System" also holds after a reload.
+				 * Default `false`. `onToggle` / `isDark` apply to the toggle only.
+				 */
+				system?: boolean;
 				/** Override the default `ColorScheme.toggle()` behavior. */
 				onToggle?: () => void;
 				/** Read current "is dark" state. Defaults to `ColorScheme.getValue() === "dark"`. */
@@ -173,10 +186,17 @@
 
 <script lang="ts">
 	import { twMerge } from "../../utils/tw-merge.js";
-	import { iconLogOut, iconMoon, iconSun } from "../../icons/index.js";
+	import {
+		iconCheck,
+		iconLogOut,
+		iconMonitor,
+		iconMoon,
+		iconSun,
+	} from "../../icons/index.js";
 	import Avatar from "../Avatar/Avatar.svelte";
 	import DropdownMenu from "../DropdownMenu/DropdownMenu.svelte";
-	import { ColorScheme } from "../ColorScheme/index.js";
+	import type { DropdownMenuActionItem } from "../DropdownMenu/DropdownMenu.svelte";
+	import { ColorScheme, type ColorSchemePreference } from "../ColorScheme/index.js";
 
 	let {
 		identity = null,
@@ -240,11 +260,49 @@
 		register: labels.register ?? "Register",
 		lightMode: labels.lightMode ?? "Light mode",
 		darkMode: labels.darkMode ?? "Dark mode",
+		appearance: labels.appearance ?? "Appearance",
+		systemMode: labels.systemMode ?? "System",
 		triggerAuthed: labels.triggerAuthed ?? "User menu",
 		triggerAnon: labels.triggerAnon ?? "Sign in",
 	});
 
+	const PREFERENCE_ICON = {
+		system: iconMonitor,
+		light: iconSun,
+		dark: iconMoon,
+	} satisfies Record<ColorSchemePreference, unknown>;
+
+	// Three-state form: a group, its icon the current preference, the active
+	// option checked. Reads `ColorScheme.preference`, so it re-renders on change.
+	function buildAppearanceItem(): DropdownMenuItem {
+		const current = ColorScheme.preference;
+		const option = (
+			preference: ColorSchemePreference,
+			label: string
+		): DropdownMenuActionItem => ({
+			type: "action",
+			id: `color-scheme-${preference}`,
+			label,
+			contentBefore: { html: PREFERENCE_ICON[preference]({ size: 16 }) },
+			contentAfter:
+				preference === current ? { html: iconCheck({ size: 16 }) } : undefined,
+			onSelect: () => ColorScheme.setPreference(preference),
+		});
+		return {
+			type: "expandable",
+			id: "color-scheme",
+			label: L.appearance,
+			contentBefore: { html: PREFERENCE_ICON[current]({ size: 16 }) },
+			items: [
+				option("system", L.systemMode),
+				option("light", L.lightMode),
+				option("dark", L.darkMode),
+			],
+		};
+	}
+
 	function buildColorSchemeItem(): DropdownMenuItem {
+		if (cs.system) return buildAppearanceItem();
 		return {
 			type: "action",
 			id: "color-scheme",

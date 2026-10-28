@@ -58,6 +58,7 @@ export { iconLucideLanguages as iconLanguages } from "@marianmeres/icons-fns/luc
 export { iconLucideList as iconList } from "@marianmeres/icons-fns/lucide/iconLucideList.js";
 export { iconLucideLogOut as iconLogOut } from "@marianmeres/icons-fns/lucide/iconLucideLogOut.js";
 export { iconLucideMenu as iconMenu } from "@marianmeres/icons-fns/lucide/iconLucideMenu.js";
+export { iconLucideMonitor as iconMonitor } from "@marianmeres/icons-fns/lucide/iconLucideMonitor.js";
 export { iconLucideMoon as iconMoon } from "@marianmeres/icons-fns/lucide/iconLucideMoon.js";
 export { iconLucideSearch as iconSearch } from "@marianmeres/icons-fns/lucide/iconLucideSearch.js";
 export { iconLucideSlidersHorizontal as iconSlidersHorizontal } from "@marianmeres/icons-fns/lucide/iconLucideSlidersHorizontal.js";
