@@ -2,6 +2,9 @@ import { render } from "vitest-browser-svelte";
 import { expect, test } from "vitest";
 import Notifications from "./Notifications.svelte";
 import { NotificationsStack } from "./notifications-stack.svelte.js";
+// the boxes opt back into pointer events (`.stuic-notification`) from inside a
+// pointer-events:none region, which hover needs
+import "./index.css";
 
 // Notifications renders a reactive NotificationsStack inside a
 // <div popover="manual" class="stuic-notifs-popover" aria-live="assertive">. An
@@ -143,4 +146,105 @@ test("an empty stack renders no role=alert", async () => {
 	const screen = await render(Notifications, { notifications });
 
 	await expect.element(screen.getByRole("alert")).not.toBeInTheDocument();
+});
+
+// Pause on hover/focus: the ttl clock lives in the stack (`paused` getter); the
+// component only decides when to hold it. A long ttl keeps the item alive for the
+// whole test - only the paused flag is asserted, the timing is covered in the
+// node-side notifications.test.ts.
+function makeTtlStack() {
+	return new NotificationsStack([], { defaultTtl: 60_000, extraTtlPerChar: 0 });
+}
+
+test("hovering a notification pauses the stack, leaving it resumes", async () => {
+	const notifications = makeTtlStack();
+	notifications.info("Hover me");
+
+	const screen = await render(Notifications, { notifications });
+	const alert = screen.getByRole("alert");
+	await expect.element(alert).toBeInTheDocument();
+	expect(notifications.paused).toBe(false);
+
+	await alert.hover();
+	await expect.poll(() => notifications.paused).toBe(true);
+
+	await alert.unhover();
+	await expect.poll(() => notifications.paused).toBe(false);
+});
+
+test("focus inside a notification pauses the stack, blur resumes", async () => {
+	const notifications = makeTtlStack();
+	notifications.info("Focus me");
+
+	const screen = await render(Notifications, { notifications });
+	const closeBtn = screen.getByRole("button", { name: "Close" });
+	await expect.element(closeBtn).toBeInTheDocument();
+
+	(closeBtn.element() as HTMLElement).focus();
+	await expect.poll(() => notifications.paused).toBe(true);
+
+	(closeBtn.element() as HTMLElement).blur();
+	await expect.poll(() => notifications.paused).toBe(false);
+});
+
+test("removing the hovered notification releases the pause (no pointerleave fires)", async () => {
+	const notifications = makeTtlStack();
+	notifications.info("Stay");
+	notifications.info("Remove me");
+
+	const screen = await render(Notifications, { notifications });
+	// the LAST one: removing it shifts nothing else under the pointer
+	const alert = screen.getByRole("alert").last();
+	await expect.element(alert).toHaveTextContent("Remove me");
+
+	await alert.hover();
+	await expect.poll(() => notifications.paused).toBe(true);
+
+	notifications.removeById(notifications.stack.at(-1)!.id);
+	await expect.element(screen.getByText("Remove me")).not.toBeInTheDocument();
+	await expect.poll(() => notifications.paused).toBe(false);
+});
+
+test("noPauseOnHover: hovering does not pause", async () => {
+	const notifications = makeTtlStack();
+	notifications.info("Hover me");
+
+	const screen = await render(Notifications, { notifications, noPauseOnHover: true });
+	const alert = screen.getByRole("alert");
+	await expect.element(alert).toBeInTheDocument();
+
+	await alert.hover();
+	// give the effect a chance to (wrongly) run
+	await new Promise((r) => setTimeout(r, 50));
+	expect(notifications.paused).toBe(false);
+});
+
+test("a pause made by app code is not released by the component", async () => {
+	const notifications = makeTtlStack();
+	notifications.info("Hover me");
+	notifications.pause();
+
+	const screen = await render(Notifications, { notifications });
+	const alert = screen.getByRole("alert");
+	await expect.element(alert).toBeInTheDocument();
+
+	await alert.hover();
+	await alert.unhover();
+	await new Promise((r) => setTimeout(r, 50));
+	expect(notifications.paused).toBe(true);
+});
+
+test("unmounting while hovered releases the pause", async () => {
+	const notifications = makeTtlStack();
+	notifications.info("Hover me");
+
+	const screen = await render(Notifications, { notifications });
+	const alert = screen.getByRole("alert");
+	await expect.element(alert).toBeInTheDocument();
+
+	await alert.hover();
+	await expect.poll(() => notifications.paused).toBe(true);
+
+	screen.unmount();
+	expect(notifications.paused).toBe(false);
 });

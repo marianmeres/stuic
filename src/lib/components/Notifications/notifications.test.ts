@@ -79,3 +79,65 @@ test("max capacity", async () => {
 
 	n.destroy();
 });
+
+test("pause holds every clock, resume continues where it stopped", async () => {
+	const n = new NotificationsStack(["foo"], {
+		defaultTtl: 100,
+		disposeInterval: 10,
+		extraTtlPerChar: 0,
+	});
+
+	await sleep(40);
+	n.pause();
+	assert(n.paused);
+	const progress = n.head!._ttlProgress;
+	assert(progress > 0 && progress < 1);
+
+	// well past the ttl: still there, progress frozen
+	await sleep(200);
+	assert.equal(n.head?.content, "foo");
+	assert.equal(n.head?._ttlProgress, progress);
+
+	// added while paused: its clock has not started yet
+	n.info("bar");
+	await sleep(50);
+	n.resume();
+	assert(!n.paused);
+
+	// "foo" has ~60ms left, "bar" the full 100ms
+	await sleep(30);
+	assert.equal(n.stack.length, 2);
+	await sleep(50);
+	assert.deepEqual(
+		n.stack.map((x) => x.content),
+		["bar"]
+	);
+	await sleep(60);
+	assert.equal(n.stack.length, 0);
+
+	n.destroy();
+});
+
+test("pause/resume are idempotent", async () => {
+	const n = new NotificationsStack(["foo"], {
+		defaultTtl: 100,
+		disposeInterval: 10,
+		extraTtlPerChar: 0,
+	});
+
+	n.resume(); // not paused: no-op
+	n.pause();
+	await sleep(30);
+	n.pause(); // must not restart the pause (would forget the first 30ms)
+	await sleep(30);
+	n.resume();
+	n.resume();
+
+	// paused the whole 60ms, so ~100ms left
+	await sleep(60);
+	assert.equal(n.stack.length, 1);
+	await sleep(80);
+	assert.equal(n.stack.length, 0);
+
+	n.destroy();
+});

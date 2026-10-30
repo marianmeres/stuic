@@ -41,6 +41,23 @@ A toast notification system with automatic stacking, progress indicators, and ty
 </script>
 ```
 
+### Pause on Hover
+
+Auto-dismiss timers (and the progress bars) of the whole stack pause while the pointer is
+over a notification or focus is inside one, and continue where they stopped once it leaves.
+Notifications added in the meantime start their timer on resume. Opt out with
+`noPauseOnHover`.
+
+The clock lives in the stack, so app code can hold it too:
+
+```ts
+notifications.pause(); // e.g. while a modal covers the toasts
+notifications.resume();
+notifications.paused; // boolean (reactive)
+```
+
+The component never releases a pause it did not make itself.
+
 ### Deduplication
 
 ```svelte
@@ -105,6 +122,7 @@ A toast notification system with automatic stacking, progress indicators, and ty
 | `noIcons`           | `boolean`                       | `false`    | Hide notification icons                       |
 | `noProgress`        | `boolean`                       | `false`    | Hide TTL progress bar                         |
 | `noXButton`         | `boolean`                       | `false`    | Hide close button                             |
+| `noPauseOnHover`    | `boolean`                       | `false`    | Don't pause timers on hover/focus             |
 | `forceAsHtml`       | `boolean`                       | `false`    | Render content as HTML                        |
 | `ariaCloseLabel`    | `string`                        | `"Close"`  | Accessibility label for close button          |
 | `duration`          | `number`                        | `200`      | Fade transition duration (ms)                 |
@@ -223,6 +241,9 @@ The notification box uses data attributes for type-based styling:
 | `error(content, opts?)`   | Add error notification    |
 | `removeById(id)`          | Remove notification by ID |
 | `reset()`                 | Clear all notifications   |
+| `pause()`                 | Hold every TTL clock      |
+| `resume()`                | Release the held clocks   |
+| `paused`                  | Getter: clocks are held   |
 | `destroy()`               | Cleanup and stop ticker   |
 
 ### Notification Options

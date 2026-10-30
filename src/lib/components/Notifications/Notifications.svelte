@@ -17,6 +17,7 @@
 		noIcons?: boolean;
 		noProgress?: boolean;
 		noXButton?: boolean;
+		noPauseOnHover?: boolean;
 		forceAsHtml?: boolean;
 		ariaCloseLabel?: string;
 		duration?: number;
@@ -35,6 +36,7 @@
 </script>
 
 <script lang="ts">
+	import { untrack } from "svelte";
 	import { fade } from "svelte/transition";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import Button from "../Button/Button.svelte";
@@ -77,6 +79,7 @@
 		noIcons,
 		noProgress,
 		noXButton,
+		noPauseOnHover,
 		forceAsHtml,
 		ariaCloseLabel = "Close",
 		duration = 200,
@@ -110,6 +113,40 @@
 		if (typeof n.iconFn === "function") return n.iconFn();
 		return (_iconFns?.[n.type] as any)?.();
 	};
+
+	// Hold every ttl clock while the pointer is over a notification or focus is in one.
+	// Tracked by id, not by element: a notification removed while engaged (its own X,
+	// capacity, removeById) may fire no leave/focusout (WebKit fires none), but it drops
+	// out of the stack, which is what releases the hold.
+	let hoveredId: string | number | null = $state(null);
+	let focusedId: string | number | null = $state(null);
+	// true only while THIS component holds the pause, so it never releases one made by
+	// someone else (app code calling `notifications.pause()`)
+	let holding = false;
+
+	// the stack usually outlives this component, never leave it paused
+	$effect(() => {
+		const stack = notifications;
+		return () => {
+			if (holding) stack.resume();
+			holding = false;
+		};
+	});
+
+	$effect(() => {
+		const engaged =
+			!noPauseOnHover &&
+			notifications.stack.some((n) => n.id === hoveredId || n.id === focusedId);
+		untrack(() => {
+			if (engaged && !holding && !notifications.paused) {
+				notifications.pause();
+				holding = true;
+			} else if (!engaged && holding) {
+				notifications.resume();
+				holding = false;
+			}
+		});
+	});
 
 	// Manage popover visibility based on notifications
 	$effect(() => {
@@ -162,6 +199,15 @@
 					data-type={n.type}
 					transition:fade|global={{ duration }}
 					role="alert"
+					onpointerenter={() => (hoveredId = n.id)}
+					onpointerleave={() => {
+						if (hoveredId === n.id) hoveredId = null;
+					}}
+					onfocusin={() => (focusedId = n.id)}
+					onfocusout={(e) => {
+						if (focusedId === n.id && !e.currentTarget.contains(e.relatedTarget as Node))
+							focusedId = null;
+					}}
 				>
 					{#if n.ttl && !noProgress}
 						<Progress

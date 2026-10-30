@@ -74,6 +74,10 @@ export interface Notification extends NotificationInput {
 	/** State progress or living time in percents. A hint for UI to maybe display some progress bar...
 	 * Will be update by the dispose checker... (so the update frequency is equal to `disposeInterval`) */
 	_ttlProgress: number;
+
+	/** Epoch ms the ttl clock counts from. Starts as `created`, moved forward by the time
+	 * spent paused (see `NotificationsStack.pause`). */
+	_ttlStart: number;
 }
 
 /**
@@ -166,6 +170,8 @@ export class NotificationsStack {
 	readonly options = $state<NotificationsStackOptions>()!;
 	#ticker: ReturnType<typeof createTicker>;
 	#unsubs: CallableFunction[] = [];
+	/** Epoch ms the clocks were paused at, 0 while running. */
+	#pausedAt = $state(0);
 
 	constructor(
 		initial: NotificationCreateParam[] = [],
@@ -186,16 +192,18 @@ export class NotificationsStack {
 
 	#onTick = (ts: number) => {
 		if (!ts) return;
+		const now = Date.now();
 		const updated = this.#stack.reduce((memo, n) => {
 			if (n.ttl) {
-				const start = n.created.valueOf();
-				const end = start + n.ttl;
-				const now = Date.now();
-				const expired = end < now;
+				// a paused clock reads the moment it was paused (and one started during
+				// the pause has not started at all)
+				const elapsed = Math.max(0, (this.#pausedAt || now) - n._ttlStart);
+				const expired = elapsed > n.ttl;
 				if (!expired) {
 					// we can't know exactly the offset here, but using full is good enough...
-					const offset = this.options.disposeInterval || 0;
-					n._ttlProgress = (now - start + offset) / (end - start);
+					// (not while paused: the bar would keep sliding one interval ahead)
+					const offset = this.#pausedAt ? 0 : this.options.disposeInterval || 0;
+					n._ttlProgress = (elapsed + offset) / n.ttl;
 					memo.push(n);
 				}
 			} else {
@@ -223,6 +231,7 @@ export class NotificationsStack {
 		o.count ??= 1;
 		o.ttl ??= this.options.defaultTtl + this.#maybeTtlExtra(o.content);
 		o._ttlProgress = 0;
+		o._ttlStart = o.created.valueOf();
 
 		return o as Notification;
 	};
@@ -250,6 +259,7 @@ export class NotificationsStack {
 			stack[idx].created = new Date(
 				Math.max(stack[idx].created.valueOf(), notif.created.valueOf())
 			);
+			stack[idx]._ttlStart = Math.max(stack[idx]._ttlStart, notif._ttlStart);
 		} else {
 			stack.push(notif);
 			stack.sort((a, b) => {
@@ -283,6 +293,36 @@ export class NotificationsStack {
 		this.#stack = [];
 		return this;
 	};
+
+	/** Will hold every notification's ttl clock (and its progress) until `resume()`.
+	 * Notifications added in the meantime start their clock on resume. The `Notifications`
+	 * component calls this while a notification is hovered or focused. */
+	pause = () => {
+		if (!this.#pausedAt) {
+			this.#pausedAt = Date.now();
+			this.#onTick(this.#pausedAt); // freeze the progress now, not on the next tick
+		}
+		return this;
+	};
+
+	/** Will release the clocks held by `pause()`, each continuing where it stopped. */
+	resume = () => {
+		if (this.#pausedAt) {
+			const now = Date.now();
+			// move every clock forward by the time it spent paused
+			this.#stack.forEach((n) => {
+				n._ttlStart += now - Math.max(this.#pausedAt, n._ttlStart);
+			});
+			this.#pausedAt = 0;
+			this.#onTick(now);
+		}
+		return this;
+	};
+
+	/** Whether the clocks are currently held by `pause()`. */
+	get paused() {
+		return !!this.#pausedAt;
+	}
 
 	/**
 	 * Will get the first in stack (for testing mostly)

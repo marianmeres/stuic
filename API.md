@@ -661,19 +661,18 @@ Modal-wrapped login form with trigger support. Inherits all `LoginForm` props pl
 
 #### `Notifications`
 
-Toast notification system.
+Toast notification system. Auto-dismiss timers pause while a notification is hovered or
+focused (`noPauseOnHover` to opt out).
 
 ```svelte
 <script>
-	import { Notifications, createNotificationsStore } from "@marianmeres/stuic";
-	const notifications = createNotificationsStore();
+	import { Notifications, NotificationsStack } from "@marianmeres/stuic";
+	const notifications = new NotificationsStack();
 </script>
 
-<Notifications store={notifications} />
+<Notifications {notifications} />
 
-<Button onclick={() => notifications.add({ text: "Saved!", type: "success" })}>
-	Notify
-</Button>
+<Button onclick={() => notifications.success("Saved!")}>Notify</Button>
 ```
 
 #### `AlertConfirmPrompt`
