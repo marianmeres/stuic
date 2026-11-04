@@ -18,6 +18,8 @@ A radio button group styled as a segmented button toggle. Supports keyboard navi
 | `style`             | `string`                                       | -       | Inline styles for container                       |
 | `onButtonClick`     | `(index, coll) => Promise<boolean> \| boolean` | -       | Async validation hook (return `false` to prevent) |
 | `buttonProps`       | `(index, coll) => Record<string, any>`         | -       | Dynamic props per button                          |
+| `aria-label`        | `string`                                       | -       | Accessible name of the radiogroup (see below)     |
+| `el`                | `HTMLDivElement`                               | -       | The radiogroup element (bindable)                 |
 | `tooltip`           | `TooltipConfig`                                | -       | Tooltip configuration                             |
 
 ## Option Format
@@ -103,6 +105,36 @@ disable the whole group instead, use the top-level `disabled` prop.
 	}}
 />
 ```
+
+### Icon-only options
+
+Labels are rendered as HTML, so an icon's SVG string is a valid label. Two things then
+need a name from somewhere else: each radio (via `buttonProps`, which reaches `Button`'s
+`aria-label` and `tooltip`) and the group itself (via `aria-label` — by default the group
+is labelled by its active option's content, which for an icon is empty).
+
+```svelte
+<script lang="ts">
+	import { ButtonGroupRadio, iconList, iconListOrdered } from "@marianmeres/stuic";
+
+	const styles = [
+		{ value: "bulleted", label: iconList({ size: 16 }), name: "Bulleted" },
+		{ value: "numbered", label: iconListOrdered({ size: 16 }), name: "Numbered" },
+	];
+	let listStyle = $state("bulleted");
+</script>
+
+<ButtonGroupRadio
+	options={styles}
+	bind:value={listStyle}
+	aria-label="List style"
+	buttonProps={(i) => ({ "aria-label": styles[i].name, tooltip: styles[i].name })}
+	class="w-auto"
+/>
+```
+
+[`ColorSchemeSwitcher`](../ColorScheme/) is this pattern, shipped: a System / Light / Dark
+group wired to the `ColorScheme` runtime.
 
 ### Custom Styling
 

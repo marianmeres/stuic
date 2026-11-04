@@ -25,6 +25,14 @@
 			coll: ItemColl
 		) => Promise<boolean | undefined | void> | boolean | undefined | void;
 		buttonProps?: (index: number, coll: ItemColl) => undefined | Record<string, any>;
+		/**
+		 * Accessible name of the radiogroup. Without it the group is labelled by
+		 * its active option's content — fine for text options, an empty name for
+		 * icon-only ones. Set it whenever the options have no text.
+		 */
+		"aria-label"?: string;
+		/** The radiogroup element (bindable). */
+		el?: HTMLDivElement;
 		//
 		tooltip?: TooltipConfig;
 	}
@@ -56,6 +64,8 @@
 		style,
 		onButtonClick,
 		buttonProps,
+		"aria-label": ariaLabel,
+		el = $bindable(),
 		tooltip: tooltipConfig = () => ({ enabled: false }),
 	}: Props = $props();
 
@@ -121,11 +131,13 @@
 
 {#if coll.size}
 	<div
+		bind:this={el}
 		class={twMerge(CLS, classProp)}
 		data-size={size}
 		{style}
 		role="radiogroup"
-		aria-labelledby={$coll?.active?.id || ""}
+		aria-label={ariaLabel}
+		aria-labelledby={ariaLabel ? undefined : $coll?.active?.id || ""}
 		use:tooltip={tooltipConfig}
 	>
 		{#each coll.items as item, i}

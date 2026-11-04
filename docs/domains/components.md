@@ -26,25 +26,25 @@
 
 ### Interactive
 
-| Component            | Purpose                                                                                         |
-| -------------------- | ----------------------------------------------------------------------------------------------- |
-| Button               | Actions with intent/variant/size                                                                |
-| CopyButton           | Click-to-copy Button with copied/error feedback; `copyToClipboard()` util for code              |
-| ButtonGroupRadio     | Toggle group (single selection)                                                                 |
-| Switch               | Boolean toggle                                                                                  |
-| Slider               | Fancy range input (fill + optional thumb)                                                       |
-| RangeSlider          | Dual-thumb Slider: `start` ≤ `end` on one track, no crossing, `minRange`, two hidden inputs     |
-| Rating               | Star rating: radiogroup input (half steps, hover preview, form + validate) or read-only display |
-| ColorPicker          | Swatch palette (radiogroup) + native picker & hex field; any CSS color, form + validate         |
-| TwCheck              | Styled checkbox/radio                                                                           |
-| DropdownMenu         | Popover menu                                                                                    |
-| ContextMenu          | Right-click / long-press menu at the cursor (the DropdownMenu engine + trigger semantics)       |
-| CommandMenu          | Command palette (keyboard-driven)                                                               |
-| Pagination           | Standalone pager: compact prev/next or windowed page numbers; DataTable-compatible              |
-| Stepper              | Numbered step indicator for wizard/checkout flows; optional click navigation                    |
-| TypeaheadInput       | Autocomplete input                                                                              |
-| ColorScheme          | Dark/light mode management with persistence                                                     |
-| HoverExpandableWidth | Width-expanding container on hover                                                              |
+| Component            | Purpose                                                                                             |
+| -------------------- | --------------------------------------------------------------------------------------------------- |
+| Button               | Actions with intent/variant/size                                                                    |
+| CopyButton           | Click-to-copy Button with copied/error feedback; `copyToClipboard()` util for code                  |
+| ButtonGroupRadio     | Toggle group (single selection)                                                                     |
+| Switch               | Boolean toggle                                                                                      |
+| Slider               | Fancy range input (fill + optional thumb)                                                           |
+| RangeSlider          | Dual-thumb Slider: `start` ≤ `end` on one track, no crossing, `minRange`, two hidden inputs         |
+| Rating               | Star rating: radiogroup input (half steps, hover preview, form + validate) or read-only display     |
+| ColorPicker          | Swatch palette (radiogroup) + native picker & hex field; any CSS color, form + validate             |
+| TwCheck              | Styled checkbox/radio                                                                               |
+| DropdownMenu         | Popover menu                                                                                        |
+| ContextMenu          | Right-click / long-press menu at the cursor (the DropdownMenu engine + trigger semantics)           |
+| CommandMenu          | Command palette (keyboard-driven)                                                                   |
+| Pagination           | Standalone pager: compact prev/next or windowed page numbers; DataTable-compatible                  |
+| Stepper              | Numbered step indicator for wizard/checkout flows; optional click navigation                        |
+| TypeaheadInput       | Autocomplete input                                                                                  |
+| ColorScheme          | Dark/light mode runtime + hydration bootstraps; `ColorSchemeSwitcher` System / Light / Dark control |
+| HoverExpandableWidth | Width-expanding container on hover                                                                  |
 
 ### Feedback
 

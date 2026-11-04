@@ -2,13 +2,16 @@
 	let { children } = $props();
 	import "../../app.css";
 	import { page } from "$app/state";
-	import { ColorScheme, ColorSchemeLocal, Breakpoint, ucfirst } from "#lib/index.js";
+	import {
+		ColorSchemeSwitcher,
+		ColorSchemeSystemAware,
+		Breakpoint,
+		ucfirst,
+	} from "#lib/index.js";
 	import { themes, themeNames } from "./theme-preview/themes-list.js";
 	import { browser } from "$app/env";
 
 	const THEME_STORAGE_KEY = "stuic-selected-theme";
-
-	const theme = $derived(ColorScheme.current);
 
 	let selectedTheme = $state(
 		browser ? localStorage.getItem(THEME_STORAGE_KEY) || "stone" : "stone"
@@ -20,8 +23,6 @@
 			localStorage.setItem(THEME_STORAGE_KEY, selectedTheme);
 		}
 	});
-
-	const toggleTheme = () => ColorScheme.toggle();
 
 	let route = $derived(page.route.id?.slice(1).replace(/\([^)]+\)\//, ""));
 
@@ -39,7 +40,8 @@
 	{@html `<style id="dynamic-theme">${themeCss}</style>`}
 </svelte:head>
 
-<ColorSchemeLocal />
+<!-- System-aware so the switcher's "System" also holds after a reload -->
+<ColorSchemeSystemAware />
 
 <div class="flex flex-col min-h-screen">
 	<header class={["p-4 flex items-center bg-stone-200 dark:bg-stone-950"]}>
@@ -56,7 +58,7 @@
 				{/each}
 			</span>
 		</div>
-		<div>
+		<div class="flex items-center">
 			<span class="mr-4 opacity-50">
 				{breakpoint.current}
 			</span>
@@ -70,9 +72,7 @@
 				{/each}
 			</select>
 
-			<button onclick={toggleTheme}>
-				{theme === ColorScheme.LIGHT ? ColorScheme.DARK : ColorScheme.LIGHT}
-			</button>
+			<ColorSchemeSwitcher size="sm" />
 		</div>
 	</header>
 

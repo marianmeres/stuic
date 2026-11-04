@@ -1,0 +1,25 @@
+/* ============================================================================
+   COLOR SCHEME SWITCHER
+   Composed on ButtonGroupRadio: every --stuic-button-group-* token applies here
+   too (radius, paddings, colors, size variants). The two tokens below are the
+   switcher's own and are never declared — fallback pattern at the usage site.
+   Override locally:  <ColorSchemeSwitcher style="--stuic-button-group-radius: 0.5rem;" />
+   ============================================================================ */
+
+@layer components {
+	/* A toolbar control, not a form row: compact instead of the group's 100%. */
+	.stuic-button-group.stuic-color-scheme-switcher {
+		width: auto;
+	}
+
+	/* Icon + label spacing (only visible with `showLabels`). */
+	.stuic-color-scheme-switcher .stuic-button-group-button {
+		gap: var(--stuic-color-scheme-switcher-gap, 0.375rem);
+	}
+
+	.stuic-color-scheme-switcher .stuic-button-group-button svg {
+		width: var(--stuic-color-scheme-switcher-icon-size, 1rem);
+		height: var(--stuic-color-scheme-switcher-icon-size, 1rem);
+		flex: none;
+	}
+}

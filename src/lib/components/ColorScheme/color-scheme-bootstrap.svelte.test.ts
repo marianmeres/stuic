@@ -15,14 +15,18 @@ import { describe, test, expect, afterEach } from "vitest";
 // Browser test (*.svelte.test.ts) on purpose: it needs a real realm with
 // document/localStorage and synchronous inline <script> execution on insert.
 
-// Raw source of the two hydration components. Uses import.meta.glob's ?raw query
-// (the pattern already used in themes-list.ts) so it typechecks under
-// svelte-check without a per-file `*?raw` module declaration.
-const RAW = import.meta.glob("./ColorScheme*.svelte", {
-	query: "?raw",
-	import: "default",
-	eager: true,
-}) as Record<string, string>;
+// Raw source of the two hydration components (listed explicitly: the folder also
+// holds ColorSchemeSwitcher, a UI component with no bootstrap). Uses
+// import.meta.glob's ?raw query (the pattern already used in themes-list.ts) so
+// it typechecks under svelte-check without a per-file `*?raw` module declaration.
+const RAW = import.meta.glob(
+	["./ColorSchemeLocal.svelte", "./ColorSchemeSystemAware.svelte"],
+	{
+		query: "?raw",
+		import: "default",
+		eager: true,
+	}
+) as Record<string, string>;
 
 const STORAGE_KEY = "stuic-color-scheme";
 

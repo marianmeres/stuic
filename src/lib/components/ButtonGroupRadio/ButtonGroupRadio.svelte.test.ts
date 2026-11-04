@@ -145,3 +145,25 @@ test("keyboard navigation skips a disabled option (ArrowRight from Apple lands o
 		.element(screen.getByRole("radio", { name: "Banana" }))
 		.toHaveAttribute("aria-checked", "false");
 });
+
+// Group naming. By default the radiogroup is labelled by its active radio
+// (aria-labelledby = that radio's id). For icon-only options that name is an SVG
+// with no text, so `aria-label` names the group directly and takes over.
+test("without aria-label the radiogroup is labelled by the active radio (aria-labelledby = its id)", async () => {
+	const screen = await render(ButtonGroupRadio, { options: OPTIONS, value: "Banana" });
+	const group = screen.getByRole("radiogroup");
+	const banana = screen.getByRole("radio", { name: "Banana" });
+	await expect.element(group).toHaveAttribute("aria-labelledby", banana.element().id);
+	await expect.element(group).not.toHaveAttribute("aria-label");
+});
+
+test("aria-label names the radiogroup itself and replaces the active-radio aria-labelledby", async () => {
+	const screen = await render(ButtonGroupRadio, {
+		options: OPTIONS,
+		value: "Apple",
+		"aria-label": "Fruit",
+	});
+	const group = screen.getByRole("radiogroup", { name: "Fruit" });
+	await expect.element(group).toBeInTheDocument();
+	await expect.element(group).not.toHaveAttribute("aria-labelledby");
+});
