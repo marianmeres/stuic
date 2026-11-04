@@ -63,11 +63,12 @@ Variants:
 	style="
 		--stuic-button-group-radius: 0.5rem;
 		--stuic-button-group-button-min-height: 1.75rem;
-		--stuic-button-group-button-padding-x: 0.5rem;
 		--stuic-button-group-button-padding-y: 0.25rem;
 	"
 />
 ```
+
+Icon-only segments are squares — circles under the group's default pill radius, rounded squares under a smaller one. They take the group's _vertical_ button padding on all sides and hold their width to `--stuic-button-group-button-min-height`; `--stuic-button-group-button-padding-x` only applies with `showLabels`.
 
 ## Props
 

@@ -26,7 +26,6 @@
 			style="
 				--stuic-button-group-radius: 0.5rem;
 				--stuic-button-group-button-min-height: 1.75rem;
-				--stuic-button-group-button-padding-x: 0.5rem;
 				--stuic-button-group-button-padding-y: 0.25rem;
 			"
 		/>

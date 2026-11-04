@@ -17,6 +17,15 @@
 		gap: var(--stuic-color-scheme-switcher-gap, 0.375rem);
 	}
 
+	/* Icon-only segments are squares: the group's horizontal padding is for text,
+	   so it is dropped for the vertical one on all sides, and the width is held
+	   to the height. Under the default pill radius that is a circle; under a
+	   smaller radius, a rounded square. */
+	.stuic-color-scheme-switcher .stuic-button-group-button[data-icon-only] {
+		padding: var(--stuic-button-group-button-padding-y);
+		min-width: var(--stuic-button-group-button-min-height);
+	}
+
 	.stuic-color-scheme-switcher .stuic-button-group-button svg {
 		width: var(--stuic-color-scheme-switcher-icon-size, 1rem);
 		height: var(--stuic-color-scheme-switcher-icon-size, 1rem);

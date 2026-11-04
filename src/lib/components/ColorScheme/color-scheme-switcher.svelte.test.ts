@@ -2,6 +2,10 @@ import { render } from "vitest-browser-svelte";
 import { beforeEach, expect, test, vi } from "vitest";
 import ColorSchemeSwitcher from "./ColorSchemeSwitcher.svelte";
 import { ColorScheme } from "./color-scheme.svelte.js";
+// The square-segment test measures real layout, so it needs the real stylesheets
+// (the switcher's rules key off the group's tokens and padding).
+import "../ButtonGroupRadio/index.css";
+import "./index.css";
 
 // ColorSchemeSwitcher is a ButtonGroupRadio wired to the ColorScheme runtime: one
 // role="radio" per offered preference, named System / Light mode / Dark mode, the
@@ -186,6 +190,27 @@ test("a light/dark pair (no System) mirrors what is on screen, and clicking stor
 	await expect.element(dark).toHaveAttribute("aria-checked", "true");
 	expect(localStorage.getItem(KEY)).toBe("dark");
 	expect(isDark()).toBe(true);
+});
+
+// Icon-only segments must be squares (a circle under the pill radius): the group's
+// horizontal padding is sized for text and would make them wider than tall.
+test("icon-only segments are square at every size; labelled ones are not", async () => {
+	for (const size of ["sm", "md", "lg"] as const) {
+		const screen = await render(ColorSchemeSwitcher, { size });
+		const el = screen.getByRole("radio", { name: "System" }).element() as HTMLElement;
+		await expect
+			.element(screen.getByRole("radio", { name: "System" }))
+			.toHaveAttribute("data-icon-only");
+		expect(el.offsetWidth, `size=${size}`).toBeGreaterThan(0);
+		expect(el.offsetWidth, `size=${size}`).toBe(el.offsetHeight);
+		await screen.unmount();
+	}
+
+	const labelled = await render(ColorSchemeSwitcher, { showLabels: true });
+	const dark = labelled.getByRole("radio", { name: "Dark mode" });
+	await expect.element(dark).not.toHaveAttribute("data-icon-only");
+	const el = dark.element() as HTMLElement;
+	expect(el.offsetWidth).toBeGreaterThan(el.offsetHeight);
 });
 
 test("disabled disables every segment", async () => {

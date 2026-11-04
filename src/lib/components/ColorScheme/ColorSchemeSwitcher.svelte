@@ -110,10 +110,16 @@
 
 	// Icon-only segments carry their name as `aria-label` (an SVG has no text)
 	// and, by default, as a tooltip. With visible labels the text names them.
+	// `data-icon-only` is what the CSS keys on to make them square (a circle
+	// under the group's default pill radius).
 	function buttonProps(index: number) {
 		if (showLabels) return undefined;
 		const label = L[options[index]];
-		return { "aria-label": label, tooltip: tooltips ? label : undefined };
+		return {
+			"aria-label": label,
+			"data-icon-only": "",
+			tooltip: tooltips ? label : undefined,
+		};
 	}
 </script>
 
