@@ -3,7 +3,7 @@
 	import { Searchable } from "@marianmeres/searchable";
 
 	// prettier-ignore
-	const links = [
+	const topLevel = [
 		'accordion',
 		'alert-confirm-prompt',
 		'animated-ellipsis',
@@ -104,7 +104,19 @@
 		'with-side-panel',
 		// 'viewport',
 		'x'
-	].toSorted();
+	];
+
+	// "input" sub-pages are hoisted to the top level, read from the filesystem so new
+	// ones show up on their own (lazy glob: only the paths are used, nothing is imported)
+	const inputPages = Object.keys(import.meta.glob("./input/*/+page.svelte")).map((path) =>
+		path.slice("./".length, -"/+page.svelte".length)
+	);
+
+	// "/" → " " sorts "input/*" right after "input", before "input-history"
+	const sortKey = (link: string) => link.replaceAll("/", " ");
+	const links = [...topLevel, ...inputPages].toSorted((a, b) =>
+		sortKey(a) < sortKey(b) ? -1 : 1
+	);
 
 	// "-" is a word char by default; dropping it splits "data-table" into two words
 	// (on both index and query side), so "table" and "data ta" both find it
@@ -123,9 +135,11 @@
 			found = index.search(query, "fuzzy", { maxDistance: 1 });
 		}
 		const hits = new Set(found);
-		// alphabetical, except slugs starting with the query go first (Enter opens #1)
+		// alphabetical, except slugs (or their last segment, e.g. "input/date")
+		// starting with the query go first (Enter opens #1)
 		const head = query.toLowerCase().replace(/[\s_]+/g, "-");
-		const rank = (l: string) => (l.startsWith(head) ? 0 : 1);
+		const rank = (l: string) =>
+			l.startsWith(head) || l.split("/").at(-1)!.startsWith(head) ? 0 : 1;
 		return links.filter((l) => hits.has(l)).toSorted((a, b) => rank(a) - rank(b));
 	});
 
@@ -182,6 +196,8 @@
 
 	<ul class="space-y-2">
 		{#each filtered as link, i (link)}
+			{@const parent = link.slice(0, link.lastIndexOf("/") + 1)}
+			{@const name = link.slice(parent.length)}
 			<li>
 				<a
 					id={linkId(link)}
@@ -191,7 +207,7 @@
 						q.trim() && i === active
 							? "text-white bg-neutral-600"
 							: "bg-neutral-200 dark:bg-neutral-900",
-					]}>{link}</a
+					]}><span class="opacity-60">{parent}</span>{name}</a
 				>
 			</li>
 		{:else}
