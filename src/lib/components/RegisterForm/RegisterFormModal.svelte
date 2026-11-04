@@ -144,7 +144,7 @@
 	import Modal from "../Modal/Modal.svelte";
 	import RegisterForm from "./RegisterForm.svelte";
 	import Button from "../Button/Button.svelte";
-	import { t_default } from "./_internal/register-form-i18n-defaults.js";
+	import { t_default } from "./i18n.js";
 	import { createEmptyRegisterFormData } from "./_internal/register-form-utils.js";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import H from "../H/H.svelte";

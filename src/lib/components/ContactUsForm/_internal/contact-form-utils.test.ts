@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createEmptyContactFormData, validateContactForm } from "./contact-form-utils.js";
-import { t_default as t } from "./contact-form-i18n-defaults.js";
+import { t_default as t } from "../i18n.js";
 import type { ContactFormData } from "./contact-form-types.js";
 
 // Pure-logic suite (node project) — no DOM. validateContactForm is the single

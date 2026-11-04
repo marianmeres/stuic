@@ -601,7 +601,9 @@ Form field grouping with legend.
 
 #### `LoginForm`
 
-Standalone login form with email/password fields, social login support, forgot password link, remember me checkbox, and client+server validation. Supports i18n via 16 translation keys.
+Standalone login form with email/password fields, social login support, forgot password link, remember me checkbox, and client+server validation. Supports i18n via 14 `login_form.*` keys.
+
+i18n exports: `createLoginFormT`, `LOGIN_FORM_MESSAGES_EN`, `LOGIN_FORM_MESSAGES_SK`, `LoginFormMessageKey`, `LoginFormMessages`. `createLoginFormT(messages)` falls back to English per key, so a partial catalog (or the app's whole dictionary) is safe. The other auth/contact forms follow the same pattern: `createContactFormT` / `CONTACT_FORM_MESSAGES_*`, `createRegisterFormT` / `REGISTER_FORM_MESSAGES_*`, `createEmailVerifyFormT` / `EMAIL_VERIFY_FORM_MESSAGES_*`, and `createLoginOrRegisterFormT` / `LOGIN_OR_REGISTER_FORM_MESSAGES_*` (spans all four namespaces — the composite forwards its `t` to the inner forms).
 
 | Prop               | Type                         | Default  | Description                                |
 | ------------------ | ---------------------------- | -------- | ------------------------------------------ |
@@ -617,7 +619,7 @@ Standalone login form with email/password fields, social login support, forgot p
 | `socialLogins`     | `Snippet`                    | —        | Social/OAuth buttons below form            |
 | `footer`           | `Snippet`                    | —        | Content below form (e.g., sign-up links)   |
 | `notifications`    | `NotificationsStack`         | —        | Route errors to notification system        |
-| `t`                | `TranslateFn`                | built-in | Translation function                       |
+| `t`                | `TranslateFn`                | English  | i18n (see `createLoginFormT`)              |
 
 ```svelte
 <LoginForm

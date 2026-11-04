@@ -20,6 +20,11 @@ It also covers **identity-first signup**, where the account identity is establis
 | `createEmptyRegisterFormData` | function  | Factory for an empty `RegisterFormData`          |
 | `validateRegisterForm`        | function  | `(data, t?, extraFields?, opts?) => Error[]`     |
 | `ValidateRegisterFormOptions` | type      | Options for `validateRegisterForm`               |
+| `createRegisterFormT`         | function  | Builds the `t` prop from a (partial) catalog     |
+| `REGISTER_FORM_MESSAGES_EN`   | constant  | Built-in English catalog (also the fallback)     |
+| `REGISTER_FORM_MESSAGES_SK`   | constant  | Bundled Slovak catalog (opt-in)                  |
+| `RegisterFormMessageKey`      | type      | Message key union                                |
+| `RegisterFormMessages`        | type      | One locale's catalog                             |
 
 ## `RegisterFieldConfig`
 
@@ -67,7 +72,7 @@ interface RegisterFieldConfig {
 | `socialDividerLabel`        | `string \| false`                       | i18n       | Override (or hide with `false`) the divider. Defaults to `social_divider` ("or continue with") at the bottom, `social_divider_alt` ("or") at the top. |
 | `footer`                    | `Snippet`                               | -          | Content below the form (e.g., "Already have an account? Log in").                                                                                     |
 | `notifications`             | `NotificationsStack`                    | -          | When set, general errors are also pushed via `notifications.error()`.                                                                                 |
-| `t`                         | `TranslateFn`                           | English    | i18n function.                                                                                                                                        |
+| `t`                         | `TranslateFn`                           | English    | i18n function — see [i18n](#i18n).                                                                                                                    |
 | `unstyled` / `class`        | -                                       | -          | Standard styling escape hatches.                                                                                                                      |
 | `el`                        | `HTMLFormElement`                       | -          | Bindable form element.                                                                                                                                |
 
@@ -320,9 +325,24 @@ Top-position extra fields are wrapped in `.stuic-register-form-fields-top` (supp
 - **Hiding a core field does not reset its value.** `showEmail={false}` still submits whatever `formData.email` last held — clear it (or set it to the established identity) when you switch mid-flow.
 - **`LoginOrRegisterForm`** renders its own shared social block, so it owns `socialLogins` / `socialPosition` / `socialDividerLabel` at the wrapper level; they are excluded from its `registerProps` type rather than silently ignored.
 
-## i18n keys
+## i18n
 
-Under the `register_form.*` namespace. See `_internal/register-form-i18n-defaults.ts` for the full list and English defaults.
+Built-in English; bundled Slovak (`REGISTER_FORM_MESSAGES_SK`) is opt-in. All keys are under the `register_form.*` namespace; `REGISTER_FORM_MESSAGES_EN` is the full list with the English defaults. The same `t` serves `RegisterForm`, `RegisterFormModal` and `validateRegisterForm`.
+
+`createRegisterFormT(messages)` builds the `t` prop from a catalog; a key the catalog lacks falls back to English, so the catalog may be partial. Same model as [LoginForm's i18n](../LoginForm/README.md#i18n), including passing the app's own dictionary as-is or bridging a function-based `t` via `createRegisterFormT({})`.
+
+```svelte
+<script lang="ts">
+	import {
+		RegisterForm,
+		createRegisterFormT,
+		REGISTER_FORM_MESSAGES_SK,
+	} from "@marianmeres/stuic";
+	const t = createRegisterFormT(REGISTER_FORM_MESSAGES_SK);
+</script>
+
+<RegisterForm {onSubmit} {t} />
+```
 
 ## See also
 

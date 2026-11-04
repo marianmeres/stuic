@@ -25,6 +25,11 @@ These are **report-only**: the form **never blocks** a submit because of them. I
 | `ContactFieldConfig`         | type      | Declarative extra-field descriptor                         |
 | `createEmptyContactFormData` | function  | Factory for an empty `ContactFormData`                     |
 | `ValidateContactFormOptions` | type      | Options accepted by the internal validator                 |
+| `createContactFormT`         | function  | Builds the `t` prop from a (partial) message catalog       |
+| `CONTACT_FORM_MESSAGES_EN`   | constant  | Built-in English catalog (also the fallback)               |
+| `CONTACT_FORM_MESSAGES_SK`   | constant  | Bundled Slovak catalog (opt-in)                            |
+| `ContactFormMessageKey`      | type      | Message key union                                          |
+| `ContactFormMessages`        | type      | One locale's catalog                                       |
 
 ## `ContactBotCheck`
 
@@ -87,7 +92,7 @@ interface ContactFieldConfig {
 | `submitButton`       | `Snippet<[{ isSubmitting, disabled }]>`                      | -        | Override the entire CTA section.                                                                                    |
 | `footer`             | `Snippet`                                                    | -        | Content below the form.                                                                                             |
 | `notifications`      | `NotificationsStack`                                         | -        | When set, general errors are also pushed via `notifications.error()`.                                               |
-| `t`                  | `TranslateFn`                                                | English  | i18n function.                                                                                                      |
+| `t`                  | `TranslateFn`                                                | English  | i18n function — see [i18n](#i18n).                                                                                  |
 | `unstyled` / `class` | -                                                            | -        | Standard styling escape hatches.                                                                                    |
 | `el`                 | `HTMLFormElement`                                            | -        | Bindable form element.                                                                                              |
 
@@ -265,9 +270,31 @@ Prefix: `--stuic-contact-us-form-*`
 | ----------------------------- | ----------------------------- |
 | `--stuic-contact-us-form-gap` | Vertical gap between sections |
 
-## i18n keys
+## i18n
 
-Under the `contact_form.*` namespace. See `_internal/contact-form-i18n-defaults.ts` for the full list and English defaults.
+Built-in English; bundled Slovak (`CONTACT_FORM_MESSAGES_SK`) is opt-in. All keys are under the `contact_form.*` namespace; `CONTACT_FORM_MESSAGES_EN` is the full list with the English defaults.
+
+`createContactFormT(messages)` builds the `t` prop from a catalog. A key the catalog lacks falls back to English, so the catalog may be partial: translate the keys you have, and a key added by a later release renders in English instead of as a raw key.
+
+```svelte
+<script lang="ts">
+	import {
+		ContactUsForm,
+		createContactFormT,
+		CONTACT_FORM_MESSAGES_SK,
+	} from "@marianmeres/stuic";
+	const t = createContactFormT(CONTACT_FORM_MESSAGES_SK);
+</script>
+
+<ContactUsForm {onSubmit} {t} />
+```
+
+The keys are namespaced, so the app's own dictionary can be passed as-is (`createContactFormT(appMessages)`); keys of other namespaces are ignored. If the app's i18n is a function rather than a table, bridge it to stuic's English:
+
+```ts
+const en = createContactFormT({}); // empty catalog = stuic's English
+const t: TranslateFn = (k, v, f) => (appHas(k) ? appT(k, v) : en(k, v, f));
+```
 
 ## See also
 

@@ -93,7 +93,7 @@
 	import DismissibleMessage from "../DismissibleMessage/DismissibleMessage.svelte";
 	import FieldCheckbox from "../Input/FieldCheckbox.svelte";
 	import FieldInput from "../Input/FieldInput.svelte";
-	import { t_default } from "./_internal/login-form-i18n-defaults.js";
+	import { t_default } from "./i18n.js";
 	import {
 		createEmptyLoginFormData,
 		validateLoginForm,

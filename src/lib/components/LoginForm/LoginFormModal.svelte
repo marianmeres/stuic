@@ -103,7 +103,7 @@
 	import LoginForm from "./LoginForm.svelte";
 	import Button from "../Button/Button.svelte";
 	import { iconX } from "../../icons/index.js";
-	import { t_default } from "./_internal/login-form-i18n-defaults.js";
+	import { t_default } from "./i18n.js";
 	import { createEmptyLoginFormData } from "./_internal/login-form-utils.js";
 	import { twMerge } from "../../utils/tw-merge.js";
 	import H from "../H/H.svelte";

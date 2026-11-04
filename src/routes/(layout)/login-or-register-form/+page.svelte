@@ -8,6 +8,8 @@
 		type RegisterFormData,
 		type LoginOrRegisterFormMode,
 		type RegisterFieldConfig,
+		createLoginOrRegisterFormT,
+		LOGIN_OR_REGISTER_FORM_MESSAGES_SK,
 	} from "#lib/index.js";
 	import Button from "#lib/components/Button/Button.svelte";
 	import FieldSwitch from "#lib/components/Input/FieldSwitch.svelte";
@@ -21,6 +23,9 @@
 	let verifyEmail = $state("");
 	let verifyError = $state<string | undefined>(undefined);
 	let isSubmitting = $state(false);
+	let useSlovak = $state(false);
+	// one `t` for the composite AND its login / register / verify forms
+	const tSk = createLoginOrRegisterFormT(LOGIN_OR_REGISTER_FORM_MESSAGES_SK);
 	let lastSubmit = $state<
 		| { kind: "login"; data: LoginFormData }
 		| { kind: "register"; data: RegisterFormData }
@@ -367,6 +372,12 @@
 			name="show-general-error"
 			renderSize="sm"
 		/>
+		<FieldSwitch
+			bind:checked={useSlovak}
+			label="Slovak (createLoginOrRegisterFormT — all four forms)"
+			name="use-slovak"
+			renderSize="sm"
+		/>
 	</div>
 
 	<div class="max-w-lg">
@@ -389,6 +400,7 @@
 			verifyProps={{ error: verifyError, resendCooldownSeconds: 5 }}
 			socialLogins={showSocialLogins ? socialButtons : undefined}
 			modeSwitcher={useCustomSwitcher ? customSwitcher : undefined}
+			t={useSlovak ? tSk : undefined}
 		>
 			{#snippet footer({ mode: currentMode, setMode })}
 				{#if showFooter}

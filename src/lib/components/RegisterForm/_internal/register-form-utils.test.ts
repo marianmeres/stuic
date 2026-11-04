@@ -3,7 +3,7 @@ import {
 	createEmptyRegisterFormData,
 	validateRegisterForm,
 } from "./register-form-utils.js";
-import { t_default } from "./register-form-i18n-defaults.js";
+import { t_default } from "../i18n.js";
 import type { RegisterFormData } from "./register-form-types.js";
 
 const t = t_default;

@@ -69,7 +69,7 @@
 <script lang="ts">
 	import { onDestroy } from "svelte";
 	import { twMerge } from "../../utils/tw-merge.js";
-	import { t_default } from "./_internal/email-verify-form-i18n-defaults.js";
+	import { t_default } from "./i18n.js";
 	import Button from "../Button/Button.svelte";
 	import DismissibleMessage from "../DismissibleMessage/DismissibleMessage.svelte";
 	import H from "../H/H.svelte";

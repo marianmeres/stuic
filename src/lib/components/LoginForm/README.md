@@ -14,8 +14,15 @@ Standalone login form with email/password fields, optional social/OAuth buttons,
 | `LoginFormModalProps`      | type      | Props for `LoginFormModal`                       |
 | `LoginFormData`            | type      | `{ email, password, rememberMe }`                |
 | `LoginFormValidationError` | type      | `{ field, message }`                             |
-| `createEmptyLoginFormData` | function  | Factory for an empty `LoginFormData`             |
-| `validateLoginForm`        | function  | `(data, t) => LoginFormValidationError[]`        |
+| `createLoginFormT`         | function  | Builds the `t` prop from a (partial) catalog     |
+| `LOGIN_FORM_MESSAGES_EN`   | constant  | Built-in English catalog (also the fallback)     |
+| `LOGIN_FORM_MESSAGES_SK`   | constant  | Bundled Slovak catalog (opt-in)                  |
+| `LoginFormMessageKey`      | type      | Message key union                                |
+| `LoginFormMessages`        | type      | One locale's catalog                             |
+
+> The `createEmptyLoginFormData` / `validateLoginForm` on the package barrel are the
+> [Checkout](../Checkout/README.md) helpers — that `validateLoginForm` looks up
+> `checkout.login.*` keys, not `login_form.*`.
 
 ## LoginForm — Props
 
@@ -35,7 +42,7 @@ Standalone login form with email/password fields, optional social/OAuth buttons,
 | `socialDividerLabel` | `string \| false`                       | i18n     | Override (or hide with `false`) the divider above social buttons.                          |
 | `footer`             | `Snippet`                               | -        | Content below the form (e.g., sign-up links).                                              |
 | `notifications`      | `NotificationsStack`                    | -        | When set, general errors are also pushed via `notifications.error()`.                      |
-| `t`                  | `TranslateFn`                           | English  | i18n function.                                                                             |
+| `t`                  | `TranslateFn`                           | English  | i18n function — see [i18n](#i18n).                                                         |
 | `unstyled` / `class` | -                                       | -        | Standard styling escape hatches.                                                           |
 | `el`                 | `HTMLFormElement`                       | -        | Bindable form element.                                                                     |
 
@@ -158,6 +165,28 @@ Prefix: `--stuic-login-form-*`
 | `--stuic-login-form-social-divider-font-size`     | Divider text size                      |
 | `--stuic-login-form-social-divider-margin-bottom` | Divider bottom margin                  |
 
-## i18n keys
+## i18n
 
-All keys are under the `login_form.*` namespace and cover labels, placeholders, validation messages, the submit/submitting CTA, the social divider, and modal title. See `_internal/login-form-i18n-defaults.ts` for the full list and English defaults.
+Built-in English; bundled Slovak (`LOGIN_FORM_MESSAGES_SK`) is opt-in. All keys are under the `login_form.*` namespace and cover labels, placeholders, validation messages, the submit/submitting CTA, the social divider, and the modal title; `LOGIN_FORM_MESSAGES_EN` is the full list with the English defaults. The same `t` serves `LoginForm` and `LoginFormModal`.
+
+`createLoginFormT(messages)` builds the `t` prop from a catalog. A key the catalog lacks falls back to English, so the catalog may be partial: translate the keys you have, and a key added by a later release renders in English instead of as a raw key.
+
+```svelte
+<script lang="ts">
+	import {
+		LoginForm,
+		createLoginFormT,
+		LOGIN_FORM_MESSAGES_SK,
+	} from "@marianmeres/stuic";
+	const t = createLoginFormT(LOGIN_FORM_MESSAGES_SK);
+</script>
+
+<LoginForm {onSubmit} {t} />
+```
+
+The keys are namespaced, so the app's own dictionary can be passed as-is (`createLoginFormT(appMessages)`); keys of other namespaces are ignored. If the app's i18n is a function rather than a table, bridge it to stuic's English:
+
+```ts
+const en = createLoginFormT({}); // empty catalog = stuic's English
+const t: TranslateFn = (k, v, f) => (appHas(k) ? appT(k, v) : en(k, v, f));
+```

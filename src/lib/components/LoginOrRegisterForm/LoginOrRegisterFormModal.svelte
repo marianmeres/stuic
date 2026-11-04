@@ -111,7 +111,7 @@
 	import Modal from "../Modal/Modal.svelte";
 	import LoginOrRegisterForm from "./LoginOrRegisterForm.svelte";
 	import Button from "../Button/Button.svelte";
-	import { t_default } from "./_internal/login-or-register-form-i18n-defaults.js";
+	import { t_default } from "./i18n.js";
 	import { createEmptyLoginFormData } from "../LoginForm/_internal/login-form-utils.js";
 	import { createEmptyRegisterFormData } from "../RegisterForm/_internal/register-form-utils.js";
 	import { twMerge } from "../../utils/tw-merge.js";

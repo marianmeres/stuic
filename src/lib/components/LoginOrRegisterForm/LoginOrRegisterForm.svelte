@@ -164,7 +164,7 @@
 
 <script lang="ts">
 	import { twMerge } from "../../utils/tw-merge.js";
-	import { t_default } from "./_internal/login-or-register-form-i18n-defaults.js";
+	import { t_default } from "./i18n.js";
 	import LoginForm from "../LoginForm/LoginForm.svelte";
 	import { createEmptyLoginFormData } from "../LoginForm/_internal/login-form-utils.js";
 	import RegisterForm from "../RegisterForm/RegisterForm.svelte";

@@ -6,13 +6,18 @@ Composite form that toggles between [`LoginForm`](../LoginForm/README.md), [`Reg
 
 ## Exports
 
-| Export                          | Kind      | Description                          |
-| ------------------------------- | --------- | ------------------------------------ |
-| `LoginOrRegisterForm`           | component | Composite form                       |
-| `LoginOrRegisterFormModal`      | component | Modal-wrapped composite form         |
-| `LoginOrRegisterFormProps`      | type      | Props for `LoginOrRegisterForm`      |
-| `LoginOrRegisterFormModalProps` | type      | Props for `LoginOrRegisterFormModal` |
-| `LoginOrRegisterFormMode`       | type      | `"login" \| "register" \| "verify"`  |
+| Export                               | Kind      | Description                                  |
+| ------------------------------------ | --------- | -------------------------------------------- |
+| `LoginOrRegisterForm`                | component | Composite form                               |
+| `LoginOrRegisterFormModal`           | component | Modal-wrapped composite form                 |
+| `LoginOrRegisterFormProps`           | type      | Props for `LoginOrRegisterForm`              |
+| `LoginOrRegisterFormModalProps`      | type      | Props for `LoginOrRegisterFormModal`         |
+| `LoginOrRegisterFormMode`            | type      | `"login" \| "register" \| "verify"`          |
+| `createLoginOrRegisterFormT`         | function  | Builds the `t` prop from a (partial) catalog |
+| `LOGIN_OR_REGISTER_FORM_MESSAGES_EN` | constant  | English catalog, all four namespaces         |
+| `LOGIN_OR_REGISTER_FORM_MESSAGES_SK` | constant  | Bundled Slovak catalog (opt-in)              |
+| `LoginOrRegisterFormMessageKey`      | type      | Message key union                            |
+| `LoginOrRegisterFormMessages`        | type      | One locale's catalog                         |
 
 ## Mode behavior
 
@@ -49,7 +54,7 @@ When the active mode changes, the relevant email is **one-shot copied** to the d
 | `notifications`      | `NotificationsStack`               | -          | Forwarded to inner forms.                                                                                                                             |
 | `onModeChange`       | `(next, prev) => void`             | -          | Called when the active mode changes. Use to clear parent-owned mode-specific state.                                                                   |
 | `animateHeight`      | `boolean`                          | `true`     | Smoothly animate content height on mode/content change. Respects `prefers-reduced-motion`; no effect when `unstyled`.                                 |
-| `t`                  | `TranslateFn`                      | English    | i18n function.                                                                                                                                        |
+| `t`                  | `TranslateFn`                      | English    | i18n function, forwarded to the inner forms — see [i18n](#i18n).                                                                                      |
 | `unstyled` / `class` | -                                  | -          | Standard styling escape hatches.                                                                                                                      |
 
 > The composite owns the shared social block, so `socialLogins`, `socialPosition`, `socialDividerLabel` (and `formData` / `onSubmit` / `isSubmitting` / `t` / `notifications` / `footer`) are **excluded** from `loginProps` / `registerProps` — passing one there would type-check and then do nothing.
@@ -166,7 +171,26 @@ Prefix: `--stuic-login-or-register-form-*`
 | `--stuic-login-or-register-form-height-transition-easing`     | Height animation easing (`animateHeight`)                                                                                                                                                                                   |
 | `--stuic-login-or-register-form-height-clip-margin`           | `overflow-clip-margin` while the height animates — how far focus rings / borders may paint past the clip edge so they aren't sliced mid-transition. Default `0.5rem`; raise it if inner controls have larger rings/shadows. |
 
-## i18n keys
+## i18n
+
+The `t` prop is forwarded to the inner `LoginForm`, `RegisterForm` and `EmailVerifyForm`, so one `t` covers four namespaces: the composite's own `login_or_register_form.*` keys (below) plus `login_form.*`, `register_form.*` and `email_verify_form.*`. `LOGIN_OR_REGISTER_FORM_MESSAGES_EN` (and the opt-in `LOGIN_OR_REGISTER_FORM_MESSAGES_SK`) span all four, and `createLoginOrRegisterFormT` falls back to English across all four — so a partial catalog never leaves an inner form blank.
+
+```svelte
+<script lang="ts">
+	import {
+		LoginOrRegisterForm,
+		createLoginOrRegisterFormT,
+		LOGIN_OR_REGISTER_FORM_MESSAGES_SK,
+	} from "@marianmeres/stuic";
+	const t = createLoginOrRegisterFormT(LOGIN_OR_REGISTER_FORM_MESSAGES_SK);
+</script>
+
+<LoginOrRegisterForm bind:mode {onLogin} {onRegister} {t} />
+```
+
+Pass this `t` (not `createLoginFormT` & co.) to the composite: a single-form factory falls back only to its own namespace, so the composite's tab labels would come out empty. `mode_verify` is not rendered by the composite itself (verify has no tab); it is there for wrappers.
+
+Own keys:
 
 | Key                                           | English default     |
 | --------------------------------------------- | ------------------- |

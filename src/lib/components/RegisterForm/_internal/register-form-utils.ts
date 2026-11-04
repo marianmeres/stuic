@@ -4,7 +4,7 @@ import type {
 	RegisterFormValidationError,
 } from "./register-form-types.js";
 import type { TranslateFn } from "../../../types.js";
-import { t_default } from "./register-form-i18n-defaults.js";
+import { t_default } from "../i18n.js";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

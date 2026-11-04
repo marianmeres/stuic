@@ -5,6 +5,8 @@
 		type ContactFormData,
 		type ContactBotCheck,
 		type ContactFieldConfig,
+		createContactFormT,
+		CONTACT_FORM_MESSAGES_SK,
 	} from "#lib/index.js";
 	import FieldSwitch from "#lib/components/Input/FieldSwitch.svelte";
 	import FieldCheckbox from "#lib/components/Input/FieldCheckbox.svelte";
@@ -44,6 +46,8 @@
 	let showExternalErrors = $state(false);
 	let showGeneralError = $state(false);
 	let lockIdentity = $state(false);
+	let useSlovak = $state(false);
+	const tSk = createContactFormT(CONTACT_FORM_MESSAGES_SK);
 
 	// Simulates "the server already knows who this is": prefill + lock.
 	const signedInUser = { name: "Jane Doe", email: "jane.doe@example.com" };
@@ -187,6 +191,12 @@
 			name="show-general-error"
 			renderSize="sm"
 		/>
+		<FieldSwitch
+			bind:checked={useSlovak}
+			label="Slovak (createContactFormT + CONTACT_FORM_MESSAGES_SK)"
+			name="use-slovak"
+			renderSize="sm"
+		/>
 	</div>
 
 	{#if submitCount > 0}
@@ -215,6 +225,7 @@
 			error={generalError}
 			extraFields={showExtraFields ? sampleExtraFields : undefined}
 			extraFieldsSlot={showExtraSlot ? consentSlot : undefined}
+			t={useSlovak ? tSk : undefined}
 		>
 			{#snippet footer()}
 				<div class="text-center text-sm opacity-60 pt-2">

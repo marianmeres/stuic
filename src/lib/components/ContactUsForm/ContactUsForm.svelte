@@ -138,7 +138,7 @@
 <script lang="ts">
 	import { untrack } from "svelte";
 	import { twMerge } from "../../utils/tw-merge.js";
-	import { t_default } from "./_internal/contact-form-i18n-defaults.js";
+	import { t_default } from "./i18n.js";
 	import {
 		createEmptyContactFormData,
 		validateContactForm,

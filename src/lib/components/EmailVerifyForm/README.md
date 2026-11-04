@@ -51,12 +51,29 @@ The form owns:
 | `submitButton`          | `Snippet`                     | —        | Override submit section                                  |
 | `footer`                | `Snippet`                     | —        | Content below the resend control                         |
 | `heading`               | `string \| false`             | —        | Override heading text, or `false` to suppress entirely   |
-| `t`                     | `TranslateFn`                 | built-in | Translation function                                     |
+| `t`                     | `TranslateFn`                 | English  | i18n function — see [i18n](#i18n)                        |
 | `unstyled`              | `boolean`                     | `false`  | Skip default styling                                     |
 | `class`                 | `string`                      | —        | Additional CSS classes on the form root                  |
 | `el`                    | `HTMLFormElement`             | —        | Bindable form element                                    |
 
-## i18n keys
+## i18n
+
+Built-in English; bundled Slovak (`EMAIL_VERIFY_FORM_MESSAGES_SK`) is opt-in. `createEmailVerifyFormT(messages)` builds the `t` prop from a catalog; a key the catalog lacks falls back to English, so the catalog may be partial. Same model as [LoginForm's i18n](../LoginForm/README.md#i18n).
+
+```svelte
+<script lang="ts">
+	import {
+		EmailVerifyForm,
+		createEmailVerifyFormT,
+		EMAIL_VERIFY_FORM_MESSAGES_SK,
+	} from "@marianmeres/stuic";
+	const t = createEmailVerifyFormT(EMAIL_VERIFY_FORM_MESSAGES_SK);
+</script>
+
+<EmailVerifyForm {email} {onSubmit} {t} />
+```
+
+Keys (`EMAIL_VERIFY_FORM_MESSAGES_EN`):
 
 | Key                                    | Default                             |
 | -------------------------------------- | ----------------------------------- |

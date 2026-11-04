@@ -278,6 +278,11 @@ Standalone login form with optional modal variant. Supports social logins, forgo
 | `LoginFormModalProps`      | type      | Props for LoginFormModal                      |
 | `LoginFormData`            | type      | `{ email, password, rememberMe }`             |
 | `LoginFormValidationError` | type      | `{ field, message }`                          |
+| `createLoginFormT`         | function  | Builds the `t` prop from a (partial) catalog  |
+| `LOGIN_FORM_MESSAGES_EN`   | constant  | Built-in English catalog (also the fallback)  |
+| `LOGIN_FORM_MESSAGES_SK`   | constant  | Bundled Slovak catalog (opt-in)               |
+| `LoginFormMessageKey`      | type      | Message key union                             |
+| `LoginFormMessages`        | type      | One locale's catalog                          |
 
 ### Key Props (LoginForm)
 
@@ -317,7 +322,7 @@ Prefix: `--stuic-login-form-*`
 
 ### i18n
 
-16 translation keys with `login_form.*` prefix covering labels, placeholders, validation messages, and social divider text.
+14 translation keys with `login_form.*` prefix covering labels, placeholders, validation messages, social divider text and the modal title. `createLoginFormT(messages)` falls back to English per key, so a catalog may be partial (and an app-wide dictionary can be passed as-is — the namespace keeps keys apart). Same pattern for `ContactUsForm`, `RegisterForm`, `EmailVerifyForm` and `LoginOrRegisterForm`.
 
 ---
 
@@ -339,6 +344,11 @@ Also covers **identity-first signup** (identity established by an OAuth provider
 | `ValidateRegisterFormOptions` | type      | Options for `validateRegisterForm`            |
 | `createEmptyRegisterFormData` | function  | Factory for an empty `RegisterFormData`       |
 | `validateRegisterForm`        | function  | `(data, t?, extraFields?, opts?) => Error[]`  |
+| `createRegisterFormT`         | function  | Builds the `t` prop from a (partial) catalog  |
+| `REGISTER_FORM_MESSAGES_EN`   | constant  | Built-in English catalog (also the fallback)  |
+| `REGISTER_FORM_MESSAGES_SK`   | constant  | Bundled Slovak catalog (opt-in)               |
+| `RegisterFormMessageKey`      | type      | Message key union                             |
+| `RegisterFormMessages`        | type      | One locale's catalog                          |
 
 ### Key Props
 
@@ -384,13 +394,18 @@ Composite form that toggles between `LoginForm`, `RegisterForm`, and (since 3.71
 
 ### Exports
 
-| Export                          | Kind      | Description                         |
-| ------------------------------- | --------- | ----------------------------------- |
-| `LoginOrRegisterForm`           | component | Composite form                      |
-| `LoginOrRegisterFormModal`      | component | Modal-wrapped variant               |
-| `LoginOrRegisterFormProps`      | type      | Props for the composite form        |
-| `LoginOrRegisterFormModalProps` | type      | Props for the modal                 |
-| `LoginOrRegisterFormMode`       | type      | `"login" \| "register" \| "verify"` |
+| Export                               | Kind      | Description                                                                     |
+| ------------------------------------ | --------- | ------------------------------------------------------------------------------- |
+| `LoginOrRegisterForm`                | component | Composite form                                                                  |
+| `LoginOrRegisterFormModal`           | component | Modal-wrapped variant                                                           |
+| `LoginOrRegisterFormProps`           | type      | Props for the composite form                                                    |
+| `LoginOrRegisterFormModalProps`      | type      | Props for the modal                                                             |
+| `LoginOrRegisterFormMode`            | type      | `"login" \| "register" \| "verify"`                                             |
+| `createLoginOrRegisterFormT`         | function  | Builds the `t` prop; English fallback over all four namespaces                  |
+| `LOGIN_OR_REGISTER_FORM_MESSAGES_EN` | constant  | English catalog: own keys + login/register/verify forms' (the `t` is forwarded) |
+| `LOGIN_OR_REGISTER_FORM_MESSAGES_SK` | constant  | Bundled Slovak catalog (opt-in), same span                                      |
+| `LoginOrRegisterFormMessageKey`      | type      | Message key union (all four namespaces)                                         |
+| `LoginOrRegisterFormMessages`        | type      | One locale's catalog                                                            |
 
 ### Key Props
 
@@ -452,10 +467,15 @@ Post-registration email-verify form. Drop-in peer to `LoginForm` / `RegisterForm
 
 ### Exports
 
-| Export                 | Kind      | Description               |
-| ---------------------- | --------- | ------------------------- |
-| `EmailVerifyForm`      | component | Email-verify form         |
-| `EmailVerifyFormProps` | type      | Props for EmailVerifyForm |
+| Export                          | Kind      | Description                                  |
+| ------------------------------- | --------- | -------------------------------------------- |
+| `EmailVerifyForm`               | component | Email-verify form                            |
+| `EmailVerifyFormProps`          | type      | Props for EmailVerifyForm                    |
+| `createEmailVerifyFormT`        | function  | Builds the `t` prop from a (partial) catalog |
+| `EMAIL_VERIFY_FORM_MESSAGES_EN` | constant  | Built-in English catalog (also the fallback) |
+| `EMAIL_VERIFY_FORM_MESSAGES_SK` | constant  | Bundled Slovak catalog (opt-in)              |
+| `EmailVerifyFormMessageKey`     | type      | Message key union                            |
+| `EmailVerifyFormMessages`       | type      | One locale's catalog                         |
 
 ### Key Props
 
@@ -483,7 +503,7 @@ Prefix: `--stuic-email-verify-form-*`
 
 ### i18n keys
 
-`email_verify_form.heading`, `subheading`, `submit`, `submitting`, `resend_prompt`, `resend`, `resend_cooldown`, `resent`, `attempts_remaining`
+`createEmailVerifyFormT(messages)` (English fallback per key); keys: `email_verify_form.heading`, `subheading`, `submit`, `submitting`, `resend_prompt`, `resend`, `resend_cooldown`, `resent`, `attempts_remaining`
 
 ---
 
