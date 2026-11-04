@@ -1,6 +1,9 @@
 <script lang="ts">
+	import { goto, snapshot } from "$app/navigation";
+	import { Searchable } from "@marianmeres/searchable";
+
 	// prettier-ignore
-	let links = [
+	const links = [
 		'accordion',
 		'alert-confirm-prompt',
 		'animated-ellipsis',
@@ -102,18 +105,97 @@
 		// 'viewport',
 		'x'
 	].toSorted();
+
+	// "-" is a word char by default; dropping it splits "data-table" into two words
+	// (on both index and query side), so "table" and "data ta" both find it
+	const index = new Searchable({ index: "trie", nonWordCharWhitelist: "" });
+	for (const link of links) index.add(link, link);
+
+	let q = $state("");
+	let active = $state(0);
+
+	const filtered = $derived.by(() => {
+		const query = q.trim();
+		if (!query) return links;
+		let found = index.search(query, "prefix");
+		// typo tolerance, but only once the query is long enough not to match everything
+		if (!found.length && query.length >= 4) {
+			found = index.search(query, "fuzzy", { maxDistance: 1 });
+		}
+		const hits = new Set(found);
+		// alphabetical, except slugs starting with the query go first (Enter opens #1)
+		const head = query.toLowerCase().replace(/[\s_]+/g, "-");
+		const rank = (l: string) => (l.startsWith(head) ? 0 : 1);
+		return links.filter((l) => hits.has(l)).toSorted((a, b) => rank(a) - rank(b));
+	});
+
+	const linkId = (link: string) => `home-link-${link}`;
+
+	function onkeydown(e: KeyboardEvent) {
+		if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+			e.preventDefault();
+			if (!filtered.length) return;
+			const step = e.key === "ArrowDown" ? 1 : -1;
+			active = (active + step + filtered.length) % filtered.length;
+			document
+				.getElementById(linkId(filtered[active]))
+				?.scrollIntoView({ block: "nearest" });
+		} else if (e.key === "Enter") {
+			const target = filtered[active];
+			if (target) {
+				e.preventDefault();
+				goto(`/${target}`);
+			}
+		} else if (e.key === "Escape") {
+			q = "";
+			active = 0;
+		}
+	}
+
+	// keeps the query when coming back from an example page via browser back
+	snapshot({
+		capture: () => q,
+		restore: (value: string) => (q = value),
+	});
 </script>
 
 <div class="p-4">
+	<div class="sticky top-0 z-10 pb-4 bg-stone-50 dark:bg-stone-800">
+		<!-- SvelteKit focuses [autofocus] after client-side navigation, so typing works right away -->
+		<!-- svelte-ignore a11y_autofocus -->
+		<input
+			type="search"
+			bind:value={q}
+			oninput={() => (active = 0)}
+			{onkeydown}
+			autofocus
+			autocomplete="off"
+			spellcheck="false"
+			placeholder="Filter... (↑↓ to move, Enter to open, Esc to clear)"
+			aria-label="Filter components"
+			class="w-full p-2 px-4 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900"
+		/>
+		<div class="mt-1 px-1 text-sm opacity-60">
+			{filtered.length} / {links.length}
+		</div>
+	</div>
+
 	<ul class="space-y-2">
-		{#each links as link}
+		{#each filtered as link, i (link)}
 			<li>
 				<a
+					id={linkId(link)}
 					href={link}
-					class="block p-2 px-4 rounded-lg bg-neutral-200 dark:bg-neutral-900 hover:text-white hover:bg-neutral-600"
-					>{link}</a
+					class={[
+						"block p-2 px-4 rounded-lg hover:text-white hover:bg-neutral-600",
+						q.trim() && i === active
+							? "text-white bg-neutral-600"
+							: "bg-neutral-200 dark:bg-neutral-900",
+					]}>{link}</a
 				>
 			</li>
+		{:else}
+			<li class="px-1 opacity-60">No match for "{q.trim()}"</li>
 		{/each}
 	</ul>
 </div>
