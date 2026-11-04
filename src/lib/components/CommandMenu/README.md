@@ -4,22 +4,23 @@ A searchable command palette/menu modal for quick navigation and selection. Supp
 
 ## Props
 
-| Prop                | Type                                              | Default               | Description                          |
-| ------------------- | ------------------------------------------------- | --------------------- | ------------------------------------ |
-| `value`             | `any`                                             | -                     | Selected item (bindable)             |
-| `q`                 | `string`                                          | `""`                  | Search query (bindable)              |
-| `getOptions`        | `(q: string, current: Item[]) => Promise<Item[]>` | -                     | Async function to fetch options      |
-| `renderOptionLabel` | `(item: Item) => string`                          | -                     | Custom label renderer                |
-| `renderOptionGroup` | `(s: string) => string`                           | -                     | Custom group label renderer          |
-| `itemIdPropName`    | `string`                                          | `"id"`                | Property name for item ID            |
-| `t`                 | `TranslateFn`                                     | -                     | Translation function for i18n        |
-| `notifications`     | `NotificationsStack`                              | -                     | Notifications stack for errors       |
-| `searchPlaceholder` | `string`                                          | `"Type to search..."` | Input placeholder                    |
-| `noScrollLock`      | `boolean`                                         | `false`               | Disable body scroll lock             |
-| `showAllOnEmptyQ`   | `boolean`                                         | `false`               | Show all options when query is empty |
-| `classOption`       | `string`                                          | -                     | CSS for option buttons               |
-| `classOptionActive` | `string`                                          | -                     | CSS for active option                |
-| `input`             | `HTMLInputElement`                                | -                     | Input element reference (bindable)   |
+| Prop                | Type                                                                      | Default               | Description                                                                      |
+| ------------------- | ------------------------------------------------------------------------- | --------------------- | -------------------------------------------------------------------------------- |
+| `value`             | `any`                                                                     | -                     | Selected item (bindable)                                                         |
+| `q`                 | `string`                                                                  | `""`                  | Search query (bindable)                                                          |
+| `getOptions`        | `(q: string, current: Item[], ctx: GetOptionsContext) => Promise<Item[]>` | -                     | Async function to fetch options; `ctx.append` shows batches before it settles    |
+| `sortOptions`       | `false \| (a: Item, b: Item) => number`                                   | -                     | Option order: a comparator, or `false` for arrival order (default: group, label) |
+| `renderOptionLabel` | `(item: Item) => string`                                                  | -                     | Custom label renderer                                                            |
+| `renderOptionGroup` | `(s: string) => string`                                                   | -                     | Custom group label renderer                                                      |
+| `itemIdPropName`    | `string`                                                                  | `"id"`                | Property name for item ID                                                        |
+| `t`                 | `TranslateFn`                                                             | -                     | Translation function for i18n                                                    |
+| `notifications`     | `NotificationsStack`                                                      | -                     | Notifications stack for errors                                                   |
+| `searchPlaceholder` | `string`                                                                  | `"Type to search..."` | Input placeholder                                                                |
+| `noScrollLock`      | `boolean`                                                                 | `false`               | Disable body scroll lock                                                         |
+| `showAllOnEmptyQ`   | `boolean`                                                                 | `false`               | Show all options when query is empty                                             |
+| `classOption`       | `string`                                                                  | -                     | CSS for option buttons                                                           |
+| `classOptionActive` | `string`                                                                  | -                     | CSS for active option                                                            |
+| `input`             | `HTMLInputElement`                                                        | -                     | Input element reference (bindable)                                               |
 
 ## Methods
 
@@ -84,6 +85,71 @@ A searchable command palette/menu modal for quick navigation and selection. Supp
 	renderOptionGroup={(group) => group.toUpperCase()}
 />
 ```
+
+### Progressive results
+
+`getOptions` receives a third argument, `{ append, signal }` (exported as
+`CommandMenuGetOptionsContext`). Call `append(items)` to put options on screen before the
+promise settles — useful when some sources answer at once (rows already in memory) and others
+over the network.
+
+```svelte
+<script lang="ts">
+	import { CommandMenu, type CommandMenuGetOptionsContext } from "stuic";
+
+	async function getOptions(
+		q: string,
+		_current: Item[],
+		ctx: CommandMenuGetOptionsContext
+	) {
+		// 1. local rows show immediately
+		ctx.append(localRows.filter((r) => r.label.toLowerCase().includes(q.toLowerCase())));
+		// 2. each remote source shows as it answers
+		await Promise.allSettled(
+			sources.map((s) => s.search(q, { signal: ctx.signal }).then(ctx.append))
+		);
+		// 3. the resolved array is the last batch (nothing more here)
+		return [];
+	}
+</script>
+```
+
+How batches behave:
+
+- A batch is an `append` call or the resolved array. The query's **first** batch replaces the
+  previous query's options (which stay up until then, so the list does not flash empty on every
+  keystroke); every later batch adds to them. A consumer that never calls `append` sees exactly
+  the old behaviour: the resolved array replaces the list.
+- The spinner stays on until the promise settles, however many batches arrived before.
+- An option whose id is already on screen is skipped — the first batch to name an id wins.
+- `append` does nothing once a newer query has superseded this one, or after the promise has
+  settled. `signal` is aborted in the same cases and when the component is destroyed, so pass it
+  on to `fetch` and similar.
+- A rejection is reported once through `notifications` (only for the current query, never for
+  one aborted by the component); batches already on screen stay.
+
+### Ordering
+
+By default options sort by `"<optgroup>__<label>"`, so groups and the labels within them come
+out alphabetically. With progressive results that means a late group lands wherever its name
+sorts — possibly above rows the person is already reading. Pass `sortOptions` to decide the
+order yourself; it is read once, when the component is created (like `itemIdPropName`).
+
+```svelte
+<script lang="ts">
+	const rank: Record<string, number> = { navigation: 0, actions: 1, data: 2 };
+	const sortOptions = (a: Item, b: Item) =>
+		rank[a.optgroup] - rank[b.optgroup] || a.label.localeCompare(b.label);
+</script>
+
+<!-- a comparator: navigation first, then actions, then data; alphabetical within -->
+<CommandMenu {getOptions} {sortOptions} />
+
+<!-- or keep the order the options arrived in (groups in the order they first appear) -->
+<CommandMenu {getOptions} sortOptions={false} />
+```
+
+The active option keeps its highlight across a re-sort (it is tracked by id).
 
 ## Layout
 

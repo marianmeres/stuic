@@ -42,10 +42,29 @@
 		return isPlainObject(values) ? replaceMap(out, values as any) : out;
 	}
 
+	/** Third argument of `getOptions`: lets one query put options on screen in batches. */
+	export interface GetOptionsContext {
+		/**
+		 * Puts these options on screen now, for this query only. The query's first batch
+		 * (an `append` or the resolved array, whichever comes first) replaces the previous
+		 * query's options; every later batch adds to them. An option whose id is already
+		 * on screen is skipped. Ignored once a newer query supersedes this one, and after
+		 * this query's promise has settled.
+		 */
+		append: (items: Item[]) => void;
+		/** Aborted when a newer query supersedes this one, or when the component is destroyed. */
+		signal: AbortSignal;
+	}
+
 	export interface Props {
 		input?: HTMLInputElement;
 		value: any;
-		getOptions: (s: string, current: Item[]) => Promise<Item[]>;
+		/**
+		 * Fetches the options for a query. Resolve the (final) list, or call `ctx.append`
+		 * to show options as they arrive before the promise settles. The spinner stays on
+		 * until the promise settles, however many batches arrived before.
+		 */
+		getOptions: (q: string, current: Item[], ctx: GetOptionsContext) => Promise<Item[]>;
 		renderOptionLabel?: (item: Item) => string;
 		renderOptionGroup?: (s: string) => string;
 		t?: TranslateFn;
@@ -59,12 +78,20 @@
 		classOption?: string;
 		classOptionActive?: string;
 		showAllOnEmptyQ?: boolean;
+		/**
+		 * How options are ordered. Default: by `"<optgroup>__<label>"`, so groups and the
+		 * labels within them are alphabetical. A comparator replaces that order; `false`
+		 * keeps the order the options arrived in (groups render in the order they first
+		 * appear). Read once, when the component is created (like `itemIdPropName`).
+		 */
+		sortOptions?: false | ((a: Item, b: Item) => number);
 		/** Skip stuic base classes (user provides their own styling) */
 		unstyled?: boolean;
 	}
 </script>
 
 <script lang="ts">
+	import { onDestroy } from "svelte";
 	import Button from "../Button/Button.svelte";
 	import {
 		normalizeAndGroupOptions,
@@ -89,6 +116,7 @@
 		itemIdPropName = "id",
 		searchPlaceholder,
 		showAllOnEmptyQ,
+		sortOptions,
 		unstyled = false,
 	}: Props = $props();
 
@@ -98,7 +126,7 @@
 		return renderOptionLabelOf(item, renderOptionLabel, itemIdPropName);
 	}
 
-	function sortFn(a: Item, b: Item) {
+	function defaultSortFn(a: Item, b: Item) {
 		return sortByOptgroupLabel(a, b, _renderOptionLabel);
 	}
 
@@ -107,21 +135,30 @@
 	let optionsBox: HTMLDivElement | undefined = $state();
 	let activeEl: HTMLButtonElement | undefined = $state();
 	let fetchRequestId = 0;
+	let inflight: AbortController | undefined;
 
-	//
+	// Without a sortFn the collection keeps insertion order (its `sort()` is a no-op).
 	// svelte-ignore state_referenced_locally
 	const _optionsColl = new ItemCollection([], {
 		allowNextPrevCycle: false,
-		sortFn,
+		sortFn: sortOptions === false ? undefined : (sortOptions ?? defaultSortFn),
 		idPropName: itemIdPropName,
 		searchable: { getContent: (item) => _renderOptionLabel(item) },
 	});
 	let options = $derived($_optionsColl);
 
+	// The active option's id is a primitive, so an effect keyed on it re-runs only when
+	// the active option actually changes — not on every publish of the collection (each
+	// batch a progressive `getOptions` appends is a publish, and must not scroll or
+	// pull focus while the person is typing).
+	let activeId = $derived(
+		options.active?.[itemIdPropName] as string | number | undefined
+	);
+
 	// scroll the active option into view
 	$effect(() => {
-		if (modalDialog.visibility().visible && options.active?.[itemIdPropName]) {
-			activeEl = qsa(`#${btn_id(options.active[itemIdPropName])}`, optionsBox)[0] as any;
+		if (modalDialog.visibility().visible && activeId != null) {
+			activeEl = qsa(`#${btn_id(activeId)}`, optionsBox)[0] as any;
 			activeEl?.scrollIntoView({ behavior: "smooth", block: "center" });
 			activeEl?.focus();
 		} else {
@@ -131,32 +168,58 @@
 
 	//
 	const debounced = new Debounced(() => q, 150);
-	watch([() => debounced.current], ([currQ], [_oldQ]) => {
+	watch([() => debounced.current], ([currQ]) => {
+		// A new (or emptied) query supersedes whatever is in flight: abort it and bump the
+		// id, so its late batches and rejection are ignored and it cannot reset the spinner.
+		inflight?.abort();
+		const currentRequest = ++fetchRequestId;
+
 		if (!currQ && !showAllOnEmptyQ) {
 			_optionsColl.clear();
+			isFetching = false;
 			return;
 		}
 
+		const controller = (inflight = new AbortController());
+		let replaced = false;
+		let settled = false;
+		const live = () => !settled && currentRequest === fetchRequestId;
+
+		// A batch is an `append` call or the resolved array. The query's first batch
+		// replaces the previous query's options (which stay up until then, so the list
+		// does not flash empty on every keystroke); later batches add to them. The
+		// collection is `unique`, so the first batch to name an id wins.
+		const append = (items: Item[]) => {
+			if (!live()) return;
+			if (!replaced) {
+				_optionsColl.clear(); // publishes, so an empty first batch still empties the list
+				replaced = true;
+			}
+			_optionsColl.addMany(items);
+		};
+
 		isFetching = true;
-		const currentRequest = ++fetchRequestId;
-		getOptions(`${currQ}`, [])
-			.then((res) => {
-				// Ignore stale responses
-				if (currentRequest !== fetchRequestId) return;
-				_optionsColl.clear().addMany(res);
-			})
+		// the Promise wrapper turns a synchronous throw of `getOptions` into a rejection
+		new Promise<Item[]>((resolve) =>
+			resolve(getOptions(`${currQ}`, [], { append, signal: controller.signal }))
+		)
+			.then((res) => append(res ?? []))
 			.catch((e) => {
-				// Surface errors only for the latest in-flight request
-				if (currentRequest !== fetchRequestId) return;
+				// Surface errors only for the latest in-flight request, and never for one
+				// we aborted ourselves (a superseded query, or the component going away).
+				if (!live() || controller.signal.aborted) return;
 				console.error(e);
 				notifications?.error(`${e}`);
 			})
 			.finally(() => {
+				settled = true;
 				// Only the latest request toggles the fetching state back off
 				// so the spinner doesn't flicker when a stale response arrives late.
 				if (currentRequest === fetchRequestId) isFetching = false;
 			});
 	});
+
+	onDestroy(() => inflight?.abort());
 
 	//
 	function _normalize_and_group_options(opts: Item[]): Map<string, Item[]> {

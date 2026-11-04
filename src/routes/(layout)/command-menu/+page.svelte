@@ -3,6 +3,7 @@
 	import {
 		Button,
 		CommandMenu,
+		type CommandMenuGetOptionsContext,
 		Notifications,
 		NotificationsStack,
 		sleep,
@@ -24,7 +25,11 @@
 		return `${item[itemIdPropName]}`;
 	}
 
-	async function getOptions(q: string, current: Item[]): Promise<Item[]> {
+	async function getOptions(
+		q: string,
+		current: Item[],
+		{ append, signal }: CommandMenuGetOptionsContext
+	): Promise<Item[]> {
 		const options = Object.entries(citiesByContinent).reduce((m, [cont, cities]) => {
 			cities.forEach((city) => m.push({ [itemIdPropName]: city, optgroup: cont }));
 			return m;
@@ -39,9 +44,14 @@
 			},
 		});
 
-		// await sleep(500);
+		const hits = q ? all.search(q) : all.items;
 
-		return q ? all.search(q) : all.items;
+		// progressive: the first few hits are "local" and show at once, the rest arrive
+		// after a simulated network round-trip (the spinner stays on until then)
+		append(hits.slice(0, 5));
+		await sleep(800);
+		if (signal.aborted) return [];
+		return hits.slice(5);
 	}
 
 	$inspect(value).with(clog);

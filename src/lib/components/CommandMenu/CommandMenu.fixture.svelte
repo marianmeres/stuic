@@ -5,11 +5,12 @@
 	// file can't drive it directly. This fixture holds the `bind:this` ref and
 	// exposes an opener button that calls `.open()`. `getOptions` (a required
 	// async prop) is forwarded; `value` is bound so a test can inspect the
-	// selected option after a pick.
+	// selected option after a pick. Any other prop (`sortOptions`,
+	// `notifications`, `showAllOnEmptyQ`, …) is passed straight through.
 	import CommandMenu from "./CommandMenu.svelte";
 
 	let cmd = $state<CommandMenu>();
-	let { getOptions, value = $bindable() } = $props();
+	let { getOptions, value = $bindable(), ...rest } = $props();
 </script>
 
 <button data-testid="opener" onclick={() => cmd?.open()}>open</button>
@@ -21,4 +22,4 @@
 -->
 <span data-testid="selected">{value?.id ?? ""}</span>
 
-<CommandMenu bind:this={cmd} bind:value {getOptions} />
+<CommandMenu bind:this={cmd} bind:value {getOptions} {...rest} />
