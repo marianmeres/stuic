@@ -379,3 +379,155 @@ test("without showAllOnEmptyQ, clearing the input while a request is in flight d
 	await expect.element(screen.getByRole("listbox")).not.toBeInTheDocument();
 	expect(spinner()).toBeNull();
 });
+
+// ---------------------------------------------------------------------------
+// Named sources (`ctx.append(items, { source })`): what a source said to the
+// previous query stays on screen until that source answers the current one, so a
+// remote group does not vanish on every keystroke and pop back a moment later.
+// ---------------------------------------------------------------------------
+
+test("options appended with a source outlive their query: they go when the source answers again (even with nothing), or when the query settles", async () => {
+	const { getOptions, calls } = makeDeferredGetOptions();
+	// arrival order, so the expectations below also pin where each batch lands
+	const screen = await render(Fixture, { getOptions, sortOptions: false });
+	await openAndType(screen, "a");
+	await waitForCall(calls, 0);
+
+	calls[0].ctx.append([{ id: "home" }]);
+	calls[0].ctx.append([{ id: "x1" }, { id: "x2" }], { source: "x" });
+	calls[0].ctx.append([{ id: "y1" }], { source: "y" });
+	calls[0].ctx.append([{ id: "z1" }], { source: "z" });
+	calls[0].resolve([]);
+	await expect.element(screen.getByRole("option", { name: "z1" })).toBeInTheDocument();
+	await expect.poll(spinner).toBeNull();
+	expect(optionNames()).toEqual(["home", "x1", "x2", "y1", "z1"]);
+
+	await screen.getByRole("textbox").fill("ab");
+	await waitForCall(calls, 1);
+
+	// the first batch replaces the unsourced row only; this query's rows lead
+	calls[1].ctx.append([{ id: "help" }]);
+	await expect.element(screen.getByRole("option", { name: "help" })).toBeInTheDocument();
+	expect(optionNames()).toEqual(["help", "x1", "x2", "y1", "z1"]);
+
+	// x answers: what it said before goes ("x2" is in both answers and shows once)
+	calls[1].ctx.append([{ id: "x2" }, { id: "x3" }], { source: "x" });
+	await expect.element(screen.getByRole("option", { name: "x3" })).toBeInTheDocument();
+	expect(optionNames()).toEqual(["help", "y1", "z1", "x2", "x3"]);
+
+	// y answers with nothing, which is an answer too
+	calls[1].ctx.append([], { source: "y" });
+	await expect
+		.element(screen.getByRole("option", { name: "y1" }))
+		.not.toBeInTheDocument();
+	expect(optionNames()).toEqual(["help", "z1", "x2", "x3"]);
+	expect(spinner()).not.toBeNull();
+
+	// z never answers this query: its row goes when the query settles
+	calls[1].resolve([]);
+	await expect
+		.element(screen.getByRole("option", { name: "z1" }))
+		.not.toBeInTheDocument();
+	expect(optionNames()).toEqual(["help", "x2", "x3"]);
+	await expect.poll(spinner).toBeNull();
+});
+
+test("the highlight stays on a stale option while it is on screen, and goes with it instead of jumping to a neighbour", async () => {
+	const { getOptions, calls } = makeDeferredGetOptions();
+	const screen = await render(Fixture, { getOptions });
+	await openAndType(screen, "a");
+	await waitForCall(calls, 0);
+	calls[0].ctx.append([{ id: "home" }]);
+	calls[0].ctx.append([{ id: "x1" }, { id: "x2" }], { source: "x" });
+	calls[0].resolve([]);
+	await expect.element(screen.getByRole("option", { name: "x2" })).toBeInTheDocument();
+
+	// home, x1, x2 → the second ArrowDown lands on x1
+	await userEvent.keyboard("{ArrowDown}{ArrowDown}");
+	const selected = () =>
+		[...document.querySelectorAll('[aria-selected="true"]')].map((el) =>
+			el.textContent?.trim()
+		);
+	await expect.poll(selected).toEqual(["x1"]);
+
+	await screen.getByRole("textbox").fill("ab");
+	await waitForCall(calls, 1);
+	// first batch: x1 is stale now, and still the active one
+	calls[1].ctx.append([{ id: "home" }]);
+	await drainMicrotasks();
+	expect(optionNames()).toEqual(["home", "x1", "x2"]);
+	expect(selected()).toEqual(["x1"]);
+
+	// x answers and names x1 again: the fresh x1 takes over the highlight
+	calls[1].ctx.append([{ id: "x0" }, { id: "x1" }], { source: "x" });
+	await expect.element(screen.getByRole("option", { name: "x0" })).toBeInTheDocument();
+	expect(optionNames()).toEqual(["home", "x0", "x1"]);
+	expect(selected()).toEqual(["x1"]);
+	calls[1].resolve([]);
+	await expect.poll(spinner).toBeNull();
+
+	// the next answer of x drops x1: nothing is highlighted (not its neighbour)
+	await screen.getByRole("textbox").fill("abc");
+	await waitForCall(calls, 2);
+	calls[2].ctx.append([{ id: "home" }]);
+	calls[2].ctx.append([{ id: "x0" }, { id: "x9" }], { source: "x" });
+	await expect.element(screen.getByRole("option", { name: "x9" })).toBeInTheDocument();
+	expect(optionNames()).toEqual(["home", "x0", "x9"]);
+	expect(selected()).toEqual([]);
+});
+
+test("emptying the query forgets the sources: a later unsourced option of the same id is replaced like any other", async () => {
+	const { getOptions, calls } = makeDeferredGetOptions();
+	const screen = await render(Fixture, { getOptions });
+	await openAndType(screen, "a");
+	await waitForCall(calls, 0);
+	calls[0].ctx.append([{ id: "x1" }], { source: "x" });
+	calls[0].resolve([]);
+	await expect.element(screen.getByRole("option", { name: "x1" })).toBeInTheDocument();
+
+	await screen.getByRole("textbox").fill("");
+	await expect.element(screen.getByRole("listbox")).not.toBeInTheDocument();
+
+	await screen.getByRole("textbox").fill("b");
+	await waitForCall(calls, 1);
+	calls[1].resolve([{ id: "x1" }]); // unsourced this time
+	await expect.element(screen.getByRole("option", { name: "x1" })).toBeInTheDocument();
+	await expect.poll(spinner).toBeNull();
+
+	await screen.getByRole("textbox").fill("bc");
+	await waitForCall(calls, 2);
+	calls[2].ctx.append([{ id: "other" }]);
+	await expect.element(screen.getByRole("option", { name: "other" })).toBeInTheDocument();
+	expect(optionNames()).toEqual(["other"]);
+});
+
+test("a group landing above others leaves their rows alone: same DOM nodes, and the active option keeps the focus", async () => {
+	const rank: Record<string, number> = { top: 0, mid: 1, low: 2 };
+	const sortOptions = (a: Item, b: Item) => rank[a.optgroup] - rank[b.optgroup];
+	const { getOptions, calls } = makeDeferredGetOptions();
+	const screen = await render(Fixture, { getOptions, sortOptions });
+	await openAndType(screen, "a");
+	await waitForCall(calls, 0);
+
+	calls[0].ctx.append([
+		{ id: "m1", optgroup: "mid" },
+		{ id: "l1", optgroup: "low" },
+	]);
+	await expect.element(screen.getByRole("option", { name: "l1" })).toBeInTheDocument();
+	await userEvent.keyboard("{ArrowDown}");
+	const options = () => [...document.querySelectorAll('[role="option"]')];
+	// arrowing focuses the active option
+	await expect.poll(() => document.activeElement).toBe(options()[0]);
+	const [m1, l1] = options();
+
+	calls[0].ctx.append([{ id: "t1", optgroup: "top" }]);
+	await expect.element(screen.getByRole("option", { name: "t1" })).toBeInTheDocument();
+	expect(groupNames()).toEqual(["top", "mid", "low"]);
+	// the rows that were on screen are the very same elements, not rebuilt copies
+	expect(options()[1]).toBe(m1);
+	expect(options()[2]).toBe(l1);
+	// so the focused option is still focused, and Enter still picks it
+	expect(document.activeElement).toBe(m1);
+	await userEvent.keyboard("{Enter}");
+	await expect.element(screen.getByTestId("selected")).toHaveTextContent("m1");
+});

@@ -122,11 +122,42 @@ How batches behave:
   the old behaviour: the resolved array replaces the list.
 - The spinner stays on until the promise settles, however many batches arrived before.
 - An option whose id is already on screen is skipped — the first batch to name an id wins.
+  (A stale option kept for a named source, below, is the exception: a fresh one replaces it.)
 - `append` does nothing once a newer query has superseded this one, or after the promise has
   settled. `signal` is aborted in the same cases and when the component is destroyed, so pass it
   on to `fetch` and similar.
 - A rejection is reported once through `notifications` (only for the current query, never for
   one aborted by the component); batches already on screen stay.
+
+### Named sources
+
+With the rules above, a query whose first batch is the local rows takes every remote group
+off the screen on each keystroke, and the groups come back one by one as their sources
+answer: the list blinks. Name the source of a batch to keep its rows up in the meantime:
+
+```ts
+// 1. local rows: no source, replaced at once as before
+ctx.append(localRows.filter((r) => r.label.toLowerCase().includes(q.toLowerCase())));
+// 2. each remote source names itself
+await Promise.allSettled(
+	sources.map((s) =>
+		s.search(q, { signal: ctx.signal }).then((hits) => ctx.append(hits, { source: s.id }))
+	)
+);
+```
+
+- Options appended with a `source` outlive their query. When the next query's first batch
+  replaces the list they stay on screen, stale, until the **same source** appends again or
+  that query **settles** — whichever comes first.
+- An empty answer is an answer: `append([], { source })` takes the source's stale rows off
+  the screen. A source that appends nothing at all keeps them until the query settles.
+- A stale option can be highlighted and picked like any other. If its source names it again
+  it keeps the highlight; if it goes, the highlight goes with it (it does not move to a
+  neighbour).
+- Emptying the query (without `showAllOnEmptyQ`) clears everything, stale rows included.
+- Pair it with a `sortOptions` comparator that pins each group's place (see below). In
+  arrival order (`sortOptions={false}`) a query's own rows lead and the stale ones follow,
+  so a group moves to the end when its source answers.
 
 ### Ordering
 

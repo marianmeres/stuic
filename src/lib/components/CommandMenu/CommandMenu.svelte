@@ -50,8 +50,15 @@
 		 * query's options; every later batch adds to them. An option whose id is already
 		 * on screen is skipped. Ignored once a newer query supersedes this one, and after
 		 * this query's promise has settled.
+		 *
+		 * `options.source` names who the batch is from (typically a remote source that
+		 * answers on its own). Options appended with a source outlive their query: when
+		 * the next query's first batch replaces the list they stay on screen, until the
+		 * same source appends again (an empty array counts) or that query settles. That
+		 * keeps a source's rows from vanishing on every keystroke only to come back a
+		 * moment later.
 		 */
-		append: (items: Item[]) => void;
+		append: (items: Item[], options?: { source?: string }) => void;
 		/** Aborted when a newer query supersedes this one, or when the component is destroyed. */
 		signal: AbortSignal;
 	}
@@ -147,6 +154,34 @@
 	});
 	let options = $derived($_optionsColl);
 
+	// Which on-screen options a batch appended with a `source` (id → source), and which
+	// of those belong to a query that has been replaced since: they stay up, stale,
+	// until their source answers again or the current query settles. Plain bookkeeping,
+	// nothing renders from it.
+	const sourceOf = new Map<unknown, string>();
+	const stale = new Set<unknown>();
+	// a batch may name an option as a bare id (the collection turns it into an item)
+	const idOf = (o: Item | string) => (typeof o === "string" ? o : o?.[itemIdPropName]);
+
+	function dropStale(match: (id: unknown) => boolean = () => true) {
+		for (const id of [...stale]) {
+			if (!match(id)) continue;
+			stale.delete(id);
+			sourceOf.delete(id);
+			_optionsColl.removeAllBy(itemIdPropName, id);
+		}
+	}
+
+	// Removing the active option moves the collection's marker onto its neighbour. Here
+	// that would highlight (and focus) a row the person never chose, mid-typing: the
+	// highlight stays on the same option while it is on screen, and goes with it.
+	function keepActive(id: unknown) {
+		if (_optionsColl.active?.[itemIdPropName] === id) return;
+		const item = id == null ? undefined : _optionsColl.findById(id as string);
+		if (item) _optionsColl.setActive(item);
+		else _optionsColl.unsetActive();
+	}
+
 	// The active option's id is a primitive, so an effect keyed on it re-runs only when
 	// the active option actually changes — not on every publish of the collection (each
 	// batch a progressive `getOptions` appends is a publish, and must not scroll or
@@ -176,6 +211,8 @@
 
 		if (!currQ && !showAllOnEmptyQ) {
 			_optionsColl.clear();
+			sourceOf.clear();
+			stale.clear();
 			isFetching = false;
 			return;
 		}
@@ -189,13 +226,40 @@
 		// replaces the previous query's options (which stay up until then, so the list
 		// does not flash empty on every keystroke); later batches add to them. The
 		// collection is `unique`, so the first batch to name an id wins.
-		const append = (items: Item[]) => {
+		//
+		// The exception to "replaces" are options appended with a `source`: they stay,
+		// stale, until that source's first batch of this query (or until it settles).
+		// One `batch()` is one publish, so whatever a batch removes and adds reaches
+		// the DOM in one step.
+		const append = (items: Item[], { source }: { source?: string } = {}) => {
 			if (!live()) return;
-			if (!replaced) {
-				_optionsColl.clear(); // publishes, so an empty first batch still empties the list
-				replaced = true;
-			}
-			_optionsColl.addMany(items);
+			items = items ?? [];
+			const wasActive = _optionsColl.active?.[itemIdPropName];
+			_optionsColl.batch(() => {
+				// what the previous query's sources said, held over (first batch only)
+				let held: Item[] = [];
+				if (!replaced) {
+					replaced = true;
+					held = _optionsColl.items.filter((o) => sourceOf.has(idOf(o)));
+					for (const o of held) stale.add(idOf(o));
+					_optionsColl.clear(); // publishes, so an empty first batch still empties the list
+				}
+				// this source has answered: what it said to the previous query goes
+				if (source != null) dropStale((id) => sourceOf.get(id) === source);
+				// a fresh option replaces a stale one of the same id, whoever held it
+				const ids = new Set(items.map(idOf));
+				dropStale((id) => ids.has(id));
+				if (source != null) {
+					// only what this batch really adds (an id already on screen is skipped)
+					for (const id of ids) {
+						if (id != null && !_optionsColl.findById(id)) sourceOf.set(id, source);
+					}
+				}
+				_optionsColl.addMany(items);
+				// after the batch's own rows: in arrival order, this query's rows lead
+				_optionsColl.addMany(held.filter((o) => stale.has(idOf(o))));
+				keepActive(wasActive);
+			});
 		};
 
 		isFetching = true;
@@ -213,9 +277,19 @@
 			})
 			.finally(() => {
 				settled = true;
+				if (currentRequest !== fetchRequestId) return;
 				// Only the latest request toggles the fetching state back off
 				// so the spinner doesn't flicker when a stale response arrives late.
-				if (currentRequest === fetchRequestId) isFetching = false;
+				isFetching = false;
+				// The sources that did not answer this query: what they said to the previous
+				// one goes now. (A query that never got to a first batch replaced nothing.)
+				if (replaced && stale.size) {
+					const wasActive = _optionsColl.active?.[itemIdPropName];
+					_optionsColl.batch(() => {
+						dropStale();
+						keepActive(wasActive);
+					});
+				}
 			});
 	});
 
@@ -380,7 +454,9 @@
 							class={twMerge(
 								!unstyled && "stuic-command-menu-options",
 								"block space-y-1 p-1",
-								"overflow-y-auto overflow-x-hidden mb-1",
+								// mt-1 mirrors the lg input-wrap's top padding, so the search row
+								// stays vertically centered above the divider
+								"overflow-y-auto overflow-x-hidden my-1",
 								"border-t"
 							)}
 							bind:this={optionsBox}
@@ -389,7 +465,8 @@
 							id={listId}
 							aria-label="Search results"
 						>
-							{#each _normalize_and_group_options(options.items) as [_optgroup, _opts]}
+							<!-- keyed, or a group landing above others would rebuild every row below it -->
+							{#each _normalize_and_group_options(options.items) as [_optgroup, _opts] (_optgroup)}
 								<div class="p-1">
 									{#if _optgroup}
 										<div
