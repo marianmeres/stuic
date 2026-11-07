@@ -1,6 +1,6 @@
 {
 	"name": "@marianmeres/stuic",
-	"version": "3.201.0",
+	"version": "3.201.1",
 	"packageManager": "pnpm@12.16.1",
 	"scripts": {
 		"dev": "vite dev",
