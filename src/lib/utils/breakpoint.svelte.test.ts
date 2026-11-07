@@ -45,6 +45,8 @@ test("the singleton outlives the component that created it", async () => {
 	await page.viewport(1100, 800);
 	await expect.element(second.getByTestId("current")).toHaveTextContent("lg");
 
-	const inert = warn.mock.calls.filter((args) => String(args[0]).includes("derived_inert"));
+	const inert = warn.mock.calls.filter((args) =>
+		String(args[0]).includes("derived_inert")
+	);
 	expect(inert).toEqual([]);
 });
