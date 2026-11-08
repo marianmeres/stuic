@@ -19,9 +19,9 @@
 		"test:ui": "vitest --ui",
 		"svelte-check": "svelte-check",
 		"svelte-package": "svelte-package",
-		"rp": "pnpm run build && npx @marianmeres/release patch --yes --no-push && npm publish --access public && git push --follow-tags",
-		"rpm": "pnpm run build && npx @marianmeres/release minor --yes --no-push && npm publish --access public && git push --follow-tags",
-		"release": "npx @marianmeres/release"
+		"rp": "npm whoami >/dev/null && npx --yes @marianmeres/release@^2.3.0 patch -y --before-bump \"pnpm run build\" --before-push \"npm publish --access public\"",
+		"rpm": "npm whoami >/dev/null && npx --yes @marianmeres/release@^2.3.0 minor -y --before-bump \"pnpm run build\" --before-push \"npm publish --access public\"",
+		"release": "npx --yes @marianmeres/release@^2.3.0"
 	},
 	"files": [
 		"dist",
