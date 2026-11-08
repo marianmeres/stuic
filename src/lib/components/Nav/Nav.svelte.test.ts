@@ -9,7 +9,8 @@ import type { NavGroup, NavItem } from "./Nav.svelte";
 //
 // Two setup hazards drive the whole file:
 //   1. persistState defaults TRUE and reads/writes localStorage, so expand state
-//      would leak between tests. Every render passes persistState={false} and we
+//      would leak between tests. Every render passes persistState={false} (except
+//      the persistence tests 13-14, which assert on localStorage on purpose) and we
 //      clear localStorage in beforeEach for belt-and-suspenders determinism.
 //   2. Leaf items with an href render a real <a href> whose onclick does NOT
 //      preventDefault — a Playwright .click() would navigate the test page and
@@ -288,4 +289,71 @@ test("(12) disabled onClick-only leaf renders a <button> with the disabled attri
 	await expect
 		.element(screen.getByRole("link", { name: "Action A1" }))
 		.not.toBeInTheDocument();
+});
+
+test("(13) sectionId keys the collapsible title's saved state per section under a shared prefix", async () => {
+	// Two Navs share one storageKeyPrefix (as a sidebar does on purpose, so that a
+	// group's memory follows its id between sections) but carry distinct sectionIds.
+	// Collapsing one must write its own `{prefix}-section-{sectionId}` key, leave the
+	// other section untouched, and a re-mount must read each section's own state back.
+	const prefix = "stuic-nav-shared";
+	const groupsA: NavGroup[] = [{ title: "Group A1", items: [] }];
+	const groupsB: NavGroup[] = [{ title: "Group B1", items: [] }];
+	const propsA = {
+		groups: groupsA,
+		title: "Section A",
+		collapsibleTitle: true,
+		storageKeyPrefix: prefix,
+		sectionId: "a",
+	};
+	const propsB = { ...propsA, groups: groupsB, title: "Section B", sectionId: "b" };
+
+	const first = { a: await render(Nav, propsA), b: await render(Nav, propsB) };
+	const titleA = first.a.getByRole("button", { name: "Section A" });
+	const titleB = first.b.getByRole("button", { name: "Section B" });
+	await expect.element(titleA).toHaveAttribute("aria-expanded", "true");
+	await expect.element(titleB).toHaveAttribute("aria-expanded", "true");
+
+	await titleA.click();
+	await expect.element(titleA).toHaveAttribute("aria-expanded", "false");
+	// Section B is unaffected...
+	await expect.element(titleB).toHaveAttribute("aria-expanded", "true");
+	// ...because only A's own key was written; B's key and the bare `-section` key
+	// (what a Nav without sectionId would use) stay untouched.
+	expect(localStorage.getItem(`${prefix}-section-a`)).toBe("false");
+	expect(localStorage.getItem(`${prefix}-section-b`)).toBeNull();
+	expect(localStorage.getItem(`${prefix}-section`)).toBeNull();
+
+	// Re-mount both (a "reload"): each reads its own saved state.
+	first.a.unmount();
+	first.b.unmount();
+	const second = { a: await render(Nav, propsA), b: await render(Nav, propsB) };
+	await expect
+		.element(second.a.getByRole("button", { name: "Section A" }))
+		.toHaveAttribute("aria-expanded", "false");
+	await expect
+		.element(second.b.getByRole("button", { name: "Section B" }))
+		.toHaveAttribute("aria-expanded", "true");
+});
+
+test("(14) without sectionId the collapsible title's saved state stays under `{prefix}-section`", async () => {
+	const prefix = "stuic-nav-single";
+	const groups: NavGroup[] = [{ title: "Group A", items: [] }];
+	const screen = await render(Nav, {
+		groups,
+		title: "Main",
+		collapsibleTitle: true,
+		storageKeyPrefix: prefix,
+	});
+
+	const titleBtn = screen.getByRole("button", { name: "Main" });
+	await titleBtn.click();
+	await expect.element(titleBtn).toHaveAttribute("aria-expanded", "false");
+
+	expect(localStorage.getItem(`${prefix}-section`)).toBe("false");
+	// No per-section key is produced (guards against a stray `-section-undefined`).
+	const perSection = Object.keys(localStorage).filter((k) =>
+		k.startsWith(`${prefix}-section-`)
+	);
+	expect(perSection).toEqual([]);
 });

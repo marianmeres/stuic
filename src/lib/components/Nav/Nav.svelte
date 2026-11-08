@@ -125,6 +125,14 @@
 		/** Storage key prefix for localStorage (default: 'stuic-nav') */
 		storageKeyPrefix?: string;
 
+		/**
+		 * This section's identity among `Nav`s that share a `storageKeyPrefix`. It keys the
+		 * collapsible title's persisted state, `{prefix}-section-{sectionId}`, so that several
+		 * collapsible sections can share a prefix (and with it their groups' memory).
+		 * Omitted: `{prefix}-section`.
+		 */
+		sectionId?: string;
+
 		/** When true, the section title becomes a button that collapses/expands all groups beneath it. Default: false (non-interactive, today's behavior). */
 		collapsibleTitle?: boolean;
 
@@ -183,6 +191,7 @@
 		el = $bindable(),
 		persistState = true,
 		storageKeyPrefix = "stuic-nav",
+		sectionId,
 		collapsibleTitle = false,
 		defaultTitleExpanded = true,
 		onTitleToggle,
@@ -218,7 +227,9 @@
 	}
 
 	function getSectionStorageKey(): string {
-		return `${storageKeyPrefix}-section`;
+		return sectionId
+			? `${storageKeyPrefix}-section-${sectionId}`
+			: `${storageKeyPrefix}-section`;
 	}
 
 	function loadGroupState(groupId: string): boolean | undefined {
