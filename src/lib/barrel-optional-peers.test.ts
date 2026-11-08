@@ -202,3 +202,34 @@ describe("root barrel isolation from optional peer deps", () => {
 		}
 	});
 });
+
+/**
+ * Guard: nothing inside the package imports the root barrel back.
+ *
+ * Why this exists — `Backdrop.svelte` and `X.svelte` imported `#lib/index.js`, which put
+ * the barrel inside its own import cycle (index.ts -> Backdrop/index.ts -> Backdrop.svelte
+ * -> index.ts). Node's ESM loader copes with that; Vite's SSR module runner does not,
+ * under concurrency. A module it judges circular is handed out with whatever exports it
+ * has SO FAR to any importer that arrives while it is still evaluating — including one
+ * that is not part of the cycle at all. SvelteKit loads a page's layouts and leaf in
+ * parallel, so on a cold `vite dev` a consumer's module-scope `new SwitchState(...)` met a
+ * barrel that had not reached its `utils` exports yet: "SwitchState is not a
+ * constructor", cached by the runner until the dev server restarts. Production builds are
+ * unaffected, which is why nothing here noticed.
+ *
+ * Inside the package, import the defining module, never the barrel.
+ */
+describe("root barrel is never imported from inside the package", () => {
+	const barrelFile = resolve(SRC_LIB, "index.ts");
+
+	test("no module reachable from src/lib/index.ts imports it back", () => {
+		const offenders: string[] = [];
+		for (const file of walk(barrelFile).files) {
+			for (const spec of specifiersIn(codeOf(file))) {
+				const target = spec === "#lib" ? barrelFile : resolveSpecifier(spec, file);
+				if (target === barrelFile) offenders.push(`${rel(file)} -> ${spec}`);
+			}
+		}
+		expect(offenders.sort()).toEqual([]);
+	});
+});
