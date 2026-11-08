@@ -453,6 +453,11 @@
 		align-items: center;
 		justify-content: center;
 		gap: var(--stuic-pill-gap);
+		/* A flex item of a pill the consumer may cap (max-width): without this it keeps the
+		   flex default `min-width: auto` and never shrinks below its label, so the label is
+		   centred past both pill edges and the × lands outside. With it, a truncating span
+		   inside has something to clip against. */
+		min-width: 0;
 
 		/* Reset native button/anchor defaults */
 		appearance: none;

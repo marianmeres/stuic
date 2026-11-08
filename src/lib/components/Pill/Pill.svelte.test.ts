@@ -2,6 +2,8 @@ import { render } from "vitest-browser-svelte";
 import { expect, test, vi } from "vitest";
 import { createRawSnippet } from "svelte";
 import Pill from "./Pill.svelte";
+// the geometry test (capped pill truncation) needs the real stylesheet; the rest do not care
+import "./index.css";
 
 const text = (s: string) =>
 	createRawSnippet(() => ({ render: () => `<span>${s}</span>` }));
@@ -101,6 +103,36 @@ test("dismiss click fires ondismiss once and does NOT fire pill onclick (stopPro
 	await dismiss.click();
 	expect(ondismiss).toHaveBeenCalledOnce();
 	expect(onclick).not.toHaveBeenCalled();
+});
+
+// Geometry (real stylesheet): a dismissible pill with onclick/href wraps its content in
+// button/a.stuic-pill-main, a flex item of the pill. Without `min-width: 0` it keeps the
+// flex default `min-width: auto` and never shrinks below its label, so a consumer that
+// caps the pill (FieldLikeChips, pickers) gets a capped pill with an uncapped button
+// inside: the label is centred past both edges and the × lands outside the pill.
+test("dismissible + onclick: a capped pill lets its label truncate (main shrinks with the pill)", async () => {
+	const LABEL =
+		"A relation label long enough to overflow a narrow pill many times over, so it must truncate";
+	const screen = await render(Pill, {
+		children: createRawSnippet(() => ({
+			render: () =>
+				`<span data-testid="label" style="min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">${LABEL}</span>`,
+		})),
+		dismissible: true,
+		onclick: () => {},
+		style: "max-width: 120px",
+		"data-testid": "pill",
+	});
+	const pill = screen.getByTestId("pill").element() as HTMLElement;
+	const main = pill.querySelector<HTMLElement>(".stuic-pill-main")!;
+	const label = screen.getByTestId("label").element() as HTMLElement;
+
+	// the inner button shrinks with the pill instead of keeping its content width …
+	expect(main.getBoundingClientRect().width).toBeLessThanOrEqual(
+		pill.getBoundingClientRect().width
+	);
+	// … so the consumer's truncating span has something to clip against
+	expect(label.scrollWidth).toBeGreaterThan(label.clientWidth);
 });
 
 test("dismissible: dismissLabel sets the X button's accessible name", async () => {

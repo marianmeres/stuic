@@ -101,6 +101,8 @@ A small rounded inline element for tags, badges, status indicators, and filter c
 
 `dismissible` works alongside `onclick` and `href` — the X button stops propagation so the parent click/navigation only fires for clicks outside the X.
 
+To truncate an over-long label, cap the pill (e.g. `class="max-w-full"`) and wrap the label in a span with `min-width: 0; overflow: hidden; text-overflow: ellipsis` — the pill is a flex row, so a bare text node would never shrink. This works the same with and without `onclick`/`href`.
+
 ### Filter Chips (active state)
 
 ```svelte
