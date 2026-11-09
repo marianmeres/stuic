@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import { untrack } from "svelte";
 	import { ModalDialog } from "../ModalDialog/index.js";
 	import { createClog } from "@marianmeres/clog";
 	import type { TranslateFn } from "../../types.js";
@@ -99,17 +100,20 @@
 		(_assets ?? []).map(normalizeInput).filter(Boolean) as AssetPreviewNormalized[]
 	);
 	let previewIdx = $state<number>(0);
-	let _openIdx: number | undefined = $state();
 	let modal: ModalDialog | undefined = $state();
 	let content: AssetsPreviewContent | undefined = $state();
 
+	// When the modal becomes visible, preload the full-size images around the opened
+	// index; when it closes, reset the zoom. This effect must never WRITE `previewIdx`:
+	// it also tracks `assets`/`preloadWindow`/`baseUrl`, so a write here would reset the
+	// user's position whenever one of those changes while the preview is open (and a
+	// read-then-write of the same state re-runs the effect, which is exactly how
+	// open(index) used to land on the first asset). `previewIdx` is read untracked so
+	// navigating inside the open preview does not re-trigger the preload either.
 	$effect(() => {
 		const visible = modal?.visibility().visible;
 		if (visible) {
-			// Use the index from open(index) if provided, otherwise reset to 0
-			const idx = _openIdx ?? 0;
-			previewIdx = idx;
-			_openIdx = undefined;
+			const idx = untrack(() => previewIdx);
 
 			const toPreload: PreloadImgOptions[] = [];
 			const len = assets.length;
@@ -137,7 +141,10 @@
 	});
 
 	export function open(index?: number) {
-		_openIdx = typeof index === "number" ? index : undefined;
+		// Set before the modal opens: AssetsPreviewContent mounts with `bind:previewIdx`,
+		// so it starts on this index. open() without an index always starts at the first
+		// asset; open(index) while already open just moves to that index.
+		previewIdx = typeof index === "number" ? index : 0;
 		modal?.open();
 	}
 
