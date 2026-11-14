@@ -274,13 +274,16 @@
 	<!-- Resend control -->
 	{#if onResend}
 		<div class={unstyled ? undefined : "stuic-email-verify-form-resend"}>
-			{#if cooldownRemaining > 0}
-				<span class={unstyled ? undefined : "stuic-email-verify-form-resend-cooldown"}>
-					{t("email_verify_form.resend_cooldown", { seconds: cooldownRemaining })}
-				</span>
-			{:else if resentFlash}
+			<!-- The confirmation first, then the countdown. A resend starts both at once, and the
+			     cooldown (30s by default) outlasts the 3s flash: with the countdown first, the
+			     "sent" confirmation was never shown at all. -->
+			{#if resentFlash}
 				<span class={unstyled ? undefined : "stuic-email-verify-form-resend-flash"}>
 					{t("email_verify_form.resent")}
+				</span>
+			{:else if cooldownRemaining > 0}
+				<span class={unstyled ? undefined : "stuic-email-verify-form-resend-cooldown"}>
+					{t("email_verify_form.resend_cooldown", { seconds: cooldownRemaining })}
 				</span>
 			{:else}
 				<span>{t("email_verify_form.resend_prompt")}</span>

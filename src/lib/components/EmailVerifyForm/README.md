@@ -8,7 +8,8 @@ The form owns:
 - An `OtpInput` (default 6 digits) that auto-submits on completion.
 - A general error banner via `DismissibleMessage`.
 - An optional inline "attempts remaining" hint.
-- An optional "Resend code" control with built-in cooldown countdown.
+- An optional "Resend code" control: a short "New code sent" confirmation after a resend,
+  then the built-in cooldown countdown.
 
 ## Usage
 
@@ -36,25 +37,25 @@ The form owns:
 
 ## Props
 
-| Prop                    | Type                          | Default  | Description                                              |
-| ----------------------- | ----------------------------- | -------- | -------------------------------------------------------- |
-| `email`                 | `string`                      | required | Email address shown in the subhead                       |
-| `onSubmit`              | `(code: string) => void`      | required | Called with the entered code (auto on complete + manual) |
-| `onResend`              | `() => Promise<void> \| void` | —        | When set, renders a resend control                       |
-| `resendCooldownSeconds` | `number`                      | `30`     | Cooldown after a successful resend                       |
-| `isSubmitting`          | `boolean`                     | `false`  | Disables submit + OtpInput                               |
-| `error`                 | `string`                      | —        | General error (renders alert + applies error styling)    |
-| `attemptsRemaining`     | `number`                      | —        | Inline hint, e.g. "3 attempts remaining"                 |
-| `codeLength`            | `number`                      | `6`      | Forwarded to OtpInput                                    |
-| `otpInputProps`         | `Partial<OtpInputProps>`      | —        | Pass-through props for the inner OtpInput                |
-| `notifications`         | `NotificationsStack`          | —        | Route errors to notification system                      |
-| `submitButton`          | `Snippet`                     | —        | Override submit section                                  |
-| `footer`                | `Snippet`                     | —        | Content below the resend control                         |
-| `heading`               | `string \| false`             | —        | Override heading text, or `false` to suppress entirely   |
-| `t`                     | `TranslateFn`                 | English  | i18n function — see [i18n](#i18n)                        |
-| `unstyled`              | `boolean`                     | `false`  | Skip default styling                                     |
-| `class`                 | `string`                      | —        | Additional CSS classes on the form root                  |
-| `el`                    | `HTMLFormElement`             | —        | Bindable form element                                    |
+| Prop                    | Type                          | Default  | Description                                                                                                             |
+| ----------------------- | ----------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `email`                 | `string`                      | required | Email address shown in the subhead                                                                                      |
+| `onSubmit`              | `(code: string) => void`      | required | Called with the entered code (auto on complete + manual)                                                                |
+| `onResend`              | `() => Promise<void> \| void` | —        | When set, renders a resend control                                                                                      |
+| `resendCooldownSeconds` | `number`                      | `30`     | Cooldown after a successful resend                                                                                      |
+| `isSubmitting`          | `boolean`                     | `false`  | Disables submit + OtpInput                                                                                              |
+| `error`                 | `string`                      | —        | General error (renders alert + applies error styling)                                                                   |
+| `attemptsRemaining`     | `number`                      | —        | Inline hint, e.g. "3 attempts remaining"                                                                                |
+| `codeLength`            | `number`                      | `6`      | Forwarded to OtpInput                                                                                                   |
+| `otpInputProps`         | `Partial<OtpInputProps>`      | —        | Pass-through props for the inner OtpInput, e.g. `{ autoFocus: false }` when the form should not take the focus on mount |
+| `notifications`         | `NotificationsStack`          | —        | Route errors to notification system                                                                                     |
+| `submitButton`          | `Snippet`                     | —        | Override submit section                                                                                                 |
+| `footer`                | `Snippet`                     | —        | Content below the resend control                                                                                        |
+| `heading`               | `string \| false`             | —        | Override heading text, or `false` to suppress entirely                                                                  |
+| `t`                     | `TranslateFn`                 | English  | i18n function — see [i18n](#i18n)                                                                                       |
+| `unstyled`              | `boolean`                     | `false`  | Skip default styling                                                                                                    |
+| `class`                 | `string`                      | —        | Additional CSS classes on the form root                                                                                 |
+| `el`                    | `HTMLFormElement`             | —        | Bindable form element                                                                                                   |
 
 ## i18n
 
