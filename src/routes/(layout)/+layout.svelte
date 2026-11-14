@@ -44,7 +44,12 @@
 <ColorSchemeSystemAware />
 
 <div class="flex flex-col min-h-screen">
-	<header class={["p-4 flex items-center bg-stone-200 dark:bg-stone-950"]}>
+	<header
+		class={[
+			"p-4 flex items-center",
+			"bg-(--stuic-color-surface) text-(--stuic-color-surface-foreground)",
+		]}
+	>
 		<div class="flex-1">
 			<a class="underline" href="/">UI home</a>
 			<span class="space-x-1">
@@ -65,7 +70,7 @@
 
 			<select
 				bind:value={selectedTheme}
-				class="mr-2 px-2 py-1 rounded border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900"
+				class="mr-2 px-2 py-1 rounded border border-(--stuic-color-border) bg-(--stuic-color-input) text-(--stuic-color-foreground)"
 			>
 				{#each themeNames as t}
 					<option value={t}>{t}</option>

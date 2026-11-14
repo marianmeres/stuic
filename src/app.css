@@ -3,8 +3,11 @@
 
 @import "./lib/index.css";
 
+/* The page follows the active theme (stone from lib/index.css, or the one picked in the demo
+   header), so each theme previews on its own background, light and dark. */
 @layer base {
 	html {
-		@apply text-stone-950 dark:text-stone-50 bg-stone-50 dark:bg-stone-800;
+		color: var(--stuic-color-foreground);
+		background-color: var(--stuic-color-background);
 	}
 }
