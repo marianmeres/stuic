@@ -143,3 +143,32 @@ test("disabled disables the slots", async () => {
 // a settable clipboardData, and maxlength=1 blocks .fill from injecting multiple chars
 // into one slot. The sequential-fill test above covers the all-filled + onComplete
 // contract that paste ultimately funnels into via commit().
+
+// Regression: two auto-focused OtpInputs mounted together froze the tab before it painted
+// (the /email-verify-form demo, three forms on one page). Each slot's focus handler defers
+// a select(), and in Chromium select() FOCUSES the input: the slot that had lost the focus
+// took it back, which re-armed the other one, forever, in microtasks. No timer and no paint
+// ever ran again.
+// A regression would hang this whole file the same way, so select() is counted and capped
+// here: past the cap it stops focusing, the loop ends, and the assertion fails instead.
+test("auto-focused OtpInputs mounted together do not fight over the focus", async () => {
+	const select = HTMLInputElement.prototype.select;
+	let calls = 0;
+	HTMLInputElement.prototype.select = function () {
+		if (++calls > 200) return;
+		select.call(this);
+	};
+	try {
+		// both mounted before either one's deferred focus work runs
+		const [, last] = await Promise.all([render(OtpInput), render(OtpInput)]);
+		// a macrotask: under the loop it would never have run
+		await new Promise((r) => setTimeout(r, 50));
+
+		// a focus + a select per instance, plus the deferred select of the one that kept it
+		expect(calls).toBeLessThan(10);
+		// the last one mounted has the focus, on its first slot
+		expect(document.activeElement).toBe(last.container.querySelector("input"));
+	} finally {
+		HTMLInputElement.prototype.select = select;
+	}
+});

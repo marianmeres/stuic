@@ -39,6 +39,7 @@
         // 'drag-drop', 
         'drawer',
         'dropdown-menu',
+		'email-verify-form',
 		'empty-state',
 		'fields-builder',
 		'file-dropzone',

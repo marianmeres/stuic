@@ -109,9 +109,11 @@
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Minimal (no resend, no error, default cooldown)</h2>
 	<div class="max-w-sm">
+		<!-- one auto-focused OTP input per page: the interactive form above keeps the focus -->
 		<EmailVerifyForm
 			email="someone@example.com"
 			onSubmit={(code) => alert("Submitted: " + code)}
+			otpInputProps={{ autoFocus: false }}
 		/>
 	</div>
 </section>
@@ -127,6 +129,7 @@
 			class="space-y-4"
 			email="user@example.com"
 			onSubmit={(code) => alert("Submitted: " + code)}
+			otpInputProps={{ autoFocus: false }}
 		/>
 	</div>
 </section>
