@@ -31,7 +31,10 @@
 	/* Grid */
 	--stuic-gantt-grid-line-color: var(--stuic-color-border);
 	--stuic-gantt-weekend-bg: var(--stuic-color-muted);
-	--stuic-gantt-today-color: var(--stuic-color-destructive);
+	/* `--stuic-gantt-today-color` is deliberately NOT declared: it is read as a fallback
+	   argument at its two usage sites, which default differently. The line is a fill (the
+	   raw destructive), the header flag is text (surface-destructive-foreground). Set the
+	   token and both follow it. */
 	--stuic-gantt-today-width: 2px;
 
 	/* Row + left label column */
@@ -201,7 +204,10 @@
 	}
 
 	.stuic-gantt-unit[data-today] {
-		color: var(--stuic-gantt-today-color);
+		color: var(
+			--stuic-gantt-today-color,
+			var(--stuic-color-surface-destructive-foreground, var(--stuic-color-destructive))
+		);
 		font-weight: var(--font-weight-bold);
 	}
 
@@ -256,7 +262,7 @@
 		bottom: 0;
 		width: var(--stuic-gantt-today-width);
 		translate: -50% 0;
-		background: var(--stuic-gantt-today-color);
+		background: var(--stuic-gantt-today-color, var(--stuic-color-destructive));
 	}
 
 	/* ============================================================================

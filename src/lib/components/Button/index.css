@@ -152,6 +152,22 @@
 	/* ============================================================================
 	   INTENT COLOR MAPPING
 	   Each intent sets the color palette via internal CSS vars.
+
+	   Two pairings per intent, both from the theme:
+	     fill   --_color + --_fg         {intent} + {intent}-foreground
+	            (solid)
+	     tint   --_tint + --_on-tint     surface-{intent} + surface-{intent}-foreground
+	            (soft, outline, ghost, link)
+
+	   The raw intent is a fill colour: a theme picks it to carry {intent}-foreground, not
+	   to be read as text. So intent-coloured text reads --_on-tint, which the theme derives
+	   to stay legible on the tint and on the page. --_color still draws the borders
+	   and the hover / active washes. A theme without the surface-{intent} tokens falls back
+	   to the raw intent.
+
+	   Local override: the theme computes the surface-{intent} tokens at :root, so a
+	   non-root override of --stuic-color-{intent} does not reach them (nor its -hover /
+	   -active). Set --stuic-color-surface-{intent} and -foreground alongside it.
 	   ============================================================================ */
 
 	/* Default (no intent): uses role tokens for theme-aware neutral styling */
@@ -171,6 +187,11 @@
 		--_fg: var(--stuic-color-primary-foreground);
 		--_fg-hover: var(--stuic-color-primary-foreground-hover);
 		--_fg-active: var(--stuic-color-primary-foreground-active);
+		--_tint: var(
+			--stuic-color-surface-primary,
+			color-mix(in srgb, var(--_color) 15%, var(--stuic-color-background))
+		);
+		--_on-tint: var(--stuic-color-surface-primary-foreground, var(--_color));
 	}
 
 	.stuic-button[data-intent="accent"] {
@@ -180,6 +201,11 @@
 		--_fg: var(--stuic-color-accent-foreground);
 		--_fg-hover: var(--stuic-color-accent-foreground-hover);
 		--_fg-active: var(--stuic-color-accent-foreground-active);
+		--_tint: var(
+			--stuic-color-surface-accent,
+			color-mix(in srgb, var(--_color) 15%, var(--stuic-color-background))
+		);
+		--_on-tint: var(--stuic-color-surface-accent-foreground, var(--_color));
 	}
 
 	.stuic-button[data-intent="destructive"] {
@@ -189,6 +215,11 @@
 		--_fg: var(--stuic-color-destructive-foreground);
 		--_fg-hover: var(--stuic-color-destructive-foreground-hover);
 		--_fg-active: var(--stuic-color-destructive-foreground-active);
+		--_tint: var(
+			--stuic-color-surface-destructive,
+			color-mix(in srgb, var(--_color) 15%, var(--stuic-color-background))
+		);
+		--_on-tint: var(--stuic-color-surface-destructive-foreground, var(--_color));
 	}
 
 	.stuic-button[data-intent="warning"] {
@@ -198,6 +229,11 @@
 		--_fg: var(--stuic-color-warning-foreground);
 		--_fg-hover: var(--stuic-color-warning-foreground-hover);
 		--_fg-active: var(--stuic-color-warning-foreground-active);
+		--_tint: var(
+			--stuic-color-surface-warning,
+			color-mix(in srgb, var(--_color) 15%, var(--stuic-color-background))
+		);
+		--_on-tint: var(--stuic-color-surface-warning-foreground, var(--_color));
 	}
 
 	.stuic-button[data-intent="success"] {
@@ -207,6 +243,11 @@
 		--_fg: var(--stuic-color-success-foreground);
 		--_fg-hover: var(--stuic-color-success-foreground-hover);
 		--_fg-active: var(--stuic-color-success-foreground-active);
+		--_tint: var(
+			--stuic-color-surface-success,
+			color-mix(in srgb, var(--_color) 15%, var(--stuic-color-background))
+		);
+		--_on-tint: var(--stuic-color-surface-success-foreground, var(--_color));
 	}
 
 	/* ============================================================================
@@ -228,40 +269,41 @@
 		--_border-active: var(--_color-active);
 	}
 
-	/* Outline: transparent background with colored border and text */
+	/* Outline: transparent background with colored border and on-tint text */
 	.stuic-button[data-variant="outline"] {
 		--_bg: transparent;
 		--_bg-hover: color-mix(in srgb, var(--_color) 10%, var(--stuic-color-background));
 		--_bg-active: color-mix(in srgb, var(--_color) 20%, var(--stuic-color-background));
-		--_text: var(--_color);
-		--_text-hover: var(--_color-hover);
-		--_text-active: var(--_color-active);
+		--_text: var(--_on-tint);
+		--_text-hover: var(--_on-tint);
+		--_text-active: var(--_on-tint);
 		--_border: var(--_color);
 		--_border-hover: var(--_color-hover);
 		--_border-active: var(--_color-active);
 	}
 
-	/* Ghost: transparent background, colored text, subtle hover state */
+	/* Ghost: transparent background, on-tint text, subtle hover state */
 	.stuic-button[data-variant="ghost"] {
 		--_bg: transparent;
 		--_bg-hover: color-mix(in srgb, var(--_color) 10%, var(--stuic-color-background));
 		--_bg-active: color-mix(in srgb, var(--_color) 20%, var(--stuic-color-background));
-		--_text: var(--_color);
-		--_text-hover: var(--_color-hover);
-		--_text-active: var(--_color-active);
+		--_text: var(--_on-tint);
+		--_text-hover: var(--_on-tint);
+		--_text-active: var(--_on-tint);
 		--_border: transparent;
 		--_border-hover: transparent;
 		--_border-active: transparent;
 	}
 
-	/* Soft: muted/translucent background tint with colored text */
+	/* Soft: the theme tint with its on-tint text */
 	.stuic-button[data-variant="soft"] {
-		--_bg: color-mix(in srgb, var(--_color) 15%, var(--stuic-color-background));
-		--_bg-hover: color-mix(in srgb, var(--_color) 25%, var(--stuic-color-background));
-		--_bg-active: color-mix(in srgb, var(--_color) 35%, var(--stuic-color-background));
-		--_text: var(--_color);
-		--_text-hover: var(--_color-hover);
-		--_text-active: var(--_color-active);
+		--_bg: var(--_tint);
+		/* 12% / 24% more of the intent, mixed into the 15% tint, are the 25% / 35% steps */
+		--_bg-hover: color-mix(in srgb, var(--_color) 12%, var(--_tint));
+		--_bg-active: color-mix(in srgb, var(--_color) 24%, var(--_tint));
+		--_text: var(--_on-tint);
+		--_text-hover: var(--_on-tint);
+		--_text-active: var(--_on-tint);
 		--_border: transparent;
 		--_border-hover: transparent;
 		--_border-active: transparent;
@@ -272,9 +314,14 @@
 		--_bg: transparent;
 		--_bg-hover: transparent;
 		--_bg-active: transparent;
-		--_text: var(--_color);
-		--_text-hover: var(--_color-hover);
-		--_text-active: var(--_color-active);
+		--_text: var(--_on-tint);
+		/* no background to mark the state on, so the text steps toward the foreground */
+		--_text-hover: color-mix(in srgb, var(--_on-tint), var(--stuic-color-foreground) 25%);
+		--_text-active: color-mix(
+			in srgb,
+			var(--_on-tint),
+			var(--stuic-color-foreground) 50%
+		);
 		--_border: transparent;
 		--_border-hover: transparent;
 		--_border-active: transparent;

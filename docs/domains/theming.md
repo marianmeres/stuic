@@ -27,13 +27,44 @@ Each intent has 6 variants:
 
 ### Surface Intent Colors (auto-generated)
 
-Soft backgrounds for callouts/alerts, derived via `color-mix()`:
+The tinted pairing of each intent, derived via `color-mix()`:
 
 ```
 --stuic-color-surface-{intent}            # 15% tint of intent
---stuic-color-surface-{intent}-foreground # Contrast text
+--stuic-color-surface-{intent}-foreground # Intent-colored text (intent 50% toward black / white)
 --stuic-color-surface-{intent}-border     # 30% tint border
 ```
+
+An intent therefore has two pairings: the fill (`{intent}` under `{intent}-foreground`) and
+the tint (`surface-{intent}` under `surface-{intent}-foreground`). The raw intent is a fill
+color, picked to carry its foreground, and often fails as text. **Intent-colored text reads
+`surface-{intent}-foreground`, never the raw intent.** `Button` and `Pill` do so in their
+`soft`, `outline`, `ghost` and `link` variants (`soft` also takes its background from
+`surface-{intent}`), and so does every other intent-colored text or glyph in the library:
+validation and error messages, `Stat` deltas, the `Stepper` and `Calendar` accents,
+`DismissibleMessage`, the icon bubbles of `Timeline` and `AlertConfirmPrompt`. The raw intent
+keeps drawing what is a fill: backgrounds, borders, rings, lines, bars, dots.
+
+`src/lib/intent-text.test.ts` enforces it. It follows every `color` declaration down its
+`var()` chain and fails when the chain ends on a raw intent, and it checks that every
+`--stuic-color-*` the library reads exists in the bundled theme (a misspelt token would
+silently fall back to the raw intent). Write the default with the raw intent as the fallback,
+for a theme without the surface tokens:
+
+```css
+--stuic-my-component-error-text: var(
+	--stuic-color-surface-destructive-foreground,
+	var(--stuic-color-destructive)
+);
+```
+
+When one token would draw both a border and text, do not declare it. Read it as a fallback
+argument at each usage site, so each role gets its own default behind it and setting the
+token still moves both (`--stuic-input-accent-error`, `--stuic-gantt-today-color`).
+
+The theme computes these at `:root`. A `:root` override of `--stuic-color-{intent}` reaches
+them; a local one (inline `style`, a scoped selector) does not, so set the `surface-{intent}`
+tokens alongside it.
 
 ### Role Colors
 

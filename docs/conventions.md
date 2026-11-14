@@ -273,16 +273,17 @@ export {
 
 ## Anti-Patterns
 
-| Don't                               | Do                                |
-| ----------------------------------- | --------------------------------- |
-| `export let prop`                   | `let { prop } = $props()`         |
-| `$: derived = ...`                  | `let derived = $derived(...)`     |
-| `dark:bg-gray-800`                  | CSS var with `:root.dark {}`      |
-| `import './index.css'` in component | Centralize in `src/lib/index.css` |
-| `class="variant-primary"`           | `data-variant="primary"`          |
-| `--stuic-btn-*`                     | `--stuic-button-*`                |
-| `--stuic-button-hover-bg`           | `--stuic-button-bg-hover`         |
-| `--stuic-button-bg-dark`            | `.dark { --stuic-button-bg: }`    |
+| Don't                                   | Do                                 |
+| --------------------------------------- | ---------------------------------- |
+| `export let prop`                       | `let { prop } = $props()`          |
+| `$: derived = ...`                      | `let derived = $derived(...)`      |
+| `dark:bg-gray-800`                      | CSS var with `:root.dark {}`       |
+| `import './index.css'` in component     | Centralize in `src/lib/index.css`  |
+| `class="variant-primary"`               | `data-variant="primary"`           |
+| `--stuic-btn-*`                         | `--stuic-button-*`                 |
+| `--stuic-button-hover-bg`               | `--stuic-button-bg-hover`          |
+| `--stuic-button-bg-dark`                | `.dark { --stuic-button-bg: }`     |
+| `color: var(--stuic-color-destructive)` | `…-surface-destructive-foreground` |
 
 ---
 

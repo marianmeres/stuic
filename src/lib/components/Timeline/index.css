@@ -238,23 +238,57 @@
 	}
 
 	/* ============================================================================
-	   INTENT — dot fills with the color, the bubble takes a soft tint
+	   INTENT — dot fills with the color; the bubble takes the theme's soft pairing
+	   (surface-{intent} under surface-{intent}-foreground: the raw intent is a fill
+	   colour and often too weak for a glyph on its own tint)
 	   ============================================================================ */
 
 	.stuic-timeline-item[data-intent="primary"] {
 		--_intent: var(--stuic-color-primary);
+		--_tint: var(
+			--stuic-color-surface-primary,
+			color-mix(in srgb, var(--stuic-color-primary) 15%, var(--stuic-color-background))
+		);
+		--_on-tint: var(--stuic-color-surface-primary-foreground, var(--stuic-color-primary));
 	}
 	.stuic-timeline-item[data-intent="accent"] {
 		--_intent: var(--stuic-color-accent);
+		--_tint: var(
+			--stuic-color-surface-accent,
+			color-mix(in srgb, var(--stuic-color-accent) 15%, var(--stuic-color-background))
+		);
+		--_on-tint: var(--stuic-color-surface-accent-foreground, var(--stuic-color-accent));
 	}
 	.stuic-timeline-item[data-intent="destructive"] {
 		--_intent: var(--stuic-color-destructive);
+		--_tint: var(
+			--stuic-color-surface-destructive,
+			color-mix(
+				in srgb,
+				var(--stuic-color-destructive) 15%,
+				var(--stuic-color-background)
+			)
+		);
+		--_on-tint: var(
+			--stuic-color-surface-destructive-foreground,
+			var(--stuic-color-destructive)
+		);
 	}
 	.stuic-timeline-item[data-intent="warning"] {
 		--_intent: var(--stuic-color-warning);
+		--_tint: var(
+			--stuic-color-surface-warning,
+			color-mix(in srgb, var(--stuic-color-warning) 15%, var(--stuic-color-background))
+		);
+		--_on-tint: var(--stuic-color-surface-warning-foreground, var(--stuic-color-warning));
 	}
 	.stuic-timeline-item[data-intent="success"] {
 		--_intent: var(--stuic-color-success);
+		--_tint: var(
+			--stuic-color-surface-success,
+			color-mix(in srgb, var(--stuic-color-success) 15%, var(--stuic-color-background))
+		);
+		--_on-tint: var(--stuic-color-surface-success-foreground, var(--stuic-color-success));
 	}
 
 	.stuic-timeline-item[data-intent] .stuic-timeline-marker[data-marker="dot"] {
@@ -262,8 +296,8 @@
 	}
 
 	.stuic-timeline-item[data-intent] .stuic-timeline-marker[data-marker="icon"] {
-		background: color-mix(in srgb, var(--_intent) 15%, var(--stuic-color-background));
-		color: var(--_intent);
+		background: var(--_tint);
+		color: var(--_on-tint);
 	}
 
 	/* ============================================================================

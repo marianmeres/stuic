@@ -790,6 +790,12 @@ Content passed via Svelte 5 snippets (not slots):
 - `soft` - Muted tinted background
 - `link` - Minimal, text decoration only
 
+`solid` is the intent's fill pairing (`{intent}` + `{intent}-foreground`). The other four draw
+intent-colored text, which reads `surface-{intent}-foreground` (never the raw intent, a fill
+color that often fails as text); `soft` also takes its background from `surface-{intent}`.
+`Pill` follows the same contract, asserted for both in
+`src/lib/components/intent-colors.svelte.test.ts`.
+
 ```svelte
 <Button intent="destructive" variant="outline">Delete</Button>
 <Button intent="success" variant="soft">Saved</Button>
@@ -817,16 +823,22 @@ Variants use data attributes for CSS targeting:
 Components use private CSS vars (`--_*`) set by intent/variant:
 
 ```css
-/* Intent sets color palette */
+/* Intent sets color palette: the fill pairing and the tint pairing */
 .stuic-button[data-intent="primary"] {
 	--_color: var(--stuic-color-primary);
 	--_fg: var(--stuic-color-primary-foreground);
+	--_tint: var(--stuic-color-surface-primary /* 15% mix fallback */);
+	--_on-tint: var(--stuic-color-surface-primary-foreground, var(--_color));
 }
 
 /* Variant determines how colors apply */
 .stuic-button[data-variant="solid"] {
 	--_bg: var(--_color);
 	--_text: var(--_fg);
+}
+.stuic-button[data-variant="soft"] {
+	--_bg: var(--_tint);
+	--_text: var(--_on-tint);
 }
 
 /* Base styles use internal vars */

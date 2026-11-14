@@ -342,15 +342,22 @@ Validation is handled by the `validate` action. Pass `validate={true}` for defau
 
 Override globally in `:root` or locally via `style` prop:
 
-| Variable                     | Default                     | Description            |
-| ---------------------------- | --------------------------- | ---------------------- |
-| `--stuic-input-radius`       | `--radius-md`               | Border radius          |
-| `--stuic-input-font-family`  | `--font-sans`               | Font family            |
-| `--stuic-input-transition`   | `150ms`                     | Transition duration    |
-| `--stuic-input-ring-width`   | `4px`                       | Focus ring width       |
-| `--stuic-input-ring-color`   | `--stuic-color-ring`        | Focus ring color       |
-| `--stuic-input-accent`       | `--stuic-color-primary`     | Accent color           |
-| `--stuic-input-accent-error` | `--stuic-color-destructive` | Error/validation color |
+| Variable                     | Default                  | Description            |
+| ---------------------------- | ------------------------ | ---------------------- |
+| `--stuic-input-radius`       | `--radius-md`            | Border radius          |
+| `--stuic-input-font-family`  | `--font-sans`            | Font family            |
+| `--stuic-input-transition`   | `150ms`                  | Transition duration    |
+| `--stuic-input-ring-width`   | `4px`                    | Focus ring width       |
+| `--stuic-input-ring-color`   | `--stuic-color-ring`     | Focus ring color       |
+| `--stuic-input-accent`       | `--stuic-color-primary`  | Accent color           |
+| `--stuic-input-accent-error` | not declared (see below) | Error/validation color |
+
+`--stuic-input-accent-error` is an override hook, read as a `var()` fallback, because its two
+roles default differently. An invalid border or focus ring is a fill
+(`--stuic-color-destructive`); a validation message is text
+(`--stuic-color-surface-destructive-foreground`, which stays legible where the raw intent often
+does not). Set the token and both follow it, as before. Since it is not declared, read it with
+a fallback in your own CSS: `var(--stuic-input-accent-error, var(--stuic-color-destructive))`.
 
 ### Color Tokens
 
@@ -687,16 +694,19 @@ Placeholders are mustache-style (`{{value}}`).
 
 ### Customization Examples
 
+Intent-colored text reads `surface-{intent}-foreground`: the raw intent is a fill color and
+often fails as text.
+
 ```css
 /* Make optgroup labels more prominent */
 :root {
-	--stuic-field-options-optgroup-text: var(--stuic-color-primary);
+	--stuic-field-options-optgroup-text: var(--stuic-color-surface-primary-foreground);
 }
 
 /* Custom control button colors */
 :root {
-	--stuic-field-options-control-text: var(--stuic-color-primary);
-	--stuic-field-options-control-text-hover: var(--stuic-color-primary-hover);
+	--stuic-field-options-control-text: var(--stuic-color-surface-primary-foreground);
+	--stuic-field-options-control-text-hover: var(--stuic-color-foreground);
 }
 ```
 
@@ -1030,24 +1040,24 @@ carries the keys of the embedded `AssetsPreview`, so one `t` serves both.
 
 ### CSS Variables
 
-| Variable                                              | Default                          | Description                                         |
-| ----------------------------------------------------- | -------------------------------- | --------------------------------------------------- |
-| `--stuic-field-single-asset-size-{sm,md,lg}`          | `5rem` / `8rem` / `12rem`        | Tile height per `size` preset                       |
-| `--stuic-field-single-asset-size`                     | (unset)                          | Explicit tile height, wins over the preset          |
-| `--stuic-field-single-asset-wide-ratio`               | `16 / 9`                         | Aspect ratio of `shape="wide"`                      |
-| `--stuic-field-single-asset-preview-bg`               | `--stuic-color-muted`            | Tile background (visible behind `fit="contain"`)    |
-| `--stuic-field-single-asset-preview-border`           | `--stuic-color-border`           | Tile border (dashed while empty)                    |
-| `--stuic-field-single-asset-preview-border-hover`     | `--stuic-color-ring`             | Tile border on hover                                |
-| `--stuic-field-single-asset-placeholder-text`         | `--stuic-color-muted-foreground` | Empty-tile icon color                               |
-| `--stuic-field-single-asset-meta-text`                | `--stuic-color-muted-foreground` | The meta line / hint / undo line                    |
-| `--stuic-field-single-asset-control-bg` / `-bg-hover` | `rgb(0 0 0 / 0.6)` / `0.8`       | Action buttons                                      |
-| `--stuic-field-single-asset-control-text`             | `#fff`                           | Action button icon color                            |
-| `--stuic-field-single-asset-overlay-bg`               | `rgb(0 0 0 / 0.4)`               | Progress overlay                                    |
-| `--stuic-field-single-asset-error-color`              | `--stuic-input-accent-error`     | Failed-upload border + overlay tint                 |
-| `--stuic-field-single-asset-radius`                   | `--stuic-radius`                 | Tile radius (usage-site fallback; `circle` ignores) |
-| `--stuic-field-single-asset-control-radius`           | `--stuic-radius-button`          | Action button radius (usage-site fallback)          |
-| `--stuic-field-single-asset-border-width`             | `--stuic-border-width`           | Tile border width (usage-site fallback)             |
-| `--stuic-field-single-asset-transition`               | `--stuic-transition`             | Hover / reveal transitions (usage-site fallback)    |
+| Variable                                              | Default                                                        | Description                                         |
+| ----------------------------------------------------- | -------------------------------------------------------------- | --------------------------------------------------- |
+| `--stuic-field-single-asset-size-{sm,md,lg}`          | `5rem` / `8rem` / `12rem`                                      | Tile height per `size` preset                       |
+| `--stuic-field-single-asset-size`                     | (unset)                                                        | Explicit tile height, wins over the preset          |
+| `--stuic-field-single-asset-wide-ratio`               | `16 / 9`                                                       | Aspect ratio of `shape="wide"`                      |
+| `--stuic-field-single-asset-preview-bg`               | `--stuic-color-muted`                                          | Tile background (visible behind `fit="contain"`)    |
+| `--stuic-field-single-asset-preview-border`           | `--stuic-color-border`                                         | Tile border (dashed while empty)                    |
+| `--stuic-field-single-asset-preview-border-hover`     | `--stuic-color-ring`                                           | Tile border on hover                                |
+| `--stuic-field-single-asset-placeholder-text`         | `--stuic-color-muted-foreground`                               | Empty-tile icon color                               |
+| `--stuic-field-single-asset-meta-text`                | `--stuic-color-muted-foreground`                               | The meta line / hint / undo line                    |
+| `--stuic-field-single-asset-control-bg` / `-bg-hover` | `rgb(0 0 0 / 0.6)` / `0.8`                                     | Action buttons                                      |
+| `--stuic-field-single-asset-control-text`             | `#fff`                                                         | Action button icon color                            |
+| `--stuic-field-single-asset-overlay-bg`               | `rgb(0 0 0 / 0.4)`                                             | Progress overlay                                    |
+| `--stuic-field-single-asset-error-color`              | `--stuic-input-accent-error`, else `--stuic-color-destructive` | Failed-upload border + overlay tint                 |
+| `--stuic-field-single-asset-radius`                   | `--stuic-radius`                                               | Tile radius (usage-site fallback; `circle` ignores) |
+| `--stuic-field-single-asset-control-radius`           | `--stuic-radius-button`                                        | Action button radius (usage-site fallback)          |
+| `--stuic-field-single-asset-border-width`             | `--stuic-border-width`                                         | Tile border width (usage-site fallback)             |
+| `--stuic-field-single-asset-transition`               | `--stuic-transition`                                           | Hover / reveal transitions (usage-site fallback)    |
 
 ---
 
@@ -1433,19 +1443,19 @@ never rendered. Column and option labels are consumer data: pass them as
 Cell controls reuse the `--stuic-input-*` colour and size tokens, so a themed `FieldInput`
 and a themed cell look alike. The table adds:
 
-| Variable                                                                     | Default                             | Description                               |
-| ---------------------------------------------------------------------------- | ----------------------------------- | ----------------------------------------- |
-| `--stuic-field-table-border-color`                                           | `--stuic-color-border`              | Stacked card border                       |
-| `--stuic-field-table-header-bg`                                              | `--stuic-color-muted`               | `<th>` background                         |
-| `--stuic-field-table-header-text`                                            | `--stuic-color-muted-foreground`    | `<th>` and stacked cell-label color       |
-| `--stuic-field-table-row-divider-color`                                      | `--stuic-color-border`              | Line between rows / under a card's title  |
-| `--stuic-field-table-cell-padding-x` / `-y`                                  | `0.375rem` / `0.25rem`              | Cell padding in table mode                |
-| `--stuic-field-table-card-bg`                                                | `transparent`                       | Stacked card background                   |
-| `--stuic-field-table-card-gap`                                               | `0.5rem`                            | Gap between stacked cards                 |
-| `--stuic-field-table-card-radius`                                            | `--stuic-radius`                    | Stacked card radius (usage-site fallback) |
-| `--stuic-field-table-invalid-color`                                          | `--stuic-input-accent-error`        | Invalid cell border + inline message      |
-| `--stuic-field-table-unit-text`                                              | `--stuic-color-muted-foreground`    | The unit suffix                           |
-| `--stuic-field-table-col-min-{text,number,select,checkbox,date,url,country}` | `10 / 6 / 8 / 3 / 9.5 / 12 / 10rem` | Minimum cell width per type in table mode |
+| Variable                                                                     | Default                                                                            | Description                               |
+| ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------- |
+| `--stuic-field-table-border-color`                                           | `--stuic-color-border`                                                             | Stacked card border                       |
+| `--stuic-field-table-header-bg`                                              | `--stuic-color-muted`                                                              | `<th>` background                         |
+| `--stuic-field-table-header-text`                                            | `--stuic-color-muted-foreground`                                                   | `<th>` and stacked cell-label color       |
+| `--stuic-field-table-row-divider-color`                                      | `--stuic-color-border`                                                             | Line between rows / under a card's title  |
+| `--stuic-field-table-cell-padding-x` / `-y`                                  | `0.375rem` / `0.25rem`                                                             | Cell padding in table mode                |
+| `--stuic-field-table-card-bg`                                                | `transparent`                                                                      | Stacked card background                   |
+| `--stuic-field-table-card-gap`                                               | `0.5rem`                                                                           | Gap between stacked cards                 |
+| `--stuic-field-table-card-radius`                                            | `--stuic-radius`                                                                   | Stacked card radius (usage-site fallback) |
+| `--stuic-field-table-invalid-color`                                          | not declared: falls back to `--stuic-input-accent-error` and its per-role defaults | Invalid cell border + inline message      |
+| `--stuic-field-table-unit-text`                                              | `--stuic-color-muted-foreground`                                                   | The unit suffix                           |
+| `--stuic-field-table-col-min-{text,number,select,checkbox,date,url,country}` | `10 / 6 / 8 / 3 / 9.5 / 12 / 10rem`                                                | Minimum cell width per type in table mode |
 
 ## FieldStruct
 
@@ -1652,14 +1662,14 @@ and set `displayLanguage`.
 Controls reuse the `--stuic-input-*` colour and size tokens, so a themed `FieldInput` and a
 struct field look alike. The struct adds:
 
-| Variable                             | Default                          | Description                             |
-| ------------------------------------ | -------------------------------- | --------------------------------------- |
-| `--stuic-field-struct-gap`           | `1rem`                           | Gap between fields                      |
-| `--stuic-field-struct-padding`       | `0.75rem`                        | Padding inside the box                  |
-| `--stuic-field-struct-label-text`    | `--stuic-color-foreground`       | Per-field label color                   |
-| `--stuic-field-struct-hint-text`     | `--stuic-color-muted-foreground` | The `description` hint line             |
-| `--stuic-field-struct-invalid-color` | `--stuic-input-accent-error`     | Invalid control border + inline message |
-| `--stuic-field-struct-unit-text`     | `--stuic-color-muted-foreground` | The unit suffix                         |
+| Variable                             | Default                                                                            | Description                             |
+| ------------------------------------ | ---------------------------------------------------------------------------------- | --------------------------------------- |
+| `--stuic-field-struct-gap`           | `1rem`                                                                             | Gap between fields                      |
+| `--stuic-field-struct-padding`       | `0.75rem`                                                                          | Padding inside the box                  |
+| `--stuic-field-struct-label-text`    | `--stuic-color-foreground`                                                         | Per-field label color                   |
+| `--stuic-field-struct-hint-text`     | `--stuic-color-muted-foreground`                                                   | The `description` hint line             |
+| `--stuic-field-struct-invalid-color` | not declared: falls back to `--stuic-input-accent-error` and its per-role defaults | Invalid control border + inline message |
+| `--stuic-field-struct-unit-text`     | `--stuic-color-muted-foreground`                                                   | The unit suffix                         |
 
 The read-only box uses `--stuic-input-bg-readonly` / `--stuic-input-border-readonly`
 (see _Readonly Tokens_ above).

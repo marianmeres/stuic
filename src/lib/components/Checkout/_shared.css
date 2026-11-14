@@ -21,7 +21,10 @@
 	--stuic-checkout-label-margin-bottom: 0.25rem;
 
 	/* Error styling */
-	--stuic-checkout-error-color: var(--stuic-color-destructive);
+	--stuic-checkout-error-color: var(
+		--stuic-color-surface-destructive-foreground,
+		var(--stuic-color-destructive)
+	);
 	--stuic-checkout-error-font-size: var(--text-base);
 	--stuic-checkout-error-bg: var(--stuic-color-surface-destructive);
 	--stuic-checkout-error-border-color: var(--stuic-color-surface-destructive-border);

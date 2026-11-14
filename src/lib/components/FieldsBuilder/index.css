@@ -13,7 +13,7 @@
 	--stuic-fields-builder-chip-text: var(--stuic-color-muted-foreground);
 	--stuic-fields-builder-muted-text: var(--stuic-color-muted-foreground);
 	--stuic-fields-builder-warning-text: var(--stuic-color-surface-warning-foreground);
-	--stuic-fields-builder-error-text: var(--stuic-color-destructive);
+	--stuic-fields-builder-error-text: var(--stuic-color-surface-destructive-foreground, var(--stuic-color-destructive));
 	--stuic-fields-builder-drop-indicator-color: var(--stuic-color-primary);
 	--stuic-fields-builder-drop-indicator-height: 2px;
 	--stuic-fields-builder-row-opacity-dragging: 0.4;

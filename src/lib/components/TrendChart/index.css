@@ -37,7 +37,7 @@
 		);
 		--trend-chart-annotation: var(
 			--stuic-trend-chart-annotation,
-			var(--stuic-color-warning)
+			var(--stuic-color-surface-warning-foreground, var(--stuic-color-warning))
 		);
 		--trend-chart-annotation-halo: var(
 			--stuic-trend-chart-annotation-halo,

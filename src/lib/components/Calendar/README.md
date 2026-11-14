@@ -226,50 +226,50 @@ messages — goes through `t`. English is built in; Slovak ships bundled and opt
 
 ## CSS Variables
 
-| Variable                                 | Default                                   | Description                                |
-| ---------------------------------------- | ----------------------------------------- | ------------------------------------------ |
-| `--stuic-calendar-bg`                    | `transparent`                             | Root background                            |
-| `--stuic-calendar-text`                  | `var(--stuic-color-foreground)`           | Root text color                            |
-| `--stuic-calendar-font-family`           | `var(--font-sans)`                        | Font family                                |
-| `--stuic-calendar-gap`                   | `1.5rem`                                  | Gap between months (`months > 1`)          |
-| `--stuic-calendar-header-gap`            | `0.25rem`                                 | Gap in the header row                      |
-| `--stuic-calendar-header-margin-bottom`  | `0.5rem`                                  | Space between header and grid              |
-| `--stuic-calendar-footer-gap`            | `0.5rem`                                  | Gap between footer buttons                 |
-| `--stuic-calendar-footer-margin-top`     | `0.5rem`                                  | Space above the footer                     |
-| `--stuic-calendar-day-size`              | `2.5rem` (`2.75rem` on `pointer: coarse`) | Width and height of a day cell             |
-| `--stuic-calendar-day-radius`            | `var(--stuic-radius)`                     | Day button / band corner radius            |
-| `--stuic-calendar-day-font-size`         | `var(--text-sm)`                          | Day number size                            |
-| `--stuic-calendar-day-font-weight`       | `var(--font-weight-normal)`               | Day number weight                          |
-| `--stuic-calendar-day-text`              | `var(--stuic-color-foreground)`           | Day text                                   |
-| `--stuic-calendar-day-bg-hover`          | `var(--stuic-color-muted)`                | Day hover background                       |
-| `--stuic-calendar-day-text-outside`      | `var(--stuic-color-muted-foreground)`     | Filler (adjacent month) day text           |
-| `--stuic-calendar-day-opacity-outside`   | `0.6`                                     | Filler day opacity                         |
-| `--stuic-calendar-day-text-weekend`      | (inherits day text)                       | Weekend day text — set it to tint weekends |
-| `--stuic-calendar-day-opacity-disabled`  | `0.35`                                    | Disabled day opacity                       |
-| `--stuic-calendar-day-bg-selected`       | `var(--stuic-color-primary)`              | Selected day / range end background        |
-| `--stuic-calendar-day-text-selected`     | `var(--stuic-color-primary-foreground)`   | Selected day text                          |
-| `--stuic-calendar-day-bg-selected-hover` | `var(--stuic-color-primary-hover)`        | Selected day hover background              |
-| `--stuic-calendar-day-bg-range`          | primary @ 15%                             | The band behind a complete range           |
-| `--stuic-calendar-day-text-range`        | `var(--stuic-color-foreground)`           | Text of days inside the range              |
-| `--stuic-calendar-day-bg-preview`        | primary @ 8%                              | The band behind the hover / focus preview  |
-| `--stuic-calendar-today-text`            | `var(--stuic-color-primary)`              | Today's number color (when not selected)   |
-| `--stuic-calendar-today-font-weight`     | `var(--font-weight-semibold)`             | Today's number weight                      |
-| `--stuic-calendar-weekday-text`          | `var(--stuic-color-muted-foreground)`     | Weekday header text                        |
-| `--stuic-calendar-weekday-font-size`     | `var(--text-xs)`                          | Weekday header size                        |
-| `--stuic-calendar-weekday-font-weight`   | `var(--font-weight-medium)`               | Weekday header weight                      |
-| `--stuic-calendar-week-number-text`      | `var(--stuic-color-muted-foreground)`     | Week-number column text                    |
-| `--stuic-calendar-week-number-font-size` | `var(--text-xs)`                          | Week-number size                           |
-| `--stuic-calendar-caption-text`          | `var(--stuic-color-foreground)`           | Caption text                               |
-| `--stuic-calendar-caption-font-size`     | `var(--text-base)`                        | Caption size                               |
-| `--stuic-calendar-caption-font-weight`   | `var(--font-weight-semibold)`             | Caption weight                             |
-| `--stuic-calendar-select-bg`             | `var(--stuic-color-input)`                | Dropdown caption select background         |
-| `--stuic-calendar-select-text`           | `var(--stuic-color-foreground)`           | Dropdown caption select text               |
-| `--stuic-calendar-select-border`         | `var(--stuic-color-border)`               | Dropdown caption select border             |
-| `--stuic-calendar-select-radius`         | `var(--stuic-radius)`                     | Dropdown caption select radius             |
-| `--stuic-calendar-border-width`          | `var(--stuic-border-width)`               | Dropdown caption select border width       |
-| `--stuic-calendar-ring-width`            | `2px`                                     | Focus ring width                           |
-| `--stuic-calendar-ring-color`            | `var(--stuic-color-ring)`                 | Focus ring color                           |
-| `--stuic-calendar-transition`            | `var(--stuic-transition)`                 | Day background / color transition          |
+| Variable                                 | Default                                         | Description                                |
+| ---------------------------------------- | ----------------------------------------------- | ------------------------------------------ |
+| `--stuic-calendar-bg`                    | `transparent`                                   | Root background                            |
+| `--stuic-calendar-text`                  | `var(--stuic-color-foreground)`                 | Root text color                            |
+| `--stuic-calendar-font-family`           | `var(--font-sans)`                              | Font family                                |
+| `--stuic-calendar-gap`                   | `1.5rem`                                        | Gap between months (`months > 1`)          |
+| `--stuic-calendar-header-gap`            | `0.25rem`                                       | Gap in the header row                      |
+| `--stuic-calendar-header-margin-bottom`  | `0.5rem`                                        | Space between header and grid              |
+| `--stuic-calendar-footer-gap`            | `0.5rem`                                        | Gap between footer buttons                 |
+| `--stuic-calendar-footer-margin-top`     | `0.5rem`                                        | Space above the footer                     |
+| `--stuic-calendar-day-size`              | `2.5rem` (`2.75rem` on `pointer: coarse`)       | Width and height of a day cell             |
+| `--stuic-calendar-day-radius`            | `var(--stuic-radius)`                           | Day button / band corner radius            |
+| `--stuic-calendar-day-font-size`         | `var(--text-sm)`                                | Day number size                            |
+| `--stuic-calendar-day-font-weight`       | `var(--font-weight-normal)`                     | Day number weight                          |
+| `--stuic-calendar-day-text`              | `var(--stuic-color-foreground)`                 | Day text                                   |
+| `--stuic-calendar-day-bg-hover`          | `var(--stuic-color-muted)`                      | Day hover background                       |
+| `--stuic-calendar-day-text-outside`      | `var(--stuic-color-muted-foreground)`           | Filler (adjacent month) day text           |
+| `--stuic-calendar-day-opacity-outside`   | `0.6`                                           | Filler day opacity                         |
+| `--stuic-calendar-day-text-weekend`      | (inherits day text)                             | Weekend day text — set it to tint weekends |
+| `--stuic-calendar-day-opacity-disabled`  | `0.35`                                          | Disabled day opacity                       |
+| `--stuic-calendar-day-bg-selected`       | `var(--stuic-color-primary)`                    | Selected day / range end background        |
+| `--stuic-calendar-day-text-selected`     | `var(--stuic-color-primary-foreground)`         | Selected day text                          |
+| `--stuic-calendar-day-bg-selected-hover` | `var(--stuic-color-primary-hover)`              | Selected day hover background              |
+| `--stuic-calendar-day-bg-range`          | primary @ 15%                                   | The band behind a complete range           |
+| `--stuic-calendar-day-text-range`        | `var(--stuic-color-foreground)`                 | Text of days inside the range              |
+| `--stuic-calendar-day-bg-preview`        | primary @ 8%                                    | The band behind the hover / focus preview  |
+| `--stuic-calendar-today-text`            | `var(--stuic-color-surface-primary-foreground)` | Today's number color (when not selected)   |
+| `--stuic-calendar-today-font-weight`     | `var(--font-weight-semibold)`                   | Today's number weight                      |
+| `--stuic-calendar-weekday-text`          | `var(--stuic-color-muted-foreground)`           | Weekday header text                        |
+| `--stuic-calendar-weekday-font-size`     | `var(--text-xs)`                                | Weekday header size                        |
+| `--stuic-calendar-weekday-font-weight`   | `var(--font-weight-medium)`                     | Weekday header weight                      |
+| `--stuic-calendar-week-number-text`      | `var(--stuic-color-muted-foreground)`           | Week-number column text                    |
+| `--stuic-calendar-week-number-font-size` | `var(--text-xs)`                                | Week-number size                           |
+| `--stuic-calendar-caption-text`          | `var(--stuic-color-foreground)`                 | Caption text                               |
+| `--stuic-calendar-caption-font-size`     | `var(--text-base)`                              | Caption size                               |
+| `--stuic-calendar-caption-font-weight`   | `var(--font-weight-semibold)`                   | Caption weight                             |
+| `--stuic-calendar-select-bg`             | `var(--stuic-color-input)`                      | Dropdown caption select background         |
+| `--stuic-calendar-select-text`           | `var(--stuic-color-foreground)`                 | Dropdown caption select text               |
+| `--stuic-calendar-select-border`         | `var(--stuic-color-border)`                     | Dropdown caption select border             |
+| `--stuic-calendar-select-radius`         | `var(--stuic-radius)`                           | Dropdown caption select radius             |
+| `--stuic-calendar-border-width`          | `var(--stuic-border-width)`                     | Dropdown caption select border width       |
+| `--stuic-calendar-ring-width`            | `2px`                                           | Focus ring width                           |
+| `--stuic-calendar-ring-color`            | `var(--stuic-color-ring)`                       | Focus ring color                           |
+| `--stuic-calendar-transition`            | `var(--stuic-transition)`                       | Day background / color transition          |
 
 ```css
 /* circles instead of rounded squares, bigger cells */

@@ -30,9 +30,18 @@
 	/* Delta */
 	--stuic-stat-delta-font-size: var(--text-sm);
 	--stuic-stat-delta-font-weight: var(--font-weight-medium);
-	--stuic-stat-delta-text-success: var(--stuic-color-success);
-	--stuic-stat-delta-text-destructive: var(--stuic-color-destructive);
-	--stuic-stat-delta-text-warning: var(--stuic-color-warning);
+	--stuic-stat-delta-text-success: var(
+		--stuic-color-surface-success-foreground,
+		var(--stuic-color-success)
+	);
+	--stuic-stat-delta-text-destructive: var(
+		--stuic-color-surface-destructive-foreground,
+		var(--stuic-color-destructive)
+	);
+	--stuic-stat-delta-text-warning: var(
+		--stuic-color-surface-warning-foreground,
+		var(--stuic-color-warning)
+	);
 	--stuic-stat-delta-text-neutral: var(--stuic-color-muted-foreground);
 
 	/* Hint */

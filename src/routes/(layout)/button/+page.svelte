@@ -262,6 +262,22 @@
 	</div>
 
 	<div>
+		<p class="text-sm text-neutral-500 mb-2">
+			Local override of a tinted variant: <code>soft</code>, <code>outline</code>,
+			<code>ghost</code> and <code>link</code> read the theme's
+			<code>surface-&#123;intent&#125;</code> tokens, which are computed at
+			<code>:root</code>, so set them alongside the intent:
+		</p>
+		<Button
+			intent="primary"
+			variant="soft"
+			style="--stuic-color-primary: hotpink; --stuic-color-surface-primary: mistyrose; --stuic-color-surface-primary-foreground: mediumvioletred;"
+		>
+			Custom Pink (soft)
+		</Button>
+	</div>
+
+	<div>
 		<p class="text-sm text-neutral-500 mb-2">Component token override:</p>
 		<Button intent="accent" style="--stuic-button-radius: 9999px;">Pill Shape</Button>
 	</div>

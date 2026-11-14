@@ -15,7 +15,11 @@
 
 	/* Accent colors (existing, preserved for BC) */
 	--stuic-input-accent: var(--stuic-color-primary);
-	--stuic-input-accent-error: var(--stuic-color-destructive);
+	/* `--stuic-input-accent-error` is deliberately NOT declared: it is read as a fallback
+	   argument, because its default differs by role. A border or ring is a fill (the raw
+	   destructive); a validation message is text (surface-destructive-foreground). Set the
+	   token and both follow it, as they always did. The same goes for
+	   `--stuic-field-table-invalid-color` and `--stuic-field-struct-invalid-color`. */
 
 	/* Color tokens - reference theme vars */
 	--stuic-input-bg: var(--stuic-color-input);
@@ -101,7 +105,7 @@
 
 	/* FieldCell — the typed control shared by FieldTable and FieldStruct (see the
 	   FIELD CELL section below). Each host re-points these at its own tokens. */
-	--stuic-field-cell-invalid-color: var(--stuic-input-accent-error);
+	--stuic-field-cell-invalid-color: var(--stuic-input-accent-error, var(--stuic-color-destructive));
 	--stuic-field-cell-unit-text: var(--stuic-color-muted-foreground);
 
 	/* FieldTable specific (see the FIELD TABLE section at the bottom of this file) */
@@ -113,7 +117,6 @@
 	--stuic-field-table-cell-padding-y: calc(var(--spacing) * 1);
 	--stuic-field-table-card-bg: transparent;
 	--stuic-field-table-card-gap: calc(var(--spacing) * 2);
-	--stuic-field-table-invalid-color: var(--stuic-input-accent-error);
 	--stuic-field-table-unit-text: var(--stuic-color-muted-foreground);
 	/* `--stuic-field-table-card-radius` is deliberately NOT declared: it is read as a
 	   fallback argument at the usage site (`--stuic-radius`) — see docs/conventions.md. */
@@ -131,7 +134,6 @@
 	--stuic-field-struct-padding: calc(var(--spacing) * 3);
 	--stuic-field-struct-label-text: var(--stuic-color-foreground);
 	--stuic-field-struct-hint-text: var(--stuic-color-muted-foreground);
-	--stuic-field-struct-invalid-color: var(--stuic-input-accent-error);
 	--stuic-field-struct-unit-text: var(--stuic-color-muted-foreground);
 
 	/* FieldSingleAsset */
@@ -148,7 +150,7 @@
 	--stuic-field-single-asset-control-bg-hover: rgb(0 0 0 / 0.8);
 	--stuic-field-single-asset-control-text: #fff;
 	--stuic-field-single-asset-overlay-bg: rgb(0 0 0 / 0.4);
-	--stuic-field-single-asset-error-color: var(--stuic-input-accent-error);
+	--stuic-field-single-asset-error-color: var(--stuic-input-accent-error, var(--stuic-color-destructive));
 	/* `--stuic-field-single-asset-size`, `-radius`, `-control-radius`, `-border-width`
 	   and `-transition` are deliberately NOT declared: they are read as fallback
 	   arguments at the usage site — see docs/conventions.md. */
@@ -302,16 +304,16 @@
 	/* Invalid state */
 	.stuic-input.invalid .input-wrap,
 	.stuic-input .input-wrap.invalid {
-		border-color: var(--stuic-input-accent-error);
+		border-color: var(--stuic-input-accent-error, var(--stuic-color-destructive));
 	}
 
 	.stuic-input.invalid .input-wrap:focus-within,
 	.stuic-input .input-wrap.invalid:focus-within {
-		border-color: var(--stuic-input-accent-error);
+		border-color: var(--stuic-input-accent-error, var(--stuic-color-destructive));
 		box-shadow: 0 0 0 var(--stuic-input-ring-width)
 			color-mix(
 				in srgb,
-				var(--stuic-input-accent-error) 20%,
+				var(--stuic-input-accent-error, var(--stuic-color-destructive)) 20%,
 				var(--stuic-color-background)
 			);
 	}
@@ -365,7 +367,10 @@
 	   ============================================================================ */
 
 	.stuic-input .validation-box {
-		color: var(--stuic-input-accent-error);
+		color: var(
+			--stuic-input-accent-error,
+			var(--stuic-color-surface-destructive-foreground, var(--stuic-color-destructive))
+		);
 	}
 
 	/* ============================================================================
@@ -553,7 +558,10 @@
 	}
 
 	.stuic-checkbox .validation-box {
-		color: var(--stuic-input-accent-error);
+		color: var(
+			--stuic-input-accent-error,
+			var(--stuic-color-surface-destructive-foreground, var(--stuic-color-destructive))
+		);
 	}
 
 	/* ============================================================================
@@ -567,11 +575,14 @@
 	}
 
 	.stuic-radios.invalid .radios-box {
-		border-color: var(--stuic-input-accent-error);
+		border-color: var(--stuic-input-accent-error, var(--stuic-color-destructive));
 	}
 
 	.stuic-radios .validation-box {
-		color: var(--stuic-input-accent-error);
+		color: var(
+			--stuic-input-accent-error,
+			var(--stuic-color-surface-destructive-foreground, var(--stuic-color-destructive))
+		);
 	}
 
 	.stuic-radios input[type="radio"] {
@@ -1091,7 +1102,10 @@
 	.stuic-field-table {
 		padding: calc(var(--spacing) * 2);
 		/* the shared cell reads these; the table's own (documented) tokens feed them */
-		--stuic-field-cell-invalid-color: var(--stuic-field-table-invalid-color);
+		--stuic-field-cell-invalid-color: var(
+			--stuic-field-table-invalid-color,
+			var(--stuic-input-accent-error, var(--stuic-color-destructive))
+		);
 		--stuic-field-cell-unit-text: var(--stuic-field-table-unit-text);
 	}
 
@@ -1214,7 +1228,13 @@
 	.stuic-field-table-cell-error {
 		margin-top: calc(var(--spacing) * 1);
 		font-size: var(--text-sm);
-		color: var(--stuic-field-table-invalid-color);
+		color: var(
+			--stuic-field-table-invalid-color,
+			var(
+				--stuic-input-accent-error,
+				var(--stuic-color-surface-destructive-foreground, var(--stuic-color-destructive))
+			)
+		);
 	}
 
 	/* ---- empty / footer ---- */
@@ -1647,7 +1667,10 @@
 		gap: var(--stuic-field-struct-gap);
 		padding: var(--stuic-field-struct-padding);
 		/* the shared cell reads these; the struct's own (documented) tokens feed them */
-		--stuic-field-cell-invalid-color: var(--stuic-field-struct-invalid-color);
+		--stuic-field-cell-invalid-color: var(
+			--stuic-field-struct-invalid-color,
+			var(--stuic-input-accent-error, var(--stuic-color-destructive))
+		);
 		--stuic-field-cell-unit-text: var(--stuic-field-struct-unit-text);
 	}
 
@@ -1678,7 +1701,13 @@
 
 	.stuic-field-struct-error {
 		font-size: var(--text-sm);
-		color: var(--stuic-field-struct-invalid-color);
+		color: var(
+			--stuic-field-struct-invalid-color,
+			var(
+				--stuic-input-accent-error,
+				var(--stuic-color-surface-destructive-foreground, var(--stuic-color-destructive))
+			)
+		);
 	}
 
 	/* ---- read-only: the record as a DescriptionList, in the readonly box ---- */

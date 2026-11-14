@@ -163,24 +163,24 @@ Minimal, dense read-only list for order confirmation screens or invoices. Each l
 
 ## CSS Variables
 
-| Variable                             | Default                          | Description                   |
-| ------------------------------------ | -------------------------------- | ----------------------------- |
-| `--stuic-cart-gap`                   | `1rem`                           | Gap between items             |
-| `--stuic-cart-item-padding`          | `1rem`                           | Item card padding             |
-| `--stuic-cart-item-radius`           | `var(--radius-lg)`               | Item border radius            |
-| `--stuic-cart-item-border-color`     | `var(--stuic-color-border)`      | Item border color             |
-| `--stuic-cart-item-bg`               | `var(--stuic-color-background)`  | Item background               |
-| `--stuic-cart-thumbnail-size`        | `4rem`                           | Thumbnail dimensions          |
-| `--stuic-cart-thumbnail-size-sm`     | `3rem`                           | Compact thumbnail dimensions  |
-| `--stuic-cart-thumbnail-radius`      | `var(--radius-md)`               | Thumbnail border radius       |
-| `--stuic-cart-thumbnail-bg`          | `var(--stuic-color-muted)`       | Thumbnail placeholder bg      |
-| `--stuic-cart-quantity-border-color` | `var(--stuic-color-border)`      | Quantity control border       |
-| `--stuic-cart-quantity-button-size`  | `2rem`                           | Quantity button dimensions    |
-| `--stuic-cart-remove-color`          | `var(--stuic-color-destructive)` | Remove button color           |
-| `--stuic-cart-summary-border-color`  | `var(--stuic-color-border)`      | Summary separator             |
-| `--stuic-cart-compact-max-height`    | `12rem`                          | Compact variant scroll height |
-| `--stuic-cart-compact-item-padding`  | `0.5rem`                         | Compact item padding          |
-| `--stuic-cart-transition`            | `150ms`                          | Transition duration           |
+| Variable                             | Default                                             | Description                                                   |
+| ------------------------------------ | --------------------------------------------------- | ------------------------------------------------------------- |
+| `--stuic-cart-gap`                   | `1rem`                                              | Gap between items                                             |
+| `--stuic-cart-item-padding`          | `1rem`                                              | Item card padding                                             |
+| `--stuic-cart-item-radius`           | `var(--radius-lg)`                                  | Item border radius                                            |
+| `--stuic-cart-item-border-color`     | `var(--stuic-color-border)`                         | Item border color                                             |
+| `--stuic-cart-item-bg`               | `var(--stuic-color-background)`                     | Item background                                               |
+| `--stuic-cart-thumbnail-size`        | `4rem`                                              | Thumbnail dimensions                                          |
+| `--stuic-cart-thumbnail-size-sm`     | `3rem`                                              | Compact thumbnail dimensions                                  |
+| `--stuic-cart-thumbnail-radius`      | `var(--radius-md)`                                  | Thumbnail border radius                                       |
+| `--stuic-cart-thumbnail-bg`          | `var(--stuic-color-muted)`                          | Thumbnail placeholder bg                                      |
+| `--stuic-cart-quantity-border-color` | `var(--stuic-color-border)`                         | Quantity control border                                       |
+| `--stuic-cart-quantity-button-size`  | `2rem`                                              | Quantity button dimensions                                    |
+| `--stuic-cart-remove-color`          | `var(--stuic-color-surface-destructive-foreground)` | Remove button color (`-hover`: stepped toward the foreground) |
+| `--stuic-cart-summary-border-color`  | `var(--stuic-color-border)`                         | Summary separator                                             |
+| `--stuic-cart-compact-max-height`    | `12rem`                                             | Compact variant scroll height                                 |
+| `--stuic-cart-compact-item-padding`  | `0.5rem`                                            | Compact item padding                                          |
+| `--stuic-cart-transition`            | `150ms`                                             | Transition duration                                           |
 
 ## Translation Keys
 

@@ -36,7 +36,7 @@
 	--stuic-calendar-day-bg-preview: color-mix(in oklab, var(--stuic-color-primary) 8%, transparent);
 
 	/* Today */
-	--stuic-calendar-today-text: var(--stuic-color-primary);
+	--stuic-calendar-today-text: var(--stuic-color-surface-primary-foreground, var(--stuic-color-primary));
 	--stuic-calendar-today-font-weight: var(--font-weight-semibold);
 
 	/* Weekday header row + week-number column */

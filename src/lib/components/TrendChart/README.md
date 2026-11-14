@@ -91,18 +91,18 @@ The first-class pairing — a sparkline in a `Stat` footer:
 
 ## CSS Variables
 
-| Variable                               | Default                               | Description                       |
-| -------------------------------------- | ------------------------------------- | --------------------------------- |
-| `--stuic-trend-chart-height`           | `8rem`                                | Container height                  |
-| `--stuic-trend-chart-height-sparkline` | `2.5rem`                              | Container height with `sparkline` |
-| `--stuic-trend-chart-line`             | `var(--stuic-color-primary)`          | Line stroke                       |
-| `--stuic-trend-chart-fill`             | `var(--stuic-color-primary)`          | Area fill base color              |
-| `--stuic-trend-chart-grid`             | `var(--stuic-color-border)`           | Gridline stroke                   |
-| `--stuic-trend-chart-label`            | `var(--stuic-color-muted-foreground)` | Axis label color                  |
-| `--stuic-trend-chart-font`             | `var(--font-sans)`                    | Label font family                 |
-| `--stuic-trend-chart-end-dot-ring`     | `var(--stuic-color-background)`       | End-dot/hover-dot ring color      |
-| `--stuic-trend-chart-annotation`       | `var(--stuic-color-warning)`          | Annotation rule + label color     |
-| `--stuic-trend-chart-annotation-halo`  | `var(--stuic-color-background)`       | Halo behind annotation labels     |
+| Variable                               | Default                                         | Description                                                                    |
+| -------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------ |
+| `--stuic-trend-chart-height`           | `8rem`                                          | Container height                                                               |
+| `--stuic-trend-chart-height-sparkline` | `2.5rem`                                        | Container height with `sparkline`                                              |
+| `--stuic-trend-chart-line`             | `var(--stuic-color-primary)`                    | Line stroke                                                                    |
+| `--stuic-trend-chart-fill`             | `var(--stuic-color-primary)`                    | Area fill base color                                                           |
+| `--stuic-trend-chart-grid`             | `var(--stuic-color-border)`                     | Gridline stroke                                                                |
+| `--stuic-trend-chart-label`            | `var(--stuic-color-muted-foreground)`           | Axis label color                                                               |
+| `--stuic-trend-chart-font`             | `var(--font-sans)`                              | Label font family                                                              |
+| `--stuic-trend-chart-end-dot-ring`     | `var(--stuic-color-background)`                 | End-dot/hover-dot ring color                                                   |
+| `--stuic-trend-chart-annotation`       | `var(--stuic-color-surface-warning-foreground)` | Annotation rule + label color (one color for both, so it is the text-safe one) |
+| `--stuic-trend-chart-annotation-halo`  | `var(--stuic-color-background)`                 | Halo behind annotation labels                                                  |
 
 These map onto the chart's own `--trend-chart-*` hooks (active because the DOM
 renderer's `cssVars` option defaults to `true`). Any `lineColor`/`fill`/... option

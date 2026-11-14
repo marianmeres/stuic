@@ -122,9 +122,9 @@ footer area (e.g. for a sparkline). Renders as a `<div>`, or as an `<a>`/`<butto
 | `--stuic-stat-value-text`             | `var(--stuic-color-foreground)`                           | Value text color                    |
 | `--stuic-stat-delta-font-size`        | `var(--text-sm)`                                          | Delta font size                     |
 | `--stuic-stat-delta-font-weight`      | `var(--font-weight-medium)`                               | Delta font weight                   |
-| `--stuic-stat-delta-text-success`     | `var(--stuic-color-success)`                              | Delta color (success intent)        |
-| `--stuic-stat-delta-text-destructive` | `var(--stuic-color-destructive)`                          | Delta color (destructive intent)    |
-| `--stuic-stat-delta-text-warning`     | `var(--stuic-color-warning)`                              | Delta color (warning intent)        |
+| `--stuic-stat-delta-text-success`     | `var(--stuic-color-surface-success-foreground)`           | Delta color (success intent)        |
+| `--stuic-stat-delta-text-destructive` | `var(--stuic-color-surface-destructive-foreground)`       | Delta color (destructive intent)    |
+| `--stuic-stat-delta-text-warning`     | `var(--stuic-color-surface-warning-foreground)`           | Delta color (warning intent)        |
 | `--stuic-stat-delta-text-neutral`     | `var(--stuic-color-muted-foreground)`                     | Delta color (neutral intent)        |
 | `--stuic-stat-hint-font-size`         | `var(--text-sm)`                                          | Hint font size                      |
 | `--stuic-stat-hint-text`              | `var(--stuic-color-muted-foreground)`                     | Hint text color                     |

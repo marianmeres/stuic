@@ -150,27 +150,27 @@ step labels are yours.
 
 ## CSS Variables
 
-| Variable                                                               | Default                            | Description                              |
-| ---------------------------------------------------------------------- | ---------------------------------- | ---------------------------------------- |
-| `--stuic-stepper-gap`                                                  | `0.75rem`                          | Indicator↔label gap + step↔connector gap |
-| `--stuic-stepper-gap-vertical`                                         | `1.75rem`                          | Vertical: distance between steps         |
-| `--stuic-stepper-connector-min-length`                                 | `1.5rem`                           | Horizontal: shortest connector           |
-| `--stuic-stepper-indicator-size`                                       | `2rem`                             | Bubble diameter                          |
-| `--stuic-stepper-indicator-border-width`                               | `2px`                              | Bubble border width                      |
-| `--stuic-stepper-indicator-radius`                                     | full circle                        | Bubble radius                            |
-| `--stuic-stepper-indicator-font-size`                                  | `--text-sm`                        | Bubble number font size                  |
-| `--stuic-stepper-indicator-bg` / `-text` / `-border`                   | upcoming colors                    | Bubble, upcoming state                   |
-| `--stuic-stepper-indicator-bg-current` / `-text-current` / …           | `--stuic-color-primary` accents    | Bubble, current state                    |
-| `--stuic-stepper-indicator-bg-completed` / `-text-completed` / …       | `--stuic-color-primary` filled     | Bubble, completed state                  |
-| `--stuic-stepper-indicator-bg-error` / `-text-error` / `-border-error` | `--stuic-color-destructive` filled | Bubble, error state                      |
-| `--stuic-stepper-label-font-size`                                      | `--text-base`                      | Label font size                          |
-| `--stuic-stepper-label-text` / `-text-current` / `-text-completed` / … | muted / foreground / destructive   | Label color per state                    |
-| `--stuic-stepper-description-font-size`                                | `--text-sm`                        | Description font size                    |
-| `--stuic-stepper-description-text`                                     | `--stuic-color-muted-foreground`   | Description color                        |
-| `--stuic-stepper-connector-thickness`                                  | `2px`                              | Connector line thickness                 |
-| `--stuic-stepper-connector-bg` / `-bg-completed`                       | border / primary                   | Connector color                          |
-| `--stuic-stepper-ring-width` / `--stuic-stepper-ring-color`            | `3px` / `--stuic-color-ring`       | Focus ring of clickable steps            |
-| `--stuic-stepper-opacity-disabled`                                     | `0.5`                              | Disabled opacity                         |
+| Variable                                                               | Default                                                                                   | Description                              |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ---------------------------------------- |
+| `--stuic-stepper-gap`                                                  | `0.75rem`                                                                                 | Indicator↔label gap + step↔connector gap |
+| `--stuic-stepper-gap-vertical`                                         | `1.75rem`                                                                                 | Vertical: distance between steps         |
+| `--stuic-stepper-connector-min-length`                                 | `1.5rem`                                                                                  | Horizontal: shortest connector           |
+| `--stuic-stepper-indicator-size`                                       | `2rem`                                                                                    | Bubble diameter                          |
+| `--stuic-stepper-indicator-border-width`                               | `2px`                                                                                     | Bubble border width                      |
+| `--stuic-stepper-indicator-radius`                                     | full circle                                                                               | Bubble radius                            |
+| `--stuic-stepper-indicator-font-size`                                  | `--text-sm`                                                                               | Bubble number font size                  |
+| `--stuic-stepper-indicator-bg` / `-text` / `-border`                   | upcoming colors                                                                           | Bubble, upcoming state                   |
+| `--stuic-stepper-indicator-bg-current` / `-text-current` / …           | transparent / `--stuic-color-surface-primary-foreground` / `--stuic-color-primary` border | Bubble, current state                    |
+| `--stuic-stepper-indicator-bg-completed` / `-text-completed` / …       | `--stuic-color-primary` filled                                                            | Bubble, completed state                  |
+| `--stuic-stepper-indicator-bg-error` / `-text-error` / `-border-error` | `--stuic-color-destructive` filled                                                        | Bubble, error state                      |
+| `--stuic-stepper-label-font-size`                                      | `--text-base`                                                                             | Label font size                          |
+| `--stuic-stepper-label-text` / `-text-current` / `-text-completed` / … | muted / foreground / `--stuic-color-surface-destructive-foreground` (error)               | Label color per state                    |
+| `--stuic-stepper-description-font-size`                                | `--text-sm`                                                                               | Description font size                    |
+| `--stuic-stepper-description-text`                                     | `--stuic-color-muted-foreground`                                                          | Description color                        |
+| `--stuic-stepper-connector-thickness`                                  | `2px`                                                                                     | Connector line thickness                 |
+| `--stuic-stepper-connector-bg` / `-bg-completed`                       | border / primary                                                                          | Connector color                          |
+| `--stuic-stepper-ring-width` / `--stuic-stepper-ring-color`            | `3px` / `--stuic-color-ring`                                                              | Focus ring of clickable steps            |
+| `--stuic-stepper-opacity-disabled`                                     | `0.5`                                                                                     | Disabled opacity                         |
 
 ## Data Attributes
 

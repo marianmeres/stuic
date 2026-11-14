@@ -52,6 +52,22 @@ A small rounded inline element for tags, badges, status indicators, and filter c
 <Pill intent="accent" variant="link">accent</Pill>
 ```
 
+A theme gives each intent two color pairings, and the variant picks one:
+
+| Variant                    | Background         | Text                          |
+| -------------------------- | ------------------ | ----------------------------- |
+| `solid`                    | `{intent}`         | `{intent}-foreground`         |
+| `soft` (default)           | `surface-{intent}` | `surface-{intent}-foreground` |
+| `outline`, `ghost`, `link` | transparent        | `surface-{intent}-foreground` |
+
+The raw intent color is a fill: a theme picks it to carry `{intent}-foreground`, not to be
+read as text. So the four variants with intent-colored text draw it in
+`--stuic-color-surface-{intent}-foreground`, which a theme derives to stay legible on the tint
+and on the page. That makes the token load-bearing for a theme author. `outline` keeps its
+border, and the status dot its fill, in the raw intent. `link` has no background to mark hover
+and pressed on, so its text steps toward `--stuic-color-foreground` instead. Without an
+`intent`, every variant uses the neutral role colors.
+
 ### Sizes
 
 ```svelte
@@ -210,6 +226,23 @@ Pill reuses the global intent palette:
 	/* + accent, destructive, warning, success */
 }
 ```
+
+The `soft`, `outline`, `ghost` and `link` variants also read
+`--stuic-color-surface-{intent}` and `--stuic-color-surface-{intent}-foreground`. A
+`@marianmeres/design-tokens` theme derives both from the intent at `:root`, so a `:root`
+override of the intent reaches them. A local override does not, because the derived tokens
+are already computed above it (the same goes for `-hover` and `-active`). Set them alongside:
+
+```svelte
+<Pill
+	intent="primary"
+	style="--stuic-color-primary: hotpink; --stuic-color-surface-primary: mistyrose; --stuic-color-surface-primary-foreground: mediumvioletred;"
+>
+	Custom Pink
+</Pill>
+```
+
+A theme without the `surface-{intent}` tokens falls back to the raw intent color.
 
 ## Data Attributes
 

@@ -257,7 +257,7 @@ nothing is readable, and quietly building 100k nodes is worse than saying so.
 | `--stuic-gantt-header-sub-text`       | `--stuic-color-muted-foreground` | Weekday / week-number line        |
 | `--stuic-gantt-grid-line-color`       | `--stuic-color-border`           | Column separators                 |
 | `--stuic-gantt-weekend-bg`            | `--stuic-color-muted`            | Saturday/Sunday shading           |
-| `--stuic-gantt-today-color`           | `--stuic-color-destructive`      | Today line and header flag        |
+| `--stuic-gantt-today-color`           | not declared (see below)         | Today line and header flag        |
 | `--stuic-gantt-today-width`           | `2px`                            | Today line thickness              |
 | `--stuic-gantt-row-bg-hover`          | translucent muted                | Row hover (keeps shading visible) |
 | `--stuic-gantt-label-bg`              | `--stuic-color-background`       | Left column (must stay opaque)    |
@@ -282,6 +282,11 @@ Structural tokens are resolved as fallbacks at the usage sites, so
 `--stuic-gantt-bar-radius` → `--stuic-radius` (bars),
 `--stuic-gantt-border-width` → `--stuic-border-width`, and
 `--stuic-gantt-transition` → `--stuic-transition`.
+
+`--stuic-gantt-today-color` is an override hook too, because its two roles default
+differently: the line is a fill (`--stuic-color-destructive`), the header flag is text
+(`--stuic-color-surface-destructive-foreground`, which stays legible where the raw intent
+often does not). Set the token and both follow it.
 
 ## Data attributes
 

@@ -35,6 +35,8 @@
 	/* ============================================================================
 	   VARIANT COLOR MAPPING
 	   Each variant sets internal CSS vars for the icon box.
+	   The box is the theme's soft pairing: surface-{intent} under
+	   surface-{intent}-foreground (the raw intent is a fill colour).
 	   ============================================================================ */
 
 	/* NOTE: using primary in all except error */
@@ -42,41 +44,53 @@
 	/* Variant: info (default) */
 	.stuic-acp[data-variant="info"],
 	.stuic-acp:not([data-variant]) {
-		--_icon-bg: color-mix(
-			in srgb,
-			var(--stuic-color-primary) 15%,
-			var(--stuic-color-background)
+		--_icon-bg: var(
+			--stuic-color-surface-primary,
+			color-mix(in srgb, var(--stuic-color-primary) 15%, var(--stuic-color-background))
 		);
-		--_icon-text: var(--stuic-color-primary);
+		--_icon-text: var(
+			--stuic-color-surface-primary-foreground,
+			var(--stuic-color-primary)
+		);
 	}
 
 	/* Variant: success */
 	.stuic-acp[data-variant="success"] {
-		--_icon-bg: color-mix(
-			in srgb,
-			var(--stuic-color-primary) 15%,
-			var(--stuic-color-background)
+		--_icon-bg: var(
+			--stuic-color-surface-primary,
+			color-mix(in srgb, var(--stuic-color-primary) 15%, var(--stuic-color-background))
 		);
-		--_icon-text: var(--stuic-color-primary);
+		--_icon-text: var(
+			--stuic-color-surface-primary-foreground,
+			var(--stuic-color-primary)
+		);
 	}
 
 	/* Variant: warn */
 	.stuic-acp[data-variant="warn"] {
-		--_icon-bg: color-mix(
-			in srgb,
-			var(--stuic-color-primary) 15%,
-			var(--stuic-color-background)
+		--_icon-bg: var(
+			--stuic-color-surface-primary,
+			color-mix(in srgb, var(--stuic-color-primary) 15%, var(--stuic-color-background))
 		);
-		--_icon-text: var(--stuic-color-primary);
+		--_icon-text: var(
+			--stuic-color-surface-primary-foreground,
+			var(--stuic-color-primary)
+		);
 	}
 
 	/* Variant: error */
 	.stuic-acp[data-variant="error"] {
-		--_icon-bg: color-mix(
-			in srgb,
-			var(--stuic-color-destructive) 15%,
-			var(--stuic-color-background)
+		--_icon-bg: var(
+			--stuic-color-surface-destructive,
+			color-mix(
+				in srgb,
+				var(--stuic-color-destructive) 15%,
+				var(--stuic-color-background)
+			)
 		);
-		--_icon-text: var(--stuic-color-destructive);
+		--_icon-text: var(
+			--stuic-color-surface-destructive-foreground,
+			var(--stuic-color-destructive)
+		);
 	}
 }

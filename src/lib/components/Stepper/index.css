@@ -20,7 +20,7 @@
 	--stuic-stepper-indicator-text: var(--stuic-color-muted-foreground);
 	--stuic-stepper-indicator-border: var(--stuic-color-border);
 	--stuic-stepper-indicator-bg-current: transparent;
-	--stuic-stepper-indicator-text-current: var(--stuic-color-primary);
+	--stuic-stepper-indicator-text-current: var(--stuic-color-surface-primary-foreground, var(--stuic-color-primary));
 	--stuic-stepper-indicator-border-current: var(--stuic-color-primary);
 	--stuic-stepper-indicator-bg-completed: var(--stuic-color-primary);
 	--stuic-stepper-indicator-text-completed: var(--stuic-color-primary-foreground);
@@ -35,7 +35,7 @@
 	--stuic-stepper-label-text: var(--stuic-color-muted-foreground);
 	--stuic-stepper-label-text-current: var(--stuic-color-foreground);
 	--stuic-stepper-label-text-completed: var(--stuic-color-foreground);
-	--stuic-stepper-label-text-error: var(--stuic-color-destructive);
+	--stuic-stepper-label-text-error: var(--stuic-color-surface-destructive-foreground, var(--stuic-color-destructive));
 
 	/* Description */
 	--stuic-stepper-description-font-size: var(--text-sm);

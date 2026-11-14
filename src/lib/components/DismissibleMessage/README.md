@@ -183,13 +183,14 @@ snippet — no need to re-implement the alert markup:
 
 ### Intent Colors
 
-Intent colors are derived from the global STUIC design tokens:
+Each intent is the theme's soft pairing, which the theme derives per color scheme from the
+intent color:
 
-| Intent        | Token Used                  |
-| ------------- | --------------------------- |
-| `destructive` | `--stuic-color-destructive` |
-| `warning`     | `--stuic-color-warning`     |
-| `success`     | `--stuic-color-success`     |
+| Intent        | Background                          | Text                                           | Border                                     |
+| ------------- | ----------------------------------- | ---------------------------------------------- | ------------------------------------------ |
+| `destructive` | `--stuic-color-surface-destructive` | `--stuic-color-surface-destructive-foreground` | `--stuic-color-surface-destructive-border` |
+| `warning`     | `--stuic-color-surface-warning`     | `--stuic-color-surface-warning-foreground`     | `--stuic-color-surface-warning-border`     |
+| `success`     | `--stuic-color-surface-success`     | `--stuic-color-surface-success-foreground`     | `--stuic-color-surface-success-border`     |
 
 Customize these in your theme file to change all components at once.
 

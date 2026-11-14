@@ -169,24 +169,24 @@ under your own headings.
 
 ## CSS Variables
 
-| Variable                                                           | Default                                     | Description                                                                                               |
-| ------------------------------------------------------------------ | ------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `--stuic-timeline-gap`                                             | `1rem`                                      | Column gap (opposite ↔ rail ↔ content)                                                                    |
-| `--stuic-timeline-gap-vertical`                                    | `1.5rem`                                    | Distance between items                                                                                    |
-| `--stuic-timeline-line-height`                                     | `1.5rem`                                    | Height of the first content line; the marker centers on it                                                |
-| `--stuic-timeline-connector-thickness`                             | `2px`                                       | Rail line thickness                                                                                       |
-| `--stuic-timeline-connector-bg`                                    | `--stuic-color-border`                      | Rail line color                                                                                           |
-| `--stuic-timeline-marker-size`                                     | `0.75rem`                                   | Dot diameter                                                                                              |
-| `--stuic-timeline-marker-bg`                                       | `--stuic-color-muted-foreground`            | Dot color (no intent)                                                                                     |
-| `--stuic-timeline-marker-size-icon`                                | `2rem`                                      | Icon bubble / custom marker diameter                                                                      |
-| `--stuic-timeline-marker-bg-icon` / `-text-icon`                   | muted / muted-foreground                    | Icon bubble colors (no intent); an intent applies a soft tint                                             |
-| `--stuic-timeline-marker-icon-size`                                | `1rem`                                      | Size of an svg inside the bubble                                                                          |
-| `--stuic-timeline-marker-radius`                                   | full circle                                 | Marker radius                                                                                             |
-| `--stuic-timeline-marker-ring-width` / `-ring-color`               | `2px` / `--stuic-color-background`          | Ring separating the marker from the line behind it (set the color to your card's background inside cards) |
-| `--stuic-timeline-time-font-size` / `-text`                        | `--text-sm` / muted-foreground              | Time label                                                                                                |
-| `--stuic-timeline-title-font-size` / `-font-weight` / `-text`      | `--text-base` / medium / foreground         | Title                                                                                                     |
-| `--stuic-timeline-description-font-size` / `-text` / `-margin-top` | `--text-sm` / muted-foreground / `0.125rem` | Description                                                                                               |
-| `--stuic-timeline-footer-gap` / `-margin-top`                      | `0.5rem` / `0.5rem`                         | Footer area                                                                                               |
+| Variable                                                           | Default                                     | Description                                                                                                      |
+| ------------------------------------------------------------------ | ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `--stuic-timeline-gap`                                             | `1rem`                                      | Column gap (opposite ↔ rail ↔ content)                                                                           |
+| `--stuic-timeline-gap-vertical`                                    | `1.5rem`                                    | Distance between items                                                                                           |
+| `--stuic-timeline-line-height`                                     | `1.5rem`                                    | Height of the first content line; the marker centers on it                                                       |
+| `--stuic-timeline-connector-thickness`                             | `2px`                                       | Rail line thickness                                                                                              |
+| `--stuic-timeline-connector-bg`                                    | `--stuic-color-border`                      | Rail line color                                                                                                  |
+| `--stuic-timeline-marker-size`                                     | `0.75rem`                                   | Dot diameter                                                                                                     |
+| `--stuic-timeline-marker-bg`                                       | `--stuic-color-muted-foreground`            | Dot color (no intent)                                                                                            |
+| `--stuic-timeline-marker-size-icon`                                | `2rem`                                      | Icon bubble / custom marker diameter                                                                             |
+| `--stuic-timeline-marker-bg-icon` / `-text-icon`                   | muted / muted-foreground                    | Icon bubble colors (no intent); an intent applies the theme's `surface-{intent}` + `surface-{intent}-foreground` |
+| `--stuic-timeline-marker-icon-size`                                | `1rem`                                      | Size of an svg inside the bubble                                                                                 |
+| `--stuic-timeline-marker-radius`                                   | full circle                                 | Marker radius                                                                                                    |
+| `--stuic-timeline-marker-ring-width` / `-ring-color`               | `2px` / `--stuic-color-background`          | Ring separating the marker from the line behind it (set the color to your card's background inside cards)        |
+| `--stuic-timeline-time-font-size` / `-text`                        | `--text-sm` / muted-foreground              | Time label                                                                                                       |
+| `--stuic-timeline-title-font-size` / `-font-weight` / `-text`      | `--text-base` / medium / foreground         | Title                                                                                                            |
+| `--stuic-timeline-description-font-size` / `-text` / `-margin-top` | `--text-sm` / muted-foreground / `0.125rem` | Description                                                                                                      |
+| `--stuic-timeline-footer-gap` / `-margin-top`                      | `0.5rem` / `0.5rem`                         | Footer area                                                                                                      |
 
 ## Data Attributes
 

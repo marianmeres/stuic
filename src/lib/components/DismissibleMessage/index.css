@@ -83,66 +83,58 @@
 
 	/* =============================================================================
 	   INTENT COLOR MAPPING (SOFT STYLE)
-	   Each intent uses a soft/tinted appearance appropriate for messages.
+	   Each intent is the theme's soft pairing: surface-{intent}, its -foreground and its
+	   -border, which the theme derives per scheme (so there is no dark-mode block here).
+	   The mixes are the fallback for a theme without those tokens.
 	   ============================================================================= */
 
 	/* Destructive: error messages */
 	.stuic-dismissible-message[data-intent="destructive"] {
-		--_bg: color-mix(
-			in srgb,
-			var(--stuic-color-destructive) 15%,
-			var(--stuic-color-background)
+		--_bg: var(
+			--stuic-color-surface-destructive,
+			color-mix(
+				in srgb,
+				var(--stuic-color-destructive) 15%,
+				var(--stuic-color-background)
+			)
 		);
-		/* --_text: var(--stuic-color-destructive); */
-		--_text: color-mix(in srgb, var(--stuic-color-destructive), black 15%);
-		--_border: color-mix(
-			in srgb,
-			var(--stuic-color-destructive) 30%,
-			var(--stuic-color-background)
+		--_text: var(
+			--stuic-color-surface-destructive-foreground,
+			var(--stuic-color-destructive)
+		);
+		--_border: var(
+			--stuic-color-surface-destructive-border,
+			color-mix(
+				in srgb,
+				var(--stuic-color-destructive) 30%,
+				var(--stuic-color-background)
+			)
 		);
 	}
 
 	/* Warning: caution messages */
 	.stuic-dismissible-message[data-intent="warning"] {
-		--_bg: color-mix(
-			in srgb,
-			var(--stuic-color-warning) 15%,
-			var(--stuic-color-background)
+		--_bg: var(
+			--stuic-color-surface-warning,
+			color-mix(in srgb, var(--stuic-color-warning) 15%, var(--stuic-color-background))
 		);
-		/* --_text: var(--stuic-color-warning); */
-		--_text: color-mix(in srgb, var(--stuic-color-warning), black 15%);
-		--_border: color-mix(
-			in srgb,
-			var(--stuic-color-warning) 30%,
-			var(--stuic-color-background)
+		--_text: var(--stuic-color-surface-warning-foreground, var(--stuic-color-warning));
+		--_border: var(
+			--stuic-color-surface-warning-border,
+			color-mix(in srgb, var(--stuic-color-warning) 30%, var(--stuic-color-background))
 		);
 	}
 
 	/* Success: confirmation messages */
 	.stuic-dismissible-message[data-intent="success"] {
-		--_bg: color-mix(
-			in srgb,
-			var(--stuic-color-success) 15%,
-			var(--stuic-color-background)
+		--_bg: var(
+			--stuic-color-surface-success,
+			color-mix(in srgb, var(--stuic-color-success) 15%, var(--stuic-color-background))
 		);
-		/* --_text: var(--stuic-color-success); */
-		--_text: color-mix(in srgb, var(--stuic-color-success), black 15%);
-		--_border: color-mix(
-			in srgb,
-			var(--stuic-color-success) 30%,
-			var(--stuic-color-background)
+		--_text: var(--stuic-color-surface-success-foreground, var(--stuic-color-success));
+		--_border: var(
+			--stuic-color-surface-success-border,
+			color-mix(in srgb, var(--stuic-color-success) 30%, var(--stuic-color-background))
 		);
-	}
-
-	/* =============================================================================
-	   DARK MODE ADJUSTMENTS
-	   Increase color intensity for better visibility in dark mode.
-	   ============================================================================= */
-
-	.dark .stuic-dismissible-message[data-intent="destructive"],
-	.dark .stuic-dismissible-message[data-intent="warning"],
-	.dark .stuic-dismissible-message[data-intent="success"] {
-		--_bg: color-mix(in srgb, var(--_text) 20%, var(--stuic-color-background));
-		--_border: color-mix(in srgb, var(--_text) 40%, var(--stuic-color-background));
 	}
 }

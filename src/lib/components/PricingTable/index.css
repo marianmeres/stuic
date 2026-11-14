@@ -242,7 +242,7 @@
 		);
 		color: var(
 			--stuic-pricing-table-discount-badge-color,
-			var(--stuic-color-success, #22c55e)
+			var(--stuic-color-surface-success-foreground, var(--stuic-color-success, #22c55e))
 		);
 		padding: 0.125rem 0.5rem;
 		border-radius: 9999px;
@@ -298,7 +298,7 @@
 		text-align: center;
 		color: var(
 			--stuic-pricing-table-feature-icon-color,
-			var(--stuic-color-success, #22c55e)
+			var(--stuic-color-surface-success-foreground, var(--stuic-color-success, #22c55e))
 		);
 	}
 

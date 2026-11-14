@@ -58,6 +58,9 @@ Theme CSS files are not bundled in this package — they're provided by `@marian
    `CommentInput`, `TrendChart` — import their own `index.css` locally so their styles
    don't ship to barrel-only consumers. Enforced by `src/lib/barrel-optional-peers.test.ts`.)
 8. Declare component tokens at `:root` that reference shared structural tokens (use fallback pattern instead)
+9. Use a raw intent color as text (`color: var(--stuic-color-destructive)`). The raw intent
+   is a fill; intent-colored text and glyphs read `--stuic-color-surface-{intent}-foreground`
+   (see [Theming](./docs/domains/theming.md)). Enforced by `src/lib/intent-text.test.ts`.
 
 ### CSS Variable Pattern
 

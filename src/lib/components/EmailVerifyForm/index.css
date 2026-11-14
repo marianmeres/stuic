@@ -3,7 +3,10 @@
 	--stuic-email-verify-form-subheading-color: var(--stuic-color-foreground);
 	--stuic-email-verify-form-attempts-color: var(--stuic-color-muted-foreground);
 	--stuic-email-verify-form-resend-color: var(--stuic-color-muted-foreground);
-	--stuic-email-verify-form-resend-flash-color: var(--stuic-color-primary);
+	--stuic-email-verify-form-resend-flash-color: var(
+		--stuic-color-surface-primary-foreground,
+		var(--stuic-color-primary)
+	);
 }
 
 @layer components {

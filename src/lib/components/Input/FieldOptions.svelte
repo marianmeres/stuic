@@ -844,9 +844,11 @@
 										onclick={enterPick}
 										class={twMerge(
 											// keep font-weight constant across states so the tab doesn't reflow
+											// the accent is a fill colour: it draws the underline, the label keeps the
+											// card's text colour (inactive tabs are muted)
 											"flex items-center px-3 -mb-px text-sm font-semibold border-b-2",
 											!arrangeMode
-												? "border-(--stuic-input-accent) text-(--stuic-input-accent)"
+												? "border-(--stuic-input-accent)"
 												: "border-transparent stuic-field-options-muted"
 										)}
 									>
@@ -862,7 +864,7 @@
 											// keep font-weight constant across states so the tab doesn't reflow
 											"flex items-center px-3 -mb-px text-sm font-semibold border-b-2",
 											arrangeMode
-												? "border-(--stuic-input-accent) text-(--stuic-input-accent)"
+												? "border-(--stuic-input-accent)"
 												: "border-transparent stuic-field-options-muted"
 										)}
 									>

@@ -26,8 +26,16 @@
 	--stuic-cart-quantity-input-bg: var(--stuic-color-input);
 
 	/* Remove button */
-	--stuic-cart-remove-color: var(--stuic-color-destructive);
-	--stuic-cart-remove-color-hover: var(--stuic-color-destructive-hover);
+	--stuic-cart-remove-color: var(
+		--stuic-color-surface-destructive-foreground,
+		var(--stuic-color-destructive)
+	);
+	/* text, so it steps toward the foreground (the raw -hover is a fill colour) */
+	--stuic-cart-remove-color-hover: color-mix(
+		in srgb,
+		var(--stuic-color-surface-destructive-foreground, var(--stuic-color-destructive)),
+		var(--stuic-color-foreground) 25%
+	);
 
 	/* Summary */
 	--stuic-cart-summary-border-color: var(--stuic-color-border);
