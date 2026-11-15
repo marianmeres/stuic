@@ -49,6 +49,21 @@
 	/* Chevron */
 	--stuic-nav-chevron-opacity: 0.5;
 
+	/* Divider (line or blank break between entries, every level) */
+	--stuic-nav-divider-color: var(--stuic-color-border);
+	--stuic-nav-divider-thickness: 1px;
+	--stuic-nav-divider-spacing: 0.25rem; /* above and below, on top of the list gap */
+
+	/* Header (non-interactive label between entries, every level) */
+	--stuic-nav-header-padding-x: 0.5rem;
+	--stuic-nav-header-padding-top: 0.5rem;
+	--stuic-nav-header-padding-bottom: 0.125rem;
+	--stuic-nav-header-font-size: var(--text-sm);
+	--stuic-nav-header-font-weight: 600;
+	--stuic-nav-header-opacity: 0.65;
+	--stuic-nav-header-letter-spacing: normal;
+	--stuic-nav-header-text-transform: none;
+
 	/* Color tokens: Base state */
 	--stuic-nav-item-bg: transparent;
 	--stuic-nav-item-text: inherit;
@@ -335,6 +350,60 @@
 	.stuic-nav-item[data-expanding] {
 		padding-left: var(--stuic-nav-item-padding-x);
 		justify-content: flex-start;
+	}
+
+	/* =============================================================================
+	   DIVIDER (line, or blank break with `line: false`)
+	   ============================================================================= */
+
+	.stuic-nav-divider {
+		flex-shrink: 0;
+		width: 100%;
+		height: 0;
+		margin: var(--stuic-nav-divider-spacing) 0;
+		border: none;
+		border-top: var(--stuic-nav-divider-thickness) solid var(--stuic-nav-divider-color);
+	}
+
+	/* Blank break: same box, no visible line, so swapping the two never shifts layout */
+	.stuic-nav-divider[data-blank] {
+		border-top-color: transparent;
+	}
+
+	/* =============================================================================
+	   HEADER (non-interactive label between entries)
+	   ============================================================================= */
+
+	.stuic-nav-header {
+		display: block;
+		width: 100%;
+		padding: var(--stuic-nav-header-padding-top) var(--stuic-nav-header-padding-x)
+			var(--stuic-nav-header-padding-bottom);
+		font-size: var(--stuic-nav-header-font-size);
+		font-weight: var(--stuic-nav-header-font-weight);
+		letter-spacing: var(--stuic-nav-header-letter-spacing);
+		text-transform: var(--stuic-nav-header-text-transform);
+		line-height: 1.25;
+		opacity: var(--stuic-nav-header-opacity);
+		user-select: none;
+	}
+
+	/* Collapsed (icon-only): no room for the label, so the header draws a divider line.
+	   The label stays in the DOM as sr-only text. */
+	.stuic-nav-header[data-collapsed] {
+		flex-shrink: 0;
+		height: 0;
+		padding: 0;
+		margin: var(--stuic-nav-divider-spacing) 0;
+		border-top: var(--stuic-nav-divider-thickness) solid var(--stuic-nav-divider-color);
+		opacity: 1;
+	}
+
+	/* ...unless a line divider already sits right above it: drop the header's box so the two
+	   don't draw a double line. Its sr-only label is absolutely positioned, so it takes no
+	   gap either. */
+	.stuic-nav-divider:not([data-blank]) + .stuic-nav-header[data-collapsed] {
+		display: contents;
 	}
 
 	/* =============================================================================

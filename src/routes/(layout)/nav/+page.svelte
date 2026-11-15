@@ -1,5 +1,11 @@
 <script lang="ts">
-	import { Nav, type NavItem, type NavGroup } from "#lib/components/Nav/index.js";
+	import {
+		Nav,
+		type NavItem,
+		type NavGroup,
+		type NavGroupEntry,
+		type NavItemEntry,
+	} from "#lib/components/Nav/index.js";
 	import { iconLucideFile } from "@marianmeres/icons-fns/lucide/iconLucideFile.js";
 	import { iconLucideFolder } from "@marianmeres/icons-fns/lucide/iconLucideFolder.js";
 	import { iconLucideImage } from "@marianmeres/icons-fns/lucide/iconLucideImage.js";
@@ -13,6 +19,17 @@
 	import { iconLucidePencil } from "@marianmeres/icons-fns/lucide/iconLucidePencil.js";
 	import { iconLucideHouse } from "@marianmeres/icons-fns/lucide/iconLucideHouse.js";
 	import { iconLucideCircleHelp } from "@marianmeres/icons-fns/lucide/iconLucideCircleHelp.js";
+	import { iconLucideInbox } from "@marianmeres/icons-fns/lucide/iconLucideInbox.js";
+	import { iconLucideLayers } from "@marianmeres/icons-fns/lucide/iconLucideLayers.js";
+	import { iconLucideBoxes } from "@marianmeres/icons-fns/lucide/iconLucideBoxes.js";
+	import { iconLucidePackage } from "@marianmeres/icons-fns/lucide/iconLucidePackage.js";
+	import { iconLucideReceipt } from "@marianmeres/icons-fns/lucide/iconLucideReceipt.js";
+	import { iconLucideUpload } from "@marianmeres/icons-fns/lucide/iconLucideUpload.js";
+	import { iconLucideTrash2 } from "@marianmeres/icons-fns/lucide/iconLucideTrash2.js";
+	import { iconLucideHistory } from "@marianmeres/icons-fns/lucide/iconLucideHistory.js";
+	import { iconLucideUndo2 } from "@marianmeres/icons-fns/lucide/iconLucideUndo2.js";
+	import { iconLucideUsers } from "@marianmeres/icons-fns/lucide/iconLucideUsers.js";
+	import { iconLucideChartColumn } from "@marianmeres/icons-fns/lucide/iconLucideChartColumn.js";
 
 	let lastAction = $state<string | null>(null);
 	let activeId = $state<string>("products-inventory");
@@ -225,6 +242,181 @@
 		icon: { html: iconLucideSettings({}) },
 	};
 
+	// Dividers & headers: a long sidebar sectioned without extra nesting, at every level
+	// (among groups, among a group's items, among an item's children).
+	let sectionedCollapsed = $state(false);
+	let sectionedExpanding = $state(false);
+	let restricted = $state(false);
+
+	const sectionedGroups: NavGroupEntry[] = [
+		{ id: "ds-home", title: "Home", href: "#/home", icon: { html: iconLucideHouse({}) } },
+		{
+			id: "ds-inbox",
+			title: "Inbox",
+			href: "#/inbox",
+			icon: { html: iconLucideInbox({}) },
+		},
+		{ type: "divider" },
+		{ type: "header", label: "Workspace" },
+		{
+			id: "ds-catalog",
+			title: "Catalog",
+			defaultExpanded: true,
+			items: [
+				{
+					id: "ds-products",
+					label: "Products",
+					href: "#/products",
+					icon: { html: iconLucideTag({}) },
+				},
+				{
+					id: "ds-categories",
+					label: "Categories",
+					href: "#/categories",
+					icon: { html: iconLucideLayers({}) },
+				},
+				{
+					id: "ds-collections",
+					label: "Collections",
+					href: "#/collections",
+					icon: { html: iconLucideBoxes({}) },
+				},
+				{ type: "divider", line: false },
+				{
+					id: "ds-inventory",
+					label: "Inventory",
+					href: "#/inventory",
+					icon: { html: iconLucidePackage({}) },
+				},
+				{
+					id: "ds-prices",
+					label: "Price lists",
+					href: "#/prices",
+					icon: { html: iconLucideReceipt({}) },
+				},
+				{
+					id: "ds-io",
+					label: "Imports & exports",
+					icon: { html: iconLucideUpload({}) },
+					children: [
+						{ type: "header", label: "Import" },
+						{ id: "ds-import-csv", label: "From CSV", href: "#/import/csv" },
+						{ id: "ds-import-feed", label: "From a feed", href: "#/import/feed" },
+						{ type: "header", label: "Export" },
+						{ id: "ds-export-csv", label: "To CSV", href: "#/export/csv" },
+						{
+							id: "ds-export-market",
+							label: "To a marketplace",
+							href: "#/export/market",
+						},
+					],
+				},
+				{ type: "divider" },
+				{ type: "header", label: "Danger zone" },
+				{
+					id: "ds-bulk-delete",
+					label: "Bulk delete",
+					href: "#/bulk-delete",
+					icon: { html: iconLucideTrash2({}) },
+					data: { adminOnly: true },
+				},
+				{
+					id: "ds-audit-log",
+					label: "Audit log",
+					href: "#/audit-log",
+					icon: { html: iconLucideHistory({}) },
+					data: { adminOnly: true },
+				},
+			],
+		},
+		{
+			id: "ds-sales",
+			title: "Sales",
+			items: [
+				{
+					id: "ds-orders",
+					label: "Orders",
+					href: "#/orders",
+					icon: { html: iconLucideShoppingCart({}) },
+				},
+				{
+					id: "ds-returns",
+					label: "Returns",
+					href: "#/returns",
+					icon: { html: iconLucideUndo2({}) },
+				},
+				{
+					id: "ds-invoices",
+					label: "Invoices",
+					href: "#/invoices",
+					icon: { html: iconLucideReceipt({}) },
+				},
+				{ type: "divider" },
+				{
+					id: "ds-customers",
+					label: "Customers",
+					href: "#/customers",
+					icon: { html: iconLucideUser({}) },
+				},
+				{
+					id: "ds-segments",
+					label: "Segments",
+					href: "#/segments",
+					icon: { html: iconLucideUsers({}) },
+				},
+				{ type: "divider", line: false },
+				{
+					id: "ds-reports",
+					label: "Reports",
+					href: "#/reports",
+					icon: { html: iconLucideChartColumn({}) },
+				},
+			],
+		},
+		{ type: "divider" },
+		{ type: "header", label: "Administration" },
+		{
+			id: "ds-admin-users",
+			title: "Users",
+			href: "#/admin/users",
+			icon: { html: iconLucideUsers({}) },
+		},
+		{
+			id: "ds-admin-database",
+			title: "Database",
+			href: "#/admin/database",
+			icon: { html: iconLucideDatabase({}) },
+		},
+		{ type: "divider" },
+		{
+			id: "ds-help",
+			title: "Help & Support",
+			href: "#/help",
+			icon: { html: iconLucideCircleHelp({}) },
+		},
+	];
+
+	// What a non-admin sees: the admin-only entries are simply filtered out, leaving the
+	// dividers and headers around them for Nav to tidy away.
+	const ADMIN_GROUPS = new Set(["ds-admin-users", "ds-admin-database"]);
+	const isAdminItem = (e: NavItemEntry) =>
+		e.type !== "divider" && e.type !== "header" && !!e.data?.adminOnly;
+
+	let sectionedVisible = $derived<NavGroupEntry[]>(
+		restricted
+			? sectionedGroups
+					.filter(
+						(g) =>
+							g.type === "divider" || g.type === "header" || !ADMIN_GROUPS.has(g.id ?? "")
+					)
+					.map((g) =>
+						g.type === "divider" || g.type === "header" || !g.items
+							? g
+							: { ...g, items: g.items.filter((i) => !isAdminItem(i)) }
+					)
+			: sectionedGroups
+	);
+
 	function handleSelect(item: NavItem) {
 		lastAction = `Selected item: ${typeof item.label === "string" ? item.label : item.label.en || item.id}`;
 		activeId = item.id;
@@ -244,7 +436,8 @@
 	<p class="text-sm text-neutral-600 dark:text-neutral-400">
 		A reusable navigation component for sidebar navigation. Supports multiple groups,
 		section titles, collapsed mode, nested items (rendered flat after level 1), groups
-		without items (act as regular nav items), and localization.
+		without items (act as regular nav items), dividers and headers at every level, and
+		localization.
 	</p>
 
 	{#if lastAction}
@@ -286,6 +479,73 @@
 			<Nav
 				groups={[homeGroup, contentGroup, productsGroup, helpGroup]}
 				{activeId}
+				onSelect={handleSelect}
+				onGroupSelect={handleGroupSelect}
+			/>
+		</div>
+	</section>
+
+	<hr class="my-4" />
+
+	<section class="space-y-4">
+		<h2 class="text-xl font-semibold">Dividers & Headers</h2>
+		<p class="text-sm text-neutral-600 dark:text-neutral-400">
+			Separate a long list logically without nesting it. Mix these entries in among
+			<code>groups</code>, among a group's <code>items</code>, or among an item's
+			<code>children</code>:
+		</p>
+		<ul
+			class="text-sm text-neutral-600 dark:text-neutral-400 list-disc list-inside space-y-1"
+		>
+			<li><code>{`{ type: "divider" }`}</code> — a subtle line</li>
+			<li>
+				<code>{`{ type: "divider", line: false }`}</code> — a blank break of the same height
+			</li>
+			<li>
+				<code>{`{ type: "header", label }`}</code> — a non-interactive label for the entries
+				after it, up to the next divider or header
+			</li>
+		</ul>
+		<p class="text-sm text-neutral-600 dark:text-neutral-400">
+			Below: dividers and headers among the groups ("Workspace", "Administration"), among
+			Catalog's and Sales' items (incl. blank breaks), and among the children of "Imports
+			& exports". A divider or header left with nothing to separate is not rendered — tick
+			"Hide admin-only entries" to filter out the admin items and watch the "Danger zone"
+			and "Administration" headers and their dividers go with them. In collapsed mode,
+			headers turn into lines.
+		</p>
+
+		<div class="flex flex-wrap gap-4 items-center">
+			<button
+				class="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
+				onclick={() => {
+					if (!sectionedCollapsed) {
+						sectionedCollapsed = true;
+					} else {
+						sectionedExpanding = true;
+						sectionedCollapsed = false;
+						setTimeout(() => (sectionedExpanding = false), 200);
+					}
+				}}
+			>
+				{sectionedCollapsed ? "Expand" : "Collapse"}
+			</button>
+			<label class="flex items-center gap-2 text-sm">
+				<input type="checkbox" bind:checked={restricted} />
+				Hide admin-only entries
+			</label>
+		</div>
+
+		<div
+			class="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-2 transition-all duration-200"
+			style:width={sectionedCollapsed ? "4rem" : "16rem"}
+		>
+			<Nav
+				groups={sectionedVisible}
+				storageKeyPrefix="stuic-nav-sectioned-demo"
+				{activeId}
+				isCollapsed={sectionedCollapsed}
+				isExpanding={sectionedExpanding}
 				onSelect={handleSelect}
 				onGroupSelect={handleGroupSelect}
 			/>

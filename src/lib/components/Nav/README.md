@@ -1,12 +1,12 @@
 # Nav
 
-A navigation component for sidebars with support for groups, nested items, expand/collapse behavior, collapsed icon-only mode, and localStorage persistence.
+A navigation component for sidebars with support for groups, nested items, dividers and headers at every level, expand/collapse behavior, collapsed icon-only mode, and localStorage persistence.
 
 ## Props
 
 | Prop                   | Type                                                | Default       | Description                                                                             |
 | ---------------------- | --------------------------------------------------- | ------------- | --------------------------------------------------------------------------------------- |
-| `groups`               | `NavGroup[]`                                        | -             | Navigation groups to render                                                             |
+| `groups`               | `NavGroupEntry[]`                                   | -             | Navigation groups to render, optionally mixed with dividers and headers                 |
 | `title`                | `MaybeLocalized`                                    | -             | Section title above groups (uppercase, non-interactive)                                 |
 | `locale`               | `string \| string[]`                                | -             | Locale (or preference chain) for localized labels                                       |
 | `isCollapsed`          | `boolean`                                           | `false`       | Collapsed mode (icon-only)                                                              |
@@ -16,7 +16,7 @@ A navigation component for sidebars with support for groups, nested items, expan
 | `isGroupActive`        | `(group: NavGroup) => boolean`                      | -             | Custom group active check callback                                                      |
 | `onSelect`             | `(item: NavItem) => void`                           | -             | Item selection callback                                                                 |
 | `onGroupSelect`        | `(group: NavGroup) => void`                         | -             | Group selection callback (groups without items)                                         |
-| `onGroupToggle`        | `(groupIndex: number, isExpanded: boolean) => void` | -             | Group expand/collapse callback                                                          |
+| `onGroupToggle`        | `(groupIndex: number, isExpanded: boolean) => void` | -             | Group expand/collapse callback (`groupIndex` counts dividers and headers in `groups`)   |
 | `touchFriendly`        | `boolean \| "auto"`                                 | `false`       | Touch-friendly sizing mode                                                              |
 | `persistState`         | `boolean`                                           | `true`        | Enable localStorage persistence for expand/collapse state                               |
 | `storageKeyPrefix`     | `string`                                            | `"stuic-nav"` | Storage key prefix for localStorage                                                     |
@@ -35,6 +35,8 @@ A navigation component for sidebars with support for groups, nested items, expan
 | `classLabel`           | `string`                                            | -             | Classes for labels                                                                      |
 | `classChildren`        | `string`                                            | -             | Classes for children container                                                          |
 | `classChevron`         | `string`                                            | -             | Classes for chevron icon                                                                |
+| `classDivider`         | `string`                                            | -             | Classes for dividers (every level)                                                      |
+| `classHeader`          | `string`                                            | -             | Classes for headers (every level)                                                       |
 | `unstyled`             | `boolean`                                           | `false`       | Skip all default styling                                                                |
 | `el`                   | `HTMLElement`                                       | -             | Element reference (bindable)                                                            |
 
@@ -46,10 +48,12 @@ A navigation group containing a title and items. Groups without items act as cli
 
 ```typescript
 interface NavGroup {
+	/** Optional discriminant, never required */
+	type?: "group";
 	/** Group title (supports localization) */
 	title: MaybeLocalized;
-	/** Navigation items in this group (empty = group acts as nav item) */
-	items?: NavItem[];
+	/** Navigation items, optionally mixed with dividers and headers (no items = group acts as nav item) */
+	items?: NavItemEntry[];
 	/** Group icon (optional) */
 	icon?: THC;
 	/** Whether the group starts expanded (default: false — groups are collapsed by default) */
@@ -69,6 +73,8 @@ A navigation item within a group. Items with children become expandable toggles.
 
 ```typescript
 interface NavItem {
+	/** Optional discriminant, never required */
+	type?: "item";
 	/** Unique identifier for the item */
 	id: string;
 	/** Display label (supports localization) */
@@ -79,8 +85,8 @@ interface NavItem {
 	onClick?: () => void;
 	/** Icon content (THC for flexibility: string, html, component) */
 	icon?: THC;
-	/** Nested children - parent items with children become expand/collapse toggles */
-	children?: NavItem[];
+	/** Nested children, optionally mixed with dividers and headers - parent items with children become expand/collapse toggles */
+	children?: NavItemEntry[];
 	/** Whether this item is disabled */
 	disabled?: boolean;
 	/** Additional CSS classes */
@@ -89,6 +95,47 @@ interface NavItem {
 	data?: Record<string, unknown>;
 }
 ```
+
+### NavDivider
+
+A break between entries. Draws a subtle line, or with `line: false` a blank break of the same height. Non-interactive (`role="separator"`).
+
+```typescript
+interface NavDivider {
+	type: "divider";
+	/** Draw the line (default: true). `false` leaves a blank break of the same height. */
+	line?: boolean;
+	/** Optional key. Defaults to the entry's position. */
+	id?: string;
+	/** Additional CSS classes */
+	class?: string;
+}
+```
+
+### NavHeader
+
+A non-interactive heading. It labels the entries after it, up to the next divider or header, without nesting them.
+
+```typescript
+interface NavHeader {
+	type: "header";
+	/** Heading text (supports localization) */
+	label: MaybeLocalized;
+	/** Optional key. Defaults to the entry's position. */
+	id?: string;
+	/** Additional CSS classes */
+	class?: string;
+}
+```
+
+### Entry unions
+
+```typescript
+type NavGroupEntry = NavGroup | NavDivider | NavHeader; // entries of `groups`
+type NavItemEntry = NavItem | NavDivider | NavHeader; // entries of `items` and `children`
+```
+
+Callbacks (`onSelect`, `isActive`, `onGroupSelect`, `isGroupActive`) only ever receive real items and groups. Code that walks its own nav tree narrows on `type`: `if (entry.type === "divider" || entry.type === "header") continue;`.
 
 ## Usage
 
@@ -218,6 +265,60 @@ Groups without items act as regular nav items (no chevron, directly clickable).
 <Nav {groups} activeId="home" />
 ```
 
+### Dividers and Headers
+
+Separate a long list logically without adding a level of nesting. Dividers and headers can be mixed in at every level: among `groups`, among a group's `items`, and among an item's `children`.
+
+```svelte
+<script lang="ts">
+	import { Nav, type NavGroupEntry } from "stuic";
+
+	const groups: NavGroupEntry[] = [
+		{ id: "home", title: "Home", href: "/" },
+		{ type: "divider" },
+		{ type: "header", label: "Workspace" },
+		{
+			id: "catalog",
+			title: "Catalog",
+			items: [
+				{ id: "products", label: "Products", href: "/products" },
+				{ id: "categories", label: "Categories", href: "/categories" },
+				{ type: "divider", line: false }, // blank break
+				{ id: "inventory", label: "Inventory", href: "/inventory" },
+				{
+					id: "io",
+					label: "Imports & exports",
+					children: [
+						{ type: "header", label: "Import" },
+						{ id: "import-csv", label: "From CSV", href: "/import/csv" },
+						{ type: "header", label: "Export" },
+						{ id: "export-csv", label: "To CSV", href: "/export/csv" },
+					],
+				},
+			],
+		},
+		{ type: "divider" },
+		{ id: "help", title: "Help", href: "/help" },
+	];
+</script>
+
+<Nav {groups} />
+```
+
+**Separators with nothing to separate are not rendered**, so a list you filter (e.g. by permission) never shows a dangling header or a double line:
+
+- a header whose section — the entries up to the next divider or header — holds no item or group,
+- a divider with no item or group before it, or none after it,
+- every divider of a run but the first.
+
+This happens at render time only. Your arrays are not modified, and `onGroupToggle`'s `groupIndex` still counts positions in `groups`, dividers and headers included.
+
+A divider or header never makes a group or item expandable: a group whose `items` hold only dividers/headers behaves like a group without items.
+
+In collapsed (icon-only) mode, dividers shrink to the icon column and headers render as divider lines, with the label kept as screen-reader-only text. A header directly below a line divider adds no second line.
+
+Styling tokens (override globally on `:root` or locally via `style`): `--stuic-nav-divider-color`, `--stuic-nav-divider-thickness`, `--stuic-nav-divider-spacing`, `--stuic-nav-header-padding-x`, `--stuic-nav-header-padding-top`, `--stuic-nav-header-padding-bottom`, `--stuic-nav-header-font-size`, `--stuic-nav-header-font-weight`, `--stuic-nav-header-opacity`, `--stuic-nav-header-letter-spacing`, `--stuic-nav-header-text-transform`.
+
 ### Collapsed Mode
 
 In collapsed mode, only icons are shown with tooltips on hover.
@@ -332,6 +433,7 @@ Note: in icon-only sidebar mode (`isCollapsed`), the section title is visually h
 ## Features
 
 - **Hierarchical Navigation**: Groups with items, nested items with children
+- **Dividers and Headers**: Logical sections at any level without extra nesting; ones left with nothing to separate are skipped
 - **Expand/Collapse**: Groups and nested items can be expanded/collapsed
 - **localStorage Persistence**: Expand/collapse state persists across page reloads
 - **Collapsed Mode**: Icon-only sidebar with tooltips
@@ -353,6 +455,8 @@ The component applies these base classes (when `unstyled` is false):
 | `stuic-nav-group-title`   | Group header/toggle    |
 | `stuic-nav-item`          | Individual nav items   |
 | `stuic-nav-children`      | Nested items container |
+| `stuic-nav-divider`       | Divider (every level)  |
+| `stuic-nav-header`        | Header (every level)   |
 
 ### Data Attributes
 
@@ -366,3 +470,4 @@ The component applies these base classes (when `unstyled` is false):
 | `data-disabled`       | Item is disabled                                      |
 | `data-interactive`    | Section title is clickable (`collapsibleTitle` is on) |
 | `data-expanded`       | Section title's content is currently expanded         |
+| `data-blank`          | Divider has `line: false`                             |

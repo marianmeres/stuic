@@ -7,6 +7,8 @@
 	 * Navigation item within a group.
 	 */
 	export interface NavItem {
+		/** Optional discriminant. Never required: an entry without `type` is an item. */
+		type?: "item";
 		/** Unique identifier for the item */
 		id: string;
 		/** Display label (supports localization) */
@@ -17,8 +19,8 @@
 		onClick?: () => void;
 		/** Icon content (THC for flexibility: string, html, component) */
 		icon?: THC;
-		/** Nested children - parent items with children become expand/collapse toggles */
-		children?: NavItem[];
+		/** Nested children - parent items with children become expand/collapse toggles. May mix in dividers and headers. */
+		children?: NavItemEntry[];
 		/** Whether this item is disabled */
 		disabled?: boolean;
 		/** Additional CSS classes */
@@ -32,10 +34,12 @@
 	 * If items is empty, the group acts as a regular nav item (clickable without chevron).
 	 */
 	export interface NavGroup {
+		/** Optional discriminant. Never required: an entry without `type` is a group. */
+		type?: "group";
 		/** Group title (supports localization) */
 		title: MaybeLocalized;
-		/** Navigation items in this group (empty = group acts as nav item) */
-		items?: NavItem[];
+		/** Navigation items in this group, optionally mixed with dividers and headers (no items = group acts as nav item) */
+		items?: NavItemEntry[];
 		/** Group icon (optional) */
 		icon?: THC;
 		/** Whether the group starts expanded (default: false, groups are collapsed by default) */
@@ -48,9 +52,103 @@
 		id?: string;
 	}
 
+	/**
+	 * A break between entries, allowed at every level: among `groups`, among a group's
+	 * `items`, and among an item's `children`. Draws a subtle horizontal line, or with
+	 * `line: false` a blank break of the same height. Non-interactive.
+	 */
+	export interface NavDivider {
+		type: "divider";
+		/** Draw the line (default: true). `false` leaves a blank break of the same height. */
+		line?: boolean;
+		/** Optional key. Defaults to the entry's position. */
+		id?: string;
+		/** Additional CSS classes */
+		class?: string;
+	}
+
+	/**
+	 * A non-interactive heading, allowed at every level. It labels the entries after it,
+	 * up to the next divider or header, without nesting them (no indent, no
+	 * expand/collapse). In collapsed (icon-only) mode it renders as a divider line, its
+	 * label kept for screen readers.
+	 */
+	export interface NavHeader {
+		type: "header";
+		/** Heading text (supports localization) */
+		label: MaybeLocalized;
+		/** Optional key. Defaults to the entry's position. */
+		id?: string;
+		/** Additional CSS classes */
+		class?: string;
+	}
+
+	/** One entry of a group's `items` or an item's `children` */
+	export type NavItemEntry = NavItem | NavDivider | NavHeader;
+
+	/** One entry of the `groups` prop */
+	export type NavGroupEntry = NavGroup | NavDivider | NavHeader;
+
+	/** True for a divider or header: an entry that separates, as opposed to an item or group. */
+	function isSeparating(
+		entry: NavItemEntry | NavGroupEntry
+	): entry is NavDivider | NavHeader {
+		return entry.type === "divider" || entry.type === "header";
+	}
+
+	/**
+	 * Which entries of one list get rendered. Dividers and headers only exist to separate
+	 * content, so those left with nothing to separate are dropped: a header with no
+	 * item/group before the next divider or header (or the end) — its section is empty —,
+	 * a divider with no item/group before it or after it, and every divider of a run but
+	 * the first. A list the caller filtered (e.g. by permission) thus never shows a
+	 * dangling header, a header labelling the wrong section, or a double line.
+	 */
+	function visibleMask(entries: (NavItemEntry | NavGroupEntry)[]): boolean[] {
+		const keep = entries.map(() => true);
+
+		// Headers: walk backwards, tracking whether content follows before the section ends
+		// (at the next divider or header).
+		let contentAhead = false;
+		for (let i = entries.length - 1; i >= 0; i--) {
+			const type = entries[i].type;
+			if (type === "header") {
+				keep[i] = contentAhead;
+				contentAhead = false;
+			} else if (type === "divider") {
+				contentAhead = false;
+			} else {
+				contentAhead = true;
+			}
+		}
+
+		// Dividers: content must precede and follow, and the previous one must not be pending.
+		let lastContent = -1;
+		for (let i = entries.length - 1; i >= 0; i--) {
+			if (!isSeparating(entries[i])) {
+				lastContent = i;
+				break;
+			}
+		}
+		let seenContent = false;
+		let dividerPending = false;
+		for (let i = 0; i < entries.length; i++) {
+			const type = entries[i].type;
+			if (type === "divider") {
+				keep[i] = seenContent && !dividerPending && i < lastContent;
+				if (keep[i]) dividerPending = true;
+			} else if (type !== "header") {
+				seenContent = true;
+				dividerPending = false;
+			}
+		}
+
+		return keep;
+	}
+
 	export interface Props extends Omit<HTMLAttributes<HTMLElement>, "children" | "title"> {
-		/** The navigation groups to render */
-		groups: NavGroup[];
+		/** The navigation groups to render, optionally mixed with dividers and headers */
+		groups: NavGroupEntry[];
 
 		/** Optional section title rendered above the groups (uppercase, non-interactive) */
 		title?: MaybeLocalized;
@@ -84,7 +182,7 @@
 		/** Callback when a group (without items) is selected */
 		onGroupSelect?: (group: NavGroup) => void;
 
-		/** Callback when group expand/collapse state changes */
+		/** Callback when group expand/collapse state changes. `groupIndex` is the position in `groups`, dividers and headers included. */
 		onGroupToggle?: (groupIndex: number, isExpanded: boolean) => void;
 
 		/** Touch-friendly sizing mode */
@@ -112,6 +210,10 @@
 		classChildren?: string;
 		/** Classes for chevron icon */
 		classChevron?: string;
+		/** Classes for dividers (every level) */
+		classDivider?: string;
+		/** Classes for headers (every level) */
+		classHeader?: string;
 
 		/** Skip all default styling */
 		unstyled?: boolean;
@@ -148,6 +250,8 @@
 	export const NAV_GROUP_TITLE_CLASSES = "stuic-nav-group-title";
 	export const NAV_ITEM_CLASSES = "stuic-nav-item";
 	export const NAV_CHILDREN_CLASSES = "stuic-nav-children";
+	export const NAV_DIVIDER_CLASSES = "stuic-nav-divider";
+	export const NAV_HEADER_CLASSES = "stuic-nav-header";
 </script>
 
 <script lang="ts">
@@ -187,6 +291,8 @@
 		classLabel,
 		classChildren,
 		classChevron,
+		classDivider,
+		classHeader,
 		unstyled = false,
 		el = $bindable(),
 		persistState = true,
@@ -279,8 +385,9 @@
 	}
 
 	// Check if any item in a list (or their descendants) is active
-	function hasActiveDescendant(items: NavItem[]): boolean {
-		for (const item of items) {
+	function hasActiveDescendant(entries: NavItemEntry[]): boolean {
+		for (const item of entries) {
+			if (isSeparating(item)) continue;
 			if (checkItemActive(item)) return true;
 			if (item.children && hasActiveDescendant(item.children)) return true;
 		}
@@ -296,6 +403,8 @@
 	// Compute initial group expanded states synchronously
 	function computeGroupStates(): boolean[] {
 		return groups.map((g) => {
+			// Dividers and headers hold a slot (indices follow `groups`) but never expand
+			if (isSeparating(g)) return false;
 			// First priority: localStorage (if persistence enabled)
 			if (persistState && g.id) {
 				const stored = loadGroupState(g.id);
@@ -356,27 +465,48 @@
 
 		// Persist state if group has an id
 		const group = groups[index];
-		if (group?.id) {
+		if (group && !isSeparating(group) && group.id) {
 			saveGroupState(group.id, newState);
 		}
 
 		onGroupToggle?.(index, newState);
 	}
 
+	// True when a list holds at least one real item (dividers/headers alone don't count)
+	function hasRealItems(entries: NavItemEntry[] | undefined): boolean {
+		return entries?.some((e) => !isSeparating(e)) ?? false;
+	}
+
 	// Check if a group has items (and thus should be expandable)
 	function groupHasItems(group: NavGroup): boolean {
-		return (group.items?.length ?? 0) > 0;
+		return hasRealItems(group.items);
 	}
 
 	// Check if an item has children
 	function itemHasChildren(item: NavItem): boolean {
-		return (item.children?.length ?? 0) > 0;
+		return hasRealItems(item.children);
 	}
 
+	// The entries of one list that get rendered (see `visibleMask`)
+	function visibleEntries<T extends NavItemEntry>(entries: T[]): T[] {
+		const keep = visibleMask(entries);
+		return entries.filter((_, i) => keep[i]);
+	}
+
+	// Keyed-each key: items by id; dividers/headers by id, else by position
+	function entryKey(entry: NavItemEntry, index: number): string {
+		if (isSeparating(entry)) return entry.id ?? `stuic-nav-${entry.type}-${index}`;
+		return entry.id;
+	}
+
+	// Which entries of `groups` get rendered (indices follow `groups`)
+	let groupsVisible = $derived(visibleMask(groups));
+
 	// Collect all items with children recursively
-	function collectItemsWithChildren(items: NavItem[]): NavItem[] {
+	function collectItemsWithChildren(entries: NavItemEntry[]): NavItem[] {
 		const result: NavItem[] = [];
-		for (const item of items) {
+		for (const item of entries) {
+			if (isSeparating(item)) continue;
 			if (item.children?.length) {
 				result.push(item);
 				result.push(...collectItemsWithChildren(item.children));
@@ -389,6 +519,7 @@
 	function computeItemStates(): Set<string> {
 		const expandedItems = new Set<string>();
 		for (const group of groups) {
+			if (isSeparating(group)) continue;
 			if (group.items) {
 				const itemsWithChildren = collectItemsWithChildren(group.items);
 				for (const item of itemsWithChildren) {
@@ -419,8 +550,9 @@
 	}
 
 	// Find item by ID in nested structure
-	function findItemById(items: NavItem[], id: string): NavItem | undefined {
-		for (const item of items) {
+	function findItemById(entries: NavItemEntry[], id: string): NavItem | undefined {
+		for (const item of entries) {
+			if (isSeparating(item)) continue;
 			if (item.id === id) return item;
 			if (item.children) {
 				const found = findItemById(item.children, id);
@@ -433,6 +565,7 @@
 	// Find item across all groups
 	function findItemInGroups(itemId: string): NavItem | undefined {
 		for (const group of groups) {
+			if (isSeparating(group)) continue;
 			if (group.items) {
 				const found = findItemById(group.items, itemId);
 				if (found) return found;
@@ -446,6 +579,7 @@
 		const ids: string[] = [];
 		if (item.children) {
 			for (const child of item.children) {
+				if (isSeparating(child)) continue;
 				ids.push(child.id);
 				ids.push(...getDescendantIds(child));
 			}
@@ -528,6 +662,29 @@
 	}
 </script>
 
+<!-- Divider and header markup, shared by every level: `div` among groups, `li` in lists -->
+{#snippet dividerEl(entry: NavDivider, tag: "div" | "li")}
+	<svelte:element
+		this={tag}
+		role="separator"
+		class={twMerge(!unstyled && NAV_DIVIDER_CLASSES, classDivider, entry.class)}
+		data-blank={entry.line === false ? "" : undefined}
+		data-collapsed={!unstyled && isCollapsed ? "" : undefined}
+	></svelte:element>
+{/snippet}
+
+{#snippet headerEl(entry: NavHeader, tag: "div" | "li")}
+	<svelte:element
+		this={tag}
+		role="presentation"
+		class={twMerge(!unstyled && NAV_HEADER_CLASSES, classHeader, entry.class)}
+		data-collapsed={!unstyled && isCollapsed ? "" : undefined}
+	>
+		<!-- No room for the label in icon-only mode: the header reads as a line, label kept for screen readers -->
+		<span class={isCollapsed ? "sr-only" : undefined}>{resolveLabel(entry.label)}</span>
+	</svelte:element>
+{/snippet}
+
 <nav
 	bind:this={el}
 	class={twMerge(!unstyled && NAV_BASE_CLASSES, classProp)}
@@ -578,292 +735,317 @@
 			transition:slide={{ duration: transitionDuration }}
 		>
 			<!-- Render each group -->
-			{#each groups as group, groupIndex}
-				{@const hasItems = groupHasItems(group)}
-				{@const expanded = isGroupExpanded(groupIndex)}
-				{@const groupActive = !hasItems && isGroupItemActive(group)}
-
-				{#if hasItems}
-					<!-- Group with items: show expandable header -->
-					{#if !isCollapsed}
-						<button
-							type="button"
-							id={groupElId(groupIndex)}
-							class={twMerge(!unstyled && NAV_GROUP_TITLE_CLASSES, classGroupTitle)}
-							onclick={() => toggleGroup(groupIndex)}
-							aria-expanded={expanded}
-							data-touch-friendly={!unstyled && isTouchFriendly ? "" : undefined}
-						>
-							<span
-								class={twMerge(
-									"inline-block shrink-0 transition-transform duration-150",
-									expanded && "rotate-90",
-									classChevron
-								)}
-							>
-								{@html iconChevronRight({ size: isTouchFriendly ? 18 : 16 })}
-							</span>
-							{#if group.icon}
-								<span class={twMerge("shrink-0", classIcon)}>
-									<Thc thc={group.icon} />
-								</span>
-							{/if}
-							<span class={twMerge(classLabel)}>{resolveLabel(group.title)}</span>
-						</button>
-					{:else}
-						<!-- Collapsed mode: show only chevron -->
-						<button
-							type="button"
-							class={twMerge(!unstyled && NAV_ITEM_CLASSES, classItemCollapsed)}
-							onclick={() => toggleGroup(groupIndex)}
-							data-collapsed=""
-							data-touch-friendly={!unstyled && isTouchFriendly ? "" : undefined}
-							use:tooltip={() => ({
-								enabled: isCollapsed,
-								content: resolveLabel(group.title),
-								position: "right",
-							})}
-						>
-							<span
-								class={twMerge(
-									"inline-block shrink-0 transition-transform duration-150",
-									expanded && "rotate-90",
-									classChevron
-								)}
-							>
-								{@html iconChevronRight({ size: 16 })}
-							</span>
-						</button>
-					{/if}
-
-					<!-- Items -->
-					{#if expanded}
-						<ul
-							class={twMerge(!unstyled && NAV_CHILDREN_CLASSES, classChildren)}
-							aria-labelledby={groupElId(groupIndex)}
-							transition:slide={{ duration: transitionDuration }}
-						>
-							{#snippet renderItem(item: NavItem, depth: number)}
-								{@const hasChildren = itemHasChildren(item)}
-								{@const itemExpanded = hasChildren && isItemExpanded(item.id)}
-								{@const active = isItemActive(item)}
-								{@const label = resolveLabel(item.label)}
-								<li>
-									{#if hasChildren}
-										<!-- Parent with children: render as toggle button -->
-										<button
-											type="button"
-											id={itemElId(groupIndex, item.id)}
-											class={twMerge(
-												!unstyled && NAV_ITEM_CLASSES,
-												isCollapsed && classItemCollapsed,
-												active && classItemActive,
-												item.disabled && classItemDisabled,
-												item.class,
-												classItem
-											)}
-											onclick={() => toggleItem(item.id)}
-											disabled={item.disabled}
-											data-active={!unstyled && active ? "" : undefined}
-											data-collapsed={!unstyled && isCollapsed ? "" : undefined}
-											data-has-children=""
-											data-touch-friendly={!unstyled && isTouchFriendly ? "" : undefined}
-											aria-expanded={itemExpanded}
-											use:tooltip={() => ({
-												enabled: isCollapsed,
-												content: label,
-												position: "right",
-											})}
-										>
-											<!-- Chevron indicator -->
-											<span
-												class={twMerge(
-													"inline-block shrink-0 transition-transform duration-150",
-													itemExpanded && "rotate-90",
-													classChevron
-												)}
-											>
-												{@html iconChevronRight({ size: isTouchFriendly ? 18 : 16 })}
-											</span>
-											{#if item.icon && !isCollapsed}
-												<span class={twMerge("shrink-0", classIcon)}>
-													<Thc thc={item.icon} />
-												</span>
-											{/if}
-											{#if !isCollapsed}
-												<span class={classLabel}>{label}</span>
-											{/if}
-										</button>
-
-										<!-- Children (only shown when expanded) -->
-										{#if itemExpanded}
-											<ul
-												class={twMerge(!unstyled && NAV_CHILDREN_CLASSES, classChildren)}
-												transition:slide={{ duration: transitionDuration }}
-											>
-												{#each item.children ?? [] as child (child.id)}
-													{@render renderItem(child, depth + 1)}
-												{/each}
-											</ul>
-										{/if}
-									{:else if item.href}
-										<!-- Leaf item with href -->
-										<a
-											id={itemElId(groupIndex, item.id)}
-											href={item.href}
-											class={twMerge(
-												!unstyled && NAV_ITEM_CLASSES,
-												isCollapsed && classItemCollapsed,
-												active && classItemActive,
-												item.disabled && classItemDisabled,
-												item.class,
-												classItem
-											)}
-											onclick={() => handleItemSelect(item)}
-											data-active={!unstyled && active ? "" : undefined}
-											data-collapsed={!unstyled && isCollapsed ? "" : undefined}
-											data-expanding={!unstyled && isExpanding ? "" : undefined}
-											data-disabled={!unstyled && item.disabled ? "" : undefined}
-											data-touch-friendly={!unstyled && isTouchFriendly ? "" : undefined}
-											aria-current={active ? "page" : undefined}
-											aria-disabled={item.disabled}
-											tabindex={item.disabled ? -1 : 0}
-											use:tooltip={() => ({
-												enabled: isCollapsed,
-												content: label,
-												position: "right",
-											})}
-										>
-											{#if item.icon}
-												<span class={twMerge("shrink-0", classIcon)}>
-													<Thc thc={item.icon} />
-												</span>
-											{:else if isCollapsed}
-												<span class={twMerge("shrink-0 font-medium", classIcon)}
-													>{getFirstLetter(label)}</span
-												>
-											{/if}
-											{#if !isCollapsed}
-												<span class={classLabel}>{label}</span>
-											{/if}
-										</a>
-									{:else}
-										<!-- Leaf item with onClick only -->
-										<button
-											type="button"
-											id={itemElId(groupIndex, item.id)}
-											class={twMerge(
-												!unstyled && NAV_ITEM_CLASSES,
-												isCollapsed && classItemCollapsed,
-												active && classItemActive,
-												item.disabled && classItemDisabled,
-												item.class,
-												classItem
-											)}
-											onclick={() => handleItemSelect(item)}
-											disabled={item.disabled}
-											data-active={!unstyled && active ? "" : undefined}
-											data-collapsed={!unstyled && isCollapsed ? "" : undefined}
-											data-expanding={!unstyled && isExpanding ? "" : undefined}
-											data-disabled={!unstyled && item.disabled ? "" : undefined}
-											data-touch-friendly={!unstyled && isTouchFriendly ? "" : undefined}
-											use:tooltip={() => ({
-												enabled: isCollapsed,
-												content: label,
-												position: "right",
-											})}
-										>
-											{#if item.icon}
-												<span class={twMerge("shrink-0", classIcon)}>
-													<Thc thc={item.icon} />
-												</span>
-											{:else if isCollapsed}
-												<span class={twMerge("shrink-0 font-medium", classIcon)}
-													>{getFirstLetter(label)}</span
-												>
-											{/if}
-											{#if !isCollapsed}
-												<span class={classLabel}>{label}</span>
-											{/if}
-										</button>
-									{/if}
-								</li>
-							{/snippet}
-
-							{#each group.items ?? [] as item (item.id)}
-								{@render renderItem(item, 0)}
-							{/each}
-						</ul>
-					{/if}
+			{#each groups as entry, groupIndex}
+				{#if !groupsVisible[groupIndex]}
+					<!-- Dropped: nothing left for this divider/header to separate -->
+				{:else if entry.type === "divider"}
+					{@render dividerEl(entry, "div")}
+				{:else if entry.type === "header"}
+					{@render headerEl(entry, "div")}
 				{:else}
-					<!-- Group without items: render as a simple nav item (no chevron) -->
-					{@const label = resolveLabel(group.title)}
-					{#if group.href}
-						<a
-							href={group.href}
-							class={twMerge(
-								!unstyled && NAV_ITEM_CLASSES,
-								isCollapsed && classItemCollapsed,
-								groupActive && classItemActive,
-								classItem
-							)}
-							onclick={() => handleGroupSelect(group)}
-							data-active={!unstyled && groupActive ? "" : undefined}
-							data-collapsed={!unstyled && isCollapsed ? "" : undefined}
-							data-expanding={!unstyled && isExpanding ? "" : undefined}
-							data-touch-friendly={!unstyled && isTouchFriendly ? "" : undefined}
-							use:tooltip={() => ({
-								enabled: isCollapsed,
-								content: label,
-								position: "right",
-							})}
-						>
-							{#if group.icon}
-								<span class={twMerge("shrink-0", classIcon)}>
-									<Thc thc={group.icon} />
-								</span>
-							{:else if isCollapsed}
-								<span class={twMerge("shrink-0 font-medium", classIcon)}
-									>{getFirstLetter(label)}</span
+					{@const group = entry}
+					{@const hasItems = groupHasItems(group)}
+					{@const expanded = isGroupExpanded(groupIndex)}
+					{@const groupActive = !hasItems && isGroupItemActive(group)}
+
+					{#if hasItems}
+						<!-- Group with items: show expandable header -->
+						{#if !isCollapsed}
+							<button
+								type="button"
+								id={groupElId(groupIndex)}
+								class={twMerge(!unstyled && NAV_GROUP_TITLE_CLASSES, classGroupTitle)}
+								onclick={() => toggleGroup(groupIndex)}
+								aria-expanded={expanded}
+								data-touch-friendly={!unstyled && isTouchFriendly ? "" : undefined}
+							>
+								<span
+									class={twMerge(
+										"inline-block shrink-0 transition-transform duration-150",
+										expanded && "rotate-90",
+										classChevron
+									)}
 								>
-							{/if}
-							{#if !isCollapsed}
-								<span class={classLabel}>{label}</span>
-							{/if}
-						</a>
+									{@html iconChevronRight({ size: isTouchFriendly ? 18 : 16 })}
+								</span>
+								{#if group.icon}
+									<span class={twMerge("shrink-0", classIcon)}>
+										<Thc thc={group.icon} />
+									</span>
+								{/if}
+								<span class={twMerge(classLabel)}>{resolveLabel(group.title)}</span>
+							</button>
+						{:else}
+							<!-- Collapsed mode: show only chevron -->
+							<button
+								type="button"
+								class={twMerge(!unstyled && NAV_ITEM_CLASSES, classItemCollapsed)}
+								onclick={() => toggleGroup(groupIndex)}
+								data-collapsed=""
+								data-touch-friendly={!unstyled && isTouchFriendly ? "" : undefined}
+								use:tooltip={() => ({
+									enabled: isCollapsed,
+									content: resolveLabel(group.title),
+									position: "right",
+								})}
+							>
+								<span
+									class={twMerge(
+										"inline-block shrink-0 transition-transform duration-150",
+										expanded && "rotate-90",
+										classChevron
+									)}
+								>
+									{@html iconChevronRight({ size: 16 })}
+								</span>
+							</button>
+						{/if}
+
+						<!-- Items -->
+						{#if expanded}
+							<ul
+								class={twMerge(!unstyled && NAV_CHILDREN_CLASSES, classChildren)}
+								aria-labelledby={groupElId(groupIndex)}
+								transition:slide={{ duration: transitionDuration }}
+							>
+								{#snippet renderItem(entry: NavItemEntry, depth: number)}
+									{#if entry.type === "divider"}
+										{@render dividerEl(entry, "li")}
+									{:else if entry.type === "header"}
+										{@render headerEl(entry, "li")}
+									{:else}
+										{@const item = entry}
+										{@const hasChildren = itemHasChildren(item)}
+										{@const itemExpanded = hasChildren && isItemExpanded(item.id)}
+										{@const active = isItemActive(item)}
+										{@const label = resolveLabel(item.label)}
+										<li>
+											{#if hasChildren}
+												<!-- Parent with children: render as toggle button -->
+												<button
+													type="button"
+													id={itemElId(groupIndex, item.id)}
+													class={twMerge(
+														!unstyled && NAV_ITEM_CLASSES,
+														isCollapsed && classItemCollapsed,
+														active && classItemActive,
+														item.disabled && classItemDisabled,
+														item.class,
+														classItem
+													)}
+													onclick={() => toggleItem(item.id)}
+													disabled={item.disabled}
+													data-active={!unstyled && active ? "" : undefined}
+													data-collapsed={!unstyled && isCollapsed ? "" : undefined}
+													data-has-children=""
+													data-touch-friendly={!unstyled && isTouchFriendly
+														? ""
+														: undefined}
+													aria-expanded={itemExpanded}
+													use:tooltip={() => ({
+														enabled: isCollapsed,
+														content: label,
+														position: "right",
+													})}
+												>
+													<!-- Chevron indicator -->
+													<span
+														class={twMerge(
+															"inline-block shrink-0 transition-transform duration-150",
+															itemExpanded && "rotate-90",
+															classChevron
+														)}
+													>
+														{@html iconChevronRight({ size: isTouchFriendly ? 18 : 16 })}
+													</span>
+													{#if item.icon && !isCollapsed}
+														<span class={twMerge("shrink-0", classIcon)}>
+															<Thc thc={item.icon} />
+														</span>
+													{/if}
+													{#if !isCollapsed}
+														<span class={classLabel}>{label}</span>
+													{/if}
+												</button>
+
+												<!-- Children (only shown when expanded) -->
+												{#if itemExpanded}
+													<ul
+														class={twMerge(
+															!unstyled && NAV_CHILDREN_CLASSES,
+															classChildren
+														)}
+														transition:slide={{ duration: transitionDuration }}
+													>
+														{#each visibleEntries(item.children ?? []) as child, i (entryKey(child, i))}
+															{@render renderItem(child, depth + 1)}
+														{/each}
+													</ul>
+												{/if}
+											{:else if item.href}
+												<!-- Leaf item with href -->
+												<a
+													id={itemElId(groupIndex, item.id)}
+													href={item.href}
+													class={twMerge(
+														!unstyled && NAV_ITEM_CLASSES,
+														isCollapsed && classItemCollapsed,
+														active && classItemActive,
+														item.disabled && classItemDisabled,
+														item.class,
+														classItem
+													)}
+													onclick={() => handleItemSelect(item)}
+													data-active={!unstyled && active ? "" : undefined}
+													data-collapsed={!unstyled && isCollapsed ? "" : undefined}
+													data-expanding={!unstyled && isExpanding ? "" : undefined}
+													data-disabled={!unstyled && item.disabled ? "" : undefined}
+													data-touch-friendly={!unstyled && isTouchFriendly
+														? ""
+														: undefined}
+													aria-current={active ? "page" : undefined}
+													aria-disabled={item.disabled}
+													tabindex={item.disabled ? -1 : 0}
+													use:tooltip={() => ({
+														enabled: isCollapsed,
+														content: label,
+														position: "right",
+													})}
+												>
+													{#if item.icon}
+														<span class={twMerge("shrink-0", classIcon)}>
+															<Thc thc={item.icon} />
+														</span>
+													{:else if isCollapsed}
+														<span class={twMerge("shrink-0 font-medium", classIcon)}
+															>{getFirstLetter(label)}</span
+														>
+													{/if}
+													{#if !isCollapsed}
+														<span class={classLabel}>{label}</span>
+													{/if}
+												</a>
+											{:else}
+												<!-- Leaf item with onClick only -->
+												<button
+													type="button"
+													id={itemElId(groupIndex, item.id)}
+													class={twMerge(
+														!unstyled && NAV_ITEM_CLASSES,
+														isCollapsed && classItemCollapsed,
+														active && classItemActive,
+														item.disabled && classItemDisabled,
+														item.class,
+														classItem
+													)}
+													onclick={() => handleItemSelect(item)}
+													disabled={item.disabled}
+													data-active={!unstyled && active ? "" : undefined}
+													data-collapsed={!unstyled && isCollapsed ? "" : undefined}
+													data-expanding={!unstyled && isExpanding ? "" : undefined}
+													data-disabled={!unstyled && item.disabled ? "" : undefined}
+													data-touch-friendly={!unstyled && isTouchFriendly
+														? ""
+														: undefined}
+													use:tooltip={() => ({
+														enabled: isCollapsed,
+														content: label,
+														position: "right",
+													})}
+												>
+													{#if item.icon}
+														<span class={twMerge("shrink-0", classIcon)}>
+															<Thc thc={item.icon} />
+														</span>
+													{:else if isCollapsed}
+														<span class={twMerge("shrink-0 font-medium", classIcon)}
+															>{getFirstLetter(label)}</span
+														>
+													{/if}
+													{#if !isCollapsed}
+														<span class={classLabel}>{label}</span>
+													{/if}
+												</button>
+											{/if}
+										</li>
+									{/if}
+								{/snippet}
+
+								{#each visibleEntries(group.items ?? []) as item, i (entryKey(item, i))}
+									{@render renderItem(item, 0)}
+								{/each}
+							</ul>
+						{/if}
 					{:else}
-						<button
-							type="button"
-							class={twMerge(
-								!unstyled && NAV_ITEM_CLASSES,
-								isCollapsed && classItemCollapsed,
-								groupActive && classItemActive,
-								classItem
-							)}
-							onclick={() => handleGroupSelect(group)}
-							data-active={!unstyled && groupActive ? "" : undefined}
-							data-collapsed={!unstyled && isCollapsed ? "" : undefined}
-							data-expanding={!unstyled && isExpanding ? "" : undefined}
-							data-touch-friendly={!unstyled && isTouchFriendly ? "" : undefined}
-							use:tooltip={() => ({
-								enabled: isCollapsed,
-								content: label,
-								position: "right",
-							})}
-						>
-							{#if group.icon}
-								<span class={twMerge("shrink-0", classIcon)}>
-									<Thc thc={group.icon} />
-								</span>
-							{:else if isCollapsed}
-								<span class={twMerge("shrink-0 font-medium", classIcon)}
-									>{getFirstLetter(label)}</span
-								>
-							{/if}
-							{#if !isCollapsed}
-								<span class={classLabel}>{label}</span>
-							{/if}
-						</button>
+						<!-- Group without items: render as a simple nav item (no chevron) -->
+						{@const label = resolveLabel(group.title)}
+						{#if group.href}
+							<a
+								href={group.href}
+								class={twMerge(
+									!unstyled && NAV_ITEM_CLASSES,
+									isCollapsed && classItemCollapsed,
+									groupActive && classItemActive,
+									classItem
+								)}
+								onclick={() => handleGroupSelect(group)}
+								data-active={!unstyled && groupActive ? "" : undefined}
+								data-collapsed={!unstyled && isCollapsed ? "" : undefined}
+								data-expanding={!unstyled && isExpanding ? "" : undefined}
+								data-touch-friendly={!unstyled && isTouchFriendly ? "" : undefined}
+								use:tooltip={() => ({
+									enabled: isCollapsed,
+									content: label,
+									position: "right",
+								})}
+							>
+								{#if group.icon}
+									<span class={twMerge("shrink-0", classIcon)}>
+										<Thc thc={group.icon} />
+									</span>
+								{:else if isCollapsed}
+									<span class={twMerge("shrink-0 font-medium", classIcon)}
+										>{getFirstLetter(label)}</span
+									>
+								{/if}
+								{#if !isCollapsed}
+									<span class={classLabel}>{label}</span>
+								{/if}
+							</a>
+						{:else}
+							<button
+								type="button"
+								class={twMerge(
+									!unstyled && NAV_ITEM_CLASSES,
+									isCollapsed && classItemCollapsed,
+									groupActive && classItemActive,
+									classItem
+								)}
+								onclick={() => handleGroupSelect(group)}
+								data-active={!unstyled && groupActive ? "" : undefined}
+								data-collapsed={!unstyled && isCollapsed ? "" : undefined}
+								data-expanding={!unstyled && isExpanding ? "" : undefined}
+								data-touch-friendly={!unstyled && isTouchFriendly ? "" : undefined}
+								use:tooltip={() => ({
+									enabled: isCollapsed,
+									content: label,
+									position: "right",
+								})}
+							>
+								{#if group.icon}
+									<span class={twMerge("shrink-0", classIcon)}>
+										<Thc thc={group.icon} />
+									</span>
+								{:else if isCollapsed}
+									<span class={twMerge("shrink-0 font-medium", classIcon)}
+										>{getFirstLetter(label)}</span
+									>
+								{/if}
+								{#if !isCollapsed}
+									<span class={classLabel}>{label}</span>
+								{/if}
+							</button>
+						{/if}
 					{/if}
 				{/if}
 			{/each}
