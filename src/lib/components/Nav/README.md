@@ -381,7 +381,9 @@ Opt in with `collapsibleTitle` to make the section title clickable. Clicking it 
 
 Several `Nav`s may share a `storageKeyPrefix` on purpose, so that a group's memory (keyed by the group's id) follows the group wherever it is rendered. The section title, however, is keyed by the prefix alone, so collapsible sections sharing a prefix would all read and write the same `-section` key and the last one toggled would decide for all of them. Give each such section a `sectionId` to keep their states apart.
 
-Note: in icon-only sidebar mode (`isCollapsed`), the section title is visually hidden but the saved collapsed state is still respected — if a user collapsed the section in expanded-sidebar mode, its groups will stay hidden in icon-only mode too.
+In icon-only sidebar mode (`isCollapsed`), the section title is visually hidden but keeps its height (one line, clipped to the rail's width), which serves as the gap between sections.
+
+Note: in icon-only sidebar mode, the saved collapsed state is still respected — if a user collapsed the section in expanded-sidebar mode, its groups will stay hidden in icon-only mode too.
 
 ### Custom Active Check
 

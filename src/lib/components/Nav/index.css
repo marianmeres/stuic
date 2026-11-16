@@ -127,9 +127,15 @@
 		user-select: none;
 	}
 
-	/* Collapsed mode: hide title but preserve space */
+	/* Collapsed mode: hide title but preserve space (its height is the gap between
+	   sections in the rail). A hidden box still has its full layout width, so clip it
+	   and keep it on one line: otherwise a label wider than the rail overflows sideways
+	   and a vertically scrolling ancestor grows a horizontal scrollbar, and a multi-word
+	   title wraps and makes the gap taller. */
 	.stuic-nav-section-title[data-collapsed] {
 		visibility: hidden;
+		overflow: hidden;
+		white-space: nowrap;
 	}
 
 	/* Interactive (collapsible) variant: opt-in via `collapsibleTitle` prop */
