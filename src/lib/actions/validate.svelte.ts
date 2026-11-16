@@ -166,7 +166,8 @@ export interface ValidateOptions {
  * - Works with native HTML validation attributes (required, pattern, min, max, etc.)
  * - Custom validation functions with access to form context
  * - Translatable error messages via `t` function
- * - Validates on input/change events and first blur
+ * - Validates on input/change events and first blur (a browser-dispatched event
+ *   validates in a microtask, a synthetic one and the imperative call at once)
  * - Returns structured validation result with reasons
  *
  * @param el - The form field element to validate
@@ -236,6 +237,35 @@ export function validate(
 	el: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,
 	fn?: () => boolean | ValidateOptions
 ) {
+	// The validator of the current `$effect` run, `null` once the action is torn down.
+	let live: (() => void) | null = null;
+
+	// Validation asked for by a BROWSER-dispatched event is deferred out of the
+	// current task.
+	//
+	// Chromium blurs a focused field while removing it from the DOM, and commits
+	// it first if it was edited: a final `change`, then `blur`, both dispatched
+	// from inside the removal, while the node is still connected and before this
+	// action's `$effect` cleanup has run. Svelte removes DOM inside a block effect,
+	// so validating there runs the consumer's `customValidator` on a field that is
+	// going away (reading a `$derived` of its component: `derived_inert` warning)
+	// and writes the host's `validation` `$state` (`state_unsafe_mutation`,
+	// uncaught). No guard inside the listener can see it coming: `isConnected` is
+	// still true.
+	//
+	// A microtask runs after that synchronous flush. By then a torn-down action has
+	// nulled `live`, so nothing runs at all. A live field validates as before, one
+	// microtask later (imperceptible), and through `live` rather than a captured
+	// closure: if the options changed in between (the commit itself may have
+	// re-run this `$effect`, e.g. `trim` writing the bound value), the current
+	// run validates instead of the superseded one silently dropping it.
+	//
+	// What must stay synchronous does: a SYNTHETIC `change`/`input`
+	// (`onSubmitValidityCheck` dispatches them and reads `el.validity` at once)
+	// and the imperative `setDoValidate` path (`FieldInput.validate()` reads
+	// `validation` right after the call).
+	const validateLater = () => queueMicrotask(() => live?.());
+
 	$effect(() => {
 		//
 		const fnResult = fn?.() ?? {};
@@ -275,26 +305,23 @@ export function validate(
 		// 	{ enabled, on, hasCustomValidator: typeof customValidator === "function" }
 		// );
 
-		// Flipped to `true` in this $effect's cleanup. Guards the deferred blur
-		// validation (and any other stray late event) from running after the action
-		// is torn down — see the guard in `_doValidate` and the `onBlur` deferral.
+		// Flipped to `true` in this $effect's cleanup. Makes a validator the host
+		// still holds (`setDoValidate`) a no-op once this run is superseded or the
+		// action is torn down — see the guard in `_doValidate`.
 		let destroyed = false;
 
 		const _doValidate = () => {
 			if (!enabled) return;
 
-			// Bail if the action has already been torn down. Together with the
-			// deferral in `onBlur`, this makes the deferred validation a guaranteed
-			// no-op after unmount even in the rare case the node stays connected —
-			// e.g. a keyed `{#each}` move that destroys this effect while the DOM
-			// node persists, where the `isConnected` check below would still pass.
+			// Bail if this run has been superseded or the action torn down: a stale
+			// reference must not validate with options that are no longer in force,
+			// nor write the state of a host that is gone.
 			if (destroyed) return;
 
-			// A focused, dirty field torn down by a route change fires a final
-			// synchronous `change`/`blur` while being removed from the DOM. That
-			// removal runs inside Svelte's flush, so writing `validation` state here
-			// would throw `state_unsafe_mutation`. By then the node is already
-			// detached (`isConnected === false`) and the field is going away — skip.
+			// Nothing to validate on a detached node (a late imperative call, or a
+			// browser that dispatches the removal's events after detaching). This is
+			// NOT what keeps the removal's own `change`/`blur` out in Chromium, which
+			// dispatches them while the node is still connected: `validateLater` is.
 			// No-op for normal interactive validation and for the synchronous
 			// imperative `validate()` path, both of which run while connected.
 			if (!el.isConnected) return;
@@ -367,45 +394,33 @@ export function validate(
 		// `enabled` / `customValidator` / `context` / `t`, so re-running the
 		// effect with new options updates the exposed function in lockstep.
 		setDoValidate?.(_doValidate);
+		live = _doValidate;
 
-		el.addEventListener(on!, _doValidate);
+		// The browser's own event validates in a microtask, a synthetic one at
+		// once (see `validateLater`).
+		const onEvent = (event: Event) => {
+			if (event.isTrusted) validateLater();
+			else _doValidate();
+		};
+		el.addEventListener(on!, onEvent);
 
 		//
 		let _touchCount = 0;
 		const onFocus = () => _touchCount++;
 		el.addEventListener("focus", onFocus);
 
-		// also validate on first blur — but DEFERRED out of the current task.
-		//
-		// When a focused, touched field is unmounted (e.g. a successful submit
-		// navigates away and tears down the form), the browser fires a final
-		// synchronous `blur` *during* Svelte's destroy flush, while the node is
-		// still connected. Running `_doValidate` there reads any consumer `$derived`
-		// belonging to the now-destroyed effect (`derived_inert` warning) and writes
-		// the parent's `validation` `$state` (`state_unsafe_mutation`, uncaught) —
-		// the existing `isConnected` guard misses it because the node hasn't been
-		// detached yet at blur time.
-		//
-		// A microtask runs *after* the synchronous flush completes: by then a
-		// torn-down node is detached and this $effect's cleanup has set `destroyed`,
-		// so `_doValidate`'s guards bail (no derived read, no state write). On a real
-		// user blur the field is still connected and alive, so validation runs as
-		// before — just one microtask later (imperceptible).
-		//
-		// Only `blur` is deferred. The `change`/`input` listener and the imperative
-		// `setDoValidate` path must stay synchronous: `onSubmitValidityCheck`
-		// dispatches synthetic `input`/`change` and reads `el.validity` immediately,
-		// and `FieldInput.validate()` reads `validation` right after invoking the
-		// exposed validator — deferring either would break submit-time validation.
+		// also validate on first blur — always deferred (see `validateLater`):
+		// the removal of a focused field fires one too.
 		const onBlur = () => {
 			if (_touchCount !== 1) return;
-			queueMicrotask(_doValidate);
+			validateLater();
 		};
 		el.addEventListener("blur", onBlur);
 
 		return () => {
 			destroyed = true;
-			el.removeEventListener(on!, _doValidate);
+			live = null;
+			el.removeEventListener(on!, onEvent);
 			el.removeEventListener("focus", onFocus);
 			el.removeEventListener("blur", onBlur);
 		};

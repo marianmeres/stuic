@@ -162,6 +162,34 @@ Two element types are deliberately exempt from the synthetic dispatch:
   consuming a selection, both as defense-in-depth and to allow re-selecting the
   same file twice in a row.)
 
+### When `validate` runs, and a field removed while focused
+
+| Trigger                                                  | Validation runs |
+| -------------------------------------------------------- | --------------- |
+| a browser-dispatched `change` / `input` (the `on` event) | in a microtask  |
+| the first `blur`                                         | in a microtask  |
+| a synthetic `change` / `input` (`dispatchEvent`)         | synchronously   |
+| the imperative validator (`setDoValidate`, `validate()`) | synchronously   |
+
+The browser's own events are deferred because of what Chromium does when a focused field is
+**removed from the DOM** (a route change, the Back button, anything that unmounts a field with the
+caret still in it): it blurs the field as part of the removal, and commits it first if it was
+edited. That last `change` and `blur` are dispatched from inside the removal, on a node that is
+still connected, before the field's actions are cleaned up, and Svelte removes DOM from inside a
+block effect, where a `$state` write throws `state_unsafe_mutation`.
+
+- `validate` does nothing with them: by the microtask the action is gone. Your `customValidator` is
+  not run on a field that is going away, and nothing is written.
+- `trim` still commits: the element is trimmed and `setValue` is called (inside `untrack`, which is
+  what makes the write legal there), so the bound value does not keep the untrimmed text.
+- `typeahead` does not submit: `onSubmit` fires for Enter, Tab and a blur the user caused (deferred
+  by a microtask, like `validate`), never for text left in a field whose page is going away.
+
+Code that dispatches its own event or calls the validator still reads the result on the next line.
+An action of your own that writes state from a raw `addEventListener("change" | "blur", …)` has the
+same exposure, and `if (!el.isConnected) return` does not cover it. Declarative handlers
+(`onchange={…}`) do not: Svelte runs those outside the reactive context.
+
 ### File Dropzone
 
 ```svelte

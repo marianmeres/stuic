@@ -17,7 +17,10 @@ export interface TypeaheadOptions<T extends Item = Item> {
 	itemIdPropName?: string;
 	/** Debounce delay in milliseconds (default: 150) */
 	debounceMs?: number;
-	/** Callback when value is submitted (Enter, Tab, blur) */
+	/**
+	 * Callback when value is submitted (Enter, Tab, blur). A blur that is only the
+	 * field being removed while focused (its page or dialog going away) does not submit.
+	 */
 	onSubmit?: (value: string) => void;
 	/** Callback when Backspace is pressed at cursor position 0 */
 	onDeleteRequest?: () => void;
@@ -75,6 +78,9 @@ export function typeahead<T extends Item = Item>(
 	// `null` means we did not mutate the parent (e.g. it wasn't static to begin with).
 	let parentOriginalPosition: string | null = null;
 	let parentEl: HTMLElement | null = null;
+	// True while the listeners are attached: false before setup, while disabled, and
+	// from the `$effect` cleanup on (see `onBlur`).
+	let attached = false;
 
 	// Current resolved options
 	let currentOpts: TypeaheadOptions<T> = { getOptions: async () => [] };
@@ -344,9 +350,23 @@ export function typeahead<T extends Item = Item>(
 		scheduleSearch(value);
 	}
 
-	// Blur handler
+	// Blur handler — the submit is DEFERRED out of the current task.
+	//
+	// Chromium blurs a focused field while removing it from the DOM: a `blur`
+	// dispatched from inside the removal, while the node is still connected and
+	// before this action's `$effect` cleanup has run. Submitting there would call
+	// the consumer's `onSubmit` on a field whose page is going away (acting on text
+	// nobody confirmed), and from inside Svelte's block effect, where the `$state`
+	// write such a callback typically makes throws `state_unsafe_mutation`.
+	//
+	// A microtask runs after that synchronous teardown. By then the cleanup has
+	// cleared `attached` and nothing is submitted. A real blur submits as before,
+	// one microtask later, with the value the field had when it lost focus.
 	function onBlur() {
-		handleSubmit(el.value || "");
+		const value = el.value || "";
+		queueMicrotask(() => {
+			if (attached) handleSubmit(value);
+		});
 	}
 
 	// Remove ghost and cleanup
@@ -424,6 +444,7 @@ export function typeahead<T extends Item = Item>(
 		el.addEventListener("keydown", onKeyDown);
 		el.addEventListener("input", onInput);
 		el.addEventListener("blur", onBlur);
+		attached = true;
 
 		// Set autocomplete off + combobox semantics for assistive tech
 		el.setAttribute("autocomplete", "off");
@@ -433,6 +454,7 @@ export function typeahead<T extends Item = Item>(
 
 		return () => {
 			// Cleanup
+			attached = false;
 			el.removeEventListener("keydown", onKeyDown);
 			el.removeEventListener("input", onInput);
 			el.removeEventListener("blur", onBlur);

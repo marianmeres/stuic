@@ -1,3 +1,5 @@
+import { untrack } from "svelte";
+
 /**
  * A Svelte action that trims whitespace from input values on change.
  *
@@ -33,7 +35,14 @@ export function trim(
 		function trim() {
 			if (enabled && typeof el.value === "string") {
 				el.value = el.value.trim();
-				setValue?.(el.value);
+				// Chromium commits a focused, edited field while REMOVING it: this
+				// `change` then arrives from inside the removal, which Svelte runs in a
+				// block effect, where a `$state` write throws `state_unsafe_mutation`.
+				// The node is still connected at that point, so `isConnected` cannot
+				// tell the two apart. The write is this event handler's, not that
+				// reaction's: `untrack` says so, and the trimmed value still reaches the
+				// bound state (the edit is being committed, whoever caused it).
+				untrack(() => setValue?.(el.value));
 			}
 		}
 
