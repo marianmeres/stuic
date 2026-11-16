@@ -1,7 +1,7 @@
 import { render } from "vitest-browser-svelte";
 import { expect, test, vi } from "vitest";
 import { createRawSnippet } from "svelte";
-import DropdownMenu from "./DropdownMenu.svelte";
+import DropdownMenu, { type DropdownMenuItemAttrs } from "./DropdownMenu.svelte";
 
 // DropdownMenu is an isOpen-bindable, anchor-positioned menu. Its default trigger
 // is a <button aria-haspopup="menu" aria-expanded aria-controls>; the open panel
@@ -296,4 +296,225 @@ test("scrollbar gutter: reserved once a space-taking scrollbar appears, kept whi
 	} finally {
 		style.remove();
 	}
+});
+
+// --- item attrs -----------------------------------------------------------------
+// An item's `attrs` are spread onto its row FIRST, so every attribute the menu sets
+// (id, role, tabindex, aria-expanded, class, the click/hover handlers, disabled, href)
+// wins. The typical payload is a `data-testid` for a consumer's tests.
+
+test("attrs: an action item's attrs land on its row, as a <button> and, given href, as an <a>", async () => {
+	const screen = await render(DropdownMenu, {
+		items: [
+			{
+				type: "action" as const,
+				id: "save",
+				label: "Save",
+				disabled: true,
+				attrs: { "data-testid": "row-save", title: "Nothing to save" },
+			},
+			{
+				type: "action" as const,
+				id: "docs",
+				label: "Docs",
+				href: "/docs",
+				attrs: { "data-testid": "row-docs", "aria-describedby": "hint" },
+			},
+		],
+		children: text("Open menu"),
+	});
+	await screen.getByRole("button", { name: "Open menu" }).click();
+
+	const save = screen.getByTestId("row-save");
+	await expect.element(save).toBeInTheDocument();
+	await expect.element(save).toHaveAttribute("title", "Nothing to save");
+	await expect.element(save).toHaveAttribute("role", "menuitem");
+	await expect.element(save).toBeDisabled();
+	expect(save.element().tagName).toBe("BUTTON");
+
+	const docs = screen.getByTestId("row-docs");
+	await expect.element(docs).toBeInTheDocument();
+	await expect.element(docs).toHaveAttribute("aria-describedby", "hint");
+	await expect.element(docs).toHaveAttribute("href", "/docs");
+	expect(docs.element().tagName).toBe("A");
+});
+
+test("attrs: an expandable's header row and an action nested in it carry their attrs", async () => {
+	const screen = await render(DropdownMenu, {
+		items: [
+			{
+				type: "expandable" as const,
+				id: "more",
+				label: "More",
+				defaultExpanded: true,
+				attrs: { "data-testid": "row-more" },
+				items: [
+					{
+						type: "action" as const,
+						id: "nested",
+						label: "Nested",
+						attrs: { "data-testid": "row-nested" },
+					},
+				],
+			},
+		],
+		children: text("Open menu"),
+	});
+	await screen.getByRole("button", { name: "Open menu" }).click();
+
+	const header = screen.getByTestId("row-more");
+	await expect.element(header).toBeInTheDocument();
+	await expect.element(header).toHaveAttribute("role", "menuitem");
+	await expect.element(header).toHaveAttribute("aria-expanded", "true");
+
+	const nested = screen.getByTestId("row-nested");
+	await expect.element(nested).toBeInTheDocument();
+	await expect.element(nested).toHaveAttribute("role", "menuitem");
+	expect(nested.element().tagName).toBe("BUTTON");
+});
+
+test("attrs: cannot override what the menu owns (id, role, tabindex, class, onclick, disabled, aria-expanded)", async () => {
+	const onSelect = vi.fn();
+	const hijackClick = vi.fn();
+	// Cast past the type: it refuses these keys, this proves the runtime holds too.
+	const hijack = {
+		id: "hijack",
+		role: "button",
+		tabindex: 0,
+		class: "hijack",
+		onclick: hijackClick,
+		disabled: true,
+	} as unknown as DropdownMenuItemAttrs;
+	const screen = await render(DropdownMenu, {
+		items: [
+			{
+				type: "action" as const,
+				id: "owned",
+				label: "Owned",
+				class: "mine",
+				onSelect,
+				attrs: { ...hijack, "data-testid": "row-owned" },
+			},
+			{
+				type: "expandable" as const,
+				id: "sec",
+				label: "Section",
+				defaultExpanded: true,
+				attrs: {
+					...hijack,
+					"aria-expanded": false,
+					"data-testid": "row-sec",
+				} as unknown as DropdownMenuItemAttrs,
+				items: [],
+			},
+		],
+		closeOnSelect: false,
+		children: text("Open menu"),
+	});
+	await screen.getByRole("button", { name: "Open menu" }).click();
+
+	const row = screen.getByTestId("row-owned");
+	await expect.element(row).toBeInTheDocument();
+	const rowEl = row.element() as HTMLElement;
+	expect(rowEl.id).not.toBe("hijack");
+	expect(rowEl.id).toMatch(/-item-owned$/);
+	expect(rowEl.getAttribute("role")).toBe("menuitem");
+	expect(rowEl.getAttribute("tabindex")).toBe("-1");
+	expect(rowEl.classList.contains("mine")).toBe(true);
+	expect(rowEl.classList.contains("hijack")).toBe(false);
+	await expect.element(row).toBeEnabled();
+
+	const sec = screen.getByTestId("row-sec");
+	await expect.element(sec).toHaveAttribute("aria-expanded", "true");
+	expect((sec.element() as HTMLElement).id).toMatch(/-expandable-sec$/);
+	expect(sec.element().getAttribute("role")).toBe("menuitem");
+
+	// Keyboard navigation finds the row by the menu's id (getElementById), so it still
+	// tracks it: ArrowDown activates the first navigable item and focuses its row.
+	window.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown" }));
+	await expect.element(row).toHaveAttribute("data-focused");
+	await expect.element(row).toHaveFocus();
+
+	// The click is the menu's: onSelect fires, the attrs' onclick never does.
+	rowEl.click();
+	expect(onSelect).toHaveBeenCalledOnce();
+	expect(hijackClick).not.toHaveBeenCalled();
+});
+
+test("attrs: a row that survives a search filter keeps its attributes", async () => {
+	const screen = await render(DropdownMenu, {
+		items: [
+			{
+				type: "action" as const,
+				id: "new",
+				label: "New",
+				attrs: { "data-testid": "row-new" },
+			},
+			{
+				type: "action" as const,
+				id: "open",
+				label: "Open",
+				attrs: { "data-testid": "row-open" },
+			},
+		],
+		search: true,
+		children: text("Open menu"),
+	});
+	await screen.getByRole("button", { name: "Open menu" }).click();
+	await expect.element(screen.getByTestId("row-open")).toBeInTheDocument();
+
+	await screen.getByLabelText("Search menu items").fill("new");
+
+	await expect.element(screen.getByTestId("row-open")).not.toBeInTheDocument();
+	const row = screen.getByTestId("row-new");
+	await expect.element(row).toBeInTheDocument();
+	await expect.element(row).toHaveAttribute("role", "menuitem");
+});
+
+test("attrs: an item without attrs renders the same attributes as before", async () => {
+	const screen = await render(DropdownMenu, {
+		items: [{ type: "action" as const, id: "plain", label: "Plain" }],
+		children: text("Open menu"),
+	});
+	await screen.getByRole("button", { name: "Open menu" }).click();
+
+	const row = screen.getByRole("menuitem", { name: "Plain" });
+	await expect.element(row).toBeInTheDocument();
+	const names = (row.element() as HTMLElement).getAttributeNames().sort();
+	expect(names).toEqual(["class", "data-size", "id", "role", "tabindex", "type"]);
+});
+
+test("attrs type: accepts data-*/aria-*/title, refuses the keys the menu owns", () => {
+	// Compile-time contract, enforced by svelte-check through the @ts-expect-error lines.
+	const ok: DropdownMenuItemAttrs = {
+		"data-testid": "x",
+		"aria-describedby": "hint",
+		title: "Why it is disabled",
+	};
+	const refused: DropdownMenuItemAttrs[] = [
+		// @ts-expect-error id is the keyboard-navigation target
+		{ id: "x" },
+		// @ts-expect-error role is the menu's
+		{ role: "button" },
+		// @ts-expect-error tabindex is the menu's
+		{ tabindex: 0 },
+		// @ts-expect-error aria-expanded is the menu's
+		{ "aria-expanded": true },
+		// @ts-expect-error class is the item's own field
+		{ class: "x" },
+		// @ts-expect-error the click is onSelect
+		{ onclick: () => {} },
+		// @ts-expect-error hover drives keyboard-nav state
+		{ onmouseenter: () => {} },
+		// @ts-expect-error the row's own state hook
+		{ "data-focused": "" },
+		// @ts-expect-error the row's own state hook
+		{ "data-active": "" },
+		// @ts-expect-error the row's own state hook
+		{ "data-size": "sm" },
+		// @ts-expect-error the row's own state hook
+		{ "data-touch-friendly": "" },
+	];
+	expect(ok["data-testid"]).toBe("x");
+	expect(refused).toHaveLength(11);
 });

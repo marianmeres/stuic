@@ -8,6 +8,7 @@ export {
 	type DropdownMenuCustomItem,
 	type DropdownMenuExpandableItem,
 	type DropdownMenuFlatItem,
+	type DropdownMenuItemAttrs,
 	type DropdownMenuPosition,
 	type DropdownMenuSearchConfig,
 	type NavigableItem,

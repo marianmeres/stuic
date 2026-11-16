@@ -1,7 +1,35 @@
 <script lang="ts" module>
 	import type { Snippet } from "svelte";
-	import type { HTMLButtonAttributes } from "svelte/elements";
+	import type { HTMLAttributes, HTMLButtonAttributes } from "svelte/elements";
 	import type { THC } from "../Thc/Thc.svelte";
+
+	/**
+	 * What an item's `attrs` may put on its rendered row: typically the `data-*` hooks a
+	 * consumer's tests select on, or a `title`. `null`/`undefined` values omit the
+	 * attribute.
+	 *
+	 * The type refuses what the menu owns: `id` (the keyboard-navigation target), `role`,
+	 * `tabindex` and `aria-expanded` (the menu's ARIA contract), `class` (use the item's
+	 * `class` field), the `onclick`/`onmouseenter` handlers (use `onSelect`), and the row's
+	 * own state hooks (`data-focused`, `data-active`, `data-size`, `data-touch-friendly`,
+	 * which its styling reads).
+	 */
+	export type DropdownMenuItemAttrs = Omit<
+		HTMLAttributes<HTMLElement>,
+		| "id"
+		| "role"
+		| "tabindex"
+		| "aria-expanded"
+		| "class"
+		| "children"
+		| "onclick"
+		| "onmouseenter"
+	> & {
+		"data-focused"?: never;
+		"data-active"?: never;
+		"data-size"?: never;
+		"data-touch-friendly"?: never;
+	};
 
 	/**
 	 * Valid positions for dropdown placement relative to the trigger element.
@@ -28,8 +56,14 @@
 		disabled?: boolean;
 		/** Additional CSS classes for this specific item */
 		class?: string;
-		/** Arbitrary data to pass through */
+		/** Arbitrary data to pass through (never rendered) */
 		data?: Record<string, any>;
+		/**
+		 * Attributes spread onto the item's row (a `<button>`, or an `<a>` when `href` is
+		 * set), e.g. `{ "data-testid": "save" }`. The menu's own attributes win: identity is
+		 * `id`, the look is `class`, the click is `onSelect`.
+		 */
+		attrs?: DropdownMenuItemAttrs;
 	}
 
 	/** Clickable action item */
@@ -989,7 +1023,9 @@
 				{#each filteredItems as item}
 					{#if item.type === "action"}
 						{@const isActive = _navItems.active?.id === item.id}
+						<!-- attrs first: every prop after it wins -->
 						<ListItemButton
+							{...item.attrs}
 							id={itemId(item.id)}
 							role="menuitem"
 							focused={isActive}
@@ -1036,6 +1072,7 @@
 						<div role="group" aria-labelledby={expandableHeaderId(item.id)}>
 							<!-- Expandable header -->
 							<ListItemButton
+								{...item.attrs}
 								id={expandableHeaderId(item.id)}
 								role="menuitem"
 								focused={isExpandableActive}
@@ -1078,6 +1115,7 @@
 											{#if !searchMatchedIds || searchMatchedIds.has(childItem.id)}
 												{@const isChildActive = _navItems.active?.id === childItem.id}
 												<ListItemButton
+													{...childItem.attrs}
 													id={itemId(childItem.id)}
 													role="menuitem"
 													focused={isChildActive}

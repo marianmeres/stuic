@@ -57,7 +57,8 @@ interface DropdownMenuActionItem {
 	href?: string; // Render as <a> link instead of <button>
 	target?: string; // Link target (e.g., "_blank")
 	class?: string;
-	data?: Record<string, any>;
+	data?: Record<string, any>; // Pass-through, never rendered
+	attrs?: DropdownMenuItemAttrs; // Attributes on the rendered row (see "Row Attributes")
 }
 ```
 
@@ -113,8 +114,39 @@ interface DropdownMenuExpandableItem {
 	defaultExpanded?: boolean;
 	disabled?: boolean;
 	class?: string;
+	data?: Record<string, any>; // Pass-through, never rendered
+	attrs?: DropdownMenuItemAttrs; // Attributes on the header row (see "Row Attributes")
 }
 ```
+
+### Row Attributes
+
+`attrs` puts attributes on an action or expandable item's rendered row (a `<button>`, or an
+`<a>` when `href` is set): typically a `data-testid` for your tests, or a `title` that says
+why a row is disabled. `null`/`undefined` values omit the attribute.
+
+```svelte
+<DropdownMenu
+	items={[
+		{ type: "action", id: "save", label: "Save", attrs: { "data-testid": "menu-save" } },
+		{
+			type: "action",
+			id: "publish",
+			label: "Publish",
+			disabled: true,
+			attrs: { title: "Save your changes first" },
+		},
+	]}
+>
+	Actions
+</DropdownMenu>
+```
+
+The menu's own attributes win over `attrs`: `id` (the keyboard-navigation target), `role`,
+`tabindex`, `aria-expanded`, `class` (use the item's `class`), `onclick`/`onmouseenter`
+(use `onSelect`), `disabled`, `href` and `target`. The `DropdownMenuItemAttrs` type
+refuses those keys, and also the row's state hooks `data-focused`, `data-active`,
+`data-size` and `data-touch-friendly`, which the row's styling reads.
 
 ## Position Options
 
