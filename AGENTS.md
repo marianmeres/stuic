@@ -17,6 +17,10 @@
 
 **Stack:** Svelte 5 (runes) · Tailwind CSS v4 · SvelteKit (library mode) · Vite
 
+**Ports:** dev server on `21230` (`DEV_PORT` overrides), `preview` on `21231`. Both are strict: a
+taken port stops the server instead of moving it. Vitest's browser server keeps its own non-strict
+port.
+
 ---
 
 ## Project Structure

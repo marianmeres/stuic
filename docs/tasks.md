@@ -192,7 +192,7 @@ The repo uses **pnpm**.
 3. Run `pnpm run lint` - ESLint + Prettier
 4. Run `pnpm test` - Node + browser suites (see [Testing](./testing.md))
 5. Run `pnpm run dev` - Start dev server
-6. Test in browser (http://localhost:8886)
+6. Test in browser (http://localhost:21230)
 7. Test light mode
 8. Test dark mode (add `class="dark"` to `<html>`)
 9. Test that `--stuic-color-primary` changes cascade

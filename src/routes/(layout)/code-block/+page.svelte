@@ -43,7 +43,7 @@ Retry-After: 12
 
 	const shell = `$ npm i @marianmeres/stuic   # the library
 $ export API_TOKEN=secret
-$ npm run dev && open "http://localhost:8886/?token=$API_TOKEN"`;
+$ npm run dev && open "http://localhost:21230/?token=$API_TOKEN"`;
 
 	const script = `#!/usr/bin/env bash
 set -euo pipefail

@@ -15,10 +15,20 @@ export default defineConfig({
 		// SvelteKit 3 takes its config here (svelte.config.js is no longer read)
 		sveltekit({ adapter: adapter() }),
 	],
+	// Ports come from stuic's registered block (21230-21239): dev +0, preview +1.
+	// Strict, so a taken port stops the server instead of shifting it.
 	server: {
-		port: parseInt(process.env.DEV_PORT || "8886"),
+		port: parseInt(process.env.DEV_PORT || "21230"),
+		// Not under vitest: its browser-mode server inherits this `server` block, and a
+		// strict port there would make a second concurrent run fail on vitest's port
+		// instead of moving to the next free one.
+		strictPort: !process.env.VITEST,
 		// expose on all
 		host: true,
+	},
+	preview: {
+		port: 21231,
+		strictPort: true,
 	},
 	test: {
 		// Two projects, routed purely by filename:
