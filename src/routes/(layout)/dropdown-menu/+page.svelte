@@ -267,9 +267,9 @@
 		</p>
 
 		<div class="flex gap-4 flex-wrap">
-			<DropdownMenu items={menuWithHeaders} onSelect={handleSelect}
-				>File Menu</DropdownMenu
-			>
+			<DropdownMenu items={menuWithHeaders} onSelect={handleSelect}>
+				File Menu
+			</DropdownMenu>
 		</div>
 	</section>
 
@@ -283,9 +283,9 @@
 		</p>
 
 		<div class="flex gap-4 flex-wrap">
-			<DropdownMenu items={expandableItems} onSelect={handleSelect}
-				>User Menu</DropdownMenu
-			>
+			<DropdownMenu items={expandableItems} onSelect={handleSelect}>
+				User Menu
+			</DropdownMenu>
 		</div>
 	</section>
 
@@ -317,9 +317,9 @@
 		</p>
 
 		<div class="flex gap-4 flex-wrap">
-			<DropdownMenu items={disabledItems} onSelect={handleSelect}
-				>With Disabled</DropdownMenu
-			>
+			<DropdownMenu items={disabledItems} onSelect={handleSelect}>
+				With Disabled
+			</DropdownMenu>
 		</div>
 	</section>
 
@@ -356,9 +356,9 @@
 		</p>
 
 		<div class="flex gap-4 flex-wrap items-start">
-			<DropdownMenu items={longList} onSelect={handleSelect}
-				>Long List (default)</DropdownMenu
-			>
+			<DropdownMenu items={longList} onSelect={handleSelect}>
+				Long List (default)
+			</DropdownMenu>
 
 			<DropdownMenu items={longList} maxHeight="150px" onSelect={handleSelect}>
 				Max Height 150px
@@ -478,8 +478,9 @@
 				items
 			</li>
 			<li>
-				<kbd class="px-1 bg-neutral-200 dark:bg-neutral-700 rounded">Arrow Right/Left</kbd
-				> - Expand/collapse expandable sections
+				<kbd class="px-1 bg-neutral-200 dark:bg-neutral-700 rounded">
+					Arrow Right/Left
+				</kbd> - Expand/collapse expandable sections
 			</li>
 			<li>
 				<kbd class="px-1 bg-neutral-200 dark:bg-neutral-700 rounded">Home/End</kbd> - Jump to

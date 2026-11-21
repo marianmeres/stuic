@@ -235,8 +235,9 @@
 		{...secondaryProps}
 	>
 		{#if typeof secondaryIcon === "string"}
-			<span class="stuic-split-button-icon" aria-hidden="true">{@html secondaryIcon}</span
-			>
+			<span class="stuic-split-button-icon" aria-hidden="true">
+				{@html secondaryIcon}
+			</span>
 		{:else if secondaryIcon}
 			{@render secondaryIcon()}
 		{:else}

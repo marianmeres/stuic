@@ -49,15 +49,19 @@
 			<Button
 				onclick={() => {
 					acp.alert("Yo!");
-				}}>alert</Button
+				}}
 			>
+				alert
+			</Button>
 			<input type="text" />
 			<Button
 				onclick={() => {
 					value = new Date();
 					modal.close();
-				}}>close</Button
+				}}
 			>
+				close
+			</Button>
 		</div>
 	{/snippet}
 </Modal>

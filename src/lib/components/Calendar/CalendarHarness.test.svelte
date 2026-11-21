@@ -16,8 +16,9 @@
 </script>
 
 <Calendar bind:value bind:view locale="en-US" />
-<button type="button" data-testid="set" onclick={() => (value = "2030-06-15")}>set</button
->
+<button type="button" data-testid="set" onclick={() => (value = "2030-06-15")}>
+	set
+</button>
 <button type="button" data-testid="clear" onclick={() => (value = null)}>clear</button>
 <output data-testid="bound">{value ?? "null"}</output>
 <output data-testid="view">{view ? `${view.year}-${view.month}` : ""}</output>

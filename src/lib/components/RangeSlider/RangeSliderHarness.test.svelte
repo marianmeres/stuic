@@ -48,9 +48,11 @@
 	onclick={() => {
 		start = 30;
 		end = 70;
-	}}>set 30..70</button
+	}}
 >
-<button type="button" data-testid="disable" onclick={() => (disabled = true)}
-	>disable</button
->
+	set 30..70
+</button>
+<button type="button" data-testid="disable" onclick={() => (disabled = true)}>
+	disable
+</button>
 <output data-testid="bound">{start},{end}</output>

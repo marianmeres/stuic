@@ -48,6 +48,6 @@
 	{/if}
 	<div style="flex:1">rest</div>
 </div>
-<button type="button" data-testid="unmount" onclick={() => (mounted = false)}
-	>unmount</button
->
+<button type="button" data-testid="unmount" onclick={() => (mounted = false)}>
+	unmount
+</button>

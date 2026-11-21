@@ -130,8 +130,9 @@
 			</Card>
 		</div>
 		<p class="text-sm text-neutral-500 mt-4">
-			Same card with auto-switch disabled (<code>horizontalThreshold=&#123;0&#125;</code
-			>):
+			Same card with auto-switch disabled (<code>
+				horizontalThreshold=&#123;0&#125;
+			</code>):
 		</p>
 		<div class="max-w-xs mt-2">
 			<Card

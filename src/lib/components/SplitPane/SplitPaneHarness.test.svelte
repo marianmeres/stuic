@@ -46,7 +46,11 @@
 <button type="button" data-testid="set" onclick={() => (size = 30)}>set 30</button>
 <button type="button" data-testid="set-big" onclick={() => (size = 999)}>set 999</button>
 <button type="button" data-testid="reset" onclick={() => pane?.reset()}>reset</button>
-<button type="button" data-testid="toggle-disabled" onclick={() => (disabled = !disabled)}
-	>toggle disabled</button
+<button
+	type="button"
+	data-testid="toggle-disabled"
+	onclick={() => (disabled = !disabled)}
 >
+	toggle disabled
+</button>
 <output data-testid="bound">{size}</output>

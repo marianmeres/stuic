@@ -790,9 +790,9 @@
 								data-error
 								title={pending.error}
 							>
-								<span class="text-xs font-semibold px-1 text-center"
-									>{t("upload_failed")}</span
-								>
+								<span class="text-xs font-semibold px-1 text-center">
+									{t("upload_failed")}
+								</span>
 							</span>
 						{/if}
 					{:else if isTHCNotEmpty(placeholder)}

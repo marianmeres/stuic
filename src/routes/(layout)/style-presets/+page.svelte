@@ -28,9 +28,9 @@
 		<h2 class="text-2xl font-bold mb-2">Style Presets</h2>
 		<p class="text-neutral-600 dark:text-neutral-400 max-w-2xl">
 			Each page below renders the exact same set of components but with different
-			<code class="text-sm bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 rounded"
-				>--stuic-*</code
-			>
+			<code class="text-sm bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 rounded">
+				--stuic-*
+			</code>
 			structural token overrides. This demonstrates how a handful of CSS custom properties can
 			transform the entire library's visual character.
 		</p>

@@ -237,9 +237,9 @@
 	{#if val === null || val === undefined}
 		<span class="italic opacity-40">&mdash;</span>
 	{:else if typeof val === "boolean"}
-		<span class={val ? "text-green-600 dark:text-green-400" : "opacity-50"}
-			>{val ? "true" : "false"}</span
-		>
+		<span class={val ? "text-green-600 dark:text-green-400" : "opacity-50"}>
+			{val ? "true" : "false"}
+		</span>
 	{:else if typeof val === "number"}
 		<span>{val}</span>
 	{:else if typeof val === "string"}
@@ -256,8 +256,10 @@
 {#snippet moreHint()}
 	<span
 		class="ml-1 align-middle text-xs italic opacity-40"
-		title="Open the editor to view the full structure">more&hellip;</span
+		title="Open the editor to view the full structure"
 	>
+		more&hellip;
+	</span>
 {/snippet}
 
 {#snippet renderValue(val: unknown, depth: number)}
@@ -269,9 +271,9 @@
 		{:else if isNarrow}
 			<span class="opacity-50">[{val.length}]</span>
 		{:else if val.every((v) => v === null || typeof v !== "object")}
-			<span class="break-words"
-				>{val.map((v) => (v === null ? "null" : String(v))).join(", ")}</span
-			>
+			<span class="break-words">
+				{val.map((v) => (v === null ? "null" : String(v))).join(", ")}
+			</span>
 		{:else if depth >= previewMaxDepth}
 			<!-- Too deep to render legibly — collapse to count + hint -->
 			<span class="opacity-50">[{val.length}]</span>{@render moreHint()}
@@ -284,9 +286,9 @@
 							depth > 0 && "ml-2"
 						)}
 					>
-						<span class="absolute top-0.5 left-1 text-xs leading-none opacity-30"
-							>#{i + 1}</span
-						>
+						<span class="absolute top-0.5 left-1 text-xs leading-none opacity-30">
+							#{i + 1}
+						</span>
 						{@render renderValue(item, depth + 1)}
 					</div>
 				{/each}
@@ -298,14 +300,14 @@
 			<span class="italic opacity-40">{"{}"}</span>
 		{:else if isNarrow && depth > 0}
 			<!-- Nested objects on narrow: show keys only -->
-			<span class="opacity-50"
-				>{"{"}&#8239;{entries.map(([k]) => k).join(", ")}&#8239;{"}"}</span
-			>
+			<span class="opacity-50">
+				{"{"}&#8239;{entries.map(([k]) => k).join(", ")}&#8239;{"}"}
+			</span>
 		{:else if depth >= previewMaxDepth}
 			<!-- Too deep to render legibly — collapse to keys + hint -->
-			<span class="opacity-50"
-				>{"{"}&#8239;{entries.map(([k]) => k).join(", ")}&#8239;{"}"}</span
-			>{@render moreHint()}
+			<span class="opacity-50">
+				{"{"}&#8239;{entries.map(([k]) => k).join(", ")}&#8239;{"}"}
+			</span>{@render moreHint()}
 		{:else}
 			<div class={twMerge("flex flex-col", depth > 0 && "ml-2")}>
 				{#each entries as [key, v], i (key)}
@@ -320,17 +322,19 @@
 							class={twMerge(
 								"shrink-0 break-all text-sm opacity-50",
 								isNarrow ? "text-xs" : "min-w-24 text-right"
-							)}>{key}</span
+							)}
 						>
+							{key}
+						</span>
 						<div class="min-w-0 flex-1 text-base">
 							{#if isNarrow && typeof v === "object" && v !== null}
 								<!-- On narrow, collapse complex nested values -->
 								{#if Array.isArray(v)}
 									<span class="opacity-50">[{v.length}]</span>
 								{:else}
-									<span class="opacity-50"
-										>{"{"}&#8239;{Object.keys(v).join(", ")}&#8239;{"}"}</span
-									>
+									<span class="opacity-50">
+										{"{"}&#8239;{Object.keys(v).join(", ")}&#8239;{"}"}
+									</span>
 								{/if}
 							{:else}
 								{@render renderValue(v, depth + 1)}

@@ -150,8 +150,10 @@
 		<h2 class="text-xl font-semibold mb-2">Locale Switcher</h2>
 		<p class="text-sm text-neutral-500 mb-4">
 			Built-in locale dropdown before the avatar. Active: <code
-				class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">{activeLocale}</code
+				class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded"
 			>
+				{activeLocale}
+			</code>
 		</p>
 		<div class="border rounded-lg overflow-hidden">
 			<Header
@@ -173,8 +175,10 @@
 		<p class="text-sm text-neutral-500 mb-4">
 			Drag the slider to resize the container. Below the threshold (768px) the nav
 			collapses into a hamburger + dropdown menu. The avatar moves into the dropdown when <code
-				class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">avatarOnClick</code
+				class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded"
 			>
+				avatarOnClick
+			</code>
 			is set. The locale switcher stays inline rather than folding in — see the next example.
 		</p>
 		<input
@@ -214,9 +218,9 @@
 			The locale switcher does not fold into the hamburger — it stays inline next to it,
 			in both collapse modes. Drag below the threshold: the nav items disappear into the
 			menu, the locale trigger does not. Untick
-			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded"
-				>keepLocaleOnCollapse</code
-			>
+			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">
+				keepLocaleOnCollapse
+			</code>
 			to compare with the alternative, where it becomes the last section of the dropdown — on
 			a real phone that means scrolling a long menu to find it, which is why it defaults on.
 			These locales also carry a
@@ -257,8 +261,10 @@
 		<h2 class="text-xl font-semibold mb-2">App-like Mode</h2>
 		<p class="text-sm text-neutral-500 mb-4">
 			Leading (left-side) hamburger with <code
-				class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">leadingHamburger</code
+				class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded"
 			>
+				leadingHamburger
+			</code>
 			that fires a callback. The header stays drawer-agnostic — the consumer wires up the Drawer
 			separately. Click the hamburger to open the left drawer.
 		</p>
@@ -292,13 +298,13 @@
 	<section>
 		<h2 class="text-xl font-semibold mb-2">Mobile-only Leading Hamburger</h2>
 		<p class="text-sm text-neutral-500 mb-4">
-			Use <code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded"
-				>leadingHamburger="collapsed"</code
-			>
+			Use <code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">
+				leadingHamburger="collapsed"
+			</code>
 			to show the hamburger only when the header is below the
-			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded"
-				>collapseThreshold</code
-			>. Drag the slider to see it appear.
+			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">
+				collapseThreshold
+			</code>. Drag the slider to see it appear.
 		</p>
 		<input
 			type="range"
@@ -368,9 +374,11 @@
 	<section>
 		<h2 class="text-xl font-semibold mb-2">Custom Leading Hamburger Icon</h2>
 		<p class="text-sm text-neutral-500 mb-4">
-			Swap the menu icon via <code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded"
-				>leadingHamburgerIcon</code
-			> while keeping the built-in button styling and accessibility.
+			Swap the menu icon via <code
+				class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded"
+			>
+				leadingHamburgerIcon
+			</code> while keeping the built-in button styling and accessibility.
 		</p>
 		<div class="border rounded-lg overflow-hidden">
 			<Header
@@ -390,8 +398,10 @@
 		<h2 class="text-xl font-semibold mb-2">Action Buttons</h2>
 		<p class="text-sm text-neutral-500 mb-4">
 			Icon-only action buttons via <code
-				class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">actions</code
+				class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded"
 			>
+				actions
+			</code>
 			sit between the locale switcher and the avatar. They support
 			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">onclick</code>,
 			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">href</code>,
@@ -442,13 +452,13 @@
 			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">onActionSelect</code>.
 		</p>
 		<p class="text-sm text-neutral-500 mb-4">
-			Unread: <code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded"
-				>{unreadCount}</code
-			>
+			Unread: <code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">
+				{unreadCount}
+			</code>
 			· Last action:
-			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded"
-				>{lastCustomAction ?? "—"}</code
-			>
+			<code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">
+				{lastCustomAction ?? "—"}
+			</code>
 		</p>
 		<div class="border rounded-lg overflow-hidden">
 			<Header
@@ -522,11 +532,11 @@
 	<section>
 		<h2 class="text-xl font-semibold mb-2">App-like Collapse (hide nav)</h2>
 		<p class="text-sm text-neutral-500 mb-4">
-			With <code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded"
-				>collapseMode="hide"</code
-			> nav items disappear entirely below the threshold (no trailing hamburger), but the avatar
-			stays — the well-known "profile always accessible" UX. A leading hamburger opens the drawer
-			that owns the navigation. Drag the slider to see the transition.
+			With <code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">
+				collapseMode="hide"
+			</code> nav items disappear entirely below the threshold (no trailing hamburger), but
+			the avatar stays — the well-known "profile always accessible" UX. A leading hamburger
+			opens the drawer that owns the navigation. Drag the slider to see the transition.
 		</p>
 		<input
 			type="range"

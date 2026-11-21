@@ -105,8 +105,10 @@
 						Or <button
 							type="button"
 							class="underline"
-							onclick={() => alert("Continue as guest")}>continue as guest</button
+							onclick={() => alert("Continue as guest")}
 						>
+							continue as guest
+						</button>
 					</div>
 				{/if}
 			{/snippet}
@@ -243,15 +245,19 @@
 						Or continue as <button
 							type="button"
 							class="underline"
-							onclick={() => alert("Guest")}>guest</button
+							onclick={() => alert("Guest")}
 						>
+							guest
+						</button>
 					</p>
 					<p>
 						Don't have an account? <button
 							type="button"
 							class="underline"
-							onclick={() => alert("Register")}>Sign up</button
+							onclick={() => alert("Register")}
 						>
+							Sign up
+						</button>
 					</p>
 				</div>
 			{/snippet}

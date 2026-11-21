@@ -171,13 +171,13 @@
 	<section>
 		<h2 class="text-xl font-semibold mb-2">The <code>children</code> form</h2>
 		<p class="text-sm text-neutral-500 mb-4">
-			Write <code
-				>&lt;div&gt;&lt;dt&gt;…&lt;/dt&gt;&lt;dd&gt;…&lt;/dd&gt;&lt;/div&gt;</code
-			>
+			Write <code>
+				&lt;div&gt;&lt;dt&gt;…&lt;/dt&gt;&lt;dd&gt;…&lt;/dd&gt;&lt;/div&gt;
+			</code>
 			per row and the same structural CSS applies — no layout utility on the consumer side.
-			For rows the data form cannot express: a link with <code>target</code>/<code
-				>rel</code
-			>, a component in the value, a conditional row. <code>data-wrap</code> and
+			For rows the data form cannot express: a link with <code>target</code>/<code>
+				rel
+			</code>, a component in the value, a conditional row. <code>data-wrap</code> and
 			<code>data-emphasis</code> on a hand-written row are the row-level contract.
 		</p>
 		<div class="max-w-2xl rounded border p-4 border-neutral-200 dark:border-neutral-700">
@@ -193,8 +193,10 @@
 							href={SHARE_URL}
 							target="_blank"
 							rel="noopener noreferrer"
-							class="underline">{SHARE_URL}</a
+							class="underline"
 						>
+							{SHARE_URL}
+						</a>
 					</dd>
 				</div>
 				<div>

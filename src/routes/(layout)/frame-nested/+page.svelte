@@ -291,9 +291,9 @@
 
 				<div class="text-neutral-500">letterbox (the slot)</div>
 				<div>
-					{dim(m.slot)} &nbsp;<span class="text-neutral-500"
-						>shell − 40px header − 2px border</span
-					>
+					{dim(m.slot)} &nbsp;<span class="text-neutral-500">
+						shell − 40px header − 2px border
+					</span>
 				</div>
 
 				<div class="text-neutral-500">100cqw / 100cqh resolve to</div>
@@ -422,9 +422,9 @@
 		</p>
 
 		<p class="text-sm text-neutral-600 dark:text-neutral-400">
-			The same rule explains where the container class goes. Put <code
-				>@container-size</code
-			>
+			The same rule explains where the container class goes. Put <code>
+				@container-size
+			</code>
 			on the outer shell instead of the letterbox and <code>100cqh</code> becomes "the whole
 			shell", header included — the frame then overshoots by exactly the header's height. The
 			container has to be the box the frame is actually allowed to fill.

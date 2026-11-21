@@ -196,9 +196,9 @@
 <section class="mb-12">
 	<h2 class="text-lg font-bold mb-2">Custom edit action (snippet)</h2>
 	<p class="text-sm opacity-60 mb-4">
-		Override the edit button with a custom snippet. The snippet receives <code
-			>onEditCart</code
-		>.
+		Override the edit button with a custom snippet. The snippet receives <code>
+			onEditCart
+		</code>.
 	</p>
 
 	<div class="max-w-lg">

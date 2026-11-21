@@ -14,9 +14,9 @@
 	<section>
 		<h2 class="text-xl font-semibold mb-2">Basic</h2>
 		<p class="text-sm text-neutral-500 mb-4">
-			A screenshot in a phone bezel. The frame is block-level and sized with <code
-				>class</code
-			>; the screen keeps a 390/844 ratio, so the phone scales with its column.
+			A screenshot in a phone bezel. The frame is block-level and sized with <code>
+				class
+			</code>; the screen keeps a 390/844 ratio, so the phone scales with its column.
 		</p>
 		<div class="flex flex-wrap items-start gap-8">
 			<PhoneFrame class="w-40" {...shot} />

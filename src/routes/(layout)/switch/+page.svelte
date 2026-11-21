@@ -15,21 +15,21 @@
 
 <h3 class="font-semibold mb-2">Intents (when checked)</h3>
 <div class="flex flex-wrap items-center gap-4 mb-6">
-	<span class="flex items-center gap-1"
-		><Switch intent="primary" checked label="Intent primary" /> primary</span
-	>
-	<span class="flex items-center gap-1"
-		><Switch intent="accent" checked label="Intent accent" /> accent</span
-	>
-	<span class="flex items-center gap-1"
-		><Switch intent="success" checked label="Intent success" /> success</span
-	>
-	<span class="flex items-center gap-1"
-		><Switch intent="warning" checked label="Intent warning" /> warning</span
-	>
-	<span class="flex items-center gap-1"
-		><Switch intent="destructive" checked label="Intent destructive" /> destructive</span
-	>
+	<span class="flex items-center gap-1">
+		<Switch intent="primary" checked label="Intent primary" /> primary
+	</span>
+	<span class="flex items-center gap-1">
+		<Switch intent="accent" checked label="Intent accent" /> accent
+	</span>
+	<span class="flex items-center gap-1">
+		<Switch intent="success" checked label="Intent success" /> success
+	</span>
+	<span class="flex items-center gap-1">
+		<Switch intent="warning" checked label="Intent warning" /> warning
+	</span>
+	<span class="flex items-center gap-1">
+		<Switch intent="destructive" checked label="Intent destructive" /> destructive
+	</span>
 </div>
 
 <h3 class="font-semibold mb-2">With icons</h3>

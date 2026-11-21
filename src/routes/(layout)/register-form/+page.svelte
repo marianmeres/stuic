@@ -306,8 +306,10 @@
 						Already have an account? <button
 							type="button"
 							class="underline"
-							onclick={() => alert("Sign in")}>Sign in</button
+							onclick={() => alert("Sign in")}
 						>
+							Sign in
+						</button>
 					</div>
 				{/if}
 			{/snippet}

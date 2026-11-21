@@ -229,9 +229,9 @@
 		>
 			{#snippet footer()}
 				<div class="text-center text-sm opacity-60 pt-2">
-					Prefer email? <a class="underline" href="mailto:hello@example.com"
-						>hello@example.com</a
-					>
+					Prefer email? <a class="underline" href="mailto:hello@example.com">
+						hello@example.com
+					</a>
 				</div>
 			{/snippet}
 		</ContactUsForm>
@@ -305,9 +305,9 @@
 		>
 			{#snippet footer()}
 				<p class="text-center text-sm opacity-60 pt-2">
-					Prefer email? <a class="underline" href="mailto:hello@example.com"
-						>hello@example.com</a
-					>
+					Prefer email? <a class="underline" href="mailto:hello@example.com">
+						hello@example.com
+					</a>
 				</p>
 			{/snippet}
 		</ContactUsForm>

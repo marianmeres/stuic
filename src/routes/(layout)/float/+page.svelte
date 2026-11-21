@@ -28,11 +28,11 @@
 
 <div class="space-y-4 max-w-2xl">
 	<p>
-		<code>Float</code> is a draggable, collapsible floating panel positioned by params (<code
-			>x</code
-		>/<code>y</code> or a named <code>placement</code>) and driven imperatively. Drag it
-		anywhere on the header, double-click the header (or the chevron) to minimize, and it
-		stays clamped inside the viewport.
+		<code>Float</code> is a draggable, collapsible floating panel positioned by params (<code>
+			x
+		</code>/<code>y</code> or a named <code>placement</code>) and driven imperatively.
+		Drag it anywhere on the header, double-click the header (or the chevron) to minimize,
+		and it stays clamped inside the viewport.
 	</p>
 
 	<!-- imperative control bar -->
@@ -150,7 +150,8 @@
 	</Float>
 {:else}
 	<div class="fixed bottom-4 right-4">
-		<Button size="sm" onclick={() => (showClosable = true)}>Re-open closable panel</Button
-		>
+		<Button size="sm" onclick={() => (showClosable = true)}>
+			Re-open closable panel
+		</Button>
 	</div>
 {/if}

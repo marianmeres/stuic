@@ -217,9 +217,9 @@
 		<Timeline items={DEPLOY.slice(0, 3)}>
 			{#snippet renderItem({ item })}
 				<div class="flex items-center gap-2 flex-wrap">
-					<span class="font-medium"
-						><b>{typeof item.title === "string" ? item.title : ""}</b></span
-					>
+					<span class="font-medium">
+						<b>{typeof item.title === "string" ? item.title : ""}</b>
+					</span>
 					{#if item.intent}
 						<Pill intent={item.intent} size="sm">{item.intent}</Pill>
 					{/if}

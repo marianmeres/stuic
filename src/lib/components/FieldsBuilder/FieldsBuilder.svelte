@@ -865,9 +865,9 @@
 										{/if}
 										{#if (showLabelError || showKeyError || showOptionsError || showColumnsError || showExtrasError) && !row.deleted}
 											<span class="fb-error-text shrink-0">
-												<span aria-hidden="true"
-													>{@html iconAlertWarning({ size: 14 })}</span
-												>
+												<span aria-hidden="true">
+													{@html iconAlertWarning({ size: 14 })}
+												</span>
 												<span class="sr-only">{t("row_has_errors")}</span>
 											</span>
 										{/if}
@@ -1240,8 +1240,9 @@
 						<span>{addLabel ?? t("add_label")}</span>
 					</button>
 					{#if maxReached}
-						<span class="fb-hint text-xs">{t("err_max_fields", { max: maxFields! })}</span
-						>
+						<span class="fb-hint text-xs">
+							{t("err_max_fields", { max: maxFields! })}
+						</span>
 					{/if}
 				</div>
 			</div>

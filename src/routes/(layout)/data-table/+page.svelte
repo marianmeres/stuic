@@ -299,9 +299,10 @@
 <!-- ============== WITH SELECTION ============== -->
 <h2 class="text-lg font-bold mb-4">With Selection & Batch Actions</h2>
 <p class="text-sm opacity-70 mb-4">
-	The selection bar keeps its place while nothing is selected (<code>reserveBatchBar</code
-	>, on by default), so ticking the first checkbox doesn't shove the table down. Turn it
-	off to see the old pop-in.
+	The selection bar keeps its place while nothing is selected (<code>
+		reserveBatchBar
+	</code>, on by default), so ticking the first checkbox doesn't shove the table down.
+	Turn it off to see the old pop-in.
 </p>
 <label class="flex items-center gap-2 text-sm mb-4">
 	<input type="checkbox" bind:checked={reserveBatchBar} />
@@ -487,9 +488,9 @@
 		t={tSk}
 	>
 		{#snippet batchActions({ effectiveCount, clearSelection })}
-			<span class="text-sm font-medium"
-				>{tSk("x_rows_selected", { count: effectiveCount })}</span
-			>
+			<span class="text-sm font-medium">
+				{tSk("x_rows_selected", { count: effectiveCount })}
+			</span>
 			<Button size="sm" variant="ghost" onclick={clearSelection}>
 				{tSk("clear_selection")}
 			</Button>

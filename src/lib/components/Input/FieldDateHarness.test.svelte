@@ -16,7 +16,8 @@
 </script>
 
 <FieldDate label="Date" name="date" locale="en-US" bind:value />
-<button type="button" data-testid="set" onclick={() => (value = "2030-06-15")}>set</button
->
+<button type="button" data-testid="set" onclick={() => (value = "2030-06-15")}>
+	set
+</button>
 <button type="button" data-testid="clear" onclick={() => (value = null)}>clear</button>
 <output data-testid="bound">{value ?? "null"}</output>

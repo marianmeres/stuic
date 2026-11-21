@@ -47,8 +47,9 @@
 			>
 				setWidth(200px)
 			</button>
-			{#if current1}<code class="text-sm self-center">{JSON.stringify(current1)}</code
-				>{/if}
+			{#if current1}<code class="text-sm self-center">
+					{JSON.stringify(current1)}
+				</code>{/if}
 		</div>
 		<div class="border h-[300px]">
 			<WithSidePanel bind:this={panel1} bind:current={current1} width="250px">
@@ -173,8 +174,9 @@
 			<button class="border px-3 py-1 rounded text-sm" onclick={() => panel5.toggle()}>
 				toggle
 			</button>
-			{#if current5}<code class="text-sm self-center">{JSON.stringify(current5)}</code
-				>{/if}
+			{#if current5}<code class="text-sm self-center">
+					{JSON.stringify(current5)}
+				</code>{/if}
 		</div>
 		<p class="text-sm text-gray-500 mb-2">
 			Resize the container below (drag its right edge) to see threshold behavior. Below

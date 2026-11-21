@@ -73,8 +73,9 @@
 				<a
 					href="/checkout/{link}"
 					class="block p-2 px-4 rounded-lg bg-neutral-200 dark:bg-neutral-900 hover:text-white hover:bg-neutral-600"
-					>{link}</a
 				>
+					{link}
+				</a>
 			</li>
 		{/each}
 	</ul>

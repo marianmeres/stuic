@@ -993,9 +993,9 @@
 											id={arrange_row_id(item[itemIdPropName])}
 											class="flex items-center gap-1 px-1 py-0.5"
 										>
-											<span class="flex-1 min-w-0 truncate text-sm"
-												>{_renderOptionLabel(item)}</span
-											>
+											<span class="flex-1 min-w-0 truncate text-sm">
+												{_renderOptionLabel(item)}
+											</span>
 											<span class="hidden sm:inline-flex">
 												<Button
 													iconButton

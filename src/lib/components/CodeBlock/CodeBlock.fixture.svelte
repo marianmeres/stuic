@@ -37,9 +37,9 @@
 </script>
 
 {#if mode === "swap"}
-	<button type="button" onclick={() => (code = code === initial ? next : initial)}
-		>swap</button
-	>
+	<button type="button" onclick={() => (code = code === initial ? next : initial)}>
+		swap
+	</button>
 	<button type="button" onclick={() => (lineNumbers = !lineNumbers)}>numbers</button>
 	<CodeBlock {code} {lang} {lineNumbers} copy={false} style="width: 240px" />
 {:else if mode === "sync"}

@@ -352,9 +352,9 @@
 	{#if hasTitle || _samples || copy}
 		<div class={_classHeader}>
 			{#if hasTitle}
-				<span id={_samples ? titleId : undefined} class={_classTitle}
-					><Thc thc={_title!} /></span
-				>
+				<span id={_samples ? titleId : undefined} class={_classTitle}>
+					<Thc thc={_title!} />
+				</span>
 			{/if}
 			{#if _samples}
 				<div
@@ -428,13 +428,13 @@
 			>
 				<span
 					class={unstyled ? undefined : "stuic-code-block-toggle-icon"}
-					aria-hidden="true">{@html iconChevronDown()}</span
+					aria-hidden="true"
 				>
-				<span
-					>{expanded
-						? t("show_less")
-						: t("show_all_lines", { count: lines.length })}</span
-				>
+					{@html iconChevronDown()}
+				</span>
+				<span>
+					{expanded ? t("show_less") : t("show_all_lines", { count: lines.length })}
+				</span>
 			</Button>
 		</div>
 	{/if}

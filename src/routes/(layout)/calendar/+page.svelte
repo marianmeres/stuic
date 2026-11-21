@@ -199,13 +199,17 @@
 			<button
 				type="button"
 				class="px-3 py-2 border rounded hover:bg-black/5"
-				onclick={() => (view = { year: 2026, month: 1 })}>Jan 2026</button
+				onclick={() => (view = { year: 2026, month: 1 })}
 			>
+				Jan 2026
+			</button>
 			<button
 				type="button"
 				class="px-3 py-2 border rounded hover:bg-black/5"
-				onclick={() => (view = { year: 2026, month: 12 })}>Dec 2026</button
+				onclick={() => (view = { year: 2026, month: 12 })}
 			>
+				Dec 2026
+			</button>
 			<span class="self-center text-sm font-mono">view: {view.year}-{view.month}</span>
 		</div>
 		<Calendar

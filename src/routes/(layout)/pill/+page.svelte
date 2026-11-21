@@ -273,7 +273,9 @@
 	out a <Pill intent="success" size="sm" dot>shipped</Pill> status, or mark something as <Pill
 		intent="destructive"
 		variant="outline"
-		size="sm">deprecated</Pill
+		size="sm"
 	>
+		deprecated
+	</Pill>
 	&mdash; pills align nicely with surrounding text.
 </p>

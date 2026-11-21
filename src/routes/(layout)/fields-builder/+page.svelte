@@ -265,9 +265,9 @@
 								{:else if f.type === "select"}
 									<select class="w-full border rounded p-1 opacity-50" disabled>
 										{#each f.options ?? [] as o (o.value)}
-											<option
-												>{getLocalizedText(o.label, [displayLanguage2, "en"])}</option
-											>
+											<option>
+												{getLocalizedText(o.label, [displayLanguage2, "en"])}
+											</option>
 										{/each}
 									</select>
 								{:else if f.type === "checkbox"}

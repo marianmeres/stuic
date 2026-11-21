@@ -347,9 +347,9 @@
 
 	<div style="--stuic-radius: 0; --stuic-radius-button: 9999px;">
 		<p class="text-sm text-neutral-500 mb-2">
-			Flat elements, pill buttons (<code
-				>--stuic-radius: 0; --stuic-radius-button: 9999px</code
-			>):
+			Flat elements, pill buttons (<code>
+				--stuic-radius: 0; --stuic-radius-button: 9999px
+			</code>):
 		</p>
 		<div class="flex flex-wrap gap-3 items-end">
 			<Button intent="primary">Primary</Button>
@@ -457,12 +457,13 @@
 	<div>
 		<p class="text-sm text-neutral-500 mb-2">Icon Only (circular):</p>
 		<div class="flex flex-wrap gap-3 items-end">
-			<Button intent="primary" size="sm" iconButton roundedFull>{@html iconPlus()}</Button
-			>
+			<Button intent="primary" size="sm" iconButton roundedFull>
+				{@html iconPlus()}
+			</Button>
 			<Button intent="accent" size="md" iconButton roundedFull>{@html iconPlus()}</Button>
-			<Button intent="success" size="lg" iconButton roundedFull
-				>{@html iconCheck()}</Button
-			>
+			<Button intent="success" size="lg" iconButton roundedFull>
+				{@html iconCheck()}
+			</Button>
 			<Button variant="outline" iconButton roundedFull>{@html iconSettings()}</Button>
 			<Button variant="ghost" iconButton roundedFull>{@html iconDownload()}</Button>
 		</div>
@@ -485,36 +486,36 @@
 	<div>
 		<p class="text-sm text-neutral-500 mb-2">Back (leading prev arrow + label):</p>
 		<div class="flex flex-wrap gap-3 items-center">
-			<Button roundedFull iconEdge="leading"
-				>{@html iconArrowLeft({ size: 24 })} Back</Button
-			>
-			<Button roundedFull iconEdge="leading" intent="primary"
-				>{@html iconArrowLeft({ size: 24 })} Back</Button
-			>
-			<Button roundedFull iconEdge="leading" variant="outline"
-				>{@html iconArrowLeft({ size: 24 })} Back</Button
-			>
-			<Button roundedFull iconEdge="leading" variant="ghost"
-				>{@html iconArrowLeft({ size: 24 })} Back</Button
-			>
-			<Button roundedFull iconEdge="leading" intent="accent" variant="soft"
-				>{@html iconArrowLeft({ size: 24 })} Back</Button
-			>
+			<Button roundedFull iconEdge="leading">
+				{@html iconArrowLeft({ size: 24 })} Back
+			</Button>
+			<Button roundedFull iconEdge="leading" intent="primary">
+				{@html iconArrowLeft({ size: 24 })} Back
+			</Button>
+			<Button roundedFull iconEdge="leading" variant="outline">
+				{@html iconArrowLeft({ size: 24 })} Back
+			</Button>
+			<Button roundedFull iconEdge="leading" variant="ghost">
+				{@html iconArrowLeft({ size: 24 })} Back
+			</Button>
+			<Button roundedFull iconEdge="leading" intent="accent" variant="soft">
+				{@html iconArrowLeft({ size: 24 })} Back
+			</Button>
 		</div>
 	</div>
 
 	<div>
 		<p class="text-sm text-neutral-500 mb-2">Next (trailing next arrow + label):</p>
 		<div class="flex flex-wrap gap-3 items-center">
-			<Button roundedFull iconEdge="trailing"
-				>Next {@html iconArrowRight({ size: 24 })}</Button
-			>
-			<Button roundedFull iconEdge="trailing" intent="primary"
-				>Next {@html iconArrowRight({ size: 24 })}</Button
-			>
-			<Button roundedFull iconEdge="trailing" variant="outline"
-				>Next {@html iconArrowRight({ size: 24 })}</Button
-			>
+			<Button roundedFull iconEdge="trailing">
+				Next {@html iconArrowRight({ size: 24 })}
+			</Button>
+			<Button roundedFull iconEdge="trailing" intent="primary">
+				Next {@html iconArrowRight({ size: 24 })}
+			</Button>
+			<Button roundedFull iconEdge="trailing" variant="outline">
+				Next {@html iconArrowRight({ size: 24 })}
+			</Button>
 		</div>
 	</div>
 
@@ -524,18 +525,18 @@
 		</p>
 		<div class="flex flex-wrap gap-3 items-center">
 			<Button nav="prev" size="sm" />
-			<Button roundedFull iconEdge="leading" intent="primary" size="sm"
-				>{@html iconArrowLeft({ size: 24 })} Back</Button
-			>
-			<Button roundedFull iconEdge="leading" intent="primary" size="md"
-				>{@html iconArrowLeft({ size: 24 })} Back</Button
-			>
-			<Button roundedFull iconEdge="leading" intent="primary" size="lg"
-				>{@html iconArrowLeft({ size: 24 })} Back</Button
-			>
-			<Button roundedFull iconEdge="leading" intent="primary" size="xl"
-				>{@html iconArrowLeft({ size: 24 })} Back</Button
-			>
+			<Button roundedFull iconEdge="leading" intent="primary" size="sm">
+				{@html iconArrowLeft({ size: 24 })} Back
+			</Button>
+			<Button roundedFull iconEdge="leading" intent="primary" size="md">
+				{@html iconArrowLeft({ size: 24 })} Back
+			</Button>
+			<Button roundedFull iconEdge="leading" intent="primary" size="lg">
+				{@html iconArrowLeft({ size: 24 })} Back
+			</Button>
+			<Button roundedFull iconEdge="leading" intent="primary" size="xl">
+				{@html iconArrowLeft({ size: 24 })} Back
+			</Button>
 		</div>
 	</div>
 </div>

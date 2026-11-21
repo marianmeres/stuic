@@ -295,9 +295,9 @@
 									{#if tier.inheritLabel}
 										<Thc thc={tier.inheritLabel} />
 									{:else}
-										Everything in <strong
-											>{getTHCStringContent(inheritedTier.name)}</strong
-										>, plus&hellip;
+										Everything in <strong>
+											{getTHCStringContent(inheritedTier.name)}
+										</strong>, plus&hellip;
 									{/if}
 								</div>
 							{/if}

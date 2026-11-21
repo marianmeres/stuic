@@ -177,21 +177,21 @@
 
 <h3 class="font-semibold mb-2">Intents</h3>
 <div class="flex flex-wrap items-center gap-4 mb-8">
-	<span class="flex items-center gap-1"
-		><Slider intent="primary" value={60} size="sm" /> primary</span
-	>
-	<span class="flex items-center gap-1"
-		><Slider intent="accent" value={60} size="sm" /> accent</span
-	>
-	<span class="flex items-center gap-1"
-		><Slider intent="success" value={60} size="sm" /> success</span
-	>
-	<span class="flex items-center gap-1"
-		><Slider intent="warning" value={60} size="sm" /> warning</span
-	>
-	<span class="flex items-center gap-1"
-		><Slider intent="destructive" value={60} size="sm" /> destructive</span
-	>
+	<span class="flex items-center gap-1">
+		<Slider intent="primary" value={60} size="sm" /> primary
+	</span>
+	<span class="flex items-center gap-1">
+		<Slider intent="accent" value={60} size="sm" /> accent
+	</span>
+	<span class="flex items-center gap-1">
+		<Slider intent="success" value={60} size="sm" /> success
+	</span>
+	<span class="flex items-center gap-1">
+		<Slider intent="warning" value={60} size="sm" /> warning
+	</span>
+	<span class="flex items-center gap-1">
+		<Slider intent="destructive" value={60} size="sm" /> destructive
+	</span>
 </div>
 
 <h3 class="font-semibold mb-2">Steps + ticks</h3>

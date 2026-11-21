@@ -126,9 +126,9 @@
 					custom={false}
 					palette={["#ef4444", "#f97316", "#22c55e", "#3b82f6", "#a855f7"]}
 				/>
-				<span class="text-sm text-neutral-500"
-					><code>{"custom={false}"}</code> — palette only</span
-				>
+				<span class="text-sm text-neutral-500">
+					<code>{"custom={false}"}</code> — palette only
+				</span>
 			</div>
 			<div class="flex flex-wrap items-start gap-8">
 				<ColorPicker bind:value={textOnly} custom="text" palette={[]} />
@@ -297,9 +297,9 @@
 		<h2 class="text-xl font-semibold mb-2">Unstyled</h2>
 		<p class="text-sm text-neutral-500 mb-4">
 			Structure only — roles, labels, <code>data-index</code> and the per-swatch
-			<code>--stuic-color-picker-swatch-color</code> survive; the styling hooks (<code
-				>data-selected</code
-			>, <code>data-clear</code>) do not, so select with
+			<code>--stuic-color-picker-swatch-color</code> survive; the styling hooks (<code>
+				data-selected
+			</code>, <code>data-clear</code>) do not, so select with
 			<code>aria-checked:</code>. Classes are yours.
 		</p>
 		<ColorPicker

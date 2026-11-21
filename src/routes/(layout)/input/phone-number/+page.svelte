@@ -192,13 +192,9 @@
 			<div class="text-sm font-mono space-y-1 p-3 rounded bg-black/5">
 				<div>value: <strong>{validatedValue}</strong></div>
 				<div>
-					isValid: <strong
-						>{validatedValue
-							? isValidPhoneNumber(validatedValue)
-								? "yes"
-								: "no"
-							: "-"}</strong
-					>
+					isValid: <strong>
+						{validatedValue ? (isValidPhoneNumber(validatedValue) ? "yes" : "no") : "-"}
+					</strong>
 				</div>
 				{#if validatedValue && isValidPhoneNumber(validatedValue)}
 					{@const parsed = parsePhoneNumber(validatedValue)}

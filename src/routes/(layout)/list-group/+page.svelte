@@ -82,9 +82,9 @@
 						>
 							{#snippet title()}
 								Loose items
-								<span class="font-normal text-(--stuic-color-muted-foreground)"
-									>optional</span
-								>
+								<span class="font-normal text-(--stuic-color-muted-foreground)">
+									optional
+								</span>
 							{/snippet}
 							{#snippet aside()}
 								<span>{total} pc</span>

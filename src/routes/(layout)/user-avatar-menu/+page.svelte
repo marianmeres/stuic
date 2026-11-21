@@ -89,9 +89,9 @@
 <section>
 	<h2 class="text-lg font-semibold mb-2">1 — Authenticated, all standard actions</h2>
 	<p class="text-sm text-neutral-500 mb-4">
-		Header tile + Profile + Color scheme + Logout. Color scheme toggles via the built-in <code
-			>ColorScheme.toggle()</code
-		>.
+		Header tile + Profile + Color scheme + Logout. Color scheme toggles via the built-in <code>
+			ColorScheme.toggle()
+		</code>.
 	</p>
 	<UserAvatarMenu
 		identity={user}

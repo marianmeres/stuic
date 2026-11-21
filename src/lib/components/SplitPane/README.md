@@ -136,8 +136,9 @@ grip, palette-based rather than theme-based, with `:root.dark` variants.
 ```svelte
 <SplitPane
 	style="--stuic-split-pane-separator-thickness: 6px; --stuic-split-pane-grip-length: 3rem;"
-	>…</SplitPane
 >
+	…
+</SplitPane>
 ```
 
 ## i18n

@@ -232,9 +232,9 @@
 				<AccordionItem>
 					{#snippet trigger()}How do I customize them?{/snippet}
 					<p class="text-sm">
-						Override the tokens in your app's CSS: <code
-							>:root {"{"} --stuic-radius: 0; {"}"}</code
-						>. All components that reference these tokens will update automatically.
+						Override the tokens in your app's CSS: <code>
+							:root {"{"} --stuic-radius: 0; {"}"}
+						</code>. All components that reference these tokens will update automatically.
 					</p>
 				</AccordionItem>
 				<AccordionItem>

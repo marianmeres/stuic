@@ -374,8 +374,9 @@
 	</div>
 
 	<div class="mt-4 flex gap-2">
-		<Button size="sm" class="border px-3" onclick={handleMinimalValidate}>Validate</Button
-		>
+		<Button size="sm" class="border px-3" onclick={handleMinimalValidate}>
+			Validate
+		</Button>
 		<Button
 			size="sm"
 			class="border px-3"
@@ -442,11 +443,11 @@
 		<code>subdivisions</code> — lists keyed by UPPERCASE ISO country code (demo: US + CA
 		subsets; stuic ships no data). When the selected country has a list, State / Region
 		becomes a fixed select storing the canonical <code>code</code>; other countries keep
-		free text, verbatim. While the select is active the field is required by default (<code
-			>subdivisionRequired</code
-		>). Legacy values self-heal — seed "Michigan" or "mi" and watch the live data become
-		"MI"; "Narnia" is preserved and renders unselected. Switch US → CA → US: the stored
-		code survives the round-trip.
+		free text, verbatim. While the select is active the field is required by default (<code>
+			subdivisionRequired
+		</code>). Legacy values self-heal — seed "Michigan" or "mi" and watch the live data
+		become "MI"; "Narnia" is preserved and renders unselected. Switch US → CA → US: the
+		stored code survives the round-trip.
 	</p>
 
 	<div class="max-w-full mb-4">

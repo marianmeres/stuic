@@ -208,8 +208,10 @@
 						q.trim() && i === active
 							? "text-white bg-neutral-600"
 							: "bg-neutral-200 dark:bg-neutral-900",
-					]}><span class="opacity-60">{parent}</span>{name}</a
+					]}
 				>
+					<span class="opacity-60">{parent}</span>{name}
+				</a>
 			</li>
 		{:else}
 			<li class="px-1 opacity-60">No match for "{q.trim()}"</li>

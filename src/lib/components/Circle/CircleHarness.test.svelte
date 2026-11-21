@@ -19,17 +19,21 @@
 <Circle {completeness} {rotate} {strokeWidth} {bgStrokeColor} />
 
 <!-- setter path: must NOT rebuild the svg -->
-<button type="button" data-testid="set-completeness" onclick={() => (completeness = 0.75)}
-	>completeness</button
+<button
+	type="button"
+	data-testid="set-completeness"
+	onclick={() => (completeness = 0.75)}
 >
-<button type="button" data-testid="set-rotate" onclick={() => (rotate = 45)}
-	>rotate</button
->
+	completeness
+</button>
+<button type="button" data-testid="set-rotate" onclick={() => (rotate = 45)}>
+	rotate
+</button>
 
 <!-- structural path: rebuilds the svg -->
-<button type="button" data-testid="set-stroke-width" onclick={() => (strokeWidth = 24)}
-	>strokeWidth</button
->
-<button type="button" data-testid="set-track" onclick={() => (bgStrokeColor = "red")}
-	>track</button
->
+<button type="button" data-testid="set-stroke-width" onclick={() => (strokeWidth = 24)}>
+	strokeWidth
+</button>
+<button type="button" data-testid="set-track" onclick={() => (bgStrokeColor = "red")}>
+	track
+</button>

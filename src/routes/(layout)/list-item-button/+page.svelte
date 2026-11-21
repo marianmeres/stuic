@@ -33,9 +33,9 @@
 <h2 class="text-lg font-bold mb-4">Touch Friendly</h2>
 <div class="w-72 space-y-1 border rounded-lg p-2">
 	<ListItemButton size="sm" touchFriendly>Small + touchFriendly=true</ListItemButton>
-	<ListItemButton size="sm" touchFriendly="auto"
-		>Small + touchFriendly="auto"</ListItemButton
-	>
+	<ListItemButton size="sm" touchFriendly="auto">
+		Small + touchFriendly="auto"
+	</ListItemButton>
 </div>
 
 <hr class="my-8" />

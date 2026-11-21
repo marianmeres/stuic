@@ -917,9 +917,9 @@
 															<Thc thc={item.icon} />
 														</span>
 													{:else if isCollapsed}
-														<span class={twMerge("shrink-0 font-medium", classIcon)}
-															>{getFirstLetter(label)}</span
-														>
+														<span class={twMerge("shrink-0 font-medium", classIcon)}>
+															{getFirstLetter(label)}
+														</span>
 													{/if}
 													{#if !isCollapsed}
 														<span class={classLabel}>{label}</span>
@@ -958,9 +958,9 @@
 															<Thc thc={item.icon} />
 														</span>
 													{:else if isCollapsed}
-														<span class={twMerge("shrink-0 font-medium", classIcon)}
-															>{getFirstLetter(label)}</span
-														>
+														<span class={twMerge("shrink-0 font-medium", classIcon)}>
+															{getFirstLetter(label)}
+														</span>
 													{/if}
 													{#if !isCollapsed}
 														<span class={classLabel}>{label}</span>
@@ -1004,9 +1004,9 @@
 										<Thc thc={group.icon} />
 									</span>
 								{:else if isCollapsed}
-									<span class={twMerge("shrink-0 font-medium", classIcon)}
-										>{getFirstLetter(label)}</span
-									>
+									<span class={twMerge("shrink-0 font-medium", classIcon)}>
+										{getFirstLetter(label)}
+									</span>
 								{/if}
 								{#if !isCollapsed}
 									<span class={classLabel}>{label}</span>
@@ -1037,9 +1037,9 @@
 										<Thc thc={group.icon} />
 									</span>
 								{:else if isCollapsed}
-									<span class={twMerge("shrink-0 font-medium", classIcon)}
-										>{getFirstLetter(label)}</span
-									>
+									<span class={twMerge("shrink-0 font-medium", classIcon)}>
+										{getFirstLetter(label)}
+									</span>
 								{/if}
 								{#if !isCollapsed}
 									<span class={classLabel}>{label}</span>

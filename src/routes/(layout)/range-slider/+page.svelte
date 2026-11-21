@@ -64,41 +64,41 @@
 			{eur.format(value)}
 		{/snippet}
 	</RangeSlider>
-	<span class="opacity-50 tabular-nums"
-		>{eur.format(priceStart)} – {eur.format(priceEnd)}</span
-	>
+	<span class="opacity-50 tabular-nums">
+		{eur.format(priceStart)} – {eur.format(priceEnd)}
+	</span>
 </div>
 
 <h3 class="font-semibold mb-2">Sizes</h3>
 <div class="flex flex-wrap items-center gap-6 mb-8">
-	<span class="flex items-center gap-2"
-		><RangeSlider size="sm" start={20} end={70} /> sm</span
-	>
-	<span class="flex items-center gap-2"
-		><RangeSlider size="md" start={20} end={70} /> md</span
-	>
-	<span class="flex items-center gap-2"
-		><RangeSlider size="lg" start={20} end={70} /> lg</span
-	>
+	<span class="flex items-center gap-2">
+		<RangeSlider size="sm" start={20} end={70} /> sm
+	</span>
+	<span class="flex items-center gap-2">
+		<RangeSlider size="md" start={20} end={70} /> md
+	</span>
+	<span class="flex items-center gap-2">
+		<RangeSlider size="lg" start={20} end={70} /> lg
+	</span>
 </div>
 
 <h3 class="font-semibold mb-2">Intents</h3>
 <div class="flex flex-wrap items-center gap-4 mb-8">
-	<span class="flex items-center gap-1"
-		><RangeSlider intent="primary" start={20} end={70} size="sm" /> primary</span
-	>
-	<span class="flex items-center gap-1"
-		><RangeSlider intent="accent" start={20} end={70} size="sm" /> accent</span
-	>
-	<span class="flex items-center gap-1"
-		><RangeSlider intent="success" start={20} end={70} size="sm" /> success</span
-	>
-	<span class="flex items-center gap-1"
-		><RangeSlider intent="warning" start={20} end={70} size="sm" /> warning</span
-	>
-	<span class="flex items-center gap-1"
-		><RangeSlider intent="destructive" start={20} end={70} size="sm" /> destructive</span
-	>
+	<span class="flex items-center gap-1">
+		<RangeSlider intent="primary" start={20} end={70} size="sm" /> primary
+	</span>
+	<span class="flex items-center gap-1">
+		<RangeSlider intent="accent" start={20} end={70} size="sm" /> accent
+	</span>
+	<span class="flex items-center gap-1">
+		<RangeSlider intent="success" start={20} end={70} size="sm" /> success
+	</span>
+	<span class="flex items-center gap-1">
+		<RangeSlider intent="warning" start={20} end={70} size="sm" /> warning
+	</span>
+	<span class="flex items-center gap-1">
+		<RangeSlider intent="destructive" start={20} end={70} size="sm" /> destructive
+	</span>
 </div>
 
 <h3 class="font-semibold mb-2">
@@ -110,9 +110,9 @@
 </p>
 <div class="flex flex-wrap items-center gap-6 mb-8">
 	<RangeSlider bind:start={gapStart} bind:end={gapEnd} minRange={20} label="Gap" />
-	<span class="opacity-50 tabular-nums"
-		>{gapStart} – {gapEnd} (Δ {gapEnd - gapStart})</span
-	>
+	<span class="opacity-50 tabular-nums">
+		{gapStart} – {gapEnd} (Δ {gapEnd - gapStart})
+	</span>
 </div>
 
 <h3 class="font-semibold mb-2">Steps + ticks</h3>
@@ -311,8 +311,8 @@
 	/>
 	<span class="opacity-50 tabular-nums">{valStart} – {valEnd}</span>
 	{#if validation && !validation.valid}
-		<span class="text-sm" style="color: var(--stuic-color-destructive)"
-			>{validation.message}</span
-		>
+		<span class="text-sm" style="color: var(--stuic-color-destructive)">
+			{validation.message}
+		</span>
 	{/if}
 </div>

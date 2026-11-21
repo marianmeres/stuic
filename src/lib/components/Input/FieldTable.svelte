@@ -563,9 +563,9 @@
 						<tr>
 							{#each uniqueColumns as c (c.key)}
 								<th scope="col" data-type={c.type}>
-									{colLabel(c)}{#if c.unit}{" "}<span class="stuic-field-table-unit"
-											>({c.unit})</span
-										>{/if}
+									{colLabel(c)}{#if c.unit}{" "}<span class="stuic-field-table-unit">
+											({c.unit})
+										</span>{/if}
 								</th>
 							{/each}
 							{#if showActions}
@@ -587,9 +587,11 @@
 												for={cellId(rid, c.key)}
 												class="stuic-field-table-cell-label"
 											>
-												{colLabel(c)}{#if c.unit}{" "}({c.unit}){/if}<span class="sr-only"
-													>, {t("row_label", { row: r + 1 })}</span
+												{colLabel(c)}{#if c.unit}{" "}({c.unit}){/if}<span
+													class="sr-only"
 												>
+													, {t("row_label", { row: r + 1 })}
+												</span>
 											</label>
 											{@render control(c, r, rid, row as FieldTableRow)}
 											{#if invalid}

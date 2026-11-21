@@ -37,7 +37,7 @@
 	style="width:200px;height:32px"
 />
 <button type="button" data-testid="set" onclick={() => (value = 77)}>set 77</button>
-<button type="button" data-testid="disable" onclick={() => (disabled = true)}
-	>disable</button
->
+<button type="button" data-testid="disable" onclick={() => (disabled = true)}>
+	disable
+</button>
 <output data-testid="bound">{value}</output>

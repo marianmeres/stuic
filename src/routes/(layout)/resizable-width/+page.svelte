@@ -72,9 +72,10 @@
 <h2 class="text-xl font-semibold mt-12 mb-2">The <code>resizable</code> attachment</h2>
 <p class="text-sm text-neutral-500 mb-4">
 	<code>resizableWidth</code> is a thin wrapper over
-	<code>{"{@attach resizable(...)}"}</code>, which also does heights (<code
-		>axis: "y"</code
-	>) and can drive a handle of your own (<code>handle</code>). Every handle is a focusable
+	<code>{"{@attach resizable(...)}"}</code>, which also does heights (<code>
+		axis: "y"
+	</code>) and can drive a handle of your own (<code>handle</code>). Every handle is a
+	focusable
 	<code>role="separator"</code>: arrow keys along the axis, Shift for ×10, Home / End,
 	Enter resets.
 </p>

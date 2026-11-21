@@ -92,9 +92,9 @@
 
 	<div class="mt-4 flex items-center gap-3">
 		<Button size="sm" onclick={setNow}>Set to now</Button>
-		<Button size="sm" onclick={() => ((hour = 0), (minute = 0), (second = 0))}
-			>Midnight</Button
-		>
+		<Button size="sm" onclick={() => ((hour = 0), (minute = 0), (second = 0))}>
+			Midnight
+		</Button>
 		<pre class="text-xs bg-muted p-3 rounded-md">{time}</pre>
 	</div>
 </section>

@@ -53,8 +53,10 @@
 				class="text-xs opacity-50"
 				onclick={() => {
 					showCustom = !showCustom;
-				}}>toggle custom</button
+				}}
 			>
+				toggle custom
+			</button>
 		</div>
 
 		<div use:tooltip class="border">noop</div>

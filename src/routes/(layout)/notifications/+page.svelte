@@ -28,38 +28,50 @@
 	<Button
 		onclick={() => {
 			notifications.info(dummySentence(1));
-		}}>info</Button
+		}}
 	>
+		info
+	</Button>
 
 	<Button
 		onclick={() => {
 			notifications.warn(dummySentence(1));
-		}}>warn</Button
+		}}
 	>
+		warn
+	</Button>
 
 	<Button
 		onclick={() => {
 			notifications.error(dummySentence(1));
-		}}>error</Button
+		}}
 	>
+		error
+	</Button>
 
 	<Button
 		onclick={() => {
 			notifications.success(dummySentence(1));
-		}}>success</Button
+		}}
 	>
+		success
+	</Button>
 
 	<Button
 		onclick={() => {
 			notifications.info(fixed, { ttl: 0 });
-		}}>eternal</Button
+		}}
 	>
+		eternal
+	</Button>
 
 	<Button
 		onclick={() => {
 			notifications.info(fixedLong, { ttl: 0 });
-		}}>eternal long</Button
+		}}
 	>
+		eternal long
+	</Button>
 
 	<!-- noTheme --color-notif-bg="var(--color-amber-500)" -->
 

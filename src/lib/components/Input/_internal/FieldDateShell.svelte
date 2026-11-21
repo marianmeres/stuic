@@ -305,9 +305,9 @@
 	>
 		<div class={twMerge("stuic-field-date-dialog pointer-events-auto", classDialog)}>
 			<div class="stuic-field-date-dialog-header">
-				<span id="{id}-dialog-title" class="stuic-field-date-dialog-title"
-					>{dialogTitle}</span
-				>
+				<span id="{id}-dialog-title" class="stuic-field-date-dialog-title">
+					{dialogTitle}
+				</span>
 				<Button
 					x
 					size="sm"

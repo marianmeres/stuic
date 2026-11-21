@@ -54,8 +54,11 @@
 				class="border rounded-lg text-xs px-1 py-0.5 leading-none inline-flex mx-1 my-1 text-left"
 				onclick={() => {
 					selection.removeAt(idx);
-				}}>{renderOptionLabel(item)} <X class="size-3" /></button
+				}}
 			>
+				{renderOptionLabel(item)}
+				<X class="size-3" />
+			</button>
 		{/each}
 		<!-- </div> -->
 	{/if}

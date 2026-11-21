@@ -180,9 +180,9 @@
 		<h2 class="text-lg font-semibold mb-2">Search Filter Simulation</h2>
 		<p class=" text-neutral-500 mb-4">
 			Simulates filter history like in a CMS. Max 5 entries. Storage key:
-			<code class="rounded bg-neutral-100 px-1"
-				>stuic-demo:filter-history:project-123:cms:posts:article</code
-			>
+			<code class="rounded bg-neutral-100 px-1">
+				stuic-demo:filter-history:project-123:cms:posts:article
+			</code>
 		</p>
 
 		<form onsubmit={handleSubmit2} class="flex gap-2">

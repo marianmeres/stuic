@@ -129,8 +129,10 @@
 						Don't have an account? <button
 							type="button"
 							class="underline"
-							onclick={() => alert("Sign up")}>Sign up</button
+							onclick={() => alert("Sign up")}
 						>
+							Sign up
+						</button>
 					</div>
 				{/if}
 			{/snippet}

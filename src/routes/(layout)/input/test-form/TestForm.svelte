@@ -94,16 +94,18 @@ Sed metus sapien, feugiat eget mauris quis, pellentesque porta enim. In hac habi
 </script>
 
 <div>
-	<Button size="sm" class="border px-2 mb-4" onclick={() => (labelLeft = !labelLeft)}
-		>left/full</Button
-	>
+	<Button size="sm" class="border px-2 mb-4" onclick={() => (labelLeft = !labelLeft)}>
+		left/full
+	</Button>
 	<Button
 		size="sm"
 		class="border px-2 mb-4"
 		onclick={() => {
 			values.input2 = LONG_LOREM;
-		}}>set big text</Button
+		}}
 	>
+		set big text
+	</Button>
 </div>
 
 <!--  -->
