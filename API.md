@@ -1063,6 +1063,7 @@ Thin wrapper around `Avatar` + `DropdownMenu` for the "user avatar in the header
 | `labels`         | `UserAvatarMenuLabels`                        | English | Translated strings for built-in items.                                                                      |
 | `colorScheme`    | `boolean \| { enabled?, onToggle?, isDark? }` | `true`  | Built-in dark/light toggle. `false` to disable.                                                             |
 | `showHeaderTile` | `boolean`                                     | `true`  | Render the avatar+email tile (auth only).                                                                   |
+| `compact`        | `boolean`                                     | `false` | Opt-in: header tile without its avatar (name / email only), tighter padding.                                |
 | `showRoles`      | `boolean`                                     | `false` | Render `identity.roles` under the email.                                                                    |
 | `extraItems`     | `DropdownMenuItem[]`                          | —       | Appended to the standard item set.                                                                          |
 | `items`          | `DropdownMenuItem[]`                          | —       | Full override of the item list (trigger + shell still render).                                              |

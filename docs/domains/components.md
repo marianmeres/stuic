@@ -1886,6 +1886,7 @@ Thin opinionated wrapper around `Avatar` + `DropdownMenu` for the common "user a
 | `labels`         | `UserAvatarMenuLabels`                                 | English | Translated strings for built-in items.                                                        |
 | `colorScheme`    | `boolean \| { enabled?, system?, onToggle?, isDark? }` | `true`  | Built-in dark/light toggle. `false` to disable; `{ system: true }` for System / Light / Dark. |
 | `showHeaderTile` | `boolean`                                              | `true`  | Render avatar+email tile inside the dropdown (auth only).                                     |
+| `compact`        | `boolean`                                              | `false` | Opt-in: header tile without its avatar (name / email only), tighter padding.                  |
 | `showRoles`      | `boolean`                                              | `false` | Render `identity.roles` under the email in the header tile.                                   |
 | `extraItems`     | `DropdownMenuItem[]`                                   | —       | Appended to the standard item set.                                                            |
 | `items`          | `DropdownMenuItem[]`                                   | —       | Full override of items (trigger + shell still render).                                        |
@@ -1913,7 +1914,7 @@ Thin opinionated wrapper around `Avatar` + `DropdownMenu` for the common "user a
 
 Prefix: `--stuic-user-avatar-menu-*`
 
-`dropdown-width` (16rem), `trigger-radius`, `trigger-opacity-hover`, `trigger-outline-color`, `transition`, `header-gap`, `header-padding`, `header-margin-bottom`, `header-bg`, `header-color`, `header-radius`, `header-email-font-size`, `header-email-color`, `header-roles-font-size`, `header-roles-color`, `header-roles-opacity`
+`dropdown-width` (16rem), `trigger-radius`, `trigger-opacity-hover`, `trigger-outline-color`, `transition`, `header-gap`, `header-padding`, `header-margin-bottom`, `header-compact-gap`, `header-compact-padding`, `header-bg`, `header-color`, `header-radius`, `header-email-font-size`, `header-email-color`, `header-roles-font-size`, `header-roles-color`, `header-roles-opacity`
 
 The dropdown has a fixed `width` so every instance opens identically — short and long content alike. Email, name, and roles truncate with `text-overflow: ellipsis`. Header tile defaults: `--stuic-color-muted` bg + `--stuic-color-muted-foreground` text.
 

@@ -66,6 +66,12 @@
 	overflow: hidden;
 }
 
+/* Compact: no avatar in the tile, so less vertical room around the text. */
+.stuic-user-avatar-menu-header[data-compact="true"] {
+	gap: var(--stuic-user-avatar-menu-header-compact-gap, 0.125rem);
+	padding: var(--stuic-user-avatar-menu-header-compact-padding, 0.5rem);
+}
+
 /* Direct text children of the header tile must each get the full row width
  * so `text-overflow: ellipsis` has something to clip against (under
  * align-items: center, children otherwise shrink to their intrinsic width). */

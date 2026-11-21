@@ -53,6 +53,18 @@ The component composes existing primitives and adds convention, not behavior. It
 />
 ```
 
+### Compact header tile
+
+`compact` drops the avatar (photo or initials) from the header tile, so the tile shows only the name / email (and roles, with `showRoles`) and takes less room. Opt-in; the trigger avatar stays.
+
+```svelte
+<UserAvatarMenu
+	identity={{ email: user.email }}
+	compact
+	actions={{ onProfile: () => goto("/me"), onLogout: () => goto("/logout") }}
+/>
+```
+
 ### Separate trigger vs header-tile avatar styling
 
 `avatar` is the shared base; `avatarHeader` overrides keys on the header-tile Avatar only (shallow merge).
@@ -75,11 +87,12 @@ The component composes existing primitives and adds convention, not behavior. It
 | `labels`         | `UserAvatarMenuLabels`                                 | English | Translated strings for built-in items.                                                                                                                  |
 | `colorScheme`    | `boolean \| { enabled?; system?; onToggle?; isDark? }` | `true`  | Built-in dark/light toggle. `false` to disable. Object form overrides toggle / read; `system: true` swaps the toggle for a System / Light / Dark group. |
 | `showHeaderTile` | `boolean`                                              | `true`  | Render the avatar + email header tile when authenticated.                                                                                               |
+| `compact`        | `boolean`                                              | `false` | Opt-in compact header tile: no avatar, only name / email (and roles), tighter padding. Trigger avatar and a custom `headerTile` are unaffected.         |
 | `showRoles`      | `boolean`                                              | `false` | Render `identity.roles` under the email in the header tile.                                                                                             |
 | `extraItems`     | `DropdownMenuItem[]`                                   | —       | Appended to the standard item set.                                                                                                                      |
 | `items`          | `DropdownMenuItem[]`                                   | —       | Full override of the item list. Trigger + dropdown shell still render.                                                                                  |
 | `avatar`         | `Partial<AvatarProps>`                                 | —       | Forwarded to BOTH the trigger Avatar and the header-tile Avatar.                                                                                        |
-| `avatarHeader`   | `Partial<AvatarProps>`                                 | —       | Overrides applied on top of `avatar` for the header-tile Avatar only. Shallow merge.                                                                    |
+| `avatarHeader`   | `Partial<AvatarProps>`                                 | —       | Overrides applied on top of `avatar` for the header-tile Avatar only. Shallow merge. Unused when `compact`.                                             |
 | `position`       | `DropdownMenuPosition`                                 | —       | Forwarded to `DropdownMenu`.                                                                                                                            |
 | `offset`         | `string`                                               | —       | Forwarded.                                                                                                                                              |
 | `maxHeight`      | `string`                                               | —       | Forwarded.                                                                                                                                              |
@@ -142,7 +155,7 @@ Predictable so consumers can reason about position when adding `extraItems`.
 
 ### Authenticated
 
-1. Header tile (when `showHeaderTile !== false`)
+1. Header tile (when `showHeaderTile !== false`; without its avatar when `compact`)
 2. View profile (when `actions.onProfile`)
 3. Settings (when `actions.onSettings`)
 4. Color scheme toggle (when `colorScheme !== false`) — sun/moon icon, label flips; with `colorScheme={{ system: true }}` an expandable "Appearance" group instead (System / Light mode / Dark mode, the active one checked)
@@ -187,6 +200,8 @@ Prefix: `--stuic-user-avatar-menu-*`
 | `--stuic-user-avatar-menu-header-gap`             | `0.5rem`                              |
 | `--stuic-user-avatar-menu-header-padding`         | `0.75rem 0.5rem`                      |
 | `--stuic-user-avatar-menu-header-margin-bottom`   | `0.25rem`                             |
+| `--stuic-user-avatar-menu-header-compact-gap`     | `0.125rem`                            |
+| `--stuic-user-avatar-menu-header-compact-padding` | `0.5rem`                              |
 | `--stuic-user-avatar-menu-header-bg`              | `var(--stuic-color-muted)`            |
 | `--stuic-user-avatar-menu-header-color`           | `var(--stuic-color-muted-foreground)` |
 | `--stuic-user-avatar-menu-header-radius`          | `var(--stuic-radius)`                 |

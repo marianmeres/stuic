@@ -143,6 +143,37 @@
 
 <hr class="my-6" />
 
+<!-- 2c — compact -->
+<section>
+	<h2 class="text-lg font-semibold mb-2">2c — <code>compact</code></h2>
+	<p class="text-sm text-neutral-500 mb-4">
+		Opt-in. The header tile drops its avatar (photo or initials) and shows only the name /
+		email, so it takes less room. The trigger avatar stays.
+	</p>
+	<div class="flex items-start gap-12">
+		<UserAvatarMenu
+			identity={userWithPhoto}
+			compact
+			actions={{
+				onProfile: () => clog("profile"),
+				onLogout: () => clog("logout"),
+			}}
+		/>
+		<UserAvatarMenu
+			identity={user}
+			compact
+			showRoles
+			actions={{
+				onProfile: () => clog("profile"),
+				onSettings: () => clog("settings"),
+				onLogout: () => clog("logout"),
+			}}
+		/>
+	</div>
+</section>
+
+<hr class="my-6" />
+
 <!-- 3 -->
 <section>
 	<h2 class="text-lg font-semibold mb-2">3 — Custom <code>headerTile</code> snippet</h2>

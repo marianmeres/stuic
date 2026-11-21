@@ -52,6 +52,37 @@ test("AUTHED: clicking the trigger opens the menu, shows the email header and a 
 		.toBeInTheDocument();
 });
 
+test("AUTHED: the header tile carries an avatar by default", async () => {
+	const screen = await render(UserAvatarMenu, {
+		identity: { email: "ada@x.io" },
+		actions: { onLogout: vi.fn() },
+	});
+	await screen.getByRole("button", { name: "User menu" }).click();
+	await expect.element(screen.getByText("ada@x.io")).toBeInTheDocument();
+
+	const tile = screen.getByText("ada@x.io").element().parentElement!;
+	expect(tile.classList.contains("stuic-user-avatar-menu-header")).toBe(true);
+	expect(tile.querySelector(".stuic-avatar")).not.toBeNull();
+	expect(tile.hasAttribute("data-compact")).toBe(false);
+});
+
+test("AUTHED: `compact` drops the header-tile avatar, keeps the email and the trigger avatar", async () => {
+	const screen = await render(UserAvatarMenu, {
+		identity: { email: "ada@x.io" },
+		actions: { onLogout: vi.fn() },
+		compact: true,
+	});
+	const trigger = screen.getByRole("button", { name: "User menu" });
+	await trigger.click();
+	await expect.element(screen.getByText("ada@x.io")).toBeInTheDocument();
+
+	const tile = screen.getByText("ada@x.io").element().parentElement!;
+	expect(tile.classList.contains("stuic-user-avatar-menu-header")).toBe(true);
+	expect(tile.getAttribute("data-compact")).toBe("true");
+	expect(tile.querySelector(".stuic-avatar")).toBeNull();
+	expect(trigger.element().querySelector(".stuic-avatar")).not.toBeNull();
+});
+
 test("AUTHED: clicking Logout fires onLogout once and closes the menu", async () => {
 	const onLogout = vi.fn();
 	const screen = await render(UserAvatarMenu, {

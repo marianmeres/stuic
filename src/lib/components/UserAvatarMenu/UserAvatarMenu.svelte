@@ -112,6 +112,13 @@
 		/** Render the identity header tile (avatar + email) in the dropdown. Default: `true`. */
 		showHeaderTile?: boolean;
 
+		/**
+		 * Compact header tile: drop the avatar from the default tile so it shows only
+		 * the name / email (and roles), and tighten its padding. The trigger avatar is
+		 * unaffected; so is a custom `headerTile` snippet. Default: `false`.
+		 */
+		compact?: boolean;
+
 		/** Render roles under the email in the header tile. Default: `false`. */
 		showRoles?: boolean;
 
@@ -135,7 +142,7 @@
 		/**
 		 * Overrides applied on top of `avatar` for the header-tile `Avatar` only
 		 * (the larger avatar shown above the menu items inside the popup).
-		 * Shallow-merged: keys present here win over `avatar`.
+		 * Shallow-merged: keys present here win over `avatar`. Unused when `compact`.
 		 */
 		avatarHeader?: Partial<Omit<AvatarProps, "onclick" | "initials" | "src" | "el">>;
 
@@ -204,6 +211,7 @@
 		labels = {},
 		colorScheme = true,
 		showHeaderTile = true,
+		compact = false,
 		showRoles = false,
 		extraItems,
 		items: itemsOverride,
@@ -414,16 +422,21 @@
 
 {#snippet defaultHeaderTile()}
 	{#if identity}
-		<div class={!unstyled ? "stuic-user-avatar-menu-header" : undefined}>
-			<Avatar
-				initials={identity.email}
-				initialsLength={1}
-				autoColor
-				hashSource={identity.email}
-				src={identity.src}
-				onclick={actions.onProfile}
-				{...avatarHeaderMerged}
-			/>
+		<div
+			class={!unstyled ? "stuic-user-avatar-menu-header" : undefined}
+			data-compact={compact ? "true" : undefined}
+		>
+			{#if !compact}
+				<Avatar
+					initials={identity.email}
+					initialsLength={1}
+					autoColor
+					hashSource={identity.email}
+					src={identity.src}
+					onclick={actions.onProfile}
+					{...avatarHeaderMerged}
+				/>
+			{/if}
 			<div class={!unstyled ? "stuic-user-avatar-menu-header-email" : undefined}>
 				{identity.name ?? identity.email}
 			</div>
